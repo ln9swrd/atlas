@@ -101,7 +101,7 @@ def get_assignee_for_task(task, registry_path):
     # Default logic if no capability matches
     return "Antigravity" if "automation" in focus_area else "Human + Forge"
 
-def build_recommendation_payload(context, base_dir=None):
+def build_recommendation_payload(context, base_dir=None, state=None):
     if base_dir is None:
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -114,6 +114,10 @@ def build_recommendation_payload(context, base_dir=None):
 
     constraints = set(getattr(context, 'constraints', []) or [])
     rules = build_rules(context)
+    resources = getattr(context, 'resources', {}) or {}
+    state = state or {}
+    task_states = state.get("task_states", []) if isinstance(state, dict) else []
+    completed_ids = {task.get("id") for task in task_states if task.get("status") == "DONE"}
 
     bottleneck_scores = parse_bottleneck_scores(bottleneck_path)
 
@@ -142,7 +146,7 @@ def build_recommendation_payload(context, base_dir=None):
 
     scored_tasks.sort(key=lambda x: x["priority_score"], reverse=True)
 
-    time_budget = 180
+    time_budget = int(resources.get("available_minutes", 180))
     if os.path.exists(execution_readme_path):
         with open(execution_readme_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -160,6 +164,15 @@ def build_recommendation_payload(context, base_dir=None):
             task_caps.add(task["focus_area"].lower())
         if task.get("category"):
             task_caps.add(task["category"].lower())
+
+        if task.get("environment") and context.environment and task["environment"] != context.environment:
+            continue
+        if task.get("depends_on"):
+            unmet_dependencies = [dependency for dependency in task.get("depends_on", []) if dependency not in completed_ids]
+            if unmet_dependencies:
+                continue
+        if task.get("est_time", 0) > time_budget:
+            continue
 
         if "no_unreal" in constraints and "unreal" in task_caps:
             continue

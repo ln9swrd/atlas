@@ -178,6 +178,357 @@ class AtlasRunnerMVPTests(unittest.TestCase):
             log_lines = (base_dir / "logs" / "atlas_events.jsonl").read_text(encoding="utf-8").splitlines()
             self.assertTrue(any("task.started" in line for line in log_lines))
 
+    def test_daily_cycle_advances_state_and_progress(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            for relpath in [
+                "core/execution",
+                "core/config",
+                "core/workflow",
+                "projects/exelion/sprints",
+                "projects/exelion/goals",
+                "logs",
+            ]:
+                (base_dir / relpath).mkdir(parents=True, exist_ok=True)
+
+            (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+                json.dumps([
+                    {"id": "EX-001", "description": "Brave 기본 프레임 제작", "target_stage": "Blender - 모델링", "projected_gain": 8.0, "est_time": 90, "focus_area": "modeling"},
+                    {"id": "EX-002", "description": "Brave UV 매핑", "target_stage": "Blender - UV", "projected_gain": 7.0, "est_time": 60, "focus_area": "uv"},
+                    {"id": "EX-003", "description": "Brave 외장 장갑 제작", "target_stage": "Blender - 모델링", "projected_gain": 6.0, "est_time": 80, "focus_area": "modeling"},
+                ]),
+                encoding="utf-8",
+            )
+            (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
+            (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
+            (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-BRAVE-001 — Brave 기본 프레임 제작\n2. EX-BRAVE-002 — Brave UV 매핑\n3. EX-BRAVE-003 — Brave 외장 장갑 제작\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+
+            report = atlas_runner.build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelion")
+            atlas_runner.initialize_task_state(base_dir, report)
+
+            first = atlas_runner.advance_task(base_dir, command="next")
+            atlas_runner.complete_current_task(base_dir)
+            second = atlas_runner.advance_task(base_dir, command="next")
+            atlas_runner.complete_current_task(base_dir)
+            third = atlas_runner.advance_task(base_dir, command="next")
+            atlas_runner.complete_current_task(base_dir)
+
+            state_data = json.loads((base_dir / "ATLAS_STATE.json").read_text(encoding="utf-8"))
+            statuses = [task["status"] for task in state_data["task_states"]]
+            self.assertEqual(statuses.count("DONE"), 3)
+            self.assertEqual(first["status"], "IN_PROGRESS")
+            self.assertEqual(second["status"], "IN_PROGRESS")
+            self.assertEqual(third["status"], "IN_PROGRESS")
+            self.assertGreaterEqual(state_data["task_states"][0].get("priority", 0), 1)
+            log_lines = (base_dir / "logs" / "atlas_events.jsonl").read_text(encoding="utf-8").splitlines()
+            self.assertTrue(any("task.completed" in line for line in log_lines))
+            self.assertTrue(any("sprint.updated" in line for line in log_lines))
+
+    def test_real_backlog_metadata_is_captured_in_task_state(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            for relpath in [
+                "core/execution",
+                "core/config",
+                "core/workflow",
+                "projects/exelion/sprints",
+                "projects/exelion/goals",
+                "logs",
+            ]:
+                (base_dir / relpath).mkdir(parents=True, exist_ok=True)
+
+            (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+                json.dumps([
+                    {
+                        "id": "EX-BRAVE-001",
+                        "description": "Brave 기본 프레임 제작",
+                        "target_stage": "Blender - 모델링",
+                        "est_time": 120,
+                        "projected_gain": 8.0,
+                        "focus_area": "modeling",
+                        "environment": "DEV_HOME",
+                        "depends_on": ["EX-BRAVE-000"],
+                    }
+                ]),
+                encoding="utf-8",
+            )
+            (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
+            (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
+            (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-BRAVE-001 — Brave 기본 프레임 제작\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+
+            report = atlas_runner.build_start_report(
+                base_dir,
+                environment_id="DEV_HOME",
+                project_name="Exelion",
+                state={"task_states": [{"id": "EX-BRAVE-000", "status": "DONE"}]},
+            )
+            atlas_runner.initialize_task_state(base_dir, report)
+            state_data = json.loads((base_dir / "ATLAS_STATE.json").read_text(encoding="utf-8"))
+            task = state_data["task_states"][0]
+            self.assertEqual(task["estimate"], 120)
+            self.assertEqual(task["environment"], "DEV_HOME")
+            self.assertEqual(task["depends_on"], ["EX-BRAVE-000"])
+
+    def test_runtime_context_filters_tasks_by_environment_dependency_and_time(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            for relpath in [
+                "core/execution",
+                "core/config",
+                "core/workflow",
+                "projects/exelion/sprints",
+                "projects/exelion/goals",
+                "logs",
+            ]:
+                (base_dir / relpath).mkdir(parents=True, exist_ok=True)
+
+            (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+                json.dumps([
+                    {
+                        "id": "EX-001",
+                        "description": "Home-only task",
+                        "target_stage": "Blender - 모델링",
+                        "projected_gain": 8.0,
+                        "est_time": 45,
+                        "focus_area": "modeling",
+                        "environment": "DEV_HOME",
+                    },
+                    {
+                        "id": "EX-002",
+                        "description": "Office-only task",
+                        "target_stage": "Blender - UV",
+                        "projected_gain": 7.0,
+                        "est_time": 30,
+                        "focus_area": "uv",
+                        "environment": "DEV_WORK",
+                    },
+                    {
+                        "id": "EX-003",
+                        "description": "Blocked by dependency",
+                        "target_stage": "Blender - Export",
+                        "projected_gain": 6.0,
+                        "est_time": 20,
+                        "focus_area": "materials",
+                        "environment": "DEV_HOME",
+                        "depends_on": ["EX-999"],
+                    },
+                    {
+                        "id": "EX-004",
+                        "description": "Too long for budget",
+                        "target_stage": "Documentation",
+                        "projected_gain": 4.0,
+                        "est_time": 100,
+                        "focus_area": "documentation",
+                        "environment": "DEV_HOME",
+                    },
+                ]),
+                encoding="utf-8",
+            )
+            (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
+            (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
+            (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-001 — Home-only task\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+
+            report = atlas_runner.build_start_report(
+                base_dir,
+                environment_id="DEV_HOME",
+                project_name="Exelion",
+                runtime_overrides={"available_minutes": 60, "energy": "high"},
+                state={"task_states": [{"id": "EX-001", "status": "DONE"}]},
+            )
+            ids = [task["id"] for task in report["recommended_tasks"]]
+            self.assertIn("EX-001", ids)
+            self.assertNotIn("EX-002", ids)
+            self.assertNotIn("EX-003", ids)
+            self.assertNotIn("EX-004", ids)
+
+    def test_simulate_day_returns_recommendation_and_actual_selection(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            for relpath in [
+                "core/execution",
+                "core/config",
+                "core/workflow",
+                "projects/exelion/sprints",
+                "projects/exelion/goals",
+                "logs",
+            ]:
+                (base_dir / relpath).mkdir(parents=True, exist_ok=True)
+
+            (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+                json.dumps([
+                    {"id": "EX-001", "description": "Task A", "target_stage": "Blender - 모델링", "projected_gain": 8.0, "est_time": 45, "focus_area": "modeling", "environment": "DEV_HOME"},
+                    {"id": "EX-002", "description": "Task B", "target_stage": "Blender - UV", "projected_gain": 7.0, "est_time": 30, "focus_area": "uv", "environment": "DEV_HOME"},
+                ]),
+                encoding="utf-8",
+            )
+            (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
+            (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
+            (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-001 — Task A\n2. EX-002 — Task B\n", encoding="utf-8")
+            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+
+            simulation = atlas_runner.simulate_day(
+                base_dir,
+                environment_id="DEV_HOME",
+                project_name="Exelion",
+                runtime_overrides={"available_minutes": 60, "energy": "high"},
+            )
+            self.assertEqual(simulation["context"]["environment"], "DEV_HOME")
+            self.assertIn("EX-001", simulation["recommended_ids"])
+            self.assertEqual(simulation["actual_ids"], ["EX-001"])
+
+    def test_log_feedback_writes_recommendation_record(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            (base_dir / "logs").mkdir(parents=True, exist_ok=True)
+
+            record = atlas_runner.log_feedback(
+                base_dir,
+                date="2026-07-16",
+                context={"environment": "office", "available_minutes": 120, "energy": "high"},
+                recommended=["EX-102", "EX-087", "EX-091"],
+                selected="EX-087",
+                completed=True,
+                duration=95,
+                reason="manual_override",
+                task="EX-214",
+                recommendation_score=84,
+                recommendation_reasons=["dependency satisfied", "environment matched", "estimate fits budget"],
+                override_reason="urgent customer issue",
+            )
+
+            log_path = base_dir / "logs" / "feedback_log.jsonl"
+            self.assertTrue(log_path.exists())
+            saved = json.loads(log_path.read_text(encoding="utf-8").strip())
+            self.assertEqual(saved["selected"], "EX-087")
+            self.assertEqual(saved["reason"], "manual_override")
+            self.assertEqual(saved["task"], "EX-214")
+            self.assertEqual(saved["recommendation_score"], 84)
+            self.assertEqual(saved["recommendation_reasons"], ["dependency satisfied", "environment matched", "estimate fits budget"])
+            self.assertEqual(saved["override_reason"], "urgent customer issue")
+            self.assertEqual(record["selected"], "EX-087")
+
+    def test_replay_feedback_and_compare_replay(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            (base_dir / "logs").mkdir(parents=True, exist_ok=True)
+            (base_dir / "logs" / "feedback_log.jsonl").write_text(
+                json.dumps({
+                    "date": "2026-07-09",
+                    "selected": "EX-101",
+                    "recommended_task": "EX-101",
+                    "override_reason": "none",
+                    "completed": True,
+                }) + "\n",
+                encoding="utf-8",
+            )
+
+            replay = atlas_runner.replay_feedback(base_dir)
+            comparison = atlas_runner.compare_replay(base_dir)
+            self.assertEqual(len(replay), 1)
+            self.assertEqual(comparison[0]["selected"], "EX-101")
+            self.assertEqual(comparison[0]["override_reason"], "none")
+
+    def test_evaluate_feedback_returns_metrics(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            (base_dir / "logs").mkdir(parents=True, exist_ok=True)
+            (base_dir / "logs" / "feedback_log.jsonl").write_text(
+                json.dumps({
+                    "date": "2026-07-09",
+                    "selected": "EX-101",
+                    "recommended_task": "EX-101",
+                    "override_reason": "urgent request",
+                    "completed": True,
+                    "duration": 95,
+                    "context": {"environment": "office"},
+                }) + "\n" +
+                json.dumps({
+                    "date": "2026-07-10",
+                    "selected": "EX-102",
+                    "recommended_task": "EX-103",
+                    "override_reason": "customer issue",
+                    "completed": False,
+                    "duration": 40,
+                    "context": {"environment": "office"},
+                    "reason": "dependency violation",
+                }) + "\n",
+                encoding="utf-8",
+            )
+
+            metrics = atlas_runner.evaluate_feedback(base_dir)
+            self.assertEqual(metrics["recommendation_accuracy"], 0.5)
+            self.assertEqual(metrics["completion_rate"], 0.5)
+            self.assertEqual(metrics["override_rate"], 1.0)
+            self.assertEqual(metrics["dependency_violations"], 1)
+            self.assertIn("urgent request", metrics["top_override_reasons"])
+
+    def test_feedback_log_records_schema_and_engine_versions(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            entry = atlas_runner.log_feedback(
+                base_dir,
+                date="2026-07-11",
+                recommended=["EX-101"],
+                selected="EX-101",
+                completed=True,
+                duration=60,
+                task="EX-101",
+                engine_version="priority-v0.8.2",
+                policy_version="policy-v0.1.0",
+            )
+            self.assertEqual(entry["schema_version"], 1)
+            self.assertEqual(entry["engine_version"], "priority-v0.8.2")
+            self.assertEqual(entry["policy_version"], "policy-v0.1.0")
+            self.assertTrue(entry["session_id"])
+
+    def test_compare_versions_groups_metrics_by_engine(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            (base_dir / "logs").mkdir(parents=True, exist_ok=True)
+            (base_dir / "logs" / "feedback_log.jsonl").write_text(
+                json.dumps({
+                    "date": "2026-07-09",
+                    "selected": "EX-101",
+                    "recommended_task": "EX-101",
+                    "completed": True,
+                    "engine_version": "priority-v0.8.1",
+                    "policy_version": "policy-v0.1.0",
+                }) + "\n" +
+                json.dumps({
+                    "date": "2026-07-10",
+                    "selected": "EX-102",
+                    "recommended_task": "EX-103",
+                    "completed": False,
+                    "engine_version": "priority-v0.8.2",
+                    "policy_version": "policy-v0.1.1",
+                }) + "\n",
+                encoding="utf-8",
+            )
+
+            comparison = atlas_runner.compare_versions(base_dir)
+            self.assertEqual(len(comparison["versions"]), 2)
+            self.assertIn("priority-v0.8.1", comparison["versions"])
+            self.assertIn("priority-v0.8.2", comparison["versions"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -3,11 +3,13 @@ import re
 import sys
 import subprocess
 import json
+import uuid
 from datetime import datetime
 
 from core.execution.context_resolver import resolve_context
 from core.execution.goal_registry import set_active_goal, sync_state_with_goal
 from core.execution.priority_engine import build_recommendation_payload
+from core.execution.runtime_context import RuntimeContext
 
 def run_script(script_relative_path):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -123,10 +125,46 @@ def load_sprint_tasks(base_dir, sprint_name, project_name="Exelion"):
     return []
 
 
-def build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelion"):
+def build_runtime_context(base_dir, environment_id="DEV_HOME", project_name="Exelion", runtime_overrides=None, state=None):
     base_dir = get_repo_root(base_dir)
     context = resolve_context(environment_id, project_name, registry_path=os.path.join(base_dir, "ENVIRONMENTS.md"))
-    payload = build_recommendation_payload(context, base_dir=base_dir)
+
+    overrides = runtime_overrides or {}
+    resources = dict(context.resources or {})
+    if "available_minutes" in overrides:
+        resources["available_minutes"] = int(overrides["available_minutes"])
+    if "energy" in overrides:
+        resources["energy"] = overrides["energy"]
+    if "focus" in overrides:
+        resources["focus"] = overrides["focus"]
+    if "meeting_day" in overrides:
+        resources["meeting_day"] = overrides["meeting_day"]
+    if "ai_quota" in overrides:
+        resources["ai_quota"] = overrides["ai_quota"]
+
+    constraints = list(context.constraints or [])
+    for constraint in overrides.get("constraints", []) or []:
+        if constraint not in constraints:
+            constraints.append(constraint)
+
+    user = dict(context.user or {})
+    user.update(overrides.get("user", {}) or {})
+
+    return RuntimeContext(
+        environment=environment_id,
+        project=project_name,
+        time=dict(context.time or {}),
+        capabilities=list(context.capabilities or []),
+        constraints=constraints,
+        resources=resources,
+        user=user,
+    )
+
+
+def build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelion", runtime_overrides=None, state=None):
+    base_dir = get_repo_root(base_dir)
+    context = build_runtime_context(base_dir, environment_id=environment_id, project_name=project_name, runtime_overrides=runtime_overrides, state=state)
+    payload = build_recommendation_payload(context, base_dir=base_dir, state=state)
     sprint_name = load_current_sprint(base_dir, project_name)
     sprint_tasks = load_sprint_tasks(base_dir, sprint_name, project_name)
 
@@ -135,9 +173,12 @@ def build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelio
         recommended_tasks.append({
             "id": task.get("id"),
             "description": task.get("description"),
+            "estimate": task.get("estimate") or task.get("est_time"),
             "est_time": task.get("est_time"),
             "focus_area": task.get("focus_area"),
             "source": task.get("source"),
+            "environment": task.get("environment") or environment_id,
+            "depends_on": task.get("depends_on") or [],
         })
 
     while len(recommended_tasks) < 5 and sprint_tasks:
@@ -148,8 +189,11 @@ def build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelio
         recommended_tasks.append({
             "id": next_task.get("id"),
             "description": next_task.get("title"),
+            "estimate": None,
             "est_time": None,
             "focus_area": None,
+            "environment": environment_id,
+            "depends_on": [],
             "source": "Sprint",
         })
 
@@ -159,6 +203,174 @@ def build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelio
         "current_sprint": sprint_name,
         "recommended_tasks": recommended_tasks,
         "planned_time": payload["accumulated_time"],
+        "context": {
+            "environment": context.environment,
+            "available_minutes": context.resources.get("available_minutes"),
+            "energy": context.resources.get("energy"),
+        },
+    }
+
+
+def simulate_day(base_dir, environment_id="DEV_HOME", project_name="Exelion", runtime_overrides=None, state=None):
+    base_dir = get_repo_root(base_dir)
+    report = build_start_report(base_dir, environment_id=environment_id, project_name=project_name, runtime_overrides=runtime_overrides, state=state)
+    recommendations = [task.get("id") for task in report.get("recommended_tasks", []) if task.get("id")]
+    actual_selection = recommendations[:1]
+    return {
+        "context": report.get("context", {}),
+        "recommended_ids": recommendations,
+        "actual_ids": actual_selection,
+    }
+
+
+def log_feedback(base_dir, *, date=None, context=None, recommended=None, selected=None, completed=None, duration=None, reason=None, task=None, recommendation_score=None, recommendation_reasons=None, override_reason=None, engine_version=None, policy_version=None, session_id=None):
+    base_dir = get_repo_root(base_dir)
+    log_path = os.path.join(base_dir, "logs", "feedback_log.jsonl")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+
+    payload = {
+        "schema_version": 1,
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "session_id": session_id or str(uuid.uuid4()),
+        "date": date or datetime.now().strftime("%Y-%m-%d"),
+        "task": task,
+        "context": context or {},
+        "recommended": recommended or [],
+        "recommended_task": recommended[0] if recommended else None,
+        "selected": selected,
+        "completed": completed,
+        "duration": duration,
+        "reason": reason,
+        "recommendation_score": recommendation_score,
+        "recommendation_reasons": recommendation_reasons or [],
+        "override_reason": override_reason,
+        "engine_version": engine_version or "unknown",
+        "policy_version": policy_version or "unknown",
+    }
+
+    with open(log_path, 'a', encoding='utf-8') as handle:
+        handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
+
+    return payload
+
+
+def replay_feedback(base_dir, log_path=None):
+    base_dir = get_repo_root(base_dir)
+    feedback_log_path = log_path or os.path.join(base_dir, "logs", "feedback_log.jsonl")
+    if not os.path.exists(feedback_log_path):
+        return []
+
+    records = []
+    with open(feedback_log_path, 'r', encoding='utf-8') as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            records.append(json.loads(line))
+
+    return records
+
+
+def compare_replay(base_dir, log_path=None):
+    records = replay_feedback(base_dir, log_path=log_path)
+    comparisons = []
+    for record in records:
+        comparisons.append({
+            "date": record.get("date"),
+            "selected": record.get("selected"),
+            "recommended_task": record.get("recommended_task"),
+            "override_reason": record.get("override_reason"),
+            "completed": record.get("completed"),
+            "engine_version": record.get("engine_version"),
+            "policy_version": record.get("policy_version"),
+        })
+    return comparisons
+
+
+def compare_versions(base_dir, log_path=None):
+    records = replay_feedback(base_dir, log_path=log_path)
+    version_map = {}
+    for record in records:
+        engine_version = record.get("engine_version") or "unknown"
+        policy_version = record.get("policy_version") or "unknown"
+        version_key = f"{engine_version}::{policy_version}"
+        version_map.setdefault(version_key, {"engine_version": engine_version, "policy_version": policy_version, "events": []})
+        version_map[version_key]["events"].append(record)
+
+    versions = []
+    details = []
+    for version_key, meta in sorted(version_map.items()):
+        events = meta["events"]
+        versions.append(meta["engine_version"])
+        details.append({
+            "engine_version": meta["engine_version"],
+            "policy_version": meta["policy_version"],
+            "count": len(events),
+            "completion_rate": round(sum(1 for event in events if event.get("completed")) / len(events), 2) if events else 0.0,
+            "recommendation_accuracy": round(sum(1 for event in events if event.get("selected") and event.get("recommended_task") and event.get("selected") == event.get("recommended_task")) / len(events), 2) if events else 0.0,
+        })
+
+    return {"versions": versions, "details": details}
+
+
+def evaluate_feedback(base_dir, log_path=None):
+    records = replay_feedback(base_dir, log_path=log_path)
+    if not records:
+        return {
+            "recommendation_accuracy": 0.0,
+            "completion_rate": 0.0,
+            "override_rate": 0.0,
+            "average_estimate_error": 0.0,
+            "environment_match_rate": 0.0,
+            "dependency_violations": 0,
+            "deferred_tasks": 0,
+            "average_task_age": 0.0,
+            "top_override_reasons": [],
+        }
+
+    total = len(records)
+    matching_recommendations = sum(1 for record in records if record.get("selected") and record.get("recommended_task") and record.get("selected") == record.get("recommended_task"))
+    completed = sum(1 for record in records if record.get("completed"))
+    overrides = sum(1 for record in records if record.get("override_reason"))
+
+    estimate_errors = []
+    environment_matches = 0
+    dependency_violations = 0
+    deferred_tasks = 0
+    override_reasons = {}
+
+    for record in records:
+        context = record.get("context") or {}
+        if context.get("environment") and record.get("selected"):
+            environment_matches += 1
+
+        if record.get("override_reason"):
+            override_reasons[record.get("override_reason")] = override_reasons.get(record.get("override_reason"), 0) + 1
+
+        duration = record.get("duration")
+        if isinstance(duration, (int, float)):
+            estimate_errors.append(float(duration))
+
+        if record.get("selected") and record.get("recommended_task") and record.get("selected") != record.get("recommended_task"):
+            deferred_tasks += 1
+
+        if record.get("reason") == "dependency violation":
+            dependency_violations += 1
+
+    top_override_reasons = [
+        reason for reason, _ in sorted(override_reasons.items(), key=lambda item: item[1], reverse=True)[:5]
+    ]
+
+    return {
+        "recommendation_accuracy": round(matching_recommendations / total, 2) if total else 0.0,
+        "completion_rate": round(completed / total, 2) if total else 0.0,
+        "override_rate": round(overrides / total, 2) if total else 0.0,
+        "average_estimate_error": round(sum(estimate_errors) / len(estimate_errors), 2) if estimate_errors else 0.0,
+        "environment_match_rate": round(environment_matches / total, 2) if total else 0.0,
+        "dependency_violations": dependency_violations,
+        "deferred_tasks": deferred_tasks,
+        "average_task_age": 0.0,
+        "top_override_reasons": top_override_reasons,
     }
 
 
@@ -175,7 +387,9 @@ def initialize_task_state(base_dir, report):
             "description": task.get("description"),
             "status": "TODO",
             "priority": len(task_states) + 1,
-            "environment": report.get("environment"),
+            "estimate": task.get("estimate") or task.get("est_time"),
+            "environment": task.get("environment") or report.get("environment"),
+            "depends_on": task.get("depends_on") or [],
             "updated_at": datetime.now().isoformat(timespec="seconds"),
         })
 
@@ -248,8 +462,11 @@ def start_day():
     print("Recommended Tasks")
     for index, task in enumerate(report["recommended_tasks"], 1):
         description = task.get("description") or "Untitled task"
-        est_time = f" ({task.get('est_time')} mins)" if task.get("est_time") else ""
-        print(f"{index}. {description}{est_time}")
+        estimate = task.get("estimate") or task.get("est_time")
+        est_time = f" ({estimate} mins)" if estimate else ""
+        environment = f" | env: {task.get('environment')}" if task.get('environment') else ""
+        depends_on = f" | depends_on: {', '.join(task.get('depends_on') or [])}" if task.get('depends_on') else ""
+        print(f"{index}. {description}{est_time}{environment}{depends_on}")
 
     update_state_file(state_path, {
         "mode": "development",
@@ -397,9 +614,9 @@ def finish_day():
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python tools/atlas_runner.py [start|next|end|finish]")
+        print("Usage: python tools/atlas_runner.py [start|next|end|finish|simulate|replay|evaluate|metrics|compare]")
         sys.exit(1)
-        
+
     command = sys.argv[1].lower()
     if command == "start":
         start_day()
@@ -409,7 +626,17 @@ if __name__ == "__main__":
         end_day()
     elif command == "finish":
         finish_day()
+    elif command == "simulate":
+        print(json.dumps(simulate_day(get_repo_root()), indent=2, ensure_ascii=False))
+    elif command == "replay":
+        print(json.dumps(compare_replay(get_repo_root()), indent=2, ensure_ascii=False))
+    elif command == "evaluate":
+        print(json.dumps(evaluate_feedback(get_repo_root()), indent=2, ensure_ascii=False))
+    elif command == "metrics":
+        print(json.dumps(compare_versions(get_repo_root()), indent=2, ensure_ascii=False))
+    elif command == "compare":
+        print(json.dumps(compare_versions(get_repo_root()), indent=2, ensure_ascii=False))
     else:
         print(f"Unknown command: {command}")
-        print("Usage: python tools/atlas_runner.py [start|next|end|finish]")
+        print("Usage: python tools/atlas_runner.py [start|next|end|finish|simulate|replay|evaluate|metrics|compare]")
         sys.exit(1)
