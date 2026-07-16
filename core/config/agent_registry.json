@@ -1,0 +1,45 @@
+[
+  {
+    "agent": "Marie",
+    "type": "architect",
+    "capabilities": [
+      "architecture",
+      "review",
+      "planning"
+    ]
+  },
+  {
+    "agent": "Antigravity",
+    "type": "technical",
+    "capabilities": [
+      "python",
+      "cpp",
+      "automation",
+      "implementation",
+      "code"
+    ]
+  },
+  {
+    "agent": "Sarah",
+    "type": "creative",
+    "capabilities": [
+      "character",
+      "mecha",
+      "visual_design",
+      "concept",
+      "art_rules"
+    ]
+  },
+  {
+    "agent": "Forge",
+    "type": "technical",
+    "capabilities": [
+      "blender",
+      "rigging",
+      "3d_print",
+      "modeling",
+      "uv_mapping",
+      "materials"
+    ]
+  }
+]

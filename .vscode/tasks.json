@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Atlas: Run Pre-flight Checks (Rule Engine)",
+      "type": "shell",
+      "command": "python rules/rule_engine.py",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Atlas: Update Recommended Tasks (Priority Engine)",
+      "type": "shell",
+      "command": "python execution/priority_engine.py",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Atlas: Generate Quality Scorecard (Review Engine)",
+      "type": "shell",
+      "command": "python review/review_engine.py",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

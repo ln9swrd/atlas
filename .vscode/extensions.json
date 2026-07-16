@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "JacquesLucke.blender-development",
+    "yzhang.markdown-all-in-one",
+    "charliermarsh.ruff"
+  ]
+}
