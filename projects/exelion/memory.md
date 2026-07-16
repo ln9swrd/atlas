@@ -102,7 +102,22 @@ ADR-[번호]
   - Antigravity: 찬성 (블렌더 자동 충돌체 생성 지원 가능)
   - Forge: 찬성 (리깅 조인트와의 스냅이 수월함)
   - Master (Human): 승인
-- **참조 (References)**: [blender_collision.py](file:///d:/Antigravity/Atlas/automation/blender_collision.py#L176-L280)
+- **참조 (References)**: [blender_collision.py](file:///d:/Antigravity/Atlas/core/tools/blender_collision.py)
+
+### ADR-005: Agent Repository Integration Rule
+- **날짜**: 2026-07-16
+- **상태**: Accepted
+- **영향 범위 (Impact)**: [x] Workflow, [ ] Automation, [x] Rule, [ ] Review, [ ] Metrics
+- **비용 (Cost/ROI)**: 소요 0.5시간 / 연간 절약 15시간 (구조적 혼선 방지)
+- **배경 (Context)**: 외부 Agent를 플랫폼에 통합할 때, Core 시스템과의 경계가 명확하지 않아 아키텍처적 충돌이 발생할 위험을 예방해야 함.
+- **결정 (Decision)**: 외부 Agent는 항상 `agents/{name}/` 경로 하위에 격리하여 평탄화된 독립 레포지토리 형태로 통합하며, Atlas Core와 독립된 경계를 유지함.
+- **결과 (Consequences)**: Core 아키텍처와 Agent 간 책임 분리(Separation of Concerns)를 유지하고, 프로젝트/코어 코드의 namespace 충돌 및 중복 구조를 예방함.
+- **AI 합의 (AI Consensus)**:
+  - Marie: 찬성 (경계 분리를 통한 코어 안정성 보장)
+  - Antigravity: 찬성 (어댑터 패턴을 이용한 코드 통합 구조 일치)
+  - Forge: 찬성 (독립된 리소스 영역 관리 용이)
+  - Master (Human): 승인
+- **참조 (References)**: N/A
 
 ---
 

@@ -8,7 +8,7 @@ The **AI Team Layer** defines the roles, responsibilities, capabilities, and col
 | :--- | :--- | :--- | :--- |
 | **Marie (마리)** | System Architect | `Architecture`, `Review`, `Planning` | Handles overall workflow, technical design, and review gate standards. |
 | **Antigravity (안티그래비티)** | Implementation Engine | `Python`, `C++`, `Automation` | Handles large-scale code generation, documentation, and scripting automation. |
-| **Sarah (세라)** | Design Director | `Concept`, `Character`, `UI` | Handles creative concepts, art style direction, world-building, and lore. |
+| **Sera (세라)** | Design Director | `Concept`, `Character`, `UI`, `Audit`, `Governance` | Handles creative concepts, art style direction, world-building, and design compliance/governance. |
 | **Forge (포지)** | Blender Expert | `Blender`, `Rig`, `Export` | Handles modeling, rigging, mesh optimization, and Blender pipeline tools. |
 | **Builder (빌더 - Planned)** | Unreal Expert | `Unreal`, `Materials`, `Optim` | Handles Unreal Engine pipeline integration, material links, and asset optimization. |
 | **Tester (테스터 - Planned)** | QA Agent | `QA`, `Testing`, `Diagnostics` | Handles test script execution, run-time diagnostics, and validation checks. |

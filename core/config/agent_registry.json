@@ -20,14 +20,16 @@
     ]
   },
   {
-    "agent": "Sarah",
+    "agent": "Sera",
     "type": "creative",
     "capabilities": [
       "character",
       "mecha",
       "visual_design",
       "concept",
-      "art_rules"
+      "art_rules",
+      "audit",
+      "governance"
     ]
   },
   {
