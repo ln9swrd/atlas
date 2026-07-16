@@ -2,6 +2,53 @@ import os
 import re
 import json
 
+from core.execution.context_resolver import resolve_context
+from core.execution.priority_rules import build_rules
+
+
+def load_project_lifecycle(lifecycle_path):
+    """Load project lifecycle statuses from a JSON file, if present."""
+    if not os.path.exists(lifecycle_path):
+        return {}
+
+    try:
+        with open(lifecycle_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except Exception as exc:
+        print(f"Warning: Failed to load project lifecycle config: {exc}")
+        return {}
+
+    if not isinstance(data, dict):
+        return {}
+    return data
+
+
+def collect_backlog_files(base_dir, lifecycle_path=None):
+    """Collect backlog files for projects that are active enough to be recommended."""
+    backlog_files = {}
+    lifecycle = load_project_lifecycle(lifecycle_path or os.path.join(base_dir, "core", "config", "project_lifecycle.json"))
+
+    atlas_backlog = os.path.join(base_dir, "core", "execution", "atlas_backlog.json")
+    if os.path.exists(atlas_backlog):
+        atlas_status = lifecycle.get("Atlas", {}).get("status", "active")
+        if atlas_status != "maintenance":
+            backlog_files["Atlas"] = atlas_backlog
+
+    projects_dir = os.path.join(base_dir, "projects")
+    if os.path.exists(projects_dir):
+        for proj in sorted(os.listdir(projects_dir)):
+            proj_path = os.path.join(projects_dir, proj)
+            if os.path.isdir(proj_path) and proj.lower() != "templates":
+                backlog_path = os.path.join(proj_path, "backlog.json")
+                if not os.path.exists(backlog_path):
+                    continue
+                status = lifecycle.get(proj.capitalize(), {}).get("status", "active")
+                if status != "maintenance":
+                    backlog_files[proj.capitalize()] = backlog_path
+
+    return backlog_files
+
+
 def parse_bottleneck_scores(bottleneck_path):
     """
     Parses workflow/bottleneck_analysis.md to extract stage names and their bottleneck scores.
@@ -54,31 +101,22 @@ def get_assignee_for_task(task, registry_path):
     # Default logic if no capability matches
     return "Antigravity" if "automation" in focus_area else "Human + Forge"
 
-def run_priority_engine():
-    # base_dir points to workspace root
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+def build_recommendation_payload(context, base_dir=None):
+    if base_dir is None:
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
     bottleneck_path = os.path.join(base_dir, "core", "workflow", "bottleneck_analysis.md")
     execution_readme_path = os.path.join(base_dir, "core", "execution", "README.md")
     registry_path = os.path.join(base_dir, "core", "config", "agent_registry.json")
 
-    # Load backlogs: Atlas and any active projects in projects/
-    backlog_files = {
-        "Atlas": os.path.join(base_dir, "core", "execution", "atlas_backlog.json")
-    }
+    lifecycle_path = os.path.join(base_dir, "core", "config", "project_lifecycle.json")
+    backlog_files = collect_backlog_files(base_dir, lifecycle_path=lifecycle_path)
 
-    projects_dir = os.path.join(base_dir, "projects")
-    if os.path.exists(projects_dir):
-        for proj in os.listdir(projects_dir):
-            proj_path = os.path.join(projects_dir, proj)
-            if os.path.isdir(proj_path) and proj.lower() != "templates":
-                backlog_path = os.path.join(proj_path, "backlog.json")
-                if os.path.exists(backlog_path):
-                    backlog_files[proj.capitalize()] = backlog_path
+    constraints = set(getattr(context, 'constraints', []) or [])
+    rules = build_rules(context)
 
-    # 1. Parse Bottleneck Scores
     bottleneck_scores = parse_bottleneck_scores(bottleneck_path)
 
-    # 2. Read Backlogs
     backlog = []
     for source, path in backlog_files.items():
         if os.path.exists(path):
@@ -91,25 +129,19 @@ def run_priority_engine():
             except Exception as e:
                 print(f"Warning: Failed to load {source} backlog from {path}: {e}")
 
-    # 3. Calculate priority scores (ROI)
     scored_tasks = []
     for task in backlog:
         stage = task.get("target_stage", "")
-        bottleneck_score = bottleneck_scores.get(stage, 50) # default to 50 if not matched
-        
-        # Priority Score = (Bottleneck Score * Projected Gain) / Est. Time
+        bottleneck_score = bottleneck_scores.get(stage, 50)
         priority = (bottleneck_score * task["projected_gain"]) / task["est_time"]
-        
+
         task_data = task.copy()
         task_data["bottleneck_score"] = bottleneck_score
         task_data["priority_score"] = round(priority, 2)
         scored_tasks.append(task_data)
 
-    # Sort tasks by priority score descending
     scored_tasks.sort(key=lambda x: x["priority_score"], reverse=True)
 
-    # 4. Fit into Time Budget
-    # Read time budget from README.md or default to 180 mins
     time_budget = 180
     if os.path.exists(execution_readme_path):
         with open(execution_readme_path, 'r', encoding='utf-8') as f:
@@ -123,12 +155,48 @@ def run_priority_engine():
     total_impact = 0.0
 
     for task in scored_tasks:
+        task_caps = set()
+        if task.get("focus_area"):
+            task_caps.add(task["focus_area"].lower())
+        if task.get("category"):
+            task_caps.add(task["category"].lower())
+
+        if "no_unreal" in constraints and "unreal" in task_caps:
+            continue
+        if "no_gpu" in constraints and any(token in task_caps for token in {"ai", "gpu", "render"}):
+            continue
+        if any(rule[0] == 'prefer_wrap_up' for rule in rules) and 'documentation' in task_caps:
+            selected_tasks.append(task)
+            accumulated_time += task['est_time']
+            total_impact += (task['projected_gain'] * (task['bottleneck_score'] / 100.0))
+            continue
+
         if accumulated_time + task["est_time"] <= time_budget:
             selected_tasks.append(task)
             accumulated_time += task["est_time"]
             total_impact += (task["projected_gain"] * (task["bottleneck_score"] / 100.0))
 
-    # 5. Format the markdown table for README.md
+    return {
+        "selected_tasks": selected_tasks,
+        "time_budget": time_budget,
+        "accumulated_time": accumulated_time,
+        "total_impact": total_impact,
+        "impact_percentage": round(total_impact, 1),
+        "registry_path": registry_path,
+    }
+
+
+def recommend(context):
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    bottleneck_path = os.path.join(base_dir, "core", "workflow", "bottleneck_analysis.md")
+    execution_readme_path = os.path.join(base_dir, "core", "execution", "README.md")
+    registry_path = os.path.join(base_dir, "core", "config", "agent_registry.json")
+
+    payload = build_recommendation_payload(context, base_dir=base_dir)
+    selected_tasks = payload["selected_tasks"]
+    time_budget = payload["time_budget"]
+    impact_percentage = payload["impact_percentage"]
+
     markdown_table_lines = [
         "## 2. Today's Recommended Tasks",
         "",
@@ -145,15 +213,13 @@ def run_priority_engine():
             f"| **{idx}** | {source_prefix}{task['description']} | {task['est_time']} mins | {assignee} | `{task['focus_area']}` | `[ ]` |"
         )
 
-    impact_percentage = round(total_impact, 1)
     markdown_table_lines.append("")
-    markdown_table_lines.append(f"* **Total Planned Time**: {accumulated_time} minutes")
+    markdown_table_lines.append(f"* **Total Planned Time**: {payload['accumulated_time']} minutes")
     markdown_table_lines.append(f"* **Expected Completion Impact**: `+{impact_percentage}%` (Based on bottleneck relief)")
     markdown_table_lines.append("")
 
     new_recommended_section = "\n".join(markdown_table_lines)
 
-    # Update core/execution/README.md
     if os.path.exists(execution_readme_path):
         with open(execution_readme_path, 'r', encoding='utf-8') as f:
             readme_content = f.read()
@@ -172,7 +238,6 @@ def run_priority_engine():
                     f.write(updated_content)
                 print("Successfully updated execution/README.md with recommended tasks.")
 
-    # 6. Print Start Day Screen
     print("\n" + "="*40)
     print("              ATLAS DAILY")
     print("="*40)
@@ -184,6 +249,12 @@ def run_priority_engine():
     print("예상 완료일     : 2027-02-18 (예정)")
     print("\n[주의] Rig 작업 전 Export 금지")
     print("="*40 + "\n")
+
+
+def run_priority_engine():
+    context = resolve_context('DEV_WORK', 'Exelion', registry_path=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'ENVIRONMENTS.md'))
+    recommend(context)
+
 
 if __name__ == "__main__":
     run_priority_engine()

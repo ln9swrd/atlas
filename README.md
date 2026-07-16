@@ -1,5 +1,9 @@
 # Atlas DevOS v1.0.0
 
+> Build the system that builds the game.
+>
+> Atlas is the operating platform for AI-assisted solo game development. It exists to reduce development friction, preserve knowledge, and continuously improve through real project feedback.
+
 **Atlas**는 프로젝트 빌드가 아닌, **프로젝트를 만드는 개발 환경을 자동화하고 관리하는 AI 중심 DevOS 플랫폼**입니다.
 개발 엔진(Core), 에이전트 협업 체계(Agents), 그리고 제작 대상 프로젝트(Projects)의 경계를 구분하여 독립적으로 작동하도록 설계되었습니다.
 
@@ -41,6 +45,49 @@ Atlas/
 ```
 
 ---
+
+## 🧭 Atlas Constitution
+
+For a concise milestone summary, see [RELEASE_NOTES.md](RELEASE_NOTES.md).
+
+**Atlas DevOS v1.0 Foundation Complete**
+
+Atlas now has a stable operating model centered on constitution, vision, registries, runtime state, event logging, and execution flow. The next phase of development will be driven by real project usage in Exelion rather than by unvalidated feature expansion.
+
+
+Atlas now exposes a shared operating model through three core documents:
+
+- [VISION.md](VISION.md) — the strategic mission and long-term goals
+- [PROJECT_REGISTRY.md](PROJECT_REGISTRY.md) — the known projects and their lifecycle states
+- [AGENT_REGISTRY.md](AGENT_REGISTRY.md) — the roles and responsibilities of Atlas agents
+- [ATLAS_CONSTITUTION.md](ATLAS_CONSTITUTION.md) — the enduring operating principles for Atlas
+- [ATLAS_STATE.json](ATLAS_STATE.json) — the runtime state store managed by Atlas runner for current mode, phase, and lifecycle events
+- [projects/exelion/PROJECT_CHARTER.md](projects/exelion/PROJECT_CHARTER.md) — the charter for the first Atlas validation project
+- [projects/exelion/goals/EX-GOAL-001.md](projects/exelion/goals/EX-GOAL-001.md) — the first Exelion operational goal and work order
+- [GOAL_REGISTRY.json](GOAL_REGISTRY.json) — the live registry of active, completed, and next goals for Atlas-driven execution
+- [projects/exelion/sprints/Sprint-001.md](projects/exelion/sprints/Sprint-001.md) — the first sprint derived from the active goal
+- [projects/exelion/ENVIRONMENT_PLAN.md](projects/exelion/ENVIRONMENT_PLAN.md) — the Company PC / Home PC execution split for Exelion work
+- [ENVIRONMENTS.md](ENVIRONMENTS.md) — the generalized environment registry for Atlas-driven planning
+- [core/execution/environment_resolver.py](core/execution/environment_resolver.py) — the runtime-context resolver that turns environment definitions into executable context
+- [core/execution/context_resolver.py](core/execution/context_resolver.py) — the higher-level context resolver that assembles environment, time, project, and runtime signals into a single context object
+- [core/execution/runtime_context.py](core/execution/runtime_context.py) — the immutable RuntimeContext data model used as the official execution interface
+- [core/execution/priority_rules.py](core/execution/priority_rules.py) — the rule layer that the priority engine consults rather than embedding logic directly in the engine
+- [PROJECT_LIFECYCLE.md](PROJECT_LIFECYCLE.md) — the shared lifecycle stages for projects managed by Atlas
+- [docs/PLAYBOOKS/README.md](docs/PLAYBOOKS/README.md) — the practical knowledge base for recurring execution workflows
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the layered architecture and dependency model of Atlas
+- [docs/EXECUTION_MODEL.md](docs/EXECUTION_MODEL.md) — the runtime loop and execution responsibilities
+- [docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md) — the non-negotiable design principles for Atlas evolution
+- [docs/adr](docs/adr) — architecture decision records that preserve key Atlas design choices
+- [docs/ROADMAP.md](docs/ROADMAP.md) — the architecture-focused roadmap for Atlas releases
+- [docs/RELEASE_NOTES_v1.2.md](docs/RELEASE_NOTES_v1.2.md) — the release candidate summary for Atlas v1.2
+- [SYSTEM_MANIFEST.md](SYSTEM_MANIFEST.md) — the repository entry point for Atlas architecture, current status, and operating principles
+- [docs/OPERATIONS.md](docs/OPERATIONS.md) — the daily operating procedure for using Atlas as a DevOS
+- [CONTRIBUTING.md](CONTRIBUTING.md) — contributor guidance for new resolvers, ADRs, and architecture tests
+- [tests/test_architecture.py](tests/test_architecture.py) — structural regression tests for the Atlas layer model
+- [.github/workflows/ci.yml](.github/workflows/ci.yml) — the basic CI workflow for automated test execution
+- [docs/DoD_v1.2.md](docs/DoD_v1.2.md) — the completion checklist for declaring Atlas v1.2 ready
+
+These documents form the shared context layer for future automation and planning.
 
 ## ⚙️ 실행 방법 (Usage)
 

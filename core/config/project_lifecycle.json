@@ -1,0 +1,13 @@
+{
+    "Atlas": {
+        "status": "maintenance",
+        "version": "1.0"
+    },
+    "Sera": {
+        "status": "maintenance",
+        "version": "0.1"
+    },
+    "Exelion": {
+        "status": "active"
+    }
+}

@@ -1,0 +1,12 @@
+{}{"timestamp": "2026-07-16T13:28:00", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-16T13:28:00", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-16T13:31:20", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
+{"timestamp": "2026-07-16T13:31:20", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-16T13:31:20", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-16T13:31:20", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
+{"timestamp": "2026-07-16T13:31:37", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
+{"timestamp": "2026-07-16T13:31:37", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-16T13:31:37", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-16T13:31:37", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
+{"timestamp": "2026-07-16T13:31:37", "event": "task.completed", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
+{"timestamp": "2026-07-16T13:31:37", "event": "sprint.updated", "sprint": "Sprint-001"}

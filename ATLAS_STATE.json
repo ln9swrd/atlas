@@ -1,0 +1,55 @@
+{
+  "platform_version": "1.0",
+  "schema_version": "1.0",
+  "mode": "review",
+  "active_project": "Exelion",
+  "active_agents": [
+    "Marie",
+    "Antigravity",
+    "Copilot",
+    "Sera"
+  ],
+  "current_phase": "Asset Production",
+  "last_started": "2026-07-16T13:31:37",
+  "last_finished": "2026-07-16T13:31:37",
+  "last_review": null,
+  "active_goal": "EX-GOAL-001",
+  "current_goal_status": "Active",
+  "last_goal_sync": "2026-07-16T13:31:37",
+  "task_states": [
+    {
+      "id": "EX-BRAVE-001",
+      "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)",
+      "status": "DONE",
+      "priority": 1,
+      "environment": "DEV_HOME",
+      "updated_at": "2026-07-16T13:31:37"
+    },
+    {
+      "id": "EX-BRAVE-002",
+      "description": "Brave 기본 프레임 UV 매핑 및 Export",
+      "status": "TODO",
+      "priority": 2,
+      "environment": "DEV_HOME",
+      "updated_at": "2026-07-16T13:31:37"
+    },
+    {
+      "id": "EX-BRAVE-003",
+      "description": "Brave 외장 장갑 1개 제작",
+      "status": "TODO",
+      "priority": 3,
+      "environment": "DEV_HOME",
+      "updated_at": "2026-07-16T13:31:37"
+    },
+    {
+      "id": "EX-BRAVE-004",
+      "description": "Unreal 임포트 및 셋업",
+      "status": "TODO",
+      "priority": 4,
+      "environment": "DEV_HOME",
+      "updated_at": "2026-07-16T13:31:37"
+    }
+  ],
+  "current_task": "EX-BRAVE-001",
+  "current_sprint": "Sprint-001"
+}
