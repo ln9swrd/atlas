@@ -12,5 +12,7 @@
   "files.associations": {
     "*.py": "python"
   },
-  "markdown.preview.breaks": true
+  "markdown.preview.breaks": true,
+  "continue.enableConsole": true,
+  "continue.enableQuickActions": true
 }
