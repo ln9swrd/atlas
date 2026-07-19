@@ -1,18 +1,9 @@
 {
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit"
-  },
-  "python.analysis.extraPaths": [
-    "./automation",
-    "./rules",
-    "./execution"
-  ],
-  "python.analysis.typeCheckingMode": "basic",
-  "files.associations": {
-    "*.py": "python"
-  },
-  "markdown.preview.breaks": true,
-  "continue.enableConsole": true,
-  "continue.enableQuickActions": true
+    "continue.agent": {
+        "shell": "wsl",
+        "workingDirectory": "/mnt/d/Atlas"
+    },
+    "continue.enableConsole": true,
+    "continue.enableQuickActions": true,
+    "aiderAgent.provider": "local"
 }
