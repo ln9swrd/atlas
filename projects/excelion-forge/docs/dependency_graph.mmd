@@ -1,0 +1,277 @@
+flowchart TD
+    excelion_forge[excelion_forge]
+    excelion_forge___init__[excelion_forge.__init__]
+    excelion_forge_adapters[excelion_forge.adapters]
+    excelion_forge_adapters___init__[excelion_forge.adapters.__init__]
+    excelion_forge_adapters_blender[excelion_forge.adapters.blender]
+    excelion_forge_adapters_blender___init__[excelion_forge.adapters.blender.__init__]
+    excelion_forge_adapters_blender_armature_adapter[excelion_forge.adapters.blender.armature_adapter]
+    excelion_forge_core[excelion_forge.core]
+    excelion_forge_core___init__[excelion_forge.core.__init__]
+    excelion_forge_core_adapters[excelion_forge.core.adapters]
+    excelion_forge_core_html_report[excelion_forge.core.html_report]
+    excelion_forge_core_issue[excelion_forge.core.issue]
+    excelion_forge_core_manager[excelion_forge.core.manager]
+    excelion_forge_core_models[excelion_forge.core.models]
+    excelion_forge_core_models___init__[excelion_forge.core.models.__init__]
+    excelion_forge_core_models_armature[excelion_forge.core.models.armature]
+    excelion_forge_core_models_bone[excelion_forge.core.models.bone]
+    excelion_forge_core_models_builders[excelion_forge.core.models.builders]
+    excelion_forge_core_pipeline[excelion_forge.core.pipeline]
+    excelion_forge_core_pipeline___init__[excelion_forge.core.pipeline.__init__]
+    excelion_forge_core_pipeline_context[excelion_forge.core.pipeline.context]
+    excelion_forge_core_pipeline_error[excelion_forge.core.pipeline.error]
+    excelion_forge_core_pipeline_logger[excelion_forge.core.pipeline.logger]
+    excelion_forge_core_pipeline_progress[excelion_forge.core.pipeline.progress]
+    excelion_forge_core_pipeline_registry[excelion_forge.core.pipeline.registry]
+    excelion_forge_core_pipeline_task[excelion_forge.core.pipeline.task]
+    excelion_forge_core_pipeline_types[excelion_forge.core.pipeline.types]
+    excelion_forge_core_pipeline_utils[excelion_forge.core.pipeline.utils]
+    excelion_forge_core_report[excelion_forge.core.report]
+    excelion_forge_core_result[excelion_forge.core.result]
+    excelion_forge_core_rules[excelion_forge.core.rules]
+    excelion_forge_core_rules___init__[excelion_forge.core.rules.__init__]
+    excelion_forge_core_rules_base[excelion_forge.core.rules.base]
+    excelion_forge_core_rules_bone_name_rule[excelion_forge.core.rules.bone_name_rule]
+    excelion_forge_core_rules_duplicate_bone_name_rule[excelion_forge.core.rules.duplicate_bone_name_rule]
+    excelion_forge_core_rules_executor[excelion_forge.core.rules.executor]
+    excelion_forge_core_rules_loader[excelion_forge.core.rules.loader]
+    excelion_forge_core_rules_metadata[excelion_forge.core.rules.metadata]
+    excelion_forge_core_rules_models[excelion_forge.core.rules.models]
+    excelion_forge_core_rules_object[excelion_forge.core.rules.object]
+    excelion_forge_core_rules_object___init__[excelion_forge.core.rules.object.__init__]
+    excelion_forge_core_rules_object_armature_has_bones_rule[excelion_forge.core.rules.object.armature_has_bones_rule]
+    excelion_forge_core_rules_object_common[excelion_forge.core.rules.object.common]
+    excelion_forge_core_rules_object_empty_armature_rule[excelion_forge.core.rules.object.empty_armature_rule]
+    excelion_forge_core_rules_object_single_root_bone_rule[excelion_forge.core.rules.object.single_root_bone_rule]
+    excelion_forge_core_rules_object_target_is_armature_rule[excelion_forge.core.rules.object.target_is_armature_rule]
+    excelion_forge_core_rules_object_rule[excelion_forge.core.rules.object_rule]
+    excelion_forge_core_rules_package_registry[excelion_forge.core.rules.package_registry]
+    excelion_forge_core_rules_packages_duplicate_bone_name___init__[excelion_forge.core.rules.packages.duplicate_bone_name.__init__]
+    excelion_forge_core_rules_packages_duplicate_bone_name_api[excelion_forge.core.rules.packages.duplicate_bone_name.api]
+    excelion_forge_core_rules_packages_duplicate_bone_name_autofix[excelion_forge.core.rules.packages.duplicate_bone_name.autofix]
+    excelion_forge_core_rules_packages_duplicate_bone_name_metadata[excelion_forge.core.rules.packages.duplicate_bone_name.metadata]
+    excelion_forge_core_rules_packages_duplicate_bone_name_spec[excelion_forge.core.rules.packages.duplicate_bone_name.spec]
+    excelion_forge_core_rules_packages_duplicate_bone_name_tests_test_name_utils[excelion_forge.core.rules.packages.duplicate_bone_name.tests.test_name_utils]
+    excelion_forge_core_rules_packages_duplicate_bone_name_validator[excelion_forge.core.rules.packages.duplicate_bone_name.validator]
+    excelion_forge_core_rules_packages_invalid_bone_character___init__[excelion_forge.core.rules.packages.invalid_bone_character.__init__]
+    excelion_forge_core_rules_packages_invalid_bone_character_api[excelion_forge.core.rules.packages.invalid_bone_character.api]
+    excelion_forge_core_rules_packages_invalid_bone_character_autofix[excelion_forge.core.rules.packages.invalid_bone_character.autofix]
+    excelion_forge_core_rules_packages_invalid_bone_character_metadata[excelion_forge.core.rules.packages.invalid_bone_character.metadata]
+    excelion_forge_core_rules_packages_invalid_bone_character_spec[excelion_forge.core.rules.packages.invalid_bone_character.spec]
+    excelion_forge_core_rules_packages_invalid_bone_character_tests_test_invalid_bone_character[excelion_forge.core.rules.packages.invalid_bone_character.tests.test_invalid_bone_character]
+    excelion_forge_core_rules_packages_invalid_bone_character_validator[excelion_forge.core.rules.packages.invalid_bone_character.validator]
+    excelion_forge_core_rules_packages_missing_lr_suffix___init__[excelion_forge.core.rules.packages.missing_lr_suffix.__init__]
+    excelion_forge_core_rules_packages_missing_lr_suffix_api[excelion_forge.core.rules.packages.missing_lr_suffix.api]
+    excelion_forge_core_rules_packages_missing_lr_suffix_metadata[excelion_forge.core.rules.packages.missing_lr_suffix.metadata]
+    excelion_forge_core_rules_packages_missing_lr_suffix_spec[excelion_forge.core.rules.packages.missing_lr_suffix.spec]
+    excelion_forge_core_rules_packages_missing_lr_suffix_tests_test_missing_lr_suffix[excelion_forge.core.rules.packages.missing_lr_suffix.tests.test_missing_lr_suffix]
+    excelion_forge_core_rules_packages_missing_lr_suffix_validator[excelion_forge.core.rules.packages.missing_lr_suffix.validator]
+    excelion_forge_core_rules_primitives[excelion_forge.core.rules.primitives]
+    excelion_forge_core_rules_primitives___init__[excelion_forge.core.rules.primitives.__init__]
+    excelion_forge_core_rules_primitives_name_utils[excelion_forge.core.rules.primitives.name_utils]
+    excelion_forge_core_rules_primitives_naming[excelion_forge.core.rules.primitives.naming]
+    excelion_forge_core_rules_primitives_sidedness[excelion_forge.core.rules.primitives.sidedness]
+    excelion_forge_core_rules_registry[excelion_forge.core.rules.registry]
+    excelion_forge_core_rules_registry_index[excelion_forge.core.rules.registry_index]
+    excelion_forge_core_rules_spec[excelion_forge.core.rules.spec]
+    excelion_forge_core_rules_transform_rule[excelion_forge.core.rules.transform_rule]
+    excelion_forge_core_runtime___init__[excelion_forge.core.runtime.__init__]
+    excelion_forge_core_runtime_adapter[excelion_forge.core.runtime.adapter]
+    excelion_forge_core_runtime_context[excelion_forge.core.runtime.context]
+    excelion_forge_core_runtime_fake_adapter[excelion_forge.core.runtime.fake_adapter]
+    excelion_forge_core_runtime_protocol[excelion_forge.core.runtime.protocol]
+    excelion_forge_core_serializer[excelion_forge.core.serializer]
+    excelion_forge_core_severity[excelion_forge.core.severity]
+    excelion_forge_core_validator[excelion_forge.core.validator]
+    excelion_forge_operators___init__[excelion_forge.operators.__init__]
+    excelion_forge_operators_base[excelion_forge.operators.base]
+    excelion_forge_operators_export[excelion_forge.operators.export]
+    excelion_forge_operators_fix_manager[excelion_forge.operators.fix_manager]
+    excelion_forge_operators_result_actions[excelion_forge.operators.result_actions]
+    excelion_forge_operators_rig_validation[excelion_forge.operators.rig_validation]
+    excelion_forge_properties[excelion_forge.properties]
+    excelion_forge_ui___init__[excelion_forge.ui.__init__]
+    excelion_forge_ui_panels[excelion_forge.ui.panels]
+    excelion_forge_utils[excelion_forge.utils]
+    excelion_forge_utils___init__[excelion_forge.utils.__init__]
+    excelion_forge_utils_context[excelion_forge.utils.context]
+    excelion_forge___init__ --> excelion_forge
+    excelion_forge_adapters___init__ --> excelion_forge_adapters_blender
+    excelion_forge_adapters_blender___init__ --> excelion_forge_adapters_blender_armature_adapter
+    excelion_forge_adapters_blender_armature_adapter --> excelion_forge_core_models
+    excelion_forge_core___init__ --> excelion_forge_core_issue
+    excelion_forge_core___init__ --> excelion_forge_core_manager
+    excelion_forge_core___init__ --> excelion_forge_core_pipeline
+    excelion_forge_core___init__ --> excelion_forge_core_report
+    excelion_forge_core___init__ --> excelion_forge_core_result
+    excelion_forge_core___init__ --> excelion_forge_core_rules
+    excelion_forge_core___init__ --> excelion_forge_core_severity
+    excelion_forge_core___init__ --> excelion_forge_core_validator
+    excelion_forge_core_html_report --> excelion_forge_core_serializer
+    excelion_forge_core_issue --> excelion_forge_core_severity
+    excelion_forge_core_manager --> excelion_forge_core_report
+    excelion_forge_core_manager --> excelion_forge_core_result
+    excelion_forge_core_manager --> excelion_forge_core_rules
+    excelion_forge_core_models___init__ --> excelion_forge_core_models_armature
+    excelion_forge_core_models___init__ --> excelion_forge_core_models_bone
+    excelion_forge_core_models___init__ --> excelion_forge_core_models_builders
+    excelion_forge_core_models_armature --> excelion_forge_core_models_bone
+    excelion_forge_core_models_builders --> excelion_forge_core_models_armature
+    excelion_forge_core_models_builders --> excelion_forge_core_models_bone
+    excelion_forge_core_pipeline___init__ --> excelion_forge_core_pipeline_context
+    excelion_forge_core_pipeline___init__ --> excelion_forge_core_pipeline_error
+    excelion_forge_core_pipeline___init__ --> excelion_forge_core_pipeline_logger
+    excelion_forge_core_pipeline___init__ --> excelion_forge_core_pipeline_progress
+    excelion_forge_core_pipeline___init__ --> excelion_forge_core_pipeline_registry
+    excelion_forge_core_pipeline___init__ --> excelion_forge_core_pipeline_task
+    excelion_forge_core_pipeline___init__ --> excelion_forge_core_pipeline_types
+    excelion_forge_core_pipeline___init__ --> excelion_forge_core_pipeline_utils
+    excelion_forge_core_pipeline_registry --> excelion_forge_core_pipeline_context
+    excelion_forge_core_pipeline_registry --> excelion_forge_core_pipeline_error
+    excelion_forge_core_pipeline_registry --> excelion_forge_core_pipeline_logger
+    excelion_forge_core_pipeline_registry --> excelion_forge_core_pipeline_progress
+    excelion_forge_core_pipeline_registry --> excelion_forge_core_pipeline_task
+    excelion_forge_core_pipeline_task --> excelion_forge_core_pipeline_context
+    excelion_forge_core_pipeline_task --> excelion_forge_core_pipeline_error
+    excelion_forge_core_report --> excelion_forge_core_issue
+    excelion_forge_core_report --> excelion_forge_core_severity
+    excelion_forge_core_result --> excelion_forge_core_issue
+    excelion_forge_core_result --> excelion_forge_core_severity
+    excelion_forge_core_rules___init__ --> excelion_forge_core_rules_base
+    excelion_forge_core_rules___init__ --> excelion_forge_core_rules_bone_name_rule
+    excelion_forge_core_rules___init__ --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules___init__ --> excelion_forge_core_rules_object_rule
+    excelion_forge_core_rules___init__ --> excelion_forge_core_rules_registry
+    excelion_forge_core_rules___init__ --> excelion_forge_core_rules_transform_rule
+    excelion_forge_core_rules_base --> excelion_forge_core_issue
+    excelion_forge_core_rules_base --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_bone_name_rule --> excelion_forge_core_issue
+    excelion_forge_core_rules_bone_name_rule --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_bone_name_rule --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_bone_name_rule --> excelion_forge_core_severity
+    excelion_forge_core_rules_duplicate_bone_name_rule --> excelion_forge_core_rules_packages_duplicate_bone_name_validator
+    excelion_forge_core_rules_executor --> excelion_forge_adapters
+    excelion_forge_core_rules_executor --> excelion_forge_core_models
+    excelion_forge_core_rules_executor --> excelion_forge_core_rules_spec
+    excelion_forge_core_rules_loader --> excelion_forge_core_rules_package_registry
+    excelion_forge_core_rules_loader --> excelion_forge_core_rules_registry_index
+    excelion_forge_core_rules_loader --> excelion_forge_core_rules_spec
+    excelion_forge_core_rules_metadata --> excelion_forge_core_severity
+    excelion_forge_core_rules_object___init__ --> excelion_forge_core_rules_object_armature_has_bones_rule
+    excelion_forge_core_rules_object___init__ --> excelion_forge_core_rules_object_empty_armature_rule
+    excelion_forge_core_rules_object___init__ --> excelion_forge_core_rules_object_single_root_bone_rule
+    excelion_forge_core_rules_object___init__ --> excelion_forge_core_rules_object_target_is_armature_rule
+    excelion_forge_core_rules_object_armature_has_bones_rule --> excelion_forge_core_issue
+    excelion_forge_core_rules_object_armature_has_bones_rule --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_object_armature_has_bones_rule --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_object_armature_has_bones_rule --> excelion_forge_core_rules_object_common
+    excelion_forge_core_rules_object_common --> excelion_forge_core_issue
+    excelion_forge_core_rules_object_common --> excelion_forge_core_severity
+    excelion_forge_core_rules_object_empty_armature_rule --> excelion_forge_core_issue
+    excelion_forge_core_rules_object_empty_armature_rule --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_object_empty_armature_rule --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_object_empty_armature_rule --> excelion_forge_core_rules_object_common
+    excelion_forge_core_rules_object_single_root_bone_rule --> excelion_forge_core_issue
+    excelion_forge_core_rules_object_single_root_bone_rule --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_object_single_root_bone_rule --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_object_single_root_bone_rule --> excelion_forge_core_rules_object_common
+    excelion_forge_core_rules_object_target_is_armature_rule --> excelion_forge_core_issue
+    excelion_forge_core_rules_object_target_is_armature_rule --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_object_target_is_armature_rule --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_object_target_is_armature_rule --> excelion_forge_core_rules_object_common
+    excelion_forge_core_rules_object_rule --> excelion_forge_core_rules_object
+    excelion_forge_core_rules_packages_duplicate_bone_name___init__ --> excelion_forge_core_rules_packages_duplicate_bone_name_spec
+    excelion_forge_core_rules_packages_duplicate_bone_name___init__ --> excelion_forge_core_rules_spec
+    excelion_forge_core_rules_packages_duplicate_bone_name_api --> excelion_forge_core_adapters
+    excelion_forge_core_rules_packages_duplicate_bone_name_api --> excelion_forge_core_rules_models
+    excelion_forge_core_rules_packages_duplicate_bone_name_api --> excelion_forge_core_rules_packages_duplicate_bone_name_autofix
+    excelion_forge_core_rules_packages_duplicate_bone_name_api --> excelion_forge_core_rules_packages_duplicate_bone_name_metadata
+    excelion_forge_core_rules_packages_duplicate_bone_name_api --> excelion_forge_core_rules_packages_duplicate_bone_name_validator
+    excelion_forge_core_rules_packages_duplicate_bone_name_autofix --> excelion_forge_core_models
+    excelion_forge_core_rules_packages_duplicate_bone_name_autofix --> excelion_forge_core_rules_primitives
+    excelion_forge_core_rules_packages_duplicate_bone_name_metadata --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_packages_duplicate_bone_name_spec --> excelion_forge_core_rules_packages_duplicate_bone_name_api
+    excelion_forge_core_rules_packages_duplicate_bone_name_spec --> excelion_forge_core_rules_packages_duplicate_bone_name_metadata
+    excelion_forge_core_rules_packages_duplicate_bone_name_spec --> excelion_forge_core_rules_spec
+    excelion_forge_core_rules_packages_duplicate_bone_name_tests_test_name_utils --> excelion_forge_core_rules_primitives_naming
+    excelion_forge_core_rules_packages_duplicate_bone_name_validator --> excelion_forge_core_issue
+    excelion_forge_core_rules_packages_duplicate_bone_name_validator --> excelion_forge_core_models
+    excelion_forge_core_rules_packages_duplicate_bone_name_validator --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_packages_duplicate_bone_name_validator --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_packages_duplicate_bone_name_validator --> excelion_forge_core_rules_packages_duplicate_bone_name_metadata
+    excelion_forge_core_rules_packages_duplicate_bone_name_validator --> excelion_forge_core_severity
+    excelion_forge_core_rules_packages_invalid_bone_character___init__ --> excelion_forge_core_rules_packages_invalid_bone_character_spec
+    excelion_forge_core_rules_packages_invalid_bone_character___init__ --> excelion_forge_core_rules_spec
+    excelion_forge_core_rules_packages_invalid_bone_character_api --> excelion_forge_core_adapters
+    excelion_forge_core_rules_packages_invalid_bone_character_api --> excelion_forge_core_rules_models
+    excelion_forge_core_rules_packages_invalid_bone_character_api --> excelion_forge_core_rules_packages_invalid_bone_character_autofix
+    excelion_forge_core_rules_packages_invalid_bone_character_api --> excelion_forge_core_rules_packages_invalid_bone_character_metadata
+    excelion_forge_core_rules_packages_invalid_bone_character_api --> excelion_forge_core_rules_packages_invalid_bone_character_validator
+    excelion_forge_core_rules_packages_invalid_bone_character_autofix --> excelion_forge_core_models
+    excelion_forge_core_rules_packages_invalid_bone_character_autofix --> excelion_forge_core_rules_primitives_naming
+    excelion_forge_core_rules_packages_invalid_bone_character_metadata --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_packages_invalid_bone_character_spec --> excelion_forge_core_rules_packages_invalid_bone_character_api
+    excelion_forge_core_rules_packages_invalid_bone_character_spec --> excelion_forge_core_rules_packages_invalid_bone_character_metadata
+    excelion_forge_core_rules_packages_invalid_bone_character_spec --> excelion_forge_core_rules_spec
+    excelion_forge_core_rules_packages_invalid_bone_character_tests_test_invalid_bone_character --> excelion_forge_core_models
+    excelion_forge_core_rules_packages_invalid_bone_character_tests_test_invalid_bone_character --> excelion_forge_core_rules_packages_invalid_bone_character_autofix
+    excelion_forge_core_rules_packages_invalid_bone_character_tests_test_invalid_bone_character --> excelion_forge_core_rules_packages_invalid_bone_character_validator
+    excelion_forge_core_rules_packages_invalid_bone_character_validator --> excelion_forge_core_issue
+    excelion_forge_core_rules_packages_invalid_bone_character_validator --> excelion_forge_core_models
+    excelion_forge_core_rules_packages_invalid_bone_character_validator --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_packages_invalid_bone_character_validator --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_packages_invalid_bone_character_validator --> excelion_forge_core_rules_packages_invalid_bone_character_metadata
+    excelion_forge_core_rules_packages_invalid_bone_character_validator --> excelion_forge_core_severity
+    excelion_forge_core_rules_packages_missing_lr_suffix___init__ --> excelion_forge_core_rules_packages_missing_lr_suffix_spec
+    excelion_forge_core_rules_packages_missing_lr_suffix___init__ --> excelion_forge_core_rules_spec
+    excelion_forge_core_rules_packages_missing_lr_suffix_api --> excelion_forge_core_adapters
+    excelion_forge_core_rules_packages_missing_lr_suffix_api --> excelion_forge_core_rules_models
+    excelion_forge_core_rules_packages_missing_lr_suffix_api --> excelion_forge_core_rules_packages_missing_lr_suffix_metadata
+    excelion_forge_core_rules_packages_missing_lr_suffix_api --> excelion_forge_core_rules_packages_missing_lr_suffix_validator
+    excelion_forge_core_rules_packages_missing_lr_suffix_metadata --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_packages_missing_lr_suffix_spec --> excelion_forge_core_rules_packages_missing_lr_suffix_api
+    excelion_forge_core_rules_packages_missing_lr_suffix_spec --> excelion_forge_core_rules_packages_missing_lr_suffix_metadata
+    excelion_forge_core_rules_packages_missing_lr_suffix_spec --> excelion_forge_core_rules_spec
+    excelion_forge_core_rules_packages_missing_lr_suffix_tests_test_missing_lr_suffix --> excelion_forge_core_rules_packages_missing_lr_suffix_validator
+    excelion_forge_core_rules_packages_missing_lr_suffix_validator --> excelion_forge_core_issue
+    excelion_forge_core_rules_packages_missing_lr_suffix_validator --> excelion_forge_core_models
+    excelion_forge_core_rules_packages_missing_lr_suffix_validator --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_packages_missing_lr_suffix_validator --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_packages_missing_lr_suffix_validator --> excelion_forge_core_rules_packages_missing_lr_suffix_metadata
+    excelion_forge_core_rules_packages_missing_lr_suffix_validator --> excelion_forge_core_rules_primitives_sidedness
+    excelion_forge_core_rules_packages_missing_lr_suffix_validator --> excelion_forge_core_severity
+    excelion_forge_core_rules_primitives___init__ --> excelion_forge_core_rules_primitives_naming
+    excelion_forge_core_rules_primitives___init__ --> excelion_forge_core_rules_primitives_sidedness
+    excelion_forge_core_rules_primitives_name_utils --> excelion_forge_core_rules_primitives_naming
+    excelion_forge_core_rules_registry --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_registry --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_spec --> excelion_forge_core_models
+    excelion_forge_core_rules_spec --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_transform_rule --> excelion_forge_core_issue
+    excelion_forge_core_rules_transform_rule --> excelion_forge_core_rules_base
+    excelion_forge_core_rules_transform_rule --> excelion_forge_core_rules_metadata
+    excelion_forge_core_rules_transform_rule --> excelion_forge_core_severity
+    excelion_forge_core_runtime___init__ --> excelion_forge_core_runtime_adapter
+    excelion_forge_core_runtime___init__ --> excelion_forge_core_runtime_context
+    excelion_forge_core_runtime___init__ --> excelion_forge_core_runtime_fake_adapter
+    excelion_forge_core_runtime___init__ --> excelion_forge_core_runtime_protocol
+    excelion_forge_core_runtime_context --> excelion_forge_core_runtime_protocol
+    excelion_forge_core_validator --> excelion_forge_core_manager
+    excelion_forge_core_validator --> excelion_forge_core_report
+    excelion_forge_core_validator --> excelion_forge_core_rules
+    excelion_forge_operators___init__ --> excelion_forge_operators_export
+    excelion_forge_operators___init__ --> excelion_forge_operators_fix_manager
+    excelion_forge_operators___init__ --> excelion_forge_operators_result_actions
+    excelion_forge_operators___init__ --> excelion_forge_operators_rig_validation
+    excelion_forge_operators_base --> excelion_forge_core_pipeline
+    excelion_forge_operators_export --> excelion_forge_core_html_report
+    excelion_forge_operators_export --> excelion_forge_core_serializer
+    excelion_forge_operators_export --> excelion_forge_utils
+    excelion_forge_operators_rig_validation --> excelion_forge_core
+    excelion_forge_operators_rig_validation --> excelion_forge_properties
+    excelion_forge_operators_rig_validation --> excelion_forge_utils
+    excelion_forge_ui___init__ --> excelion_forge_ui_panels
+    excelion_forge_ui_panels --> excelion_forge_core
+    excelion_forge_ui_panels --> excelion_forge_utils
+    excelion_forge_utils___init__ --> excelion_forge_utils_context
