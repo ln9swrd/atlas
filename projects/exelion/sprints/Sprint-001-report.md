@@ -35,19 +35,47 @@ Completed
 ## Recommendations
 
 1. **Task Assignment Strategy**:
-   - Assign modeling tasks (EX-BRAVE-001, EX-BRAVE-002) to DEV_WORK environment
-   - Assign Unreal Engine tasks (EX-BRAVE-003, EX-BRAVE-004) to DEV_HOME environment
+   - Assign modeling tasks (EX-BRAVE-001, EX-BRAVE-002, EX-BRAVE-003) to DEV_WORK environment
+   - Assign Unreal Engine import and setup (EX-BRAVE-004) to DEV_HOME environment
 
 2. **Next Steps**:
    - Implement the production pipeline checkpoints defined in this sprint
    - Begin execution of the first recommended task: Basic frame creation for Brave character
 
-## Completion Criteria Met
+## Sprint Status
 
-✓ Prototype scope is understood
-✓ Initial backlog is reorganized for sprint execution  
-✓ Production path risks are documented
-✓ First prototype task is selected and prepared for execution
+- Current focus: `EX-BRAVE-001` — Brave 기본 프레임 제작
+- Current status: `Ready to start`
+- Expected next update: `task progress / blockers / decisions`
+
+## Progress Log
+
+| Date | Item | Status | Notes |
+| --- | --- | --- | --- |
+| 2026-07-20 | Sprint-001 planning | Completed | 기본 스프린트 구조와 환경 분리가 정리됨 |
+| 2026-07-20 | EX-BRAVE-001 task 우선화 | Completed | DEV_WORK 우선 수행 예정 |
+
+## Current Backlog Snapshot
+
+- `EX-BRAVE-001` — Brave 기본 프레임 제작 (In Progress)
+- `EX-BRAVE-002` — Brave 기본 프레임 UV 매핑 및 Export (Pending)
+- `EX-BRAVE-003` — Brave 외장 장갑 1개 제작 (Pending)
+- `EX-BRAVE-004` — Unreal 임포트 및 셋업 (Pending)
+
+### Current Backlog Snapshot
+
+| ID | Description | Target Stage | Estimated Time | Environment | Status |
+| --- | --- | --- | --- | --- | --- |
+| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+
+## Risks and Blockers
+
+- Unreal Engine은 DEV_HOME에서만 실행 가능하므로 `EX-BRAVE-004`는 회사 PC에서 진행할 수 없음
+- 모델링부터 수출까지의 규칙 및 파이프라인 검증이 필요함
+- `excelion-forge/`, `projects/coin-s/`, `projects/exelion-forge/`가 언트랙 상태인 것을 후속으로 정리해야 함
 
 ## Environment Considerations
 

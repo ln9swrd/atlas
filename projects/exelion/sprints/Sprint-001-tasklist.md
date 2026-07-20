@@ -4,10 +4,12 @@
 - Parent Goal: EX-GOAL-001
 
 ## Priority Tasks
-1. EX-BRAVE-001 — Brave 기본 프레임 제작
-2. EX-BRAVE-002 — Brave 기본 프레임 UV 매핑 및 Export
-3. EX-BRAVE-003 — Brave 외장 장갑 1개 제작
-4. EX-BRAVE-004 — Unreal 임포트 및 셋업
+| ID | Task | Environment | Status |
+| --- | --- | --- | --- |
+| EX-BRAVE-001 | Brave 기본 프레임 제작 | DEV_WORK (Company PC) | In Progress |
+| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-004 | Unreal 임포트 및 셋업 | DEV_HOME (Home PC) | Pending |
 
 ## Execution Notes
 - Start with the highest ROI task to establish the prototype skeleton.
