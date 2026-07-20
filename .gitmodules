@@ -1,0 +1,3 @@
+[submodule "projects/coin-s"]
+	path = projects/coin-s
+	url = https://github.com/ln9swrd/atlas.git
