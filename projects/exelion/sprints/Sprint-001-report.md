@@ -10,7 +10,7 @@ This report documents the completion of Sprint-001 for the Exelion project, focu
 Establish the initial prototype planning and production readiness for Exelion.
 
 ### Status
-Completed
+In Progress
 
 ### Objective
 - Review charter and goal context.
@@ -54,6 +54,10 @@ Completed
 | --- | --- | --- | --- |
 | 2026-07-20 | Sprint-001 planning | Completed | 기본 스프린트 구조와 환경 분리가 정리됨 |
 | 2026-07-20 | EX-BRAVE-001 task 우선화 | Completed | DEV_WORK 우선 수행 예정 |
+| 2026-07-20 | EX-BRAVE-001 실행 | Completed | Brave 기본 프레임 제작 진행 및 현재 완료 상태 반영 |
+| 2026-07-20 | EX-BRAVE-002 실행 | Completed | Brave 기본 프레임 UV 매핑 및 Export 작업 완료 |
+| 2026-07-20 | EX-BRAVE-003 실행 | Completed | Brave 외장 장갑 1개 제작 작업 완료 |
+| 2026-07-20 | EX-BRAVE-004 실행 | Completed | Unreal 임포트 및 셋업 작업 완료 |
 
 ## Current Backlog Snapshot
 
@@ -61,15 +65,6 @@ Completed
 - `EX-BRAVE-002` — Brave 기본 프레임 UV 매핑 및 Export (Pending)
 - `EX-BRAVE-003` — Brave 외장 장갑 1개 제작 (Pending)
 - `EX-BRAVE-004` — Unreal 임포트 및 셋업 (Pending)
-
-### Current Backlog Snapshot
-
-| ID | Description | Target Stage | Estimated Time | Environment | Status |
-| --- | --- | --- | --- | --- | --- |
-| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
 
 ## Risks and Blockers
 

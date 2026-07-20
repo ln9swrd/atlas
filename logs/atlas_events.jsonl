@@ -10,3 +10,22 @@
 {"timestamp": "2026-07-16T13:31:37", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
 {"timestamp": "2026-07-16T13:31:37", "event": "task.completed", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
 {"timestamp": "2026-07-16T13:31:37", "event": "sprint.updated", "sprint": "Sprint-001"}
+{"timestamp": "2026-07-20T18:37:52", "event": "task.state_initialized", "count": 1, "sprint": "Sprint-001"}
+{"timestamp": "2026-07-20T18:37:52", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-20T18:37:52", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-20T18:38:14", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
+{"timestamp": "2026-07-20T18:39:46", "event": "task.completed", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
+{"timestamp": "2026-07-20T18:39:46", "event": "sprint.updated", "sprint": "Sprint-001"}
+{"timestamp": "2026-07-20T18:40:27", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
+{"timestamp": "2026-07-20T18:40:53", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
+{"timestamp": "2026-07-20T18:41:34", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
+{"timestamp": "2026-07-20T18:43:25", "event": "task.completed", "task_id": "EX-BRAVE-002", "description": "Brave 기본 프레임 UV 매핑 및 Export"}
+{"timestamp": "2026-07-20T18:43:25", "event": "sprint.updated", "sprint": "Sprint-001"}
+{"timestamp": "2026-07-20T18:43:48", "event": "task.started", "task_id": "EX-BRAVE-003", "description": "Brave 외장 장갑 1개 제작"}
+{"timestamp": "2026-07-20T18:44:29", "event": "task.completed", "task_id": "EX-BRAVE-003", "description": "Brave 외장 장갑 1개 제작"}
+{"timestamp": "2026-07-20T18:44:29", "event": "sprint.updated", "sprint": "Sprint-001"}
+{"timestamp": "2026-07-20T18:44:54", "event": "task.started", "task_id": "EX-BRAVE-004", "description": "Unreal 임포트 및 셋업"}
+{"timestamp": "2026-07-20T18:45:29", "event": "task.completed", "task_id": "EX-BRAVE-004", "description": "Unreal 임포트 및 셋업"}
+{"timestamp": "2026-07-20T18:45:29", "event": "sprint.updated", "sprint": "Sprint-001"}
+{"timestamp": "2026-07-20T18:46:11", "event": "atlas.finish", "review": "PASS"}
+{"timestamp": "2026-07-20T18:46:11", "event": "goal.sync", "status": "reviewed"}

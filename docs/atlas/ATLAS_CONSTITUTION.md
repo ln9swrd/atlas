@@ -22,3 +22,7 @@ This document defines the enduring principles that govern Atlas as a development
 - Use the registry as the canonical source for project and agent context.
 - Use [ATLAS_STATE.json](ATLAS_STATE.json) as the current runtime state source for mode, active project, and active agents.
 - Favor improvements that reduce friction, cost, or risk in execution.
+
+## Review Context
+
+Atlas documents should be reviewed through the shared lens captured in [docs/process/ATLAS_REVIEW_CONTEXT.md](../process/ATLAS_REVIEW_CONTEXT.md). This review context preserves the system's emphasis on evidence-first reasoning, reproducibility, automation readiness, traceability, and stability over unnecessary churn.

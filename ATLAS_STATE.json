@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "review",
+  "mode": "idle",
   "active_project": "Exelion",
   "active_agents": [
     "Marie",
@@ -10,46 +10,54 @@
     "Sera"
   ],
   "current_phase": "Asset Production",
-  "last_started": "2026-07-16T13:31:37",
-  "last_finished": "2026-07-16T13:31:37",
-  "last_review": null,
+  "last_started": "2026-07-20T18:37:52",
+  "last_finished": "2026-07-20T18:46:11",
+  "last_review": "PASS",
   "active_goal": "EX-GOAL-001",
   "current_goal_status": "Active",
-  "last_goal_sync": "2026-07-16T13:31:37",
+  "last_goal_sync": "2026-07-20T18:37:52",
   "task_states": [
     {
       "id": "EX-BRAVE-001",
       "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)",
       "status": "DONE",
       "priority": 1,
-      "environment": "DEV_HOME",
-      "updated_at": "2026-07-16T13:31:37"
+      "estimate": 180,
+      "environment": "DEV_WORK",
+      "depends_on": [],
+      "updated_at": "2026-07-20T18:42:53"
     },
     {
       "id": "EX-BRAVE-002",
       "description": "Brave 기본 프레임 UV 매핑 및 Export",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 2,
-      "environment": "DEV_HOME",
-      "updated_at": "2026-07-16T13:31:37"
+      "estimate": null,
+      "environment": "DEV_WORK",
+      "depends_on": [],
+      "updated_at": "2026-07-20T18:43:25"
     },
     {
       "id": "EX-BRAVE-003",
       "description": "Brave 외장 장갑 1개 제작",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 3,
-      "environment": "DEV_HOME",
-      "updated_at": "2026-07-16T13:31:37"
+      "estimate": null,
+      "environment": "DEV_WORK",
+      "depends_on": [],
+      "updated_at": "2026-07-20T18:44:29"
     },
     {
       "id": "EX-BRAVE-004",
       "description": "Unreal 임포트 및 셋업",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 4,
-      "environment": "DEV_HOME",
-      "updated_at": "2026-07-16T13:31:37"
+      "estimate": null,
+      "environment": "DEV_WORK",
+      "depends_on": [],
+      "updated_at": "2026-07-20T18:45:29"
     }
   ],
-  "current_task": "EX-BRAVE-001",
+  "current_task": "EX-BRAVE-004",
   "current_sprint": "Sprint-001"
 }

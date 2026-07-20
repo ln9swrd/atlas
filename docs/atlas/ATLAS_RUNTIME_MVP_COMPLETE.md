@@ -63,6 +63,10 @@ runtime.record_decision(status, reason, evidence_ids)
 5. **`final_integration_test.py`** - Full workflow integration test
 6. **`ATLAS_RUNTIME_MVP_SUMMARY.md`** - This document
 
+## Review Context
+
+This implementation summary should be reviewed using the shared Atlas review lens in [docs/process/ATLAS_REVIEW_CONTEXT.md](../process/ATLAS_REVIEW_CONTEXT.md). The evaluation focuses on evidence-based completion, traceable behavior, automation readiness, and stable runtime operation.
+
 ## Verification Results
 
 All requirements have been thoroughly tested and verified:

@@ -13,6 +13,10 @@ This document captures the key architectural decisions made during Sprint-021, i
 **Decision**: Validation operations must be deterministic - same input always produces same output with no side effects.
 **Rationale**: Determinism is essential for reproducible results, debugging capabilities, and ensuring consistent behavior across different execution environments.
 
+## Review Context
+
+The review context for this document is defined in [docs/process/ATLAS_REVIEW_CONTEXT.md](../process/ATLAS_REVIEW_CONTEXT.md). Every architectural decision here should be assessed for evidence basis, reproducibility, traceability, and operational value, not simply for novelty.
+
 ## Key Architectural Decisions
 
 ### 1. Evidence Graph Immutability

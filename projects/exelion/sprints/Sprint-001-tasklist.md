@@ -6,10 +6,10 @@
 ## Priority Tasks
 | ID | Task | Environment | Status |
 | --- | --- | --- | --- |
-| EX-BRAVE-001 | Brave 기본 프레임 제작 | DEV_WORK (Company PC) | In Progress |
-| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-004 | Unreal 임포트 및 셋업 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-001 | Brave 기본 프레임 제작 | DEV_WORK (Company PC) | Done |
+| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | DEV_WORK (Company PC) | Done |
+| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 | DEV_WORK (Company PC) | Done |
+| EX-BRAVE-004 | Unreal 임포트 및 셋업 | DEV_HOME (Home PC) | Done |
 
 ## Execution Notes
 - Start with the highest ROI task to establish the prototype skeleton.

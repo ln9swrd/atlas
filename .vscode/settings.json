@@ -1,9 +1,5 @@
 {
-    "continue.agent": {
-        "shell": "wsl",
-        "workingDirectory": "/mnt/d/Atlas"
-    },
-    "continue.enableConsole": true,
-    "continue.enableQuickActions": true,
+    "continue.enableConsole": false,
+    "continue.enableQuickActions": false,
     "aiderAgent.provider": "local"
 }

@@ -115,12 +115,32 @@ def load_sprint_tasks(base_dir, sprint_name, project_name="Exelion"):
             continue
 
         tasks = []
+        in_table = False
+        headers = []
         for line in lines:
+            # numbered list format
             match = re.match(r"^\s*\d+\.\s*(?:(?P<id>[A-Z0-9-]+)\s*[—-]\s*)?(?P<title>.+)$", line)
             if match:
                 title = match.group("title").strip()
                 tasks.append({"id": match.group("id") or None, "title": title})
-        return tasks
+                continue
+
+            if line.strip().startswith("|") and "|" in line:
+                cells = [cell.strip() for cell in line.strip().split("|") if cell.strip()]
+                if not in_table and any(header.lower() in ["id", "task", "description"] for header in cells):
+                    in_table = True
+                    headers = [header.lower() for header in cells]
+                    continue
+                if in_table and set(headers) and len(cells) >= len(headers):
+                    row = {headers[i]: cells[i] for i in range(min(len(headers), len(cells)))}
+                    task_id = row.get("id") or row.get("task") or row.get("description")
+                    title = row.get("task") or row.get("description") or task_id
+                    if task_id and task_id != "---" and title:
+                        tasks.append({"id": task_id, "title": title})
+                    continue
+
+        if tasks:
+            return tasks
 
     return []
 

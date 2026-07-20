@@ -75,6 +75,10 @@ When session context exceeds 50k Prompt Tokens, implementation of Conversation S
 - Maintained Rule-010 consistency in all documentation
 - Established pending decision status requiring further verification
 
+## Review Context
+
+This summary is intended to be read through the Atlas review context defined in [docs/process/ATLAS_REVIEW_CONTEXT.md](../process/ATLAS_REVIEW_CONTEXT.md). It should preserve evidence-first interpretation, clear traceability, and operational recommendations that are grounded in verifiable system behavior.
+
 ## Operational Recommendations
 
 ### Immediate Actions (Based on Atlas Methodology)
