@@ -66,6 +66,15 @@
 - 문서 중심으로 설계와 실행 상태를 정리
 - Phase 4 이후에 Worker 통합 준비
 
+### 자동화 및 사용 가이드 (요약)
+
+- 일일 시작: `python3 tools/atlas_runner.py start` 또는 `./scripts/daily_start.sh` — 추천 작업 생성 및 `ATLAS_STATE.json` 초기화
+- 작업 전환: `python3 tools/atlas_runner.py next` — 다음 작업 선택 및 상태 업데이트
+- 작업 완료/종료: `python3 tools/atlas_runner.py finish-task` 또는 `./scripts/daily_end.sh` — 검증 엔진 및 리뷰 엔진 실행 포함
+- CI: `.github/workflows/atlas-ci.yml`가 추가되어 push/PR 시 규칙 엔진 및 시뮬레이션을 실행합니다.
+
+위 명령어는 WSL 환경에서는 `python3`로 실행하세요. Windows PowerShell에서는 `python`일 수 있습니다.
+
 ## 6. 다음에 해야 할 일
 
 1. `projects/exelion` 내부 현황과 백로그를 확인하여 현재 진행 중인 실제 작업을 정리
