@@ -18,8 +18,8 @@
 ## 3. 우선 순위 작업
 
 ### 3.1 바로 할 일
-1. `projects/exelion/backlog.json`의 4개 작업을 `Sprint-001`에 맞게 우선 순위와 실행 상태로 정리
-2. `projects/exelion/sprints/Sprint-001-tasklist.md`를 기반으로 현재 진척도를 점검
+1. `PROJECT_IMPLEMENTATION_PLAN.md`에 따라 Atlas 코어 플랫폼 5대 고도화 영역 구현 (Platform Rule Engine, Review Engine, sys.path 주입, Doc Sync 등)
+2. `projects/exelion/backlog.json`의 4개 작업을 `Sprint-001`에 맞게 우선 순위와 실행 상태로 정리
 3. `PROJECT_OVERVIEW.md`를 현재 상태 요약 문서로 끝까지 다듬기
 4. `SYSTEM_MANIFEST.md`와 `docs/OPERATIONS.md`를 기준으로 ‘오늘 할 일’ 프로세스를 구체화
 

@@ -20,9 +20,16 @@ def _normalize_constraint(value):
 
 
 def resolve_environment(environment_id='DEV_WORK', registry_path=None):
-    if registry_path is None:
+    if registry_path is None or not Path(registry_path).exists():
         base_dir = Path(__file__).resolve().parents[2]
-        registry_path = base_dir / 'ENVIRONMENTS.md'
+        default_path = base_dir / 'ENVIRONMENTS.md'
+        alt_path = base_dir / 'docs' / 'process' / 'ENVIRONMENTS.md'
+        if default_path.exists():
+            registry_path = default_path
+        elif alt_path.exists():
+            registry_path = alt_path
+        else:
+            registry_path = default_path
     else:
         registry_path = Path(registry_path)
 

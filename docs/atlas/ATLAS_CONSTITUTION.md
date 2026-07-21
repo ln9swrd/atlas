@@ -20,7 +20,7 @@ This document defines the enduring principles that govern Atlas as a development
 - Keep lifecycle states explicit for projects.
 - Separate platform maintenance from active product development.
 - Use the registry as the canonical source for project and agent context.
-- Use [ATLAS_STATE.json](ATLAS_STATE.json) as the current runtime state source for mode, active project, and active agents.
+- Use [ATLAS_STATE.json](../../ATLAS_STATE.json) as the current runtime state source for mode, active project, and active agents.
 - Favor improvements that reduce friction, cost, or risk in execution.
 
 ## Review Context

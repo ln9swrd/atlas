@@ -15,6 +15,6 @@ This registry defines the known projects in Atlas and their current lifecycle st
 
 - Atlas: Build and maintain the operating system that coordinates agents, rules, execution, and review.
 - Sera: Implement the design and planning intelligence layer for architecture and creative decision support.
-- Exelion: Deliver the main product experience and assets around the Exelion IP. See [projects/exelion/PROJECT_CHARTER.md](projects/exelion/PROJECT_CHARTER.md).
+- Exelion: Deliver the main product experience and assets around the Exelion IP. See [projects/exelion/PROJECT_CHARTER.md](../../projects/exelion/PROJECT_CHARTER.md).
 - Use [PROJECT_LIFECYCLE.md](PROJECT_LIFECYCLE.md) as the shared lifecycle reference for project phase reporting.
 - Coin-S: Prepare a future software project for analysis-oriented workflows.

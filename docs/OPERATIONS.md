@@ -38,7 +38,7 @@ End Day
 
 ### 1. Review the system entry point
 
-Start by reviewing [SYSTEM_MANIFEST.md](../SYSTEM_MANIFEST.md) so the current release posture, architecture focus, and operating principles are clear.
+Start by reviewing [SYSTEM_MANIFEST.md](process/SYSTEM_MANIFEST.md) so the current release posture, architecture focus, and operating principles are clear.
 
 ### 2. Resolve runtime context
 

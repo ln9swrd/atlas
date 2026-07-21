@@ -21,11 +21,11 @@ This file records the current locations of all `atlas*.md` files in the reposito
 - `docs/atlas/atlas_decision_log.md`
 - `docs/atlas/ATLAS_CONSTITUTION.md`
 - `docs/atlas/atlas_complete_workflow.md`
-- `atlas/ATLAS-INT-001_INTERACTION_MODEL.md`
-- `atlas/ATLAS-ARCH-001_ARCHITECTURE_MODEL.md`
+- `docs/atlas/ATLAS-INT-001_INTERACTION_MODEL.md`
+- `docs/atlas/ATLAS-ARCH-001_ARCHITECTURE_MODEL.md`
 
 ## Summary
 
-All `atlas*.md` files are currently consolidated in `docs/atlas/`, with two architecture/interaction model files still present in the `atlas/` folder.
+All `atlas*.md` files are currently consolidated in `docs/atlas/`.
 
 If you want, I can also update `README.md` or the automation guidance to explicitly point to this inventory file for quick reference.

@@ -2,11 +2,22 @@ import os
 import sys
 import subprocess
 
+repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
+
+from core.rules.platform_rules import run_platform_rules
+
 def run_preflight_checks():
     """
     Executes all rule engine and validation scripts.
     Blocks downstream pipeline (returns non-zero exit code) if any validation fails.
     """
+    # Run Platform DevOS Rules
+    platform_passed = run_platform_rules()
+    if not platform_passed:
+        return False
+
     print("\n" + "="*50)
     print("           ATLAS PRE-FLIGHT CHECK (RULE ENGINE)")
     print("="*50)

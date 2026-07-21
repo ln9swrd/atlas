@@ -4,9 +4,16 @@ from datetime import datetime
 
 
 def load_environment_registry(path=None):
-    if path is None:
+    if path is None or not Path(path).exists():
         base_dir = Path(__file__).resolve().parents[2]
-        path = base_dir / "ENVIRONMENTS.md"
+        default_path = base_dir / "ENVIRONMENTS.md"
+        alt_path = base_dir / "docs" / "process" / "ENVIRONMENTS.md"
+        if default_path.exists():
+            path = default_path
+        elif alt_path.exists():
+            path = alt_path
+        else:
+            path = default_path
     else:
         path = Path(path)
 

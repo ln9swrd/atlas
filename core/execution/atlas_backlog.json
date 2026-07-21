@@ -1,1 +1,57 @@
-[]
+[
+  {
+    "id": "ATL-CORE-001",
+    "description": "atlas_runner.py 시작 시 sys.path에 프로젝트 루트 경로 자동 추가",
+    "status": "DONE",
+    "priority": 1,
+    "estimate": 30,
+    "environment": "DEV_WORK",
+    "focus_area": "automation",
+    "category": "core",
+    "depends_on": []
+  },
+  {
+    "id": "ATL-CORE-002",
+    "description": "Atlas DevOS 전용 Platform Rule Engine 모듈 구현",
+    "status": "DONE",
+    "priority": 2,
+    "estimate": 60,
+    "environment": "DEV_WORK",
+    "focus_area": "automation",
+    "category": "rules",
+    "depends_on": ["ATL-CORE-001"]
+  },
+  {
+    "id": "ATL-CORE-003",
+    "description": "Atlas DevOS 전용 Platform Review Engine 모듈 구현",
+    "status": "DONE",
+    "priority": 3,
+    "estimate": 60,
+    "environment": "DEV_WORK",
+    "focus_area": "automation",
+    "category": "review",
+    "depends_on": ["ATL-CORE-002"]
+  },
+  {
+    "id": "ATL-CORE-004",
+    "description": "atlas_runner.py finish 시 docs/PROJECT_STATUS.md 자동 동기화 기능 구현",
+    "status": "DONE",
+    "priority": 4,
+    "estimate": 45,
+    "environment": "DEV_WORK",
+    "focus_area": "automation",
+    "category": "docs",
+    "depends_on": ["ATL-CORE-003"]
+  },
+  {
+    "id": "ATL-CORE-005",
+    "description": "Atlas 플랫폼 전용 유닛 테스트 수립 및 검증",
+    "status": "DONE",
+    "priority": 5,
+    "estimate": 45,
+    "environment": "DEV_WORK",
+    "focus_area": "automation",
+    "category": "tests",
+    "depends_on": ["ATL-CORE-004"]
+  }
+]

@@ -2,6 +2,12 @@ import sys
 import os
 import json
 
+repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
+
+from core.review.platform_review_engine import run_platform_review
+
 def get_star_rating(score):
     if score >= 90:
         return "★★★★★"
@@ -14,10 +20,34 @@ def get_star_rating(score):
     else:
         return "★☆☆☆☆"
 
-def run_review_engine(asset_name="Exelion_Arm", topology_score=95, animation_score=90, printability_score=85, performance_score=92):
+def get_active_project(base_dir):
+    state_path = os.path.join(base_dir, "ATLAS_STATE.json")
+    if not os.path.exists(state_path):
+        return None
+
+    try:
+        with open(state_path, "r", encoding="utf-8") as f:
+            state_data = json.load(f)
+        return state_data.get("active_project")
+    except Exception:
+        return None
+
+
+def run_review_engine(asset_name=None, topology_score=95, animation_score=90, printability_score=85, performance_score=92, base_dir=None):
     """
     Runs automated checks and combines them with manual inputs to output an Atlas Review Scorecard.
     """
+    if base_dir is None:
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    if asset_name is None:
+        active_project = get_active_project(base_dir)
+        asset_name = active_project or "Exelion_Arm"
+
+    if asset_name in ("Atlas", "Atlas_DevOS_Core", "Atlas_Platform"):
+        return run_platform_review()
+
+    # Fallback asset review path when no platform review target is specified.
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     
     # 1. Automated Naming Score
@@ -93,4 +123,5 @@ def run_review_engine(asset_name="Exelion_Arm", topology_score=95, animation_sco
     print(scorecard_md)
 
 if __name__ == "__main__":
-    run_review_engine()
+    asset_name = sys.argv[1] if len(sys.argv) > 1 else None
+    run_review_engine(asset_name=asset_name)

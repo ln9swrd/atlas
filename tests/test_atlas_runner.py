@@ -395,6 +395,30 @@ class AtlasRunnerMVPTests(unittest.TestCase):
             self.assertIn("EX-001", simulation["recommended_ids"])
             self.assertEqual(simulation["actual_ids"], ["EX-001"])
 
+    def test_sync_status_doc_writes_state_summary_into_project_status_document(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            (base_dir / "docs").mkdir(parents=True, exist_ok=True)
+            (base_dir / "docs" / "PROJECT_STATUS.md").write_text("# Project Status\n\n## 1. 현재 상태\n\n- Repo: Atlas DevOS\n", encoding="utf-8")
+            state = {
+                "platform_version": "1.0",
+                "mode": "development",
+                "active_project": "Atlas",
+                "current_sprint": "Sprint-001",
+                "current_task": "EX-BRAVE-001",
+                "last_review": "PASS",
+                "task_states": []
+            }
+            (base_dir / "ATLAS_STATE.json").write_text(json.dumps(state), encoding="utf-8")
+
+            atlas_runner.sync_status_doc(str(base_dir))
+            content = (base_dir / "docs" / "PROJECT_STATUS.md").read_text(encoding="utf-8")
+            self.assertIn("- Last Sync:", content)
+            self.assertIn("- Project: `Atlas`", content)
+            self.assertIn("- Mode: `development`", content)
+            self.assertIn("- Current Sprint: `Sprint-001`", content)
+            self.assertIn("- Current Task: `EX-BRAVE-001`", content)
+
     def test_log_feedback_writes_recommendation_record(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             base_dir = Path(tmpdir)

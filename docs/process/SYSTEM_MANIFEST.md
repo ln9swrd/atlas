@@ -11,18 +11,18 @@ Atlas is a Context-Aware DevOS for AI-assisted project execution. It coordinates
 - Runner: orchestrates execution and state updates
 
 ## Architecture
-- Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- Execution Model: [docs/EXECUTION_MODEL.md](docs/EXECUTION_MODEL.md)
-- Design Principles: [docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)
+- Architecture: [docs/ARCHITECTURE.md](../ARCHITECTURE.md)
+- Execution Model: [docs/EXECUTION_MODEL.md](../EXECUTION_MODEL.md)
+- Design Principles: [docs/DESIGN_PRINCIPLES.md](../DESIGN_PRINCIPLES.md)
 
 ## Decision History
-- ADRs: [docs/adr](docs/adr)
+- ADRs: [docs/adr](../adr)
 
 ## Current Release
-- Release Notes: [docs/RELEASE_NOTES_v1.2.md](docs/RELEASE_NOTES_v1.2.md)
-- Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
-- Operations Manual: [docs/OPERATIONS.md](docs/OPERATIONS.md)
-- Definition of Done: [docs/DoD_v1.2.md](docs/DoD_v1.2.md)
+- Release Notes: [docs/RELEASE_NOTES_v1.2.md](../RELEASE_NOTES_v1.2.md)
+- Roadmap: [docs/ROADMAP.md](../ROADMAP.md)
+- Operations Manual: [docs/OPERATIONS.md](../OPERATIONS.md)
+- Definition of Done: [docs/DoD_v1.2.md](../DoD_v1.2.md)
 
 ## Contribution
 - Contribution Guide: [CONTRIBUTING.md](CONTRIBUTING.md)
