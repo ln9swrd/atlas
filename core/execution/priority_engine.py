@@ -137,7 +137,21 @@ def build_recommendation_payload(context, base_dir=None, state=None):
     for task in backlog:
         stage = task.get("target_stage", "")
         bottleneck_score = bottleneck_scores.get(stage, 50)
-        priority = (bottleneck_score * task["projected_gain"]) / task["est_time"]
+
+        # Defensive defaults for missing fields
+        projected_gain = task.get("projected_gain")
+        try:
+            projected_gain = float(projected_gain) if projected_gain is not None else 1.0
+        except Exception:
+            projected_gain = 1.0
+
+        est_time = task.get("est_time") or task.get("estimate")
+        try:
+            est_time = float(est_time) if est_time not in (None, 0, "") else 60.0
+        except Exception:
+            est_time = 60.0
+
+        priority = (bottleneck_score * projected_gain) / est_time
 
         task_data = task.copy()
         task_data["bottleneck_score"] = bottleneck_score
@@ -180,14 +194,14 @@ def build_recommendation_payload(context, base_dir=None, state=None):
             continue
         if any(rule[0] == 'prefer_wrap_up' for rule in rules) and 'documentation' in task_caps:
             selected_tasks.append(task)
-            accumulated_time += task['est_time']
-            total_impact += (task['projected_gain'] * (task['bottleneck_score'] / 100.0))
+            accumulated_time += task.get('est_time') or task.get('estimate') or 0
+            total_impact += (task.get('projected_gain', 1.0) * (task['bottleneck_score'] / 100.0))
             continue
 
         if accumulated_time + task["est_time"] <= time_budget:
             selected_tasks.append(task)
-            accumulated_time += task["est_time"]
-            total_impact += (task["projected_gain"] * (task["bottleneck_score"] / 100.0))
+            accumulated_time += task.get('est_time') or task.get('estimate') or 0
+            total_impact += (task.get('projected_gain', 1.0) * (task['bottleneck_score'] / 100.0))
 
     return {
         "selected_tasks": selected_tasks,
