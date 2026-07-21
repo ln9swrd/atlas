@@ -6,6 +6,11 @@ import json
 import uuid
 from datetime import datetime
 
+# Auto-inject repository root into sys.path
+repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
+
 from core.execution.context_resolver import resolve_context
 from core.execution.goal_registry import set_active_goal, sync_state_with_goal
 from core.execution.priority_engine import build_recommendation_payload
@@ -17,6 +22,7 @@ def run_script(script_relative_path):
     
     result = subprocess.run(
         [sys.executable, script_path],
+        cwd=base_dir,
         capture_output=False
     )
     return result.returncode
@@ -147,7 +153,10 @@ def load_sprint_tasks(base_dir, sprint_name, project_name="Exelion"):
 
 def build_runtime_context(base_dir, environment_id="DEV_HOME", project_name="Exelion", runtime_overrides=None, state=None):
     base_dir = get_repo_root(base_dir)
-    context = resolve_context(environment_id, project_name, registry_path=os.path.join(base_dir, "ENVIRONMENTS.md"))
+    env_path = os.path.join(base_dir, "ENVIRONMENTS.md")
+    if not os.path.exists(env_path):
+        env_path = os.path.join(base_dir, "docs", "process", "ENVIRONMENTS.md")
+    context = resolve_context(environment_id, project_name, registry_path=env_path)
 
     overrides = runtime_overrides or {}
     resources = dict(context.resources or {})
@@ -464,6 +473,57 @@ def advance_task(base_dir, command="next"):
     }
 
 
+def sync_status_doc(base_dir):
+    """Syncs docs/PROJECT_STATUS.md with current ATLAS_STATE.json."""
+    status_path = os.path.join(base_dir, "docs", "PROJECT_STATUS.md")
+    state_path = os.path.join(base_dir, "ATLAS_STATE.json")
+    if not os.path.exists(status_path) or not os.path.exists(state_path):
+        return
+
+    try:
+        with open(state_path, "r", encoding="utf-8") as f:
+            state_data = json.load(f)
+
+        today_str = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+        status_block = [
+            f"- Last Sync: `{today_str}`",
+            f"- Project: `{state_data.get('active_project', 'Atlas')}`",
+            f"- Mode: `{state_data.get('mode', 'unknown')}`",
+            f"- Current Sprint: `{state_data.get('current_sprint', 'none')}`",
+            f"- Current Task: `{state_data.get('current_task', 'none')}`",
+            f"- Last Review: `{state_data.get('last_review', 'PASS')}`",
+            "\n",
+        ]
+
+        with open(status_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+
+        filtered_lines = []
+        for line in lines:
+            if line.startswith(tuple(["- Last Sync:", "- Project:", "- Mode:", "- Current Sprint:", "- Current Task:", "- Last Review:"])):
+                continue
+            filtered_lines.append(line)
+
+        insert_at = None
+        for idx, line in enumerate(filtered_lines):
+            if line.strip() == "## 1. 현재 상태":
+                insert_at = idx + 1
+                break
+        if insert_at is None:
+            insert_at = 0
+        while insert_at < len(filtered_lines) and filtered_lines[insert_at].strip() == "":
+            insert_at += 1
+
+        new_lines = filtered_lines[:insert_at] + [line + "\n" for line in status_block] + filtered_lines[insert_at:]
+
+        with open(status_path, "w", encoding="utf-8") as f:
+            f.writelines(new_lines)
+
+        print(f"[RUNNER] Synced docs/PROJECT_STATUS.md (Last Sync: {today_str})")
+    except Exception as e:
+        print(f"[WARN] Failed to sync PROJECT_STATUS.md: {e}")
+
+
 def start_day():
     print("========================================")
     print("           ATLAS RUNNER: START")
@@ -623,6 +683,7 @@ def finish_day():
     })
     append_event_log(log_path, "atlas.finish", {"review": "PASS"})
     append_event_log(log_path, "goal.sync", {"status": "reviewed"})
+    sync_status_doc(base_dir)
 
     print("Completed Tasks")
     print("Updated State")
@@ -646,6 +707,19 @@ if __name__ == "__main__":
         end_day()
     elif command == "finish":
         finish_day()
+    elif command == "start-report":
+        # alias for start (generate start report and initialize tasks)
+        start_day()
+    elif command == "start-task":
+        # alias for selecting/starting the next task
+        next_task()
+    elif command == "finish-task":
+        # alias for completing current task (non-blocking wrapper)
+        completed = complete_current_task(get_repo_root())
+        if completed:
+            print(f"Completed Task : {completed.get('description', 'Untitled task')}")
+        else:
+            print("No task completed")
     elif command == "simulate":
         print(json.dumps(simulate_day(get_repo_root()), indent=2, ensure_ascii=False))
     elif command == "replay":
