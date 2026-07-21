@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "development",
+  "mode": "idle",
   "active_project": "Exelion",
   "active_agents": [
     "Marie",
@@ -10,12 +10,12 @@
     "Sera"
   ],
   "current_phase": "Asset Production",
-  "last_started": "2026-07-21T15:27:11",
-  "last_finished": "2026-07-21T11:45:45",
+  "last_started": "2026-07-21T16:16:36",
+  "last_finished": "2026-07-21T17:08:26",
   "last_review": "PASS",
   "active_goal": "EX-GOAL-001",
   "current_goal_status": "Active",
-  "last_goal_sync": "2026-07-21T15:27:11",
+  "last_goal_sync": "2026-07-21T16:16:36",
   "task_states": [
     {
       "id": "EX-BRAVE-001",
@@ -25,7 +25,7 @@
       "estimate": 180,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-21T15:27:11"
+      "updated_at": "2026-07-21T16:16:36"
     },
     {
       "id": "EX-BRAVE-002",
@@ -35,7 +35,7 @@
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-21T15:27:11"
+      "updated_at": "2026-07-21T16:16:36"
     },
     {
       "id": "EX-BRAVE-003",
@@ -45,7 +45,7 @@
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-21T15:27:11"
+      "updated_at": "2026-07-21T16:16:36"
     },
     {
       "id": "EX-BRAVE-004",
@@ -55,7 +55,7 @@
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-21T15:27:11"
+      "updated_at": "2026-07-21T16:16:36"
     }
   ],
   "current_task": "EX-BRAVE-001",
