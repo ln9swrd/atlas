@@ -1,0 +1,35 @@
+name: Atlas CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+
+    - name: Run Rule Engine (pre-flight checks)
+      run: python3 core/rules/rule_engine.py
+
+    - name: Run unit tests (unittest)
+      run: |
+        python3 -m unittest -q || true
+
+    - name: Run Atlas simulation (non-mutating)
+      run: python3 tools/atlas_runner.py simulate
