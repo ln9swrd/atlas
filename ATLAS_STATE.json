@@ -10,12 +10,12 @@
     "Sera"
   ],
   "current_phase": "Asset Production",
-  "last_started": "2026-07-20T18:37:52",
-  "last_finished": "2026-07-20T18:46:11",
+  "last_started": "2026-07-21T10:25:56",
+  "last_finished": "2026-07-21T11:45:45",
   "last_review": "PASS",
   "active_goal": "EX-GOAL-001",
-  "current_goal_status": "Active",
-  "last_goal_sync": "2026-07-20T18:37:52",
+  "current_goal_status": "Completed",
+  "last_goal_sync": "2026-07-21T10:25:56",
   "task_states": [
     {
       "id": "EX-BRAVE-001",
@@ -23,9 +23,9 @@
       "status": "DONE",
       "priority": 1,
       "estimate": 180,
-      "environment": "DEV_WORK",
+      "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-20T18:42:53"
+      "updated_at": "2026-07-21T11:45:45"
     },
     {
       "id": "EX-BRAVE-002",
@@ -33,9 +33,9 @@
       "status": "DONE",
       "priority": 2,
       "estimate": null,
-      "environment": "DEV_WORK",
+      "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-20T18:43:25"
+      "updated_at": "2026-07-21T11:45:45"
     },
     {
       "id": "EX-BRAVE-003",
@@ -43,9 +43,9 @@
       "status": "DONE",
       "priority": 3,
       "estimate": null,
-      "environment": "DEV_WORK",
+      "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-20T18:44:29"
+      "updated_at": "2026-07-21T11:45:45"
     },
     {
       "id": "EX-BRAVE-004",
@@ -53,11 +53,11 @@
       "status": "DONE",
       "priority": 4,
       "estimate": null,
-      "environment": "DEV_WORK",
+      "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-20T18:45:29"
+      "updated_at": "2026-07-21T11:45:45"
     }
   ],
-  "current_task": "EX-BRAVE-004",
+  "current_task": null,
   "current_sprint": "Sprint-001"
 }

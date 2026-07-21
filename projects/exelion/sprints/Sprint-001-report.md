@@ -10,7 +10,7 @@ This report documents the completion of Sprint-001 for the Exelion project, focu
 Establish the initial prototype planning and production readiness for Exelion.
 
 ### Status
-In Progress
+Completed
 
 ### Objective
 - Review charter and goal context.
@@ -44,9 +44,9 @@ In Progress
 
 ## Sprint Status
 
-- Current focus: `EX-BRAVE-001` — Brave 기본 프레임 제작
-- Current status: `Ready to start`
-- Expected next update: `task progress / blockers / decisions`
+- Current focus: All Sprint-001 tasks
+- Current status: Completed
+- Expected next update: Sprint-002 계획 및 후속 백로그 등록
 
 ## Progress Log
 
@@ -61,10 +61,10 @@ In Progress
 
 ## Current Backlog Snapshot
 
-- `EX-BRAVE-001` — Brave 기본 프레임 제작 (In Progress)
-- `EX-BRAVE-002` — Brave 기본 프레임 UV 매핑 및 Export (Pending)
-- `EX-BRAVE-003` — Brave 외장 장갑 1개 제작 (Pending)
-- `EX-BRAVE-004` — Unreal 임포트 및 셋업 (Pending)
+- `EX-BRAVE-001` — Brave 기본 프레임 제작 (Done)
+- `EX-BRAVE-002` — Brave 기본 프레임 UV 매핑 및 Export (Done)
+- `EX-BRAVE-003` — Brave 외장 장갑 1개 제작 (Done)
+- `EX-BRAVE-004` — Unreal 임포트 및 셋업 (Done)
 
 ## Risks and Blockers
 
