@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "execution",
+  "mode": "review",
   "active_project": "Excelion",
   "active_agents": [
     "Marie",
@@ -11,7 +11,7 @@
   ],
   "current_phase": "Release Candidate & Production Packaging",
   "last_started": "2026-07-22T14:16:35",
-  "last_finished": "2026-07-22T14:16:10",
+  "last_finished": "2026-07-22T14:18:06",
   "last_review": "PASS",
   "active_goal": "EX-GOAL-007",
   "current_goal_status": "Active",
@@ -20,46 +20,46 @@
     {
       "id": "EX-BRAVE-025",
       "description": "High-poly Hero Mech LOD Group & Mesh Reduction",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "priority": 1,
       "estimate": 180,
       "environment": "DEV_WORK",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:16:35"
+      "updated_at": "2026-07-22T14:17:34"
     },
     {
       "id": "EX-BRAVE-026",
       "description": "Global Post-Process Volume & Color Grading Finalization",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 2,
       "estimate": 180,
       "environment": "DEV_HOME",
       "depends_on": [
         "EX-BRAVE-025"
       ],
-      "updated_at": "2026-07-22T14:16:35"
+      "updated_at": "2026-07-22T14:17:46"
     },
     {
       "id": "EX-BRAVE-027",
       "description": "Cross-Platform Input Remapping & Gamepad Profile",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 3,
       "estimate": 210,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:16:35"
+      "updated_at": "2026-07-22T14:17:56"
     },
     {
       "id": "EX-BRAVE-028",
       "description": "Release Candidate Build Pipeline & Final Scorecard Audit",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 4,
       "estimate": 240,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:16:35"
+      "updated_at": "2026-07-22T14:18:06"
     }
   ],
-  "current_task": "EX-BRAVE-025",
+  "current_task": "EX-BRAVE-028",
   "current_sprint": "Sprint-007"
 }
