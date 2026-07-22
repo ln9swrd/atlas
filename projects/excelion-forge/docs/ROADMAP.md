@@ -42,9 +42,10 @@ Excelion Forge는 Blender에서 EXCELION 에셋을 검사하고 Unreal Engine으
 | v1.0 | Standalone Excelion Forge | 완료 |
 | v1.1 | Unreal Engine Live Sync | 완료 |
 | v1.2 | Material & Texture Inspector | 완료 |
+| v1.3 | Auto-LOD Generator | 완료 |
 
 ---
 
 # 다음 목표
 
-- **v1.3 Auto-LOD Generator**: Mesh Decimate 기반 자동 LOD 메쉬 파이프라인 수립
+- **v2.0 Standalone Excelion Forge Suite**: GUI & Headless CLI 종합 프로덕션 패키징

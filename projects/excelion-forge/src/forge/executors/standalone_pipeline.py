@@ -9,12 +9,13 @@ from forge.executors.fbx_exporter import FBXExporter
 from forge.executors.asset_database import AssetDatabaseManager, AssetMetadata
 from forge.executors.material_inspector import MaterialInspectorExecutor
 from forge.executors.ue_live_sync import UnrealLiveSyncExecutor
+from forge.executors.lod_generator import LODGeneratorExecutor
 
 
 class StandalonePipelineOrchestrator:
     """
-    Unified end-to-end pipeline runner for Standalone Excelion Forge v1.0~v1.2.
-    Executes validation, material inspection, FBX export, DB registration, and UE Live Sync.
+    Unified end-to-end pipeline runner for Standalone Excelion Forge v1.0~v1.3.
+    Executes validation, material inspection, Auto-LOD generation, FBX export, DB registration, and UE Live Sync.
     """
 
     def __init__(self, db_path: str = ":memory:"):
@@ -23,6 +24,7 @@ class StandalonePipelineOrchestrator:
         self.fbx_exporter = FBXExporter()
         self.material_inspector = MaterialInspectorExecutor()
         self.live_sync = UnrealLiveSyncExecutor()
+        self.lod_generator = LODGeneratorExecutor()
 
     def run_pipeline(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -82,7 +84,12 @@ class StandalonePipelineOrchestrator:
                 report["errors"].append("Material inspection failed prior to export.")
                 return report
 
-        # Step 2: Export FBX
+        # Step 2: Auto-LOD Generation
+        if context.get("generate_lods", False):
+            lod_result = self.lod_generator.execute(context)
+            report["steps"]["lod_generation"] = lod_result
+
+        # Step 3: Export FBX
         export_result = self.fbx_exporter.execute(context)
         report["steps"]["export"] = export_result
         if not export_result.get("success", False) and export_result.get("status") not in ("SUCCESS", "PASS"):

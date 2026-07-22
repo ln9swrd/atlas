@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "execution",
+  "mode": "idle",
   "active_project": "Excelion",
   "active_agents": [
     "Marie",
@@ -11,10 +11,10 @@
   ],
   "current_phase": "Season 1 Content Expansion & Dedicated Server Co-Op Services",
   "last_started": "2026-07-22T14:20:10",
-  "last_finished": "2026-07-22T14:18:25",
+  "last_finished": "2026-07-22T14:23:37",
   "last_review": "PASS",
   "active_goal": "EX-GOAL-008",
-  "current_goal_status": "Active",
+  "current_goal_status": "Completed",
   "last_goal_sync": "2026-07-22T14:20:10",
   "task_states": [
     {
@@ -28,22 +28,22 @@
     {
       "id": "EX-BRAVE",
       "description": "014: Audio Sound Cue & Spatial SFX Attenuation Setup",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 2,
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:20:10"
+      "updated_at": "2026-07-22T14:23:37"
     },
     {
       "id": "EX-BRAVE",
       "description": "015: Post-Processing & Cinematic Lighting Polish",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "priority": 3,
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:20:10"
+      "updated_at": "2026-07-22T14:23:37"
     },
     {
       "id": "EX-BRAVE",
@@ -56,6 +56,6 @@
       "updated_at": "2026-07-22T14:20:10"
     }
   ],
-  "current_task": "EX-BRAVE-020",
+  "current_task": "EX-BRAVE",
   "current_sprint": "Sprint-004"
 }

@@ -139,3 +139,9 @@
 {"timestamp": "2026-07-22T14:20:10", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-004"}
 {"timestamp": "2026-07-22T14:20:10", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-008", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T14:20:10", "event": "goal.activate", "goal": "EX-GOAL-008"}
+{"timestamp": "2026-07-22T14:23:06", "event": "task.started", "task_id": "EX-BRAVE", "description": "014: Audio Sound Cue & Spatial SFX Attenuation Setup"}
+{"timestamp": "2026-07-22T14:23:30", "event": "task.completed", "task_id": "EX-BRAVE", "description": "014: Audio Sound Cue & Spatial SFX Attenuation Setup"}
+{"timestamp": "2026-07-22T14:23:30", "event": "sprint.updated", "sprint": "Sprint-004"}
+{"timestamp": "2026-07-22T14:23:37", "event": "task.started", "task_id": "EX-BRAVE", "description": "015: Post-Processing & Cinematic Lighting Polish"}
+{"timestamp": "2026-07-22T14:23:37", "event": "task.completed", "task_id": "EX-BRAVE", "description": "014: Audio Sound Cue & Spatial SFX Attenuation Setup"}
+{"timestamp": "2026-07-22T14:23:37", "event": "sprint.updated", "sprint": "Sprint-004"}
