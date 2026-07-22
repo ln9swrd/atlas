@@ -46,3 +46,21 @@
 {"timestamp": "2026-07-21T16:16:36", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-21T17:08:26", "event": "atlas.finish", "review": "PASS"}
 {"timestamp": "2026-07-21T17:08:26", "event": "goal.sync", "status": "reviewed"}
+{"timestamp": "2026-07-22T09:24:20", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
+{"timestamp": "2026-07-22T09:24:20", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T09:24:20", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-22T09:39:42", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
+{"timestamp": "2026-07-22T09:39:42", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T09:39:42", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-22T09:44:48", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
+{"timestamp": "2026-07-22T09:44:48", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T09:44:48", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-22T10:18:31", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
+{"timestamp": "2026-07-22T10:18:31", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T10:18:31", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-22T10:18:49", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
+{"timestamp": "2026-07-22T10:18:49", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T10:18:49", "event": "goal.activate", "goal": "EX-GOAL-001"}
+{"timestamp": "2026-07-22T10:23:49", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-002"}
+{"timestamp": "2026-07-22T10:23:49", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-002", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T10:23:49", "event": "goal.activate", "goal": "EX-GOAL-002"}

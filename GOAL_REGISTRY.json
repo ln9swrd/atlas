@@ -1,19 +1,24 @@
 {
-  "active_goal": "EX-GOAL-001",
+  "active_goal": "EX-GOAL-002",
   "completed_goals": [
     "EX-GOAL-001"
   ],
-  "next_goal": "ATL-GOAL-002",
+  "next_goal": "EX-GOAL-003",
   "goals": {
     "EX-GOAL-001": {
       "goal_id": "EX-GOAL-001",
+      "status": "Completed",
+      "updated_at": "2026-07-22T10:18:49"
+    },
+    "EX-GOAL-002": {
+      "goal_id": "EX-GOAL-002",
       "status": "Active",
-      "updated_at": "2026-07-21T16:16:36"
+      "updated_at": "2026-07-22T10:23:49"
     },
     "ATL-GOAL-001": {
       "goal_id": "ATL-GOAL-001",
       "description": "Atlas DevOS Self-Platform Completeness and Automated Review System",
-      "status": "Active",
+      "status": "Completed",
       "updated_at": "2026-07-21T10:45:00"
     }
   }

@@ -128,6 +128,8 @@ def build_recommendation_payload(context, base_dir=None, state=None):
                 with open(path, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     for item in data:
+                        if item.get("status") == "DONE" or item.get("id") in completed_ids:
+                            continue
                         item["source"] = source
                         backlog.append(item)
             except Exception as e:

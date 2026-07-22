@@ -12,7 +12,7 @@ if repo_root not in sys.path:
     sys.path.insert(0, repo_root)
 
 from core.execution.context_resolver import resolve_context
-from core.execution.goal_registry import set_active_goal, sync_state_with_goal
+from core.execution.goal_registry import load_goal_registry, set_active_goal, sync_state_with_goal
 from core.execution.priority_engine import build_recommendation_payload
 from core.execution.runtime_context import RuntimeContext
 
@@ -77,11 +77,33 @@ def get_repo_root(base_dir=None):
 
 
 def load_current_sprint(base_dir, project_name="Exelion"):
+    goal_registry_path = os.path.join(base_dir, "GOAL_REGISTRY.json")
+    active_goal = None
+    if os.path.exists(goal_registry_path):
+        try:
+            with open(goal_registry_path, 'r', encoding='utf-8') as f:
+                reg_data = json.load(f)
+                active_goal = reg_data.get("active_goal")
+        except Exception:
+            pass
+
     project_dir = os.path.join(base_dir, "projects", project_name.lower())
     goal_dir = os.path.join(project_dir, "goals")
 
+    if active_goal and os.path.exists(goal_dir):
+        active_goal_path = os.path.join(goal_dir, f"{active_goal}.md")
+        if os.path.exists(active_goal_path):
+            try:
+                with open(active_goal_path, 'r', encoding='utf-8') as handle:
+                    content = handle.read()
+                match = re.search(r"(Sprint-[A-Za-z0-9_-]+)", content)
+                if match:
+                    return match.group(1)
+            except Exception:
+                pass
+
     if os.path.exists(goal_dir):
-        for filename in sorted(os.listdir(goal_dir)):
+        for filename in sorted(os.listdir(goal_dir), reverse=True):
             if not filename.endswith(".md"):
                 continue
             goal_path = os.path.join(goal_dir, filename)
@@ -96,7 +118,7 @@ def load_current_sprint(base_dir, project_name="Exelion"):
 
     sprints_dir = os.path.join(project_dir, "sprints")
     if os.path.exists(sprints_dir):
-        for filename in sorted(os.listdir(sprints_dir)):
+        for filename in sorted(os.listdir(sprints_dir), reverse=True):
             if filename.startswith("Sprint-") and filename.endswith(".md"):
                 return filename[:-3]
 
@@ -141,6 +163,9 @@ def load_sprint_tasks(base_dir, sprint_name, project_name="Exelion"):
                     row = {headers[i]: cells[i] for i in range(min(len(headers), len(cells)))}
                     task_id = row.get("id") or row.get("task") or row.get("description")
                     title = row.get("task") or row.get("description") or task_id
+                    status = (row.get("status") or "").lower()
+                    if status in ["done", "completed"]:
+                        continue
                     if task_id and task_id != "---" and title:
                         tasks.append({"id": task_id, "title": title})
                     continue
@@ -556,11 +581,13 @@ def start_day():
     })
 
     registry_path = os.path.join(base_dir, "GOAL_REGISTRY.json")
-    set_active_goal(registry_path, "EX-GOAL-001")
+    reg_data = load_goal_registry(registry_path)
+    active_goal = reg_data.get("active_goal") or "EX-GOAL-001"
+    set_active_goal(registry_path, active_goal)
     sync_state_with_goal(state_path, registry_path)
 
-    append_event_log(log_path, "atlas.start", {"project": "Exelion", "goal": "EX-GOAL-001", "environment": report["environment"]})
-    append_event_log(log_path, "goal.activate", {"goal": "EX-GOAL-001"})
+    append_event_log(log_path, "atlas.start", {"project": "Exelion", "goal": active_goal, "environment": report["environment"]})
+    append_event_log(log_path, "goal.activate", {"goal": active_goal})
 
     print("")
     print("[RUNNER] Atlas start routine completed.")

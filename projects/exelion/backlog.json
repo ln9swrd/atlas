@@ -2,6 +2,8 @@
   {
     "id": "EX-BRAVE-001",
     "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)",
+    "status": "DONE",
+    "environment": "DEV_WORK",
     "target_stage": "Blender - 모델링",
     "est_time": 180,
     "projected_gain": 12.0,
@@ -13,6 +15,8 @@
   {
     "id": "EX-BRAVE-002",
     "description": "Brave 기본 프레임 UV 매핑 및 Export",
+    "status": "DONE",
+    "environment": "DEV_WORK",
     "target_stage": "Blender - UV 매핑",
     "est_time": 120,
     "projected_gain": 5.0,
@@ -24,6 +28,8 @@
   {
     "id": "EX-BRAVE-003",
     "description": "Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증)",
+    "status": "DONE",
+    "environment": "DEV_WORK",
     "target_stage": "Blender - Export 준비",
     "est_time": 150,
     "projected_gain": 6.0,
@@ -35,12 +41,66 @@
   {
     "id": "EX-BRAVE-004",
     "description": "Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint)",
+    "status": "DONE",
+    "environment": "DEV_HOME",
     "target_stage": "Unreal - 임포트/설정",
     "est_time": 240,
     "projected_gain": 7.0,
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Import/Collision",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-005",
+    "description": "Primary Weapon (Rifle/Sword) 3D Modeling & UV",
+    "status": "TODO",
+    "environment": "DEV_WORK",
+    "target_stage": "Blender - 모델링",
+    "est_time": 180,
+    "projected_gain": 10.0,
+    "focus_area": "modeling",
+    "category": "Blender Modeling",
+    "bottleneck": "Topology",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-006",
+    "description": "Joint Rigging & Basic Motion Clips",
+    "status": "TODO",
+    "environment": "DEV_WORK",
+    "target_stage": "Blender - 리깅",
+    "est_time": 150,
+    "projected_gain": 9.0,
+    "focus_area": "animation",
+    "category": "Blender Rigging",
+    "bottleneck": "Weight Painting",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-007",
+    "description": "Unreal Animation Blueprint (ABP) & Socket Setup",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 210,
+    "projected_gain": 11.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "ABP Graph",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-008",
+    "description": "Action Camera & Motion Test Map Validation",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 180,
+    "projected_gain": 8.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Camera Math",
     "assignee_role": "Forge"
   }
 ]

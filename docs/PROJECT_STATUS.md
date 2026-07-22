@@ -4,21 +4,20 @@
 
 
 
-- Last Sync: `2026-07-21 17:08:26`
+- Last Sync: `2026-07-22 10:24:00`
 - Project: `Exelion`
-- Mode: `idle`
-- Current Sprint: `Sprint-001`
-- Current Task: `EX-BRAVE-001`
+- Mode: `development`
+- Current Sprint: `Sprint-002`
+- Current Task: `EX-BRAVE-005`
 - Last Review: `PASS`
 
 
 - Repo: Atlas DevOS
 - 현재 브랜치: `main`
 - 원격과 동기화됨
-- 주요 문서 추가 완료: `PROJECT_OVERVIEW.md`, `PROJECT_EXECUTION_PLAN.md`
-- Exelion 프로젝트는 `EX-GOAL-001` 및 `Sprint-001` 초기 태스크(`EX-BRAVE-001`~`EX-BRAVE-004`) 완수 완료
-- 마지막 검증으로 Atlas pre-flight 규칙도 모두 통과했습니다.
-- `tools/atlas_runner.py` 런타임 실행 및 Rule/Review Engine 검증 완료 (총 22개 유닛 테스트 PASS)
+- `EX-GOAL-001` 및 `Sprint-001` 완료에 이어 `EX-GOAL-002` 및 `Sprint-002` 수립 완료
+- Exelion 차기 목표(`EX-BRAVE-005`~`EX-BRAVE-008`) 백로그 활성화 완료
+- `tools/atlas_runner.py` 런타임 실행 및 Rule/Review Engine 검증 완료 (총 32개 유닛 테스트 PASS)
 
 ## 2. 주요 문서
 
@@ -29,34 +28,33 @@
 - `PROJECT_EXECUTION_PLAN.md` — 실행 계획 및 단계별 진행 계획
 - `docs/PROJECT_STATUS.md` — 현재 상태 및 단기 실행 체크리스트
 - `docs/OPERATIONS.md` — 일일 운영 절차
-- `docs/ARCHITECTURE.md` — 아키텍처 계층 및 흐름
-- `projects/exelion/sprints/Sprint-001.md` — 현재 스프린트 정의
-- `projects/exelion/sprints/Sprint-001-tasklist.md` — 스프린트 작업 리스트
-- `projects/exelion/sprints/Sprint-001-report.md` — 스프린트 보고서
+- `projects/exelion/goals/EX-GOAL-002.md` — 현재 실행 목표
+- `projects/exelion/sprints/Sprint-002.md` — 현재 스프린트 정의
+- `projects/exelion/sprints/Sprint-002-tasklist.md` — 스프린트 작업 리스트
 
 ## 3. 즉시 실행 항목
 
-1. [PROJECT_IMPLEMENTATION_PLAN.md](file:///mnt/d/Antigravity/Atlas/PROJECT_IMPLEMENTATION_PLAN.md) 기반 Atlas 코어 5대 영역 구현 착수
-2. `Sprint-001` 완료에 따른 결과 검증 및 `Sprint-002` 백로그 정의
-3. `projects/exelion/sprints/Sprint-001-report.md` 최종 진행 보고서 마감
-3. `EX-GOAL-002` 목표 설정 및 차기 스프린트 작업 등록
+1. `EX-BRAVE-005` Primary Weapon (Rifle/Sword) 3D Modeling & UV 작업 착수 (`DEV_WORK`)
+2. `EX-BRAVE-006` Joint Rigging & Basic Motion Clips 작업 (`DEV_WORK`)
+3. `EX-BRAVE-007` Unreal Animation Blueprint (ABP) & Socket Setup (`DEV_HOME`)
+4. `EX-BRAVE-008` Action Camera & Motion Test Map Validation (`DEV_HOME`)
 
 CI 및 자동화 참고:
 - `.github/workflows/atlas-ci.yml`이 추가되어 `main` 브랜치로의 push와 PR 생성 시 자동으로 `core/rules/rule_engine.py`와 시뮬레이션을 실행합니다.
 - 일일 루틴 스크립트: `./scripts/daily_start.sh` / `./scripts/daily_end.sh` 로 로컬에서 시작/종료를 자동화할 수 있습니다.
 
-### 현재 작업 (Sprint-001)
+### 현재 작업 (Sprint-002)
 
 | ID | Description | Target Stage | Estimated Time | Environment | Status |
 | --- | --- | --- | --- | --- | --- |
-| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | DONE |
-| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | DONE |
-| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | DONE |
-| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | DONE |
+| EX-BRAVE-005 | Primary Weapon (Rifle/Sword) 3D Modeling & UV | Blender - 모델링 | 180 | DEV_WORK (Company PC) | TODO |
+| EX-BRAVE-006 | Joint Rigging & Basic Motion Clips | Blender - 리깅 | 150 | DEV_WORK (Company PC) | TODO |
+| EX-BRAVE-007 | Unreal Animation Blueprint (ABP) & Socket Setup | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | TODO |
+| EX-BRAVE-008 | Action Camera & Motion Test Map Validation | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | TODO |
 
 ## 4. 다음 단계
 
-- **Sprint-002 준비**: `EX-GOAL-002` 차기 백로그 수립
+- **Sprint-002 수행**: `EX-BRAVE-005`~`008` 순차 실행 및 검증
 - **Runner 자동화 유지**: `tools/atlas_runner.py` 기반 일일 `start`/`finish` 검증 루프 지속 활용
 - **문서 동기화**: 프로젝트 진행 상황에 따른 상태 문서 자동 업데이트 체계화
 

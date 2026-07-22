@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "idle",
+  "mode": "development",
   "active_project": "Exelion",
   "active_agents": [
     "Marie",
@@ -10,54 +10,54 @@
     "Sera"
   ],
   "current_phase": "Asset Production",
-  "last_started": "2026-07-21T16:16:36",
+  "last_started": "2026-07-22T10:23:49",
   "last_finished": "2026-07-21T17:08:26",
   "last_review": "PASS",
-  "active_goal": "EX-GOAL-001",
+  "active_goal": "EX-GOAL-002",
   "current_goal_status": "Active",
-  "last_goal_sync": "2026-07-21T16:16:36",
+  "last_goal_sync": "2026-07-22T10:23:49",
   "task_states": [
     {
-      "id": "EX-BRAVE-001",
-      "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)",
+      "id": "EX-BRAVE-008",
+      "description": "Action Camera & Motion Test Map Validation",
       "status": "TODO",
       "priority": 1,
       "estimate": 180,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-21T16:16:36"
+      "updated_at": "2026-07-22T10:23:49"
     },
     {
-      "id": "EX-BRAVE-002",
-      "description": "Brave 기본 프레임 UV 매핑 및 Export",
+      "id": "EX-BRAVE-006",
+      "description": "Joint Rigging & Basic Motion Clips",
       "status": "TODO",
       "priority": 2,
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-21T16:16:36"
+      "updated_at": "2026-07-22T10:23:49"
     },
     {
-      "id": "EX-BRAVE-003",
-      "description": "Brave 외장 장갑 1개 제작",
+      "id": "EX-BRAVE-007",
+      "description": "Unreal Animation Blueprint (ABP) & Socket Setup",
       "status": "TODO",
       "priority": 3,
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-21T16:16:36"
+      "updated_at": "2026-07-22T10:23:49"
     },
     {
-      "id": "EX-BRAVE-004",
-      "description": "Unreal 임포트 및 셋업",
+      "id": "EX-BRAVE-008",
+      "description": "Action Camera & Motion Test Map Validation",
       "status": "TODO",
       "priority": 4,
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-21T16:16:36"
+      "updated_at": "2026-07-22T10:23:49"
     }
   ],
-  "current_task": "EX-BRAVE-001",
-  "current_sprint": "Sprint-001"
+  "current_task": "EX-BRAVE-008",
+  "current_sprint": "Sprint-002"
 }
