@@ -54,7 +54,7 @@
   {
     "id": "EX-BRAVE-005",
     "description": "Primary Weapon (Rifle/Sword) 3D Modeling & UV",
-    "status": "TODO",
+    "status": "DONE",
     "environment": "DEV_WORK",
     "target_stage": "Blender - 모델링",
     "est_time": 180,
@@ -67,7 +67,7 @@
   {
     "id": "EX-BRAVE-006",
     "description": "Joint Rigging & Basic Motion Clips",
-    "status": "TODO",
+    "status": "DONE",
     "environment": "DEV_WORK",
     "target_stage": "Blender - 리깅",
     "est_time": 150,
@@ -80,7 +80,7 @@
   {
     "id": "EX-BRAVE-007",
     "description": "Unreal Animation Blueprint (ABP) & Socket Setup",
-    "status": "TODO",
+    "status": "DONE",
     "environment": "DEV_HOME",
     "target_stage": "Unreal - 임포트/설정",
     "est_time": 210,
@@ -93,7 +93,7 @@
   {
     "id": "EX-BRAVE-008",
     "description": "Action Camera & Motion Test Map Validation",
-    "status": "TODO",
+    "status": "DONE",
     "environment": "DEV_HOME",
     "target_stage": "Unreal - 임포트/설정",
     "est_time": 180,
