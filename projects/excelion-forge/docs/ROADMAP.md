@@ -35,9 +35,9 @@ Excelion Forge는 Blender에서 EXCELION 에셋을 검사하고 Unreal Engine으
 | v0.1 | Addon Skeleton | 완료 |
 | v0.1 | UI | 완료 |
 | v0.1 | Rig Validator | 완료 |
-| v0.2 | Animation Validator | 예정 |
-| v0.3 | FBX Export | 예정 |
-| v0.4 | Batch Export | 예정 |
+| v0.2 | Animation Validator | 완료 |
+| v0.3 | FBX Export | 완료 |
+| v0.4 | Batch Export | 완료 |
 | v0.5 | Asset Database | 예정 |
 | v1.0 | Standalone Excelion Forge | 예정 |
 
@@ -45,6 +45,5 @@ Excelion Forge는 Blender에서 EXCELION 에셋을 검사하고 Unreal Engine으
 
 # 다음 목표
 
-v0.2 이전에는 문서 링크, 명칭, v0.1 기준 API를 먼저 정리한다.
-
-그 다음 Object Validation 범위를 확장한다.
+- **v0.5 Asset Database**: 에셋 버전 관리 및 메타데이터 DB 연동 모듈 수립
+- **v1.0 Standalone Excelion Forge**: Blender GUI & Headless CLI 파이프라인 통합 패키징
