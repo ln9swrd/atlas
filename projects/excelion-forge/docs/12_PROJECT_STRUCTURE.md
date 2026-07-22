@@ -58,7 +58,7 @@ Blender 애드온을 관리한다.
 
 ```text
 addons/
-└── exelion_forge/
+└── excelion_forge/
 ```
 
 애드온은 Unreal 프로젝트와 독립적으로 개발한다.

@@ -2,7 +2,7 @@
 
 This file records the current locations of all `atlas*.md` files in the repository. These documents are referenced for project planning, architecture, verification, and system summaries.
 
-> Note: Current automation is driven by `tools/atlas_runner.py`, `projects/exelion`, `core/`, and state files like `ATLAS_STATE.json`. This inventory is a reference to where Atlas documentation lives, not a direct automation input.
+> Note: Current automation is driven by `tools/atlas_runner.py`, `projects/excelion`, `core/`, and state files like `ATLAS_STATE.json`. This inventory is a reference to where Atlas documentation lives, not a direct automation input.
 
 ## atlas*.md file locations
 

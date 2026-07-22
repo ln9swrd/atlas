@@ -4,7 +4,7 @@
 
 ## 1. 개요
 
-이 저장소는 Atlas DevOS 플랫폼의 실행 엔진, 에이전트 협업 구조, 그리고 첫 번째 검증 프로젝트인 Exelion을 포함합니다.
+이 저장소는 Atlas DevOS 플랫폼의 실행 엔진, 에이전트 협업 구조, 그리고 첫 번째 검증 프로젝트인 Excelion을 포함합니다.
 
 - `core/`: Atlas의 런타임, 룰 엔진, 리뷰 엔진, 실행 흐름을 담고 있는 핵심 모듈
 - `projects/`: 실제 프로젝트 인스턴스와 백로그, 스프린트, 아키텍처 기록
@@ -34,7 +34,7 @@
 - `docs/process/VISION.md` — 전략 및 비전
 
 - `docs/atlas/` — Atlas 자체 관련 문서, 결정 기록, 로그, 규칙
-- `projects/exelion/` — Exelion 프로젝트 관련 기획, 백로그, 스프린트
+- `projects/excelion/` — Excelion 프로젝트 관련 기획, 백로그, 스프린트
 
 ## 3.1 AI 자동화 진입점
 
@@ -44,7 +44,7 @@ AI가 `README.md`를 읽고 자동으로 다음 단계를 진행하려면, 이 �
 - 전체 프로젝트 맥락은 `PROJECT_OVERVIEW.md`와 `PROJECT_EXECUTION_PLAN.md`에서 확인합니다.
 - 실행기 진입점은 `tools/atlas_runner.py`입니다.
 - 현재 상태 저장소는 `ATLAS_STATE.json`입니다.
-- 목표 관리/진행 기록은 `GOAL_REGISTRY.json`과 `projects/exelion/backlog.json`입니다.
+- 목표 관리/진행 기록은 `GOAL_REGISTRY.json`과 `projects/excelion/backlog.json`입니다.
 
 `README.md`는 전체 구조와 진입점을 안내하는 역할을 하며, 상세한 판단과 수정은 위의 문서들에서 수행해야 합니다.
 
@@ -66,8 +66,8 @@ python tools/atlas_runner.py finish
 
 - `core/execution/` — 실행 컨텍스트, 우선순위 규칙, 런타임 모델
 - `core/review/` — 품질 점수화 및 리뷰 결과
-- `projects/exelion/backlog.json` — 현재 Exelion 백로그
-- `projects/exelion/sprints/` — 스프린트 작업 목록 및 보고서
+- `projects/excelion/backlog.json` — 현재 Excelion 백로그
+- `projects/excelion/sprints/` — 스프린트 작업 목록 및 보고서
 - `ATLAS_STATE.json` — 현재 런타임 상태 저장소
 - `GOAL_REGISTRY.json` — 목표 관리 레지스트리
 

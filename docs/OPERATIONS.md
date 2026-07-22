@@ -50,7 +50,7 @@ Use the priority engine to evaluate the current backlog and select the next most
 
 ### 4. Select the operational target
 
-For the current release cycle, Exelion is the primary validation project. The preferred flow is:
+For the current release cycle, Excelion is the primary validation project. The preferred flow is:
 
 ```text
 SYSTEM_MANIFEST
@@ -59,7 +59,7 @@ RuntimeContext
   ↓
 PriorityEngine
   ↓
-Exelion Goal
+Excelion Goal
   ↓
 Sprint
   ↓

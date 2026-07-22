@@ -6,7 +6,7 @@
 - Status: Active
 - Priority: High
 - Owner: Marie
-- Project: Exelion
+- Project: Excelion
 
 ## Outputs
 - Sprint-002
@@ -24,7 +24,7 @@
 - Unreal Engine 상에서 애니메이션 블루프린트 연동 및 액션 시연 확인
 
 ## Project
-Exelion
+Excelion
 
 ## Current Phase
 Prototype → Mechanics & Animation Integration

@@ -42,7 +42,7 @@ def run_review_engine(asset_name=None, topology_score=95, animation_score=90, pr
 
     if asset_name is None:
         active_project = get_active_project(base_dir)
-        asset_name = active_project or "Exelion_Arm"
+        asset_name = active_project or "Excelion_Arm"
 
     if asset_name in ("Atlas", "Atlas_DevOS_Core", "Atlas_Platform"):
         return run_platform_review()

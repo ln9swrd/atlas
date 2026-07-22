@@ -16,7 +16,7 @@ class PriorityEngineLifecycleTests(unittest.TestCase):
             base_dir = Path(tmpdir)
             (base_dir / "core" / "execution").mkdir(parents=True, exist_ok=True)
             (base_dir / "core" / "config").mkdir(parents=True, exist_ok=True)
-            (base_dir / "projects" / "exelion").mkdir(parents=True, exist_ok=True)
+            (base_dir / "projects" / "excelion").mkdir(parents=True, exist_ok=True)
 
             (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(
                 json.dumps([
@@ -31,11 +31,11 @@ class PriorityEngineLifecycleTests(unittest.TestCase):
                 ]),
                 encoding="utf-8"
             )
-            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+            (base_dir / "projects" / "excelion" / "backlog.json").write_text(
                 json.dumps([
                     {
                         "id": "EX-001",
-                        "description": "Exelion active task",
+                        "description": "Excelion active task",
                         "target_stage": "Blender - 모델링",
                         "projected_gain": 8.0,
                         "est_time": 120,
@@ -48,14 +48,14 @@ class PriorityEngineLifecycleTests(unittest.TestCase):
                 json.dumps({
                     "Atlas": {"status": "maintenance"},
                     "Sera": {"status": "maintenance"},
-                    "Exelion": {"status": "active"}
+                    "Excelion": {"status": "active"}
                 }),
                 encoding="utf-8"
             )
 
             backlog_files = priority_engine.collect_backlog_files(base_dir, lifecycle_path=base_dir / "core" / "config" / "project_lifecycle.json")
 
-            self.assertEqual(list(backlog_files.keys()), ["Exelion"])
+            self.assertEqual(list(backlog_files.keys()), ["Excelion"])
 
 
 if __name__ == "__main__":

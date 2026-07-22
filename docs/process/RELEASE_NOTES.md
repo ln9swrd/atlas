@@ -13,4 +13,4 @@ This milestone captures the first stable foundation of Atlas as a development op
 - Runner-based execution flow
 
 ### Intent
-Atlas is now positioned as a stable platform for supporting real project work, especially Exelion, rather than as a collection of loosely connected scripts.
+Atlas is now positioned as a stable platform for supporting real project work, especially Excelion, rather than as a collection of loosely connected scripts.

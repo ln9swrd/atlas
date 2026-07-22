@@ -281,7 +281,7 @@ def recommend(context):
 
 
 def run_priority_engine():
-    context = resolve_context('DEV_WORK', 'Exelion', registry_path=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'ENVIRONMENTS.md'))
+    context = resolve_context('DEV_WORK', 'Excelion', registry_path=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'ENVIRONMENTS.md'))
     recommend(context)
 
 

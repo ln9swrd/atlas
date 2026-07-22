@@ -1,7 +1,7 @@
 # 프로젝트 아틀라스(Atlas DevOS) 코어 플랫폼 구현 계획서 (Implementation Plan)
 
 - **대상 범위**: Atlas DevOS 자체 플랫폼 코어 (`core/`, `tools/`, `docs/`, `ATLAS_STATE.json`)
-- **제외 범위**: 서브프로젝트 (`projects/exelion`, `projects/coin-s` 등)
+- **제외 범위**: 서브프로젝트 (`projects/excelion`, `projects/coin-s` 등)
 - **작성 일자**: 2026-07-21
 
 ---

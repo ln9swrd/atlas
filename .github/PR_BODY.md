@@ -4,7 +4,7 @@ This PR reflects Sprint-001 completion and synchronizes project state and docume
 
 ### Changes
 - Update `PROJECT_OVERVIEW.md` to mark Sprint-001 tasks as Done and add automation/usage notes.
-- Update `projects/exelion/sprints/Sprint-001-report.md` to Completed and normalize backlog snapshot.
+- Update `projects/excelion/sprints/Sprint-001-report.md` to Completed and normalize backlog snapshot.
 - Update `ATLAS_STATE.json` to clear `current_task` and reflect completed tasks.
 - Add CI workflow: `.github/workflows/atlas-ci.yml` to run rule engine and simulation on push/PR.
 - Add daily scripts: `scripts/daily_start.sh`, `scripts/daily_end.sh`.
@@ -16,5 +16,5 @@ This PR reflects Sprint-001 completion and synchronizes project state and docume
 - `tools/atlas_runner.py start` run: start report generated successfully
 
 ### Notes for reviewers
-- Verify textual updates in `PROJECT_OVERVIEW.md` and `projects/exelion/sprints/Sprint-001-report.md`.
+- Verify textual updates in `PROJECT_OVERVIEW.md` and `projects/excelion/sprints/Sprint-001-report.md`.
 - Confirm `ATLAS_STATE.json` changes are intended (clearing `current_task`).

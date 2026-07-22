@@ -18,8 +18,8 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 "core/execution",
                 "core/config",
                 "core/workflow",
-                "projects/exelion/sprints",
-                "projects/exelion/goals",
+                "projects/excelion/sprints",
+                "projects/excelion/goals",
                 "logs",
             ]:
                 (base_dir / relpath).mkdir(parents=True, exist_ok=True)
@@ -41,7 +41,7 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 ]),
                 encoding="utf-8",
             )
-            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+            (base_dir / "projects" / "excelion" / "backlog.json").write_text(
                 json.dumps([
                     {
                         "id": "EX-001",
@@ -102,7 +102,7 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 encoding="utf-8",
             )
             (base_dir / "core" / "config" / "project_lifecycle.json").write_text(
-                json.dumps({"Exelion": {"status": "active"}, "Atlas": {"status": "active"}}),
+                json.dumps({"Excelion": {"status": "active"}, "Atlas": {"status": "active"}}),
                 encoding="utf-8",
             )
             (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text(
@@ -117,7 +117,7 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 "# Environments\n\n## DEV_HOME\nCapabilities:\n- Unreal Engine\n- Blender\n",
                 encoding="utf-8",
             )
-            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text(
+            (base_dir / "projects" / "excelion" / "sprints" / "Sprint-001-tasklist.md").write_text(
                 "# Sprint-001 Task List\n\n## Priority Tasks\n"
                 "1. EX-BRAVE-001 — Brave 기본 프레임 제작\n"
                 "2. EX-BRAVE-002 — Brave 기본 프레임 UV 매핑\n"
@@ -126,12 +126,12 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 "5. EX-BRAVE-005 — 플레이 테스트 준비\n",
                 encoding="utf-8",
             )
-            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text(
+            (base_dir / "projects" / "excelion" / "goals" / "EX-GOAL-001.md").write_text(
                 "# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n",
                 encoding="utf-8",
             )
 
-            report = atlas_runner.build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelion")
+            report = atlas_runner.build_start_report(base_dir, environment_id="DEV_HOME", project_name="Excelion")
 
             self.assertEqual(report["environment"], "DEV_HOME")
             self.assertEqual(report["current_sprint"], "Sprint-001")
@@ -145,15 +145,15 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 "core/execution",
                 "core/config",
                 "core/workflow",
-                "projects/exelion/sprints",
-                "projects/exelion/goals",
+                "projects/excelion/sprints",
+                "projects/excelion/goals",
                 "logs",
             ]:
                 (base_dir / relpath).mkdir(parents=True, exist_ok=True)
 
             (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
             (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+            (base_dir / "projects" / "excelion" / "backlog.json").write_text(
                 json.dumps([
                     {"id": "EX-001", "description": "Brave 기본 프레임 제작", "target_stage": "Blender - 모델링", "projected_gain": 8.0, "est_time": 90, "focus_area": "modeling"},
                     {"id": "EX-002", "description": "Brave UV 매핑", "target_stage": "Blender - UV", "projected_gain": 7.0, "est_time": 60, "focus_area": "uv"},
@@ -161,13 +161,13 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 encoding="utf-8",
             )
             (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
-            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Excelion": {"status": "active"}}), encoding="utf-8")
             (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
             (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-BRAVE-001 — Brave 기본 프레임 제작\n2. EX-BRAVE-002 — Brave UV 매핑\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-BRAVE-001 — Brave 기본 프레임 제작\n2. EX-BRAVE-002 — Brave UV 매핑\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
 
-            report = atlas_runner.build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelion")
+            report = atlas_runner.build_start_report(base_dir, environment_id="DEV_HOME", project_name="Excelion")
             atlas_runner.initialize_task_state(base_dir, report)
             result = atlas_runner.advance_task(base_dir, command="next")
 
@@ -185,14 +185,14 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 "core/execution",
                 "core/config",
                 "core/workflow",
-                "projects/exelion/sprints",
-                "projects/exelion/goals",
+                "projects/excelion/sprints",
+                "projects/excelion/goals",
                 "logs",
             ]:
                 (base_dir / relpath).mkdir(parents=True, exist_ok=True)
 
             (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+            (base_dir / "projects" / "excelion" / "backlog.json").write_text(
                 json.dumps([
                     {"id": "EX-001", "description": "Brave 기본 프레임 제작", "target_stage": "Blender - 모델링", "projected_gain": 8.0, "est_time": 90, "focus_area": "modeling"},
                     {"id": "EX-002", "description": "Brave UV 매핑", "target_stage": "Blender - UV", "projected_gain": 7.0, "est_time": 60, "focus_area": "uv"},
@@ -202,13 +202,13 @@ class AtlasRunnerMVPTests(unittest.TestCase):
             )
             (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
             (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
-            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Excelion": {"status": "active"}}), encoding="utf-8")
             (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
             (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-BRAVE-001 — Brave 기본 프레임 제작\n2. EX-BRAVE-002 — Brave UV 매핑\n3. EX-BRAVE-003 — Brave 외장 장갑 제작\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-BRAVE-001 — Brave 기본 프레임 제작\n2. EX-BRAVE-002 — Brave UV 매핑\n3. EX-BRAVE-003 — Brave 외장 장갑 제작\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
 
-            report = atlas_runner.build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelion")
+            report = atlas_runner.build_start_report(base_dir, environment_id="DEV_HOME", project_name="Excelion")
             atlas_runner.initialize_task_state(base_dir, report)
 
             first = atlas_runner.advance_task(base_dir, command="next")
@@ -236,14 +236,14 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 "core/execution",
                 "core/config",
                 "core/workflow",
-                "projects/exelion/sprints",
-                "projects/exelion/goals",
+                "projects/excelion/sprints",
+                "projects/excelion/goals",
                 "logs",
             ]:
                 (base_dir / relpath).mkdir(parents=True, exist_ok=True)
 
             (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+            (base_dir / "projects" / "excelion" / "backlog.json").write_text(
                 json.dumps([
                     {
                         "id": "EX-BRAVE-001",
@@ -260,16 +260,16 @@ class AtlasRunnerMVPTests(unittest.TestCase):
             )
             (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
             (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
-            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Excelion": {"status": "active"}}), encoding="utf-8")
             (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
             (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-BRAVE-001 — Brave 기본 프레임 제작\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-BRAVE-001 — Brave 기본 프레임 제작\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
 
             report = atlas_runner.build_start_report(
                 base_dir,
                 environment_id="DEV_HOME",
-                project_name="Exelion",
+                project_name="Excelion",
                 state={"task_states": [{"id": "EX-BRAVE-000", "status": "DONE"}]},
             )
             atlas_runner.initialize_task_state(base_dir, report)
@@ -286,14 +286,14 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 "core/execution",
                 "core/config",
                 "core/workflow",
-                "projects/exelion/sprints",
-                "projects/exelion/goals",
+                "projects/excelion/sprints",
+                "projects/excelion/goals",
                 "logs",
             ]:
                 (base_dir / relpath).mkdir(parents=True, exist_ok=True)
 
             (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+            (base_dir / "projects" / "excelion" / "backlog.json").write_text(
                 json.dumps([
                     {
                         "id": "EX-001",
@@ -337,16 +337,16 @@ class AtlasRunnerMVPTests(unittest.TestCase):
             )
             (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
             (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
-            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Excelion": {"status": "active"}}), encoding="utf-8")
             (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
             (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-001 — Home-only task\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-001 — Home-only task\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
 
             report = atlas_runner.build_start_report(
                 base_dir,
                 environment_id="DEV_HOME",
-                project_name="Exelion",
+                project_name="Excelion",
                 runtime_overrides={"available_minutes": 60, "energy": "high"},
                 state={"task_states": [{"id": "EX-001", "status": "DONE"}]},
             )
@@ -363,14 +363,14 @@ class AtlasRunnerMVPTests(unittest.TestCase):
                 "core/execution",
                 "core/config",
                 "core/workflow",
-                "projects/exelion/sprints",
-                "projects/exelion/goals",
+                "projects/excelion/sprints",
+                "projects/excelion/goals",
                 "logs",
             ]:
                 (base_dir / relpath).mkdir(parents=True, exist_ok=True)
 
             (base_dir / "core" / "execution" / "README.md").write_text("# Execution\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "backlog.json").write_text(
+            (base_dir / "projects" / "excelion" / "backlog.json").write_text(
                 json.dumps([
                     {"id": "EX-001", "description": "Task A", "target_stage": "Blender - 모델링", "projected_gain": 8.0, "est_time": 45, "focus_area": "modeling", "environment": "DEV_HOME"},
                     {"id": "EX-002", "description": "Task B", "target_stage": "Blender - UV", "projected_gain": 7.0, "est_time": 30, "focus_area": "uv", "environment": "DEV_HOME"},
@@ -379,16 +379,16 @@ class AtlasRunnerMVPTests(unittest.TestCase):
             )
             (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(json.dumps([]), encoding="utf-8")
             (base_dir / "core" / "config" / "agent_registry.json").write_text(json.dumps([]), encoding="utf-8")
-            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Exelion": {"status": "active"}}), encoding="utf-8")
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(json.dumps({"Excelion": {"status": "active"}}), encoding="utf-8")
             (base_dir / "core" / "workflow" / "bottleneck_analysis.md").write_text("| **Blender - 모델링** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |\n", encoding="utf-8")
             (base_dir / "ENVIRONMENTS.md").write_text("# Environments\n\n## DEV_HOME\nCapabilities:\n- Blender\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-001 — Task A\n2. EX-002 — Task B\n", encoding="utf-8")
-            (base_dir / "projects" / "exelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "sprints" / "Sprint-001-tasklist.md").write_text("1. EX-001 — Task A\n2. EX-002 — Task B\n", encoding="utf-8")
+            (base_dir / "projects" / "excelion" / "goals" / "EX-GOAL-001.md").write_text("# EX-GOAL-001\n\n## Sprint\n- Sprint-001\n", encoding="utf-8")
 
             simulation = atlas_runner.simulate_day(
                 base_dir,
                 environment_id="DEV_HOME",
-                project_name="Exelion",
+                project_name="Excelion",
                 runtime_overrides={"available_minutes": 60, "energy": "high"},
             )
             self.assertEqual(simulation["context"]["environment"], "DEV_HOME")

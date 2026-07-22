@@ -28,7 +28,7 @@
 - **산출물**: `docs/analysis/PHASE1_ARCHITECTURE_ANALYSIS.md`
 
 ### Phase 2: 실행 런타임 및 상태 동기화 분석
-- **분석 범위**: `tools/atlas_runner.py`, `ATLAS_STATE.json`, `GOAL_REGISTRY.json`, `projects/exelion/backlog.json`
+- **분석 범위**: `tools/atlas_runner.py`, `ATLAS_STATE.json`, `GOAL_REGISTRY.json`, `projects/excelion/backlog.json`
 - **주요 분석 항목**:
   - `atlas_runner.py start` 실행 시 `RuntimeContext` 수집 및 우선순위(`PriorityEngine`) 계산 정확도 평가
   - `ATLAS_STATE.json`과 프로젝트별 `backlog.json` 간 상태 동기화 및 락(Lock)/경합 관리 체계 평가
@@ -41,7 +41,7 @@
 - **분석 범위**: `core/rules/` (`rule_engine.py`), `core/review/` (`review_engine.py`), `core/checklists/`
 - **주요 분석 항목**:
   - Pre-flight 검증 룰(Collision, Export, UV, UE 등)의 커버리지 및 확장성 평가
-  - Review Engine의 품질 점수화 산출 공식 및 스코어카드(`scorecard_Exelion_Arm.md`) 생성 로직 정밀도 평가
+  - Review Engine의 품질 점수화 산출 공식 및 스코어카드(`scorecard_Excelion_Arm.md`) 생성 로직 정밀도 평가
   - Rule $\rightarrow$ Review $\rightarrow$ Metrics 순차 흐름 준수 상태 및 자동화 피드백 루프 분석
 - **분석 방법**:
   - 검증 시나리오별 Rule Pass/Fail 테스트 및 스코어 산출 알고리즘 검토

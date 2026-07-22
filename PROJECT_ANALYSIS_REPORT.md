@@ -43,7 +43,7 @@
    - 외부 DCC/엔진(Blender, Unreal Engine) 미설치 환경에서도 시뮬레이션 패스(Simulation Pass) 방식으로 런타임 에러 없이 유연하게 가동
 2. **Quality Review Engine (Review Engine)**:
    - 6개 평가 카테고리(Topology, Naming, UV, Animation, Printability, Performance) 별 점수 및 가중 평균 종합 점수(Total Score) 산출
-   - 평가 결과를 [scorecard_Exelion_Arm.md](file:///mnt/d/Antigravity/Atlas/core/review/scorecard_Exelion_Arm.md)와 같은 표준 마크다운 형식으로 자동 기록하는 피드백 루프 동작 확인
+   - 평가 결과를 [scorecard_Excelion_Arm.md](file:///mnt/d/Antigravity/Atlas/core/review/scorecard_Excelion_Arm.md)와 같은 표준 마크다운 형식으로 자동 기록하는 피드백 루프 동작 확인
 
 ---
 

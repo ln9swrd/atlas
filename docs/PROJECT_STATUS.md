@@ -5,7 +5,7 @@
 
 
 - Last Sync: `2026-07-22 10:24:00`
-- Project: `Exelion`
+- Project: `Excelion`
 - Mode: `development`
 - Current Sprint: `Sprint-002`
 - Current Task: `EX-BRAVE-005`
@@ -16,7 +16,7 @@
 - 현재 브랜치: `main`
 - 원격과 동기화됨
 - `EX-GOAL-001` 및 `Sprint-001` 완료에 이어 `EX-GOAL-002` 및 `Sprint-002` 수립 완료
-- Exelion 차기 목표(`EX-BRAVE-005`~`EX-BRAVE-008`) 백로그 활성화 완료
+- Excelion 차기 목표(`EX-BRAVE-005`~`EX-BRAVE-008`) 백로그 활성화 완료
 - `tools/atlas_runner.py` 런타임 실행 및 Rule/Review Engine 검증 완료 (총 32개 유닛 테스트 PASS)
 
 ## 2. 주요 문서
@@ -28,9 +28,9 @@
 - `PROJECT_EXECUTION_PLAN.md` — 실행 계획 및 단계별 진행 계획
 - `docs/PROJECT_STATUS.md` — 현재 상태 및 단기 실행 체크리스트
 - `docs/OPERATIONS.md` — 일일 운영 절차
-- `projects/exelion/goals/EX-GOAL-002.md` — 현재 실행 목표
-- `projects/exelion/sprints/Sprint-002.md` — 현재 스프린트 정의
-- `projects/exelion/sprints/Sprint-002-tasklist.md` — 스프린트 작업 리스트
+- `projects/excelion/goals/EX-GOAL-002.md` — 현재 실행 목표
+- `projects/excelion/sprints/Sprint-002.md` — 현재 스프린트 정의
+- `projects/excelion/sprints/Sprint-002-tasklist.md` — 스프린트 작업 리스트
 
 ## 3. 즉시 실행 항목
 
@@ -60,7 +60,7 @@ CI 및 자동화 참고:
 
 ## 5. 리스크 및 이슈
 
-- 현재 `excelion-forge/`, `projects/coin-s/`, `projects/exelion-forge/`가 언트랙 상태이므로, 이 파일들이 실제 작업과 관련 없는 경우 정리 필요
+- 현재 `excelion-forge/`, `projects/coin-s/`, `projects/excelion-forge/`가 언트랙 상태이므로, 이 파일들이 실제 작업과 관련 없는 경우 정리 필요
 - `DEV_WORK`와 `DEV_HOME` 환경 구분이 명확하며, Unreal 관련 작업은 Home PC에서만 수행해야 함
 - 실제 작업이 시작되기 전에 `Sprint-001-report.md`를 반드시 상태 업데이트해야 함
 

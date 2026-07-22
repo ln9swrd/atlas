@@ -1,7 +1,7 @@
 ## 변경 내용 요약
 
 - `PROJECT_OVERVIEW.md`: Sprint-001 관련 EX-BRAVE 작업 상태를 완료(Done)으로 업데이트
-- `projects/exelion/sprints/Sprint-001-report.md`: Sprint 상태를 Completed로 정리
+- `projects/excelion/sprints/Sprint-001-report.md`: Sprint 상태를 Completed로 정리
 - `ATLAS_STATE.json`: `current_task`를 null로 정리
 
 ## 검증

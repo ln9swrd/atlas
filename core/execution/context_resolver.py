@@ -4,7 +4,7 @@ from core.execution.environment_resolver import resolve_environment
 from core.execution.runtime_context import RuntimeContext
 
 
-def resolve_context(environment_id='DEV_WORK', project_name='Exelion', registry_path=None):
+def resolve_context(environment_id='DEV_WORK', project_name='Excelion', registry_path=None):
     environment_context = resolve_environment(environment_id, registry_path=registry_path)
 
     now = datetime.now()

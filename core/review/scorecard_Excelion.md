@@ -1,4 +1,4 @@
-### Atlas Review: Exelion
+### Atlas Review: Excelion
 
 **Total Score: 93.7 / 100**
 

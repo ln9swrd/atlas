@@ -7,11 +7,11 @@ The **Execution Layer** is the active driver of Atlas DevOS. It translates proje
 ## 1. Today's Dashboard
 
 * **Time Budget**: 3 Hours (180 mins)
-* **Active Project**: Exelion
+* **Active Project**: Excelion
 
 ### Project Progress
 ```text
-Exelion Progress
+Excelion Progress
 ███████░░░ 74%
 ```
 
@@ -23,7 +23,7 @@ Atlas suggests the following task breakdown based on active bottlenecks and prio
 
 | # | Task Description | Est. Time | Assignee | Focus Area | Status |
 | :-: | :--- | :-: | :-: | :--- | :---: |
-| **1** | [Exelion] Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | 180 mins | Human + Forge | `modeling` | `[x]` |
+| **1** | [Excelion] Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | 180 mins | Human + Forge | `modeling` | `[x]` |
 
 * **Total Planned Time**: 180 minutes
 * **Expected Completion Impact**: `+6.2%` (Based on bottleneck relief)

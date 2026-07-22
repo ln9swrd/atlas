@@ -7,13 +7,13 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 PROJECT_OVERVIEW = os.path.join(BASE_DIR, "PROJECT_OVERVIEW.md")
 PROJECT_EXECUTION_PLAN = os.path.join(BASE_DIR, "PROJECT_EXECUTION_PLAN.md")
 PROJECT_STATUS = os.path.join(BASE_DIR, "docs", "PROJECT_STATUS.md")
-EXELION_BACKLOG = os.path.join(BASE_DIR, "projects", "exelion", "backlog.json")
-SPRINT_TASKLIST = os.path.join(BASE_DIR, "projects", "exelion", "sprints", "Sprint-001-tasklist.md")
-SPRINT_REPORT = os.path.join(BASE_DIR, "projects", "exelion", "sprints", "Sprint-001-report.md")
+EXCELION_BACKLOG = os.path.join(BASE_DIR, "projects", "excelion", "backlog.json")
+SPRINT_TASKLIST = os.path.join(BASE_DIR, "projects", "excelion", "sprints", "Sprint-001-tasklist.md")
+SPRINT_REPORT = os.path.join(BASE_DIR, "projects", "excelion", "sprints", "Sprint-001-report.md")
 
 
 def load_backlog():
-    with open(EXELION_BACKLOG, "r", encoding="utf-8") as f:
+    with open(EXCELION_BACKLOG, "r", encoding="utf-8") as f:
         return json.load(f)
 
 

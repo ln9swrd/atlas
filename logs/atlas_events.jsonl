@@ -1,17 +1,17 @@
-{}{"timestamp": "2026-07-16T13:28:00", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{}{"timestamp": "2026-07-16T13:28:00", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-16T13:28:00", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-16T13:31:20", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-16T13:31:20", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-16T13:31:20", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-16T13:31:20", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-16T13:31:20", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
 {"timestamp": "2026-07-16T13:31:37", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-16T13:31:37", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-16T13:31:37", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-16T13:31:37", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-16T13:31:37", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
 {"timestamp": "2026-07-16T13:31:37", "event": "task.completed", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
 {"timestamp": "2026-07-16T13:31:37", "event": "sprint.updated", "sprint": "Sprint-001"}
 {"timestamp": "2026-07-20T18:37:52", "event": "task.state_initialized", "count": 1, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-20T18:37:52", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-20T18:37:52", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-20T18:37:52", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-20T18:38:14", "event": "task.started", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
 {"timestamp": "2026-07-20T18:39:46", "event": "task.completed", "task_id": "EX-BRAVE-001", "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)"}
@@ -30,7 +30,7 @@
 {"timestamp": "2026-07-20T18:46:11", "event": "atlas.finish", "review": "PASS"}
 {"timestamp": "2026-07-20T18:46:11", "event": "goal.sync", "status": "reviewed"}
 {"timestamp": "2026-07-21T10:25:56", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-21T10:25:56", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-21T10:25:56", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-21T10:25:56", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-21T10:26:23", "event": "atlas.finish", "review": "PASS"}
 {"timestamp": "2026-07-21T10:26:23", "event": "goal.sync", "status": "reviewed"}
@@ -39,28 +39,31 @@
 {"timestamp": "2026-07-21T11:45:45", "event": "atlas.finish", "review": "PASS"}
 {"timestamp": "2026-07-21T11:45:45", "event": "goal.sync", "status": "reviewed"}
 {"timestamp": "2026-07-21T15:27:11", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-21T15:27:11", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-21T15:27:11", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-21T15:27:11", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-21T16:16:36", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-21T16:16:36", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-21T16:16:36", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-21T16:16:36", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-21T17:08:26", "event": "atlas.finish", "review": "PASS"}
 {"timestamp": "2026-07-21T17:08:26", "event": "goal.sync", "status": "reviewed"}
 {"timestamp": "2026-07-22T09:24:20", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-22T09:24:20", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T09:24:20", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T09:24:20", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-22T09:39:42", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-22T09:39:42", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T09:39:42", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T09:39:42", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-22T09:44:48", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-22T09:44:48", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T09:44:48", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T09:44:48", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-22T10:18:31", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-22T10:18:31", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T10:18:31", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T10:18:31", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-22T10:18:49", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-001"}
-{"timestamp": "2026-07-22T10:18:49", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T10:18:49", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-001", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T10:18:49", "event": "goal.activate", "goal": "EX-GOAL-001"}
 {"timestamp": "2026-07-22T10:23:49", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-002"}
-{"timestamp": "2026-07-22T10:23:49", "event": "atlas.start", "project": "Exelion", "goal": "EX-GOAL-002", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T10:23:49", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-002", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T10:23:49", "event": "goal.activate", "goal": "EX-GOAL-002"}
+{"timestamp": "2026-07-22T10:27:22", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-002"}
+{"timestamp": "2026-07-22T10:27:22", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-002", "environment": "DEV_HOME"}
+{"timestamp": "2026-07-22T10:27:22", "event": "goal.activate", "goal": "EX-GOAL-002"}

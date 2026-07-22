@@ -1,4 +1,4 @@
-### Atlas Review: Exelion_Arm
+### Atlas Review: Excelion_Arm
 
 **Total Score: 93.7 / 100**
 

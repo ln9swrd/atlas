@@ -33,7 +33,7 @@ def update_state_file(state_path, updates):
             "platform_version": "1.0",
             "schema_version": "1.0",
             "mode": "production",
-            "active_project": "Exelion",
+            "active_project": "Excelion",
             "active_agents": ["Marie", "Antigravity", "Copilot", "Sera"],
             "current_phase": "Development",
             "last_started": None,
@@ -76,7 +76,7 @@ def get_repo_root(base_dir=None):
     return os.path.abspath(base_dir)
 
 
-def load_current_sprint(base_dir, project_name="Exelion"):
+def load_current_sprint(base_dir, project_name="Excelion"):
     goal_registry_path = os.path.join(base_dir, "GOAL_REGISTRY.json")
     active_goal = None
     if os.path.exists(goal_registry_path):
@@ -125,7 +125,7 @@ def load_current_sprint(base_dir, project_name="Exelion"):
     return "Sprint-001"
 
 
-def load_sprint_tasks(base_dir, sprint_name, project_name="Exelion"):
+def load_sprint_tasks(base_dir, sprint_name, project_name="Excelion"):
     project_dir = os.path.join(base_dir, "projects", project_name.lower())
     sprints_dir = os.path.join(project_dir, "sprints")
     candidates = [
@@ -176,7 +176,7 @@ def load_sprint_tasks(base_dir, sprint_name, project_name="Exelion"):
     return []
 
 
-def build_runtime_context(base_dir, environment_id="DEV_HOME", project_name="Exelion", runtime_overrides=None, state=None):
+def build_runtime_context(base_dir, environment_id="DEV_HOME", project_name="Excelion", runtime_overrides=None, state=None):
     base_dir = get_repo_root(base_dir)
     env_path = os.path.join(base_dir, "ENVIRONMENTS.md")
     if not os.path.exists(env_path):
@@ -215,7 +215,7 @@ def build_runtime_context(base_dir, environment_id="DEV_HOME", project_name="Exe
     )
 
 
-def build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelion", runtime_overrides=None, state=None):
+def build_start_report(base_dir, environment_id="DEV_HOME", project_name="Excelion", runtime_overrides=None, state=None):
     base_dir = get_repo_root(base_dir)
     context = build_runtime_context(base_dir, environment_id=environment_id, project_name=project_name, runtime_overrides=runtime_overrides, state=state)
     payload = build_recommendation_payload(context, base_dir=base_dir, state=state)
@@ -265,7 +265,7 @@ def build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelio
     }
 
 
-def simulate_day(base_dir, environment_id="DEV_HOME", project_name="Exelion", runtime_overrides=None, state=None):
+def simulate_day(base_dir, environment_id="DEV_HOME", project_name="Excelion", runtime_overrides=None, state=None):
     base_dir = get_repo_root(base_dir)
     report = build_start_report(base_dir, environment_id=environment_id, project_name=project_name, runtime_overrides=runtime_overrides, state=state)
     recommendations = [task.get("id") for task in report.get("recommended_tasks", []) if task.get("id")]
@@ -558,7 +558,7 @@ def start_day():
     state_path = os.path.join(base_dir, "ATLAS_STATE.json")
     log_path = os.path.join(base_dir, "logs", "atlas_events.jsonl")
 
-    report = build_start_report(base_dir, environment_id="DEV_HOME", project_name="Exelion")
+    report = build_start_report(base_dir, environment_id="DEV_HOME", project_name="Excelion")
     initialize_task_state(base_dir, report)
 
     print(f"Current Environment : {report['environment']}")
@@ -575,7 +575,7 @@ def start_day():
 
     update_state_file(state_path, {
         "mode": "development",
-        "active_project": "Exelion",
+        "active_project": "Excelion",
         "current_phase": "Asset Production",
         "last_started": datetime.now().isoformat(timespec="seconds")
     })
@@ -586,7 +586,7 @@ def start_day():
     set_active_goal(registry_path, active_goal)
     sync_state_with_goal(state_path, registry_path)
 
-    append_event_log(log_path, "atlas.start", {"project": "Exelion", "goal": active_goal, "environment": report["environment"]})
+    append_event_log(log_path, "atlas.start", {"project": "Excelion", "goal": active_goal, "environment": report["environment"]})
     append_event_log(log_path, "goal.activate", {"goal": active_goal})
 
     print("")

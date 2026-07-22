@@ -2,12 +2,12 @@
 
 ## Executive Summary
 
-This report documents the completion of Sprint-001 for the Exelion project, focusing on establishing the foundation for the first playable prototype. The sprint involved reviewing the project charter and goal context, validating existing backlog items for prototype relevance, defining production pipeline checkpoints, and recording the first recommended next task.
+This report documents the completion of Sprint-001 for the Excelion project, focusing on establishing the foundation for the first playable prototype. The sprint involved reviewing the project charter and goal context, validating existing backlog items for prototype relevance, defining production pipeline checkpoints, and recording the first recommended next task.
 
 ## Sprint Overview
 
 ### Goal
-Establish the initial prototype planning and production readiness for Exelion.
+Establish the initial prototype planning and production readiness for Excelion.
 
 ### Status
 Completed
@@ -70,7 +70,7 @@ Completed
 
 - Unreal Engine은 DEV_HOME에서만 실행 가능하므로 `EX-BRAVE-004`는 회사 PC에서 진행할 수 없음
 - 모델링부터 수출까지의 규칙 및 파이프라인 검증이 필요함
-- `excelion-forge/`, `projects/coin-s/`, `projects/exelion-forge/`가 언트랙 상태인 것을 후속으로 정리해야 함
+- `excelion-forge/`, `projects/coin-s/`, `projects/excelion-forge/`가 언트랙 상태인 것을 후속으로 정리해야 함
 
 ## Environment Considerations
 
