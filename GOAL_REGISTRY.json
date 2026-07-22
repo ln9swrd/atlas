@@ -1,14 +1,15 @@
 {
-  "active_goal": "EX-GOAL-007",
+  "active_goal": "EX-GOAL-008",
   "completed_goals": [
     "EX-GOAL-001",
     "EX-GOAL-002",
     "EX-GOAL-003",
     "EX-GOAL-004",
     "EX-GOAL-005",
-    "EX-GOAL-006"
+    "EX-GOAL-006",
+    "EX-GOAL-007"
   ],
-  "next_goal": "EX-GOAL-008",
+  "next_goal": "EX-GOAL-009",
   "goals": {
     "EX-GOAL-001": {
       "goal_id": "EX-GOAL-001",
@@ -48,8 +49,8 @@
     "EX-GOAL-007": {
       "goal_id": "EX-GOAL-007",
       "description": "Excelion Release Candidate & Production Packaging",
-      "status": "Active",
-      "updated_at": "2026-07-22T14:16:35"
+      "status": "Completed",
+      "updated_at": "2026-07-22T14:18:25"
     },
     "ATL-GOAL-001": {
       "goal_id": "ATL-GOAL-001",

@@ -135,3 +135,4 @@
 {"timestamp": "2026-07-22T14:18:05", "event": "task.started", "task_id": "EX-BRAVE-028", "description": "Release Candidate Build Pipeline & Final Scorecard Audit"}
 {"timestamp": "2026-07-22T14:18:06", "event": "task.completed", "task_id": "EX-BRAVE-028", "description": "Release Candidate Build Pipeline & Final Scorecard Audit"}
 {"timestamp": "2026-07-22T14:18:06", "event": "sprint.updated", "sprint": "Sprint-007"}
+{"timestamp": "2026-07-22T14:18:48", "event": "task.started", "task_id": "EX-BRAVE-025", "description": "High-poly Hero Mech LOD Group & Mesh Reduction"}
