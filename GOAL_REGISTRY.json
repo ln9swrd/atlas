@@ -1,12 +1,13 @@
 {
-  "active_goal": "EX-GOAL-005",
+  "active_goal": "EX-GOAL-006",
   "completed_goals": [
     "EX-GOAL-001",
     "EX-GOAL-002",
     "EX-GOAL-003",
-    "EX-GOAL-004"
+    "EX-GOAL-004",
+    "EX-GOAL-005"
   ],
-  "next_goal": "EX-GOAL-006",
+  "next_goal": "EX-GOAL-007",
   "goals": {
     "EX-GOAL-001": {
       "goal_id": "EX-GOAL-001",
@@ -33,8 +34,15 @@
     },
     "EX-GOAL-005": {
       "goal_id": "EX-GOAL-005",
+      "description": "Excelion Vertical Slice & Advanced Weapon Systems",
+      "status": "Completed",
+      "updated_at": "2026-07-22T14:13:35"
+    },
+    "EX-GOAL-006": {
+      "goal_id": "EX-GOAL-006",
+      "description": "Vertical Slice Beta & Multi-platform Optimization",
       "status": "Active",
-      "updated_at": "2026-07-22T14:12:34"
+      "updated_at": "2026-07-22T14:14:10"
     },
     "ATL-GOAL-001": {
       "goal_id": "ATL-GOAL-001",

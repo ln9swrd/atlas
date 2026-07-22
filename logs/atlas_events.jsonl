@@ -111,3 +111,4 @@
 {"timestamp": "2026-07-22T14:13:37", "event": "task.started", "task_id": "EX-BRAVE-020", "description": "Destructible Environmental Props & Chaos Physics Setup"}
 {"timestamp": "2026-07-22T14:13:37", "event": "task.completed", "task_id": "EX-BRAVE-020", "description": "Destructible Environmental Props & Chaos Physics Setup"}
 {"timestamp": "2026-07-22T14:13:37", "event": "sprint.updated", "sprint": "Sprint-005"}
+{"timestamp": "2026-07-22T14:14:12", "event": "task.started", "task_id": "EX-BRAVE-017", "description": "Secondary Weapon (Heavy Launcher / Energy Shield) 3D Asset & Rigging"}

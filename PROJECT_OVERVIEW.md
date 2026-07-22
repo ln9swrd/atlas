@@ -74,6 +74,10 @@
 | EX-BRAVE-018 | Weapon Swap & Ammo Management Gameplay System | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
 | EX-BRAVE-019 | Boss Class Heavy Mech AI Pattern & Phase Transition | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
 | EX-BRAVE-020 | Destructible Environmental Props & Chaos Physics Setup | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-021 | Multi-Weapon Attachment & Socket Mesh Dynamic Component | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-022 | Particle System Performance Profiling & LOD Optimization | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-023 | Local Multiplayer Split-Screen / Co-op Arena Blueprint | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-024 | Beta Build Packaging & Production Readiness Audit | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
 
 ## 5. 지금 진행 중인 방향
 

@@ -258,5 +258,57 @@
     "category": "Unreal Setup",
     "bottleneck": "Chaos Physics Geometry Collection",
     "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-021",
+    "description": "Multi-Weapon Attachment & Socket Mesh Dynamic Component",
+    "status": "TODO",
+    "environment": "DEV_WORK",
+    "target_stage": "Blender - 모델링",
+    "est_time": 180,
+    "projected_gain": 10.0,
+    "focus_area": "modeling",
+    "category": "Blender Modeling",
+    "bottleneck": "Socket Alignment",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-022",
+    "description": "Particle System Performance Profiling & LOD Optimization",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 210,
+    "projected_gain": 12.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Niagara GPU Particle LOD",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-023",
+    "description": "Local Multiplayer Split-Screen / Co-op Arena Blueprint",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 240,
+    "projected_gain": 15.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "ViewPort Split & Controller Mapping",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-024",
+    "description": "Beta Build Packaging & Production Readiness Audit",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 180,
+    "projected_gain": 11.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Build Audit & Scorecard Verification",
+    "assignee_role": "Forge"
   }
 ]
