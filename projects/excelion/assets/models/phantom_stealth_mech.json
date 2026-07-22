@@ -1,0 +1,41 @@
+{
+  "asset_id": "EX-MECH-004",
+  "name": "Phantom Stealth Mech Frame",
+  "class_type": "Stealth_Agility",
+  "version": "1.0.0",
+  "mesh_spec": {
+    "poly_count_lod0": 45000,
+    "poly_count_lod1": 22500,
+    "poly_count_lod2": 11250,
+    "material_slots": [
+      "MI_Phantom_Body_PBR",
+      "MI_Phantom_Stealth_Emitters",
+      "MI_Phantom_Visor_Glass"
+    ]
+  },
+  "skeleton_rig": {
+    "root_bone": "root",
+    "hierarchy": [
+      {"bone": "root", "parent": null},
+      {"bone": "pelvis", "parent": "root"},
+      {"bone": "spine_01", "parent": "pelvis"},
+      {"bone": "spine_02", "parent": "spine_01"},
+      {"bone": "chest", "parent": "spine_02"},
+      {"bone": "neck", "parent": "chest"},
+      {"bone": "head", "parent": "neck"},
+      {"bone": "stealth_emitter_l", "parent": "chest"},
+      {"bone": "stealth_emitter_r", "parent": "chest"},
+      {"bone": "shoulder_l", "parent": "chest"},
+      {"bone": "shoulder_r", "parent": "chest"},
+      {"bone": "arm_l", "parent": "shoulder_l"},
+      {"bone": "arm_r", "parent": "shoulder_r"},
+      {"bone": "leg_l", "parent": "pelvis"},
+      {"bone": "leg_r", "parent": "pelvis"}
+    ],
+    "sockets": [
+      {"socket_name": "Socket_Weapon_R", "attached_bone": "arm_r"},
+      {"socket_name": "Socket_Weapon_L", "attached_bone": "arm_l"},
+      {"socket_name": "Socket_Cloak_Generator", "attached_bone": "chest"}
+    ]
+  }
+}
