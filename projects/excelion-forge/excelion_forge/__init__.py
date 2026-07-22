@@ -5,7 +5,7 @@ from __future__ import annotations
 bl_info = {
     "name": "Excelion Forge",
     "author": "EXCELION",
-    "version": (0, 2, 0),
+    "version": (1, 0, 0),
     "blender": (5, 0, 0),
     "location": "View3D > Sidebar > Excelion",
     "description": "Rig validation and production utilities for Excelion assets.",
