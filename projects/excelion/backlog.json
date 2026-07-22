@@ -154,5 +154,57 @@
     "category": "Unreal Setup",
     "bottleneck": "Map Layout",
     "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-013",
+    "description": "Player HUD & Mech Status UI Blueprint Setup",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 180,
+    "projected_gain": 11.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "UMG UI",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-014",
+    "description": "Audio Sound Cue & Spatial SFX Attenuation Setup",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 150,
+    "projected_gain": 9.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Audio Attenuation",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-015",
+    "description": "Post-Processing & Cinematic Lighting Polish",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 180,
+    "projected_gain": 10.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Lighting",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-016",
+    "description": "Alpha Prototype Standalone Build & Pre-flight Review",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 240,
+    "projected_gain": 20.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Cook/Build",
+    "assignee_role": "Forge"
   }
 ]
