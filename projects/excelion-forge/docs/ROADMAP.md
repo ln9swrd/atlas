@@ -44,9 +44,10 @@ Excelion Forge는 Blender에서 EXCELION 에셋을 검사하고 Unreal Engine으
 | v1.2 | Material & Texture Inspector | 완료 |
 | v1.3 | Auto-LOD Generator | 완료 |
 | v2.0 | Standalone Excelion Forge Suite | 완료 |
+| v2.1 | Web Dashboard & Remote Pipeline Monitoring | 완료 |
 
 ---
 
 # 다음 목표
 
-- **v2.1 Web Dashboard & Remote Pipeline Monitoring**: 브라우저 기반 실시간 익스포트/검증 대시보드 모듈 수립
+- **v3.0 Cloud Pipeline & CI/CD Cloud Engine**: 클라우드 렌더팜 및 파이프라인 자동 연동 모듈 수립

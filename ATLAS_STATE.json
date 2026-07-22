@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "idle",
+  "mode": "execution",
   "active_project": "Excelion",
   "active_agents": [
     "Marie",
@@ -23,7 +23,7 @@
       "status": "IN_PROGRESS",
       "priority": 1,
       "estimate": 180,
-      "updated_at": "2026-07-22T14:20:10"
+      "updated_at": "2026-07-22T14:29:12"
     },
     {
       "id": "EX-BRAVE",
@@ -56,6 +56,6 @@
       "updated_at": "2026-07-22T14:27:20"
     }
   ],
-  "current_task": "EX-BRAVE",
+  "current_task": "EX-BRAVE-029",
   "current_sprint": "Sprint-004"
 }
