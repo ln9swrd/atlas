@@ -414,5 +414,57 @@
     "category": "Unreal Setup",
     "bottleneck": "Live Deploy & Patch Verification",
     "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-033",
+    "description": "Boss Mech Phase 2 Transformations & Visual FX Shader",
+    "status": "TODO",
+    "environment": "DEV_WORK",
+    "target_stage": "Blender - 모델링",
+    "est_time": 180,
+    "projected_gain": 10.0,
+    "focus_area": "modeling",
+    "category": "Blender Modeling",
+    "bottleneck": "Mesh Morphing & Shader FX",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-034",
+    "description": "Raid Boss Behavior Tree & Aggro Control System",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 240,
+    "projected_gain": 15.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Aggro Table & Phase Transition",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-035",
+    "description": "Dynamic Destructible Arena Terrain & Fracture Physics",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 210,
+    "projected_gain": 12.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Chaos Geometry Collection",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-036",
+    "description": "Season 2 Competitive Leaderboard & Server API",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 180,
+    "projected_gain": 11.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "REST API & Scoreboard UI",
+    "assignee_role": "Forge"
   }
 ]
