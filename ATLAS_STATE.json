@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "idle",
+  "mode": "execution",
   "active_project": "Excelion",
   "active_agents": [
     "Marie",
@@ -9,14 +9,53 @@
     "Copilot",
     "Sera"
   ],
-  "current_phase": "Release Candidate Complete",
-  "last_started": "2026-07-22T14:16:35",
+  "current_phase": "Season 1 Content Expansion & Dedicated Server Co-Op Services",
+  "last_started": "2026-07-22T14:20:10",
   "last_finished": "2026-07-22T14:18:25",
   "last_review": "PASS",
-  "active_goal": "EX-GOAL-007",
-  "current_goal_status": "Completed",
-  "last_goal_sync": "2026-07-22T14:18:25",
-  "task_states": [],
-  "current_task": "NONE",
-  "current_sprint": "Sprint-007-Complete"
+  "active_goal": "EX-GOAL-008",
+  "current_goal_status": "Active",
+  "last_goal_sync": "2026-07-22T14:20:10",
+  "task_states": [
+    {
+      "id": "EX-BRAVE-029",
+      "description": "New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging",
+      "status": "IN_PROGRESS",
+      "priority": 1,
+      "estimate": 180,
+      "updated_at": "2026-07-22T14:20:10"
+    },
+    {
+      "id": "EX-BRAVE",
+      "description": "014: Audio Sound Cue & Spatial SFX Attenuation Setup",
+      "status": "TODO",
+      "priority": 2,
+      "estimate": null,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-22T14:20:10"
+    },
+    {
+      "id": "EX-BRAVE",
+      "description": "015: Post-Processing & Cinematic Lighting Polish",
+      "status": "TODO",
+      "priority": 3,
+      "estimate": null,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-22T14:20:10"
+    },
+    {
+      "id": "EX-BRAVE",
+      "description": "016: Alpha Prototype Standalone Build & Pre-flight Review",
+      "status": "TODO",
+      "priority": 4,
+      "estimate": null,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-22T14:20:10"
+    }
+  ],
+  "current_task": "EX-BRAVE-020",
+  "current_sprint": "Sprint-004"
 }

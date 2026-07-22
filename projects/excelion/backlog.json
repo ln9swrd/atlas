@@ -362,5 +362,57 @@
     "category": "Unreal Setup",
     "bottleneck": "RC Packaging & DevOS Review",
     "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-029",
+    "description": "New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging",
+    "status": "TODO",
+    "environment": "DEV_WORK",
+    "target_stage": "Blender - 모델링",
+    "est_time": 180,
+    "projected_gain": 10.0,
+    "focus_area": "modeling",
+    "category": "Blender Modeling",
+    "bottleneck": "Stealth Mesh Cloth",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-030",
+    "description": "Dedicated Server Network Replicated Combat Mechanics",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 240,
+    "projected_gain": 15.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Network RPC & Client Prediction",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-031",
+    "description": "Matchmaking & Lobby UI Blueprint Setup",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 180,
+    "projected_gain": 11.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Session Subsystem",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-032",
+    "description": "Season 1 Launch Package & Live Service Deploy Pipeline",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 210,
+    "projected_gain": 18.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Live Deploy & Patch Verification",
+    "assignee_role": "Forge"
   }
 ]

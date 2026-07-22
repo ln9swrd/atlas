@@ -98,6 +98,10 @@ Completed
 | EX-BRAVE-026 | Global Post-Process Volume & Color Grading Finalization | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
 | EX-BRAVE-027 | Cross-Platform Input Remapping & Gamepad Profile | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
 | EX-BRAVE-028 | Release Candidate Build Pipeline & Final Scorecard Audit | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-029 | New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-030 | Dedicated Server Network Replicated Combat Mechanics | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-031 | Matchmaking & Lobby UI Blueprint Setup | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-032 | Season 1 Launch Package & Live Service Deploy Pipeline | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
 
 ## Risks and Blockers
 
