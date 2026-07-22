@@ -310,5 +310,57 @@
     "category": "Unreal Setup",
     "bottleneck": "Build Audit & Scorecard Verification",
     "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-025",
+    "description": "High-poly Hero Mech LOD Group & Mesh Reduction",
+    "status": "TODO",
+    "environment": "DEV_WORK",
+    "target_stage": "Blender - 모델링",
+    "est_time": 180,
+    "projected_gain": 10.0,
+    "focus_area": "modeling",
+    "category": "Blender Modeling",
+    "bottleneck": "Decimate & LOD Seams",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-026",
+    "description": "Global Post-Process Volume & Color Grading Finalization",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 180,
+    "projected_gain": 11.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Color LUT & Film Grain",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-027",
+    "description": "Cross-Platform Input Remapping & Gamepad Profile",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 210,
+    "projected_gain": 12.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Enhanced Input Action Map",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-028",
+    "description": "Release Candidate Build Pipeline & Final Scorecard Audit",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 240,
+    "projected_gain": 20.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "RC Packaging & DevOS Review",
+    "assignee_role": "Forge"
   }
 ]

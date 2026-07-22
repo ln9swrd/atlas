@@ -94,6 +94,10 @@ Completed
 | EX-BRAVE-022 | Particle System Performance Profiling & LOD Optimization | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
 | EX-BRAVE-023 | Local Multiplayer Split-Screen / Co-op Arena Blueprint | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
 | EX-BRAVE-024 | Beta Build Packaging & Production Readiness Audit | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-025 | High-poly Hero Mech LOD Group & Mesh Reduction | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-026 | Global Post-Process Volume & Color Grading Finalization | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-027 | Cross-Platform Input Remapping & Gamepad Profile | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-028 | Release Candidate Build Pipeline & Final Scorecard Audit | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
 
 ## Risks and Blockers
 

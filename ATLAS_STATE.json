@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "review",
+  "mode": "execution",
   "active_project": "Excelion",
   "active_agents": [
     "Marie",
@@ -9,57 +9,57 @@
     "Copilot",
     "Sera"
   ],
-  "current_phase": "Vertical Slice Beta & Multi-platform Optimization",
-  "last_started": "2026-07-22T14:14:10",
-  "last_finished": "2026-07-22T14:16:03",
+  "current_phase": "Release Candidate & Production Packaging",
+  "last_started": "2026-07-22T14:16:35",
+  "last_finished": "2026-07-22T14:16:10",
   "last_review": "PASS",
-  "active_goal": "EX-GOAL-006",
+  "active_goal": "EX-GOAL-007",
   "current_goal_status": "Active",
-  "last_goal_sync": "2026-07-22T14:14:10",
+  "last_goal_sync": "2026-07-22T14:16:35",
   "task_states": [
     {
-      "id": "EX-BRAVE-021",
-      "description": "Multi-Weapon Attachment & Socket Mesh Dynamic Component",
-      "status": "DONE",
+      "id": "EX-BRAVE-025",
+      "description": "High-poly Hero Mech LOD Group & Mesh Reduction",
+      "status": "IN_PROGRESS",
       "priority": 1,
       "estimate": 180,
       "environment": "DEV_WORK",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:15:36"
+      "updated_at": "2026-07-22T14:16:35"
     },
     {
-      "id": "EX-BRAVE-022",
-      "description": "Particle System Performance Profiling & LOD Optimization",
-      "status": "DONE",
+      "id": "EX-BRAVE-026",
+      "description": "Global Post-Process Volume & Color Grading Finalization",
+      "status": "TODO",
       "priority": 2,
-      "estimate": 210,
+      "estimate": 180,
       "environment": "DEV_HOME",
       "depends_on": [
-        "EX-BRAVE-021"
+        "EX-BRAVE-025"
       ],
-      "updated_at": "2026-07-22T14:15:46"
+      "updated_at": "2026-07-22T14:16:35"
     },
     {
-      "id": "EX-BRAVE-023",
-      "description": "Local Multiplayer Split-Screen / Co-op Arena Blueprint",
-      "status": "DONE",
+      "id": "EX-BRAVE-027",
+      "description": "Cross-Platform Input Remapping & Gamepad Profile",
+      "status": "TODO",
       "priority": 3,
+      "estimate": 210,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-22T14:16:35"
+    },
+    {
+      "id": "EX-BRAVE-028",
+      "description": "Release Candidate Build Pipeline & Final Scorecard Audit",
+      "status": "TODO",
+      "priority": 4,
       "estimate": 240,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:15:54"
-    },
-    {
-      "id": "EX-BRAVE-024",
-      "description": "Beta Build Packaging & Production Readiness Audit",
-      "status": "DONE",
-      "priority": 4,
-      "estimate": 180,
-      "environment": "DEV_HOME",
-      "depends_on": [],
-      "updated_at": "2026-07-22T14:16:03"
+      "updated_at": "2026-07-22T14:16:35"
     }
   ],
-  "current_task": "EX-BRAVE-024",
-  "current_sprint": "Sprint-006"
+  "current_task": "EX-BRAVE-025",
+  "current_sprint": "Sprint-007"
 }
