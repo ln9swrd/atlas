@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "idle",
+  "mode": "development",
   "active_project": "Excelion",
   "active_agents": [
     "Marie",
@@ -10,54 +10,54 @@
     "Sera"
   ],
   "current_phase": "Asset Production",
-  "last_started": "2026-07-22T10:27:22",
+  "last_started": "2026-07-22T10:32:22",
   "last_finished": "2026-07-22T10:31:23",
   "last_review": "PASS",
-  "active_goal": "EX-GOAL-002",
+  "active_goal": "EX-GOAL-003",
   "current_goal_status": "Active",
-  "last_goal_sync": "2026-07-22T10:27:22",
+  "last_goal_sync": "2026-07-22T10:32:22",
   "task_states": [
     {
-      "id": "EX-BRAVE-008",
-      "description": "Action Camera & Motion Test Map Validation",
-      "status": "IN_PROGRESS",
+      "id": "EX-BRAVE-011",
+      "description": "Weapon Hit Impact & FX Particle System",
+      "status": "TODO",
       "priority": 1,
-      "estimate": 180,
+      "estimate": 150,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T10:30:29"
+      "updated_at": "2026-07-22T10:32:22"
     },
     {
-      "id": "EX-BRAVE-006",
-      "description": "Joint Rigging & Basic Motion Clips",
+      "id": "EX-BRAVE-010",
+      "description": "Enemy Behavior Tree (BT) & AI Perception",
       "status": "TODO",
       "priority": 2,
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T10:27:22"
+      "updated_at": "2026-07-22T10:32:22"
     },
     {
-      "id": "EX-BRAVE-007",
-      "description": "Unreal Animation Blueprint (ABP) & Socket Setup",
+      "id": "EX-BRAVE-011",
+      "description": "Weapon Hit Impact & FX Particle System",
       "status": "TODO",
       "priority": 3,
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T10:27:22"
+      "updated_at": "2026-07-22T10:32:22"
     },
     {
-      "id": "EX-BRAVE-008",
-      "description": "Action Camera & Motion Test Map Validation",
+      "id": "EX-BRAVE-012",
+      "description": "Prototype Battle Arena Map & Playtest Validation",
       "status": "TODO",
       "priority": 4,
       "estimate": null,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T10:27:22"
+      "updated_at": "2026-07-22T10:32:22"
     }
   ],
-  "current_task": "EX-BRAVE-008",
-  "current_sprint": "Sprint-002"
+  "current_task": "EX-BRAVE-011",
+  "current_sprint": "Sprint-003"
 }

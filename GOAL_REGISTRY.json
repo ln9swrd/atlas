@@ -1,9 +1,10 @@
 {
-  "active_goal": "EX-GOAL-002",
+  "active_goal": "EX-GOAL-003",
   "completed_goals": [
-    "EX-GOAL-001"
+    "EX-GOAL-001",
+    "EX-GOAL-002"
   ],
-  "next_goal": "EX-GOAL-003",
+  "next_goal": "EX-GOAL-004",
   "goals": {
     "EX-GOAL-001": {
       "goal_id": "EX-GOAL-001",
@@ -12,8 +13,14 @@
     },
     "EX-GOAL-002": {
       "goal_id": "EX-GOAL-002",
+      "description": "Brave Character Combat Action Foundation",
+      "status": "Completed",
+      "updated_at": "2026-07-22T10:31:23"
+    },
+    "EX-GOAL-003": {
+      "goal_id": "EX-GOAL-003",
       "status": "Active",
-      "updated_at": "2026-07-22T10:27:22"
+      "updated_at": "2026-07-22T10:32:22"
     },
     "ATL-GOAL-001": {
       "goal_id": "ATL-GOAL-001",

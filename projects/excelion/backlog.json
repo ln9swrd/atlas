@@ -102,5 +102,57 @@
     "category": "Unreal Setup",
     "bottleneck": "Camera Math",
     "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-009",
+    "description": "Enemy Mech 3D Modeling & Collision Setup",
+    "status": "TODO",
+    "environment": "DEV_WORK",
+    "target_stage": "Blender - 모델링",
+    "est_time": 180,
+    "projected_gain": 10.0,
+    "focus_area": "modeling",
+    "category": "Blender Modeling",
+    "bottleneck": "Collision",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-010",
+    "description": "Enemy Behavior Tree (BT) & AI Perception",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 210,
+    "projected_gain": 12.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "BT Graph",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-011",
+    "description": "Weapon Hit Impact & FX Particle System",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 150,
+    "projected_gain": 9.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Niagara FX",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-012",
+    "description": "Prototype Battle Arena Map & Playtest Validation",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 240,
+    "projected_gain": 15.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Map Layout",
+    "assignee_role": "Forge"
   }
 ]
