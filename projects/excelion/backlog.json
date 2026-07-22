@@ -206,5 +206,57 @@
     "category": "Unreal Setup",
     "bottleneck": "Cook/Build",
     "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-017",
+    "description": "Secondary Weapon (Heavy Launcher / Energy Shield) 3D Asset & Rigging",
+    "status": "TODO",
+    "environment": "DEV_WORK",
+    "target_stage": "Blender - 모델링",
+    "est_time": 180,
+    "projected_gain": 10.0,
+    "focus_area": "modeling",
+    "category": "Blender Modeling",
+    "bottleneck": "Topology",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-018",
+    "description": "Weapon Swap & Ammo Management Gameplay System",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 210,
+    "projected_gain": 12.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Gameplay Ability / Swap Graph",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-019",
+    "description": "Boss Class Heavy Mech AI Pattern & Phase Transition",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 240,
+    "projected_gain": 15.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Boss BT & Phase Logic",
+    "assignee_role": "Forge"
+  },
+  {
+    "id": "EX-BRAVE-020",
+    "description": "Destructible Environmental Props & Chaos Physics Setup",
+    "status": "TODO",
+    "environment": "DEV_HOME",
+    "target_stage": "Unreal - 임포트/설정",
+    "est_time": 180,
+    "projected_gain": 11.0,
+    "focus_area": "unreal_setup",
+    "category": "Unreal Setup",
+    "bottleneck": "Chaos Physics Geometry Collection",
+    "assignee_role": "Forge"
   }
 ]

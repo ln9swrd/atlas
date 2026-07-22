@@ -1,11 +1,12 @@
 {
-  "active_goal": "EX-GOAL-004",
+  "active_goal": "EX-GOAL-005",
   "completed_goals": [
     "EX-GOAL-001",
     "EX-GOAL-002",
-    "EX-GOAL-003"
+    "EX-GOAL-003",
+    "EX-GOAL-004"
   ],
-  "next_goal": "EX-GOAL-005",
+  "next_goal": "EX-GOAL-006",
   "goals": {
     "EX-GOAL-001": {
       "goal_id": "EX-GOAL-001",
@@ -26,8 +27,14 @@
     },
     "EX-GOAL-004": {
       "goal_id": "EX-GOAL-004",
+      "description": "Alpha Prototype HUD, Audio, Post-Processing & Package Integration",
+      "status": "Completed",
+      "updated_at": "2026-07-22T14:08:35"
+    },
+    "EX-GOAL-005": {
+      "goal_id": "EX-GOAL-005",
       "status": "Active",
-      "updated_at": "2026-07-22T10:37:05"
+      "updated_at": "2026-07-22T14:12:34"
     },
     "ATL-GOAL-001": {
       "goal_id": "ATL-GOAL-001",

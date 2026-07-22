@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "review",
+  "mode": "execution",
   "active_project": "Excelion",
   "active_agents": [
     "Marie",
@@ -9,55 +9,55 @@
     "Copilot",
     "Sera"
   ],
-  "current_phase": "Asset Production",
-  "last_started": "2026-07-22T10:37:05",
-  "last_finished": "2026-07-22T13:25:47",
+  "current_phase": "Vertical Slice & Advanced Systems",
+  "last_started": "2026-07-22T14:12:30",
+  "last_finished": "2026-07-22T14:08:35",
   "last_review": "PASS",
-  "active_goal": "EX-GOAL-004",
+  "active_goal": "EX-GOAL-005",
   "current_goal_status": "Active",
-  "last_goal_sync": "2026-07-22T10:37:05",
+  "last_goal_sync": "2026-07-22T14:12:30",
   "task_states": [
     {
-      "id": "EX-BRAVE-013",
-      "description": "Player HUD & Mech Status UI Blueprint Setup",
-      "status": "DONE",
+      "id": "EX-BRAVE-017",
+      "description": "Secondary Weapon (Heavy Launcher / Energy Shield) 3D Asset & Rigging",
+      "status": "IN_PROGRESS",
       "priority": 1,
+      "estimate": 180,
+      "environment": "DEV_WORK",
+      "depends_on": [],
+      "updated_at": "2026-07-22T14:12:30"
+    },
+    {
+      "id": "EX-BRAVE-018",
+      "description": "Weapon Swap & Ammo Management Gameplay System",
+      "status": "TODO",
+      "priority": 2,
+      "estimate": 210,
+      "environment": "DEV_HOME",
+      "depends_on": ["EX-BRAVE-017"],
+      "updated_at": "2026-07-22T14:12:30"
+    },
+    {
+      "id": "EX-BRAVE-019",
+      "description": "Boss Class Heavy Mech AI Pattern & Phase Transition",
+      "status": "TODO",
+      "priority": 3,
+      "estimate": 240,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-22T14:12:30"
+    },
+    {
+      "id": "EX-BRAVE-020",
+      "description": "Destructible Environmental Props & Chaos Physics Setup",
+      "status": "TODO",
+      "priority": 4,
       "estimate": 180,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T13:24:24"
-    },
-    {
-      "id": "EX-BRAVE-014",
-      "description": "Audio Sound Cue & Spatial SFX Attenuation Setup",
-      "status": "DONE",
-      "priority": 2,
-      "estimate": null,
-      "environment": "DEV_HOME",
-      "depends_on": [],
-      "updated_at": "2026-07-22T13:24:39"
-    },
-    {
-      "id": "EX-BRAVE-015",
-      "description": "Post-Processing & Cinematic Lighting Polish",
-      "status": "DONE",
-      "priority": 3,
-      "estimate": null,
-      "environment": "DEV_HOME",
-      "depends_on": [],
-      "updated_at": "2026-07-22T13:24:54"
-    },
-    {
-      "id": "EX-BRAVE-016",
-      "description": "Alpha Prototype Standalone Build & Pre-flight Review",
-      "status": "DONE",
-      "priority": 4,
-      "estimate": null,
-      "environment": "DEV_HOME",
-      "depends_on": [],
-      "updated_at": "2026-07-22T13:25:47"
+      "updated_at": "2026-07-22T14:12:30"
     }
   ],
-  "current_task": "EX-BRAVE-016",
-  "current_sprint": "Sprint-004"
+  "current_task": "EX-BRAVE-017",
+  "current_sprint": "Sprint-005"
 }

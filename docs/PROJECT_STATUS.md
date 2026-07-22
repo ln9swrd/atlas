@@ -73,6 +73,10 @@ CI 및 자동화 참고:
 | EX-BRAVE-014 | Audio Sound Cue & Spatial SFX Attenuation Setup | Unreal - 임포트/설정 | 150 | DEV_HOME (Home PC) | Pending |
 | EX-BRAVE-015 | Post-Processing & Cinematic Lighting Polish | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
 | EX-BRAVE-016 | Alpha Prototype Standalone Build & Pre-flight Review | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-017 | Secondary Weapon (Heavy Launcher / Energy Shield) 3D Asset & Rigging | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-018 | Weapon Swap & Ammo Management Gameplay System | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-019 | Boss Class Heavy Mech AI Pattern & Phase Transition | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-020 | Destructible Environmental Props & Chaos Physics Setup | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
 
 ## 4. 다음 단계
 
