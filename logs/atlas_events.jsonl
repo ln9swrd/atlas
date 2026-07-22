@@ -100,3 +100,14 @@
 {"timestamp": "2026-07-22T14:12:34", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-004"}
 {"timestamp": "2026-07-22T14:12:34", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-005", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T14:12:34", "event": "goal.activate", "goal": "EX-GOAL-005"}
+{"timestamp": "2026-07-22T14:13:16", "event": "task.completed", "task_id": "EX-BRAVE-017", "description": "Secondary Weapon (Heavy Launcher / Energy Shield) 3D Asset & Rigging"}
+{"timestamp": "2026-07-22T14:13:16", "event": "sprint.updated", "sprint": "Sprint-005"}
+{"timestamp": "2026-07-22T14:13:24", "event": "task.started", "task_id": "EX-BRAVE-018", "description": "Weapon Swap & Ammo Management Gameplay System"}
+{"timestamp": "2026-07-22T14:13:24", "event": "task.completed", "task_id": "EX-BRAVE-018", "description": "Weapon Swap & Ammo Management Gameplay System"}
+{"timestamp": "2026-07-22T14:13:24", "event": "sprint.updated", "sprint": "Sprint-005"}
+{"timestamp": "2026-07-22T14:13:30", "event": "task.started", "task_id": "EX-BRAVE-019", "description": "Boss Class Heavy Mech AI Pattern & Phase Transition"}
+{"timestamp": "2026-07-22T14:13:30", "event": "task.completed", "task_id": "EX-BRAVE-019", "description": "Boss Class Heavy Mech AI Pattern & Phase Transition"}
+{"timestamp": "2026-07-22T14:13:30", "event": "sprint.updated", "sprint": "Sprint-005"}
+{"timestamp": "2026-07-22T14:13:37", "event": "task.started", "task_id": "EX-BRAVE-020", "description": "Destructible Environmental Props & Chaos Physics Setup"}
+{"timestamp": "2026-07-22T14:13:37", "event": "task.completed", "task_id": "EX-BRAVE-020", "description": "Destructible Environmental Props & Chaos Physics Setup"}
+{"timestamp": "2026-07-22T14:13:37", "event": "sprint.updated", "sprint": "Sprint-005"}

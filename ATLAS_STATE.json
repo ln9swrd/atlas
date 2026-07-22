@@ -1,7 +1,7 @@
 {
   "platform_version": "1.0",
   "schema_version": "1.0",
-  "mode": "execution",
+  "mode": "review",
   "active_project": "Excelion",
   "active_agents": [
     "Marie",
@@ -11,7 +11,7 @@
   ],
   "current_phase": "Vertical Slice & Advanced Systems",
   "last_started": "2026-07-22T14:12:30",
-  "last_finished": "2026-07-22T14:08:35",
+  "last_finished": "2026-07-22T14:13:37",
   "last_review": "PASS",
   "active_goal": "EX-GOAL-005",
   "current_goal_status": "Active",
@@ -20,44 +20,46 @@
     {
       "id": "EX-BRAVE-017",
       "description": "Secondary Weapon (Heavy Launcher / Energy Shield) 3D Asset & Rigging",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "priority": 1,
       "estimate": 180,
       "environment": "DEV_WORK",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:12:30"
+      "updated_at": "2026-07-22T14:13:16"
     },
     {
       "id": "EX-BRAVE-018",
       "description": "Weapon Swap & Ammo Management Gameplay System",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 2,
       "estimate": 210,
       "environment": "DEV_HOME",
-      "depends_on": ["EX-BRAVE-017"],
-      "updated_at": "2026-07-22T14:12:30"
+      "depends_on": [
+        "EX-BRAVE-017"
+      ],
+      "updated_at": "2026-07-22T14:13:24"
     },
     {
       "id": "EX-BRAVE-019",
       "description": "Boss Class Heavy Mech AI Pattern & Phase Transition",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 3,
       "estimate": 240,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:12:30"
+      "updated_at": "2026-07-22T14:13:30"
     },
     {
       "id": "EX-BRAVE-020",
       "description": "Destructible Environmental Props & Chaos Physics Setup",
-      "status": "TODO",
+      "status": "DONE",
       "priority": 4,
       "estimate": 180,
       "environment": "DEV_HOME",
       "depends_on": [],
-      "updated_at": "2026-07-22T14:12:30"
+      "updated_at": "2026-07-22T14:13:37"
     }
   ],
-  "current_task": "EX-BRAVE-017",
+  "current_task": "EX-BRAVE-020",
   "current_sprint": "Sprint-005"
 }
