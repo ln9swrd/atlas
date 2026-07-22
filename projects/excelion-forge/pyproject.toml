@@ -1,7 +1,7 @@
 [project]
 name = "excelion-forge"
-version = "2.0.0"
-description = "Blender addon for Excelion rig validation and production utilities"
+version = "3.0.0"
+description = "Excelion Forge Suite - Standalone 3D Asset Export, Rig Validation, LOD & Cloud Pipeline"
 requires-python = ">=3.10"
 
 [project.optional-dependencies]

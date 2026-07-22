@@ -21,9 +21,19 @@ def main():
     parser.add_argument("--skip-validation", action="store_true", help="Skip pre-export validation")
     parser.add_argument("--no-material-inspection", action="store_true", help="Skip material node & texture inspection")
     parser.add_argument("--live-sync", action="store_true", help="Enable Unreal Engine live asset sync trigger")
+    parser.add_argument("--unreal-sync", action="store_true", help="Trigger Unreal Live Sync after export")
+    parser.add_argument("--cloud", action="store_true", help="Trigger Remote Cloud Pipeline Export (v3.0)")
+    parser.add_argument("--config", help="Path to config JSON file")
     parser.add_argument("--json-output", action="store_true", help="Format output report as JSON")
 
     args = parser.parse_args()
+
+    if args.cloud:
+        from forge.executors.cloud_driver import CloudDriverExecutor
+        driver = CloudDriverExecutor()
+        res = driver.dispatch_cloud_export(args.asset_id, args.asset_name, args.asset_type)
+        print(json.dumps(res, indent=2))
+        return
 
     orchestrator = StandalonePipelineOrchestrator(db_path=args.db_path)
     context = {
