@@ -147,3 +147,4 @@
 {"timestamp": "2026-07-22T14:23:37", "event": "sprint.updated", "sprint": "Sprint-004"}
 {"timestamp": "2026-07-22T14:27:20", "event": "task.started", "task_id": "EX-BRAVE", "description": "016: Alpha Prototype Standalone Build & Pre-flight Review"}
 {"timestamp": "2026-07-22T14:29:12", "event": "task.started", "task_id": "EX-BRAVE-029", "description": "New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging"}
+{"timestamp": "2026-07-22T14:31:40", "event": "task.started", "task_id": "EX-BRAVE-029", "description": "New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging"}
