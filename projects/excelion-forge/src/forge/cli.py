@@ -19,6 +19,8 @@ def main():
     parser.add_argument("--db-path", default="./assets.json", help="Path to asset database file")
     parser.add_argument("--tags", nargs="*", default=[], help="List of asset tags")
     parser.add_argument("--skip-validation", action="store_true", help="Skip pre-export validation")
+    parser.add_argument("--no-material-inspection", action="store_true", help="Skip material node & texture inspection")
+    parser.add_argument("--live-sync", action="store_true", help="Enable Unreal Engine live asset sync trigger")
     parser.add_argument("--json-output", action="store_true", help="Format output report as JSON")
 
     args = parser.parse_args()
@@ -32,6 +34,8 @@ def main():
         "filename": args.filename or f"{args.asset_id}.fbx",
         "tags": args.tags,
         "skip_validation": args.skip_validation,
+        "inspect_materials": not args.no_material_inspection,
+        "enable_live_sync": args.live_sync,
     }
 
     report = orchestrator.run_pipeline(context)

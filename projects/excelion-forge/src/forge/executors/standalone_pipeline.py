@@ -7,18 +7,22 @@ import os
 from forge.executors.animation_validator import AnimationValidator
 from forge.executors.fbx_exporter import FBXExporter
 from forge.executors.asset_database import AssetDatabaseManager, AssetMetadata
+from forge.executors.material_inspector import MaterialInspectorExecutor
+from forge.executors.ue_live_sync import UnrealLiveSyncExecutor
 
 
 class StandalonePipelineOrchestrator:
     """
-    Unified end-to-end pipeline runner for Standalone Excelion Forge v1.0.
-    Executes validation, database registration, and FBX export in sequence.
+    Unified end-to-end pipeline runner for Standalone Excelion Forge v1.0~v1.2.
+    Executes validation, material inspection, FBX export, DB registration, and UE Live Sync.
     """
 
     def __init__(self, db_path: str = ":memory:"):
         self.db = AssetDatabaseManager(db_path)
         self.anim_validator = AnimationValidator()
         self.fbx_exporter = FBXExporter()
+        self.material_inspector = MaterialInspectorExecutor()
+        self.live_sync = UnrealLiveSyncExecutor()
 
     def run_pipeline(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -44,6 +48,8 @@ class StandalonePipelineOrchestrator:
         filename = context.get("filename", f"{asset_id}.fbx")
         tags = context.get("tags", [])
         skip_validation = context.get("skip_validation", False)
+        inspect_materials = context.get("inspect_materials", True)
+        enable_live_sync = context.get("enable_live_sync", False)
 
         report = {
             "asset_id": asset_id,
@@ -56,7 +62,7 @@ class StandalonePipelineOrchestrator:
         exported_file = os.path.join(export_dir, filename)
         context["export_path"] = exported_file
 
-        # Step 1: Validation
+        # Step 1: Validation & Material Inspection
         if not skip_validation:
             valid = self.anim_validator.validate(context)
             val_result = self.anim_validator.execute(context)
@@ -67,6 +73,14 @@ class StandalonePipelineOrchestrator:
                 return report
         else:
             report["steps"]["validation"] = {"skipped": True}
+
+        if inspect_materials:
+            mat_result = self.material_inspector.execute(context)
+            report["steps"]["material_inspection"] = mat_result
+            if not mat_result.get("success", True):
+                report["status"] = "FAILED"
+                report["errors"].append("Material inspection failed prior to export.")
+                return report
 
         # Step 2: Export FBX
         export_result = self.fbx_exporter.execute(context)
@@ -98,5 +112,11 @@ class StandalonePipelineOrchestrator:
             "asset_id": metadata.asset_id,
             "file_hash": metadata.file_hash,
         }
+
+        # Step 4: Live Sync to Unreal Engine
+        if enable_live_sync:
+            context["export_file"] = exported_file
+            sync_result = self.live_sync.execute(context)
+            report["steps"]["live_sync"] = sync_result
 
         return report
