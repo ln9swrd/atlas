@@ -66,6 +66,27 @@ Completed
 - `EX-BRAVE-003` — Brave 외장 장갑 1개 제작 (Done)
 - `EX-BRAVE-004` — Unreal 임포트 및 셋업 (Done)
 
+### Current Backlog Snapshot
+
+| ID | Description | Target Stage | Estimated Time | Environment | Status |
+| --- | --- | --- | --- | --- | --- |
+| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-005 | Primary Weapon (Rifle/Sword) 3D Modeling & UV | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-006 | Joint Rigging & Basic Motion Clips | Blender - 리깅 | 150 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-007 | Unreal Animation Blueprint (ABP) & Socket Setup | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-008 | Action Camera & Motion Test Map Validation | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-009 | Enemy Mech 3D Modeling & Collision Setup | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-010 | Enemy Behavior Tree (BT) & AI Perception | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-011 | Weapon Hit Impact & FX Particle System | Unreal - 임포트/설정 | 150 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-012 | Prototype Battle Arena Map & Playtest Validation | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-013 | Player HUD & Mech Status UI Blueprint Setup | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-014 | Audio Sound Cue & Spatial SFX Attenuation Setup | Unreal - 임포트/설정 | 150 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-015 | Post-Processing & Cinematic Lighting Polish | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-016 | Alpha Prototype Standalone Build & Pre-flight Review | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+
 ## Risks and Blockers
 
 - Unreal Engine은 DEV_HOME에서만 실행 가능하므로 `EX-BRAVE-004`는 회사 PC에서 진행할 수 없음

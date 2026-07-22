@@ -50,14 +50,26 @@
 - Excelion을 첫 번째 실증 프로젝트로 정의
 - Phase 3 아키텍처 동결 목표 설정
 
-### 현재 주요 백로그 (Sprint-001 ~ Sprint-004)
+### 현재 주요 백로그
 
-| ID | Description | Target Stage | Environment | Status |
-| --- | --- | --- | --- | --- |
-| EX-BRAVE-001~004 | Brave 프레임 제작, UV, 장갑 및 Unreal 임포트 | Blender / Unreal | DEV_WORK / DEV_HOME | Done |
-| EX-BRAVE-005~008 | 주 무기 3D 모델링, 리깅, 모션, Unreal ABP & Socket | Blender / Unreal | DEV_WORK / DEV_HOME | Done |
-| EX-BRAVE-009~012 | 적 메카 3D, Behavior Tree AI, 히트 이펙트, 배틀 아레나 | Blender / Unreal | DEV_WORK / DEV_HOME | Done |
-| EX-BRAVE-013~016 | UMG Player HUD, Spatial SFX, Post-Processing, Alpha Build | Unreal | DEV_HOME | Done |
+| ID | Description | Target Stage | Estimated Time | Environment | Status |
+| --- | --- | --- | --- | --- | --- |
+| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-005 | Primary Weapon (Rifle/Sword) 3D Modeling & UV | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-006 | Joint Rigging & Basic Motion Clips | Blender - 리깅 | 150 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-007 | Unreal Animation Blueprint (ABP) & Socket Setup | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-008 | Action Camera & Motion Test Map Validation | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-009 | Enemy Mech 3D Modeling & Collision Setup | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
+| EX-BRAVE-010 | Enemy Behavior Tree (BT) & AI Perception | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-011 | Weapon Hit Impact & FX Particle System | Unreal - 임포트/설정 | 150 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-012 | Prototype Battle Arena Map & Playtest Validation | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-013 | Player HUD & Mech Status UI Blueprint Setup | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-014 | Audio Sound Cue & Spatial SFX Attenuation Setup | Unreal - 임포트/설정 | 150 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-015 | Post-Processing & Cinematic Lighting Polish | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-016 | Alpha Prototype Standalone Build & Pre-flight Review | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
 
 ## 5. 지금 진행 중인 방향
 
