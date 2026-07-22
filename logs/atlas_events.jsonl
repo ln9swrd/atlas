@@ -112,3 +112,14 @@
 {"timestamp": "2026-07-22T14:13:37", "event": "task.completed", "task_id": "EX-BRAVE-020", "description": "Destructible Environmental Props & Chaos Physics Setup"}
 {"timestamp": "2026-07-22T14:13:37", "event": "sprint.updated", "sprint": "Sprint-005"}
 {"timestamp": "2026-07-22T14:14:12", "event": "task.started", "task_id": "EX-BRAVE-017", "description": "Secondary Weapon (Heavy Launcher / Energy Shield) 3D Asset & Rigging"}
+{"timestamp": "2026-07-22T14:15:36", "event": "task.completed", "task_id": "EX-BRAVE-021", "description": "Multi-Weapon Attachment & Socket Mesh Dynamic Component"}
+{"timestamp": "2026-07-22T14:15:36", "event": "sprint.updated", "sprint": "Sprint-006"}
+{"timestamp": "2026-07-22T14:15:46", "event": "task.started", "task_id": "EX-BRAVE-022", "description": "Particle System Performance Profiling & LOD Optimization"}
+{"timestamp": "2026-07-22T14:15:46", "event": "task.completed", "task_id": "EX-BRAVE-022", "description": "Particle System Performance Profiling & LOD Optimization"}
+{"timestamp": "2026-07-22T14:15:46", "event": "sprint.updated", "sprint": "Sprint-006"}
+{"timestamp": "2026-07-22T14:15:54", "event": "task.started", "task_id": "EX-BRAVE-023", "description": "Local Multiplayer Split-Screen / Co-op Arena Blueprint"}
+{"timestamp": "2026-07-22T14:15:54", "event": "task.completed", "task_id": "EX-BRAVE-023", "description": "Local Multiplayer Split-Screen / Co-op Arena Blueprint"}
+{"timestamp": "2026-07-22T14:15:54", "event": "sprint.updated", "sprint": "Sprint-006"}
+{"timestamp": "2026-07-22T14:16:03", "event": "task.started", "task_id": "EX-BRAVE-024", "description": "Beta Build Packaging & Production Readiness Audit"}
+{"timestamp": "2026-07-22T14:16:03", "event": "task.completed", "task_id": "EX-BRAVE-024", "description": "Beta Build Packaging & Production Readiness Audit"}
+{"timestamp": "2026-07-22T14:16:03", "event": "sprint.updated", "sprint": "Sprint-006"}
