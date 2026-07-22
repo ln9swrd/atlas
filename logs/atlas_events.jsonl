@@ -78,3 +78,5 @@
 {"timestamp": "2026-07-22T10:37:05", "event": "task.state_initialized", "count": 4, "sprint": "Sprint-004"}
 {"timestamp": "2026-07-22T10:37:05", "event": "atlas.start", "project": "Excelion", "goal": "EX-GOAL-004", "environment": "DEV_HOME"}
 {"timestamp": "2026-07-22T10:37:05", "event": "goal.activate", "goal": "EX-GOAL-004"}
+{"timestamp": "2026-07-22T10:38:31", "event": "atlas.finish", "review": "PASS"}
+{"timestamp": "2026-07-22T10:38:31", "event": "goal.sync", "status": "reviewed"}
