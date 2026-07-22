@@ -68,7 +68,7 @@
   - [docs/08_MISSION_DESIGN.md](docs/08_MISSION_DESIGN.md)
   - [docs/09_GAME_LOOP.md](docs/09_GAME_LOOP.md)
 - For implementation planning, check:
-  - [docs/11_DEVELOPMENT_GUIDE.md](docs/11_DEVELOPMENT_GUIDE.md)
+  - [docs/11_PROJECT_ROADMAP.md](docs/11_PROJECT_ROADMAP.md)
   - [docs/12_PROJECT_STRUCTURE.md](docs/12_PROJECT_STRUCTURE.md)
   - [docs/13_UNREAL_ARCHITECTURE.md](docs/13_UNREAL_ARCHITECTURE.md)
   - [docs/14_CODING_STANDARD.md](docs/14_CODING_STANDARD.md)

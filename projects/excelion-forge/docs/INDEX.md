@@ -43,7 +43,7 @@
 
 | 문서                        | 설명                     | 상태 |
 | ------------------------- | ---------------------- | -- |
-| 11_DEVELOPMENT_GUIDE.md   | 개발 표준 개요               | ✅  |
+| 11_PROJECT_ROADMAP.md     | 로드맵 및 실행 개요          | ✅  |
 | 12_PROJECT_STRUCTURE.md   | 저장소 구조                 | ✅  |
 | 13_UNREAL_ARCHITECTURE.md | Unreal 아키텍처            | ✅  |
 | 14_CODING_STANDARD.md     | 코딩 규칙                  | ✅  |

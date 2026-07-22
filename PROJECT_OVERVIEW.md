@@ -50,21 +50,20 @@
 - Excelion을 첫 번째 실증 프로젝트로 정의
 - Phase 3 아키텍처 동결 목표 설정
 
-### 현재 주요 백로그
+### 현재 주요 백로그 (Sprint-001 ~ Sprint-004)
 
-| ID | Description | Target Stage | Estimated Time | Environment | Status |
-| --- | --- | --- | --- | --- | --- |
-| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Done |
-| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | Done |
-| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | Done |
-| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Done |
+| ID | Description | Target Stage | Environment | Status |
+| --- | --- | --- | --- | --- |
+| EX-BRAVE-001~004 | Brave 프레임 제작, UV, 장갑 및 Unreal 임포트 | Blender / Unreal | DEV_WORK / DEV_HOME | Done |
+| EX-BRAVE-005~008 | 주 무기 3D 모델링, 리깅, 모션, Unreal ABP & Socket | Blender / Unreal | DEV_WORK / DEV_HOME | Done |
+| EX-BRAVE-009~012 | 적 메카 3D, Behavior Tree AI, 히트 이펙트, 배틀 아레나 | Blender / Unreal | DEV_WORK / DEV_HOME | Done |
+| EX-BRAVE-013~016 | UMG Player HUD, Spatial SFX, Post-Processing, Alpha Build | Unreal | DEV_HOME | Done |
 
 ## 5. 지금 진행 중인 방향
 
-- Excelion 프로토타입 준비 및 첫 스프린트 구성
-- Atlas 실행 런타임 및 운영 흐름 검증
-- 문서 중심으로 설계와 실행 상태를 정리
-- Phase 4 이후에 Worker 통합 준비
+- Excelion Alpha Prototype 패키징 완료 및 검증 통과 (Scorecard 93.7점)
+- 차기 버티컬 슬라이스(Vertical Slice) 및 베이직 콘텐츠 확장 백로그 준비
+- Atlas DevOS 실행 런타임 및 Pre-flight Rule Check 동기화 유지
 
 ### 자동화 및 사용 가이드 (요약)
 
