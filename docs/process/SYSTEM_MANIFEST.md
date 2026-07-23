@@ -14,6 +14,7 @@ Atlas is a Context-Aware DevOS for AI-assisted project execution. It coordinates
 - Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Execution Model: [docs/EXECUTION_MODEL.md](docs/EXECUTION_MODEL.md)
 - Design Principles: [docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)
+- Runtime v2 Specification: [docs/atlas/RUNTIME_V2_SPEC.md](docs/atlas/RUNTIME_V2_SPEC.md)
 
 ## Decision History
 - ADRs: [docs/adr](docs/adr)
@@ -28,6 +29,6 @@ Atlas is a Context-Aware DevOS for AI-assisted project execution. It coordinates
 - Contribution Guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Current Status
-- Version: v1.2 RC
-- Architecture: Stable
-- Focus: Execution Runtime
+- Version: v1.2 RC (v2.0 Architecture Designed)
+- Architecture: Stable (v2.0 Transitioning)
+- Focus: Execution Runtime & AI Engine Design

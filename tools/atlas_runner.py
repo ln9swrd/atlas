@@ -6,6 +6,13 @@ import json
 import uuid
 from datetime import datetime
 
+# Running this file directly sets ``sys.path[0]`` to ``tools/``.  Add the
+# repository root so the top-level ``core`` package is available regardless
+# of the caller's current working directory.
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
 from core.execution.context_resolver import resolve_context
 from core.execution.goal_registry import set_active_goal, sync_state_with_goal
 from core.execution.priority_engine import build_recommendation_payload

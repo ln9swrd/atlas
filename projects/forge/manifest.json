@@ -1,0 +1,29 @@
+{
+  "name": "Forge",
+  "description": "Atlas-native asset production and validation workbench application",
+  "version": "1.0.0",
+  "required_sdk_version": "2.0",
+  "entry_point": "projects.forge.app:ForgeApplication",
+  "required_services": [
+    "ai",
+    "event",
+    "memory",
+    "workflow",
+    "review",
+    "resource",
+    "knowledge"
+  ],
+  "supported_adapters": [
+    "blender",
+    "unreal"
+  ],
+  "permissions": {
+    "file_system": [
+      "projects/excelion/"
+    ],
+    "subprocesses": [
+      "blender",
+      "unreal"
+    ]
+  }
+}
