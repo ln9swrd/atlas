@@ -1,0 +1,28 @@
+{
+  "secondary_weapons": [
+    {
+      "asset_id": "EX-WEAPON-002",
+      "name": "Heavy Rocket Launcher",
+      "type": "Heavy_Launcher",
+      "socket_attachment": "Socket_Weapon_R",
+      "max_ammo": 20,
+      "mesh_spec": {
+        "vertices": 1200,
+        "triangles": 2400,
+        "material": "MI_Heavy_Launcher_PBR"
+      }
+    },
+    {
+      "asset_id": "EX-WEAPON-003",
+      "name": "Energy Plasma Shield",
+      "type": "Energy_Shield",
+      "socket_attachment": "Socket_Weapon_L",
+      "max_energy": 100.0,
+      "mesh_spec": {
+        "vertices": 850,
+        "triangles": 1700,
+        "material": "MI_Energy_Shield_PBR"
+      }
+    }
+  ]
+}

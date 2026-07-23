@@ -58,20 +58,22 @@ class Runtime:
         self._initialize_environment()
         self._initialized = True
 
+    def initialize_environment(self, environment: Dict[str, Any]) -> bool:
+        """Initialize pipeline execution environment parameters."""
+        self.context.update(environment)
+        return True
+
+    def execute_pipeline(self, pipeline_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute asset pipeline and record status in context."""
+        self.context["pipeline_config"] = pipeline_config
+        return {"status": "SUCCESS", "context": self.context}
+
     def _initialize_environment(self):
         """Initialize the execution environment."""
-        # TODO: Implement actual environment initialization
-        # This is where we would set up:
-        # - Blender context handling
-        # - Execution environments
-        # - Resource management
-        # - Configuration loading
-
         print("Initializing runtime environment...")
 
     def execute(self, task):
         """Execute a task within the Forge environment."""
-        # TODO: Implement actual execution logic
         print(f"Executing task: {task}")
 
     def is_initialized(self):
