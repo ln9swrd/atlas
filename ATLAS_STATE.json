@@ -1,61 +1,143 @@
 {
-  "platform_version": "1.0",
-  "schema_version": "1.0",
-  "mode": "idle",
-  "active_project": "Excelion",
-  "active_agents": [
-    "Marie",
-    "Antigravity",
-    "Copilot",
-    "Sera"
-  ],
-  "current_phase": "Season 2 Complete",
-  "last_started": "2026-07-22T14:20:10",
-  "last_finished": "2026-07-22T15:29:26",
-  "last_review": "PASS",
-  "active_goal": "EX-GOAL-008",
-  "current_goal_status": "Completed",
-  "last_goal_sync": "2026-07-22T14:20:10",
-  "task_states": [
-    {
-      "id": "EX-BRAVE-029",
-      "description": "New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging",
-      "status": "IN_PROGRESS",
-      "priority": 1,
-      "estimate": 180,
-      "updated_at": "2026-07-22T15:27:30"
+  "atlas": {
+    "version": "1.2",
+    "release_status": "RC",
+    "runtime_status": "ACTIVE",
+    "last_updated": "2026-07-24"
+  },
+
+  "runtime": {
+    "current_environment": "DEV_WORK",
+    "current_project": "Excelion",
+    "current_goal": "Validate AI-assisted mecha production workflow",
+    "execution_mode": "PRODUCTION"
+  },
+
+  "projects": {
+    "Atlas": {
+      "status": "maintenance",
+      "type": "platform",
+      "priority": "medium",
+      "owner": "Marie"
     },
-    {
-      "id": "EX-BRAVE",
-      "description": "014: Audio Sound Cue & Spatial SFX Attenuation Setup",
-      "status": "DONE",
-      "priority": 2,
-      "estimate": null,
-      "environment": "DEV_HOME",
-      "depends_on": [],
-      "updated_at": "2026-07-22T14:23:37"
+
+    "Sera": {
+      "status": "implementation",
+      "type": "ai_agent",
+      "priority": "high",
+      "owner": "Sera",
+      "role": "Design and planning intelligence layer"
     },
-    {
-      "id": "EX-BRAVE",
-      "description": "015: Post-Processing & Cinematic Lighting Polish",
-      "status": "IN_PROGRESS",
-      "priority": 3,
-      "estimate": null,
-      "environment": "DEV_HOME",
-      "depends_on": [],
-      "updated_at": "2026-07-22T14:23:37"
+
+    "Excelion": {
+      "status": "active",
+      "type": "game_ip",
+      "priority": "critical",
+      "owner": "Marie",
+      "current_phase": "Prototype Validation",
+      "active_task": "EX-BRAVE-029"
     },
-    {
-      "id": "EX-BRAVE",
-      "description": "016: Alpha Prototype Standalone Build & Pre-flight Review",
-      "status": "IN_PROGRESS",
-      "priority": 4,
-      "estimate": null,
-      "environment": "DEV_HOME",
-      "depends_on": [],
-      "updated_at": "2026-07-22T14:27:20"
+
+    "Coin-S": {
+      "status": "planning",
+      "type": "software",
+      "priority": "low",
+      "owner": "Marie"
     }
-  ],
-  "current_task": "EX-BRAVE-029",
-  "current_sprint": "Sprint-004"
+  },
+
+  "active_execution": {
+    "project": "Excelion",
+
+    "task": {
+      "id": "EX-BRAVE-029",
+      "title": "New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging",
+      "status": "IN_PROGRESS",
+      "environment": "DEV_WORK",
+      "category": "Blender Modeling"
+    },
+
+    "forge": {
+      "execution_required": true,
+      "validation_required": true,
+      "status": "RUNNING"
+    },
+
+    "sera": {
+      "planning_context": "phantom_stealth_mech",
+      "status": "READY"
+    }
+  },
+
+  "validation": {
+    "current_cycle": "Excelion Prototype Validation",
+
+    "requirements": [
+      "Asset Evidence",
+      "Execution Evidence",
+      "Validation Evidence"
+    ],
+
+    "current_status": {
+      "asset": "PENDING",
+      "execution": "PENDING",
+      "validation": "PENDING"
+    }
+  },
+
+  "environment_state": {
+    "DEV_WORK": {
+      "role": "Production",
+      "available": [
+        "Blender",
+        "Python",
+        "VS Code",
+        "Atlas",
+        "Git"
+      ],
+      "assigned": [
+        "Modeling",
+        "Rigging",
+        "Documentation",
+        "Atlas Development",
+        "Sera Development"
+      ]
+    },
+
+    "DEV_HOME": {
+      "role": "Integration",
+      "available": [
+        "Unreal Engine",
+        "Blender",
+        "GPU",
+        "AI Models"
+      ],
+      "assigned": [
+        "FBX Import",
+        "Play Test",
+        "Rendering",
+        "Packaging",
+        "Animation Review"
+      ]
+    }
+  },
+
+  "priority_engine": {
+    "source": "projects/excelion/backlog.json",
+
+    "rules": [
+      "critical project priority first",
+      "active task before backlog",
+      "environment suitability",
+      "validation dependency"
+    ]
+  },
+
+  "events": [
+    {
+      "type": "STATE_UPDATE",
+      "source": "Atlas",
+      "description": "Excelion baseline synchronized with backlog"
+    }
+  ]
 }

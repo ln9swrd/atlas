@@ -270,7 +270,6 @@ def recommend(context):
     print("\n" + "="*40)
     print("              ATLAS DAILY")
     print("="*40)
-    print(f"개발 가능 시간  : {time_budget // 60}시간 ({time_budget}분)")
     print("\n오늘 추천 작업:")
     for idx, task in enumerate(selected_tasks, 1):
         print(f"  {idx}. {task['description']} ({task['est_time']}분)")

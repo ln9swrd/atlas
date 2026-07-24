@@ -1,45 +1,289 @@
 # Excelion Project Charter
 
-## 1. Purpose
-Excelion is the first validation project for Atlas DevOS in a real production context. It exists to build a compelling mecha IP experience while simultaneously validating Atlas as a development operating system.
+## 1. Project Identity
 
-## 2. Success Criteria
-- A playable prototype or vertical slice is completed.
-- Core mecha IP assets and supporting production pipeline are established.
-- Atlas helps reduce bottlenecks and improve delivery speed in a measurable way.
+## Project Name
 
-## 3. Scope
-### Included
-- Mecha IP design and iteration
-- Game or interactive prototype development
-- Unreal-based production workflow
-- Atlas-driven process validation and improvement
+Excelion
 
-### Excluded
-- Large-scale MMORPG production
-- Mobile-first service deployment
-- Unbounded feature expansion unrelated to the core project goal
+## Project Type
 
-## 4. Development Principles
-- Atlas rules and review flow are followed.
-- Reuse and automation are prioritized over ad-hoc work.
-- Development should remain grounded in ROI and validated bottleneck reduction.
-- The project should remain compatible with a solo or small-team workflow where possible.
+Game IP / Mecha Action Project
 
-## 5. AI Roles
-| Agent | Role |
-| :--- | :--- |
-| Marie | Architecture, review, and coordination |
-| Antigravity | Implementation and automation |
-| Sera | Design reasoning and planning |
-| Forge | Blender and asset production work |
-| Atlas | Platform validation and operational support |
+## Role Within Atlas
 
-## 6. Current Phase
-Excelion is currently in an active development phase focused on validating the core production flow and turning the concept into a working prototype.
+Excelion is the first product project used to validate the Atlas DevOS ecosystem.
 
-## 7. Initial Goal
-- See [goals/EX-GOAL-001.md](goals/EX-GOAL-001.md) for the first operational work order for prototype startup.
+Relationship:
 
-## 8. Environment Model
-- See [ENVIRONMENT_PLAN.md](ENVIRONMENT_PLAN.md) for the Company PC / Home PC execution split.
+```text
+Atlas DevOS
+
+↓
+
+Sera Intelligence
+
+↓
+
+Forge Production Framework
+
+↓
+
+Excelion Game Project
+```
+
+Excelion provides a real production environment for validating:
+
+* AI-assisted planning
+* Production automation
+* Asset workflow
+* Game development process
+
+---
+
+# 2. Vision
+
+Excelion aims to create a mecha action experience that combines:
+
+* Super robot style combat
+* Modern 3D production
+* Cinematic presentation
+* AI-assisted development workflow
+
+The project focuses on building a scalable IP foundation rather than a single prototype.
+
+---
+
+# 3. Core Objective
+
+The primary objective is:
+
+> Build a playable mecha action prototype through a repeatable AI-assisted production pipeline.
+
+The project validates:
+
+* Asset creation workflow
+* Character/mecha production
+* Unreal integration
+* Gameplay foundation
+* Production documentation
+
+---
+
+# 4. Development Philosophy
+
+## Production Evidence First
+
+Every major result should have:
+
+* Source asset
+* Execution record
+* Validation result
+
+---
+
+## Modular Development
+
+Game systems are developed as independent components.
+
+Examples:
+
+* Mecha framework
+* Weapon system
+* Animation system
+* Enemy system
+
+---
+
+## Reusable Knowledge
+
+Development results should become reusable knowledge for:
+
+* Future Excelion content
+* Forge improvement
+* Other projects
+
+---
+
+# 5. Current Product Scope
+
+## Core Prototype
+
+The initial target:
+
+* Playable mecha character
+* Basic combat
+* Weapon interaction
+* Enemy encounter
+* Test environment
+
+---
+
+# 6. Main Development Areas
+
+## Mecha Production
+
+Includes:
+
+* Frame design
+* Armor modeling
+* Rigging
+* Animation
+
+---
+
+## Combat System
+
+Includes:
+
+* Weapons
+* Attacks
+* Hit effects
+* Enemy interaction
+
+---
+
+## Unreal Integration
+
+Includes:
+
+* Import pipeline
+* Blueprint setup
+* Runtime testing
+
+---
+
+## Presentation
+
+Includes:
+
+* Camera system
+* Effects
+* Lighting
+* Cinematic elements
+
+---
+
+# 7. Current Development Status
+
+Current phase:
+
+```text
+Prototype Validation
+```
+
+Current focus:
+
+* Brave frame development
+* Phantom Stealth Mech preparation
+* Forge workflow validation
+
+---
+
+# 8. Development Environment
+
+## DEV_WORK
+
+Used for:
+
+* Blender modeling
+* Rigging
+* Documentation
+* Atlas/Sera development
+
+---
+
+## DEV_HOME
+
+Used for:
+
+* Unreal integration
+* Testing
+* Rendering
+* Packaging
+
+---
+
+# 9. Milestone Structure
+
+## Milestone 1
+
+Basic Mecha Framework
+
+Goal:
+
+Create first functional mecha asset pipeline.
+
+---
+
+## Milestone 2
+
+Combat Prototype
+
+Goal:
+
+Validate gameplay foundation.
+
+---
+
+## Milestone 3
+
+Vertical Slice
+
+Goal:
+
+Demonstrate complete production workflow.
+
+---
+
+# 10. Success Criteria
+
+Excelion succeeds when:
+
+```text
+Design
+
+↓
+
+Asset Production
+
+↓
+
+Engine Integration
+
+↓
+
+Gameplay Validation
+
+↓
+
+Playable Experience
+```
+
+is repeatable through the Atlas ecosystem.
+
+---
+
+# Summary
+
+Excelion is not only a game project.
+
+It is the first real-world validation project proving that:
+
+```text
+Human Creativity
+
++
+
+AI Assistance
+
++
+
+Production Automation
+
+=
+
+Scalable IP Development
+```
+
+Excelion is the product target that gives Atlas and Forge a real purpose.

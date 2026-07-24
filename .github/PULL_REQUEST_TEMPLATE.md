@@ -1,17 +1,12 @@
 ## 변경 내용 요약
 
-- `PROJECT_OVERVIEW.md`: Sprint-001 관련 EX-BRAVE 작업 상태를 완료(Done)으로 업데이트
-- `projects/excelion/sprints/Sprint-001-report.md`: Sprint 상태를 Completed로 정리
-- `ATLAS_STATE.json`: `current_task`를 null로 정리
+- (변경한 파일과 목적을 간단히 기술)
 
 ## 검증
 
-- `core/rules/rule_engine.py` 실행으로 사전 규칙 검증 통과(ALL RULES PASSED)
+- [ ] `python3 -m unittest discover -s tests` 통과
+- [ ] `python3 tools/atlas_runner.py finish` (또는 해당 명령) 검증 통과
 
 ## 요청 사항
 
-- 문서 내용(특히 `Sprint-001-report.md`의 타임스탬프/설명) 확인
-- `ATLAS_STATE.json`의 `current_task` null 처리에 대한 의견
-
----
-(자동 생성된 PR 템플릿)
+- (리뷰어에게 확인을 요청할 항목)

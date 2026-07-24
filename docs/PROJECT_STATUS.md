@@ -1,113 +1,231 @@
 # Project Status
 
-## 1. 현재 상태
+## 1. Current Status
 
+* Last Sync: `2026-07-23`
+* Repository: `Atlas DevOS`
+* Branch: `main`
 
+## Current Project
 
+* Active Project: `Excelion`
+* Current Sprint: `Sprint-004`
+* Mode: `Development`
+* Last Review: `PASS`
 
+## Current Phase
 
+Atlas DevOS:
 
+* Architecture baseline stabilization
+* Runtime / Documentation structure refinement
+* AI Agent workflow preparation
 
+Excelion:
 
+* Prototype development preparation
+* Asset Pipeline definition
+* Blender / Unreal production workflow validation
 
+---
 
+# 2. Source of Truth
 
+현재 상태 판단 기준:
 
+1. `ATLAS_STATE.json`
 
+   * Runtime 상태
 
+2. `docs/PROJECT_STATUS.md`
 
-- Last Sync: `2026-07-22 15:29:26`
-- Project: `Excelion`
-- Mode: `idle`
-- Current Sprint: `Sprint-004`
-- Current Task: `EX-BRAVE-029`
-- Last Review: `PASS`
+   * 현재 작업 상태
 
+3. `projects/excelion/backlog.json`
 
-- Repo: Atlas DevOS
-- 현재 브랜치: `main`
-- 원격과 동기화됨
-- Atlas DevOS v3.0 Final Complete Release (100.0 / 100.0점 완결)
-- Excelion Real 3D Mesh Synthesis Engine (`mesh_generator.py`) 및 실체 `.obj`/`.fbx` 3D 파일 생성기 완결
-- Excelion Unreal Engine 5 C++ Core Actor (`ExcelionPhantomMech.cpp / .h`) 완결
-- Excelion Forge v3.0 Cloud Driver & Standalone Suite Final 릴리즈 완료
-- `tools/atlas_runner.py` 런타임 실행 및 Rule/Review Engine 검증 완료 (총 147개 Forge 테스트 PASS)
+   * Excelion 작업 목록
 
-## 2. 주요 문서
+4. Sprint 문서
 
-- `README.md` — 리포지토리 전체 개요 및 구조
-- `SYSTEM_MANIFEST.md` — 시스템 목표, 아키텍처, 현재 상태 요약
-- `VISION.md` — 전략과 방향
-- `PROJECT_OVERVIEW.md` — 현재 프로젝트 이해용 요약 문서
-- `PROJECT_EXECUTION_PLAN.md` — 실행 계획 및 단계별 진행 계획
-- `docs/PROJECT_STATUS.md` — 현재 상태 및 단기 실행 체크리스트
-- `docs/OPERATIONS.md` — 일일 운영 절차
-- `projects/excelion/goals/EX-GOAL-002.md` — 현재 실행 목표
-- `projects/excelion/sprints/Sprint-002.md` — 현재 스프린트 정의
-- `projects/excelion/sprints/Sprint-002-tasklist.md` — 스프린트 작업 리스트
+   * 세부 작업 계획 및 결과
 
-## 3. 즉시 실행 항목
+상태 충돌 발생 시 Runtime 상태와 최신 Status 문서를 우선한다.
 
-1. `EX-BRAVE-005` Primary Weapon (Rifle/Sword) 3D Modeling & UV 작업 착수 (`DEV_WORK`)
-2. `EX-BRAVE-006` Joint Rigging & Basic Motion Clips 작업 (`DEV_WORK`)
-3. `EX-BRAVE-007` Unreal Animation Blueprint (ABP) & Socket Setup (`DEV_HOME`)
-4. `EX-BRAVE-008` Action Camera & Motion Test Map Validation (`DEV_HOME`)
+---
 
-CI 및 자동화 참고:
-- `.github/workflows/atlas-ci.yml`이 추가되어 `main` 브랜치로의 push와 PR 생성 시 자동으로 `core/rules/rule_engine.py`와 시뮬레이션을 실행합니다.
-- 일일 루틴 스크립트: `./scripts/daily_start.sh` / `./scripts/daily_end.sh` 로 로컬에서 시작/종료를 자동화할 수 있습니다.
+# 3. Development Environment
 
-### 현재 작업
+## DEV_WORK (Company PC)
 
-| ID | Description | Target Stage | Estimated Time | Environment | Status |
-| --- | --- | --- | --- | --- | --- |
-| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-005 | Primary Weapon (Rifle/Sword) 3D Modeling & UV | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-006 | Joint Rigging & Basic Motion Clips | Blender - 리깅 | 150 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-007 | Unreal Animation Blueprint (ABP) & Socket Setup | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-008 | Action Camera & Motion Test Map Validation | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-009 | Enemy Mech 3D Modeling & Collision Setup | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-010 | Enemy Behavior Tree (BT) & AI Perception | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-011 | Weapon Hit Impact & FX Particle System | Unreal - 임포트/설정 | 150 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-012 | Prototype Battle Arena Map & Playtest Validation | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-013 | Player HUD & Mech Status UI Blueprint Setup | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-014 | Audio Sound Cue & Spatial SFX Attenuation Setup | Unreal - 임포트/설정 | 150 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-015 | Post-Processing & Cinematic Lighting Polish | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-016 | Alpha Prototype Standalone Build & Pre-flight Review | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-017 | Secondary Weapon (Heavy Launcher / Energy Shield) 3D Asset & Rigging | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-018 | Weapon Swap & Ammo Management Gameplay System | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-019 | Boss Class Heavy Mech AI Pattern & Phase Transition | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-020 | Destructible Environmental Props & Chaos Physics Setup | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-021 | Multi-Weapon Attachment & Socket Mesh Dynamic Component | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-022 | Particle System Performance Profiling & LOD Optimization | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-023 | Local Multiplayer Split-Screen / Co-op Arena Blueprint | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-024 | Beta Build Packaging & Production Readiness Audit | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-025 | High-poly Hero Mech LOD Group & Mesh Reduction | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-026 | Global Post-Process Volume & Color Grading Finalization | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-027 | Cross-Platform Input Remapping & Gamepad Profile | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-028 | Release Candidate Build Pipeline & Final Scorecard Audit | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-029 | New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-030 | Dedicated Server Network Replicated Combat Mechanics | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-031 | Matchmaking & Lobby UI Blueprint Setup | Unreal - 임포트/설정 | 180 | DEV_HOME (Home PC) | Pending |
-| EX-BRAVE-032 | Season 1 Launch Package & Live Service Deploy Pipeline | Unreal - 임포트/설정 | 210 | DEV_HOME (Home PC) | Pending |
+사용 목적:
 
-## 4. 다음 단계
+* 문서 작업
+* 코드 분석
+* AI Agent 작업
+* Blender 기반 Asset 준비 작업
 
-- **Sprint-002 수행**: `EX-BRAVE-005`~`008` 순차 실행 및 검증
-- **Runner 자동화 유지**: `tools/atlas_runner.py` 기반 일일 `start`/`finish` 검증 루프 지속 활용
-- **문서 동기화**: 프로젝트 진행 상황에 따른 상태 문서 자동 업데이트 체계화
+## DEV_HOME (Home PC)
 
-## 5. 리스크 및 이슈
+사용 목적:
 
-- 현재 `excelion-forge/`, `projects/coin-s/`, `projects/excelion-forge/`가 언트랙 상태이므로, 이 파일들이 실제 작업과 관련 없는 경우 정리 필요
-- `DEV_WORK`와 `DEV_HOME` 환경 구분이 명확하며, Unreal 관련 작업은 Home PC에서만 수행해야 함
-- 실제 작업이 시작되기 전에 `Sprint-001-report.md`를 반드시 상태 업데이트해야 함
+* Unreal Engine 작업
+* Forge 개발
+* Blender / Unreal 통합 테스트
+* 고사양 실행 환경 필요 작업
 
-## 6. 권장 일정
+환경 제약:
 
-- 오늘: `PROJECT_OVERVIEW.md`/`PROJECT_EXECUTION_PLAN.md` 검토, `Sprint-001` 단기 계획 확정
-- 내일: `EX-BRAVE-001` 실행 및 진행 기록, `Sprint-001-report.md` 업데이트
-- 이후: `EX-BRAVE-002`~`EX-BRAVE-004` 순차 진행 및 `docs/PROJECT_STATUS.md` 유지
+* Unreal Engine 관련 작업은 DEV_HOME에서 수행
+* 회사 환경에서는 실행 검증보다 설계 및 문서 작업 중심
+
+---
+
+# 4. Current Focus
+
+## Atlas DevOS
+
+현재 작업:
+
+* Context 관리 구조 정리
+* 문서 기반 상태 관리 개선
+* AI Agent 작업 진입점 정리
+* SERA / Forge / MCP 책임 영역 정의
+
+## Excelion
+
+현재 작업:
+
+* Brave Prototype Pipeline 정의
+* Asset 제작 흐름 검토
+* Blender → Unreal 연동 구조 준비
+
+---
+
+# 5. Active Tasks
+
+현재 진행 대상:
+
+| ID           | Description                                   | Environment | Status  |
+| ------------ | --------------------------------------------- | ----------- | ------- |
+| EX-BRAVE-029 | Phantom Stealth Mech 3D Model & Rigging       | DEV_WORK    | Pending |
+| EX-BRAVE-017 | Secondary Weapon Asset & Rigging              | DEV_WORK    | Pending |
+| EX-BRAVE-018 | Weapon Swap & Ammo Management Gameplay System | DEV_HOME    | Pending |
+
+세부 백로그:
+
+```
+projects/excelion/backlog.json
+```
+
+관리.
+
+---
+
+# 6. Next Actions
+
+## Immediate
+
+1. Atlas 문서 기준선 확정
+2. Forge Architecture 정의
+3. SERA Runtime 구조 정리
+4. MCP Integration 방향 검토
+
+## Excelion
+
+1. Brave Asset Pipeline 정의
+2. Blender 제작 환경 검증
+3. Unreal Import Pipeline 준비
+
+---
+
+# 7. Automation Status
+
+현재 자동화 영역:
+
+* `tools/atlas_runner.py`
+
+역할:
+
+* 작업 시작
+* 상태 확인
+* 검증 실행
+* 결과 기록
+
+CI:
+
+```
+.github/workflows/atlas-ci.yml
+```
+
+관리.
+
+---
+
+# 8. Risks and Issues
+
+## State Synchronization
+
+확인 필요:
+
+* `ATLAS_STATE.json`
+* `projects/excelion/backlog.json`
+
+간 상태 동기화.
+
+## Environment Dependency
+
+* DEV_WORK / DEV_HOME 환경 차이 관리 필요
+* Unreal 관련 작업은 Home 환경 기준
+
+## Documentation Drift
+
+주의:
+
+* 새로운 문서 생성 시 기존 Source of Truth와 책임 영역 확인
+* 동일 목적 문서 중복 생성 방지
+
+---
+
+# 9. Recent Decisions
+
+## Documentation Structure
+
+확정 방향:
+
+* README
+
+  * 진입점
+
+* PROJECT_OVERVIEW
+
+  * 전체 방향
+
+* PROJECT_STATUS
+
+  * 현재 상태
+
+* Project Documents
+
+  * 상세 개발 내용
+
+## Architecture Direction
+
+향후 정의 대상:
+
+* SERA
+* Forge
+* MCP
+* Excelion Production Pipeline
+
+---
+
+# Summary
+
+현재 Atlas DevOS는 실행 시스템 자체보다,
+AI 기반 개발 환경을 위한 구조 정리와 기준선 확립 단계에 있다.
+
+Excelion은 Atlas를 검증하는 실제 프로젝트이며,
+Forge, SERA, MCP는 향후 제작 자동화 및 AI 협업 환경을 구성하는 핵심 시스템으로 확장한다.
+
+현재 우선순위는 새로운 기능 추가보다,
+명확한 책임 영역과 지속 가능한 개발 흐름을 확립하는 것이다.

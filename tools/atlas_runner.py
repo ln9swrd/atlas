@@ -185,8 +185,12 @@ def build_runtime_context(base_dir, environment_id="DEV_HOME", project_name="Exc
 
     overrides = runtime_overrides or {}
     resources = dict(context.resources or {})
-    if "available_minutes" in overrides:
-        resources["available_minutes"] = int(overrides["available_minutes"])
+    # Only set available_minutes when a non-None value is provided; coerce safely to int
+    if "available_minutes" in overrides and overrides.get("available_minutes") is not None:
+        try:
+            resources["available_minutes"] = int(overrides["available_minutes"])
+        except Exception:
+            resources["available_minutes"] = resources.get("available_minutes") or 180
     if "energy" in overrides:
         resources["energy"] = overrides["energy"]
     if "focus" in overrides:
@@ -727,16 +731,37 @@ if __name__ == "__main__":
 
     command = sys.argv[1].lower()
     if command == "start":
-        start_day()
+        runtime = None
+        try:
+            from atlas_runtime import AtlasRuntime
+            runtime = AtlasRuntime()
+            runtime.start()
+        except Exception as exc:
+            print(f"[RUNNER] Failed to start Atlas runtime: {exc}")
+            sys.exit(1)
     elif command == "next":
         next_task()
     elif command == "end":
         end_day()
     elif command == "finish":
-        finish_day()
+        runtime = None
+        try:
+            from atlas_runtime import AtlasRuntime
+            runtime = AtlasRuntime()
+            runtime.finish()
+        except Exception as exc:
+            print(f"[RUNNER] Failed to finish Atlas runtime: {exc}")
+            sys.exit(1)
     elif command == "start-report":
         # alias for start (generate start report and initialize tasks)
-        start_day()
+        runtime = None
+        try:
+            from atlas_runtime import AtlasRuntime
+            runtime = AtlasRuntime()
+            runtime.start()
+        except Exception as exc:
+            print(f"[RUNNER] Failed to start Atlas runtime: {exc}")
+            sys.exit(1)
     elif command == "start-task":
         # alias for selecting/starting the next task
         next_task()

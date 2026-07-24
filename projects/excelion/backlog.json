@@ -10,7 +10,16 @@
     "focus_area": "modeling",
     "category": "Blender Modeling",
     "bottleneck": "Topology",
-    "assignee_role": "Forge + Marie Review"
+    "assignee_role": "Forge + Marie Review",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-002",
@@ -23,7 +32,16 @@
     "focus_area": "uv_mapping",
     "category": "Blender UV",
     "bottleneck": "Seams & Texel Density",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-003",
@@ -36,7 +54,16 @@
     "focus_area": "materials",
     "category": "Blender Export",
     "bottleneck": "Material Instance Validation",
-    "assignee_role": "Forge + Rule Engine"
+    "assignee_role": "Forge + Rule Engine",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-004",
@@ -49,7 +76,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Import/Collision",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-005",
@@ -62,7 +98,16 @@
     "focus_area": "modeling",
     "category": "Blender Modeling",
     "bottleneck": "Topology",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-006",
@@ -75,7 +120,16 @@
     "focus_area": "animation",
     "category": "Blender Rigging",
     "bottleneck": "Weight Painting",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-007",
@@ -88,7 +142,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "ABP Graph",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-008",
@@ -101,8 +164,18 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Camera Math",
-    "assignee_role": "Forge"
-  },
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
+  }
+][
   {
     "id": "EX-BRAVE-009",
     "description": "Enemy Mech 3D Modeling & Collision Setup",
@@ -114,7 +187,16 @@
     "focus_area": "modeling",
     "category": "Blender Modeling",
     "bottleneck": "Collision",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-010",
@@ -127,7 +209,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "BT Graph",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-011",
@@ -140,7 +231,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Niagara FX",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-012",
@@ -153,7 +253,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Map Layout",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-013",
@@ -166,7 +275,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "UMG UI",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-014",
@@ -179,7 +297,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Audio Attenuation",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-015",
@@ -192,7 +319,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Lighting",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-016",
@@ -205,7 +341,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Cook/Build",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "COMPLETED",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PASS"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-017",
@@ -218,7 +363,16 @@
     "focus_area": "modeling",
     "category": "Blender Modeling",
     "bottleneck": "Topology",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "READY",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-018",
@@ -231,7 +385,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Gameplay Ability / Swap Graph",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-019",
@@ -244,7 +407,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Boss BT & Phase Logic",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-020",
@@ -257,8 +429,18 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Chaos Physics Geometry Collection",
-    "assignee_role": "Forge"
-  },
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
+  }
+][
   {
     "id": "EX-BRAVE-021",
     "description": "Multi-Weapon Attachment & Socket Mesh Dynamic Component",
@@ -270,7 +452,16 @@
     "focus_area": "modeling",
     "category": "Blender Modeling",
     "bottleneck": "Socket Alignment",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-022",
@@ -283,7 +474,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Niagara GPU Particle LOD",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-023",
@@ -296,7 +496,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "ViewPort Split & Controller Mapping",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-024",
@@ -309,7 +518,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Build Audit & Scorecard Verification",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-025",
@@ -322,7 +540,16 @@
     "focus_area": "modeling",
     "category": "Blender Modeling",
     "bottleneck": "Decimate & LOD Seams",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-026",
@@ -335,7 +562,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Color LUT & Film Grain",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-027",
@@ -348,7 +584,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Enhanced Input Action Map",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-028",
@@ -361,12 +606,21 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "RC Packaging & DevOS Review",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-029",
     "description": "New Player Class Frame (Phantom Stealth Mech) 3D Model & Rigging",
-    "status": "TODO",
+    "status": "IN_PROGRESS",
     "environment": "DEV_WORK",
     "target_stage": "Blender - 모델링",
     "est_time": 180,
@@ -374,7 +628,19 @@
     "focus_area": "modeling",
     "category": "Blender Modeling",
     "bottleneck": "Stealth Mesh Cloth",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "ACTIVE_DEVELOPMENT",
+    "forge": {
+      "execution_required": true,
+      "validation_required": true
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": [],
+    "sera": {
+      "planning_context": "phantom_stealth_mech"
+    }
   },
   {
     "id": "EX-BRAVE-030",
@@ -387,7 +653,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Network RPC & Client Prediction",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": false,
+      "validation_required": false
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-031",
@@ -400,7 +675,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Session Subsystem",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": false,
+      "validation_required": false
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-032",
@@ -413,7 +697,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Live Deploy & Patch Verification",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": false,
+      "validation_required": false
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-033",
@@ -426,7 +719,16 @@
     "focus_area": "modeling",
     "category": "Blender Modeling",
     "bottleneck": "Mesh Morphing & Shader FX",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": false,
+      "validation_required": false
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-034",
@@ -439,7 +741,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Aggro Table & Phase Transition",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": false,
+      "validation_required": false
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-035",
@@ -452,7 +763,16 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "Chaos Geometry Collection",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": false,
+      "validation_required": false
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   },
   {
     "id": "EX-BRAVE-036",
@@ -465,6 +785,15 @@
     "focus_area": "unreal_setup",
     "category": "Unreal Setup",
     "bottleneck": "REST API & Scoreboard UI",
-    "assignee_role": "Forge"
+    "assignee_role": "Forge",
+    "lifecycle_status": "BACKLOG",
+    "forge": {
+      "execution_required": false,
+      "validation_required": false
+    },
+    "validation": {
+      "status": "PENDING"
+    },
+    "evidence": []
   }
 ]

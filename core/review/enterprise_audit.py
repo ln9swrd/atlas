@@ -99,7 +99,7 @@ class EnterpriseAuditEngine:
         """Run audit and write scorecard markdown to file."""
         report = self.run_audit()
         md_content = self.generate_scorecard_markdown(report)
-        target_path = output_path or os.path.join(self.base_dir, "core", "review", "scorecard_Atlas_v2.0_Enterprise.md")
+        target_path = output_path or os.path.join(self.base_dir, "core", "review", "scorecard_Atlas_Platform.md")
         os.makedirs(os.path.dirname(os.path.abspath(target_path)), exist_ok=True)
         with open(target_path, "w", encoding="utf-8") as f:
             f.write(md_content)
