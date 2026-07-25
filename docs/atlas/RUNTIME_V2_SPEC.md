@@ -39,6 +39,38 @@
 
 Atlas 2.0 커널은 상태 비저장(Stateless) 아키텍처에서 **메모리 지속형 비동기 서비스 실행기**로 진화합니다.
 
+### 2.0 Atlas의 장기 비전
+
+Atlas는 "LLM을 포함하는 시스템"이 아니라, 다양한 AI 모델과 에이전트가 공존할 수 있는 **AI Operating System**으로 정의된다. SERA를 포함한 모든 에이전트는 Atlas Runtime을 통해 실행되며, Atlas의 핵심 자산은 단일 모델이 아니라 축적된 Knowledge, Memory, 규칙, 경험, 그리고 실행 기록이다.
+
+### 2.1 Knowledge Layer: Atlas의 핵심 서비스
+
+Runtime V2의 중심에는 Knowledge Layer가 위치한다. Knowledge Layer는 단순한 문서 저장소가 아니라, Atlas가 지속적으로 학습하고 운영되는 지식 기반 서비스이다.
+
+#### A. Knowledge Layer 구성 요소
+
+- Principles: 설계 철학, 운영 원칙, 제약 조건을 저장한다.
+- Rules: 검증 규칙, 정책, 품질 기준, 실행 규칙을 저장한다.
+- Patterns: 재사용 가능한 설계 패턴, 구현 템플릿, 운영 패턴을 저장한다.
+- Decisions: ADR, 의사결정 기록, 이유와 결과를 저장한다.
+- Experiences: 성공/실패 사례, 회고, 운영 노하우를 저장한다.
+- Assets: 프로젝트별 산출물, 컨텍스트, 메타데이터, 에셋별 지식을 저장한다.
+- Knowledge Graph: 지식 간의 관계, 연관성, 의존성, 추론 연결을 저장한다.
+
+#### B. 각 계층의 책임
+
+- Principles: Atlas의 운용 철학과 제약을 유지한다.
+- Rules: 자동 검증 및 운영 추론의 기준을 제공한다.
+- Patterns: 반복되는 문제 해결을 표준화한다.
+- Decisions: 왜 그렇게 결정했는지를 보존한다.
+- Experiences: 실무에서 검증된 학습 결과를 축적한다.
+- Assets: 프로젝트 단위의 지식과 산출물을 연결한다.
+- Knowledge Graph: 지식 간의 연결 구조를 통해 검색, 추천, 추론의 기반을 만든다.
+
+#### C. Knowledge Layer 저장 방식
+
+Knowledge Layer는 문서형 저장소에서 시작하되, 점진적으로 구조화된 스토리지로 확장한다. 초기에는 Markdown/JSON/Git 기반으로 관리하고, 이후 메타데이터와 관계 정보가 늘어나면 SQLite, Graph DB, 그리고 검색 인덱스를 단계적으로 도입한다.
+
 ```text
        +--------------------------------------------------------------------+
        |                         Atlas 2.0 Kernel                           |
@@ -78,13 +110,23 @@ Atlas 2.0 커널은 상태 비저장(Stateless) 아키텍처에서 **메모리 �
   ```
 
 #### B. AI Runtime
-* **책임**: 로컬 LLM 및 클라우드 AI 연결 관리를 총괄하며, 프롬프트 템플릿에 `RuntimeContext` 정보를 주입(Context Injection)하고, 구조화된 응답을 파싱 및 유효성 검증을 거쳐 수합합니다.
+* **책임**: 로컬 LLM 및 클라우드 AI 연결 관리를 총괄하며, 프롬프트 템플릿에 `RuntimeContext` 정보를 주입(Context Injection)하고, 구조화된 응답을 파싱 및 유효성 검증을 거쳐 수합합니다. AI Runtime은 특정 모델에 종속되지 않으며, Atlas 내부에서 모델과 실행 경로를 선택하는 정책 계층으로 동작합니다.
 * **인터페이스 (Python)**:
   ```python
   class AIRuntime:
       def execute_reasoning(self, agent_name: str, task_description: str, schema: dict) -> dict: ...
       def route_model(self, constraints: list, task_complexity: str) -> str: ...
+      def select_model(self, task_type: str, constraints: dict) -> str: ...
+      def inject_context(self, prompt: str, context: dict) -> str: ...
   ```
+
+##### AI Runtime 정책
+
+- Atlas AI Runtime은 특정 LLM을 포함하지 않는다.
+- Runtime은 Local LLM 실행, Cloud AI 연결, Model Adapter, Model Selection, Context Injection, Result Aggregation 기능을 제공한다.
+- Forge를 포함한 모든 Application은 직접 모델을 호출하지 않고 Runtime을 통해 AI 서비스를 사용한다.
+- Runtime은 작업의 복잡도, 비용, 지연시간, 리소스 제약에 따라 모델을 동적으로 선택한다.
+- 각 응답은 구조화된 결과로 수합되며, 검증 단계에서 다시 점검된다.
 
 #### C. Event Bus
 * **책임**: 커널 내부 및 등록된 Plugin App 간에 이벤트를 전달하는 발행/구독(Pub-Sub) 미들웨어입니다. 모든 이벤트 발생 이력을 `atlas_events.jsonl`에 동시 영속화합니다.
@@ -124,9 +166,29 @@ Atlas 2.0 커널은 상태 비저장(Stateless) 아키텍처에서 **메모리 �
   class KnowledgeManager:
       def get_rules_for_stage(self, target_stage: str) -> list: ...
       def search_best_practices(self, query: str) -> list: ...
+      def query_knowledge(self, query: str, scope: str = "all") -> list: ...
   ```
 
-#### G. Plugin Host
+#### G. Knowledge Curator
+* **책임**: 지식을 지속적으로 수집·정리·평가·연결·폐기 후보 관리하는 서비스이다. 지식은 단순 저장소가 아니라 운영 자산으로 관리된다.
+* **역할**:
+  * Knowledge 등록
+  * 중복 탐지
+  * 품질 평가
+  * 버전 관리
+  * 폐기 후보 관리
+  * Knowledge 연결
+  * 검증 상태 관리
+* **인터페이스 (Python)**:
+  ```python
+  class KnowledgeCurator:
+      def register_knowledge(self, item: dict) -> str: ...
+      def detect_duplicates(self, candidate: dict) -> list: ...
+      def evaluate_quality(self, knowledge_id: str) -> dict: ...
+      def manage_version(self, knowledge_id: str, content: dict) -> None: ...
+  ```
+
+#### H. Plugin Host
 * **책임**: Forge와 같은 도메인 특화 애플리케이션의 설치, 메모리 격리 로드, 실행 제어 및 자원 제한(Sandboxing)을 관리합니다.
 * **인터페이스 (Python)**:
   ```python
@@ -136,7 +198,7 @@ Atlas 2.0 커널은 상태 비저장(Stateless) 아키텍처에서 **메모리 �
       def get_application_status(self, app_id: str) -> str: ...
   ```
 
-#### H. Execution Manager
+#### I. Execution Manager
 * **책임**: 룰 검증을 위한 Blender, Unreal Engine 등 서브프로세스 셸 환경 실행을 통제하며, 대상 기기 사양에 따라 모듈 부재 시 Simulation Pass 가상 실행 모드를 통합 조율합니다.
 * **인터페이스 (Python)**:
   ```python
@@ -145,7 +207,7 @@ Atlas 2.0 커널은 상태 비저장(Stateless) 아키텍처에서 **메모리 �
       def setup_simulation_env(self, target_tool: str) -> None: ...
   ```
 
-#### I. Review Manager
+#### J. Review Manager
 * **책임**: 에셋 생성이나 코드 작성 결과로 발생한 각종 검사 데이터를 기반으로 품질 평가를 수합하고 Scorecard([scorecard_Exelion_Arm.md](file:///mnt/d/Atlas/core/review/scorecard_Exelion_Arm.md))를 자동 발행합니다.
 * **인터페이스 (Python)**:
   ```python
@@ -334,7 +396,48 @@ stateDiagram-v2
 
 ---
 
-## 7. 구현 로드맵 (Phased Roadmap)
+## 7. Storage Roadmap
+
+Atlas의 저장소는 단일 형식으로 고정되지 않고, 지식의 복잡도가 증가함에 따라 단계적으로 진화한다.
+
+### Phase 1: Markdown / JSON / Git
+* **목적**: 문서 기반 운영과 변경 추적의 기본 구조를 확보한다.
+* **적용 대상**: Constitution, ADR, Sprint Notes, Runtime State, Goal Registry.
+* **전환 기준**: 지식이 증가해도 단순 파일 기반으로 충분히 관리 가능한 수준일 때 유지한다.
+
+### Phase 2: SQLite 기반 메타데이터
+* **목적**: 지식 항목의 메타데이터, 상태, 버전, 소유자, 검증 상태를 구조화된 방식으로 관리한다.
+* **적용 대상**: Knowledge Curator가 등록된 지식 항목의 인덱스와 상태 관리.
+* **전환 기준**: 파일 수가 증가하고 검색/정렬 비용이 커질 때 진입한다.
+
+### Phase 3: Knowledge Graph
+* **목적**: Principles, Rules, Decisions, Experiences, Assets 간 관계를 저장하고 추론 가능한 연결 구조를 만든다.
+* **적용 대상**: 의사결정-근거-실행결과 간 관계 분석.
+* **전환 기준**: 연관성 기반 추천이나 영향 범위 파악이 필요할 때 진입한다.
+
+### Phase 4: Vector Search
+* **목적**: 자연어 검색과 의미 기반 검색을 지원한다.
+* **적용 대상**: 문서 내용과 경험 사례에서 적합한 지식 항목을 찾는 작업.
+* **전환 기준**: 대규모 지식베이스에서 키워드 검색만으로는 한계가 생길 때 도입한다.
+
+### Phase 5: Hybrid Knowledge Storage
+* **목적**: 구조화된 관계 데이터, 메타데이터, 벡터 검색, 문서 저장소를 통합한다.
+* **적용 대상**: Atlas 전체 운영체제 수준의 지식 인프라.
+* **전환 기준**: AI Runtime이 장기 기억, 추천, 자동 검증을 실질적으로 활용해야 할 때 적용한다.
+
+## 8. Hardware Independence Policy
+
+Atlas Runtime은 특정 하드웨어 성능 또는 특정 모델 가용성에 종속되지 않도록 설계한다. AI 실행은 다음 요소를 기준으로 선택된다.
+
+- PC 자원: CPU, 메모리, 스토리지 가용량
+- GPU 메모리: 로컬 추론 시 활용 가능한 GPU 메모리 크기
+- 응답 속도: 지연시간이 중요한 작업인지 여부
+- 비용: 클라우드 호출 비용과 로컬 실행 비용 비교
+- 작업 유형: 간단 검증, 복잡한 설계, 코드 생성, 분석 등
+
+Runtime은 이 정보를 `RuntimeContext`와 `Resource API`를 통해 수집하고, 모델 선택 정책에 반영한다.
+
+## 9. 구현 로드맵 (Phased Roadmap)
 
 ```mermaid
 gantt
@@ -358,6 +461,7 @@ gantt
   * 인메모리 Event Bus(`EventBus`)와 파일 영속 로그 연계 구현.
   * 커널 SDK API 껍데기(Mock 리턴 구조) 구현 및 `tools/atlas_runner.py`와의 구조적 결합.
   * `knowledge_base.md` 파서 모듈 개발.
+  * Knowledge Layer의 기본 등록/조회 경로 설계.
 
 ### Phase 2: Integration & Local AI (v1.8)
 * **목적**: 실제 AI 인프라와 플러그인 격리 모듈 탑재.
@@ -365,6 +469,7 @@ gantt
   * Ollama 로컬 LLM 통신 어댑터 및 Gemini Cloud API 게이트웨이 통합.
   * Forge를 독립 `AtlasApp`으로 분리 포팅하고 SDK API를 호출하여 작동하게 구조 이관.
   * `ExecutionManager`를 통해 Blender/Unreal의 배치 커맨드라인 에러 가로채기 및 자동 재시도 로직 활성화.
+  * Knowledge Curator를 통한 지식 등록 및 품질 평가 흐름 연결.
 
 ### Phase 3: Autonomous DevOS (v2.0)
 * **목적**: 완전 비동기 반응형 AI 런타임 운영체제 달성.
@@ -372,3 +477,4 @@ gantt
   * 디렉터리 와처(Watcher) 서비스와 연동한 파일 생성 감지 시 `AssetCreated` 이벤트 자동 발생 파이프라인.
   * GPU 자원 및 난이도 기반 동적 모델 라우팅 실행.
   * 다중 애플리케이션(Mission Editor, Dialogue Editor 등) 동시 상주 상태 격리 관리 시스템 활성화.
+  * Knowledge Graph 기반 추천 및 지식 연결 서비스 활성화.

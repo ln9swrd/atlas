@@ -1,0 +1,1 @@
+Blender modification steps drafted. Please open /mnt/d/Atlas/projects/excelion-forge/blender/assets/shin_getter_robo11.blend in local Windows Blender, adjust overhang wall thickness to 2.5mm using Solidify/Bevel tools, save, and verify printability improvements.

@@ -17,6 +17,8 @@
 - Self Planning & Continuous Runtime
 - AI Decision (SERA AI Runtime Engine)
 - Multi Project Support & Sandboxed Application Host
+- Knowledge Layer and Knowledge Curator as first-class runtime services
+- Model-agnostic AI Runtime with adaptive routing and hardware-aware policy
 
 ### v2.0 Phased Roadmap
 * **Phase 1: Foundation (v1.5)**

@@ -1,3 +1,4 @@
+import asyncio
 import sys
 import os
 import json
@@ -14,7 +15,7 @@ def get_star_rating(score):
     else:
         return "★☆☆☆☆"
 
-def run_review_engine(asset_name="Exelion_Arm", topology_score=95, animation_score=90, printability_score=85, performance_score=92):
+def run_review_engine(asset_name="Exelion_Arm", topology_score=95, animation_score=90, printability_score=85, performance_score=92, event_bus=None):
     """
     Runs automated checks and combines them with manual inputs to output an Atlas Review Scorecard.
     """
@@ -88,6 +89,19 @@ def run_review_engine(asset_name="Exelion_Arm", topology_score=95, animation_sco
     with open(scorecard_path, 'w', encoding='utf-8') as f:
         f.write(scorecard_md)
         
+    if event_bus is not None:
+        payload = {
+            "asset_name": asset_name,
+            "score": round(total_score, 1),
+            "categories": categories,
+        }
+        try:
+            loop = asyncio.get_running_loop()
+            if loop.is_running():
+                loop.create_task(event_bus.publish("review.completed", payload))
+        except RuntimeError:
+            asyncio.run(event_bus.publish("review.completed", payload))
+
     print(f"Scorecard successfully written to: core/review/scorecard_{asset_name}.md")
     print("="*40 + "\n")
     print(scorecard_md)

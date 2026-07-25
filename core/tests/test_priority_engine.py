@@ -11,6 +11,39 @@ import priority_engine
 
 
 class PriorityEngineLifecycleTests(unittest.TestCase):
+    def test_build_recommendation_payload_accepts_dict_context(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+            (base_dir / "core" / "execution").mkdir(parents=True, exist_ok=True)
+            (base_dir / "core" / "config").mkdir(parents=True, exist_ok=True)
+            (base_dir / "projects" / "exelion").mkdir(parents=True, exist_ok=True)
+
+            (base_dir / "core" / "execution" / "atlas_backlog.json").write_text(
+                json.dumps([
+                    {
+                        "id": "EX-001",
+                        "description": "Exelion active task",
+                        "target_stage": "Blender - 모델링",
+                        "projected_gain": 8.0,
+                        "est_time": 120,
+                        "focus_area": "modeling"
+                    }
+                ]),
+                encoding="utf-8"
+            )
+            (base_dir / "core" / "config" / "project_lifecycle.json").write_text(
+                json.dumps({"Exelion": {"status": "active"}}),
+                encoding="utf-8"
+            )
+
+            payload = priority_engine.build_recommendation_payload(
+                {"environment": "DEV_HOME", "project": "Exelion", "constraints": [], "resources": {"available_minutes": 180}, "time": {"work_hours": True}},
+                base_dir=base_dir,
+            )
+
+            self.assertIn("selected_tasks", payload)
+            self.assertIsInstance(payload["selected_tasks"], list)
+
     def test_maintenance_projects_are_skipped(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             base_dir = Path(tmpdir)

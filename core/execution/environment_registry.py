@@ -10,40 +10,50 @@ def load_environment_registry(path=None):
     else:
         path = Path(path)
 
+    candidate_paths = [path]
     if not path.exists():
-        return {}
+        repo_root = Path(__file__).resolve().parents[2]
+        fallback_path = repo_root / "docs" / "process" / "ENVIRONMENTS.md"
+        if fallback_path.exists():
+            candidate_paths.append(fallback_path)
 
-    content = path.read_text(encoding="utf-8")
-    environments = {}
-    current = None
-    current_key = None
-
-    for line in content.splitlines():
-        stripped = line.strip()
-        if not stripped:
+    for candidate in candidate_paths:
+        if not candidate.exists():
             continue
+        content = candidate.read_text(encoding="utf-8")
+        environments = {}
+        current = None
+        current_key = None
 
-        if stripped.startswith("### "):
-            current = stripped[4:].strip()
-            current_key = None
-            environments[current] = {"id": current, "role": "", "capabilities": [], "limitations": [], "assigned_tasks": []}
-        elif stripped.startswith("## "):
-            current = stripped[3:].strip()
-            current_key = None
-            environments[current] = {"id": current, "role": "", "capabilities": [], "limitations": [], "assigned_tasks": []}
-        elif current:
-            if stripped.startswith("Role:"):
-                environments[current]["role"] = stripped.split(":", 1)[1].strip()
-            elif stripped == "Capabilities:":
-                current_key = "capabilities"
-            elif stripped == "Limitations:":
-                current_key = "limitations"
-            elif stripped == "Assigned Tasks:":
-                current_key = "assigned_tasks"
-            elif stripped.startswith("- ") and current_key is not None:
-                environments[current][current_key].append(stripped[2:].strip())
+        for line in content.splitlines():
+            stripped = line.strip()
+            if not stripped:
+                continue
 
-    return environments
+            if stripped.startswith("### "):
+                current = stripped[4:].strip()
+                current_key = None
+                environments[current] = {"id": current, "role": "", "capabilities": [], "limitations": [], "assigned_tasks": []}
+            elif stripped.startswith("## "):
+                current = stripped[3:].strip()
+                current_key = None
+                environments[current] = {"id": current, "role": "", "capabilities": [], "limitations": [], "assigned_tasks": []}
+            elif current:
+                if stripped.startswith("Role:"):
+                    environments[current]["role"] = stripped.split(":", 1)[1].strip()
+                elif stripped == "Capabilities:":
+                    current_key = "capabilities"
+                elif stripped == "Limitations:":
+                    current_key = "limitations"
+                elif stripped == "Assigned Tasks:":
+                    current_key = "assigned_tasks"
+                elif stripped.startswith("- ") and current_key is not None:
+                    environments[current][current_key].append(stripped[2:].strip())
+
+        if environments:
+            return environments
+
+    return {}
 
 
 def set_active_environment(state_path=None, environment_id=None):

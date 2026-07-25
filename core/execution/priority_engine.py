@@ -49,14 +49,34 @@ def collect_backlog_files(base_dir, lifecycle_path=None):
     return backlog_files
 
 
+def ensure_bottleneck_analysis_file(bottleneck_path):
+    """Create a default bottleneck-analysis file if one is missing."""
+    if os.path.exists(bottleneck_path):
+        return bottleneck_path
+
+    os.makedirs(os.path.dirname(bottleneck_path), exist_ok=True)
+
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    fallback_path = os.path.join(repo_root, "core", "workflow", "bottleneck_analysis.md")
+    if os.path.exists(fallback_path):
+        with open(fallback_path, 'r', encoding='utf-8') as src:
+            content = src.read()
+        with open(bottleneck_path, 'w', encoding='utf-8') as dst:
+            dst.write(content)
+        return bottleneck_path
+
+    default_content = """# Bottleneck Analysis\n\n| Stage | Score |\n| --- | ---: |\n| Default | 50 |\n"""
+    with open(bottleneck_path, 'w', encoding='utf-8') as handle:
+        handle.write(default_content)
+    return bottleneck_path
+
+
 def parse_bottleneck_scores(bottleneck_path):
     """
     Parses workflow/bottleneck_analysis.md to extract stage names and their bottleneck scores.
     """
     scores = {}
-    if not os.path.exists(bottleneck_path):
-        print(f"Warning: Bottleneck analysis file not found at {bottleneck_path}")
-        return scores
+    bottleneck_path = ensure_bottleneck_analysis_file(bottleneck_path)
 
     # Regex to match: | **Blender - 리깅** | 5 | 4 | 4 | 4 | 2 | `19` | **`76` 점** |
     row_pattern = re.compile(r"\|\s*\*\*([^*]+)\*\*\s*\|[^|]+\|[^|]+\|[^|]+\|[^|]+\|[^|]+\|[^|]+\|\s*\*\*\s*`(\d+)`\s*점\*\*")
@@ -105,6 +125,17 @@ def build_recommendation_payload(context, base_dir=None, state=None):
     if base_dir is None:
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+    if hasattr(context, "constraints"):
+        constraints = set(getattr(context, 'constraints', []) or [])
+        environment = getattr(context, 'environment', None)
+        resources = getattr(context, 'resources', {}) or {}
+        time_context = getattr(context, 'time', {}) or {}
+    else:
+        constraints = set((context or {}).get('constraints', []) or [])
+        environment = (context or {}).get('environment')
+        resources = (context or {}).get('resources', {}) or {}
+        time_context = (context or {}).get('time', {}) or {}
+
     bottleneck_path = os.path.join(base_dir, "core", "workflow", "bottleneck_analysis.md")
     execution_readme_path = os.path.join(base_dir, "core", "execution", "README.md")
     registry_path = os.path.join(base_dir, "core", "config", "agent_registry.json")
@@ -112,9 +143,7 @@ def build_recommendation_payload(context, base_dir=None, state=None):
     lifecycle_path = os.path.join(base_dir, "core", "config", "project_lifecycle.json")
     backlog_files = collect_backlog_files(base_dir, lifecycle_path=lifecycle_path)
 
-    constraints = set(getattr(context, 'constraints', []) or [])
     rules = build_rules(context)
-    resources = getattr(context, 'resources', {}) or {}
     state = state or {}
     task_states = state.get("task_states", []) if isinstance(state, dict) else []
     completed_ids = {task.get("id") for task in task_states if task.get("status") == "DONE"}
@@ -165,7 +194,7 @@ def build_recommendation_payload(context, base_dir=None, state=None):
         if task.get("category"):
             task_caps.add(task["category"].lower())
 
-        if task.get("environment") and context.environment and task["environment"] != context.environment:
+        if task.get("environment") and environment and task["environment"] != environment:
             continue
         if task.get("depends_on"):
             unmet_dependencies = [dependency for dependency in task.get("depends_on", []) if dependency not in completed_ids]

@@ -9,6 +9,7 @@ from core.contract import (
     IResourceService,
     IReviewService,
 )
+from core.memory import AtlasMemory
 
 
 class AtlasSDK(IAtlasSDK):
@@ -138,6 +139,7 @@ class MockMemoryService(IMemoryService):
     def __init__(self):
         self.adrs: Dict[str, Dict[str, Any]] = {}
         self.session_state: Dict[str, Any] = {}
+        self.memory_layers = AtlasMemory()
 
     async def get_adr(self, adr_id: str) -> Optional[Dict[str, Any]]:
         return self.adrs.get(adr_id)
@@ -154,6 +156,7 @@ class MockMemoryService(IMemoryService):
 
     async def set_session_state(self, key: str, val: Any) -> None:
         self.session_state[key] = val
+        self.memory_layers.session.set(key, val)
 
     async def get_session_state(self, key: str) -> Any:
         return self.session_state.get(key)

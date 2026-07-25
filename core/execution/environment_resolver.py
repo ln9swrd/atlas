@@ -29,7 +29,16 @@ def resolve_environment(environment_id='DEV_WORK', registry_path=None):
     registry = load_environment_registry(registry_path)
     entry = registry.get(environment_id)
     if not entry:
-        raise KeyError(f'Unknown environment: {environment_id}')
+        aliases = {
+            'DEV_HOME': ['DEV_HOME', 'DEV-HOME', 'dev_home', 'dev-home'],
+            'DEV_WORK': ['DEV_WORK', 'DEV-WORK', 'dev_work', 'dev-work'],
+        }
+        for canonical, candidates in aliases.items():
+            if environment_id in candidates:
+                entry = registry.get(canonical)
+                break
+        if not entry:
+            raise KeyError(f'Unknown environment: {environment_id}')
 
     capabilities = [item.lower() for item in entry.get('capabilities', [])]
     constraints = []

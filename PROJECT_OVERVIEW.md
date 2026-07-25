@@ -17,6 +17,7 @@
 - `docs/ARCHITECTURE.md` - 층별 아키텍처와 런타임 흐름
 - `docs/OPERATIONS.md` - 일일 운영 절차 및 실행 흐름
 - `docs/ROADMAP.md` - v1.2, v1.3, v2.0 단계
+- `docs/atlas/RUNTIME_V2_SPEC.md` - Knowledge Layer, AI Runtime 정책, Knowledge Curator, Storage Roadmap, Hardware Independence 전략
 - `ATLAS_SPRINT_021_DECISIONS.md` - 핵심 아키텍처 결정과 원칙
 - `projects/exelion/PROJECT_CHARTER.md` - Exelion 프로젝트 헌장
 - `projects/exelion/goals/EX-GOAL-001.md` - 첫 번째 Exelion 실행 목표
@@ -61,6 +62,7 @@
 - Atlas 실행 런타임 및 운영 흐름 검증
 - 문서 중심으로 설계와 실행 상태를 정리
 - Phase 4 이후에 Worker 통합 준비
+- 장기적으로 Atlas를 AI Operating System으로 확장하기 위한 Knowledge Layer와 Runtime V2 전략을 보완
 
 ## 6. 다음에 해야 할 일
 
