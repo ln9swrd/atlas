@@ -24,14 +24,12 @@ from core.taskbroker.task_broker import TaskBroker
 
 def _run_python_script(base_dir, script_relative_path):
     script_path = os.path.join(base_dir, script_relative_path)
-
     return subprocess.run(
         [sys.executable, script_path],
         cwd=base_dir,
         capture_output=True,
         text=True,
         encoding='utf-8',
-        errors='replace',
     )
 
 
@@ -134,9 +132,8 @@ def run_audit(base_dir='.'):
         "name": "Review Engine",
         "status": "PASS" if review_ok else "FAIL",
         "command": "python core/review/review_engine.py",
-        "stdout": (rule_result.stdout or "").strip(),
-        "stderr": (rule_result.stderr or "").strip(),
-
+        "stdout": review_result.stdout.strip(),
+        "stderr": review_result.stderr.strip(),
     })
     report["components"]["Review"] = {
         "coverage": 90.0 if review_ok else 60.0,
@@ -205,7 +202,6 @@ def run_audit(base_dir='.'):
             capture_output=True,
             text=True,
             encoding='utf-8',
-            errors='replace',
             timeout=120,
         )
     except subprocess.TimeoutExpired:
@@ -335,10 +331,9 @@ def append_event_log(log_path, event_name, payload=None):
 
 
 def get_repo_root(base_dir=None):
-    if base_dir:
-        return os.path.abspath(base_dir)
-
-    return REPO_ROOT
+    if base_dir is None:
+        return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return os.path.abspath(base_dir)
 
 
 def load_current_sprint(base_dir, project_name="Exelion"):

@@ -114,3 +114,33 @@ Atlas 작업 규칙:
 ### 다음 단계 제안
 
 추측은 사실처럼 작성하지 않는다.
+
+---
+
+## AUDIT MODE RULES
+
+When operating in Audit Mode:
+
+- Do not modify repository source files.
+- Do not use repository modification tools.
+- Do not make assumptions without evidence.
+- Use only verified sources:
+  - filesystem
+  - code inspection
+  - runtime execution
+  - test results
+
+Audit reports must include:
+
+- Command
+- Output
+- Interpretation
+- Confidence
+
+Evidence classification:
+
+- EXISTS
+- IMPLEMENTED
+- VERIFIED
+- MISSING
+- UNKNOWN

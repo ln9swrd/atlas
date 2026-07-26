@@ -62,8 +62,13 @@ def advance_task(base_dir, command="next"):
     logging.info(f"Advanced task {next_task['id']} to IN_PROGRESS")
     return next_task
 
-def get_repo_root(base_dir):
-    return base_dir
+def get_repo_root(base_dir=None):
+    if base_dir:
+        return os.path.abspath(base_dir)
+
+    return os.path.abspath(
+        os.path.dirname(__file__)
+    )
 
 def main():
     parser = argparse.ArgumentParser(description="ATLAS Runner")
@@ -71,7 +76,9 @@ def main():
     args = parser.parse_args()
     
     configure_logging()
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    #base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    #base_dir = os.path.abspath(os.path.dirname(__file__))
+    base_dir = get_repo_root()
     
     if args.command == "status":
         state_data = load_state(base_dir)
