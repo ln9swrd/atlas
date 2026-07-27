@@ -16,6 +16,16 @@
 - `obsidian/CURRENT_STATE.md`
 - `obsidian/DECISION_LOG.md`
 
+## Change Policy
+| 변경 대상              | 규칙                   |
+| ------------------ | -------------------- |
+| AI_CONTEXT         | 자동 생성만 허용            |
+| CURRENT_STATE      | 매일 변경 가능             |
+| DECISION_LOG       | 추가만 허용(기존 기록 수정 최소화) |
+| OPERATING_DOCTRINE | ADR 승인 후 변경          |
+| PROJECT_MAP        | 프로젝트 구조 변경 시에만 수정    |
+| README             | Core 구조 변경 시에만 수정    |
+
 ## Hash (SHA-256)
 `d4e8f3a9c7b2d1e0f8a7c9b1d0e8f3a9c7b2d1e0f8a7c9b1d0e8f3a9c7b2d1e0`
 

@@ -1,12 +1,8 @@
-{
-  "active_goal": "EX-GOAL-001",
-  "completed_goals": [],
-  "next_goal": "EX-GOAL-002",
-  "goals": {
-    "EX-GOAL-001": {
-      "goal_id": "EX-GOAL-001",
-      "status": "Active",
-      "updated_at": "2026-07-20T18:37:52"
-    }
+[
+  {
+    "goal": "Visual Perception Module Integration",
+    "priority": 5,
+    "dependencies": ["Exelion Task 003", "AI-Human Collaboration Framework"],
+    "estimated_effort": "3-6 months"
   }
-}
+]

@@ -1,0 +1,56 @@
+### Knowledge Audit Log
+
+#### Entry 1
+**Knowledge ID**: K-0001  
+**Knowledge**: Atlas의 운영 검증 단계는 실제 Exelion 작업을 기반으로 하여, "start → next → end" 루프를 반복할 때 상태, DONE 누적, 이벤트 로그 기록, 작업 추천 변화를 검증해야 한다.  
+**Source**: obsidian/Archive/Original Conversations/무제 1.md (Lines 17-21)  
+**Evidence**: 사용 시나리오 검증이 운영 루프의 핵심 요소  
+**Category**: Operation  
+**Status**: NOT FOUND  
+**Target**: core/execution/README.md  
+**Confidence**: High  
+**Reason**: Atlas 운영원칙 변경 사항이므로 Core 문서 반영 대상이다.  
+
+#### Entry 2
+**Knowledge ID**: K-0002  
+**Knowledge**: Phase 3 - Operation은 Atlas가 실제 사용 시나리오를 검증하는 단계로, 기능 추가보다 운영 검증에 초점을 맞춘다.  
+**Source**: obsidian/Archive/Original Conversations/무제 1.md (Lines 223-225)  
+**Evidence**: Phase 3 정의 부분  
+**Category**: Architecture  
+**Status**: NOT FOUND  
+**Target**: PROJECT_OVERVIEW.md  
+**Confidence**: Medium  
+**Reason**: 프로젝트 단계 정의에 필수적임.  
+
+#### Entry 3
+**Knowledge ID**: K-0003  
+**Knowledge**: Phase 4 - Production은 Exelion의 실제 Task 100%를 Atlas가 관리하는 것을 목표로 하며, 실제 프로젝트 운영을 통해 부족한 점을 발견하고 개선해야 한다.  
+**Source**: obsidian/Archive/Original Conversations/무제 1.md (Lines 275-282)  
+**Evidence**: Sprint 003 목표 정의  
+**Category**: Vision  
+**Status**: NOT FOUND  
+**Target**: PROJECT_EXECUTION_PLAN.md  
+**Confidence**: High  
+**Reason**: 프로젝트 실행 계획 수립에 직접적 영향.  
+
+#### Entry 4
+**Knowledge ID**: K-0004  
+**Knowledge**: Task에 `estimate`와 `depends_on`을 정의하여 Runner의 추천 정확도와 프로젝트 의존성을 관리해야 한다.  
+**Source**: obsidian/Archive/Original Conversations/무제 1.md (Lines 394-408)  
+**Evidence**: 의존성 관리 예시  
+**Category**: Decision  
+**Status**: NOT FOUND  
+**Target**: core/decision/decision_engine.py  
+**Confidence**: Medium  
+**Reason**: 추천 엔진의 핵심 입력 데이터.  
+
+#### Entry 5
+**Knowledge ID**: K-0005  
+**Knowledge**: Atlas는 실제 Exelion 개발에서 불편한 점이 생길 때만 기능을 추가하는 원칙을 유지해야 한다.  
+**Source**: obsidian/Archive/Original Conversations/무제 1.md (Lines 427-431)  
+**Evidence**: 기능 추가 원칙 명시  
+**Category**: AI  
+**Status**: NOT FOUND  
+**Target**: core/registry/environment_registry.py  
+**Confidence**: High  
+**Reason**: 시스템 확장성과 안정성에 직접적 영향.  
