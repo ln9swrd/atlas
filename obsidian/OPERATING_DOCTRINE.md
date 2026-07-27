@@ -13,6 +13,7 @@ This document defines the principles governing Atlas operations, ensuring consis
 - Decision-making requires traceability to source conversations
 - AI should not generate new content without explicit directives
 - All outputs must maintain consistency with `ATLAS_ENVIRONMENT_BASELINE.md`
+- Context loading follows the sequence defined in `AI_CONTEXT.md`
 
 ## Project Management
 - Projects follow the `Projects/` directory structure
