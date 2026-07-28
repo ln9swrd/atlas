@@ -11,6 +11,11 @@
 ## 2. 현재 주요 문서
 
 - `README.md` - 전체 리포지토리와 디렉토리 구조, 실행 흐름, 에이전트 매핑
+- `PROJECT_OVERVIEW.md` - 프로젝트 전반 요약
+- `PROJECT_EXECUTION_PLAN.md` - 실행 계획과 우선순위
+- `PROJECT_ANALYSIS_PLAN.md` - Atlas DevOS 심층 분석 계획서
+- `PROJECT_ANALYSIS_REPORT.md` - Atlas DevOS 심층 분석 결과 보고서
+- `PROJECT_IMPLEMENTATION_PLAN.md` - Atlas DevOS 코어 플랫폼 구현 계획서
 - `SYSTEM_MANIFEST.md` - 시스템 목적, 핵심 개념, 아키텍처 링크, 현재 상태 요약
 - `VISION.md` - 전략적 미션과 장기 목표
 - `PROJECT_REGISTRY.md` - Atlas/Exelion/Coin-S 등 프로젝트 현황
@@ -27,7 +32,6 @@
 
 ### Atlas 구조
 - `core/` - Atlas 엔진, 룰, 리뷰, 실행, 워크플로우
-- `agents/` - AI 전문가 계층
 - `projects/` - 실제 프로젝트 인스턴스 (현재 Exelion 중심)
 - `docs/` - 아키텍처, 운영, 결정 기록, 플레이북 등 지식 기록
 - `tools/` - 실행 도구 및 Runner
@@ -51,10 +55,10 @@
 
 | ID | Description | Target Stage | Estimated Time | Environment | Status |
 | --- | --- | --- | --- | --- | --- |
-| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | Pending |
-| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Pending |
+| EX-BRAVE-001 | Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트) | Blender - 모델링 | 180 | DEV_WORK (Company PC) | Done |
+| EX-BRAVE-002 | Brave 기본 프레임 UV 매핑 및 Export | Blender - UV 매핑 | 120 | DEV_WORK (Company PC) | Done |
+| EX-BRAVE-003 | Brave 외장 장갑 1개 제작 (Material Instance 적용, Naming Rule 검증) | Blender - Export 준비 | 150 | DEV_WORK (Company PC) | Done |
+| EX-BRAVE-004 | Brave Unreal Engine 임포트 및 셋업 (Import, Animation, Collision, Blueprint) | Unreal - 임포트/설정 | 240 | DEV_HOME (Home PC) | Done |
 
 ## 5. 지금 진행 중인 방향
 
