@@ -1,61 +1,69 @@
-# Atlas Architecture
+# Project Atlas System Architecture
 
-## Layered Architecture
+## Core Modules
 
-### Layer 0 — Core Domain
-- RuntimeContext
-- State
-- Event
-- Goal
-- Registry
+### 1. Idea Module
+- **Purpose**: Concept generation and initial brainstorming
+- **Input**: User input, market trends, technical constraints
+- **Output**: Concept documents, idea matrices
+- **Automation Potential**: 70% (Qwen-powered idea generation)
+- **Integration**: API with Qwen for AI brainstorming
 
-### Layer 1 — Resolvers
-- EnvironmentResolver
-- ProjectResolver
-- TimeResolver
-- ResourceResolver
-- UserResolver
+### 2. Design Module
+- **Purpose**: Systematic design documentation
+- **Input**: Concept documents, technical specs
+- **Output**: Design blueprints, technical requirements
+- **Automation Potential**: 60% (Cline-generated documentation)
+- **Integration**: Cline API for auto-documentation
 
-### Layer 2 — Decision
-- PriorityRules
-- PriorityEngine
-- RecommendationEngine
-- DecisionEngine (implemented as MVP)
-- DecisionRegistry (implemented as MVP)
-- StrategyDescriptor (implemented)
-- DecisionMemory (implemented)
+### 3. Modeling Module
+- **Purpose**: 3D asset creation and management
+- **Input**: Design blueprints, reference materials
+- **Output**: Blender files, texture maps
+- **Automation Potential**: 50% (Blender automation for repetitive tasks)
+- **Integration**: Blender Python API for asset generation
 
-The current implementation already provides a lightweight decision path via the priority engine, but the architecture now also includes a decision layer that can combine context, rule-based reasoning, and stored decision history. The contract-first approach is documented in [docs/process/ATLAS_DECISION_CONTRACT_SPEC.md](docs/process/ATLAS_DECISION_CONTRACT_SPEC.md), and the broader contract system is defined in [docs/process/ATLAS_CONTRACT_ARCHITECTURE.md](docs/process/ATLAS_CONTRACT_ARCHITECTURE.md).
+### 4. Implementation Module
+- **Purpose**: Game engine implementation
+- **Input**: Design documents, asset files
+- **Output**: Unreal Engine project files
+- **Automation Potential**: 40% (Unreal Engine automation tools)
+- **Integration**: Unreal Engine C++/Blueprint API
 
-### Decision Data Model
-- Decision History stores facts about decisions that were made.
-- Knowledge stores lessons and abstracted guidance derived from repeated decisions.
-- Memory stores current runtime state such as project, goal, and sprint context.
+### 5. Review Module
+- **Purpose**: Quality assurance and feedback
+- **Input**: Implemented assets, design docs
+- **Output**: Review reports, optimization suggestions
+- **Automation Potential**: 30% (AI-based quality checks)
+- **Integration**: AI reviewer plugins for real-time feedback
 
-### Layer 3 — Execution
-- Runner
-- Executor
-- Scheduler
-- PluginHost
+### 6. Fix Module
+- **Purpose**: Issue resolution and iteration
+- **Input**: Review reports, test results
+- **Output**: Corrected assets, updated docs
+- **Automation Potential**: 20% (Automated bug fixing patterns)
+- **Integration**: CI/CD pipelines for automatic retesting
 
-### Layer 4 — Interface
-- CLI
-- VS Code
-- Web
-- REST API
+## System Integration
+- **Blender Integration**: 
+  - Asset generation pipeline
+  - Real-time preview system
+  - Version control integration
 
-## Dependency Direction
+- **Unreal Engine Integration**:
+  - Automated asset import
+  - Blueprint generation
+  - Performance profiling tools
 
-The dependency direction is:
+## Automation Opportunities
+1. **Idea Generation**: AI-powered concept expansion
+2. **Documentation**: Auto-generated technical specs
+3. **Asset Creation**: Procedural modeling for repetitive elements
+4. **Testing**: Automated playtesting with AI avatars
+5. **Optimization**: AI-driven performance tuning
 
-Registry -> Resolver -> Context -> Decision -> Execution -> Interface
-
-Upper layers may depend on lower layers, but lower layers must not depend on upper layers.
-
-## Runtime Flow
-
-1. Collect context from registries and resolvers.
-2. Build an immutable RuntimeContext.
-3. Apply decision rules via the priority engine.
-4. Execute recommended actions through the runner.
-5. Persist state and emit events.
+## Principle Implementation
+- **AI Focus**: 80% of workflow is AI-assisted review/coaching
+- **Repeatability**: All modules have defined input/output interfaces
+- **Systemization**: Full CI/CD pipeline for all modules
+- **Efficiency**: Automation reduces manual effort by 50-70%
