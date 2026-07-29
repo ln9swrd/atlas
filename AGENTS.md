@@ -3,6 +3,7 @@
 ## 1. Domain Separation
 - **System Domain:** `AGENTS.md`, `state/`, `tools/` (Agent operational intelligence & CLI runner)
 - **Project Domain:** `projects/<active-project>/` (Active target development scope)
+- **User Sandbox:** `scratch/` (User personal free notes & temporary files, bypassed by LLM)
 - **Forbidden Domain (BLACK):** `archive/`, `obsidian/`, `node_modules/`, `.git/` (STRICTLY BLOCKED from automatic LLM context injection)
 
 ## 2. Evidence-First Rule

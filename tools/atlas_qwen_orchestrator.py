@@ -82,7 +82,7 @@ def check_ollama_connection():
         sys.stderr.write(f"[-] Failed to connect to Ollama at {OLLAMA_HOST}: {e}\n")
         return []
 
-FORBIDDEN_DIRECTORIES = ["archive", "obsidian", "node_modules", ".git", ".vsix"]
+FORBIDDEN_DIRECTORIES = ["archive", "obsidian", "node_modules", ".git", ".vsix", "scratch"]
 
 def validate_file_access(target_path: str) -> bool:
     """Validate if file path is allowed according to Domain Isolation Rules."""
