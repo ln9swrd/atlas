@@ -1,63 +1,51 @@
 # Project Map
 
-This document outlines the structure, purpose, and relationships of projects within Atlas.
+This document outlines the structure, purpose, and relationships of projects within Atlas, aligned with the 87 conversation analysis in [[DETAILED_CONVERSATION_ANALYSIS.md]].
 
-## Atlas Core Structure
+---
+
+## Subsystem & Agent Architecture (SERA / Kraken Framework)
 
 ```
-Atlas
-│
-├── AI Layer
-│   └── SERA (AI Decision Engine)
-│
-├── Game
-│   └── Exelion Forge (3D Game Engine)
-│
-├── Business
-│   └── Business Agent (Automated Workflow System)
-│
-├── Manufacturing
-│   └── PrintGuard (Quality Assurance System)
-│
-├── Research
-│   └── Kraken (AI Research Lab)
-│
-└── Investment
-    └── Coins (Digital Asset Management)
-```
-
-## System Hierarchy (Code View)
-
-```markdown
 Atlas DevOS
-
-├── Core
-│   ├── AI_CONTEXT
-│   ├── CURRENT_STATE
-│   ├── DECISION_LOG
-│   └── OPERATING_DOCTRINE
 │
-├── Projects
-│   ├── Exelion
-│   │   └── Exelion Forge (3D Game Engine)
-│   ├── Coin-S
-│   ├── PrintGuard (Quality Assurance System)
-│   └── Business Agent (Automated Workflow System)
+├── SERA (Intelligence & Architecture Layer)
+│   ├── Architectural Decision Records (ADR)
+│   ├── Context Resolver & Dynamic Memory Window
+│   └── Review & Rule Compliance Engine
 │
-└── Archive
-    └── Original Conversations
+├── Kraken (Autonomous Execution Layer)
+│   ├── Autonomous Execution Runner (tools/atlas_runner.py)
+│   ├── Priority Engine (Context-Aware Task Recommendation)
+│   └── Verification & Testing System
+│
+└── Projects (Domain Projects Layer)
+    ├── Exelion (3D Mech Action Game)
+    │   └── Excelion Forge (Hybrid 3D Pipeline & Web Dashboard)
+    ├── Coin-S (Quant Trading & Backtesting System)
+    ├── PrintGuard (3D Printing Quality Control)
+    └── Business Agent (Automated Workflow & Packaging Tool)
 ```
 
-## Key Relationships
-- **SERA** provides decision-making support for all projects  
-- **Exelion Forge** relies on **PrintGuard** for quality validation  
-- **Business Agent** integrates with **Coins** for financial tracking  
-- **Kraken** feeds research findings into **SERA**
+---
+
+## Active Projects Map
+
+| Project | Domain | Status | Key Artifacts / Location |
+|---|---|---|---|
+| **Atlas DevOS** | Dev Platform & Core OS | `IMPLEMENTED` | `core/`, `tools/`, `obsidian/Core/` |
+| **Excelion Forge** | 3D Asset Pipeline | `IMPLEMENTED` | `projects/excelion-forge/` |
+| **Exelion Game Core**| Unreal Engine 5 & Blender Mesh | `IN_PROGRESS` | `projects/excelion/` |
+| **Coin-S** | Quant Strategy & Backtest | `PROPOSED / PLANNED` | `obsidian/Archive/Named Conversations/030_...md` |
+| **PrintGuard** | 3D Print QA & Handover | `PROPOSED / PLANNED` | `obsidian/Archive/Named Conversations/031_...md` |
+| **Business Agent** | Workflow Packaging & Monetization | `PROPOSED / PLANNED` | `obsidian/Archive/Named Conversations/086_...md` |
+
+---
 
 ## Document References
-[[AI_CONTEXT]]  
-[[CURRENT_STATE]]  
-[[DECISION_LOG]]  
-[[OPERATING_DOCTRINE]]  
-[[GOAL_REGISTRY.json]]  
-[[ADR-001.md]]
+- [[DETAILED_CONVERSATION_ANALYSIS.md]] (Full 87 Conversation Deep Analysis)
+- [[ADR_CATALOG.md]] (Master Architecture Decision Records)
+- [[AI_CONTEXT]]
+- [[CURRENT_STATE]]
+- [[DECISION_LOG]]
+- [[OPERATING_DOCTRINE]]

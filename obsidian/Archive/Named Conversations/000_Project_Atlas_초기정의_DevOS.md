@@ -647,7 +647,7 @@ ENVIRONMENT_REGISTRY   ← 추가
 - ✅ Atlas DevOS v1.0 Foundation 완료
 - ✅ Sera v1.0 아키텍처 완료
 - ✅ Exelion Goal → Sprint → Task 체계 구축
-- ✅ State / Agent / Goal Registry 구축
+- ✅ State / Event / Goal Registry 구축
 - ✅ Project Charter / Lifecycle / Playbooks 구축
 - ✅ 회사 PC / 집 PC 역할 분리 반영
 
