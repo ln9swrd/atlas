@@ -1,0 +1,3 @@
+# 06_OPERATIONS
+
+See `DAILY_LOOP.md`.
