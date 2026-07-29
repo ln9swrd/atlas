@@ -1,5 +1,7 @@
 {
     "continue.enableConsole": false,
     "continue.enableQuickActions": false,
-    "aiderAgent.provider": "local"
+    "aiderAgent.provider": "local",
+    "atlas.model": "qwen3:8b",
+    "atlas.provider": "ollama"
 }

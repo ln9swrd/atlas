@@ -1,31 +1,15 @@
-# AGENTS.md — Atlas work rules
+# AGENTS.md — Atlas DevOS Core Rules
 
-## Scope of rebuild track
+## 1. Domain Separation
+- **System Domain:** `AGENTS.md`, `state/`, `tools/` (Agent operational intelligence & CLI runner)
+- **Project Domain:** `projects/<active-project>/` (Active target development scope)
+- **Forbidden Domain (BLACK):** `archive/`, `obsidian/`, `node_modules/`, `.git/` (STRICTLY BLOCKED from automatic LLM context injection)
 
-- **Allowed:** documentation, `state/`, archive organization
-- **Forbidden:** application/extension code development or modification
+## 2. Evidence-First Rule
+- Do not report DONE without verified CLI execution evidence.
+- Claims != Implementation.
 
-## Evidence First
+## 3. Strict Boundary Control
+- Never traverse or auto-load files outside the active project target defined in `state/CURRENT_STATE.md`.
+- Keep context slim (< 500 tokens total).
 
-- Do not report DONE / VERIFIED without repository evidence
-- Claim ≠ implementation
-
-## Context
-
-1. Read `state/CURRENT_STATE.md`
-2. Read `state/CONTEXT_INDEX.md`
-3. Open only listed paths
-
-## Local LLM / IDE
-
-- Prefer local models when using IDE tooling
-- Extension behavior is defined under `docs/04_IDE_EXTENSION/` (spec only)
-
-## Perception
-
-- Code, logs, screenshots, images in Git: in scope
-- **Camera: out of scope**
-
-## Git
-
-State and decisions belong in the repository, not only in chat.
