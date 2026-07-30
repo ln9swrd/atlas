@@ -6,7 +6,7 @@ Atlas map: `state/PROJECT_MAP.md`
 ACTIVE_TARGET: Stabilize Blender add-on / rig validation (Evidence-First)  
 ACTIVE_MODE: cline  
 ACTIVE_BRANCH: n/a until feature branch opened  
-STATUS: state seeded 2026-07-30; git reference surveys saved; code exists under `excelion_forge/` + `docs/`
+STATUS: state seeded 2026-07-30; git reference surveys saved (Blender/Unreal/Pipeline); code exists under `excelion_forge/` + `docs/`
 
 ## Next one thing
 
@@ -14,9 +14,10 @@ STATUS: state seeded 2026-07-30; git reference surveys saved; code exists under 
 
 ## Recent (2026-07-30)
 
-- Blender 깃 참고 조사 → `state/GIT_REFERENCE_BLENDER.md`
-- Unreal 깃 참고 조사 → `state/GIT_REFERENCE_UNREAL.md` (문서 중심, UE 본체 없음)
-- 게임 기획 점검은 `projects/excelion/state/DESIGN_REVIEW_2026-07-30.md`
+- Blender 깃 참고 → `state/GIT_REFERENCE_BLENDER.md`
+- Unreal 깃 참고 → `state/GIT_REFERENCE_UNREAL.md`
+- Pipeline 공개 레포 조사 → `state/GIT_REFERENCE_PIPELINE.md` (Epic/BFUE/ACT/SKET 등, 구현 이식 아님)
+- 게임 기획 점검 → `projects/excelion/state/DESIGN_REVIEW_2026-07-30.md`
 
 ## Blockers
 
@@ -29,3 +30,4 @@ STATUS: state seeded 2026-07-30; git reference surveys saved; code exists under 
 - Treat SERA as blocking dependency (D19 — use Cline/cloud **mode**)
 - Load archive/obsidian into context
 - Treat `projects/forge/` as this project
+- Reimplement full Send-to-Unreal / BFUE inside Forge
