@@ -24,7 +24,7 @@ yarn-error.log*
 *.vsix
 
 # Optional: compiled extension output (uncomment if out/ should not be tracked)
-# projects/atlas-extension/out/
+projects/atlas-extension/out/
 
 # Env & secrets
 .env
