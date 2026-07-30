@@ -14,7 +14,7 @@ STATUS: P1–P3 **Done**. D20 Forge path fixed. Optional G6 only on Git.
 
 ## Next
 
-**집 PC — L-1** Ollama `num_ctx` ≥ 32768  
+**집 PC — L-2** Cline Rules update (AGENTS.md 주입)  
 Git 선택 — G6
 
 ## Do not
