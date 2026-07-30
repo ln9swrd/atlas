@@ -5,6 +5,26 @@
 - **원본 디렉터리**: `obsidian/Archive/Original Conversations/`
 - **보관 수량**: 총 87개 문서 (`000_...md` ~ `086_...md`)
 - **생성 일시**: 2026-07-29
+- **Core index**: `docs/process/CORE_INDEX.md`
+- **Duplicate policy**: `docs/process/DUPLICATE_POLICY.md`
+
+---
+
+## Core 등급 (우선 참고)
+
+| 번호 | 파일명 |
+|------|--------|
+| 000 | `000_Project_Atlas_초기정의_DevOS.md` |
+| 001 | `001_Operation_Sprint_002_운영검증.md` |
+| 005 | `005_Atlas_DevOS_전체_아키텍처_및_구현_로드맵.md` |
+| 050 | `050_Exelion_Forge_권장구조_및_파이프라인.md` |
+| 058 | `058_Project_Documentation_Standard_docs표준화.md` |
+| 080 | `080_Atlas_프로젝트_현황_및_계층구조.md` |
+| 086 | `086_Business_Agent_및_사업화전략.md` |
+
+선별 Core: 020, 025 · 참고: 010, 015, 070
+
+Exact 중복본: 061=055, 062=056, 063=057, 065=059, 066=060 (파일명에 `_중복본` 표기됨). Near: 064≈058.
 
 ---
 

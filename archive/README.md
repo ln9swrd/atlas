@@ -22,6 +22,13 @@ Live sources: `docs/`, `state/`, root `README.md`.
 - `obsidian/Archive/summary/` path does **not** exist (no duplicate summary tree).
 - Raw / named conversation dumps remain under `obsidian/Archive/` (`Named Conversations/`, `Original Conversations/`, `Atlas_Related/`). Those are **not** the numbered summary set; treat them as historical bulk, not the archive body for operational context.
 
+## Core / duplicate policy
+
+- Core index: `docs/process/CORE_INDEX.md`
+- Duplicate policy: `docs/process/DUPLICATE_POLICY.md`
+- Decision log / glossary: `docs/DECISIONS.md`, `docs/GLOSSARY.md`
+- Exact duplicates 061–066 are marked `*_중복본` under Named Conversations; canonical = lower number (055–060).
+
 ## Rules
 
 - Do not use archive as current operational context
