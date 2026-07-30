@@ -6,11 +6,17 @@ Atlas map: `state/PROJECT_MAP.md`
 ACTIVE_TARGET: IP/game direction frozen in README; next = align backlog with Forge pipeline  
 ACTIVE_MODE: cline  
 ACTIVE_BRANCH: n/a (docs-first until Unreal work resumes)  
-STATUS: state seeded 2026-07-30; no full game implementation track on main
+STATUS: state seeded 2026-07-30; design review saved; no full game implementation track on main
 
 ## Next one thing
 
 1. Review `backlog.json` + `PROJECT_CHARTER.md` and pick one concrete T-* for the next local session
+2. Optionally act on gaps in `state/DESIGN_REVIEW_2026-07-30.md` (WORLD 통합, S-Core 규칙, Charter Sera/D19)
+
+## Recent (2026-07-30)
+
+- Chat 기획·설계 점검 → `state/DESIGN_REVIEW_2026-07-30.md`
+- Forge Blender/Unreal 깃 참고 → sister `excelion-forge/state/GIT_REFERENCE_*.md`
 
 ## Blockers
 
