@@ -1,24 +1,23 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: Owner local **L-1** · optional **P3** / **G6**  
+ACTIVE_TARGET: Owner local **L-1**  
 ACTIVE_BRANCH: `main` · `impl/atlas-extension`  
-STATUS: **P2 Done** — excelion & excelion-forge have `state/`.
+STATUS: P1–P3 **Done**. D20 Forge path fixed. Optional G6 only on Git.
 
-## Domain P0 state
+## Forge (D20)
 
-| Project | Path |
-|---------|------|
-| excelion | `projects/excelion/state/` |
-| excelion-forge | `projects/excelion-forge/state/` |
-
-Map: `state/PROJECT_MAP.md`
+| Role | Path |
+|------|------|
+| Canonical | `projects/excelion-forge/` |
+| Legacy experiment | `projects/forge/` |
+| Nested stub | `projects/excelion/projects/exelion_forge/` |
 
 ## Next
 
-**집 PC** — **L-1**  
-**Git 선택** — P3 (forge path Decision) · G6
+**집 PC — L-1** Ollama `num_ctx` ≥ 32768  
+Git 선택 — G6
 
 ## Do not
 
+- Work Forge product under `projects/forge/`
 - SERA as project (D19)
-- `projects/forge/` as second product without Decision
