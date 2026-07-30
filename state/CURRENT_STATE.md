@@ -1,8 +1,9 @@
 # CURRENT_STATE
 
 ACTIVE_TARGET: Owner local **L-8**  
-ACTIVE_BRANCH: `main` · `impl/atlas-extension`  
-STATUS: P1–P3 **Done**. D20 Forge path fixed. L-1…L-7 **Done**. Optional G6 only on Git.
+ACTIVE_BRANCH: `main`  
+STATUS: P1–P3 **Done**. D20 Forge path fixed. L-1…L-7 **Done**. Optional G6 only on Git.  
+D21: atlas-extension Abandoned. Cline primary.
 
 ## Forge (D20)
 

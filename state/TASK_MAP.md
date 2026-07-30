@@ -25,7 +25,7 @@
 | L-5 | Cline 보완 마무리 점검 | **Done** |
 | L-6 | untrack / gitignore 정리 | **Done** |
 | L-7 | rebase (impl/atlas-extension) | **Done** |
-| L-8…L-10 | merge, tag, PR | **Pending** |
+| L-8…L-10 | merge, tag, PR | **Abandoned** |
 
 ## Implementation
 
