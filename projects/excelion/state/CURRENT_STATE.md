@@ -3,19 +3,20 @@
 Schema: `docs/process/PROJECT_STATE_SCHEMA.md`  
 Atlas map: `state/PROJECT_MAP.md`
 
-ACTIVE_TARGET: IP/game direction frozen in README; next = align backlog with Forge pipeline  
+ACTIVE_TARGET: 기획 갭 정리 완료; next = 세계관 단일화(우선순위 1)  
 ACTIVE_MODE: cline  
 ACTIVE_BRANCH: n/a (docs-first until Unreal work resumes)  
-STATUS: state seeded 2026-07-30; design review saved; no full game implementation track on main
+STATUS: planning gaps saved 2026-07-30; design review + gaps both in state; no full game implementation track on main
 
 ## Next one thing
 
-1. Review `backlog.json` + `PROJECT_CHARTER.md` and pick one concrete T-* for the next local session
-2. Optionally act on gaps in `state/DESIGN_REVIEW_2026-07-30.md` (WORLD 통합, S-Core 규칙, Charter Sera/D19)
+1. **세계관 단일화** — `WORLD.md`와 README(고대 문명·루프·시즌) 통합 여부 결정 후 단일 출처 문서 작성
+2. (이어서) Prototype 스토리 1줄 + 파일럿 최소 설정
 
 ## Recent (2026-07-30)
 
 - Chat 기획·설계 점검 → `state/DESIGN_REVIEW_2026-07-30.md`
+- Chat 기획 보완 갭 정리 → `state/PLANNING_GAPS_2026-07-30.md`
 - Forge Blender/Unreal 깃 참고 → sister `excelion-forge/state/GIT_REFERENCE_*.md`
 
 ## Blockers
