@@ -1,24 +1,46 @@
 # Project Registry
 
-This registry defines the known projects in Atlas and their current lifecycle status.
+Known **domain** projects on Atlas. Platform = Atlas DevOS (not listed as a deliverable product).
 
-## Projects
+Source of path truth: `state/PROJECT_MAP.md`  
+State schema: `docs/process/PROJECT_STATE_SCHEMA.md`  
+Updated: 2026-07-30
 
-| Name | Status | Type | Priority | Owner | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Atlas | maintenance | platform | medium | Marie | AI-based development operating system |
-| Exelion | active | game_ip | critical | Marie | Main product project centered on mecha IP |
-| Excelion Forge | active | pipeline | high | Marie | Parametric / Blender asset pipeline |
-| PrintGuard | planning | business | medium | Marie | Pre-print QA initiative |
-| Coin-S | planning | software | low | Marie | Future investment analysis project |
-| ~~Sera~~ | **deprecated** | — | — | — | **D19 (2026-07-30): 프로젝트 폐기.** 신규 구현·레지스트리 활성 항목 아님 |
+## Active / planned domain projects
 
-## Project Intent
+| Name | Path | Status | Type | Priority | state/ | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Excelion (Exelion) | `projects/excelion/` | active | game_ip | **critical** | missing | Main mecha/IP product |
+| Excelion Forge | `projects/excelion-forge/` | active | pipeline | **high** | missing | Blender/rig validation pipeline (canonical Forge) |
+| PrintGuard | `projects/printguard/` | planning | business | medium | missing | Pre-print QA initiative |
+| Coin-S | `projects/coin-s/` | planning | software | low | n/a (submodule) | Analysis experiment |
 
-- Atlas: Build and maintain the operating system that coordinates agents, rules, execution, and review.
-- Exelion: Deliver the main product experience and assets around the Exelion IP.
-- Excelion Forge: Parametric asset pipeline on Atlas.
-- PrintGuard / Coin-S: As listed above.
-- **Sera (project):** Abandoned. Do not implement as standalone project. Optional cloud AI usage is a **work mode**, not a registry project.
+## Platform-adjacent
 
-Use PROJECT_LIFECYCLE.md as the shared lifecycle reference for project phase reporting where present.
+| Name | Path | Status | Notes |
+| :--- | :--- | :--- | :--- |
+| atlas-extension | `projects/atlas-extension/` | secondary | issue #2 / PR #3; secondary to Cline |
+
+## Deprecated
+
+| Name | Status |
+| :--- | :--- |
+| Sera (project) | **deprecated (D19)** — not implementable as standalone project |
+
+## Not separate products (until Decision)
+
+- `projects/forge/` — clarify vs excelion-forge
+- `projects/excelion/projects/exelion_forge/` — nested legacy; use excelion-forge
+
+## Intent
+
+- **Excelion**: ship IP/product experience.
+- **Excelion Forge**: asset/rig pipeline tool under Atlas.
+- **PrintGuard / Coin-S**: as priority allows.
+- **Atlas**: DevOS only — coordinates state, agents, evidence.
+
+## Onboarding a project for Cline / cloud / both
+
+1. Ensure `projects/<name>/state/` from `_template`
+2. Set `ACTIVE_MODE` in CURRENT_STATE
+3. One Next row in TASK_MAP with assignee `human` | `cline` | `cloud` | `both`
