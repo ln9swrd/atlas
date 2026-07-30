@@ -32,7 +32,8 @@
 
 ### Historical detail (archive)
 
-- `obsidian/Archive/summary/` (until fully moved under `archive/summary/`)
+- `archive/summary/` — numbered summaries 000–086 (canonical)
+- `obsidian/Archive/` — raw / named conversation dumps (not operational context)
 
 ## Token discipline
 
