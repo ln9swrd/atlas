@@ -22,6 +22,7 @@
 | L-1…L-5 | Ollama + Cline | **Done** |
 | L-6…L-10 | untrack, merge, tag, PR | **In Progress** |
 | L-3 | .clinerules 배치 | **Done** |
+| L-4 | Cline 작업 루프 검증 | **Done** |
 | L-6…L-10 | untrack, merge, tag, PR | Pending |
 
 ## Implementation

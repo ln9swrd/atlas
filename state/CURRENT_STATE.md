@@ -14,8 +14,8 @@ STATUS: P1–P3 **Done**. D20 Forge path fixed. Optional G6 only on Git.
 
 ## Next
 
-**집 PC — L-3** `.clinerules` 배치 완료  
-**L-4** 대기 중 (업데이트 필요)
+**집 PC — L-4** Cline 작업 루프 검증 완료  
+**L-5** 대기 중 (업데이트 필요)
 Git 선택 — G6
 
 ## Do not
