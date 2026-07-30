@@ -17,6 +17,17 @@
 | RB-G | Bulk path move summary → `archive/summary/` | **Done** |
 | RB-H | Clean root / ignore tracked junk | Policy Done (`.gitignore`); **untrack still owner local** |
 
+## Analysis follow-up (2026-07-30)
+
+| ID | Task | Status |
+|----|------|--------|
+| AF-1 | `docs/DECISIONS.md` (D01–D18) | **Done** |
+| AF-2 | `docs/GLOSSARY.md` | **Done** |
+| AF-3 | `docs/process/DUPLICATE_POLICY.md` | **Done** |
+| AF-4 | Exact duplicate delete (061/062/063/065/066 Named + Original + summary) | **Done** |
+| AF-5 | `docs/process/CORE_INDEX.md` + CONTEXT_INDEX sync | **Done** |
+| AF-6 | Open Questions → GitHub issues | **In progress** (see issues) |
+
 ## Implementation (repo)
 
 | ID | Task | Status |
