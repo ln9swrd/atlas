@@ -9,5 +9,6 @@ VS Code + local LLM work surface.
 | `NON_GOALS.md` | Explicit exclusions |
 | `PACKAGING.md` | node_modules / vsix hygiene |
 | `F5_CHECKLIST.md` | Extension Host smoke regression |
+| `BOUNDARY.md` | Extension ↔ orchestrator ownership |
 
 Implementation track: [issue #2](https://github.com/ln9swrd/atlas/issues/2) · branch `impl/atlas-extension`.
