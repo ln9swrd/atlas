@@ -1,0 +1,18 @@
+# .clinerules - Atlas Workspace Rules for Cline
+
+## Core Constraints
+- **Git 단일 출처**  
+  상태 및 컨텍스트는 `state/` 및 `docs/` 폴더만 허용.  
+  작업 전: `state/CURRENT_STATE.md` + `TASK_MAP.md` + `CONTEXT_INDEX.md` 확인  
+  작업 후: 상태 갱신 + `git commit` 필수
+
+## 금지 사항
+- **IMP-1 (익스텐션 구현)** 금지  
+- **SERA 프로젝트** 작업 금지  
+- **projects/forge/** 제품 작업 금지  
+- 추측 기반 작업 금지 (Evidence First 원칙)
+
+## 작업 흐름
+1. `state/` 및 `docs/` 기반 작업  
+2. 작업 전 상태 파일 검토  
+3. 작업 후 상태 갱신 + Git 커밋
