@@ -7,11 +7,18 @@
 | Path | Why |
 |------|-----|
 | `state/CURRENT_STATE.md` | Where we are now |
-| `state/TASK_MAP.md` | What is open |
+| `state/TASK_MAP.md` | What is open — **Owner local TODO (L-1…L-10)** |
 | `docs/07_ROADMAP/ATLAS_GIT_REBUILD_PLAN.md` | Rebuild plan |
 | `README.md` | Entry map |
 
 ## By task type
+
+### Owner local (Cline / Ollama)
+
+- `state/TASK_MAP.md` — L-1…L-10 checklist
+- `state/CURRENT_STATE.md` — decision: Cline primary
+- `AGENTS.md` — paste-related rules into Cline instructions
+- `docs/04_IDE_EXTENSION/BOUNDARY.md` — if using custom extension too (on `impl/atlas-extension`)
 
 ### Docs / rebuild
 
@@ -33,7 +40,7 @@
 ### Historical detail (archive)
 
 - `archive/summary/` — numbered summaries 000–086 (canonical)
-- `obsidian/Archive/` — raw / named conversation dumps (not operational context)
+- `obsidian/Archive/` — raw dumps (not operational context)
 
 ## Token discipline
 

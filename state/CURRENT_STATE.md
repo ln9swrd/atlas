@@ -1,58 +1,60 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: [issue #2](https://github.com/ln9swrd/atlas/issues/2) — Atlas VS Code extension formal implementation  
-ACTIVE_BRANCH: `impl/atlas-extension`  
-ACTIVE_PHASE: Extension packaging + boundary hardening (not domain isolation — that is Done)  
-STATUS: Docs rebuild closed except optional local tag / `git rm --cached`; **impl gate is open**
+ACTIVE_TARGET: Owner local setup — **Cline + Ollama** as primary Atlas work surface  
+ACTIVE_BRANCH: `impl/atlas-extension` (repo work) · daily coding on **local Cline**  
+ACTIVE_PHASE: Stabilize local agent (not more custom extension features)  
+STATUS: Docs/meta track largely closed; **your machine** must finish L-1…L-10 in `state/TASK_MAP.md`
+
+## Decision (2026-07-30)
+
+| Choice | Rationale |
+|--------|-----------|
+| Primary agent = **Cline** (fallback **Roo**) | Matches agent + tools need; better fit than Continue for Atlas |
+| Continue = optional only | Chat/autocomplete; upstream maintenance weak for main agent role |
+| Do **not** fork Cline/Continue | Fix via num_ctx, settings, Atlas rules |
+| Custom extension | Secondary; packaging/docs on issue #2 / PR #3 — not the long-term full agent |
 
 ## Scope agreement
 
 | Area | Status |
 |------|--------|
-| Domain Isolation Enforcer | Done |
-| Docs rebuild RB-B/G/H policy | Done (tag RB-F2 optional local) |
-| Extension **feature work** | Allowed **only** on `impl/atlas-extension` per issue #2 |
-| Camera / vision pipeline | Out of scope |
-| `core/`, `src/`, `atlas-runtime/` | No modify without dedicated issue |
+| Domain Isolation (orchestrator blacklist) | Done |
+| Docs rebuild RB-* | Done except RB-F2 tag + local untrack |
+| Owner local Cline/Ollama path | **Pending** — see TASK_MAP L-1…L-5 |
+| Extension packaging on `impl/atlas-extension` | Open — L-6…L-8, PR #3 |
+| Camera / vision | Out of scope |
+| `core/`, `src/`, `atlas-runtime/` | No modify without issue |
 
-## Primary Target Scope (allowed now)
+## Next one thing (owner)
 
-- Branch `impl/atlas-extension`: packaging hygiene, orchestrator boundary, F5 checklist docs
-- `main`: state/docs chore only; no extension feature commits
+1. **L-1** Create Ollama model with `num_ctx` ≥ 32768  
+2. **L-2…L-4** Point Cline at it + harden + paste Atlas rules  
+3. **L-5** Smoke test (no loop)  
+4. Then L-6…L-10 (git untrack, merge, tag, PR)
 
-## Verified Milestones
+Full checklist: `state/TASK_MAP.md` → **Owner local TODO**
 
-- Ollama `qwen3:14b` @ `http://192.168.219.254:11434`
-- Domain Isolation: `archive/`, `obsidian/` blacklisted from auto LLM injection
-- Smart Context Router + streaming webview path verified
+## Verified milestones (repo)
+
+- Ollama host used in project: `http://192.168.219.254:11434`
 - `archive/summary/` 000–086 canonical
-- Issue #2 + branch `impl/atlas-extension` created 2026-07-30
+- Issue #2, branch `impl/atlas-extension`, draft PR #3
+- Orchestrator: workspace root from `ATLAS_ROOT` or cwd (not hardcoded `/mnt/d/Atlas`) on impl branch
 
 ## Fixed requirements (charter)
 
-1. VS Code + **local LLM** extension (`projects/atlas-extension/`)
-2. **Git** as source of state and context (`state/`)
-3. Recognize **code + screen + images**; **camera = 0**
+1. VS Code + **local LLM** (Cline/Roo + Ollama preferred over cloud-only)
+2. **Git** as source of state (`state/`)
+3. Code + screen + images; **camera = 0**
 
 ## Blockers
 
-- None for starting IMP-1 on `impl/atlas-extension`
-- Tag `atlas-docs-rebuild-v1` still needs local `git tag` (optional)
-
-## Next one thing
-
-1. On `impl/atlas-extension`: `git rm --cached` node_modules/vsix + commit  
-2. Document F5 regression checklist under `docs/04_IDE_EXTENSION/`  
-3. (Optional on any clone) tag `atlas-docs-rebuild-v1`
-
-## Evidence
-
-- Issue: https://github.com/ln9swrd/atlas/issues/2
-- Branch ref: `impl/atlas-extension`
-- Orchestrator: `tools/atlas_qwen_orchestrator.py`
-- Extension out: `projects/atlas-extension/out/`
+- None blocking L-1 start
+- L-5 failure → try Roo with same rules before any fork
 
 ## Do not
 
-- Land extension feature commits on `main` without PR from `impl/atlas-extension`
-- Expand into Runtime/Plugin/Knowledge without new issues
+- Auto-approve all Cline terminal/file tools on local models
+- Dump `archive/` or `obsidian/` into agent context
+- Land extension features on `main` without PR from `impl/atlas-extension`
+- Expand Runtime/Plugin/Knowledge without new issues
