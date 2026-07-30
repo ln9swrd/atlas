@@ -39,11 +39,11 @@
 | G1 | `CURRENT_STATE` + `TASK_MAP`에 D19·G-* 반영 | **Done** |
 | G2 | Atlas ≠ Project + 3모드 공통 state 스키마 → `docs/process/PROJECT_STATE_SCHEMA.md` | **Done** |
 | G3 | `projects/_template/state/` (CURRENT / TASK / CONTEXT 3파일) | **Done** |
-| G4 | issue #5 정리 (프로젝트 SERA 폐기 반영, 남은 범위만) | **Pending** |
+| G4 | issue #5 정리 (프로젝트 SERA 폐기 반영, 남은 범위만) | **Done** — [#5](https://github.com/ln9swrd/atlas/issues/5) 본문 재작성; Kraken·G5만 잔여 |
 | G5 | (선택) 잔여 Sera=project 문구 정리 | **Pending** |
 | G6 | (선택) Open Q #4·#6·#7 문서 초안만 | **Pending** |
 
-**권장 다음 Git 작업:** G4 (이슈 정리). G5–G6 선택.
+**필수 Git 계획 G1–G4 완료.** 선택: G5, G6. 집 PC: L-1.
 
 ## Implementation (repo)
 
