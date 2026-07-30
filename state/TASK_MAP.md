@@ -45,7 +45,3 @@
 - D20: Canonical Forge = `projects/excelion-forge/` only.
 - D19: SERA project abandoned.
 
-## 검증
-1. cat state/TASK_MAP.md
-2. L-6…L-10 중복 행이 없어야 함
-3. L-6·L-7 = Done, L-8+ = Pending
