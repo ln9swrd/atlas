@@ -1,9 +1,7 @@
 # Atlas Decision Log
 
 Source: `obsidian/Archive/Original Conversations/ANALYSIS_REPORT.md` (Phase 3)
-Status: Extracted candidates promoted to living log (2026-07-30)
-
-Format: ID | Decision | Notes
+Status: Living log (2026-07-30)
 
 ---
 
@@ -15,51 +13,50 @@ Format: ID | Decision | Notes
 | D02 | **Build the system that builds the game** | Atlas는 제품이 아니라 제품을 만드는 운영 체계 |
 | D03 | Knowledge Layer ↔ Runtime Layer 분리 | 안정 지식은 Git docs/ADR, 세션 런타임은 폐기 가능 |
 | D04 | Environment 분리·등록 (Registry) | DEV_WORK / DEV_HOME 등 환경별 제약 반영 |
-| D05 | 기능 추가보다 실제 운영 시나리오 검증 우선 | ROI Gate: 2회 이상 반복 또는 30분 이상 단축 검증 |
+| D05 | 기능 추가보다 실제 운영 시나리오 검증 우선 | ROI Gate |
 | D06 | 가상 Task보다 실제 Exelion Task로 운영 | 실 프로젝트 태스크로 루프 검증 |
 
 ## Agent / Local LLM
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D07 | Cline 문제 추적 중 Subagents / Native / Parallel Tool Call OFF | 로컬 모델 안정화 우선 |
-| D08 | 로컬 AI는 WSL 내부 배치 권장 | Windows 호스트 직접보다 WSL 권장 |
-| D15 | Primary work surface = Cline (or Roo) + local Ollama | Continue는 보조만; 커스텀 확장 전체 에이전트화 금지 |
+| D07 | Cline: Subagents / Native / Parallel Tool Call OFF 권장 | 로컬 모델 안정화 |
+| D08 | 로컬 AI는 WSL 내부 배치 권장 | |
+| D15 | Primary work surface = Cline (or Roo) + local Ollama | Continue 보조만 |
 
 ## Forge / Pipeline
 
 | ID | Decision | Notes |
 |----|----------|-------|
 | D09 | Forge = Core(뇌) + Blender Add-on(손발) 하이브리드 | 단일 모놀리식 금지 |
-| D13 | .blend는 Git, 대용량은 LFS, .blend1 등은 gitignore | 에셋 버전 관리 규칙 |
-| D14 | 급할수록 돌아간다 — 제작 도구·파이프라인 우선 | 단기 편의 기능보다 파이프라인 안정 |
+| D13 | .blend는 Git, 대용량은 LFS, .blend1 등은 gitignore | |
+| D14 | 급할수록 돌아간다 — 제작 도구·파이프라인 우선 | |
+| D20 | **Canonical Forge path = `projects/excelion-forge/`** | `projects/forge/` = Atlas App-host 실험 스냅샷 (IApplication 셸). 제품 작업·Cline 컨텍스트는 excelion-forge만. `projects/excelion/projects/exelion_forge/` = 중첩 스텁 — 무시. 삭제/이동은 별도 이슈+로컬 |
 
 ## Documentation / Knowledge
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D10 | 프로젝트 docs: 파일명 영어, 본문 한국어, 필수 VISION/ROADMAP/CHANGELOG | PROJECT_DOC_STANDARD |
-| D11 | SERA ≠ 프로젝트 목록 (계층 용어로만 사용 가능) | **D19로 프로젝트 지위 폐기** |
-| D12 | Kraken = 실행·자동화 계층 | 프로젝트 아님; 경로 여부는 [#5](https://github.com/ln9swrd/atlas/issues/5) 잔여 |
-| D16 | 대화 기록 → 문서 → 프로젝트 자산 | Original Conversations → Named → Core 승격 경로 |
-| D19 | **프로젝트 SERA 폐기** | 독립 프로젝트·레지스트리 항목 종료. 신규 `projects/sera` 금지. 과거 문서는 archive. 클라우드 AI는 모드명으로만 필요 시 사용 (프로젝트 아님) |
+| D10 | 프로젝트 docs: 파일명 영어, 본문 한국어 | PROJECT_DOC_STANDARD |
+| D11 | SERA ≠ 프로젝트 목록 | D19로 프로젝트 폐기 |
+| D12 | Kraken = 실행·자동화 계층 | 프로젝트 아님 |
+| D16 | 대화 기록 → 문서 → 프로젝트 자산 | |
+| D19 | **프로젝트 SERA 폐기** | `projects/sera` 금지 |
 
 ## Domain Isolation
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D17 | Forbidden domain: `archive/`, `obsidian/`, `node_modules/`, `.git/` | 자동 컨텍스트 주입 금지 |
-| D18 | Context slim: 활성 타겟만 로드 | `state/CURRENT_STATE.md` 기준 |
+| D17 | Forbidden: `archive/`, `obsidian/`, `node_modules/`, `.git/` | |
+| D18 | Context slim: 활성 타겟만 로드 | |
 
 ---
 
-## Open (아직 확정 전) → Issues
+## Open → Issues
 
 | 항목 | Issue |
 |------|-------|
-| VERIFY 실제 코드 구현 범위 | [#4](https://github.com/ln9swrd/atlas/issues/4) |
-| Kraken 계층 이름·경로 · legacy SERA 문구 (G5) | [#5](https://github.com/ln9swrd/atlas/issues/5) — **프로젝트 SERA Q는 G4로 종료** |
-| SPRINT-009~029 설계 구현·폐기·보관 상태 | [#6](https://github.com/ln9swrd/atlas/issues/6) |
-| Forge Phase 1→2 전환 기준 | [#7](https://github.com/ln9swrd/atlas/issues/7) |
-
-확정되면 위 이슈를 닫고 본 Decision Log에 ID를 추가한다.
+| VERIFY 코드 범위 | [#4](https://github.com/ln9swrd/atlas/issues/4) |
+| Kraken 이름·경로 | [#5](https://github.com/ln9swrd/atlas/issues/5) |
+| SPRINT-009~029 상태 | [#6](https://github.com/ln9swrd/atlas/issues/6) |
+| Forge Phase 1→2 | [#7](https://github.com/ln9swrd/atlas/issues/7) — 대상 경로 = **excelion-forge** (D20) |
