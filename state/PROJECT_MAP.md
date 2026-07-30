@@ -1,46 +1,45 @@
 # PROJECT_MAP
 
-> Atlas(DevOS) ≠ domain project. Schema: `docs/process/PROJECT_STATE_SCHEMA.md`  
-> Updated: 2026-07-30 — P2 state seed for P0 projects
+> Schema: `docs/process/PROJECT_STATE_SCHEMA.md` · D20 Forge paths  
+> Updated: 2026-07-30
 
 ## System (not domain projects)
 
 | Name | Role |
 |------|------|
-| **Atlas** | DevOS — root `state/`, `docs/`, `AGENTS.md` |
-| **Cloud AI (mode)** | Optional mode — not a project (D19) |
-| **Kraken** | Layer name only — not a project |
-| **Cline / Continue** | Tools — not memory |
+| **Atlas** | DevOS |
+| **Cloud AI (mode)** | Mode only (D19) |
+| **Kraken** | Layer name |
+| **Cline / Continue** | Tools |
 
-## Domain projects (implement / deliver on Atlas)
+## Domain projects
 
-| ID | Path | Status | Priority | Has `state/`? | Notes |
-|----|------|--------|----------|---------------|-------|
-| **excelion** | `projects/excelion/` | active | **P0** | **Yes** | Game/IP |
-| **excelion-forge** | `projects/excelion-forge/` | active | **P0** | **Yes** | Canonical Forge; issue #7 |
+| ID | Path | Status | Priority | state/ | Notes |
+|----|------|--------|----------|--------|-------|
+| **excelion** | `projects/excelion/` | active | P0 | Yes | Game/IP |
+| **excelion-forge** | `projects/excelion-forge/` | active | P0 | Yes | **Canonical Forge (D20)** |
 | **printguard** | `projects/printguard/` | planning | P2 | No | Docs only |
-| **coin-s** | `projects/coin-s/` | planning / submodule | P3 | Unknown | Submodule |
+| **coin-s** | `projects/coin-s/` | planning | P3 | — | Submodule |
 
 ## Platform-adjacent
 
-| ID | Path | Status | Notes |
-|----|------|--------|-------|
-| **atlas-extension** | `projects/atlas-extension/` | secondary | IMP-1 / issue #2 |
+| ID | Path | Notes |
+|----|------|-------|
+| atlas-extension | `projects/atlas-extension/` | IMP-1 |
 
-## Templates
+## Legacy / non-product (D20)
 
 | Path | Role |
 |------|------|
-| `projects/_template/` | Canonical state template |
-| `projects/templates/project_template/` | Older — prefer `_template` |
+| `projects/forge/` | Atlas App-host experiment (IApplication shell). **Not** the product pipeline. Do not open as active Forge work. |
+| `projects/excelion/projects/exelion_forge/` | Nested stub README only. Ignore. |
 
-## Duplicate / clarify later (P3)
+Deletion or archive move of legacy paths = separate issue + owner local.
 
-| Path | Issue |
-|------|--------|
-| `projects/forge/` | vs excelion-forge |
-| `projects/excelion/projects/exelion_forge/` | Nested stub |
+## Templates
+
+`projects/_template/` — use for new project state.
 
 ## Deprecated
 
-**SERA (project)** — D19 — no `projects/sera`
+SERA project — D19.
