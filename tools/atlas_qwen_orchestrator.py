@@ -2,12 +2,15 @@
 """
 Atlas Qwen3 Max-Performance Orchestrator
 ----------------------------------------
-Connects to Ollama at http://192.168.219.254:11434
+Connects to Ollama (OLLAMA_HOST, default http://192.168.219.254:11434)
 Features:
  - CoT Thinking & Chain-of-Thought Prompting
  - Git Context Auto-Resolver (state/CURRENT_STATE.md, AGENTS.md, TASK_MAP.md)
  - Deterministic JSON Tool Call Parser (execute_cli, read_file, write_file)
  - CLI Execution & Evidence Feedback Loop
+ - Domain Isolation (FORBIDDEN_DIRECTORIES)
+
+Workspace root: ATLAS_ROOT env, else process cwd (extension spawns with cwd=repo root).
 """
 
 import sys
@@ -20,7 +23,7 @@ import subprocess
 from pathlib import Path
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://192.168.219.254:11434")
-WORKSPACE_ROOT = Path("/mnt/d/Atlas")
+WORKSPACE_ROOT = Path(os.environ.get("ATLAS_ROOT", os.getcwd())).resolve()
 
 SYSTEM_PROMPT = """You are Atlas Agent, an autonomous coding AI pair programming with the USER in Atlas DevOS.
 You are powered by Qwen. You must maximize your reasoning capabilities using Chain-of-Thought (CoT).
@@ -76,6 +79,7 @@ def check_ollama_connection():
                 data = json.loads(resp.read().decode())
                 models = [m.get("name") for m in data.get("models", [])]
                 sys.stderr.write(f"[+] Connected to Ollama at {OLLAMA_HOST}\n")
+                sys.stderr.write(f"[+] Workspace root: {WORKSPACE_ROOT}\n")
                 sys.stderr.write(f"[+] Available Models ({len(models)}): {', '.join(models)}\n")
                 return models
     except Exception as e:
