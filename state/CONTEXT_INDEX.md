@@ -7,11 +7,12 @@
 | Path | Why |
 |------|-----|
 | `state/CURRENT_STATE.md` | Where we are now |
-| `state/TASK_MAP.md` | What is open — **Owner local TODO (L-1…L-10)** |
+| `state/TASK_MAP.md` | Open work — G-*, L-*, IMP-* |
 | `docs/07_ROADMAP/ATLAS_GIT_REBUILD_PLAN.md` | Rebuild plan |
 | `README.md` | Entry map |
-| `docs/DECISIONS.md` | Living decision log (from conversation analysis) |
+| `docs/DECISIONS.md` | Living decision log |
 | `docs/GLOSSARY.md` | Concept glossary |
+| `docs/process/PROJECT_STATE_SCHEMA.md` | Atlas vs project state; 3 AI modes |
 
 ## By task type
 
@@ -22,14 +23,20 @@
 - `AGENTS.md` — paste-related rules into Cline instructions
 - `docs/04_IDE_EXTENSION/BOUNDARY.md` — if using custom extension too (on `impl/atlas-extension`)
 
+### Domain project work
+
+- `docs/process/PROJECT_STATE_SCHEMA.md`
+- `projects/_template/state/` (after G3)
+- `projects/<name>/state/CURRENT_STATE.md` → TASK_MAP → CONTEXT_INDEX only
+
 ### Docs / rebuild
 
 - `docs/02_CONTEXT_STATE/SCHEMA.md`
 - `docs/03_PERCEPTION/SCOPE.md`
 - `docs/04_IDE_EXTENSION/SPEC.md`
 - `archive/README.md`
-- `docs/process/DUPLICATE_POLICY.md` — Original Conversations duplicate rules
-- `docs/process/CORE_INDEX.md` — Core-grade conversation index
+- `docs/process/DUPLICATE_POLICY.md`
+- `docs/process/CORE_INDEX.md`
 
 ### Core philosophy
 
