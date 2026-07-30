@@ -52,3 +52,6 @@ logs/
 *.flac
 *.wav
 *.zip
+
+# Ignore Cline rules file
+.clinerules

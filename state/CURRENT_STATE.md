@@ -23,8 +23,8 @@ STATUS: P1–P3 **Done**. D20 Forge path fixed. Optional G6 only on Git.
 
 ## Next
 
-**집 PC — L-5** Cline 보완 마무리 점검 완료  
-**L-6…L-10** 대기 중 (업데이트 필요)  
+**집 PC — L-6** untrack / gitignore 정리 완료  
+**L-7** 대기 중 (업데이트 필요)  
 Git 선택 — G6
 
 ## Do not
