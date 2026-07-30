@@ -2,6 +2,7 @@
 
 > Documentation rebuild track is closed except optional local tag. Implementation work uses issue + branch.
 > **Owner local** rows are actions only the human can run on their machine (no GitHub API).
+> **Git-only (G-*)** rows can be done via GitHub without home PC.
 
 ## Docs rebuild (RB-*)
 
@@ -26,7 +27,23 @@
 | AF-3 | `docs/process/DUPLICATE_POLICY.md` | **Done** |
 | AF-4 | Exact duplicate delete (061/062/063/065/066 Named + Original + summary) | **Done** |
 | AF-5 | `docs/process/CORE_INDEX.md` + CONTEXT_INDEX sync | **Done** |
-| AF-6 | Open Questions → GitHub issues | **Done** — [#4](https://github.com/ln9swrd/atlas/issues/4) Q01 VERIFY · [#5](https://github.com/ln9swrd/atlas/issues/5) Q03 SERA/Kraken · [#6](https://github.com/ln9swrd/atlas/issues/6) Q02 SPRINT · [#7](https://github.com/ln9swrd/atlas/issues/7) Q04 Forge |
+| AF-6 | Open Questions → GitHub issues | **Done** — [#4](https://github.com/ln9swrd/atlas/issues/4) · [#5](https://github.com/ln9swrd/atlas/issues/5) · [#6](https://github.com/ln9swrd/atlas/issues/6) · [#7](https://github.com/ln9swrd/atlas/issues/7) |
+| AF-7 | D19 프로젝트 SERA 폐기 (DECISIONS / GLOSSARY / PROJECT_MAP / REGISTRY) | **Done** |
+
+## Git-only plan (G-*) — 집 PC 불필요
+
+순서대로. 중단 시 이 표의 Status만 보면 이어갈 수 있음.
+
+| ID | Task | Status |
+|----|------|--------|
+| G1 | `CURRENT_STATE` + `TASK_MAP`에 D19·G-* 반영 (본 커밋) | **Done** |
+| G2 | Atlas ≠ Project + 3모드 공통 state 스키마 → `docs/process/PROJECT_STATE_SCHEMA.md` | **Pending** |
+| G3 | `projects/_template/state/` (CURRENT / TASK / CONTEXT 3파일) | **Pending** |
+| G4 | issue #5 정리 (프로젝트 SERA 폐기 반영, 남은 범위만) | **Pending** |
+| G5 | (선택) 잔여 Sera=project 문구 정리 | **Pending** |
+| G6 | (선택) Open Q #4·#6·#7 문서 초안만 | **Pending** |
+
+**권장 다음 Git 작업:** G2 → G3 → G4.
 
 ## Implementation (repo)
 
@@ -58,6 +75,7 @@ Priority order. Check off in this file or in issue #2 comments when done.
 - **Primary work surface:** Cline (or Roo if L-5 fails) + local Ollama — not Continue as main agent; not growing custom extension into a full agent.
 - **Continue:** optional autocomplete only.
 - **Custom `projects/atlas-extension`:** secondary until L-5 proves Cline stable; then deprecate or keep as thin panel only.
+- **프로젝트 SERA:** 폐기 (D19). 클라우드 AI는 모드명만.
 
 ## Out of scope (do not start without new issue)
 
