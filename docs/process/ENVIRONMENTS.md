@@ -21,7 +21,7 @@ Assigned Tasks:
 - Rigging
 - Documentation
 - Planning
-- Atlas and Sera development
+- Atlas DevOS work (docs/state; not a separate SERA project)
 
 ### DEV_HOME
 Role: Integration
@@ -30,7 +30,7 @@ Capabilities:
 - Unreal Engine
 - Blender
 - GPU
-- AI models
+- AI models (Ollama / local)
 
 Limitations:
 - None specified
@@ -41,3 +41,4 @@ Assigned Tasks:
 - Rendering
 - Packaging
 - Animation review
+- Cline + Ollama setup (L-1…L-5)
