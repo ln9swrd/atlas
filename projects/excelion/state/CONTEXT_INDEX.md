@@ -15,7 +15,10 @@
 | Path | Why |
 |------|-----|
 | `projects/excelion/backlog.json` | Backlog |
+| `projects/excelion/state/DESIGN_REVIEW_2026-07-30.md` | 기획·설계 주제별 점검 (2026-07-30) |
 | `projects/excelion-forge/state/CURRENT_STATE.md` | Sister pipeline |
+| `projects/excelion-forge/state/GIT_REFERENCE_BLENDER.md` | Forge·Blender 깃 참고 |
+| `projects/excelion-forge/state/GIT_REFERENCE_UNREAL.md` | Forge·Unreal 깃 참고 |
 
 ## Forbidden
 
