@@ -52,11 +52,13 @@ Format: ID | Decision | Notes
 
 ---
 
-## Open (아직 확정 전)
+## Open (아직 확정 전) → Issues
 
-- VERIFY 실제 코드 구현 범위
-- SPRINT-009~029 설계의 구현·폐기·보관 상태
-- SERA / Kraken 코드·디렉터리 경계 최종화
-- Forge Phase 1→2 전환 기준
+| 항목 | Issue |
+|------|-------|
+| VERIFY 실제 코드 구현 범위 | [#4](https://github.com/ln9swrd/atlas/issues/4) |
+| SERA / Kraken 코드·디렉터리 경계 최종화 | [#5](https://github.com/ln9swrd/atlas/issues/5) |
+| SPRINT-009~029 설계 구현·폐기·보관 상태 | [#6](https://github.com/ln9swrd/atlas/issues/6) |
+| Forge Phase 1→2 전환 기준 | [#7](https://github.com/ln9swrd/atlas/issues/7) |
 
-이 항목들은 `ANALYSIS_REPORT.md` Open Questions를 이슈로 등록 후 확정한다.
+확정되면 위 이슈를 닫고 본 Decision Log에 ID를 추가한다.
