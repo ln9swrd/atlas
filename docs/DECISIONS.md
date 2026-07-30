@@ -39,9 +39,10 @@ Format: ID | Decision | Notes
 | ID | Decision | Notes |
 |----|----------|-------|
 | D10 | 프로젝트 docs: 파일명 영어, 본문 한국어, 필수 VISION/ROADMAP/CHANGELOG | PROJECT_DOC_STANDARD |
-| D11 | SERA = 프로젝트 목록이 아니라 Atlas 지능 계층 | 계층 경계 명확화 |
-| D12 | Kraken = 실행·자동화 계층 | SERA와 역할 분리 |
+| D11 | SERA ≠ 프로젝트 목록 (계층 용어로만 사용 가능) | **D19로 프로젝트 지위 폐기** |
+| D12 | Kraken = 실행·자동화 계층 | 프로젝트 아님 |
 | D16 | 대화 기록 → 문서 → 프로젝트 자산 | Original Conversations → Named → Core 승격 경로 |
+| D19 | **프로젝트 SERA 폐기** | 독립 프로젝트·레지스트리 항목 종료. 신규 `projects/sera` 금지. 과거 문서는 archive. 클라우드 AI는 모드명으로만 필요 시 사용 (프로젝트 아님) |
 
 ## Domain Isolation
 
@@ -57,7 +58,7 @@ Format: ID | Decision | Notes
 | 항목 | Issue |
 |------|-------|
 | VERIFY 실제 코드 구현 범위 | [#4](https://github.com/ln9swrd/atlas/issues/4) |
-| SERA / Kraken 코드·디렉터리 경계 최종화 | [#5](https://github.com/ln9swrd/atlas/issues/5) |
+| SERA / Kraken 코드·디렉터리 경계 | [#5](https://github.com/ln9swrd/atlas/issues/5) — 프로젝트 SERA는 D19로 폐기; 남은 것은 Kraken·클라우드 모드 명명만 |
 | SPRINT-009~029 설계 구현·폐기·보관 상태 | [#6](https://github.com/ln9swrd/atlas/issues/6) |
 | Forge Phase 1→2 전환 기준 | [#7](https://github.com/ln9swrd/atlas/issues/7) |
 
