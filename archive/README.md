@@ -10,17 +10,17 @@ Live sources: `docs/`, `state/`, root `README.md`.
 |------|---------|
 | `summary/` | Numbered conversation summaries 000–086 |
 | `recovered/` | `*_RECOVERED*`, baseline duplicates |
-| `conversations/` | Raw / named conversation exports |
+| `legacy_files/` | Pre-rebuild root/legacy snapshots |
+| `conversations/` | (optional) Raw / named conversation exports |
 
 ## Migration status
 
-**Current:** Summaries still live at:
+**Done (verified 2026-07-30):** Numbered summaries **000–086** live at:
 
-`obsidian/Archive/summary/` (000–086)
+`archive/summary/`
 
-**Target:** `archive/summary/` (same filenames)
-
-Bulk move is a separate chore commit series (no content rewrite). Until complete, treat `obsidian/Archive/summary/` as the archive body.
+- `obsidian/Archive/summary/` path does **not** exist (no duplicate summary tree).
+- Raw / named conversation dumps remain under `obsidian/Archive/` (`Named Conversations/`, `Original Conversations/`, `Atlas_Related/`). Those are **not** the numbered summary set; treat them as historical bulk, not the archive body for operational context.
 
 ## Rules
 
