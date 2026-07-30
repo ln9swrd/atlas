@@ -1,4 +1,54 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.venv/
+venv/
+env/
+
+# Node / VS Code extension
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.vsix
+
+# Optional: compiled extension output (uncomment if out/ should not be tracked)
+# projects/atlas-extension/out/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
 *.bak
 *.diff
+
+# Logs
+logs/
+*.log
+
+# Large / binary assets (adjust if a project needs them tracked)
+*.blend
+*.blend1
+*.mp3
+*.flac
+*.wav
+*.zip
