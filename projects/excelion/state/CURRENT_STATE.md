@@ -6,7 +6,7 @@ Atlas map: `state/PROJECT_MAP.md`
 ACTIVE_TARGET: 기획 갭 정리 완료; next = 세계관 단일화(우선순위 1)  
 ACTIVE_MODE: cline  
 ACTIVE_BRANCH: n/a (docs-first until Unreal work resumes)  
-STATUS: planning gaps + AI pipeline tools saved 2026-07-30; design review in state; no full game implementation track on main
+STATUS: planning gaps + AI pipeline tools + 파이프라인 프로그램 구체화 saved 2026-07-30; design review in state; no full game implementation track on main
 
 ## Next one thing
 
@@ -18,6 +18,7 @@ STATUS: planning gaps + AI pipeline tools saved 2026-07-30; design review in sta
 - Chat 기획·설계 점검 → `state/DESIGN_REVIEW_2026-07-30.md`
 - Chat 기획 보완 갭 정리 → `state/PLANNING_GAPS_2026-07-30.md`
 - Chat AI 지원 파이프라인 도구 정리 → `state/AI_PIPELINE_TOOLS_2026-07-30.md`
+- Chat 파이프라인 전체 소화 프로그램 구체화 → `state/PIPELINE_PROGRAMS_2026-07-30.md`
 - Forge Blender/Unreal 깃 참고 → sister `excelion-forge/state/GIT_REFERENCE_*.md`
 
 ## Blockers

@@ -17,6 +17,8 @@
 | `projects/excelion/backlog.json` | Backlog |
 | `projects/excelion/state/DESIGN_REVIEW_2026-07-30.md` | 기획·설계 주제별 점검 (2026-07-30) |
 | `projects/excelion/state/PLANNING_GAPS_2026-07-30.md` | 기획 보완 갭·우선순위 (2026-07-30) |
+| `projects/excelion/state/AI_PIPELINE_TOOLS_2026-07-30.md` | AI 지원 파이프라인 도구 요약 |
+| `projects/excelion/state/PIPELINE_PROGRAMS_2026-07-30.md` | 전체 파이프라인 프로그램 구체화 |
 | `projects/excelion-forge/state/CURRENT_STATE.md` | Sister pipeline |
 | `projects/excelion-forge/state/GIT_REFERENCE_BLENDER.md` | Forge·Blender 깃 참고 |
 | `projects/excelion-forge/state/GIT_REFERENCE_UNREAL.md` | Forge·Unreal 깃 참고 |
