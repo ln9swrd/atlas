@@ -14,6 +14,7 @@
 | T-10 | Forge 최소 모듈 스펙 (Rig Validator + Export Guard) | Pending | both | PIPELINE_PROGRAMS Next |
 | T-11 | 1인 개발 관점 기획·설계 타당성 평가 | Done | both | SOLO_DEV_REVIEW_2026-07-30.md |
 | T-12 | Steam 유료 판매 매출 관점 타당성 평가 | Done | both | STEAM_REVENUE_REVIEW_2026-07-30.md |
+| T-13 | 비즈니스(마케팅) 에이전트 개발 타당성 평가 | Done | both | BUSINESS_AGENT_REVIEW_2026-07-30.md |
 
 ## Status
 
