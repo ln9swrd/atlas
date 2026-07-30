@@ -7,14 +7,18 @@ This registry defines the known projects in Atlas and their current lifecycle st
 | Name | Status | Type | Priority | Owner | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Atlas | maintenance | platform | medium | Marie | AI-based development operating system |
-| Sera | implementation | ai_agent | high | Sera | Design and planning specialist AI |
 | Exelion | active | game_ip | critical | Marie | Main product project centered on mecha IP |
+| Excelion Forge | active | pipeline | high | Marie | Parametric / Blender asset pipeline |
+| PrintGuard | planning | business | medium | Marie | Pre-print QA initiative |
 | Coin-S | planning | software | low | Marie | Future investment analysis project |
+| ~~Sera~~ | **deprecated** | — | — | — | **D19 (2026-07-30): 프로젝트 폐기.** 신규 구현·레지스트리 활성 항목 아님 |
 
 ## Project Intent
 
 - Atlas: Build and maintain the operating system that coordinates agents, rules, execution, and review.
-- Sera: Implement the design and planning intelligence layer for architecture and creative decision support.
-- Exelion: Deliver the main product experience and assets around the Exelion IP. See [projects/exelion/PROJECT_CHARTER.md](projects/exelion/PROJECT_CHARTER.md).
-- Use [PROJECT_LIFECYCLE.md](PROJECT_LIFECYCLE.md) as the shared lifecycle reference for project phase reporting.
-- Coin-S: Prepare a future software project for analysis-oriented workflows.
+- Exelion: Deliver the main product experience and assets around the Exelion IP.
+- Excelion Forge: Parametric asset pipeline on Atlas.
+- PrintGuard / Coin-S: As listed above.
+- **Sera (project):** Abandoned. Do not implement as standalone project. Optional cloud AI usage is a **work mode**, not a registry project.
+
+Use PROJECT_LIFECYCLE.md as the shared lifecycle reference for project phase reporting where present.
