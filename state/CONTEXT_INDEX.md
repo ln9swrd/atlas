@@ -29,6 +29,7 @@
 - `docs/04_IDE_EXTENSION/SPEC.md`
 - `archive/README.md`
 - `docs/process/DUPLICATE_POLICY.md` — Original Conversations duplicate rules
+- `docs/process/CORE_INDEX.md` — Core-grade conversation index
 
 ### Core philosophy
 
@@ -47,6 +48,7 @@
 - `archive/summary/` — numbered summaries 000–086 (canonical)
 - `obsidian/Archive/` — raw dumps (not operational context)
 - `obsidian/Archive/Original Conversations/ANALYSIS_REPORT.md` — source analysis
+- `docs/process/CORE_INDEX.md` — when intentionally reviewing Core conversations
 
 ## Token discipline
 
