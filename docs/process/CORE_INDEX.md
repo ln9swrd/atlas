@@ -2,7 +2,7 @@
 
 Source: ANALYSIS_REPORT Phase 0 grade + Named Conversations catalog
 Policy: `docs/process/DUPLICATE_POLICY.md`
-Updated: 2026-07-30
+Updated: 2026-07-30 (exact duplicates removed)
 
 > Archive is **not** operational context. Use this index only when intentionally reviewing historical decisions.
 
@@ -35,17 +35,12 @@ Updated: 2026-07-30
 | 015 | `015_Cline_병렬_툴콜_및_서브에이전트_최적설정_가이드.md` | Cline 설정 |
 | 070 | `070_Blender_AI_애드온_및_툴체인_조사.md` | Blender AI 툴체인 |
 
-## Exact 중복 (canonical = 낮은 번호)
+## Exact 중복 — 삭제 완료 (2026-07-30)
 
-| Canonical | Duplicate Named |
-|-----------|-----------------|
-| 055 | 061 `*_중복본` |
-| 056 | 062 |
-| 057 | 063 |
-| 059 | 065 |
-| 060 | 066 |
+Canonical만 유지: 055, 056, 057, 059, 060.
+제거됨: 061, 062, 063, 065, 066 (Named / Original / summary).
 
-Near: 058 ≈ 064 (둘 다 유지)
+Near: 058 ≈ 064 (둘 다 유지).
 
 상세: `docs/process/DUPLICATE_POLICY.md`
 
