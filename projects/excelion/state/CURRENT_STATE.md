@@ -3,10 +3,10 @@
 Schema: `docs/process/PROJECT_STATE_SCHEMA.md`  
 Atlas map: `state/PROJECT_MAP.md`
 
-ACTIVE_TARGET: 1인 개발 관점 평가 완료; next = Prototype용 단순 WORLD 채택 + 수치·보스 초안  
+ACTIVE_TARGET: 1인 개발·매출 관점 평가 완료; next = Prototype용 단순 WORLD 채택 + 수치·보스 초안  
 ACTIVE_MODE: cline  
 ACTIVE_BRANCH: n/a (docs-first until Unreal work resumes)  
-STATUS: planning gaps + pipeline tools + 1인 개발 타당성 평가 saved 2026-07-30; design review in state; no full game implementation track on main
+STATUS: planning + solo-dev + Steam revenue reviews saved 2026-07-30; no full game implementation track on main
 
 ## Next one thing
 
@@ -21,6 +21,7 @@ STATUS: planning gaps + pipeline tools + 1인 개발 타당성 평가 saved 2026
 - Chat AI 지원 파이프라인 도구 정리 → `state/AI_PIPELINE_TOOLS_2026-07-30.md`
 - Chat 파이프라인 전체 소화 프로그램 구체화 → `state/PIPELINE_PROGRAMS_2026-07-30.md`
 - Chat 1인 개발 관점 기획·설계 타당성 평가 → `state/SOLO_DEV_REVIEW_2026-07-30.md`
+- Chat Steam 유료 판매 매출 관점 평가 → `state/STEAM_REVENUE_REVIEW_2026-07-30.md`
 - Forge Blender/Unreal 깃 참고 → sister `excelion-forge/state/GIT_REFERENCE_*.md`
 
 ## Blockers
@@ -35,3 +36,4 @@ STATUS: planning gaps + pipeline tools + 1인 개발 타당성 평가 saved 2026
 - Mark Done without evidence
 - Depend on deprecated project SERA (D19)
 - 문서/도구 우선으로 Prototype 플레이 빌드를 뒤로 미루지 말 것 (SOLO_DEV_REVIEW)
+- Steam 매출을 Prototype 재미 검증 전에 기대로 잡지 말 것 (STEAM_REVENUE_REVIEW)

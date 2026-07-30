@@ -20,6 +20,7 @@
 | `projects/excelion/state/AI_PIPELINE_TOOLS_2026-07-30.md` | AI 지원 파이프라인 도구 요약 |
 | `projects/excelion/state/PIPELINE_PROGRAMS_2026-07-30.md` | 전체 파이프라인 프로그램 구체화 |
 | `projects/excelion/state/SOLO_DEV_REVIEW_2026-07-30.md` | 1인 개발 관점 기획·설계 타당성 평가 |
+| `projects/excelion/state/STEAM_REVENUE_REVIEW_2026-07-30.md` | Steam 유료 판매 매출 관점 평가 |
 | `projects/excelion-forge/state/CURRENT_STATE.md` | Sister pipeline |
 | `projects/excelion-forge/state/GIT_REFERENCE_BLENDER.md` | Forge·Blender 깃 참고 |
 | `projects/excelion-forge/state/GIT_REFERENCE_UNREAL.md` | Forge·Unreal 깃 참고 |
