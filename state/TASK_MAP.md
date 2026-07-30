@@ -19,7 +19,7 @@
 
 | ID | Task | Status |
 |----|------|--------|
-| L-1…L-5 | Ollama + Cline | Pending |
+| L-1…L-5 | Ollama + Cline | **Done** |
 | L-6…L-10 | untrack, merge, tag, PR | Pending |
 
 ## Implementation
