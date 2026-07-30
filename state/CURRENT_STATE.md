@@ -1,60 +1,69 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: Owner local setup — **Cline + Ollama** as primary Atlas work surface  
-ACTIVE_BRANCH: `impl/atlas-extension` (repo work) · daily coding on **local Cline**  
-ACTIVE_PHASE: Stabilize local agent (not more custom extension features)  
-STATUS: Docs/meta track largely closed; **your machine** must finish L-1…L-10 in `state/TASK_MAP.md`
+ACTIVE_TARGET: (1) Git-only **G2** schema 또는 (2) Owner local **L-1** Ollama  
+ACTIVE_BRANCH: `main` (docs/state) · `impl/atlas-extension` (extension)  
+ACTIVE_PHASE: 상태 Git 기록 유지 + 로컬 에이전트 안정화 대기  
+STATUS: AF-* / D19 Done. Git 계획 G1 Done → 다음 G2. 집 PC는 L-1부터.
 
 ## Decision (2026-07-30)
 
 | Choice | Rationale |
 |--------|-----------|
-| Primary agent = **Cline** (fallback **Roo**) | Matches agent + tools need; better fit than Continue for Atlas |
-| Continue = optional only | Chat/autocomplete; upstream maintenance weak for main agent role |
-| Do **not** fork Cline/Continue | Fix via num_ctx, settings, Atlas rules |
-| Custom extension | Secondary; packaging/docs on issue #2 / PR #3 — not the long-term full agent |
+| Primary agent = **Cline** (fallback **Roo**) | Matches agent + tools need |
+| Continue = optional only | 메인 에이전트 아님 |
+| Do **not** fork Cline/Continue | num_ctx·settings·rules로 대응 |
+| Custom extension | Secondary; issue #2 / PR #3 |
+| **프로젝트 SERA 폐기 (D19)** | 클라우드 AI는 모드만, 프로젝트 아님 |
 
 ## Scope agreement
 
 | Area | Status |
 |------|--------|
-| Domain Isolation (orchestrator blacklist) | Done |
+| Domain Isolation | Done |
 | Docs rebuild RB-* | Done except RB-F2 tag + local untrack |
-| Owner local Cline/Ollama path | **Pending** — see TASK_MAP L-1…L-5 |
-| Extension packaging on `impl/atlas-extension` | Open — L-6…L-8, PR #3 |
+| Analysis follow-up AF-* / D19 | **Done** |
+| Git-only G1 | **Done** (TASK_MAP에 G-* 기록) |
+| Git-only G2–G6 | Pending — see `state/TASK_MAP.md` |
+| Owner local L-1…L-5 | **Pending** |
+| Extension L-6…L-10 / PR #3 | Pending after L-5 |
 | Camera / vision | Out of scope |
-| `core/`, `src/`, `atlas-runtime/` | No modify without issue |
 
-## Next one thing (owner)
+## Next
 
-1. **L-1** Create Ollama model with `num_ctx` ≥ 32768  
-2. **L-2…L-4** Point Cline at it + harden + paste Atlas rules  
-3. **L-5** Smoke test (no loop)  
-4. Then L-6…L-10 (git untrack, merge, tag, PR)
+**Git (원격에서 가능)**  
+1. **G2** `docs/process/PROJECT_STATE_SCHEMA.md`  
+2. G3 `projects/_template/state/`  
+3. G4 issue #5 정리  
 
-Full checklist: `state/TASK_MAP.md` → **Owner local TODO**
+**집 PC**  
+1. **L-1** Ollama `num_ctx` ≥ 32768  
+2. L-2…L-5 Cline 연결·스모크  
+3. 이후 L-6…L-10  
+
+Full tables: `state/TASK_MAP.md`
 
 ## Verified milestones (repo)
 
-- Ollama host used in project: `http://192.168.219.254:11434`
-- `archive/summary/` 000–086 canonical
+- Ollama host 기록: `http://192.168.219.254:11434`
+- `archive/summary/` 000–086 canonical; exact dup 061/062/063/065/066 removed
+- Issues #4–#7 open questions; #5 updated for D19
 - Issue #2, branch `impl/atlas-extension`, draft PR #3
-- Orchestrator: workspace root from `ATLAS_ROOT` or cwd (not hardcoded `/mnt/d/Atlas`) on impl branch
 
 ## Fixed requirements (charter)
 
-1. VS Code + **local LLM** (Cline/Roo + Ollama preferred over cloud-only)
+1. VS Code + **local LLM** (Cline/Roo + Ollama preferred)
 2. **Git** as source of state (`state/`)
 3. Code + screen + images; **camera = 0**
 
 ## Blockers
 
-- None blocking L-1 start
-- L-5 failure → try Roo with same rules before any fork
+- None blocking L-1 or G2
+- L-5 failure → Roo before any fork
 
 ## Do not
 
-- Auto-approve all Cline terminal/file tools on local models
+- Auto-approve all Cline write/terminal on local models
 - Dump `archive/` or `obsidian/` into agent context
 - Land extension features on `main` without PR from `impl/atlas-extension`
+- Treat SERA as a project (D19)
 - Expand Runtime/Plugin/Knowledge without new issues
