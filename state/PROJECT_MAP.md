@@ -1,7 +1,7 @@
 # PROJECT_MAP
 
 > Atlas(DevOS) ≠ domain project. Schema: `docs/process/PROJECT_STATE_SCHEMA.md`  
-> Updated: 2026-07-30 — inventory of what exists under `projects/`
+> Updated: 2026-07-30 — P2 state seed for P0 projects
 
 ## System (not domain projects)
 
@@ -16,43 +16,31 @@
 
 | ID | Path | Status | Priority | Has `state/`? | Notes |
 |----|------|--------|----------|---------------|-------|
-| **excelion** | `projects/excelion/` | active | **P0** | No → add from `_template` | Game/IP. Charter, backlog, nested `projects/exelion_forge/` (legacy nest) |
-| **excelion-forge** | `projects/excelion-forge/` | active | **P0** | No → add from `_template` | Canonical Forge pipeline (code + `docs/`). Issue #7 Phase gate |
-| **printguard** | `projects/printguard/` | planning | P2 | No | Docs only (`HANDOVER`, `PROJECT_STATUS`) |
-| **coin-s** | `projects/coin-s/` | planning / submodule | P3 | Unknown | Git submodule; low Atlas coupling |
+| **excelion** | `projects/excelion/` | active | **P0** | **Yes** | Game/IP |
+| **excelion-forge** | `projects/excelion-forge/` | active | **P0** | **Yes** | Canonical Forge; issue #7 |
+| **printguard** | `projects/printguard/` | planning | P2 | No | Docs only |
+| **coin-s** | `projects/coin-s/` | planning / submodule | P3 | Unknown | Submodule |
 
-## Platform-adjacent (not product IP)
+## Platform-adjacent
 
-| ID | Path | Status | Priority | Notes |
-|----|------|--------|----------|-------|
-| **atlas-extension** | `projects/atlas-extension/` | secondary | P1 (after L-5) | VS Code extension; IMP-1 / issue #2. Prefer Cline as primary surface |
+| ID | Path | Status | Notes |
+|----|------|--------|-------|
+| **atlas-extension** | `projects/atlas-extension/` | secondary | IMP-1 / issue #2 |
 
-## Templates (not projects)
+## Templates
 
 | Path | Role |
 |------|------|
-| `projects/_template/` | **Canonical** state template (CURRENT / TASK / CONTEXT) |
-| `projects/templates/project_template/` | Older charter/backlog template — prefer `_template` for new work |
+| `projects/_template/` | Canonical state template |
+| `projects/templates/project_template/` | Older — prefer `_template` |
 
-## Duplicate / clarify later
+## Duplicate / clarify later (P3)
 
 | Path | Issue |
 |------|--------|
-| `projects/forge/` | Smaller/older Forge tree vs **excelion-forge** — do not treat as second product without Decision |
-| `projects/excelion/projects/exelion_forge/` | Nested stub; prefer `projects/excelion-forge/` as canonical |
+| `projects/forge/` | vs excelion-forge |
+| `projects/excelion/projects/exelion_forge/` | Nested stub |
 
 ## Deprecated
 
-| Name | Rule |
-|------|------|
-| **SERA (project)** | D19 — no `projects/sera` |
-
-## New project checklist
-
-1. Copy `projects/_template/state/` → `projects/<name>/state/`
-2. Register row in this file + `docs/process/PROJECT_REGISTRY.md`
-3. Work modes: `cline` | `cloud` | `both` on shared state files only
-
-## Legacy code (Atlas core — not domain apps)
-
-`core/`, `src/`, `atlas-runtime/`, `tools/` — snapshot; no modify without issue.
+**SERA (project)** — D19 — no `projects/sera`
