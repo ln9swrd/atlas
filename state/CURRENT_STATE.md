@@ -24,7 +24,7 @@ STATUS: P1–P3 **Done**. D20 Forge path fixed. Optional G6 only on Git.
 ## Next
 
 **집 PC — L-6** untrack / gitignore 정리 완료  
-**L-7** 대기 중 (업데이트 필요)  
+**L-7** rebase 완료 (impl/atlas-extension @ 6507877)  
 Git 선택 — G6
 
 ## Do not
