@@ -5,6 +5,7 @@
 > 작성일: 2026-07-29  
 > 저장소: `ln9swrd/atlas`  
 > 목적: 세 가지 고정 요구를 기준으로 Git 위에 Atlas 지식·상태·스펙을 다시 앉힌다.
+> G5 (2026-07-30): 프로젝트 SERA 폐기(D19) 반영 — 아래 계층 문구 갱신.
 
 ---
 
@@ -12,7 +13,7 @@
 
 | # | 요구 | 의미 (코드 없이) |
 |---|------|------------------|
-| **1** | VS Code + **로컬 LLM** 연결 익스텐션 제공 | Atlas의 “작업 창구”는 IDE 확장. 실행 모델은 로컬(Ollama 등). 클라우드 AI는 선택·보조 |
+| **1** | VS Code + **로컬 LLM** 연결 익스텐션 제공 | Atlas의 “작업 창구”는 IDE 확장. 실행 모델은 로컬(Ollama 등). 클라우드 AI는 선택·보조 **모드** |
 | **2** | **Git으로 상태·컨텍스트 참조** | 진행·결정·현재 작업은 대화창이 아니라 **저장소 문서/메타**가 단일 출처 |
 | **3** | **코드 전체 인식** + **화면·이미지 인식** / **카메라 = 0** | Perception: Code → Runtime/로그 → Screen → Image. 카메라·실세계 영상은 범위 밖 |
 
@@ -42,7 +43,7 @@ atlas/                          # 루트 = Atlas DevOS 지식 본체
 │   ├── 02_CONTEXT_STATE/       # Git으로 참조할 상태·컨텍스트 스키마 (문서)
 │   ├── 03_PERCEPTION/          # Code/Screen/Image 인식 범위 (카메라 제외 명시)
 │   ├── 04_IDE_EXTENSION/       # VS Code + 로컬 LLM 확장 **스펙만** (구현 X)
-│   ├── 05_AGENTS/              # SERA / Kraken / Cline 역할
+│   ├── 05_AGENTS/              # Cline / Cloud mode / Kraken 역할 (SERA 프로젝트 아님)
 │   ├── 06_OPERATIONS/          # start/next/end, 일일 루프, 문서 갱신 절차
 │   ├── 07_ROADMAP/             # Alpha scope, 재구축 단계 (본 문서 위치)
 │   └── adr/                    # ADR-001~ 확정 결정만
@@ -54,6 +55,7 @@ atlas/                          # 루트 = Atlas DevOS 지식 본체
 │   └── CONTEXT_INDEX.md        # “지금 읽을 문서 목록” (토큰 절감용 지도)
 │
 ├── projects/                   # 앱 단위 (문서만 우선)
+│   ├── _template/state/        # 공통 state 스키마 템플릿
 │   ├── excelion/docs/
 │   ├── excelion-forge/docs/
 │   ├── printguard/docs/
@@ -133,15 +135,7 @@ atlas/                          # 루트 = Atlas DevOS 지식 본체
 
 1. `docs/00`~`07`, `docs/adr` 폴더 생성
 2. summary·기존 docs에서 **공식 1본만** 골라 배치 (이동 또는 짧은 인덱스 + 링크)
-   - 비전: 000, 038, 020
-   - Core: 005, 006, 007, Constitution
-   - Context/State: 013, 019, 047, 052, 055, 069
-   - Perception: 037 + 카메라 제외 문구
-   - IDE/로컬 LLM: 003, 018, 039, 040, 079 → 스펙 문서로 재작성(복붙 요약 수준, 신규 코드 없음)
-   - Agents: 048, 080, 085
-   - Operations: 001, 002, 016
-   - Roadmap/Alpha: 026, 027, 081
-3. ADR 내용을 `docs/adr/`에 **결정만** 남기기 (구현 상태 주장과 코드 검증은 이번 범위에서 재검증하지 않음 — 문서상 “설계 결정”으로 표기)
+3. ADR 내용을 `docs/adr/`에 **결정만** 남기기
 
 ### Phase D — state/ 도입 (Git 컨텍스트의 심장)
 
@@ -151,30 +145,15 @@ atlas/                          # 루트 = Atlas DevOS 지식 본체
 
 ### Phase E — 3요구를 README에 헌장으로 고정
 
-README 상단:
-
-- Atlas가 제공할 것: (1) VS Code+로컬 LLM 확장 **계획/스펙** (2) Git 기반 상태·컨텍스트 (3) 코드·화면·이미지 인식 범위 / 카메라 제외
-- 지금 저장소 역할: **지식·상태·스펙의 단일 출처**
-- 하지 않는 것: 이 단계에서 프로그램 개발·수정
-
 ### Phase F — 병합·태그
 
 1. 리뷰 후 `main` 병합
 2. 태그: `atlas-docs-rebuild-v1`
-3. (선택) 이후 구현 브랜치는 `feat/vscode-extension` 등으로 **분리** — 지금 계획에 코드 없음
+3. (선택) 이후 구현 브랜치는 `feat/vscode-extension` 등으로 **분리**
 
 ---
 
 ## 5. 커밋 단위 제안 (이력 깨끗하게)
-
-1. `chore: tag and branch for docs rebuild`
-2. `chore: move summary and recovered materials to archive/`
-3. `docs: create docs/ skeleton 00–07 and adr/`
-4. `docs: place canonical vision/core/context documents`
-5. `docs: perception scope (code/screen/image, no camera)`
-6. `docs: vscode local-llm extension spec (no implementation)`
-7. `docs: add state/ CURRENT_STATE CONTEXT_INDEX TASK_MAP`
-8. `docs: rewrite README as entry map for rebuild`
 
 한 커밋에 이동+대량 재작성 섞지 않기.
 
@@ -188,26 +167,25 @@ README 상단:
 | Context/State 스키마, 운영 루프 | Cline 디버깅 상세, GitHub 404 로그 |
 | Perception 범위 (카메라 0) | 코인·주식·부수익 일반론 |
 | VS Code+로컬 LLM **스펙** | PrintGuard/Exelion **세부**는 `projects/*/docs`로, 원 대화는 archive |
-| Alpha freeze·실체 구현 **방향** 선언문 | 중복본 061~066 |
-| SERA/Kraken/Projects 계층 | Enterprise/Civilization 장황 스케치(025 후반)는 archive 또는 roadmap 한 줄만 |
+| Cline / Cloud mode / Kraken 역할 | 과거 SERA **프로젝트** 설계·전환 기록 (085 등) |
 
 ---
 
 ## 7. 성공 기준 (개발 없이 검증 가능한 것)
 
-- [ ] 클론만으로 README → state → docs 순으로 Atlas가 무엇인지 이해 가능
-- [ ] 세 요구가 README와 `docs/03`, `docs/04`, `docs/02`에 **명시**
-- [ ] 카메라가 어디에도 “포함”으로 안 적힘
-- [ ] 진행 상황은 `state/`만 보면 됨 (대화 필수 아님)
-- [ ] summary 000~086은 `archive/`에만 있음
-- [ ] 이 단계에서 **애플리케이션/확장 코드 변경 없음**
+- [x] 클론만으로 README → state → docs 순으로 Atlas가 무엇인지 이해 가능
+- [x] 세 요구가 README와 관련 docs에 **명시**
+- [x] 카메라가 “포함”으로 안 적힘
+- [x] 진행 상황은 `state/`만 보면 됨
+- [x] summary 000~086은 `archive/`에만 있음
+- [x] 프로젝트 SERA 폐기 (D19) 반영
 
 ---
 
 ## 8. 의도적으로 미룸 (나중 브랜치)
 
 - VS Code 확장 실제 구현
-- 로컬 LLM 연결 코드
+- 로컬 LLM 연결 코드 (집 PC L-1…)
 - 화면/이미지 OCR·비전 파이프라인
 - Runner/Priority Engine 코드 수정
 - Exelion/Forge/PrintGuard 기능 개발
@@ -216,15 +194,6 @@ README 상단:
 
 ---
 
-## 9. 바로 실행할 첫 3스텝
+## 9. 관련 아카이브 근거 (참고)
 
-1. `pre-rebuild-atlas-docs` 태그 + `docs/rebuild-structure` 브랜치
-2. `archive/summary`로 000~086 이동 계획 확정 (또는 복사 후 구경로 삭제 커밋)
-3. `docs/02_CONTEXT_STATE`, `docs/03_PERCEPTION`, `docs/04_IDE_EXTENSION`, `state/` 빈 골격 + README 헌장 초안
-
----
-
-## 10. 관련 아카이브 근거 (참고)
-
-대화 요약 `obsidian/Archive/summary` 000~086 및 ADR 카탈로그를 정독한 뒤 정리한 계획이다.  
-핵심 정합 문서 번호 예: 000, 005~007, 013, 019, 020, 026, 037, 038, 047, 048, 052, 055, 069, 079~081, 085.
+대화 요약 `archive/summary` 000~086 및 ADR 카탈로그를 정독한 뒤 정리한 계획이다.
