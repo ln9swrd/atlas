@@ -23,6 +23,7 @@
 | L-6…L-10 | untrack, merge, tag, PR | **In Progress** |
 | L-3 | .clinerules 배치 | **Done** |
 | L-4 | Cline 작업 루프 검증 | **Done** |
+| L-5 | Cline 보완 마무리 점검 | **Done** |
 | L-6…L-10 | untrack, merge, tag, PR | Pending |
 
 ## Implementation
