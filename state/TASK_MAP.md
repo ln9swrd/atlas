@@ -26,7 +26,7 @@
 | AF-3 | `docs/process/DUPLICATE_POLICY.md` | **Done** |
 | AF-4 | Exact duplicate delete (061/062/063/065/066 Named + Original + summary) | **Done** |
 | AF-5 | `docs/process/CORE_INDEX.md` + CONTEXT_INDEX sync | **Done** |
-| AF-6 | Open Questions → GitHub issues | **In progress** (see issues) |
+| AF-6 | Open Questions → GitHub issues | **Done** — [#4](https://github.com/ln9swrd/atlas/issues/4) Q01 VERIFY · [#5](https://github.com/ln9swrd/atlas/issues/5) Q03 SERA/Kraken · [#6](https://github.com/ln9swrd/atlas/issues/6) Q02 SPRINT · [#7](https://github.com/ln9swrd/atlas/issues/7) Q04 Forge |
 
 ## Implementation (repo)
 
