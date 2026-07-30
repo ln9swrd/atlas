@@ -1,28 +1,24 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: Owner local **L-1** · optional **P2** (project state seed)  
+ACTIVE_TARGET: Owner local **L-1** · optional **P3** / **G6**  
 ACTIVE_BRANCH: `main` · `impl/atlas-extension`  
-STATUS: G1–G5 Done. **P1 domain inventory Done.** 집 PC = L-1.
+STATUS: **P2 Done** — excelion & excelion-forge have `state/`.
 
-## Domain projects (summary)
+## Domain P0 state
 
-| Priority | Project | Path |
-|----------|---------|------|
-| P0 | Excelion | `projects/excelion/` |
-| P0 | Excelion Forge | `projects/excelion-forge/` |
-| P2 | PrintGuard | `projects/printguard/` |
-| P3 | Coin-S | `projects/coin-s/` (submodule) |
-| secondary | atlas-extension | `projects/atlas-extension/` |
+| Project | Path |
+|---------|------|
+| excelion | `projects/excelion/state/` |
+| excelion-forge | `projects/excelion-forge/state/` |
 
-Full map: `state/PROJECT_MAP.md` · `projects/README.md`
+Map: `state/PROJECT_MAP.md`
 
 ## Next
 
-**집 PC** — L-1 Ollama large context  
-**Git 선택** — P2 seed `state/` on excelion + excelion-forge · P3 forge path Decision · G6
+**집 PC** — **L-1**  
+**Git 선택** — P3 (forge path Decision) · G6
 
 ## Do not
 
-- Treat SERA as a project (D19)
-- Treat `projects/forge/` as second product without Decision
-- Dump archive/obsidian into agent context
+- SERA as project (D19)
+- `projects/forge/` as second product without Decision
