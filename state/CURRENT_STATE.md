@@ -2,7 +2,8 @@
 
 ACTIVE_TARGET: Owner local **L-8**  
 ACTIVE_BRANCH: `main` · `impl/atlas-extension`  
-STATUS: P1–P3 **Done**. D20 Forge path fixed. L-1…L-7 **Done**. Optional G6 only on Git.
+STATUS: P1–P3 **Done**. D20 Forge path fixed. L-1…L-7 **Done**. Optional G6 only on Git.  
+PLAN: `docs/07_ROADMAP/CLOUD_AI_VSCODE_EXEC_PLAN.md` (Cloud AI + VS Code, 2026-07-31)
 
 ## Forge (D20)
 
@@ -25,10 +26,12 @@ STATUS: P1–P3 **Done**. D20 Forge path fixed. L-1…L-7 **Done**. Optional G6 
 
 **L-8…L-10** merge, tag, PR (`impl/atlas-extension` → `main`)  
 Git 선택 — G6  
-Forge — T-1 validation smoke + evidence
+Forge — T-1 validation smoke + evidence  
+Cloud mode — CA-1…CA-5 after L-10 (see CLOUD_AI_VSCODE_EXEC_PLAN)
 
 ## Do not
 
 - Work Forge product under `projects/forge/`
 - SERA as project (D19)
 - Push divergent rewritten history
+- Force cloud-only models on extension (SPEC)

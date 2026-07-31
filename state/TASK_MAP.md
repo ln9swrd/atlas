@@ -27,6 +27,18 @@
 | L-7 | rebase (impl/atlas-extension) | **Done** |
 | L-8…L-10 | merge, tag, PR | **Pending** |
 
+## Cloud AI + VS Code (CA-*)
+
+Plan: `docs/07_ROADMAP/CLOUD_AI_VSCODE_EXEC_PLAN.md`
+
+| ID | Task | Status | Assignee |
+|----|------|--------|----------|
+| CA-1 | 프로젝트 ACTIVE_MODE 설정 (cloud / both) | **Pending** | human |
+| CA-2 | TASK_MAP assignee 컬럼 사용 | **Pending** | human |
+| CA-3 | Cloud 결과 → PR 또는 명시적 Git 반영 | **Pending** | cloud |
+| CA-4 | Cline 실행 + Evidence 기록 | **Pending** | cline |
+| CA-5 | 세션 끝 state 갱신 + commit | **Pending** | both |
+
 ## Implementation
 
 | ID | Task | Status |
@@ -37,3 +49,4 @@
 
 - D20: Canonical Forge = `projects/excelion-forge/` only.
 - D19: SERA project abandoned.
+- D15: Primary work surface = Cline + local Ollama; Cloud AI = mode only.

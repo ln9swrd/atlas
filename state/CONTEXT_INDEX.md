@@ -7,8 +7,9 @@
 | Path | Why |
 |------|-----|
 | `state/CURRENT_STATE.md` | Where we are now |
-| `state/TASK_MAP.md` | Open work — G-*, L-*, IMP-* |
+| `state/TASK_MAP.md` | Open work — G-*, L-*, CA-*, IMP-* |
 | `docs/07_ROADMAP/ATLAS_GIT_REBUILD_PLAN.md` | Rebuild plan |
+| `docs/07_ROADMAP/CLOUD_AI_VSCODE_EXEC_PLAN.md` | Cloud AI + VS Code 실행계획 |
 | `README.md` | Entry map |
 | `docs/DECISIONS.md` | Living decision log |
 | `docs/GLOSSARY.md` | Concept glossary |
@@ -22,6 +23,13 @@
 - `state/CURRENT_STATE.md` — decision: Cline primary
 - `AGENTS.md` — paste-related rules into Cline instructions
 - `docs/04_IDE_EXTENSION/BOUNDARY.md` — if using custom extension too (on `impl/atlas-extension`)
+
+### Cloud AI / both mode
+
+- `docs/07_ROADMAP/CLOUD_AI_VSCODE_EXEC_PLAN.md`
+- `docs/process/PROJECT_STATE_SCHEMA.md` — ACTIVE_MODE
+- `docs/05_AGENTS/README.md` — role split
+- project `state/CURRENT_STATE.md` → TASK_MAP → CONTEXT_INDEX only
 
 ### Domain project work
 
