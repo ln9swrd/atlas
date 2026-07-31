@@ -1,6 +1,6 @@
 # PROJECT_MAP
 
-> Updated: 2026-07-31 (S3 D28 product repos)
+> Updated: 2026-07-31 (D28 S5 pointers)
 
 ## System
 
@@ -11,35 +11,25 @@
 | **Kraken** | Layer name only (D24) |
 | **Cline / Continue** | Tools |
 
-## Product repos (D28 / S3)
+## Product (canonical GitHub)
 
-| ID | GitHub | Atlas path (until S4) | Status |
-|----|--------|----------------------|--------|
-| **excelion** | https://github.com/ln9swrd/excelion | `projects/excelion/` | empty shell; extract pending |
-| **excelion-forge** | https://github.com/ln9swrd/excelion-forge | `projects/excelion-forge/` | **existing** repo (content already); sync vs monorepo path TBD S4 |
+| ID | Canonical | Atlas mirror |
+|----|-----------|--------------|
+| **excelion** | https://github.com/ln9swrd/excelion | `projects/excelion/` + CANONICAL.md |
+| **excelion-forge** | https://github.com/ln9swrd/excelion-forge | `projects/excelion-forge/` + CANONICAL.md |
 
-## Domain paths still in atlas (hold)
+## Still in atlas only
 
-| ID | Path | Priority | Notes |
-|----|------|----------|-------|
-| excelion | `projects/excelion/` | P0 | hold until ACTIVE_TARGET / S4 |
-| excelion-forge | `projects/excelion-forge/` | P0 | Canonical in-mono; also standalone repo |
-| printguard | `projects/printguard/` | P2 | Docs only |
-| coin-s | `projects/coin-s/` | P3 | Submodule |
+| ID | Path | Notes |
+|----|------|-------|
+| printguard | `projects/printguard/` | P2 docs |
+| coin-s | `projects/coin-s/` | submodule-oriented |
+| _template | `projects/_template/` | |
 
 ## Archived
 
-| Path | Was |
-|------|-----|
-| `archive/projects-forge-legacy/` | `projects/forge/` |
-| `archive/projects-templates-legacy/` | `projects/templates/` |
-| `archive/excelion-exelion_forge-stub/` | nested stub |
-| `archive/projects-atlas-extension-legacy/` | extension |
-
-## Templates
-
-`projects/_template/` only.
+See prior PROJECT_MAP / `archive/`.
 
 ## Deprecated
 
-SERA (D19), atlas-extension (D22).
+SERA (D19), atlas-extension (D22). Dual-write product into mono: **forbidden**.
