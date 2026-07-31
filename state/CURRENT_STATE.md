@@ -1,13 +1,14 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: post-min — **F2** or idle  
-MIN_SCOPE: **Complete**  
-F1: **Done** — `tools/domain_policy.py`
+ACTIVE_TARGET: idle / **F2** or **F4** (마스터 선택)  
+MIN_SCOPE: Complete  
+F1: Done + Evidence (domain_policy)
 
-## Next one thing
+## Next
 
-- **F2** D23 VERIFY 강화, or **F4** runner guard, or **idle**
-- 제품 재개 = 마스터가 min hold 해제할 때
+- F2 D23 VERIFY 강화
+- F4 atlas_runner path guard
+- idle
 
 ## Do not
 
