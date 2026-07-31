@@ -1,7 +1,7 @@
 # Atlas Concept Glossary
 
 Source: Original Conversations analysis + current repo docs
-Updated: 2026-07-30 (D19: project SERA deprecated)
+Updated: 2026-07-31 (SERA = Cloud AI clarified)
 
 ---
 
@@ -34,13 +34,13 @@ Updated: 2026-07-30 (D19: project SERA deprecated)
 | **Roo** | Cline 실패 시 fallback agent. |
 | **Continue** | 선택적 autocomplete/chat 전용. 메인 에이전트 아님. |
 | **Ollama** | 로컬 LLM 호스트. 권장 `num_ctx` ≥ 32768. |
-| **Cloud AI (mode)** | 클라우드 측 설계·분석 모드. **프로젝트가 아님.** 과거 문서의 SERA 프로젝트와 혼동 금지. |
+| **SERA / Cloud AI (mode)** | **클라우드 AI.** 설계·분석·리뷰·문서 초안. 제품 프로젝트 아님. (`ROLE_SPLIT.md`, D11/D19) |
 
 ## Layers (conceptual)
 
 | Term | Definition |
 |------|------------|
-| **SERA (legacy term)** | 과거: 독립 프로젝트 또는 지능 계층으로 혼용. **D19: 프로젝트 지위 폐기.** 신규 작업에 프로젝트명으로 쓰지 않음. |
+| **SERA** | Cloud AI 모드의 호칭. (과거 독립 프로젝트로 쓰이던 용법은 D19로 폐기) |
 | **Kraken** | 실행·자동화 계층 (프로젝트 아님). |
 | **Forge** | Core(뇌) + Blender Add-on(손발) 하이브리드 파이프라인. |
 
@@ -52,7 +52,7 @@ Updated: 2026-07-30 (D19: project SERA deprecated)
 | **Excelion Forge** | Blender 리그 검증·파이프라인 도구. |
 | **PrintGuard** | 비즈니스/3D프린팅 관련 하위 프로젝트. |
 | **Coin-S** | 암호화폐 관련 실험 (Atlas 연동 수준 낮음). |
-| ~~**SERA (project)**~~ | **폐기 (D19).** |
+| ~~**SERA (project)**~~ | **프로젝트 형태만 폐기 (D19).** 이름 = Cloud AI로 유지. |
 
 ## Process
 

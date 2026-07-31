@@ -1,13 +1,13 @@
 # PROJECT_MAP
 
-> Updated: 2026-07-31 (D28 S5-del + C3 closeout)
+> Updated: 2026-07-31 (SERA = Cloud AI)
 
 ## System
 
 | Name | Role |
 |------|------|
 | **Atlas** | DevOS — `ln9swrd/atlas` |
-| **Cloud AI (mode)** | Mode only (D19) |
+| **SERA / Cloud AI** | Cloud AI 모드 (설계·분석·리뷰). 제품 아님 (D11/D19) |
 | **Kraken** | Layer name only (D24) |
 | **Cline / Continue** | Tools |
 
@@ -32,4 +32,6 @@ See prior PROJECT_MAP / `archive/`.
 
 ## Deprecated
 
-SERA (D19), atlas-extension (D22). Dual-write product into mono: **forbidden**.
+- **프로젝트 형태 SERA** (`projects/sera`) — D19. 호칭 SERA(Cloud AI)는 유지.
+- atlas-extension (D22).
+- Dual-write product into mono: **forbidden**.

@@ -61,9 +61,9 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 | ID | Decision | Notes |
 |----|----------|-------|
 | D10 | docs 파일명 영어, 본문 한국어 | |
-| D11 | SERA ≠ 프로젝트 목록 | D19 |
+| D11 | **SERA = Cloud AI (mode)** | 호칭·역할명. 제품/레포 아님. `ROLE_SPLIT.md` |
 | D16 | 대화 → 문서 → 자산 | |
-| D19 | **프로젝트 SERA 폐기** | `projects/sera` 금지 |
+| D19 | **프로젝트 형태 SERA 폐기** | `projects/sera` 금지. 이름 SERA 자체(Cloud AI)는 유지 |
 
 ---
 
