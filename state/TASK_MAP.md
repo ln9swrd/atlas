@@ -18,7 +18,7 @@ M1–M7 **Done**
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
 | PP | Atlas platform core plan | **Done** | `docs/07_ROADMAP/ATLAS_PLATFORM_PLAN.md` |
-| P0-1 | F1/F2/F4 green | **Open** | Master local: `python3 tools/check_domain_policy.py` |
+| P0-1 | F1/F2/F4 green | **Done** | local smoke 5/5 OK, workspace=/mnt/d/Antigravity/Atlas (2026-07-31) |
 | P2-1 | D23 full VERIFY CWD jail | Pending | |
 | P2-3 | CONTEXT_INDEX slim | **Done** | platform plan + hold list |
 | P2-4 | DAILY_LOOP real use | Pending | habit |
