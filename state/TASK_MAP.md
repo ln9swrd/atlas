@@ -10,7 +10,7 @@ M1–M7 **Done**
 |----|------|--------|----------|
 | F1 | domain_policy source | **Done** | path_is_blacklisted |
 | F2 | path escape / outside WS deny | **Done** | `tools/check_domain_policy.py` |
-| F3 | D24–D26 path hygiene | **Done** | D24 N/A; D25 OK; D26 policy + physical move (2026-07-31) |
+| F3 | D24–D26 path hygiene | **Done** | D24 N/A; D25 OK; D26 physical move |
 | F4 | runner domain_policy hook | **Done** | run_script assert_path_allowed |
 
 ## Platform plan
@@ -29,7 +29,7 @@ M1–M7 **Done**
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
 | R1 | state/docs path sync after forge archive | **Done** | 950a945 |
-| R2 | `projects/templates` → archive | **Done** | cb4999e → `archive/projects-templates-legacy` |
-| R3 | nested excelion forge stub cleanup | **Done** | dceb51a → `archive/excelion-exelion_forge-stub` |
-| R4 | `atlas-extension` → archive (D22) | Open | optional |
+| R2 | `projects/templates` → archive | **Done** | cb4999e |
+| R3 | nested excelion forge stub cleanup | **Done** | dceb51a |
+| R4 | `atlas-extension` → archive (D22) | **Done** | 49eb16b → `archive/projects-atlas-extension-legacy` |
 | R5 | Master: ACTIVE_TARGET product vs platform | Open | decision only |

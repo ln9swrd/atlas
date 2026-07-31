@@ -3,8 +3,9 @@
 ## Done this session
 
 - forge → `archive/projects-forge-legacy` + R1 docs
-- templates → `archive/projects-templates-legacy` (R2, cb4999e)
-- nested stub → `archive/excelion-exelion_forge-stub` (R3, dceb51a)
+- templates → `archive/projects-templates-legacy` (R2)
+- nested stub → `archive/excelion-exelion_forge-stub` (R3)
+- atlas-extension → `archive/projects-atlas-extension-legacy` (R4 / D22, 49eb16b)
 
 ## Problems
 
@@ -12,7 +13,7 @@
 |---|--------|
 | 1 | Docs lagged physical paths |
 | 2 | Platform charter mostly Spec; runtime incomplete |
-| 3 | Legacy duplication (core/src, templates, nested stub, extension) |
+| 3 | Legacy duplication (partially cleaned R2–R4) |
 | 4 | Monorepo mixes DevOS + large product trees |
 | 5 | Binary asset policy vs history unclear |
 | 6 | P0 products on hold while ACTIVE_TARGET = platform idle |
@@ -25,7 +26,7 @@
 | R1 | state/docs path sync | **Done** |
 | R2 | templates → archive | **Done** |
 | R3 | nested excelion forge stub → archive | **Done** |
-| R4 | `atlas-extension` → archive (D22) | Open |
+| R4 | atlas-extension → archive (D22) | **Done** |
 | R5 | ACTIVE_TARGET product vs platform | Open |
 | — | Binary → LFS or external store | Open |
 | — | Long-term: split platform vs product repos | Open |

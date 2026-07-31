@@ -9,29 +9,25 @@
 | `state/CURRENT_STATE.md` | 지금 타겟 |
 | `state/TASK_MAP.md` | 열린 작업 |
 | `state/ATLAS_REVIEW_2026-07-31.md` | 문제·개선 기록 |
-| `docs/06_OPERATIONS/DAILY_LOOP.md` | 세션 루프 (P2-4) |
-| `docs/06_OPERATIONS/DECISION_PROCESS.md` | Decision 규율 (P2-5) |
+| `docs/06_OPERATIONS/DAILY_LOOP.md` | 세션 루프 |
+| `docs/06_OPERATIONS/DECISION_PROCESS.md` | Decision 규율 |
 | `docs/DECISIONS.md` | D01–D26 SoR |
 | `docs/07_ROADMAP/ATLAS_PLATFORM_PLAN.md` | 플랫폼 계획 |
-| `docs/07_ROADMAP/D23_VERIFY_CWD_JAIL_DESIGN.md` | P2-1 Done |
-| `docs/07_ROADMAP/ATLAS_MIN_SCOPE.md` | 최소 구현 (완료) |
 | `AGENTS.md` | 도메인·Evidence |
 | `docs/05_AGENTS/ROLE_SPLIT.md` | Master/Cline/Cloud |
 
 ## Tools (필요 시 1개)
 
-- `tools/atlas_status.sh` — 세션 시작
+- `tools/atlas_status.sh`
 - `tools/domain_policy.py` / `tools/check_domain_policy.py`
-- `tools/INVENTORY.md` · `tools/DOMAIN_BLACKLIST.md`
 
 ## Hold — 열지 말 것 (지금)
 
 - `projects/excelion*/**`, `projects/printguard/**`, `projects/coin-s/**`
-- `projects/atlas-extension/**` (D22; R4 open)
-- `archive/**`
+- `archive/**` (extension·forge·templates·stub 포함)
 - `obsidian/`
 - `core/`, `atlas-runtime/` 대규모 탐색 (P3 전)
 
 ## Token discipline
 
-ACTIVE_TARGET 관련 + Always 표만. summary 000–086 덤프 금지.
+ACTIVE_TARGET 관련 + Always 표만.
