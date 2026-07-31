@@ -52,7 +52,8 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D27 | **ACTIVE_TARGET = platform** (R5) | Master 2026-07-31. 제품 hold. Next: binary policy / P3 when scheduled. |
+| D27 | **ACTIVE_TARGET = platform** (R5) | Master 2026-07-31. 제품 hold. |
+| D28 | **Long-term repo split defaults** | Master confirm 2026-07-31. (1) two product repos `excelion` + `excelion-forge` (2) history extract preferred where valuable; else pointer (3) product-coupled `core/` stays HOLD in atlas until forge consumes (4) execute **before** long product sprint. Plan: `docs/07_ROADMAP/LONG_TERM_REPO_SPLIT.md`. S1 tag local. |
 
 ## Documentation
 
