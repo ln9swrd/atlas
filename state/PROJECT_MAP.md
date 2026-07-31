@@ -1,37 +1,44 @@
 # PROJECT_MAP
 
-> Updated: 2026-07-31 (R4 atlas-extension archive)
+> Updated: 2026-07-31 (S3 D28 product repos)
 
 ## System
 
 | Name | Role |
 |------|------|
-| **Atlas** | DevOS |
+| **Atlas** | DevOS — `ln9swrd/atlas` |
 | **Cloud AI (mode)** | Mode only (D19) |
 | **Kraken** | Layer name only (D24) |
 | **Cline / Continue** | Tools |
 
-## Domain projects
+## Product repos (D28 / S3)
 
-| ID | Path | Status | Priority | state/ | Notes |
-|----|------|--------|----------|--------|-------|
-| **excelion** | `projects/excelion/` | hold | P0 | Yes | hold until ACTIVE_TARGET |
-| **excelion-forge** | `projects/excelion-forge/` | hold | P0 | Yes | **Canonical Forge** |
-| **printguard** | `projects/printguard/` | planning | P2 | No | Docs only |
-| **coin-s** | `projects/coin-s/` | planning | P3 | — | Submodule |
+| ID | GitHub | Atlas path (until S4) | Status |
+|----|--------|----------------------|--------|
+| **excelion** | https://github.com/ln9swrd/excelion | `projects/excelion/` | empty shell; extract pending |
+| **excelion-forge** | https://github.com/ln9swrd/excelion-forge | `projects/excelion-forge/` | **existing** repo (content already); sync vs monorepo path TBD S4 |
 
-## Archived (not under projects/)
+## Domain paths still in atlas (hold)
 
-| Path | Was | Status |
-|------|-----|--------|
-| `archive/projects-forge-legacy/` | `projects/forge/` | Done |
-| `archive/projects-templates-legacy/` | `projects/templates/` | Done (R2) |
-| `archive/excelion-exelion_forge-stub/` | nested under excelion | Done (R3) |
-| `archive/projects-atlas-extension-legacy/` | `projects/atlas-extension/` | Done (R4 / D22) |
+| ID | Path | Priority | Notes |
+|----|------|----------|-------|
+| excelion | `projects/excelion/` | P0 | hold until ACTIVE_TARGET / S4 |
+| excelion-forge | `projects/excelion-forge/` | P0 | Canonical in-mono; also standalone repo |
+| printguard | `projects/printguard/` | P2 | Docs only |
+| coin-s | `projects/coin-s/` | P3 | Submodule |
+
+## Archived
+
+| Path | Was |
+|------|-----|
+| `archive/projects-forge-legacy/` | `projects/forge/` |
+| `archive/projects-templates-legacy/` | `projects/templates/` |
+| `archive/excelion-exelion_forge-stub/` | nested stub |
+| `archive/projects-atlas-extension-legacy/` | extension |
 
 ## Templates
 
-`projects/_template/` — only.
+`projects/_template/` only.
 
 ## Deprecated
 
