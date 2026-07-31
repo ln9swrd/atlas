@@ -24,7 +24,9 @@ M1–M7 **Done**
 | P3-1b | Remove empty stubs | **Done** | deleted empty files |
 | P3-1c | Archive `tools/atlas_runner_backup.py` | **Done** | deleted + `archive/legacy_files/ATLAS_RUNNER_BACKUP.md` |
 | P3-1d | contract.py implement matrix | **Done** | `docs/07_ROADMAP/P3_CONTRACT_MATRIX.md` |
-| P3-1e | atlas-runtime package + smoke | **Done** | stubs fixed + `tools/check_atlas_runtime.py` |
+| P3-1e | atlas-runtime package + smoke | **Done** (GitHub) | stubs + `tools/check_atlas_runtime.py` |
+| P3-E1 | domain_policy local Evidence | **Done** | Master 25/25 PASS 2026-07-31 |
+| P3-E2 | atlas-runtime local smoke | Open | need `git pull` then run |
 
 ## Review follow-ups (2026-07-31)
 
@@ -36,5 +38,5 @@ M1–M7 **Done**
 
 | ID | Task | Status | Notes |
 |----|------|--------|-------|
+| P3-E2 | Runtime smoke Evidence | Open | `git pull` + `python tools/check_atlas_runtime.py` |
 | — | Long-term repo split | Open | planning only |
-| — | Cline local Evidence | Open | `python tools/check_atlas_runtime.py` |
