@@ -32,4 +32,6 @@ M1–M7 **Done**
 | R2 | `projects/templates` → archive | **Done** | cb4999e |
 | R3 | nested excelion forge stub cleanup | **Done** | dceb51a |
 | R4 | `atlas-extension` → archive (D22) | **Done** | 49eb16b → `archive/projects-atlas-extension-legacy` |
-| R5 | Master: ACTIVE_TARGET product vs platform | Open | decision only |
+| R5 | Master: ACTIVE_TARGET product vs platform | **Done** | platform 유지 (Master 2026-07-31) |
+| R6 | Binary asset policy | Open | D13 보완 |
+| R7 | State discipline (single SoR) | Open | |
