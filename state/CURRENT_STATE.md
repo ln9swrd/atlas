@@ -6,19 +6,19 @@ F1–F2–F4: **Done**
 F3: **Assessed**  
 P0-1: **Done**  
 P2-3: **Done**  
-P2-1 Phase A: **Code landed** — awaiting local Evidence
+P2-1 Phase A: **Done** (2026-07-31 Evidence PASS)
 
-## Evidence commands
+## Evidence (Phase A)
 
-```bash
-python3 tools/check_domain_policy.py
-python3 -m unittest tests.test_domain_policy -v
+```
+python3 tools/check_domain_policy.py  → PASS
+python3 -m unittest tests.test_domain_policy -v  → 8 tests OK
 ```
 
 ## Next (one thing)
 
-- **Master**: run Evidence above; report PASS → mark P2-1 Phase A Done  
-- Then Phase B (runner wire) or idle
+- Phase B (runner wire: assert_path_allowed → path_is_allowed) or idle
+- Master chooses
 
 ## Do not
 
