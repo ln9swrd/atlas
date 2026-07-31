@@ -23,22 +23,21 @@ M1–M7 **Done**
 | P2-3 | CONTEXT_INDEX slim | **Done** | |
 | P2-4 | DAILY_LOOP real use | **Done** | atlas_status.sh |
 | P2-5 | Decision log discipline | **Done** | DECISION_PROCESS |
+| P3-0 | Runtime inventory | **Done** | `docs/07_ROADMAP/P3_RUNTIME_INVENTORY.md` |
 
 ## Review follow-ups (2026-07-31)
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| R1 | state/docs path sync after forge archive | **Done** | 950a945 |
-| R2 | `projects/templates` → archive | **Done** | cb4999e |
-| R3 | nested excelion forge stub cleanup | **Done** | dceb51a |
-| R4 | `atlas-extension` → archive (D22) | **Done** | 49eb16b → `archive/projects-atlas-extension-legacy` |
-| R5 | Master: ACTIVE_TARGET product vs platform | **Done** | platform 유지 (Master 2026-07-31) |
-| R6 | Binary asset policy | **Done** | `docs/06_OPERATIONS/BINARY_ASSET_POLICY.md` + `.gitattributes` |
-| R7 | State discipline (single SoR) | **Done** | `docs/06_OPERATIONS/STATE_DISCIPLINE.md` |
+| R1–R7 | (closed) | **Done** | see ATLAS_REVIEW |
 
-## Open (after R1–R7)
+## P3 open
 
 | ID | Task | Status | Notes |
 |----|------|--------|-------|
-| — | P3 runtime | Open | Master schedule |
-| — | Long-term repo split | Open | platform vs product |
+| P3-1a | Tag product-coupled paths under `core/` | Open | inventory §7.1 |
+| P3-1b | Remove empty stubs (AI_CONTEXT, root review_engine) | Open | §7.2 |
+| P3-1c | Archive `tools/atlas_runner_backup.py` | Open | §7.3 |
+| P3-1d | contract.py implement matrix | Open | §7.4 |
+| P3-1e | atlas-runtime package + smoke (optional) | Open | §7.5 |
+| — | Long-term repo split | Open | planning only |
