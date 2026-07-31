@@ -4,41 +4,31 @@
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| G1–G5 | Plan, schema, template, #5 wording | **Done** | |
-| G6 | Open Q #4·#5·#6·#7 Decision 초안 | **Draft saved** | `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` — 마스터 승인 대기 |
-
-## Domain (P-*)
-
-| ID | Task | Status |
-|----|------|--------|
-| P1–P3 | inventory, seed, D20 | **Done** |
+| G1–G5 | schema / D19 wording 등 | **Done** | |
+| G6 | Decision 초안 #4–#7 | **Draft** | `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` — 마스터 승인 대기 |
 
 ## Owner local (L-*)
 
-| ID | Task | Status | Executor | Evidence |
-|----|------|--------|----------|----------|
-| L-1…L-7 | Ollama/Cline/rebase 등 | **Done** | | |
-| L-8 | rebase vs main | **Pending** | 마스터 shell OK | template in G6_DRAFTS |
-| L-9 | packaging untrack + push | **Pending** | 마스터 shell OK | |
-| L-10 | F5 → PR merge/tag | **Pending** | 마스터/Cline dev PC | |
+| ID | Task | Status | Executor | How |
+|----|------|--------|----------|-----|
+| L-1…L-7 | setup / rebase 등 | **Done** | | |
+| L-8 | rebase impl ← main | **Pending** | 마스터 | `bash scripts/master_l8_l10.sh l8` |
+| L-9 | untrack + push | **Pending** | 마스터 | `bash scripts/master_l8_l10.sh l9` |
+| L-8+L-9 | batch | **Pending** | 마스터 | `bash scripts/master_l8_l10.sh l8-l9` |
+| L-10 npm | compile | **Pending** | 마스터 | `bash scripts/master_l8_l10.sh l10-npm` |
+| L-10 F5+merge | smoke + PR #3 | **Pending** | 마스터 | 수동 (MASTER_BATCH.md) |
 
-## Cloud AI (CA-*)
+Script: `scripts/master_l8_l10.sh`  
+Guide: `docs/06_OPERATIONS/MASTER_BATCH.md`
 
-| ID | Task | Status | Assignee | Evidence |
-|----|------|--------|----------|----------|
-| CA-1 | excelion-forge ACTIVE_MODE | **Done** | 마스터+Sera | `both` in project CURRENT_STATE |
-| CA-2 | assignee 컬럼 사용 | **Partial** | | 본 TASK_MAP |
-| CA-3 | Cloud → Git | **Partial** | Sera | G6_DRAFTS + L8 review |
-| CA-4 | 로컬 Evidence | **Pending** | 마스터/Cline | L-8…L-10 |
-| CA-5 | state 세션 갱신 | **Ongoing** | both | commits |
+## Cloud (CA-*)
 
-## Implementation
+| ID | Status | Evidence |
+|----|--------|----------|
+| CA-1 ACTIVE_MODE both | **Done** | excelion-forge state |
+| CA-3 G6+L8 review Git | **Partial** | G6_DRAFTS, L8_L10_CLOUD_REVIEW |
+| CA-4 local Evidence | **Pending** | after master_l8_l10.sh |
 
-| ID | Task | Status |
-|----|------|--------|
-| IMP-1 | Extension issue #2 | Open |
+## IMP-1
 
-### Decision pointers
-
-- D20 Forge path · D19 no SERA project · D15 Cline primary · D21 마스터
-- G6 proposed: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` + `docs/DECISIONS.md` Proposed section
+Extension issue #2 / PR #3 — open until L-10 merge.
