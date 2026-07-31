@@ -18,26 +18,23 @@ M1–M7 **Done**
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
 | PP | Atlas platform core plan | **Done** | `docs/07_ROADMAP/ATLAS_PLATFORM_PLAN.md` |
-| P0-1 | F1/F2/F4 green | **Done** | local smoke OK |
-| P2-1 | D23 full VERIFY CWD jail | **Done** | 25/25 + 15 unittest |
-| P2-3 | CONTEXT_INDEX slim | **Done** | |
-| P2-4 | DAILY_LOOP real use | **Done** | atlas_status.sh |
-| P2-5 | Decision log discipline | **Done** | DECISION_PROCESS |
+| P0–P2 | (closed) | **Done** | TASK_MAP history |
 | P3-0 | Runtime inventory | **Done** | `docs/07_ROADMAP/P3_RUNTIME_INVENTORY.md` |
-| P3-1a | Tag product-coupled paths under `core/` | **Done** | `core/README.md` + `core/tools/README.md` |
-| P3-1b | Remove empty stubs | **Done** | deleted `core/AI_CONTEXT.md`, `core/review_engine.py` |
+| P3-1a | Tag product-coupled paths under `core/` | **Done** | `core/README.md` |
+| P3-1b | Remove empty stubs | **Done** | deleted empty files |
+| P3-1c | Archive `tools/atlas_runner_backup.py` | **Done** | deleted + `archive/legacy_files/ATLAS_RUNNER_BACKUP.md` |
+| P3-1d | contract.py implement matrix | **Done** | `docs/07_ROADMAP/P3_CONTRACT_MATRIX.md` |
+| P3-1e | atlas-runtime package + smoke | **Done** | stubs fixed + `tools/check_atlas_runtime.py` |
 
 ## Review follow-ups (2026-07-31)
 
-| ID | Task | Status | Evidence |
-|----|------|--------|----------|
-| R1–R7 | (closed) | **Done** | see ATLAS_REVIEW |
+| ID | Task | Status |
+|----|------|--------|
+| R1–R7 | (closed) | **Done** |
 
-## P3 open
+## Open
 
 | ID | Task | Status | Notes |
 |----|------|--------|-------|
-| P3-1c | Archive `tools/atlas_runner_backup.py` | Open | |
-| P3-1d | contract.py implement matrix | Open | |
-| P3-1e | atlas-runtime package + smoke (optional) | Open | |
 | — | Long-term repo split | Open | planning only |
+| — | Cline local Evidence | Open | `python tools/check_atlas_runtime.py` |
