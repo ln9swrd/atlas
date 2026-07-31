@@ -6,19 +6,11 @@ import json
 import uuid
 from datetime import datetime
 
-<<<<<<< HEAD
-# Running this file directly sets ``sys.path[0]`` to ``tools/``.  Add the
-# repository root so the top-level ``core`` package is available regardless
-# of the caller's current working directory.
+# Repo root on sys.path when run from tools/
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
-=======
-# Auto-inject repository root into sys.path
-repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if repo_root not in sys.path:
-    sys.path.insert(0, repo_root)
->>>>>>> 77e268d (chore: add daily scripts, PR template, CLI aliases, dev requirements)
+
 
 from core.execution.context_resolver import resolve_context
 from core.execution.goal_registry import set_active_goal, sync_state_with_goal
