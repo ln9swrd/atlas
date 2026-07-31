@@ -1,28 +1,29 @@
 # CURRENT_STATE
 
 ACTIVE_TARGET: **platform P3**  
-D28 S0–S3: **Done**  
-S4-A excelion import: **Done** (working tree clean / remote already matched)  
-S4-B forge diff: **Evidence recorded** (sync choices pending Master)
+D28 S0–S5 (pointer): **Done**
 
-## S4-B diff (Master local)
+## Product SoR
 
-| Side | Paths |
-|------|--------|
-| Only standalone | `.agents`, `.codex`, `.github`, `.gitignore`, `.importlinter` |
-| Differ | `README.md` |
-| Only atlas mono | `shin_getter_robo11.blend` (root), `state/` |
+| Product | Canonical |
+|---------|-----------|
+| excelion | https://github.com/ln9swrd/excelion |
+| excelion-forge | https://github.com/ln9swrd/excelion-forge |
 
-**Default recommendation:** standalone = code canonical; copy mono `state/` into standalone if newer; root blend → LFS/policy or drop if duplicate of `blender/assets/`.
+Atlas paths: `projects/*/CANONICAL.md` pointers. Mono trees kept (no delete).
+
+## S4-B applied
+
+- standalone = code SoR  
+- mono `state/` → forge standalone  
+- root mono `.blend` ignored  
 
 ## Next (one thing)
 
-Master pick S4-B:
-1. `state/` mono → standalone copy?  
-2. root `.blend` keep / LFS / ignore?  
-3. then S5 (pointer in atlas, no delete required immediately)
+- idle / platform maintenance, **or** ACTIVE_TARGET → product  
+- optional later: physically remove mono product trees after backup
 
 ## Do not
 
-- force-push forge  
-- delete mono paths without S5 confirm
+- dual-write product into atlas mono  
+- force-push product repos
