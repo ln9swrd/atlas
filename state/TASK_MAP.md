@@ -25,6 +25,7 @@ M1–M7 **Done**
 | P2-5 | Decision log discipline | **Done** | DECISION_PROCESS |
 | P3-0 | Runtime inventory | **Done** | `docs/07_ROADMAP/P3_RUNTIME_INVENTORY.md` |
 | P3-1a | Tag product-coupled paths under `core/` | **Done** | `core/README.md` + `core/tools/README.md` |
+| P3-1b | Remove empty stubs | **Done** | deleted `core/AI_CONTEXT.md`, `core/review_engine.py` |
 
 ## Review follow-ups (2026-07-31)
 
@@ -36,7 +37,6 @@ M1–M7 **Done**
 
 | ID | Task | Status | Notes |
 |----|------|--------|-------|
-| P3-1b | Remove empty stubs (AI_CONTEXT, root review_engine) | Open | |
 | P3-1c | Archive `tools/atlas_runner_backup.py` | Open | |
 | P3-1d | contract.py implement matrix | Open | |
 | P3-1e | atlas-runtime package + smoke (optional) | Open | |
