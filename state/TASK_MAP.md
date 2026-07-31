@@ -1,41 +1,28 @@
 # TASK_MAP
 
-## Git-only (G-*)
+Focus: **Atlas min scope** — `docs/07_ROADMAP/ATLAS_MIN_SCOPE.md`  
+Product projects: **on hold**
+
+## Atlas Min (M-*)
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| G1–G5 | schema 등 | **Done** | |
-| G6 | Decision 초안 #4–#7 | **Draft** | `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` — 마스터 승인 대기 |
+| M1 | state/ CONTEXT TASK 운영 | **Done** | state files on main |
+| M2 | AGENTS.md rules | **Done** | root AGENTS.md |
+| M3 | Cline + Ollama L-1…L-7 | **Done** | 2026-07-30 |
+| M4 | DAILY_LOOP 실운용 정리 | **Pending** | |
+| M5 | G6 정책 확정 (Atlas-relevant) | **Draft** | G6_DECISION_DRAFTS.md |
+| M6 | tools/ 목록 + 명령 1회 Evidence | **Pending** | **ACTIVE** |
+| M7 | domain blacklist ↔ tools 정합 | **Pending** | |
 
-## Owner local (L-*)
+## Cancelled / Hold
 
-| ID | Task | Status |
-|----|------|--------|
-| L-1…L-7 | Cline/Ollama setup 등 | **Done** |
-| L-8…L-10 | extension merge track | **Cancelled (D22)** |
+| ID | Status |
+|----|--------|
+| L-8…L-10 / IMP-1 extension | **Cancelled (D22)** |
+| excelion-forge T-1 | **Hold** (min scope 우선) |
+| G6 file moves (archive sprints, forge delete) | **Hold** until M5 승인 + 여유 |
 
-## Implementation
+## Decision pointers
 
-| ID | Task | Status |
-|----|------|--------|
-| IMP-1 | atlas-extension | **Abandoned (D22)** — issue #2 closed, PR #3 closed |
-
-## Cloud (CA-*)
-
-| ID | Status | Evidence |
-|----|--------|----------|
-| CA-1 ACTIVE_MODE both | **Done** | excelion-forge |
-| CA-3 docs to Git | **Partial** | G6 drafts, reviews |
-| CA-4 extension Evidence | **Cancelled** | D22 |
-
-## Active next
-
-| ID | Task | Status | Owner |
-|----|------|--------|-------|
-| G6 | 승인 → Decision ID | Pending | 마스터 |
-| Forge T-1 | excelion-forge validation evidence | Pending | 마스터/Cline |
-
-### Decision pointers
-
-- **D22:** atlas-extension 폐기
-- D15 Cline primary · D20 excelion-forge · D19 no SERA project · D21 마스터
+- D15 Cline · D21 마스터 · D22 no extension · D19 no SERA project · D20 forge path (제품 재개 시)
