@@ -3,25 +3,24 @@
 ACTIVE_TARGET: **platform P2** (hardening)  
 MIN_SCOPE: Complete  
 F1–F2–F4: **Done**  
-F3: **Assessed**  
+F3 (D24–D26): **Done** (2026-07-31 — policy/Evidence; no mass move)  
 P0-1: **Done**  
-P2-1 (D23): **Done**  
-P2-3: **Done**  
-P2-4 (DAILY_LOOP): **Done**  
-P2-5 (Decision log): **Done** (2026-07-31)
+P2-1…P2-5: **Done**
 
-## Evidence (P2 platform hardening)
+## F3 Evidence
 
-| ID | Evidence |
-|----|----------|
-| P2-1 | domain_policy 25/25 + 15 unittest OK |
-| P2-4 | `atlas_status.sh` PASS |
-| P2-5 | `DECISION_PROCESS.md` + DECISIONS D23 Implemented |
+| Item | Result |
+|------|--------|
+| D24 | No `projects/kraken/` / no `tools/kraken/` code → N/A |
+| D25 | No Open SPRINT-009–029 in TASK_MAP → OK |
+| D26 | Canonical = `excelion-forge`; `projects/forge/` legacy README → policy Done |
+
+Optional later (Master local): `git mv projects/forge archive/...`
 
 ## Next (one thing)
 
-- **idle** (P2 track complete except optional F3)
-- or F3 path hygiene when Master schedules
+- **idle**
+- or P3 runtime when Master schedules
 
 ## Do not
 
