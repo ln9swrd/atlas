@@ -1,26 +1,24 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: **M5** G6 정책 (Atlas-relevant) 또는 **M4** DAILY_LOOP  
+ACTIVE_TARGET: **M7** blacklist ↔ tools 정합 (optional) 또는 세션 종료  
 MIN_SCOPE: `docs/07_ROADMAP/ATLAS_MIN_SCOPE.md`  
-TOOLS: `tools/INVENTORY.md`
+LOOP: `docs/06_OPERATIONS/DAILY_LOOP.md`
 
-## M6 — Done
+## Done today
 
-| Check | Evidence |
-|-------|----------|
-| tools listing | 마스터 `ls tools/` |
-| inventory | `tools/INVENTORY.md` |
-| smoke | `bash tools/atlas_status.sh` → main, log OK |
-| runner conflict | fixed + push `8edcc4f` |
+| ID | Result |
+|----|--------|
+| M4 | DAILY_LOOP 실운용 문서 |
+| M5 | G6 → **D23–D26** confirmed |
+| M6 | tools smoke + runner conflict fix |
 
-## Next one thing
+## Next
 
-1. **M5** — G6 중 Atlas 직접 정책만 승인 (#4 VERIFY, #5 Kraken path)  
-2. 또는 **M4** — DAILY_LOOP를 Cline 실운용 1페이지로 정리  
-3. **M7** — blacklist ↔ tools 정합 (여유 시)
+- **M7** (선택): AGENTS blacklist가 tools/orchestrator 경로와 맞는지 점검  
+- 또는 다음 세션까지 **min scope 유지** (제품 보류)
 
 ## Do not
 
-- 제품 프로젝트 우선
+- 제품 프로젝트 우선 이탈
 - extension 부활
-- runner full audit를 필수로 확대하지 않음
+- D23–D26 구현 미완을 Done으로 위장

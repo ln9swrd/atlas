@@ -1,6 +1,5 @@
 # Atlas Decision Log
 
-Source: `obsidian/Archive/Original Conversations/ANALYSIS_REPORT.md` (Phase 3)
 Status: Living log (2026-07-31)
 
 ---
@@ -9,70 +8,62 @@ Status: Living log (2026-07-31)
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D01 | **Claim ≠ Evidence** (Evidence-First) | DONE 보고 전 CLI/파일/테스트 증거 필수 |
-| D02 | **Build the system that builds the game** | Atlas는 제품이 아니라 제품을 만드는 운영 체계 |
-| D03 | Knowledge Layer ↔ Runtime Layer 분리 | 안정 지식은 Git docs/ADR, 세션 런타임은 폐기 가능 |
-| D04 | Environment 분리·등록 (Registry) | DEV_WORK / DEV_HOME 등 환경별 제약 반영 |
-| D05 | 기능 추가보다 실제 운영 시나리오 검증 우선 | ROI Gate |
-| D06 | 가상 Task보다 실제 Exelion Task로 운영 | 실 프로젝트 태스크로 루프 검증 |
+| D01 | **Claim ≠ Evidence** (Evidence-First) | DONE 전 CLI/파일 Evidence 필수 |
+| D02 | **Build the system that builds the game** | Atlas = 제품을 만드는 운영 체계 |
+| D03 | Knowledge ↔ Runtime 분리 | 지식=Git docs; 세션 런타임 폐기 가능 |
+| D04 | Environment Registry | DEV_WORK / DEV_HOME 등 |
+| D05 | 운영 시나리오 검증 우선 | ROI Gate |
+| D06 | 실 프로젝트 태스크로 루프 검증 | |
 
 ## Agent / Local LLM
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D07 | Cline: Subagents / Native / Parallel Tool Call OFF 권장 | 로컬 모델 안정화 |
-| D08 | 로컬 AI는 WSL 내부 배치 권장 | |
-| D15 | Primary work surface = Cline (or Roo) + local Ollama | Continue 보조만 |
-| D21 | **마스터(Master)** = 최종 권한자; 단순 커맨드·쉘 실행 가능 | `docs/05_AGENTS/ROLE_SPLIT.md` |
-| D22 | **atlas-extension 폐기** | `projects/atlas-extension`, issue #2, PR #3, L-8…L-10 extension track **abandoned**. 커스텀 VS Code 확장 구현 안 함. 작업면 = Cline. 브랜치 `impl/atlas-extension` 유지 불필요. node_modules 정리는 선택(메인 hygiene). |
+| D07 | Cline: Subagents/Native/Parallel OFF 권장 | |
+| D08 | 로컬 AI는 WSL 권장 | |
+| D15 | Primary surface = Cline + Ollama | Continue 보조 |
+| D21 | **마스터** = 최종 권한; 단순 쉘 가능 | ROLE_SPLIT.md |
+| D22 | **atlas-extension 폐기** | issue #2 / PR #3 closed |
 
-## Forge / Pipeline
-
-| ID | Decision | Notes |
-|----|----------|-------|
-| D09 | Forge = Core(뇌) + Blender Add-on(손발) 하이브리드 | 단일 모놀리식 금지 |
-| D13 | .blend는 Git, 대용량은 LFS, .blend1 등은 gitignore | |
-| D14 | 급할수록 돌아간다 — 제작 도구·파이프라인 우선 | |
-| D20 | **Canonical Forge path = `projects/excelion-forge/`** | 제품 작업은 excelion-forge만 |
-
-## Documentation / Knowledge
+## Domain Isolation / VERIFY
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D10 | 프로젝트 docs: 파일명 영어, 본문 한국어 | PROJECT_DOC_STANDARD |
+| D17 | Forbidden auto-load: archive/, obsidian/, node_modules/, .git/ | |
+| D18 | Context slim: 활성 타겟만 | |
+| D23 | **VERIFY 샌드박스** (G6 #4) | VERIFY·도구 실행의 파일/코드 접근은 **활성 도메인 프로젝트** (`projects/<name>/` 또는 Atlas `state/`·`tools/` 등 시스템 허용 경로)로 제한. 호스트 임의 경로·외부 네트워크 부작용 금지. 구현 Acceptance는 orchestrator/Cline 도구 쪽에 후속. 메타(DevOS 코어 수정) 우회는 마스터 명시 승인. |
+
+## Kraken / Knowledge / Forge
+
+| ID | Decision | Notes |
+|----|----------|-------|
+| D12 | Kraken = 실행·자동화 **계층** | 제품 프로젝트 아님 |
+| D24 | **Kraken 경로** (G6 #5) | Canonical 후보 **`tools/kraken/`**. `projects/kraken/` 금지. 이름 keep. 이관은 존재 시 후속 작업. |
+| D25 | **과거 스프린트 Knowledge** (G6 #6) | SPRINT-009~029 등 과거 스프린트는 활성 TASK 아님 → archive(또는 기존 archive)만. state Open에 올리지 않음. |
+| D09 | Forge = Core + Blender add-on 하이브리드 | |
+| D13 | .blend Git; 대용량 LFS | |
+| D14 | 급할수록 파이프라인 우선 | |
+| D20 | Canonical Forge = `projects/excelion-forge/` | |
+| D26 | **Forge Phase 경로** (G6 #7) | 제품 작업 = excelion-forge only (D20 재확인). `projects/forge/`·중첩 스텁은 삭제/archive **예정**(실행은 별도 로컬 Evidence). 지금은 Atlas min scope로 제품 작업 보류. |
+
+## Documentation
+
+| ID | Decision | Notes |
+|----|----------|-------|
+| D10 | docs 파일명 영어, 본문 한국어 | |
 | D11 | SERA ≠ 프로젝트 목록 | D19 |
-| D12 | Kraken = 실행·자동화 계층 | 프로젝트 아님 |
-| D16 | 대화 기록 → 문서 → 프로젝트 자산 | |
+| D16 | 대화 → 문서 → 자산 | |
 | D19 | **프로젝트 SERA 폐기** | `projects/sera` 금지 |
 
-## Domain Isolation
-
-| ID | Decision | Notes |
-|----|----------|-------|
-| D17 | Forbidden: `archive/`, `obsidian/`, `node_modules/`, `.git/` | |
-| D18 | Context slim: 활성 타겟만 로드 | |
-
 ---
 
-## Proposed (G6) — 마스터 승인 대기
+## G6 closed
 
-Full text: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md`
+| Issue | Decision | Status |
+|-------|----------|--------|
+| #4 VERIFY | D23 | **Confirmed** — 구현 Acceptance 후속 |
+| #5 Kraken path | D24 | **Confirmed** — 이관 실행 후속 |
+| #6 SPRINT archive | D25 | **Confirmed** — 이동 실행 후속 |
+| #7 Forge phase path | D26 | **Confirmed** — 삭제/archive 실행 후속; 제품 작업은 min scope 이후 |
 
-| Issue | 요약 | Status |
-|-------|------|--------|
-| [#4](https://github.com/ln9swrd/atlas/issues/4) VERIFY | 프로젝트 샌드박스 격리 | **Draft** |
-| [#5](https://github.com/ln9swrd/atlas/issues/5) Kraken | `tools/kraken/` 계층 경로 | **Draft** |
-| [#6](https://github.com/ln9swrd/atlas/issues/6) SPRINT-009~029 | archive Knowledge | **Draft** |
-| [#7](https://github.com/ln9swrd/atlas/issues/7) Forge Phase 1→2 | excelion-forge only | **Draft** |
-
----
-
-## Open → Issues
-
-| 항목 | Issue |
-|------|-------|
-| VERIFY 코드 범위 | [#4](https://github.com/ln9swrd/atlas/issues/4) |
-| Kraken 이름·경로 | [#5](https://github.com/ln9swrd/atlas/issues/5) |
-| SPRINT-009~029 상태 | [#6](https://github.com/ln9swrd/atlas/issues/6) |
-| Forge Phase 1→2 | [#7](https://github.com/ln9swrd/atlas/issues/7) |
-| ~~VS Code extension~~ | ~~#2~~ **Closed not_planned (D22)** |
+Draft archive: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` (historical)
