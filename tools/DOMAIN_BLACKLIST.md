@@ -10,4 +10,5 @@
 | F2 path escape + outside-workspace deny | **Done** (`workspace=` resolve) |
 | F4 runner hooks `assert_path_allowed` on `run_script` | **Done** |
 | P2-1 Phase A `path_is_allowed` / `get_active_domain` | **Done** |
-| Phase B–C orchestrator + full CLI jail | Pending |
+| P2-1 Phase B runner wire (allowlist via assert) | **Code ready** — Evidence pending Master |
+| Phase C orchestrator + CLI jail | Pending |

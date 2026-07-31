@@ -1,4 +1,4 @@
-"""Unit tests for tools.domain_policy (P2-1 Phase A)."""
+"""Unit tests for tools.domain_policy (P2-1 Phase A + B)."""
 from __future__ import annotations
 
 import sys
@@ -34,6 +34,8 @@ class DomainPolicyPhaseATests(unittest.TestCase):
         )
         (self.ws / "tools" / "x.py").write_text("#\n", encoding="utf-8")
         (self.ws / "projects" / "excelion-forge" / "a.py").write_text("#\n", encoding="utf-8")
+        (self.ws / "core" / "rules").mkdir(parents=True, exist_ok=True)
+        (self.ws / "core" / "rules" / "rule_engine.py").write_text("#\n", encoding="utf-8")
 
     def tearDown(self) -> None:
         self.tmp.cleanup()
@@ -79,6 +81,21 @@ class DomainPolicyPhaseATests(unittest.TestCase):
 
     def test_assert_path_allowed_system_ok(self) -> None:
         assert_path_allowed("tools/x.py", workspace=self.ws, active=None)
+
+    # --- Phase B: runner script entry paths use same allowlist ---
+    def test_phase_b_runner_system_script_allowed(self) -> None:
+        """Paths runner executes (core/rules/...) must pass allowlist in platform mode."""
+        assert_path_allowed("core/rules/rule_engine.py", workspace=self.ws, active=None)
+        self.assertTrue(
+            path_is_allowed("core/review/review_engine.py", workspace=self.ws, active=None)
+        )
+
+    def test_phase_b_runner_product_script_denied(self) -> None:
+        """Product script path must raise when runner would call assert_path_allowed."""
+        with self.assertRaises(PermissionError):
+            assert_path_allowed(
+                "projects/excelion-forge/a.py", workspace=self.ws, active=None
+            )
 
 
 if __name__ == "__main__":

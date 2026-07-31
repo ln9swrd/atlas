@@ -11,7 +11,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-# domain_policy (F4 runner hook)
+# domain_policy (F4 + P2-1 Phase B: assert_path_allowed → path_is_allowed allowlist)
 _TOOLS_DIR = os.path.join(REPO_ROOT, "tools")
 if _TOOLS_DIR not in sys.path:
     sys.path.insert(0, _TOOLS_DIR)
@@ -27,7 +27,7 @@ from core.taskbroker.task_broker import TaskBroker
 
 
 def _run_python_script(base_dir, script_relative_path):
-    # F4: deny BLACK / outside-workspace paths before exec
+    # P2-1 Phase B: allowlist (system + active domain) before exec
     assert_path_allowed(script_relative_path, workspace=resolve_workspace_root())
     script_path = os.path.join(base_dir, script_relative_path)
 
@@ -140,8 +140,8 @@ def run_audit(base_dir='.'):
         "name": "Review Engine",
         "status": "PASS" if review_ok else "FAIL",
         "command": "python core/review/review_engine.py",
-        "stdout": (rule_result.stdout or "").strip(),
-        "stderr": (rule_result.stderr or "").strip(),
+        "stdout": (review_result.stdout or "").strip(),
+        "stderr": (review_result.stderr or "").strip(),
 
     })
     report["components"]["Review"] = {
@@ -288,7 +288,7 @@ def generate_project_status_markdown(report):
 
 
 def run_script(script_relative_path):
-    # F4: deny BLACK / outside-workspace paths before exec
+    # P2-1 Phase B: allowlist (system + active domain) before exec
     assert_path_allowed(script_relative_path, workspace=resolve_workspace_root())
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     script_path = os.path.join(base_dir, script_relative_path)

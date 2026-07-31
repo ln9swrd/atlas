@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Smoke checks for domain_policy (F1/F2 + P2-1 Phase A)."""
+"""Smoke checks for domain_policy (F1/F2 + P2-1 Phase A/B)."""
 from __future__ import annotations
 
 import sys
@@ -42,19 +42,21 @@ def main() -> int:
         if not ok:
             failed += 1
 
-    # Phase A allowlist (platform mode: active=None)
+    # Phase A/B allowlist (platform mode: active=None)
+    # Includes runner script paths used by atlas_runner (Phase B wire)
     allow_cases = [
         ("state/CURRENT_STATE.md", None, True),
         ("tools/check_domain_policy.py", None, True),
         ("docs/DECISIONS.md", None, True),
         ("core/rules/rule_engine.py", None, True),
+        ("core/review/review_engine.py", None, True),
         ("AGENTS.md", None, True),
         ("projects/excelion-forge/README.md", None, False),
         ("projects/excelion-forge/README.md", "excelion-forge", True),
         ("archive/x", None, False),
         ("projects/other/x.py", "excelion-forge", False),
     ]
-    print("-- path_is_allowed --")
+    print("-- path_is_allowed (Phase A/B) --")
     for path, active, expect_ok in allow_cases:
         got = path_is_allowed(path, workspace=ws, active=active)
         ok = got == expect_ok
