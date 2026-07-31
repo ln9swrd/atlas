@@ -10,6 +10,7 @@
 | `state/TASK_MAP.md` | Open work — G-*, L-*, CA-*, IMP-* |
 | `docs/07_ROADMAP/ATLAS_GIT_REBUILD_PLAN.md` | Rebuild plan |
 | `docs/07_ROADMAP/CLOUD_AI_VSCODE_EXEC_PLAN.md` | Cloud AI + VS Code 실행계획 |
+| `docs/06_OPERATIONS/L8_L10_CLOUD_REVIEW.md` | L-8…L-10 로컬 체크리스트 + PR 리뷰 포인트 |
 | `README.md` | Entry map |
 | `docs/DECISIONS.md` | Living decision log |
 | `docs/GLOSSARY.md` | Concept glossary |
@@ -17,16 +18,19 @@
 
 ## By task type
 
-### Owner local (Cline / Ollama)
+### Owner local (Cline / Ollama) — L-8…L-10
 
-- `state/TASK_MAP.md` — L-1…L-10 checklist
-- `state/CURRENT_STATE.md` — decision: Cline primary
-- `AGENTS.md` — paste-related rules into Cline instructions
-- `docs/04_IDE_EXTENSION/BOUNDARY.md` — if using custom extension too (on `impl/atlas-extension`)
+- `docs/06_OPERATIONS/L8_L10_CLOUD_REVIEW.md` — **실행 체크리스트**
+- `state/TASK_MAP.md` — L-8…L-10 Pending
+- `docs/04_IDE_EXTENSION/PACKAGING.md` (on `impl/atlas-extension`)
+- `docs/04_IDE_EXTENSION/F5_CHECKLIST.md` (on `impl/atlas-extension`)
+- `docs/04_IDE_EXTENSION/BOUNDARY.md` (on `impl/atlas-extension`)
+- `AGENTS.md`
 
 ### Cloud AI / both mode
 
 - `docs/07_ROADMAP/CLOUD_AI_VSCODE_EXEC_PLAN.md`
+- `docs/06_OPERATIONS/L8_L10_CLOUD_REVIEW.md`
 - `docs/process/PROJECT_STATE_SCHEMA.md` — ACTIVE_MODE
 - `docs/05_AGENTS/README.md` — role split
 - project `state/CURRENT_STATE.md` → TASK_MAP → CONTEXT_INDEX only
