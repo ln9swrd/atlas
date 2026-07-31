@@ -1,30 +1,24 @@
 # tools/ Inventory (M6)
 
 Date: 2026-07-31  
-Scope: Atlas min only
+Status: **M6 Done**
 
-## Listing (마스터 `ls tools/`)
+## Listing
 
 | Path | Role | Min-scope? | Smoke |
 |------|------|------------|-------|
-| `atlas_status.sh` | git branch/status/log | **Yes** | `bash tools/atlas_status.sh` |
-| `atlas_runner.py` | start/next/end/finish/audit … | Partial — needs `core/` | conflict fixed 2026-07-31; full smoke later |
-| `atlas_runner_backup.py` | backup of runner | No — ignore | — |
-| `atlas_qwen_orchestrator.py` | Ollama tool loop | Optional (Cline primary D15) | needs Ollama |
-| `README.md` | policy | Yes (read) | — |
-| `__pycache__/` | bytecode | ignore | — |
+| `atlas_status.sh` | git status | **Yes** | `bash tools/atlas_status.sh` — **PASS** |
+| `atlas_runner.py` | start/next/end… | Partial (`core/`) | conflict removed `8edcc4f` |
+| `atlas_runner_backup.py` | backup | No | — |
+| `atlas_qwen_orchestrator.py` | Ollama loop | Optional | needs Ollama |
+| `README.md` | policy | Yes | — |
 
-## Recommended Evidence (M6)
+## Evidence (2026-07-31)
 
-```bash
-cd /path/to/atlas   # repo root
+```
 bash tools/atlas_status.sh
+# branch: main
+# recent: 2949ac3 … then push 8edcc4f fix(tools): remove merge conflict markers
 ```
 
-Pass = prints branch, short status, last 5 commits (exit 0).
-
-## Notes
-
-- `atlas_runner.py` had unresolved `<<<<<<<` markers; removed in same change set as this inventory.
-- Runner still depends on legacy `core/` — not required for M6 pass.
-- Product projects remain on hold (`ATLAS_MIN_SCOPE.md`).
+Product projects remain on hold.
