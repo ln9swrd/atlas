@@ -3,7 +3,9 @@
 AGENTS.md §1 BLACK + D17 + D23 (path sandbox helpers).
 Cline: .clineignore | Orchestrator/Runner: this module.
 
-Phase A (P2-1): path_is_allowed + get_active_domain (allowlist).
+Phase A: path_is_allowed + get_active_domain
+Phase B: runner wire via assert_path_allowed
+Phase C: command_is_allowed + orchestrator allowlist
 """
 from __future__ import annotations
 
@@ -47,6 +49,14 @@ KNOWN_PRODUCT_IDS: tuple[str, ...] = (
     "printguard",
     "coin-s",
     "atlas-extension",
+)
+
+# Rough path-like tokens inside CLI strings (Phase C)
+_PATH_TOKEN_RE = re.compile(
+    r"(?:^|[\s\"'=])("
+    r"(?:(?:\.\./)+|\./)?(?:[A-Za-z0-9_.-]+/)+[A-Za-z0-9_.-]*"
+    r"|/[A-Za-z0-9_./-]+"
+    r"|(?:projects|state|tools|docs|core|archive|obsidian|logs|tests)/[A-Za-z0-9_./-]*)"
 )
 
 
@@ -211,3 +221,50 @@ def assert_path_allowed(
     ws = workspace or resolve_workspace_root()
     if not path_is_allowed(target_path, workspace=ws, active=active):
         raise PermissionError(f"domain_policy: denied path '{target_path}'")
+
+
+def extract_path_tokens(command: str) -> list[str]:
+    """Rough path-like tokens from a CLI command string (Phase C)."""
+    tokens: list[str] = []
+    for m in _PATH_TOKEN_RE.finditer(command):
+        tok = m.group(1).strip().strip("'\"")
+        if tok and tok not in tokens:
+            tokens.append(tok)
+    return tokens
+
+
+def command_is_allowed(
+    command: str,
+    workspace: Path | None = None,
+    active: str | None | object = ...,
+) -> bool:
+    """True if CLI command is allowed under D23.
+
+    1. BLACK name mention → deny
+    2. Any path-like token failing path_is_allowed → deny
+    3. No path tokens → allow (e.g. pwd, git status)
+    """
+    if not command or not command.strip():
+        return False
+    if command_mentions_black(command):
+        return False
+
+    ws = workspace or resolve_workspace_root()
+    if active is ...:
+        active = get_active_domain(workspace=ws)
+
+    for tok in extract_path_tokens(command):
+        if not path_is_allowed(tok, workspace=ws, active=active):
+            return False
+    return True
+
+
+def assert_command_allowed(
+    command: str,
+    workspace: Path | None = None,
+    active: str | None | object = ...,
+) -> None:
+    """Raise PermissionError if command is outside allowlist."""
+    ws = workspace or resolve_workspace_root()
+    if not command_is_allowed(command, workspace=ws, active=active):
+        raise PermissionError(f"domain_policy: denied command '{command}'")

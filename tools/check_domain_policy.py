@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Smoke checks for domain_policy (F1/F2 + P2-1 Phase A/B)."""
+"""Smoke checks for domain_policy (F1/F2 + P2-1 Phase A/B/C)."""
 from __future__ import annotations
 
 import sys
@@ -11,6 +11,7 @@ if str(_TOOLS) not in sys.path:
 
 from domain_policy import (  # noqa: E402
     BLACK_DIR_NAMES,
+    command_is_allowed,
     get_active_domain,
     path_is_allowed,
     path_is_blacklisted,
@@ -42,8 +43,7 @@ def main() -> int:
         if not ok:
             failed += 1
 
-    # Phase A/B allowlist (platform mode: active=None)
-    # Includes runner script paths used by atlas_runner (Phase B wire)
+    # Phase A/B allowlist
     allow_cases = [
         ("state/CURRENT_STATE.md", None, True),
         ("tools/check_domain_policy.py", None, True),
@@ -62,6 +62,25 @@ def main() -> int:
         ok = got == expect_ok
         print(
             f"  {'OK' if ok else 'FAIL'}: path_is_allowed({path!r}, active={active!r})={got} expect={expect_ok}"
+        )
+        if not ok:
+            failed += 1
+
+    # Phase C command_is_allowed
+    cmd_cases = [
+        ("pwd", None, True),
+        ("git status", None, True),
+        ("cat state/CURRENT_STATE.md", None, True),
+        ("cat projects/excelion-forge/README.md", None, False),
+        ("ls archive/", None, False),
+        ("cat projects/excelion-forge/README.md", "excelion-forge", True),
+    ]
+    print("-- command_is_allowed (Phase C) --")
+    for cmd, active, expect_ok in cmd_cases:
+        got = command_is_allowed(cmd, workspace=ws, active=active)
+        ok = got == expect_ok
+        print(
+            f"  {'OK' if ok else 'FAIL'}: command_is_allowed({cmd!r}, active={active!r})={got} expect={expect_ok}"
         )
         if not ok:
             failed += 1

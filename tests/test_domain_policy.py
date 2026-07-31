@@ -1,4 +1,4 @@
-"""Unit tests for tools.domain_policy (P2-1 Phase A + B)."""
+"""Unit tests for tools.domain_policy (P2-1 Phase A/B/C)."""
 from __future__ import annotations
 
 import sys
@@ -11,7 +11,9 @@ TOOLS = REPO_ROOT / "tools"
 sys.path.insert(0, str(TOOLS))
 
 from domain_policy import (  # noqa: E402
+    assert_command_allowed,
     assert_path_allowed,
+    command_is_allowed,
     get_active_domain,
     path_is_allowed,
     path_is_blacklisted,
@@ -82,19 +84,45 @@ class DomainPolicyPhaseATests(unittest.TestCase):
     def test_assert_path_allowed_system_ok(self) -> None:
         assert_path_allowed("tools/x.py", workspace=self.ws, active=None)
 
-    # --- Phase B: runner script entry paths use same allowlist ---
+    # --- Phase B: runner script entry paths ---
     def test_phase_b_runner_system_script_allowed(self) -> None:
-        """Paths runner executes (core/rules/...) must pass allowlist in platform mode."""
         assert_path_allowed("core/rules/rule_engine.py", workspace=self.ws, active=None)
         self.assertTrue(
             path_is_allowed("core/review/review_engine.py", workspace=self.ws, active=None)
         )
 
     def test_phase_b_runner_product_script_denied(self) -> None:
-        """Product script path must raise when runner would call assert_path_allowed."""
         with self.assertRaises(PermissionError):
             assert_path_allowed(
                 "projects/excelion-forge/a.py", workspace=self.ws, active=None
+            )
+
+    # --- Phase C: command_is_allowed ---
+    def test_phase_c_cli_no_path_ok(self) -> None:
+        self.assertTrue(command_is_allowed("pwd", workspace=self.ws, active=None))
+        self.assertTrue(command_is_allowed("git status", workspace=self.ws, active=None))
+
+    def test_phase_c_cli_system_path_ok(self) -> None:
+        self.assertTrue(
+            command_is_allowed("cat state/CURRENT_STATE.md", workspace=self.ws, active=None)
+        )
+
+    def test_phase_c_cli_product_path_denied(self) -> None:
+        self.assertFalse(
+            command_is_allowed(
+                "cat projects/excelion-forge/a.py", workspace=self.ws, active=None
+            )
+        )
+
+    def test_phase_c_cli_black_denied(self) -> None:
+        self.assertFalse(
+            command_is_allowed("ls archive/", workspace=self.ws, active=None)
+        )
+
+    def test_phase_c_assert_command_raises(self) -> None:
+        with self.assertRaises(PermissionError):
+            assert_command_allowed(
+                "cat projects/excelion-forge/a.py", workspace=self.ws, active=None
             )
 
 

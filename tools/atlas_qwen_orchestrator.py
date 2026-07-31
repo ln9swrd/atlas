@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Atlas Qwen Orchestrator (optional; primary surface = Cline per D15)
-Blacklist: tools.domain_policy (F1)
+Domain policy: tools.domain_policy (F1 + P2-1 Phase C allowlist)
 """
 
 import sys
@@ -20,8 +20,8 @@ if str(_TOOLS) not in sys.path:
 
 from domain_policy import (  # noqa: E402
     BLACK_DIR_NAMES,
-    command_mentions_black,
-    path_is_blacklisted,
+    command_is_allowed,
+    path_is_allowed,
     resolve_workspace_root,
 )
 
@@ -37,6 +37,7 @@ CRITICAL INSTRUCTIONS:
 2. Do NOT select `finish` action until you have executed the required CLI or file read actions to collect real evidence.
 3. Structure your thought process carefully inside <thought> tags before taking any action.
 4. Never read or write under archive/, obsidian/, node_modules/, .git/, or scratch/.
+5. In platform mode, do not read/write under projects/ unless ACTIVE_TARGET is that product.
 
 RESPONSE FORMAT:
 You MUST format your responses using the following tags:
@@ -93,7 +94,8 @@ def check_ollama_connection():
 
 
 def validate_file_access(target_path: str) -> bool:
-    return not path_is_blacklisted(target_path)
+    """P2-1 Phase C: allowlist (system + active domain), not blacklist-only."""
+    return path_is_allowed(target_path, workspace=WORKSPACE_ROOT)
 
 
 def resolve_context(user_prompt: str) -> str:
@@ -147,8 +149,11 @@ def execute_action(action: dict) -> str:
 
     if action_type == "execute_cli":
         cmd = action.get("command", "")
-        if command_mentions_black(cmd):
-            return "[Access Denied] Command targets forbidden directory (see domain_policy.BLACK_DIR_NAMES)."
+        if not command_is_allowed(cmd, workspace=WORKSPACE_ROOT):
+            return (
+                "[Access Denied] Command blocked by domain_policy "
+                "(BLACK or path outside allowlist)."
+            )
 
         sys.stderr.write(f"[+] Executing CLI: {cmd}\n")
         try:
@@ -163,7 +168,10 @@ def execute_action(action: dict) -> str:
     elif action_type == "read_file":
         filepath = action.get("path", "")
         if not validate_file_access(filepath):
-            return f"[Access Denied] Path '{filepath}' is in forbidden blacklisted zone."
+            return (
+                f"[Access Denied] Path '{filepath}' denied by domain_policy "
+                f"(BLACK or outside allowlist)."
+            )
 
         full_path = WORKSPACE_ROOT / filepath
         if not full_path.exists():
@@ -176,7 +184,10 @@ def execute_action(action: dict) -> str:
     elif action_type == "write_file":
         filepath = action.get("path", "")
         if not validate_file_access(filepath):
-            return f"[Access Denied] Cannot write to blacklisted zone '{filepath}'."
+            return (
+                f"[Access Denied] Cannot write '{filepath}' "
+                f"(BLACK or outside allowlist)."
+            )
 
         content = action.get("content", "")
         full_path = WORKSPACE_ROOT / filepath
