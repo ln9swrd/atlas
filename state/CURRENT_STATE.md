@@ -1,24 +1,26 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: **M7** blacklist ↔ tools 정합 (optional) 또는 세션 종료  
+ACTIVE_TARGET: Atlas min scope — **M1–M7 complete** (follow-ups optional)  
 MIN_SCOPE: `docs/07_ROADMAP/ATLAS_MIN_SCOPE.md`  
-LOOP: `docs/06_OPERATIONS/DAILY_LOOP.md`
+LOOP: `docs/06_OPERATIONS/DAILY_LOOP.md`  
+BLACKLIST: `tools/DOMAIN_BLACKLIST.md`
 
-## Done today
+## Done (min loop)
 
 | ID | Result |
 |----|--------|
-| M4 | DAILY_LOOP 실운용 문서 |
-| M5 | G6 → **D23–D26** confirmed |
-| M6 | tools smoke + runner conflict fix |
+| M4 | DAILY_LOOP |
+| M5 | D23–D26 |
+| M6 | tools smoke |
+| M7 | .clineignore fix; orchestrator ATLAS_ROOT; DOMAIN matrix |
 
 ## Next
 
-- **M7** (선택): AGENTS blacklist가 tools/orchestrator 경로와 맞는지 점검  
-- 또는 다음 세션까지 **min scope 유지** (제품 보류)
+- 세션 종료 가능 (min scope 달성)
+- 후속(비차단): D23 enforce 강화, D24–D26 파일 이동, runner path guard
+- 제품 작업은 min 유지 정책 해제 후
 
 ## Do not
 
-- 제품 프로젝트 우선 이탈
 - extension 부활
-- D23–D26 구현 미완을 Done으로 위장
+- archive/obsidian 자동 로드
