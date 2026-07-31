@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Smoke checks for domain_policy (F1/F2 + P2-1 Phase A/B/C)."""
+"""Smoke checks for domain_policy (F1/F2 + P2-1 Phase A–D).
+
+Single Evidence entry for D23 VERIFY path/CLI allowlist.
+"""
 from __future__ import annotations
 
 import sys
@@ -22,6 +25,7 @@ from domain_policy import (  # noqa: E402
 def main() -> int:
     ws = resolve_workspace_root()
     failed = 0
+    total = 0
 
     print(f"workspace={ws}")
     print(f"BLACK={BLACK_DIR_NAMES}")
@@ -37,13 +41,14 @@ def main() -> int:
     ]
     print("-- path_is_blacklisted --")
     for path, expect_denied in black_cases:
+        total += 1
         got = path_is_blacklisted(path, workspace=ws)
         ok = got == expect_denied
         print(f"  {'OK' if ok else 'FAIL'}: path_is_blacklisted({path!r})={got} expect_denied={expect_denied}")
         if not ok:
             failed += 1
 
-    # Phase A/B allowlist
+    # Phase A/B allowlist (+ runner paths)
     allow_cases = [
         ("state/CURRENT_STATE.md", None, True),
         ("tools/check_domain_policy.py", None, True),
@@ -58,6 +63,7 @@ def main() -> int:
     ]
     print("-- path_is_allowed (Phase A/B) --")
     for path, active, expect_ok in allow_cases:
+        total += 1
         got = path_is_allowed(path, workspace=ws, active=active)
         ok = got == expect_ok
         print(
@@ -77,6 +83,7 @@ def main() -> int:
     ]
     print("-- command_is_allowed (Phase C) --")
     for cmd, active, expect_ok in cmd_cases:
+        total += 1
         got = command_is_allowed(cmd, workspace=ws, active=active)
         ok = got == expect_ok
         print(
@@ -94,12 +101,16 @@ def main() -> int:
         ("ACTIVE_TARGET: excelion-forge pipeline\n", "excelion-forge"),
     ]
     for text, expect in parse_cases:
+        total += 1
         got = get_active_domain(state_text=text)
         ok = got == expect
         print(f"  {'OK' if ok else 'FAIL'}: get_active_domain({text.strip()!r})={got!r} expect={expect!r}")
         if not ok:
             failed += 1
 
+    passed = total - failed
+    print(f"-- summary --")
+    print(f"  {passed}/{total} OK" + ("  PASS" if failed == 0 else f"  FAIL ({failed})"))
     return 1 if failed else 0
 
 

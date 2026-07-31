@@ -12,4 +12,4 @@
 | P2-1 Phase A `path_is_allowed` / `get_active_domain` | **Done** |
 | P2-1 Phase B runner wire (allowlist via assert) | **Done** (Evidence 2026-07-31) |
 | P2-1 Phase C orchestrator + `command_is_allowed` | **Done** (Evidence 2026-07-31) |
-| Phase D smoke polish | Optional |
+| P2-1 Phase D smoke polish + D23 status | **Code ready** — Evidence pending Master |
