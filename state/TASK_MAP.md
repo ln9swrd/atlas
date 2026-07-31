@@ -2,18 +2,15 @@
 
 ## Direction (Master 2026-07-31)
 
-Platform only. Product projects **not started**. Priority = min-scope fixes applied → **Atlas closeout**.
+Platform only. Product projects **not started**. **Atlas closeout Done.**
 
 ## Closed
 
-Min · F1–F4 · P0–P3 · R1–R7 · D28 S0–S5 pointers · domain_policy + runtime smoke Evidence
+Min · F1–F4 · P0–P3 · R1–R7 · D28 S0–S5 (incl. S5-del) · domain_policy + runtime smoke Evidence · C1 · C3
 
-## Open (closeout only)
+## Open
 
-| ID | Task | Status | Notes |
-|----|------|--------|-------|
-| C1 | Optional mono product path delete | Deferred | pointer sufficient |
-| C3 | Atlas 일단락 선언 | Open | Master: confirm closeout → idle |
+없음.
 
 ## Hold
 

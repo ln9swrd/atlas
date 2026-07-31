@@ -45,16 +45,16 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 | D09 | Forge = Core + Blender add-on 하이브리드 | |
 | D13 | **Binary policy** | BINARY_ASSET_POLICY.md |
 | D14 | 급할수록 파이프라인 우선 | |
-| D20 | Canonical Forge path (legacy wording) | **Superseded for SoR by D28**: GitHub `ln9swrd/excelion-forge`; atlas path = mirror |
+| D20 | Canonical Forge path (legacy wording) | **Superseded for SoR by D28**: GitHub `ln9swrd/excelion-forge`; atlas path removed (S5-del) |
 | D26 | **Forge Phase 경로** | F3 policy Done |
 
 ## Target / Ops
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D27 | **ACTIVE_TARGET = platform** (R5) | Master 2026-07-31 |
-| D28 | **Long-term repo split** | S0–S5 pointers Done. Product SoR = separate repos. |
-| D29 | **Atlas closeout priority; product hold** | Master 2026-07-31. Atlas = platform only. 개별 제품 프로젝트 진행 안 함. 최소범위 문제·개선 적용 후 Atlas 일단락이 최우선. |
+| D27 | **ACTIVE_TARGET = platform** (R5) | Master 2026-07-31 → superseded by closeout |
+| D28 | **Long-term repo split** | S0–S5 Done. Product SoR = separate repos. Mono mirrors deleted (S5-del b719513). |
+| D29 | **Atlas closeout; product hold** | Master 2026-07-31. Atlas = platform only. 제품 진행 안 함. Closeout Done → ACTIVE_TARGET = **idle**. |
 
 ## Documentation
 
