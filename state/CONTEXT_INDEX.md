@@ -27,8 +27,8 @@
 ## Hold — 열지 말 것 (지금)
 
 - `projects/excelion*/**`, `projects/printguard/**`, `projects/coin-s/**`
-- `projects/atlas-extension/**` (D22)
-- `archive/**` (forge-legacy, templates-legacy 포함)
+- `projects/atlas-extension/**` (D22; R4 open)
+- `archive/**`
 - `obsidian/`
 - `core/`, `atlas-runtime/` 대규모 탐색 (P3 전)
 

@@ -30,6 +30,6 @@ M1–M7 **Done**
 |----|------|--------|----------|
 | R1 | state/docs path sync after forge archive | **Done** | 950a945 |
 | R2 | `projects/templates` → archive | **Done** | cb4999e → `archive/projects-templates-legacy` |
-| R3 | nested `excelion/.../exelion_forge` stub cleanup | Open | |
+| R3 | nested excelion forge stub cleanup | **Done** | dceb51a → `archive/excelion-exelion_forge-stub` |
 | R4 | `atlas-extension` → archive (D22) | Open | optional |
 | R5 | Master: ACTIVE_TARGET product vs platform | Open | decision only |

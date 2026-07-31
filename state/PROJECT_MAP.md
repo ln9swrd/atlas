@@ -1,7 +1,7 @@
 # PROJECT_MAP
 
-> Schema: `docs/process/PROJECT_STATE_SCHEMA.md` · D20 Forge paths  
-> Updated: 2026-07-31 (R2 templates archive)
+> Schema: `docs/process/PROJECT_STATE_SCHEMA.md`  
+> Updated: 2026-07-31 (R3 nested stub archive)
 
 ## System (not domain projects)
 
@@ -25,15 +25,15 @@
 
 | ID | Path | Notes |
 |----|------|-------|
-| atlas-extension | `projects/atlas-extension/` | **Deprecated (D22)** — do not revive |
+| atlas-extension | `projects/atlas-extension/` | **Deprecated (D22)** — do not revive; R4 open |
 
-## Legacy / non-product (D20 / D26)
+## Legacy / archived
 
 | Path | Role | Status |
 |------|------|--------|
-| `archive/projects-forge-legacy/` | Was `projects/forge/` | **Done** 2026-07-31 |
-| `archive/projects-templates-legacy/` | Was `projects/templates/` | **Done** 2026-07-31 (R2) |
-| Nested excelion forge stubs | cleanup candidate (R3) | Open |
+| `archive/projects-forge-legacy/` | Was `projects/forge/` | Done |
+| `archive/projects-templates-legacy/` | Was `projects/templates/` | Done (R2) |
+| `archive/excelion-exelion_forge-stub/` | Was nested under excelion | Done (R3) |
 
 ## Templates
 
@@ -42,11 +42,3 @@
 ## Deprecated
 
 SERA project — D19.
-
-## F3 Evidence (2026-07-31)
-
-| Decision | Result |
-|----------|--------|
-| D24 Kraken | **N/A** |
-| D25 Sprint knowledge | **OK** |
-| D26 Forge paths | **Done** — forge → `archive/projects-forge-legacy` |
