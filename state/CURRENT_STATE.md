@@ -1,20 +1,24 @@
 # CURRENT_STATE
 
 ACTIVE_TARGET: **platform P3**  
-P3 + Evidence: **Done**  
-Long-term split: **S0 plan written** (no migration yet)
-
-## Plan
-
-`docs/07_ROADMAP/LONG_TERM_REPO_SPLIT.md`
+D28 repo-split defaults: **Confirmed**  
+S0 plan + S2 path list: **Done**  
+S1 tag: **Master local** (API cannot create annotated tag)
 
 ## Next (one thing)
 
-Master confirm §5 defaults (two product repos / history / core HOLD / when)  
-→ then S1 tag `pre-split-atlas` **or** defer idle
+```bash
+cd /mnt/d/Atlas
+git pull origin main
+git tag -a pre-split-atlas -m "D28 pre-split baseline"
+git push origin pre-split-atlas
+# optional size Evidence:
+du -sh projects/excelion projects/excelion-forge 2>/dev/null
+```
+
+Then S3 (create empty product repos) when Master schedules.
 
 ## Do not
 
-- filter-repo / force-push without S1 tag + backup  
-- product feature work while ACTIVE_TARGET = platform  
-- extension 부활
+- filter-repo / force-push without tag + backup  
+- product feature work on platform target
