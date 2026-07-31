@@ -3,7 +3,7 @@
 ACTIVE_TARGET: **platform P2** (hardening)  
 MIN_SCOPE: Complete  
 F1–F4 / P0-1 / P2-1…P2-5: **Done**  
-R1–R5: **Done**
+R1–R7: **Done**
 
 ## F3 Evidence
 
@@ -15,12 +15,13 @@ R1–R5: **Done**
 
 ## Review (2026-07-31)
 
-See `state/ATLAS_REVIEW_2026-07-31.md`.
+See `state/ATLAS_REVIEW_2026-07-31.md`.  
+R5 platform 유지 · R6 binary policy · R7 state discipline **Done**.
 
 ## Next (one thing)
 
-- Binary asset policy 정리 (R5 follow-up)
-- or P3 runtime when Master schedules
+- P3 runtime when Master schedules
+- or long-term: platform vs product repo split (planning only)
 
 ## Do not
 
