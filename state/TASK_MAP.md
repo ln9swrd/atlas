@@ -22,4 +22,4 @@ M1–M7 **Done**
 | P2-1 | D23 full VERIFY CWD jail | **Done** (A–D) | 25/25 smoke + 15 unittest OK (2026-07-31) |
 | P2-3 | CONTEXT_INDEX slim | **Done** | platform plan + hold list |
 | P2-4 | DAILY_LOOP real use | **Done** | `atlas_status.sh` PASS + 25/25 (2026-07-31) |
-| P2-5 | Decision log discipline | Pending | |
+| P2-5 | Decision log discipline | **Code ready** | DECISION_PROCESS + DECISIONS update; Evidence pending |

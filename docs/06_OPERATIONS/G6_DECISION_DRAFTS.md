@@ -2,11 +2,11 @@
 
 마스터 승인. Decision IDs: **D23–D26** in `docs/DECISIONS.md`.
 
-구현(Acceptance 체크·경로 이동)은 **후속 작업**. 정책만 확정.
+| Issue | ID | Implement |
+|-------|-----|-----------|
+| #4 VERIFY | D23 | **Done** P2-1 A–D (2026-07-31 Evidence) |
+| #5 Kraken | D24 | 이관 후속 |
+| #6 SPRINT | D25 | 이동 후속 |
+| #7 Forge path | D26 | 삭제/archive 후속 |
 
-| Issue | ID |
-|-------|-----|
-| #4 VERIFY | D23 |
-| #5 Kraken | D24 |
-| #6 SPRINT | D25 |
-| #7 Forge path | D26 |
+Process: `docs/06_OPERATIONS/DECISION_PROCESS.md`

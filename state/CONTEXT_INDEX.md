@@ -9,11 +9,12 @@
 | `state/CURRENT_STATE.md` | 지금 타겟 |
 | `state/TASK_MAP.md` | 열린 작업 |
 | `docs/06_OPERATIONS/DAILY_LOOP.md` | 세션 루프 (P2-4) |
+| `docs/06_OPERATIONS/DECISION_PROCESS.md` | Decision 규율 (P2-5) |
+| `docs/DECISIONS.md` | D01–D26 SoR |
 | `docs/07_ROADMAP/ATLAS_PLATFORM_PLAN.md` | 플랫폼 계획 |
 | `docs/07_ROADMAP/D23_VERIFY_CWD_JAIL_DESIGN.md` | P2-1 Done |
 | `docs/07_ROADMAP/ATLAS_MIN_SCOPE.md` | 최소 구현 (완료) |
 | `AGENTS.md` | 도메인·Evidence |
-| `docs/DECISIONS.md` | D01–D26 |
 | `docs/05_AGENTS/ROLE_SPLIT.md` | Master/Cline/Cloud |
 
 ## Tools (필요 시 1개)
