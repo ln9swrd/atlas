@@ -1,29 +1,25 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: **platform P2** (hardening)  
+ACTIVE_TARGET: **platform P3** (runtime evolution)  
 MIN_SCOPE: Complete  
-F1–F4 / P0-1 / P2-1…P2-5: **Done**  
-R1–R7: **Done**
+F1–F4 / P0–P2 / R1–R7: **Done**  
+P3-0 inventory: **Done**
 
-## F3 Evidence
+## Review
 
-| Item | Result |
-|------|--------|
-| D24 | No kraken → N/A |
-| D25 | Sprint map OK |
-| D26 | forge → `archive/projects-forge-legacy` |
-
-## Review (2026-07-31)
-
-See `state/ATLAS_REVIEW_2026-07-31.md`.  
-R5 platform 유지 · R6 binary policy · R7 state discipline **Done**.
+- R5–R7 closed 2026-07-31
+- P3-0: `docs/07_ROADMAP/P3_RUNTIME_INVENTORY.md`
 
 ## Next (one thing)
 
-- P3 runtime when Master schedules
-- or long-term: platform vs product repo split (planning only)
+- **P3-1** Master pick from inventory §7 (tag product paths / stubs / backup / contract matrix / optional runtime smoke)
+
+## Session
+
+Home · Master + Cline + Sera available
 
 ## Do not
 
 - extension 부활 / archive 자동 로드
-- 제품 프로젝트 작업 (ACTIVE_TARGET = platform 유지)
+- 제품 기능 작업 (ACTIVE_TARGET ≠ product)
+- core/ SDK 전면 rewrite
