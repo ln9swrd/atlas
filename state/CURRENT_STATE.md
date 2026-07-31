@@ -1,22 +1,26 @@
 # CURRENT_STATE
 
 ACTIVE_TARGET: **platform P3**  
-D28: **Confirmed**  
-S0–S2 plan/path list: **Done**  
-S1 tag `pre-split-atlas`: **Done** (Master push 2026-07-31)
+D28 / S0–S3: **Done**  
+Tag: `pre-split-atlas`
+
+## Product repos
+
+| Repo | Status |
+|------|--------|
+| https://github.com/ln9swrd/excelion | **Created** (empty + README) |
+| https://github.com/ln9swrd/excelion-forge | **Already existed** (has content; not empty) |
 
 ## Next (one thing)
 
-**S3** — create empty product repos (Master confirm):
-- `ln9swrd/excelion`
-- `ln9swrd/excelion-forge`
+**S4 planning** — choose extract strategy:
+1. excelion: subtree/copy from `projects/excelion` → new repo  
+2. excelion-forge: **diff/sync** mono path vs existing standalone (do not blind overwrite)
 
-Optional before S3:
-```bash
-du -sh projects/excelion projects/excelion-forge 2>/dev/null
-```
+Master: `S4` to start extract design, or idle.
 
 ## Do not
 
-- filter-repo / force-push without backup  
+- force-push product repos  
+- delete `projects/*` from atlas before S4 plan + backup  
 - product feature work on platform target
