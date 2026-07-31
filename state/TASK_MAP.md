@@ -21,5 +21,5 @@ M1–M7 **Done**
 | P0-1 | F1/F2/F4 green | **Done** | local smoke OK (2026-07-31) |
 | P2-1 | D23 full VERIFY CWD jail | **Done** (A–D) | 25/25 smoke + 15 unittest OK (2026-07-31) |
 | P2-3 | CONTEXT_INDEX slim | **Done** | platform plan + hold list |
-| P2-4 | DAILY_LOOP real use | Pending | habit |
+| P2-4 | DAILY_LOOP real use | **Code ready** | `atlas_status.sh` + DAILY_LOOP align; Evidence pending |
 | P2-5 | Decision log discipline | Pending | |
