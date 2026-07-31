@@ -2,23 +2,27 @@
 
 ACTIVE_TARGET: **platform P3**  
 D28 S0–S3: **Done**  
-S4: **Playbook written** — local execution pending
+S4-A excelion import: **Done** (working tree clean / remote already matched)  
+S4-B forge diff: **Evidence recorded** (sync choices pending Master)
 
-## Plan
+## S4-B diff (Master local)
 
-`docs/07_ROADMAP/SPLIT_S4_EXEC.md`
+| Side | Paths |
+|------|--------|
+| Only standalone | `.agents`, `.codex`, `.github`, `.gitignore`, `.importlinter` |
+| Differ | `README.md` |
+| Only atlas mono | `shin_getter_robo11.blend` (root), `state/` |
 
-| Track | Action |
-|-------|--------|
-| **S4-A excelion** | rsync/copy `projects/excelion` → github.com/ln9swrd/excelion |
-| **S4-B forge** | diff mono vs existing standalone; sync gaps only |
+**Default recommendation:** standalone = code canonical; copy mono `state/` into standalone if newer; root blend → LFS/policy or drop if duplicate of `blender/assets/`.
 
 ## Next (one thing)
 
-Master/Cline run S4-A (and optionally S4-B diff) on `/mnt/d/Atlas`, paste Evidence.
+Master pick S4-B:
+1. `state/` mono → standalone copy?  
+2. root `.blend` keep / LFS / ignore?  
+3. then S5 (pointer in atlas, no delete required immediately)
 
 ## Do not
 
-- force-push excelion-forge  
-- delete mono `projects/*` before S5  
-- product feature sprint until extract verified
+- force-push forge  
+- delete mono paths without S5 confirm
