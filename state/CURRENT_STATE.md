@@ -1,26 +1,24 @@
 # CURRENT_STATE
 
 ACTIVE_TARGET: **platform P3**  
-D28 / S0–S3: **Done**  
-Tag: `pre-split-atlas`
+D28 S0–S3: **Done**  
+S4: **Playbook written** — local execution pending
 
-## Product repos
+## Plan
 
-| Repo | Status |
-|------|--------|
-| https://github.com/ln9swrd/excelion | **Created** (empty + README) |
-| https://github.com/ln9swrd/excelion-forge | **Already existed** (has content; not empty) |
+`docs/07_ROADMAP/SPLIT_S4_EXEC.md`
+
+| Track | Action |
+|-------|--------|
+| **S4-A excelion** | rsync/copy `projects/excelion` → github.com/ln9swrd/excelion |
+| **S4-B forge** | diff mono vs existing standalone; sync gaps only |
 
 ## Next (one thing)
 
-**S4 planning** — choose extract strategy:
-1. excelion: subtree/copy from `projects/excelion` → new repo  
-2. excelion-forge: **diff/sync** mono path vs existing standalone (do not blind overwrite)
-
-Master: `S4` to start extract design, or idle.
+Master/Cline run S4-A (and optionally S4-B diff) on `/mnt/d/Atlas`, paste Evidence.
 
 ## Do not
 
-- force-push product repos  
-- delete `projects/*` from atlas before S4 plan + backup  
-- product feature work on platform target
+- force-push excelion-forge  
+- delete mono `projects/*` before S5  
+- product feature sprint until extract verified
