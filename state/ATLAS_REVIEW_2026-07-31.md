@@ -3,8 +3,8 @@
 ## Done this session
 
 - `git mv projects/forge` → `archive/projects-forge-legacy`
-- push `main` (`feecd25..ab5057b` then docs sync commit)
-- state/docs path alignment (R1)
+- push `main` + state path alignment (R1)
+- `git mv projects/templates` → `archive/projects-templates-legacy` (R2, cb4999e)
 
 ## Problems
 
@@ -12,7 +12,7 @@
 |---|--------|
 | 1 | Docs lagged physical paths (forge still listed under projects/) |
 | 2 | Platform charter (IDE extension, perception) mostly Spec; runtime incomplete |
-| 3 | Legacy duplication: `core/`/`src` snapshot, `templates` vs `_template`, nested excelion forge stub, deprecated extension still in tree |
+| 3 | Legacy duplication: `core/`/`src` snapshot, templates vs `_template`, nested excelion forge stub, deprecated extension still in tree |
 | 4 | Monorepo mixes DevOS + large product trees |
 | 5 | Binary asset policy vs history (blend/audio) unclear |
 | 6 | P0 products on hold while ACTIVE_TARGET = platform idle |
@@ -23,7 +23,7 @@
 | ID | Action | Status |
 |----|--------|--------|
 | R1 | Sync PROJECT_MAP / CURRENT_STATE / projects/README / CONTEXT_INDEX | **Done** |
-| R2 | `projects/templates` → archive or drop | Open |
+| R2 | `projects/templates` → archive | **Done** |
 | R3 | Nested excelion forge stub cleanup | Open |
 | R4 | `atlas-extension` → archive (D22) | Open |
 | R5 | Master decides ACTIVE_TARGET: product vs platform | Open |

@@ -28,8 +28,8 @@ M1–M7 **Done**
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| R1 | state/docs path sync after forge archive | **Done** | this commit |
-| R2 | `projects/templates` → archive or drop | Open | prefer `_template` only |
+| R1 | state/docs path sync after forge archive | **Done** | 950a945 |
+| R2 | `projects/templates` → archive | **Done** | cb4999e → `archive/projects-templates-legacy` |
 | R3 | nested `excelion/.../exelion_forge` stub cleanup | Open | |
 | R4 | `atlas-extension` → archive (D22) | Open | optional |
 | R5 | Master: ACTIVE_TARGET product vs platform | Open | decision only |

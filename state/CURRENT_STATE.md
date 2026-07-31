@@ -5,7 +5,8 @@ MIN_SCOPE: Complete
 F1–F2–F4: **Done**  
 F3 (D24–D26): **Done** (2026-07-31 — policy + physical move)  
 P0-1: **Done**  
-P2-1…P2-5: **Done**
+P2-1…P2-5: **Done**  
+R1–R2: **Done**
 
 ## F3 Evidence
 
@@ -21,9 +22,10 @@ See `state/ATLAS_REVIEW_2026-07-31.md`.
 
 ## Next (one thing)
 
-- Doc hygiene remaining: `templates` / nested excelion forge stub / extension archive (R2–R4 in TASK_MAP)
+- **R3** nested excelion forge stub cleanup
+- or R4 extension archive
+- or R5 ACTIVE_TARGET decision (Master)
 - or P3 runtime when Master schedules
-- or ACTIVE_TARGET → product (Master decision)
 
 ## Do not
 

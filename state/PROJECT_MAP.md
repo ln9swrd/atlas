@@ -1,7 +1,7 @@
 # PROJECT_MAP
 
 > Schema: `docs/process/PROJECT_STATE_SCHEMA.md` · D20 Forge paths  
-> Updated: 2026-07-31 (F3 path hygiene + physical archive)
+> Updated: 2026-07-31 (R2 templates archive)
 
 ## System (not domain projects)
 
@@ -29,15 +29,15 @@
 
 ## Legacy / non-product (D20 / D26)
 
-| Path | Role | F3 |
-|------|------|-----|
-| `archive/projects-forge-legacy/` | Was `projects/forge/` (App-host experiment). **Not** product Forge. | **Physical move Done** 2026-07-31 |
-| Nested excelion forge stubs | Ignore / cleanup candidate (R3) | — |
-| `projects/templates/` | Prefer `_template`; cleanup candidate (R2) | — |
+| Path | Role | Status |
+|------|------|--------|
+| `archive/projects-forge-legacy/` | Was `projects/forge/` | **Done** 2026-07-31 |
+| `archive/projects-templates-legacy/` | Was `projects/templates/` | **Done** 2026-07-31 (R2) |
+| Nested excelion forge stubs | cleanup candidate (R3) | Open |
 
 ## Templates
 
-`projects/_template/` — use for new project state.
+`projects/_template/` — **only** template for new project state.
 
 ## Deprecated
 
@@ -47,6 +47,6 @@ SERA project — D19.
 
 | Decision | Result |
 |----------|--------|
-| D24 Kraken | **N/A** — no `projects/kraken/`; no `tools/kraken/` code to move |
-| D25 Sprint knowledge | **OK** — no SPRINT-009–029 Open in TASK_MAP |
-| D26 Forge paths | **Done** — canonical = excelion-forge; forge → `archive/projects-forge-legacy` |
+| D24 Kraken | **N/A** |
+| D25 Sprint knowledge | **OK** |
+| D26 Forge paths | **Done** — forge → `archive/projects-forge-legacy` |

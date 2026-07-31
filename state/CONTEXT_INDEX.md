@@ -28,7 +28,7 @@
 
 - `projects/excelion*/**`, `projects/printguard/**`, `projects/coin-s/**`
 - `projects/atlas-extension/**` (D22)
-- `archive/**` (incl. `projects-forge-legacy`)
+- `archive/**` (forge-legacy, templates-legacy 포함)
 - `obsidian/`
 - `core/`, `atlas-runtime/` 대규모 탐색 (P3 전)
 
