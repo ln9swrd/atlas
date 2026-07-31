@@ -1,22 +1,23 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: idle / **F3** path moves (optional)  
+ACTIVE_TARGET: **platform P2** (hardening)  
 MIN_SCOPE: Complete  
-F1–F2–F4: **Done** (domain_policy + runner hook)
+F1–F2–F4: **Done**  
+F3: **Assessed** — D24 N/A (no kraken code), D25 archive OK, D26 deferred (product hold)
 
 ## Evidence commands
 
 ```bash
-python tools/check_domain_policy.py
+python3 tools/check_domain_policy.py
 ```
 
-## Next
+## Next (one thing)
 
-- **F3** D24–D26 file moves (when ready)
-- or **idle**
-- Platform plan: `docs/07_ROADMAP/ATLAS_PLATFORM_PLAN.md` (2026-07-31)
+- **P2-3** CONTEXT_INDEX slim + platform plan link  
+- then P2-1 / P2-4 as capacity
 
 ## Do not
 
 - extension 부활 / archive 자동 로드
-- 제품 프로젝트 작업 (min-scope 유지)
+- 제품 프로젝트 작업 (ACTIVE_TARGET 변경 전)
+- F3 D26 legacy forge 삭제/이동 (Master 명시 전)
