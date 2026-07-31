@@ -4,17 +4,20 @@ Status: **Draft from cloud mode** — Human/Cline 실행 대기
 Date: 2026-07-31  
 Source: Cloud AI session (mode: cloud)  
 Plan: `docs/07_ROADMAP/CLOUD_AI_VSCODE_EXEC_PLAN.md`  
+Roles: `docs/05_AGENTS/ROLE_SPLIT.md`  
 Evidence: 본 문서 = CA-3 partial (설계·리뷰 Git 반영). L-8…L-10 **Done 아님**.
+
+**Executor note (2026-07-31):** Human **can run simple commands and shell scripts**. L-8 / L-9 (and npm compile if Node is available) do **not** require Cline. L-10 F5 still needs VS Code + Ollama on a suitable machine.
 
 ---
 
 ## 산출물 (필수)
 
-### 1. L-8 / L-9 / L-10 로컬 실행 체크리스트
+### 1. L-8 / L-9 / L-10 실행 체크리스트
 
-로컬 환경(Cline)에서 복사/붙여넣기하며 순서대로 실행.
+복사/붙여넣기 후 **Human 또는 Cline**이 실행.
 
-#### [L-8] Rebase 및 Merge 준비
+#### [L-8] Rebase 및 Merge 준비 — Human shell OK
 
 - [ ] `main` 기준으로 `impl/atlas-extension` rebase 상태가 깨끗한지(충돌 없음) 확인
 
@@ -25,7 +28,7 @@ git rebase origin/main
 # 충돌 시 해결 후: git add … && git rebase --continue
 ```
 
-#### [L-9] Packaging Untrack (node_modules, vsix)
+#### [L-9] Packaging Untrack (node_modules, vsix) — Human shell OK
 
 - [ ] 아래 명령으로 인덱스에서 제거 후 커밋 (파일 자체는 디스크에 남겨도 됨)
 
@@ -41,8 +44,8 @@ git push origin impl/atlas-extension
 
 #### [L-10] F5 Smoke 및 PR #3 Merge 전 확인
 
-- [ ] `projects/atlas-extension/` 에서 `npm install` 후 `npm run compile` (node_modules 커밋 금지)
-- [ ] VS Code F5 (Extension Development Host) 후 점검:
+- [ ] `projects/atlas-extension/` 에서 `npm install` 후 `npm run compile` (node_modules 커밋 금지) — Human if Node available
+- [ ] VS Code F5 (Extension Development Host) 후 점검 — **dev PC** (Cline optional):
 
 | # | Check | Pass? |
 |---|--------|-------|
@@ -53,7 +56,7 @@ git push origin impl/atlas-extension
 | 5 | host/model 설정 변경 → reload 후 반영 | |
 | 6 | camera/mic 권한 팝업 없음 (camera = 0) | |
 
-- [ ] Smoke 통과 후 PR #3 → `main` merge + tag
+- [ ] Smoke 통과 후 PR #3 → `main` merge + tag — **Human** 승인
 
 참고: `docs/04_IDE_EXTENSION/F5_CHECKLIST.md` (impl 브랜치)
 
@@ -98,13 +101,13 @@ git push origin impl/atlas-extension
 ACTIVE_MODE: both
 ```
 
-(Cloud = 설계·리뷰 / Cline = 도구 실행·Evidence)
+(Cloud = 설계·리뷰 / Cline = 에이전트 루프 / Human = 승인·단순 쉘)
 
 ---
 
-## Human / Cline이 Git에 넣을 것 (실행 후)
+## 실행 후 Git에 넣을 것
 
-- [ ] PR #3 merge → `main` (`projects/atlas-extension/` 등)
+- [ ] PR #3 merge → `main` (`projects/atlas-extension/` 등) — Human
 - [ ] `state/CURRENT_STATE.md` — L-8…L-10 Done, Next = CA-1 또는 Forge T-1
 - [ ] `state/TASK_MAP.md` — L-8…L-10 Status Done + Evidence
 - [ ] (선택) `projects/<domain>/state/CURRENT_STATE.md` — `ACTIVE_MODE: both`
@@ -115,5 +118,6 @@ ACTIVE_MODE: both
 ## 상태 메모
 
 - 본 문서는 **Cloud 설계 산출물**이다.
-- L-9 untrack / L-10 F5는 **로컬에서만** Evidence 확보 가능.
-- 원격 샌드박스에서는 node_modules untrack·F5를 대신 실행하지 않는다.
+- L-8/L-9 쉘: **Human 실행 가능** (Cline 불필수).
+- L-10 F5: Extension Host + Ollama 있는 머신 필요.
+- 원격 전용 환경에서는 F5를 대신 통과 처리할 수 없다.
