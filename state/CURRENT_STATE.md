@@ -7,31 +7,19 @@ F3: **Assessed**
 P0-1: **Done**  
 P2-3: **Done**  
 P2-1 Phase A: **Done** (2026-07-31 Evidence PASS)  
-P2-1 Phase B: **Code ready** (runner wire; Evidence pending)
+P2-1 Phase B: **Done** (2026-07-31 Evidence PASS)
 
-## Evidence (Phase A)
-
-```
-python3 tools/check_domain_policy.py  → PASS
-python3 -m unittest tests.test_domain_policy -v  → 8 tests OK
-```
-
-## Phase B (ready for Evidence)
-
-- `run_script` / `_run_python_script` → `assert_path_allowed` (= path_is_allowed allowlist)
-- smoke includes runner script paths (`core/rules/`, `core/review/`)
-- unittest Phase B cases added
+## Evidence (Phase A + B)
 
 ```
-git pull github main
-python3 tools/check_domain_policy.py
-python3 -m unittest tests.test_domain_policy -v
+python3 tools/check_domain_policy.py  → all OK
+python3 -m unittest tests.test_domain_policy -v  → 10 tests OK
 ```
 
 ## Next (one thing)
 
-- Master: run Evidence above → mark Phase B Done, or idle
-- Phase C (orchestrator) not started
+- Phase C (orchestrator path_is_allowed) or idle
+- Master chooses
 
 ## Do not
 
