@@ -2,11 +2,14 @@
 
 ACTIVE_TARGET: **platform P3** (runtime evolution)  
 MIN_SCOPE: Complete  
-F1–F4 / P0–P2 / R1–R7 / P3-0 / P3-1a / P3-1b: **Done**
+P3-0 / P3-1a–e: **Done** (code/docs)  
+Local Evidence: **pending Cline** — `python tools/check_atlas_runtime.py`
 
 ## Next (one thing)
 
-- P3-1c runner backup · P3-1d contract matrix · P3-1e optional smoke
+- Cline: run runtime smoke + domain_policy smoke (Evidence)  
+- or long-term repo split planning  
+- or idle / product ACTIVE_TARGET when Master decides
 
 ## Session
 
@@ -15,5 +18,5 @@ Home · Master + Cline + Sera available
 ## Do not
 
 - extension 부활 / archive 자동 로드
-- 제품 기능 작업 / `core/` product-coupled 경로 확장
+- 제품 기능 작업 / `core/` product-coupled 확장
 - core/ SDK 전면 rewrite
