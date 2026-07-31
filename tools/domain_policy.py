@@ -2,9 +2,12 @@
 
 AGENTS.md §1 BLACK + D17 + D23 (path sandbox helpers).
 Cline: .clineignore | Orchestrator/Runner: this module.
+
+Phase A (P2-1): path_is_allowed + get_active_domain (allowlist).
 """
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Iterable
 
@@ -14,6 +17,36 @@ BLACK_DIR_NAMES: tuple[str, ...] = (
     "node_modules",
     ".git",
     "scratch",
+)
+
+# Relative prefixes always allowed when not BLACK (D23 system paths)
+SYSTEM_ALLOW_PREFIXES: tuple[str, ...] = (
+    "state/",
+    "tools/",
+    "docs/",
+    "core/",
+    "atlas-runtime/",
+    "tests/",
+    "logs/",
+    "config/",
+    "scripts/",
+)
+
+SYSTEM_ALLOW_FILES: tuple[str, ...] = (
+    "agents.md",
+    "readme.md",
+    ".clineignore",
+    "requirements-dev.txt",
+    ".gitignore",
+)
+
+# Product ids recognized in ACTIVE_TARGET text
+KNOWN_PRODUCT_IDS: tuple[str, ...] = (
+    "excelion-forge",
+    "excelion",
+    "printguard",
+    "coin-s",
+    "atlas-extension",
 )
 
 
@@ -30,6 +63,10 @@ def resolve_workspace_root(env_atlas_root: str | None = None) -> Path:
     return repo_root_from_tools()
 
 
+def _normalize_rel(target_path: str) -> str:
+    return target_path.replace("\\", "/").lstrip("./").strip()
+
+
 def path_is_blacklisted(
     target_path: str,
     black: Iterable[str] = BLACK_DIR_NAMES,
@@ -40,7 +77,7 @@ def path_is_blacklisted(
     Checks string segments and, when workspace is set, resolved path parts
     (blocks ../archive style escapes outside or into BLACK).
     """
-    normalized = target_path.replace("\\", "/").lower().lstrip("./")
+    normalized = _normalize_rel(target_path).lower()
     for name in black:
         n = name.lower()
         if f"/{n}/" in f"/{normalized}/" or normalized.startswith(f"{n}/") or normalized == n:
@@ -49,7 +86,6 @@ def path_is_blacklisted(
     if workspace is not None:
         ws = workspace.resolve()
         try:
-            # Absolute targets: still resolve
             candidate = Path(target_path)
             full = candidate.resolve() if candidate.is_absolute() else (ws / target_path).resolve()
         except (OSError, RuntimeError):
@@ -71,8 +107,107 @@ def command_mentions_black(command: str, black: Iterable[str] = BLACK_DIR_NAMES)
     return any(name.lower() in lower for name in black)
 
 
-def assert_path_allowed(target_path: str, workspace: Path | None = None) -> None:
-    """Raise PermissionError if blacklisted or outside workspace."""
+def get_active_domain(
+    workspace: Path | None = None,
+    state_text: str | None = None,
+) -> str | None:
+    """Return active product domain name or None for platform mode.
+
+    Reads ACTIVE_TARGET from state/CURRENT_STATE.md unless state_text given.
+    """
+    text = state_text
+    if text is None:
+        ws = workspace or resolve_workspace_root()
+        state_path = ws / "state" / "CURRENT_STATE.md"
+        if not state_path.is_file():
+            return None
+        try:
+            text = state_path.read_text(encoding="utf-8")
+        except OSError:
+            return None
+
+    active_line = ""
+    for line in text.splitlines():
+        if line.upper().startswith("ACTIVE_TARGET"):
+            active_line = line
+            break
+    if not active_line:
+        return None
+
+    lower = active_line.lower()
+
+    # Explicit projects/<name>
+    m = re.search(r"projects/([a-z0-9_-]+)", lower)
+    if m:
+        return m.group(1)
+
+    # Known product id token
+    for pid in KNOWN_PRODUCT_IDS:
+        if re.search(rf"\b{re.escape(pid)}\b", lower):
+            return pid
+
+    # platform / idle / F3 / min → no product domain
+    return None
+
+
+def _under_prefix(normalized: str, prefix: str) -> bool:
+    n = normalized.lower()
+    p = prefix.lower()
+    return n == p.rstrip("/") or n.startswith(p)
+
+
+def path_is_allowed(
+    target_path: str,
+    workspace: Path | None = None,
+    active: str | None | object = ...,
+) -> bool:
+    """True if path is allowed under D23 allowlist.
+
+    Order: BLACK/outside deny → system allow → active project allow → deny.
+    active=... means load from CURRENT_STATE; pass str or None to override.
+    """
     ws = workspace or resolve_workspace_root()
     if path_is_blacklisted(target_path, workspace=ws):
+        return False
+
+    # Resolve to workspace-relative for allow checks
+    try:
+        candidate = Path(target_path)
+        full = candidate.resolve() if candidate.is_absolute() else (ws / target_path).resolve()
+        rel = full.relative_to(ws.resolve())
+        normalized = rel.as_posix()
+    except (OSError, RuntimeError, ValueError):
+        return False
+
+    if not normalized or normalized == ".":
+        return True
+
+    norm_lower = normalized.lower()
+
+    if norm_lower in SYSTEM_ALLOW_FILES:
+        return True
+    for prefix in SYSTEM_ALLOW_PREFIXES:
+        if _under_prefix(norm_lower, prefix):
+            return True
+
+    if active is ...:
+        active = get_active_domain(workspace=ws)
+
+    if active:
+        proj_prefix = f"projects/{str(active).lower()}/"
+        proj_exact = f"projects/{str(active).lower()}"
+        if norm_lower == proj_exact or norm_lower.startswith(proj_prefix):
+            return True
+
+    return False
+
+
+def assert_path_allowed(
+    target_path: str,
+    workspace: Path | None = None,
+    active: str | None | object = ...,
+) -> None:
+    """Raise PermissionError if blacklisted, outside workspace, or outside allowlist."""
+    ws = workspace or resolve_workspace_root()
+    if not path_is_allowed(target_path, workspace=ws, active=active):
         raise PermissionError(f"domain_policy: denied path '{target_path}'")
