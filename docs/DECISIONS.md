@@ -1,7 +1,7 @@
 # Atlas Decision Log
 
 Source: `obsidian/Archive/Original Conversations/ANALYSIS_REPORT.md` (Phase 3)
-Status: Living log (2026-07-30)
+Status: Living log (2026-07-31)
 
 ---
 
@@ -23,6 +23,7 @@ Status: Living log (2026-07-30)
 | D07 | Cline: Subagents / Native / Parallel Tool Call OFF 권장 | 로컬 모델 안정화 |
 | D08 | 로컬 AI는 WSL 내부 배치 권장 | |
 | D15 | Primary work surface = Cline (or Roo) + local Ollama | Continue 보조만 |
+| D21 | **마스터(Master)** = Human 최종 권한자; 단순 커맨드·쉘 실행 가능 | `docs/05_AGENTS/ROLE_SPLIT.md` |
 
 ## Forge / Pipeline
 
@@ -31,7 +32,7 @@ Status: Living log (2026-07-30)
 | D09 | Forge = Core(뇌) + Blender Add-on(손발) 하이브리드 | 단일 모놀리식 금지 |
 | D13 | .blend는 Git, 대용량은 LFS, .blend1 등은 gitignore | |
 | D14 | 급할수록 돌아간다 — 제작 도구·파이프라인 우선 | |
-| D20 | **Canonical Forge path = `projects/excelion-forge/`** | `projects/forge/` = Atlas App-host 실험 스냅샷 (IApplication 셸). 제품 작업·Cline 컨텍스트는 excelion-forge만. `projects/excelion/projects/exelion_forge/` = 중첩 스텁 — 무시. 삭제/이동은 별도 이슈+로컬 |
+| D20 | **Canonical Forge path = `projects/excelion-forge/`** | `projects/forge/` = Atlas App-host 실험 스냅샷. 제품 작업은 excelion-forge만. 중첩 스텁 무시. 삭제/이동은 별도 이슈+로컬 |
 
 ## Documentation / Knowledge
 
@@ -52,6 +53,21 @@ Status: Living log (2026-07-30)
 
 ---
 
+## Proposed (G6) — 마스터 승인 대기
+
+Full text: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md`
+
+| Issue | 요약 | Status |
+|-------|------|--------|
+| [#4](https://github.com/ln9swrd/atlas/issues/4) VERIFY | 프로젝트 샌드박스 격리 | **Draft** |
+| [#5](https://github.com/ln9swrd/atlas/issues/5) Kraken | `tools/kraken/` 계층 경로 | **Draft** |
+| [#6](https://github.com/ln9swrd/atlas/issues/6) SPRINT-009~029 | archive Knowledge, 활성 TASK 제외 | **Draft** |
+| [#7](https://github.com/ln9swrd/atlas/issues/7) Forge Phase 1→2 | excelion-forge only; legacy archive/삭제 | **Draft** |
+
+승인 후 확정 ID(D22…) 부여하고 본 표를 Closed로 옮긴다.
+
+---
+
 ## Open → Issues
 
 | 항목 | Issue |
@@ -59,4 +75,4 @@ Status: Living log (2026-07-30)
 | VERIFY 코드 범위 | [#4](https://github.com/ln9swrd/atlas/issues/4) |
 | Kraken 이름·경로 | [#5](https://github.com/ln9swrd/atlas/issues/5) |
 | SPRINT-009~029 상태 | [#6](https://github.com/ln9swrd/atlas/issues/6) |
-| Forge Phase 1→2 | [#7](https://github.com/ln9swrd/atlas/issues/7) — 대상 경로 = **excelion-forge** (D20) |
+| Forge Phase 1→2 | [#7](https://github.com/ln9swrd/atlas/issues/7) — **excelion-forge** (D20) |

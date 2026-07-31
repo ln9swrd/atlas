@@ -2,56 +2,43 @@
 
 ## Git-only (G-*)
 
-| ID | Task | Status |
-|----|------|--------|
-| G1–G5 | Plan, schema, template, #5, Sera wording | **Done** |
-| G6 | (선택) Open Q #4·#6·#7 초안 | **Pending** — draft in `docs/06_OPERATIONS/L8_L10_CLOUD_REVIEW.md` |
+| ID | Task | Status | Evidence |
+|----|------|--------|----------|
+| G1–G5 | Plan, schema, template, #5 wording | **Done** | |
+| G6 | Open Q #4·#5·#6·#7 Decision 초안 | **Draft saved** | `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` — 마스터 승인 대기 |
 
 ## Domain (P-*)
 
 | ID | Task | Status |
 |----|------|--------|
-| P1 | Domain inventory | **Done** |
-| P2 | excelion + excelion-forge state seed | **Done** |
-| P3 | forge vs excelion-forge Decision | **Done** — **D20** |
+| P1–P3 | inventory, seed, D20 | **Done** |
 
 ## Owner local (L-*)
 
 | ID | Task | Status | Executor | Evidence |
 |----|------|--------|----------|----------|
-| L-1…L-5 | Ollama + Cline | **Done** | Cline/Human | |
-| L-3 | .clinerules 배치 | **Done** | | |
-| L-4 | Cline 작업 루프 검증 | **Done** | | |
-| L-5 | Cline 보완 마무리 점검 | **Done** | | |
-| L-6 | untrack / gitignore 정리 | **Done** | | |
-| L-7 | rebase (impl/atlas-extension) | **Done** | | |
-| L-8 | rebase vs main 재확인 | **Pending** | **Human shell OK** | `docs/06_OPERATIONS/L8_L10_CLOUD_REVIEW.md` |
-| L-9 | packaging untrack + push | **Pending** | **Human shell OK** | same |
-| L-10 | F5 smoke → PR merge/tag | **Pending** | Human/Cline on dev PC | same |
+| L-1…L-7 | Ollama/Cline/rebase 등 | **Done** | | |
+| L-8 | rebase vs main | **Pending** | 마스터 shell OK | template in G6_DRAFTS |
+| L-9 | packaging untrack + push | **Pending** | 마스터 shell OK | |
+| L-10 | F5 → PR merge/tag | **Pending** | 마스터/Cline dev PC | |
 
-Roles: `docs/05_AGENTS/ROLE_SPLIT.md` — Human may run simple commands & shell scripts.
-
-## Cloud AI + VS Code (CA-*)
-
-Plan: `docs/07_ROADMAP/CLOUD_AI_VSCODE_EXEC_PLAN.md`
+## Cloud AI (CA-*)
 
 | ID | Task | Status | Assignee | Evidence |
 |----|------|--------|----------|----------|
-| CA-1 | 프로젝트 ACTIVE_MODE 설정 (cloud / both) | **Pending** | human | |
-| CA-2 | TASK_MAP assignee 컬럼 사용 | **Pending** | human | |
-| CA-3 | Cloud 결과 → PR 또는 명시적 Git 반영 | **Partial** | cloud | `docs/06_OPERATIONS/L8_L10_CLOUD_REVIEW.md` |
-| CA-4 | 로컬 실행 + Evidence 기록 | **Pending** | human/cline | L-8…L-10 |
-| CA-5 | 세션 끝 state 갱신 + commit | **Pending** | both | |
+| CA-1 | excelion-forge ACTIVE_MODE | **Done** | 마스터+Sera | `both` in project CURRENT_STATE |
+| CA-2 | assignee 컬럼 사용 | **Partial** | | 본 TASK_MAP |
+| CA-3 | Cloud → Git | **Partial** | Sera | G6_DRAFTS + L8 review |
+| CA-4 | 로컬 Evidence | **Pending** | 마스터/Cline | L-8…L-10 |
+| CA-5 | state 세션 갱신 | **Ongoing** | both | commits |
 
 ## Implementation
 
 | ID | Task | Status |
 |----|------|--------|
-| IMP-1 | Extension | Open — issue #2 |
+| IMP-1 | Extension issue #2 | Open |
 
-### Decision
+### Decision pointers
 
-- D20: Canonical Forge = `projects/excelion-forge/` only.
-- D19: SERA project abandoned.
-- D15: Primary work surface = Cline + local Ollama; Cloud AI = mode only.
-- Human: simple commands & shell scripts allowed without Cline (`docs/05_AGENTS/ROLE_SPLIT.md`).
+- D20 Forge path · D19 no SERA project · D15 Cline primary · D21 마스터
+- G6 proposed: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` + `docs/DECISIONS.md` Proposed section
