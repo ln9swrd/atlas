@@ -7,28 +7,18 @@ F3: **Assessed**
 P0-1: **Done**  
 P2-1 (D23): **Done**  
 P2-3: **Done**  
-P2-4 (DAILY_LOOP): **Code ready** (Evidence pending)
+P2-4 (DAILY_LOOP): **Done** (2026-07-31 Evidence PASS)
 
-## Evidence (P2-1)
-
-```
-python3 tools/check_domain_policy.py  → 25/25 OK PASS
-python3 -m unittest tests.test_domain_policy -v  → 15 tests OK
-```
-
-## Phase P2-4 (ready for Evidence)
-
-- `bash tools/atlas_status.sh` → git + ACTIVE_TARGET + domain_policy smoke
-- `docs/06_OPERATIONS/DAILY_LOOP.md` aligned
+## Evidence (P2-4)
 
 ```
-git pull github main
-bash tools/atlas_status.sh
+bash tools/atlas_status.sh  → status OK + 25/25 domain_policy PASS
 ```
 
 ## Next (one thing)
 
-- Master: run `bash tools/atlas_status.sh` → P2-4 Done, or idle / P2-5
+- idle, or **P2-5** Decision log discipline
+- Master chooses
 
 ## Do not
 
