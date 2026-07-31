@@ -33,20 +33,20 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 |----|----------|-------|
 | D17 | Forbidden auto-load: archive/, obsidian/, node_modules/, .git/ | |
 | D18 | Context slim: 활성 타겟만 | |
-| D23 | **VERIFY 샌드박스** (G6 #4) | 활성 도메인 또는 Atlas system paths만. BLACK·WS 밖 금지. **Implemented** P2-1 A–D (2026-07-31): `path_is_allowed` / `command_is_allowed` / runner+orchestrator wire. Evidence: `tools/check_domain_policy.py` 25/25. Meta 코어 write = Master only. |
+| D23 | **VERIFY 샌드박스** (G6 #4) | 활성 도메인 또는 Atlas system paths만. BLACK·WS 밖 금지. **Implemented** P2-1 A–D (2026-07-31). Evidence: `check_domain_policy.py` 25/25. Meta 코어 write = Master only. |
 
 ## Kraken / Knowledge / Forge
 
 | ID | Decision | Notes |
 |----|----------|-------|
 | D12 | Kraken = 실행·자동화 **계층** | 제품 프로젝트 아님 |
-| D24 | **Kraken 경로** (G6 #5) | Canonical 후보 **`tools/kraken/`**. `projects/kraken/` 금지. 이름 keep. 이관은 존재 시 후속 작업. |
-| D25 | **과거 스프린트 Knowledge** (G6 #6) | SPRINT-009~029 등 과거 스프린트는 활성 TASK 아님 → archive(또는 기존 archive)만. state Open에 올리지 않음. |
+| D24 | **Kraken 경로** (G6 #5) | Canonical 후보 `tools/kraken/`. `projects/kraken/` 금지. **F3 2026-07-31: N/A** — 이동할 코드 없음. |
+| D25 | **과거 스프린트 Knowledge** (G6 #6) | SPRINT-009~029 → archive only. **F3: OK** — TASK_MAP Open 없음. |
 | D09 | Forge = Core + Blender add-on 하이브리드 | |
 | D13 | .blend Git; 대용량 LFS | |
 | D14 | 급할수록 파이프라인 우선 | |
 | D20 | Canonical Forge = `projects/excelion-forge/` | |
-| D26 | **Forge Phase 경로** (G6 #7) | 제품 작업 = excelion-forge only (D20 재확인). `projects/forge/`·중첩 스텁은 삭제/archive **예정**(실행은 별도 로컬 Evidence). 지금은 Atlas min scope로 제품 작업 보류. |
+| D26 | **Forge Phase 경로** (G6 #7) | 제품 = excelion-forge only. **F3: policy Done** — `projects/forge/` legacy 유지; 물리 archive는 Master local optional. |
 
 ## Documentation
 
@@ -63,10 +63,10 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 
 | Issue | Decision | Status |
 |-------|----------|--------|
-| #4 VERIFY | D23 | **Confirmed + Implemented** (P2-1 2026-07-31) |
-| #5 Kraken path | D24 | **Confirmed** — 이관 실행 후속 |
-| #6 SPRINT archive | D25 | **Confirmed** — 이동 실행 후속 |
-| #7 Forge phase path | D26 | **Confirmed** — 삭제/archive 실행 후속; 제품 작업은 min scope 이후 |
+| #4 VERIFY | D23 | **Confirmed + Implemented** (P2-1) |
+| #5 Kraken path | D24 | **Confirmed + F3 N/A** (no path to move) |
+| #6 SPRINT archive | D25 | **Confirmed + F3 OK** (no Open sprints) |
+| #7 Forge phase path | D26 | **Confirmed + F3 policy Done** (physical archive optional) |
 
-Draft archive: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` (historical)  
+Draft archive: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md`  
 Process: `docs/06_OPERATIONS/DECISION_PROCESS.md`
