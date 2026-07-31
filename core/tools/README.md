@@ -1,8 +1,13 @@
-# Automation Layer
+# core/tools — Product automation (HOLD)
 
-The **Automation Layer** contains scripts, pipelines, and continuous integration setups designed to eliminate repetitive manual work across Blender, Unreal Engine, and Git.
+> **P3-1a:** This directory is **product-coupled** (Blender / Unreal).  
+> ACTIVE_TARGET = platform → do not expand; do not auto-load in platform sessions.
 
-## Automation Target Register
+Canonical product work lives under `projects/excelion*` / `projects/excelion-forge` when ACTIVE_TARGET reopens.
+
+---
+
+## Automation Target Register (legacy inventory)
 
 | Pipeline Stage | Automation Task | Status | Tool / Script |
 | :--- | :--- | :--- | :--- |
@@ -13,3 +18,4 @@ The **Automation Layer** contains scripts, pipelines, and continuous integration
 | | Naming/Directory Validation | Implemented | [ue_validation.py](ue_validation.py) |
 | **Git & Version Control** | Auto Changelog Generation | Planned | Git Hook / Node |
 | | Commit Linting | Planned | Git Hook |
+| — | visual_perception.py | Present | Vision non-goal for platform |
