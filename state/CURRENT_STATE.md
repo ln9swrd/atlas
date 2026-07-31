@@ -2,18 +2,23 @@
 
 ACTIVE_TARGET: **platform P3** (runtime evolution)  
 MIN_SCOPE: Complete  
-P3-0 / P3-1a–e: **Done** (code/docs)  
-Local Evidence: **pending Cline** — `python tools/check_atlas_runtime.py`
+P3-0 / P3-1a–e: **Done** (code/docs on GitHub)
+
+## Evidence (Master local 2026-07-31)
+
+| Check | Result |
+|-------|--------|
+| `check_domain_policy.py` | **25/25 PASS** |
+| `check_atlas_runtime.py` | **BLOCKED** — file not on local disk (need `git pull`) |
 
 ## Next (one thing)
 
-- Cline: run runtime smoke + domain_policy smoke (Evidence)  
-- or long-term repo split planning  
-- or idle / product ACTIVE_TARGET when Master decides
+```bash
+git pull origin main
+python tools/check_atlas_runtime.py
+```
 
-## Session
-
-Home · Master + Cline + Sera available
+Then record runtime smoke PASS/FAIL.
 
 ## Do not
 
