@@ -34,4 +34,11 @@ M1–M7 **Done**
 | R4 | `atlas-extension` → archive (D22) | **Done** | 49eb16b → `archive/projects-atlas-extension-legacy` |
 | R5 | Master: ACTIVE_TARGET product vs platform | **Done** | platform 유지 (Master 2026-07-31) |
 | R6 | Binary asset policy | **Done** | `docs/06_OPERATIONS/BINARY_ASSET_POLICY.md` + `.gitattributes` |
-| R7 | State discipline (single SoR) | Open | |
+| R7 | State discipline (single SoR) | **Done** | `docs/06_OPERATIONS/STATE_DISCIPLINE.md` |
+
+## Open (after R1–R7)
+
+| ID | Task | Status | Notes |
+|----|------|--------|-------|
+| — | P3 runtime | Open | Master schedule |
+| — | Long-term repo split | Open | platform vs product |
