@@ -4,31 +4,38 @@
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| G1–G5 | schema / D19 wording 등 | **Done** | |
+| G1–G5 | schema 등 | **Done** | |
 | G6 | Decision 초안 #4–#7 | **Draft** | `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` — 마스터 승인 대기 |
 
 ## Owner local (L-*)
 
-| ID | Task | Status | Executor | How |
-|----|------|--------|----------|-----|
-| L-1…L-7 | setup / rebase 등 | **Done** | | |
-| L-8 | rebase impl ← main | **Pending** | 마스터 | `bash scripts/master_l8_l10.sh l8` |
-| L-9 | untrack + push | **Pending** | 마스터 | `bash scripts/master_l8_l10.sh l9` |
-| L-8+L-9 | batch | **Pending** | 마스터 | `bash scripts/master_l8_l10.sh l8-l9` |
-| L-10 npm | compile | **Pending** | 마스터 | `bash scripts/master_l8_l10.sh l10-npm` |
-| L-10 F5+merge | smoke + PR #3 | **Pending** | 마스터 | 수동 (MASTER_BATCH.md) |
+| ID | Task | Status |
+|----|------|--------|
+| L-1…L-7 | Cline/Ollama setup 등 | **Done** |
+| L-8…L-10 | extension merge track | **Cancelled (D22)** |
 
-Script: `scripts/master_l8_l10.sh`  
-Guide: `docs/06_OPERATIONS/MASTER_BATCH.md`
+## Implementation
+
+| ID | Task | Status |
+|----|------|--------|
+| IMP-1 | atlas-extension | **Abandoned (D22)** — issue #2 closed, PR #3 closed |
 
 ## Cloud (CA-*)
 
 | ID | Status | Evidence |
 |----|--------|----------|
-| CA-1 ACTIVE_MODE both | **Done** | excelion-forge state |
-| CA-3 G6+L8 review Git | **Partial** | G6_DRAFTS, L8_L10_CLOUD_REVIEW |
-| CA-4 local Evidence | **Pending** | after master_l8_l10.sh |
+| CA-1 ACTIVE_MODE both | **Done** | excelion-forge |
+| CA-3 docs to Git | **Partial** | G6 drafts, reviews |
+| CA-4 extension Evidence | **Cancelled** | D22 |
 
-## IMP-1
+## Active next
 
-Extension issue #2 / PR #3 — open until L-10 merge.
+| ID | Task | Status | Owner |
+|----|------|--------|-------|
+| G6 | 승인 → Decision ID | Pending | 마스터 |
+| Forge T-1 | excelion-forge validation evidence | Pending | 마스터/Cline |
+
+### Decision pointers
+
+- **D22:** atlas-extension 폐기
+- D15 Cline primary · D20 excelion-forge · D19 no SERA project · D21 마스터

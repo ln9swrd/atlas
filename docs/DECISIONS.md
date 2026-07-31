@@ -23,7 +23,8 @@ Status: Living log (2026-07-31)
 | D07 | Cline: Subagents / Native / Parallel Tool Call OFF 권장 | 로컬 모델 안정화 |
 | D08 | 로컬 AI는 WSL 내부 배치 권장 | |
 | D15 | Primary work surface = Cline (or Roo) + local Ollama | Continue 보조만 |
-| D21 | **마스터(Master)** = Human 최종 권한자; 단순 커맨드·쉘 실행 가능 | `docs/05_AGENTS/ROLE_SPLIT.md` |
+| D21 | **마스터(Master)** = 최종 권한자; 단순 커맨드·쉘 실행 가능 | `docs/05_AGENTS/ROLE_SPLIT.md` |
+| D22 | **atlas-extension 폐기** | `projects/atlas-extension`, issue #2, PR #3, L-8…L-10 extension track **abandoned**. 커스텀 VS Code 확장 구현 안 함. 작업면 = Cline. 브랜치 `impl/atlas-extension` 유지 불필요. node_modules 정리는 선택(메인 hygiene). |
 
 ## Forge / Pipeline
 
@@ -32,14 +33,14 @@ Status: Living log (2026-07-31)
 | D09 | Forge = Core(뇌) + Blender Add-on(손발) 하이브리드 | 단일 모놀리식 금지 |
 | D13 | .blend는 Git, 대용량은 LFS, .blend1 등은 gitignore | |
 | D14 | 급할수록 돌아간다 — 제작 도구·파이프라인 우선 | |
-| D20 | **Canonical Forge path = `projects/excelion-forge/`** | `projects/forge/` = Atlas App-host 실험 스냅샷. 제품 작업은 excelion-forge만. 중첩 스텁 무시. 삭제/이동은 별도 이슈+로컬 |
+| D20 | **Canonical Forge path = `projects/excelion-forge/`** | 제품 작업은 excelion-forge만 |
 
 ## Documentation / Knowledge
 
 | ID | Decision | Notes |
 |----|----------|-------|
 | D10 | 프로젝트 docs: 파일명 영어, 본문 한국어 | PROJECT_DOC_STANDARD |
-| D11 | SERA ≠ 프로젝트 목록 | D19로 프로젝트 폐기 |
+| D11 | SERA ≠ 프로젝트 목록 | D19 |
 | D12 | Kraken = 실행·자동화 계층 | 프로젝트 아님 |
 | D16 | 대화 기록 → 문서 → 프로젝트 자산 | |
 | D19 | **프로젝트 SERA 폐기** | `projects/sera` 금지 |
@@ -61,10 +62,8 @@ Full text: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md`
 |-------|------|--------|
 | [#4](https://github.com/ln9swrd/atlas/issues/4) VERIFY | 프로젝트 샌드박스 격리 | **Draft** |
 | [#5](https://github.com/ln9swrd/atlas/issues/5) Kraken | `tools/kraken/` 계층 경로 | **Draft** |
-| [#6](https://github.com/ln9swrd/atlas/issues/6) SPRINT-009~029 | archive Knowledge, 활성 TASK 제외 | **Draft** |
-| [#7](https://github.com/ln9swrd/atlas/issues/7) Forge Phase 1→2 | excelion-forge only; legacy archive/삭제 | **Draft** |
-
-승인 후 확정 ID(D22…) 부여하고 본 표를 Closed로 옮긴다.
+| [#6](https://github.com/ln9swrd/atlas/issues/6) SPRINT-009~029 | archive Knowledge | **Draft** |
+| [#7](https://github.com/ln9swrd/atlas/issues/7) Forge Phase 1→2 | excelion-forge only | **Draft** |
 
 ---
 
@@ -75,4 +74,5 @@ Full text: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md`
 | VERIFY 코드 범위 | [#4](https://github.com/ln9swrd/atlas/issues/4) |
 | Kraken 이름·경로 | [#5](https://github.com/ln9swrd/atlas/issues/5) |
 | SPRINT-009~029 상태 | [#6](https://github.com/ln9swrd/atlas/issues/6) |
-| Forge Phase 1→2 | [#7](https://github.com/ln9swrd/atlas/issues/7) — **excelion-forge** (D20) |
+| Forge Phase 1→2 | [#7](https://github.com/ln9swrd/atlas/issues/7) |
+| ~~VS Code extension~~ | ~~#2~~ **Closed not_planned (D22)** |

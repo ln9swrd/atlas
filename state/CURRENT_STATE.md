@@ -1,32 +1,28 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: 마스터 **L-9 untrack** (remote 설정 후 L-8)  
-STATUS: Script needs GIT_REMOTE — origin 없음 확인됨. node_modules still tracked. npm 없음 on this host.  
-MASTER_BATCH: `scripts/master_l8_l10.sh` (remote auto-detect / GIT_REMOTE=)
+ACTIVE_TARGET: **G6 승인** 또는 **excelion-forge T-1** (마스터 선택)  
+ACTIVE_BRANCH: `main`  
+STATUS: **D22 atlas-extension 폐기.** L-8…L-10 / IMP-1 / PR #3 **Abandoned**. Primary surface = Cline (D15).  
+G6_DRAFTS: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md` (승인 대기)  
+ROLES: `docs/05_AGENTS/ROLE_SPLIT.md`
+
+## Abandoned (D22)
+
+| Item | Status |
+|------|--------|
+| `projects/atlas-extension` | 폐기 — 신규 작업 금지 |
+| issue #2 / PR #3 | closed not_planned / closed unmerged |
+| L-8…L-10 extension batch | **Cancelled** |
+| `scripts/master_l8_l10.sh` | extension 전용 — 사용 중단 (보관만) |
 
 ## Next (마스터)
 
-```bash
-git remote -v
-# pull latest script from github if needed, then:
-export GIT_REMOTE=github   # if that is the remote name
-bash scripts/master_l8_l10.sh status
-bash scripts/master_l8_l10.sh l9      # untrack works even if push fails
-# or l8-l9 after remote works
-```
-
-If no remote at all:
-
-```bash
-git remote add github https://github.com/ln9swrd/atlas.git
-git fetch github
-export GIT_REMOTE=github
-bash scripts/master_l8_l10.sh l8-l9
-```
-
-l10-npm: skip until Node installed.
+1. G6 Decision 초안 승인/수정 → DECISIONS 확정  
+2. 또는 `projects/excelion-forge` T-1 validation (Evidence-First)  
+3. (선택) main에서 `projects/atlas-extension/node_modules` untrack hygiene only — 기능 작업 아님
 
 ## Do not
 
-- Commit node_modules
-- Mark L-8/L-9 Done without Evidence hash
+- atlas-extension 부활 / PR #3 merge
+- SERA as project (D19)
+- Done without Evidence (D01)
