@@ -1,6 +1,6 @@
 # D23 VERIFY CWD Jail — Design (P2-1)
 
-> Status: **Implemented** (Phase A–D, 2026-07-31)  
+> Status: **Done** (Phase A–D, Evidence 2026-07-31)  
 > Owner: Cloud draft → Master confirm → Cline implement  
 > Related: D17, D18, D23 · F1/F2/F4 Done · `tools/domain_policy.py`
 
@@ -29,7 +29,7 @@ Min-scope 현재 ACTIVE_TARGET = platform → 제품 `projects/*` 쓰기/실행�
 | Runner `run_script` | **Done** (Phase B → `assert_path_allowed`) |
 | Orchestrator read/write | **Done** (Phase C → `path_is_allowed`) |
 | Orchestrator CLI | **Done** (Phase C → `command_is_allowed`) |
-| Smoke Evidence | **Done** (Phase D `check_domain_policy.py`) |
+| Smoke Evidence | **Done** (Phase D `check_domain_policy.py` 25/25) |
 | CWD hard jail / network sandbox | Soft only (cwd=WS); full jail = later P3+ |
 
 ---
@@ -82,7 +82,7 @@ extract_path_tokens(command) -> list[str]
 | **A** | `get_active_domain` + `path_is_allowed` + tests | **Done** |
 | **B** | Wire runner script entry points | **Done** |
 | **C** | Orchestrator + `command_is_allowed` | **Done** |
-| **D** | Smoke polish + this doc status | **Code ready** → Evidence |
+| **D** | Smoke polish + this doc status | **Done** (Evidence 2026-07-31) |
 
 **Not in scope:** rewriting Cline; full OS container; product feature work.
 
@@ -112,10 +112,10 @@ extract_path_tokens(command) -> list[str]
 ## 7. Evidence commands
 
 ```bash
-python3 tools/check_domain_policy.py
-python3 -m unittest tests.test_domain_policy -v
+python3 tools/check_domain_policy.py   # 25/25 OK PASS
+python3 -m unittest tests.test_domain_policy -v  # 15 OK
 ```
 
 ---
 
-*P2-1 path/CLI allowlist complete pending Phase D Master Evidence.*
+*P2-1 path/CLI allowlist complete.*
