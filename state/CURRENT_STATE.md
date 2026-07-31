@@ -2,11 +2,11 @@
 
 ACTIVE_TARGET: **platform P3** (runtime evolution)  
 MIN_SCOPE: Complete  
-F1–F4 / P0–P2 / R1–R7 / P3-0 / P3-1a: **Done**
+F1–F4 / P0–P2 / R1–R7 / P3-0 / P3-1a / P3-1b: **Done**
 
 ## Next (one thing)
 
-- P3-1b empty stubs · P3-1c runner backup · P3-1d contract matrix · P3-1e optional smoke
+- P3-1c runner backup · P3-1d contract matrix · P3-1e optional smoke
 
 ## Session
 
