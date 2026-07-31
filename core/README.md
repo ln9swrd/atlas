@@ -1,6 +1,7 @@
 # core/
 
 > P3-1a (2026-07-31): platform vs **product-coupled** 구분.  
+> P3-1b: empty stubs removed (`AI_CONTEXT.md`, root `review_engine.py`).  
 > ACTIVE_TARGET = platform → 제품 경로 확장·로드 금지.
 
 See: `docs/07_ROADMAP/P3_RUNTIME_INVENTORY.md`
@@ -46,10 +47,3 @@ See: `docs/07_ROADMAP/P3_RUNTIME_INVENTORY.md`
 | `review/print_settings.yaml` | Print product |
 
 **Rule:** 제품 재오픈 시 `projects/excelion*` / `excelion-forge` 쪽에서 소비. `core/` 안에서의 대규모 제품 작업 금지.
-
----
-
-## Empty / cleanup candidates (P3-1b)
-
-- `AI_CONTEXT.md` (0 bytes)
-- `review_engine.py` at `core/` root (0 bytes; real module under `review/`)
