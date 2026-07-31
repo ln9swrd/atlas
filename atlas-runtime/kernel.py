@@ -1,10 +1,17 @@
 # Kernel module
 
-from .observation import Observation
-from .inference import Inference
-from .verification import Verification
-from .evidence import Evidence
-from .decision import Decision
+try:
+    from .observation import Observation
+    from .inference import Inference
+    from .verification import Verification
+    from .evidence import Evidence
+    from .decision import Decision
+except ImportError:  # loaded as scripts from atlas-runtime/ on sys.path
+    from observation import Observation
+    from inference import Inference
+    from verification import Verification
+    from evidence import Evidence
+    from decision import Decision
 
 
 class Kernel:
