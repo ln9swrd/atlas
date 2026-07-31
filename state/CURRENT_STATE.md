@@ -3,7 +3,8 @@
 ACTIVE_TARGET: **platform P2** (hardening)  
 MIN_SCOPE: Complete  
 F1–F2–F4: **Done**  
-F3: **Assessed** — D24 N/A (no kraken code), D25 archive OK, D26 deferred (product hold)
+F3: **Assessed** — D24 N/A, D25 OK, D26 deferred  
+P2-3: **Done**
 
 ## Evidence commands
 
@@ -13,8 +14,8 @@ python3 tools/check_domain_policy.py
 
 ## Next (one thing)
 
-- **P2-3** CONTEXT_INDEX slim + platform plan link  
-- then P2-1 / P2-4 as capacity
+- **P0-1** Master local smoke (Evidence)  
+- or **P2-1** D23 CWD jail (design/draft first)
 
 ## Do not
 

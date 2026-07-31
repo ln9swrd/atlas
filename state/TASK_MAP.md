@@ -20,6 +20,6 @@ M1–M7 **Done**
 | PP | Atlas platform core plan | **Done** | `docs/07_ROADMAP/ATLAS_PLATFORM_PLAN.md` |
 | P0-1 | F1/F2/F4 green | **Open** | Master local: `python3 tools/check_domain_policy.py` |
 | P2-1 | D23 full VERIFY CWD jail | Pending | |
-| P2-3 | CONTEXT_INDEX slim | **In progress** | |
+| P2-3 | CONTEXT_INDEX slim | **Done** | platform plan + hold list |
 | P2-4 | DAILY_LOOP real use | Pending | habit |
 | P2-5 | Decision log discipline | Pending | |
