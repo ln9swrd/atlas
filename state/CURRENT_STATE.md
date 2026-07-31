@@ -1,14 +1,19 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: idle / **F2** or **F4** (마스터 선택)  
+ACTIVE_TARGET: idle / **F3** path moves (optional)  
 MIN_SCOPE: Complete  
-F1: Done + Evidence (domain_policy)
+F1–F2–F4: **Done** (domain_policy + runner hook)
+
+## Evidence commands
+
+```bash
+python tools/check_domain_policy.py
+```
 
 ## Next
 
-- F2 D23 VERIFY 강화
-- F4 atlas_runner path guard
-- idle
+- **F3** D24–D26 file moves (when ready)
+- or **idle**
 
 ## Do not
 
