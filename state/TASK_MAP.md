@@ -2,11 +2,11 @@
 
 ## Closed
 
-P3 + Evidence · R1–R7 · S0 · S0-C (D28) · S1 (`pre-split-atlas`) · S2 path list
+P3 + Evidence · R1–R7 · S0–S3 (D28) · tag `pre-split-atlas`
 
 ## Open
 
 | ID | Task | Status | Notes |
 |----|------|--------|-------|
-| S3 | Create empty `excelion` + `excelion-forge` repos | Open | Master confirm to run |
-| S4+ | Extract / remove paths | Blocked | after S3 |
+| S4 | Extract/sync product content | Open | excelion = fill empty repo; forge = sync with existing standalone |
+| S5 | Remove paths from atlas after verify | Blocked | after S4 |
