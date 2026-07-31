@@ -1,0 +1,6 @@
+# Atlas binary policy — see docs/06_OPERATIONS/BINARY_ASSET_POLICY.md
+# Default: large/media ignored in .gitignore.
+# Uncomment + `git lfs track` only when a file type must live in the repo.
+
+# *.psd filter=lfs diff=lfs merge=lfs -text
+# *.png filter=lfs diff=lfs merge=lfs -text
