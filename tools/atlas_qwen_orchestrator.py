@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """
 Atlas Qwen Orchestrator (optional; primary surface = Cline per D15)
-- Ollama chat + tool loop
-- Domain blacklist aligned with AGENTS.md / D17
-- WORKSPACE_ROOT: ATLAS_ROOT env or parent of tools/
+Blacklist: tools.domain_policy (F1)
 """
 
 import sys
@@ -15,14 +13,20 @@ import urllib.error
 import subprocess
 from pathlib import Path
 
+# Allow `python tools/atlas_qwen_orchestrator.py` imports
+_TOOLS = Path(__file__).resolve().parent
+if str(_TOOLS) not in sys.path:
+    sys.path.insert(0, str(_TOOLS))
+
+from domain_policy import (  # noqa: E402
+    BLACK_DIR_NAMES,
+    command_mentions_black,
+    path_is_blacklisted,
+    resolve_workspace_root,
+)
+
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://192.168.219.254:11434")
-
-# Repo root: env wins, else directory containing tools/
-_TOOLS_DIR = Path(__file__).resolve().parent
-WORKSPACE_ROOT = Path(os.environ.get("ATLAS_ROOT", str(_TOOLS_DIR.parent))).resolve()
-
-# AGENTS BLACK + scratch deny-on-tool (sandbox not auto-loaded)
-FORBIDDEN_DIRECTORIES = ["archive", "obsidian", "node_modules", ".git", "scratch"]
+WORKSPACE_ROOT = resolve_workspace_root()
 
 SYSTEM_PROMPT = """You are Atlas Agent, an autonomous coding AI pair programming with the USER in Atlas DevOS.
 You are powered by Qwen. You must maximize your reasoning capabilities using Chain-of-Thought (CoT).
@@ -80,6 +84,7 @@ def check_ollama_connection():
                 models = [m.get("name") for m in data.get("models", [])]
                 sys.stderr.write(f"[+] Connected to Ollama at {OLLAMA_HOST}\n")
                 sys.stderr.write(f"[+] Workspace: {WORKSPACE_ROOT}\n")
+                sys.stderr.write(f"[+] BLACK: {', '.join(BLACK_DIR_NAMES)}\n")
                 sys.stderr.write(f"[+] Available Models ({len(models)}): {', '.join(models)}\n")
                 return models
     except Exception as e:
@@ -88,11 +93,7 @@ def check_ollama_connection():
 
 
 def validate_file_access(target_path: str) -> bool:
-    normalized = target_path.replace("\\", "/").lower()
-    for forbidden in FORBIDDEN_DIRECTORIES:
-        if f"/{forbidden}/" in f"/{normalized}/" or normalized.startswith(f"{forbidden}/"):
-            return False
-    return True
+    return not path_is_blacklisted(target_path)
 
 
 def resolve_context(user_prompt: str) -> str:
@@ -146,8 +147,8 @@ def execute_action(action: dict) -> str:
 
     if action_type == "execute_cli":
         cmd = action.get("command", "")
-        if any(forbidden in cmd.lower() for forbidden in FORBIDDEN_DIRECTORIES):
-            return "[Access Denied] Command targets forbidden directory (archive/obsidian/node_modules/.git/scratch)."
+        if command_mentions_black(cmd):
+            return "[Access Denied] Command targets forbidden directory (see domain_policy.BLACK_DIR_NAMES)."
 
         sys.stderr.write(f"[+] Executing CLI: {cmd}\n")
         try:
