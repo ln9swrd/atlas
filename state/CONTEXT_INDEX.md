@@ -8,6 +8,7 @@
 |------|-----|
 | `state/CURRENT_STATE.md` | 지금 타겟 |
 | `state/TASK_MAP.md` | 열린 작업 |
+| `state/ATLAS_REVIEW_2026-07-31.md` | 문제·개선 기록 |
 | `docs/06_OPERATIONS/DAILY_LOOP.md` | 세션 루프 (P2-4) |
 | `docs/06_OPERATIONS/DECISION_PROCESS.md` | Decision 규율 (P2-5) |
 | `docs/DECISIONS.md` | D01–D26 SoR |
@@ -27,8 +28,8 @@
 
 - `projects/excelion*/**`, `projects/printguard/**`, `projects/coin-s/**`
 - `projects/atlas-extension/**` (D22)
-- `projects/forge/**` (legacy; D26 deferred)
-- `archive/`, `obsidian/`
+- `archive/**` (incl. `projects-forge-legacy`)
+- `obsidian/`
 - `core/`, `atlas-runtime/` 대규모 탐색 (P3 전)
 
 ## Token discipline

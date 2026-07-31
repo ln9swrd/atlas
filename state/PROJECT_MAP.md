@@ -1,7 +1,7 @@
 # PROJECT_MAP
 
 > Schema: `docs/process/PROJECT_STATE_SCHEMA.md` · D20 Forge paths  
-> Updated: 2026-07-31 (F3 path hygiene)
+> Updated: 2026-07-31 (F3 path hygiene + physical archive)
 
 ## System (not domain projects)
 
@@ -31,8 +31,9 @@
 
 | Path | Role | F3 |
 |------|------|-----|
-| `projects/forge/` | Atlas App-host experiment only. **Not** product Forge. | Policy locked; physical `archive/` move = Master local optional |
-| Nested excelion forge stubs | Ignore | — |
+| `archive/projects-forge-legacy/` | Was `projects/forge/` (App-host experiment). **Not** product Forge. | **Physical move Done** 2026-07-31 |
+| Nested excelion forge stubs | Ignore / cleanup candidate (R3) | — |
+| `projects/templates/` | Prefer `_template`; cleanup candidate (R2) | — |
 
 ## Templates
 
@@ -48,4 +49,4 @@ SERA project — D19.
 |----------|--------|
 | D24 Kraken | **N/A** — no `projects/kraken/`; no `tools/kraken/` code to move |
 | D25 Sprint knowledge | **OK** — no SPRINT-009–029 Open in TASK_MAP |
-| D26 Forge paths | **Policy Done** — canonical = excelion-forge; `projects/forge/` marked legacy |
+| D26 Forge paths | **Done** — canonical = excelion-forge; forge → `archive/projects-forge-legacy` |

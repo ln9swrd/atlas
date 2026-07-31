@@ -13,9 +13,14 @@ See **`state/PROJECT_MAP.md`** (authoritative inventory) and **`docs/process/PRO
 | `excelion-forge/` | Forge pipeline (P0, canonical) |
 | `printguard/` | Business / pre-print (P2) |
 | `coin-s/` | Experiment (submodule, P3) |
-| `atlas-extension/` | VS Code extension (platform-adjacent) |
-| `forge/` | Legacy/alternate — do not treat as second product yet |
-| `templates/` | Older project_template — prefer `_template` |
+| `atlas-extension/` | VS Code extension — **Deprecated (D22)** |
+| `templates/` | Older project_template — prefer `_template` (cleanup R2) |
+
+## Archived (not under projects/)
+
+| Path | Role |
+|------|------|
+| `archive/projects-forge-legacy/` | Was `projects/forge/` — App-host experiment; not product Forge (D26 Done) |
 
 ## Rules
 

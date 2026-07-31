@@ -3,7 +3,7 @@
 ACTIVE_TARGET: **platform P2** (hardening)  
 MIN_SCOPE: Complete  
 F1–F2–F4: **Done**  
-F3 (D24–D26): **Done** (2026-07-31 — policy/Evidence; no mass move)  
+F3 (D24–D26): **Done** (2026-07-31 — policy + physical move)  
 P0-1: **Done**  
 P2-1…P2-5: **Done**
 
@@ -13,14 +13,17 @@ P2-1…P2-5: **Done**
 |------|--------|
 | D24 | No `projects/kraken/` / no `tools/kraken/` code → N/A |
 | D25 | No Open SPRINT-009–029 in TASK_MAP → OK |
-| D26 | Canonical = `excelion-forge`; `projects/forge/` legacy README → policy Done |
+| D26 | Canonical = `excelion-forge`; `projects/forge` → `archive/projects-forge-legacy` (**physical move Done** 2026-07-31) |
 
-Optional later (Master local): `git mv projects/forge archive/...`
+## Review (2026-07-31)
+
+See `state/ATLAS_REVIEW_2026-07-31.md`.
 
 ## Next (one thing)
 
-- **idle**
+- Doc hygiene remaining: `templates` / nested excelion forge stub / extension archive (R2–R4 in TASK_MAP)
 - or P3 runtime when Master schedules
+- or ACTIVE_TARGET → product (Master decision)
 
 ## Do not
 
