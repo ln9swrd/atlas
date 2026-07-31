@@ -11,4 +11,5 @@
 | F4 runner hooks `assert_path_allowed` on `run_script` | **Done** |
 | P2-1 Phase A `path_is_allowed` / `get_active_domain` | **Done** |
 | P2-1 Phase B runner wire (allowlist via assert) | **Done** (Evidence 2026-07-31) |
-| P2-1 Phase C orchestrator + `command_is_allowed` | **Code ready** — Evidence pending Master |
+| P2-1 Phase C orchestrator + `command_is_allowed` | **Done** (Evidence 2026-07-31) |
+| Phase D smoke polish | Optional |
