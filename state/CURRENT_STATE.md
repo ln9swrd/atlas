@@ -2,14 +2,14 @@
 
 ACTIVE_TARGET: **platform P3** (runtime evolution)  
 MIN_SCOPE: Complete  
-P3-0 / P3-1a–e: **Done** (code/docs on GitHub)
+P3-0 / P3-1a–e: **Done** (code/docs)
 
 ## Evidence (Master local 2026-07-31)
 
 | Check | Result |
 |-------|--------|
 | `check_domain_policy.py` | **25/25 PASS** |
-| `check_atlas_runtime.py` | **BLOCKED** — file not on local disk (need `git pull`) |
+| `check_atlas_runtime.py` | **FAIL** (null bytes / BOM in old inference·verification) → **fixed on main** |
 
 ## Next (one thing)
 
@@ -17,8 +17,6 @@ P3-0 / P3-1a–e: **Done** (code/docs on GitHub)
 git pull origin main
 python tools/check_atlas_runtime.py
 ```
-
-Then record runtime smoke PASS/FAIL.
 
 ## Do not
 
