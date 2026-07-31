@@ -1,41 +1,14 @@
 # TASK_MAP
 
-## Min — Done
+## Closed (recent)
 
-M1–M7 **Done**
-
-## Post-min
-
-| ID | Task | Status | Evidence |
-|----|------|--------|----------|
-| F1 | domain_policy source | **Done** | path_is_blacklisted |
-| F2 | path escape / outside WS deny | **Done** | `tools/check_domain_policy.py` |
-| F3 | D24–D26 path hygiene | **Done** | D24 N/A; D25 OK; D26 physical move |
-| F4 | runner domain_policy hook | **Done** | run_script assert_path_allowed |
-
-## Platform plan
-
-| ID | Task | Status | Evidence |
-|----|------|--------|----------|
-| PP | Atlas platform core plan | **Done** | `docs/07_ROADMAP/ATLAS_PLATFORM_PLAN.md` |
-| P0–P2 | (closed) | **Done** | TASK_MAP history |
-| P3-0 | Runtime inventory | **Done** | `docs/07_ROADMAP/P3_RUNTIME_INVENTORY.md` |
-| P3-1a | Tag product-coupled paths under `core/` | **Done** | `core/README.md` |
-| P3-1b | Remove empty stubs | **Done** | deleted empty files |
-| P3-1c | Archive `tools/atlas_runner_backup.py` | **Done** | deleted + archive pointer |
-| P3-1d | contract.py implement matrix | **Done** | `docs/07_ROADMAP/P3_CONTRACT_MATRIX.md` |
-| P3-1e | atlas-runtime package + smoke | **Done** | stubs + `tools/check_atlas_runtime.py` |
-| P3-E1 | domain_policy local Evidence | **Done** | Master 25/25 PASS |
-| P3-E2 | atlas-runtime local smoke | **Done** | Master PASS kernel_stub_pipeline |
-
-## Review follow-ups (2026-07-31)
-
-| ID | Task | Status |
-|----|------|--------|
-| R1–R7 | (closed) | **Done** |
+P3-0 … P3-E2 **Done** · R1–R7 **Done** · domain_policy + runtime smoke Evidence **PASS**
 
 ## Open
 
 | ID | Task | Status | Notes |
 |----|------|--------|-------|
-| — | Long-term repo split | Open | planning only |
+| S0 | Long-term repo split plan | **Done** | `docs/07_ROADMAP/LONG_TERM_REPO_SPLIT.md` |
+| S0-C | Master confirm §5 defaults | Open | two repos / history / core HOLD / when |
+| S1 | Tag `pre-split-atlas` | Open | after confirm |
+| S2+ | Dry-run / extract | Blocked | needs S0-C + S1 |
