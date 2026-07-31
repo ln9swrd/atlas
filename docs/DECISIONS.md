@@ -43,10 +43,16 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 | D24 | **Kraken 경로** (G6 #5) | Canonical 후보 `tools/kraken/`. `projects/kraken/` 금지. **F3 2026-07-31: N/A** — 이동할 코드 없음. |
 | D25 | **과거 스프린트 Knowledge** (G6 #6) | SPRINT-009~029 → archive only. **F3: OK** — TASK_MAP Open 없음. |
 | D09 | Forge = Core + Blender add-on 하이브리드 | |
-| D13 | .blend Git; 대용량 LFS | |
+| D13 | **Binary policy** | 기본 ignore (`.gitignore`). 필요 시만 LFS. 초대형 = external. SoR: `docs/06_OPERATIONS/BINARY_ASSET_POLICY.md` (R6 2026-07-31). |
 | D14 | 급할수록 파이프라인 우선 | |
 | D20 | Canonical Forge = `projects/excelion-forge/` | |
 | D26 | **Forge Phase 경로** (G6 #7) | 제품 = excelion-forge only. **F3: policy Done** — `projects/forge/` legacy 유지; 물리 archive는 Master local optional. |
+
+## Target / Ops
+
+| ID | Decision | Notes |
+|----|----------|-------|
+| D27 | **ACTIVE_TARGET = platform** (R5) | Master 2026-07-31. 제품 hold. Next: binary policy / P3 when scheduled. |
 
 ## Documentation
 
