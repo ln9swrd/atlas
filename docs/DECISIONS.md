@@ -33,27 +33,28 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 |----|----------|-------|
 | D17 | Forbidden auto-load: archive/, obsidian/, node_modules/, .git/ | |
 | D18 | Context slim: 활성 타겟만 | |
-| D23 | **VERIFY 샌드박스** (G6 #4) | 활성 도메인 또는 Atlas system paths만. BLACK·WS 밖 금지. **Implemented** P2-1 A–D (2026-07-31). Evidence: `check_domain_policy.py` 25/25. Meta 코어 write = Master only. |
+| D23 | **VERIFY 샌드박스** (G6 #4) | Implemented P2-1. Evidence 25/25. |
 
 ## Kraken / Knowledge / Forge
 
 | ID | Decision | Notes |
 |----|----------|-------|
 | D12 | Kraken = 실행·자동화 **계층** | 제품 프로젝트 아님 |
-| D24 | **Kraken 경로** (G6 #5) | Canonical 후보 `tools/kraken/`. `projects/kraken/` 금지. **F3 2026-07-31: N/A** — 이동할 코드 없음. |
-| D25 | **과거 스프린트 Knowledge** (G6 #6) | SPRINT-009~029 → archive only. **F3: OK** — TASK_MAP Open 없음. |
+| D24 | **Kraken 경로** | F3 N/A |
+| D25 | **과거 스프린트 Knowledge** | F3 OK |
 | D09 | Forge = Core + Blender add-on 하이브리드 | |
-| D13 | **Binary policy** | 기본 ignore (`.gitignore`). 필요 시만 LFS. 초대형 = external. SoR: `docs/06_OPERATIONS/BINARY_ASSET_POLICY.md` (R6 2026-07-31). |
+| D13 | **Binary policy** | BINARY_ASSET_POLICY.md |
 | D14 | 급할수록 파이프라인 우선 | |
-| D20 | Canonical Forge = `projects/excelion-forge/` | |
-| D26 | **Forge Phase 경로** (G6 #7) | 제품 = excelion-forge only. **F3: policy Done** — `projects/forge/` legacy 유지; 물리 archive는 Master local optional. |
+| D20 | Canonical Forge path (legacy wording) | **Superseded for SoR by D28**: GitHub `ln9swrd/excelion-forge`; atlas path = mirror |
+| D26 | **Forge Phase 경로** | F3 policy Done |
 
 ## Target / Ops
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D27 | **ACTIVE_TARGET = platform** (R5) | Master 2026-07-31. 제품 hold. |
-| D28 | **Long-term repo split defaults** | Master confirm 2026-07-31. (1) two product repos `excelion` + `excelion-forge` (2) history extract preferred where valuable; else pointer (3) product-coupled `core/` stays HOLD in atlas until forge consumes (4) execute **before** long product sprint. Plan: `docs/07_ROADMAP/LONG_TERM_REPO_SPLIT.md`. S1 tag local. |
+| D27 | **ACTIVE_TARGET = platform** (R5) | Master 2026-07-31 |
+| D28 | **Long-term repo split** | S0–S5 pointers Done. Product SoR = separate repos. |
+| D29 | **Atlas closeout priority; product hold** | Master 2026-07-31. Atlas = platform only. 개별 제품 프로젝트 진행 안 함. 최소범위 문제·개선 적용 후 Atlas 일단락이 최우선. |
 
 ## Documentation
 
@@ -70,10 +71,9 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 
 | Issue | Decision | Status |
 |-------|----------|--------|
-| #4 VERIFY | D23 | **Confirmed + Implemented** (P2-1) |
-| #5 Kraken path | D24 | **Confirmed + F3 N/A** (no path to move) |
-| #6 SPRINT archive | D25 | **Confirmed + F3 OK** (no Open sprints) |
-| #7 Forge phase path | D26 | **Confirmed + F3 policy Done** (physical archive optional) |
+| #4 VERIFY | D23 | Implemented |
+| #5 Kraken path | D24 | N/A |
+| #6 SPRINT archive | D25 | OK |
+| #7 Forge phase path | D26 | policy Done |
 
-Draft archive: `docs/06_OPERATIONS/G6_DECISION_DRAFTS.md`  
 Process: `docs/06_OPERATIONS/DECISION_PROCESS.md`
