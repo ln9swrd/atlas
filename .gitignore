@@ -53,5 +53,9 @@ logs/
 *.wav
 *.zip
 
+# Allow this specific Blender project to be tracked
+!projects/blender/shin getter robo/
+!projects/blender/shin getter robo/*.blend
+
 # Ignore Cline rules file
 .clinerules
