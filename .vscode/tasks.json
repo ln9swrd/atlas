@@ -33,6 +33,12 @@
         "panel": "new"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Open Blender File",
+      "type": "shell",
+      "command": "if command -v blender >/dev/null 2>&1; then blender \"${file}\"; elif command -v blender-4.0 >/dev/null 2>&1; then blender-4.0 \"${file}\"; elif command -v blender-3.6 >/dev/null 2>&1; then blender-3.6 \"${file}\"; else echo 'Blender executable not found'; fi",
+      "problemMatcher": []
     }
   ]
 }

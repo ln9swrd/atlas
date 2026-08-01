@@ -3,5 +3,14 @@
     "continue.enableQuickActions": false,
     "aiderAgent.provider": "local",
     "atlas.model": "qwen3:8b",
-    "atlas.provider": "ollama"
+    "atlas.provider": "ollama",
+    "files.associations": {
+        "*.blend": "binary"
+    },
+    "workbench.editorAssociations": {
+        "*.blend": "default"
+    },
+    "openInExternalApp.openInExternalApp": [
+        "*.blend"
+    ]
 }
