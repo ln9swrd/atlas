@@ -11,7 +11,6 @@ $OutLog = Join-Path $LogDir ("run-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".l
 
 Write-Host "=== makerfac collect_safe $(Get-Date -Format 'yyyy-MM-dd HH:mm') ==="
 try {
-    # 크롬 CDP 확인
     $null = Invoke-WebRequest -Uri "http://127.0.0.1:9222/json/version" -UseBasicParsing -TimeoutSec 5
 } catch {
     Write-Host "크롬 9222 연결 실패. 디버깅 모드 크롬을 먼저 켜세요."
@@ -19,6 +18,6 @@ try {
     exit 1
 }
 
-# 세션당 25개, 일 50 상한은 collect_safe.py 내부에서 처리
-python collect_safe.py --limit 25 2>&1 | Tee-Object -FilePath $OutLog
+# 기본 50개 / 일 100 상한은 collect_safe.py 내부
+python collect_safe.py --limit 50 2>&1 | Tee-Object -FilePath $OutLog
 exit $LASTEXITCODE
