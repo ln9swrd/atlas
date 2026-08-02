@@ -174,85 +174,190 @@ def create_slot_empties(mecha: dict, root=None, collection_name: str = "ParaMode
     return created
 
 
-def _find_rig_blend() -> str:
-    """Locate para_model.blend that contains SuperRobotRig."""
-    root = _addon_root()
-    candidates = [
-        os.path.join(root, "para_model.blend"),
-        os.path.join(os.path.dirname(root), "para_model.blend"),
-        os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "para_model.blend")),
-        os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "para_model.blend")),
-    ]
-    for path in candidates:
-        if path and os.path.isfile(path):
-            return path
-    return ""
+# SuperRobotRig bone table (from user metarig.001 dump)
+# (name, parent_name or None, head_xyz, tail_xyz)
+_SUPER_ROBOT_BONES = [
+    ("Root", None, (0.0, 0.0, -1.0252), (0.0, 0.0, -0.8559)),
+    ("Hip", "Root", (0.0, 0.0, 0.0862), (0.0, 0.0, 0.2597)),
+    ("Waist", "Hip", (0.0, 0.0172, 0.2562), (0.0, 0.0542, 0.3505)),
+    ("Midriff", "Waist", (0.0, 0.0542, 0.3505), (0.0, 0.1108, 0.493)),
+    ("Chest", "Midriff", (0.0, 0.1094, 0.5142), (0.0, 0.1048, 0.6946)),
+    ("Neck", "Chest", (0.0, 0.1048, 0.6946), (0.0, 0.0673, 0.7451)),
+    ("Head", "Neck", (0.0, 0.0673, 0.7451), (-0.0, 0.0622, 0.8531)),
+    ("wing", "Chest", (0.0, 0.1048, 0.6946), (-0.0, 0.1899, 0.6633)),
+    ("wing_01.L", "wing", (0.0, 0.1899, 0.6633), (0.4129, 0.3744, 0.7134)),
+    ("wing_02.L", "wing_01.L", (0.4125, 0.3739, 0.7189), (0.8226, 0.52, 1.3624)),
+    ("wing_03.L", "wing_02.L", (0.8226, 0.52, 1.3624), (1.2663, 0.5993, 1.0093)),
+    ("wing_03_02.L", "wing_03.L", (1.2663, 0.5993, 1.0093), (1.1904, 0.5803, 0.4181)),
+    ("wing_03_01.L", "wing_03.L", (1.2663, 0.5993, 1.0093), (1.785, 0.7469, 0.1779)),
+    ("wing_02_03.L", "wing_02.L", (0.8226, 0.52, 1.3624), (0.6684, 0.4743, 0.6008)),
+    ("wing_01.R", "wing", (-0.0, 0.1899, 0.6633), (-0.4129, 0.3744, 0.7134)),
+    ("wing_02.R", "wing_01.R", (-0.4125, 0.3739, 0.7189), (-0.8226, 0.52, 1.3624)),
+    ("wing_03.R", "wing_02.R", (-0.8226, 0.52, 1.3624), (-1.2663, 0.5993, 1.0093)),
+    ("wing_03_01.R", "wing_03.R", (-1.2663, 0.5993, 1.0093), (-1.785, 0.7469, 0.1779)),
+    ("wing_03_02.R", "wing_03.R", (-1.2663, 0.5993, 1.0093), (-1.1904, 0.5803, 0.4181)),
+    ("wing_02_03.R", "wing_02.R", (-0.8226, 0.52, 1.3624), (-0.6684, 0.4743, 0.6008)),
+    ("clavicle.L", "Chest", (0.061, 0.0966, 0.6625), (0.2086, 0.0964, 0.6195)),
+    ("shoulder_joint.L", "clavicle.L", (0.2116, 0.0966, 0.6207), (0.3588, 0.1737, 0.6631)),
+    ("shoulder.L", "shoulder_joint.L", (0.4865, 0.1375, 0.6475), (0.4119, 0.1445, 1.2197)),
+    ("upper_arm.L", "shoulder.L", (0.4924, 0.1605, 0.6265), (0.557, 0.1518, 0.5175)),
+    ("elbow_double_top.L", "upper_arm.L", (0.557, 0.1518, 0.5175), (0.577, 0.1474, 0.4797)),
+    ("elbow_double_bottom.L", "elbow_double_top.L", (0.577, 0.1474, 0.4797), (0.597, 0.1431, 0.4419)),
+    ("forearm.L", "elbow_double_bottom.L", (0.597, 0.1431, 0.4419), (0.5874, 0.1016, 0.0702)),
+    ("hand.L", "forearm.L", (0.5874, 0.1016, 0.0702), (0.5638, 0.0936, -0.0062)),
+    ("palm.01.L", "hand.L", (0.5814, 0.0748, 0.0333), (0.5618, 0.0574, -0.0314)),
+    ("f_index.01.L", "palm.01.L", (0.5618, 0.0574, -0.0314), (0.5354, 0.0536, -0.0678)),
+    ("f_index.02.L", "f_index.01.L", (0.5354, 0.0536, -0.0678), (0.5155, 0.052, -0.0878)),
+    ("f_index.03.L", "f_index.02.L", (0.5155, 0.052, -0.0878), (0.4962, 0.0529, -0.1002)),
+    ("thumb.01.L", "palm.01.L", (0.5606, 0.0738, 0.0489), (0.5341, 0.0538, 0.0233)),
+    ("thumb.02.L", "thumb.01.L", (0.5341, 0.0538, 0.0233), (0.5163, 0.0466, -0.0041)),
+    ("thumb.03.L", "thumb.02.L", (0.5163, 0.0466, -0.0041), (0.5068, 0.0425, -0.0222)),
+    ("palm.02.L", "hand.L", (0.5826, 0.0913, 0.0285), (0.5641, 0.0801, -0.0363)),
+    ("f_middle.01.L", "palm.02.L", (0.5641, 0.0801, -0.0363), (0.5317, 0.0758, -0.0737)),
+    ("f_middle.02.L", "f_middle.01.L", (0.5317, 0.0758, -0.0737), (0.5055, 0.0742, -0.0925)),
+    ("f_middle.03.L", "f_middle.02.L", (0.5055, 0.0742, -0.0925), (0.4856, 0.074, -0.1035)),
+    ("palm.03.L", "hand.L", (0.5821, 0.1069, 0.0291), (0.5644, 0.1045, -0.0386)),
+    ("f_ring.01.L", "palm.03.L", (0.5644, 0.1045, -0.0386), (0.5313, 0.1023, -0.0689)),
+    ("f_ring.02.L", "f_ring.01.L", (0.5313, 0.1023, -0.0689), (0.5049, 0.1018, -0.0867)),
+    ("f_ring.03.L", "f_ring.02.L", (0.5049, 0.1018, -0.0867), (0.4869, 0.1022, -0.0916)),
+    ("palm.04.L", "hand.L", (0.5806, 0.1221, 0.0322), (0.5589, 0.1288, -0.0392)),
+    ("f_pinky.01.L", "palm.04.L", (0.5589, 0.1288, -0.0392), (0.5352, 0.129, -0.0541)),
+    ("f_pinky.02.L", "f_pinky.01.L", (0.5352, 0.129, -0.0541), (0.515, 0.1295, -0.0644)),
+    ("f_pinky.03.L", "f_pinky.02.L", (0.515, 0.1295, -0.0644), (0.5006, 0.1297, -0.0687)),
+    ("clavicle.R", "Chest", (-0.061, 0.0966, 0.6625), (-0.2086, 0.0964, 0.6195)),
+    ("shoulder_joint.R", "clavicle.R", (-0.2116, 0.0966, 0.6207), (-0.3588, 0.1737, 0.6631)),
+    ("shoulder.R", "shoulder_joint.R", (-0.4865, 0.1375, 0.6475), (-0.4119, 0.1445, 1.2197)),
+    ("upper_arm.R", "shoulder.R", (-0.4924, 0.1605, 0.6265), (-0.557, 0.1518, 0.5175)),
+    ("elbow_double_top.R", "upper_arm.R", (-0.557, 0.1518, 0.5175), (-0.577, 0.1474, 0.4797)),
+    ("elbow_double_bottom.R", "elbow_double_top.R", (-0.577, 0.1474, 0.4797), (-0.597, 0.1431, 0.4419)),
+    ("forearm.R", "elbow_double_bottom.R", (-0.597, 0.1431, 0.4419), (-0.5874, 0.1016, 0.0702)),
+    ("hand.R", "forearm.R", (-0.5874, 0.1016, 0.0702), (-0.5638, 0.0936, -0.0062)),
+    ("palm.01.R", "hand.R", (-0.5814, 0.0748, 0.0333), (-0.5618, 0.0574, -0.0314)),
+    ("f_index.01.R", "palm.01.R", (-0.5618, 0.0574, -0.0314), (-0.5354, 0.0536, -0.0678)),
+    ("f_index.02.R", "f_index.01.R", (-0.5354, 0.0536, -0.0678), (-0.5155, 0.052, -0.0878)),
+    ("f_index.03.R", "f_index.02.R", (-0.5155, 0.052, -0.0878), (-0.4962, 0.0529, -0.1002)),
+    ("thumb.01.R", "palm.01.R", (-0.5606, 0.0738, 0.0489), (-0.5341, 0.0538, 0.0233)),
+    ("thumb.02.R", "thumb.01.R", (-0.5341, 0.0538, 0.0233), (-0.5163, 0.0466, -0.0041)),
+    ("thumb.03.R", "thumb.02.R", (-0.5163, 0.0466, -0.0041), (-0.5068, 0.0425, -0.0222)),
+    ("palm.02.R", "hand.R", (-0.5826, 0.0913, 0.0285), (-0.5641, 0.0801, -0.0363)),
+    ("f_middle.01.R", "palm.02.R", (-0.5641, 0.0801, -0.0363), (-0.5317, 0.0758, -0.0737)),
+    ("f_middle.02.R", "f_middle.01.R", (-0.5317, 0.0758, -0.0737), (-0.5055, 0.0742, -0.0925)),
+    ("f_middle.03.R", "f_middle.02.R", (-0.5055, 0.0742, -0.0925), (-0.4856, 0.074, -0.1035)),
+    ("palm.03.R", "hand.R", (-0.5821, 0.1069, 0.0291), (-0.5644, 0.1045, -0.0386)),
+    ("f_ring.01.R", "palm.03.R", (-0.5644, 0.1045, -0.0386), (-0.5313, 0.1023, -0.0689)),
+    ("f_ring.02.R", "f_ring.01.R", (-0.5313, 0.1023, -0.0689), (-0.5049, 0.1018, -0.0867)),
+    ("f_ring.03.R", "f_ring.02.R", (-0.5049, 0.1018, -0.0867), (-0.4869, 0.1022, -0.0916)),
+    ("palm.04.R", "hand.R", (-0.5806, 0.1221, 0.0322), (-0.5589, 0.1288, -0.0392)),
+    ("f_pinky.01.R", "palm.04.R", (-0.5589, 0.1288, -0.0392), (-0.5352, 0.129, -0.0541)),
+    ("f_pinky.02.R", "f_pinky.01.R", (-0.5352, 0.129, -0.0541), (-0.515, 0.1295, -0.0644)),
+    ("f_pinky.03.R", "f_pinky.02.R", (-0.515, 0.1295, -0.0644), (-0.5006, 0.1297, -0.0687)),
+    ("pelvis.L", "Hip", (-0.0, 0.0552, 0.1083), (0.1112, -0.0451, 0.118)),
+    ("thigh.L", "pelvis.L", (0.1239, 0.0124, 0.1455), (0.23, 0.0278, -0.1272)),
+    ("knee_double_top.L", "thigh.L", (0.23, 0.0278, -0.1272), (0.2604, 0.0401, -0.2097)),
+    ("knee_double_bottom.L", "knee_double_top.L", (0.2604, 0.0401, -0.2097), (0.2842, 0.051, -0.2742)),
+    ("shin.L", "knee_double_bottom.L", (0.2842, 0.051, -0.2742), (0.4426, 0.1523, -0.7694)),
+    ("ankle.L", "shin.L", (0.4426, 0.1523, -0.7694), (0.4865, 0.1636, -0.9038)),
+    ("foot.L", "ankle.L", (0.4865, 0.1636, -0.9038), (0.5149, 0.1431, -0.9884)),
+    ("toe.L", "foot.L", (0.5149, 0.1431, -0.9884), (0.5793, -0.129, -0.9915)),
+    ("heel.02.L", "foot.L", (0.5106, 0.1615, -0.9904), (0.4886, 0.2545, -0.989)),
+    ("pelvis.R", "Hip", (0.0, 0.0552, 0.1083), (-0.1112, -0.0451, 0.118)),
+    ("thigh.R", "pelvis.R", (-0.1239, 0.0124, 0.1455), (-0.23, 0.0278, -0.1272)),
+    ("knee_double_top.R", "thigh.R", (-0.23, 0.0278, -0.1272), (-0.2604, 0.0401, -0.2097)),
+    ("knee_double_bottom.R", "knee_double_top.R", (-0.2604, 0.0401, -0.2097), (-0.2842, 0.051, -0.2742)),
+    ("shin.R", "knee_double_bottom.R", (-0.2842, 0.051, -0.2742), (-0.4426, 0.1523, -0.7694)),
+    ("ankle.R", "shin.R", (-0.4426, 0.1523, -0.7694), (-0.4865, 0.1636, -0.9038)),
+    ("foot.R", "ankle.R", (-0.4865, 0.1636, -0.9038), (-0.5149, 0.1431, -0.9884)),
+    ("toe.R", "foot.R", (-0.5149, 0.1431, -0.9884), (-0.5793, -0.129, -0.9915)),
+    ("heel.02.R", "foot.R", (-0.5106, 0.1615, -0.9904), (-0.4886, 0.2545, -0.989)),
+]
+
+
+def _set_active(obj):
+    for o in bpy.context.view_layer.objects:
+        o.select_set(False)
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
 
 
 def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Armature"):
-    """Append SuperRobotRig from para_model.blend (user rig)."""
+    """Create SuperRobotRig procedurally from hard-coded bone table."""
     mecha_id = mecha.get("id", "mecha")
-    blend_path = _find_rig_blend()
-    if not blend_path:
-        raise FileNotFoundError(
-            "para_model.blend not found. Expected SuperRobotRig inside it."
-        )
+    arm_name = "SuperRobotRig"
 
-    # Remove previous instances
-    for name in ("SuperRobotRig", f"armature_{mecha_id}"):
-        if name in bpy.data.objects:
-            bpy.data.objects.remove(bpy.data.objects[name], do_unlink=True)
+    # Remove existing
+    if arm_name in bpy.data.objects:
+        bpy.data.objects.remove(bpy.data.objects[arm_name], do_unlink=True)
+    if arm_name in bpy.data.armatures:
+        bpy.data.armatures.remove(bpy.data.armatures[arm_name])
+    # also remove old procedural names
+    old_name = f"armature_{mecha_id}"
+    if old_name in bpy.data.objects:
+        bpy.data.objects.remove(bpy.data.objects[old_name], do_unlink=True)
+    if old_name in bpy.data.armatures:
+        bpy.data.armatures.remove(bpy.data.armatures[old_name])
 
-    # Ensure object mode
+    arm_data = bpy.data.armatures.new(arm_name)
+    arm_obj = bpy.data.objects.new(arm_name, arm_data)
+    coll = _ensure_collection(collection_name)
+    coll.objects.link(arm_obj)
+
+    arm_obj["paramodel_armature"] = True
+    arm_obj["paramodel_mecha_id"] = mecha_id
+    arm_obj["paramodel_rig_source"] = "SuperRobotRig"
+
     if bpy.context.object and bpy.context.object.mode != "OBJECT":
         try:
             bpy.ops.object.mode_set(mode="OBJECT")
         except Exception:
             pass
 
-    before_objs = set(bpy.data.objects)
+    _set_active(arm_obj)
 
-    with bpy.data.libraries.load(blend_path, link=False) as (data_from, data_to):
-        if "SuperRobotRig" not in data_from.objects:
-            available = list(data_from.objects)[:30]
-            raise RuntimeError(
-                f"SuperRobotRig not found in {blend_path}. Available: {available}"
-            )
-        data_to.objects = ["SuperRobotRig"]
+    try:
+        if hasattr(bpy.context, "temp_override"):
+            with bpy.context.temp_override(
+                active_object=arm_obj,
+                object=arm_obj,
+                selected_objects=[arm_obj],
+                selected_editable_objects=[arm_obj],
+            ):
+                bpy.ops.object.mode_set(mode="EDIT")
+        else:
+            bpy.ops.object.mode_set(mode="EDIT")
+    except Exception:
+        _set_active(arm_obj)
+        bpy.ops.object.mode_set(mode="EDIT")
 
-    coll = _ensure_collection(collection_name)
-    arm_obj = None
+    edit_bones = arm_data.edit_bones
+    created = []
 
-    for obj in data_to.objects:
-        if obj is None:
-            continue
-        for c in list(obj.users_collection):
-            c.objects.unlink(obj)
-        coll.objects.link(obj)
-        if obj.name == "SuperRobotRig" or obj.type == "ARMATURE":
-            arm_obj = obj
+    for name, parent_name, head, tail in _SUPER_ROBOT_BONES:
+        bone = edit_bones.new(name)
+        bone.head = Vector(head)
+        bone.tail = Vector(tail)
+        bone.use_connect = False
+        if parent_name and parent_name in edit_bones:
+            bone.parent = edit_bones[parent_name]
+        created.append(name)
 
-    if arm_obj is None:
-        # Fallback: pick newly added armature-type object
-        new_objs = [o for o in bpy.data.objects if o not in before_objs]
-        for o in new_objs:
-            if o.type == "ARMATURE":
-                arm_obj = o
-                break
-        if arm_obj is None and new_objs:
-            arm_obj = new_objs[0]
-
-    if arm_obj is None:
-        raise RuntimeError("Failed to append SuperRobotRig from blend")
-
-    arm_obj["paramodel_armature"] = True
-    arm_obj["paramodel_mecha_id"] = mecha_id
-    arm_obj["paramodel_rig_source"] = "SuperRobotRig"
+    try:
+        if hasattr(bpy.context, "temp_override"):
+            with bpy.context.temp_override(
+                active_object=arm_obj,
+                object=arm_obj,
+                selected_objects=[arm_obj],
+            ):
+                bpy.ops.object.mode_set(mode="OBJECT")
+        else:
+            bpy.ops.object.mode_set(mode="OBJECT")
+    except Exception:
+        _set_active(arm_obj)
+        bpy.ops.object.mode_set(mode="OBJECT")
 
     if root:
         arm_obj.parent = root
 
-    # Bone-parent slots when bone names match slot ids
+    # Optional slot bone-parent if names overlap
     parented = []
     if arm_obj.type == "ARMATURE" and arm_obj.data:
         bone_names = {b.name for b in arm_obj.data.bones}
@@ -272,7 +377,7 @@ def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Ar
             slot_obj.matrix_world = mw
             parented.append(slot_id)
 
-    return arm_obj, parented
+    return arm_obj, created
 
 
 def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "ParaModel_Parts"):
@@ -376,7 +481,6 @@ class PARAMODEL_OT_load_mecha(Operator):
             self.report({"ERROR"}, f"Invalid JSON: {e}")
             return {"CANCELLED"}
 
-        # Ensure object mode at start
         if context.object and context.object.mode != "OBJECT":
             try:
                 bpy.ops.object.mode_set(mode="OBJECT")
@@ -406,7 +510,6 @@ class PARAMODEL_OT_load_mecha(Operator):
                 _, bones = create_armature(mecha, root=root)
                 n_bones = len(bones)
             except Exception as e:
-                # Do not cancel whole load — report and continue
                 self.report({"WARNING"}, f"Armature failed: {e}")
                 print(f"ParaModel armature error: {e}")
 
@@ -464,7 +567,6 @@ class PARAMODEL_OT_clear_slots(Operator):
             if coll_name in bpy.data.collections:
                 bpy.data.collections.remove(bpy.data.collections[coll_name])
 
-        # Clean orphaned armature data blocks from SuperRobotRig / armature_*
         for arm in list(bpy.data.armatures):
             if arm.name.startswith("armature_") or arm.name == "SuperRobotRig":
                 if arm.users == 0:
