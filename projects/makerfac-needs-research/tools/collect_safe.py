@@ -3,18 +3,19 @@
 makerfac 안전 수집 스크립트
 - 이미 실행 중인 크롬(remote-debugging-port=9222)에 연결
 - 세션당 소량, 긴 랜덤 대기, 글 ID 기준 재열람 방지, 일일 상한
+- 저장 형식: collected/posts.jsonl (JSON Lines)
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import random
 import re
 import sys
 import time
 from datetime import date, datetime
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs
 
 try:
     from playwright.sync_api import sync_playwright
@@ -24,7 +25,8 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parent.parent
 NOTES = ROOT / "notes"
-INBOX = ROOT / "collected" / "_inbox"
+COLLECTED = ROOT / "collected"
+POSTS_JSONL = COLLECTED / "posts.jsonl"
 VIEWED = NOTES / "viewed-ids.md"
 SESSION_LOG = NOTES / "session-log.md"
 
@@ -48,7 +50,6 @@ def article_id(url: str) -> str | None:
 
 
 def normalize_article_url(url: str) -> str:
-    """쿼리 제거한 본문 URL (중복 판별용)."""
     aid = article_id(url)
     if not aid:
         return url.split("?")[0]
@@ -69,16 +70,30 @@ def is_noise_link(url: str, title: str) -> bool:
 
 
 def load_viewed_ids() -> set[str]:
-    """viewed-ids.md 에서 article id 집합."""
-    if not VIEWED.exists():
-        return set()
-    text = VIEWED.read_text(encoding="utf-8")
-    ids = set(ARTICLE_ID_RE.findall(text))
-    # 구형: URL만 있고 id 추출 가능한 줄
-    for u in re.findall(r"https://cafe\.naver\.com[^\s\)|]+", text):
-        aid = article_id(u)
-        if aid:
-            ids.add(aid)
+    ids: set[str] = set()
+    if VIEWED.exists():
+        text = VIEWED.read_text(encoding="utf-8")
+        ids.update(ARTICLE_ID_RE.findall(text))
+        for u in re.findall(r"https://cafe\.naver\.com[^\s\)|]+", text):
+            aid = article_id(u)
+            if aid:
+                ids.add(aid)
+        for m in re.finditer(r"id:(\d+)", text):
+            ids.add(m.group(1))
+    # posts.jsonl 도 중복 기준으로 사용
+    if POSTS_JSONL.exists():
+        with POSTS_JSONL.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                    aid = str(obj.get("id") or "")
+                    if aid:
+                        ids.add(aid)
+                except json.JSONDecodeError:
+                    continue
     return ids
 
 
@@ -119,7 +134,7 @@ def append_session_log(opened: int, saved: int, note: str = "") -> None:
         f"\n### 세션 {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
         f"- **열람**: {opened}개\n"
         f"- **저장**: {saved}개\n"
-        f"- **비고**: {note or 'collect_safe 자동'}\n"
+        f"- **비고**: {note or 'collect_safe 자동 (jsonl)'}\n"
     )
     with SESSION_LOG.open("a", encoding="utf-8") as f:
         f.write(block)
@@ -131,29 +146,30 @@ def human_delay() -> None:
     time.sleep(sec)
 
 
-def save_inbox(title: str, url: str, body: str) -> Path:
-    INBOX.mkdir(parents=True, exist_ok=True)
-    safe = re.sub(r"[^\w가-힣\-]+", "_", title)[:60] or "post"
-    aid = article_id(url) or "x"
-    path = INBOX / f"{date.today().isoformat()}_{aid}_{safe}.md"
-    if path.exists():
-        path = INBOX / f"{date.today().isoformat()}_{aid}_{safe}_{int(time.time())}.md"
-    content = (
-        f"# 수집 기록 – 미분류\n\n"
-        f"## 게시글 정보\n"
-        f"- **제목**: {title}\n"
-        f"- **작성일**: (확인 후 기입)\n"
-        f"- **원문 링크**: {normalize_article_url(url)}\n"
-        f"- **수집일**: {date.today().isoformat()}\n\n"
-        f"## 핵심 니즈 요약\n- (검토 후 작성)\n\n"
-        f"## 본문 주요 내용\n\n{body[:4000]}\n\n"
-        f"## 관련 키워드\n- \n\n"
-        f"## 사업 아이템 관점 메모\n"
-        f"- 가능성: (높음 / 보통 / 낮음)\n"
-        f"- 이유: \n"
-    )
-    path.write_text(content, encoding="utf-8")
-    return path
+def save_post(title: str, url: str, body: str) -> Path:
+    """JSONL 한 줄 append. 반환: posts.jsonl 경로."""
+    COLLECTED.mkdir(parents=True, exist_ok=True)
+    aid = article_id(url) or "unknown"
+    record = {
+        "id": aid,
+        "title": title.strip(),
+        "url": normalize_article_url(url),
+        "collected_at": datetime.now().isoformat(timespec="seconds"),
+        "source_board": "qna",
+        "category": None,
+        "keywords": [],
+        "need_summary": None,
+        "body": (body or "")[:8000],
+        "business": {
+            "potential": None,
+            "reason": None,
+            "notes": None,
+        },
+        "status": "inbox",
+    }
+    with POSTS_JSONL.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    return POSTS_JSONL
 
 
 def main() -> None:
@@ -180,6 +196,7 @@ def main() -> None:
 
     print(f"이미 기록된 글 ID: {len(viewed_ids)}개")
     print(f"오늘 처리: {today_count}/{daily_cap} → 이번 세션 한도 {limit}")
+    print(f"저장: {POSTS_JSONL.relative_to(ROOT)} (JSONL)")
     print(f"대기 {MIN_DELAY}~{MAX_DELAY}s")
 
     with sync_playwright() as p:
@@ -255,16 +272,16 @@ def main() -> None:
                 except Exception:
                     continue
 
-            path = save_inbox(title, href, body or "(본문 추출 실패 — 수동 확인)")
+            path = save_post(title, href, body or "")
             append_viewed(href, title)
             opened += 1
             saved += 1
-            print(f"  저장: {path.relative_to(ROOT)}")
+            print(f"  저장 → {path.name} (id={article_id(href)})")
 
         append_session_log(opened, saved)
         print("\n=== 세션 종료 ===")
         print(f"열람: {opened} | 저장: {saved}")
-        print("session-log.md 에 자동 기록됨.")
+        print(f"데이터: {POSTS_JSONL}")
         print("의심 화면(캡차 등)이 보였다면 오늘은 추가 실행하지 마세요.")
 
 
