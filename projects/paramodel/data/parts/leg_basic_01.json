@@ -3,6 +3,6 @@
   "name": "Basic Leg 01",
   "slot_types": ["leg_l", "leg_r"],
   "category": "body",
-  "mesh": null,
+  "mesh": "meshes/leg_basic_01.glb",
   "placeholder": { "size": [0.25, 0.9, 0.25] }
 }
