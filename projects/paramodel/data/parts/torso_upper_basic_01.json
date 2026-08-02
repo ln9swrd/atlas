@@ -4,5 +4,5 @@
   "slot_types": ["torso_upper"],
   "category": "body",
   "mesh": null,
-  "placeholder": { "size": [700, 500, 400] }
+  "placeholder": { "size": [0.7, 0.5, 0.4] }
 }

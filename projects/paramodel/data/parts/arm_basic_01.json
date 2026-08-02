@@ -4,5 +4,5 @@
   "slot_types": ["arm_l", "arm_r"],
   "category": "body",
   "mesh": null,
-  "placeholder": { "size": [200, 700, 200] }
+  "placeholder": { "size": [0.2, 0.7, 0.2] }
 }
