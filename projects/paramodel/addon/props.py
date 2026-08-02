@@ -1,5 +1,5 @@
 import bpy
-from bpy.props import StringProperty, BoolProperty, EnumProperty
+from bpy.props import StringProperty, BoolProperty
 from bpy.types import PropertyGroup
 
 
@@ -18,6 +18,11 @@ class ParaModelSettings(PropertyGroup):
     create_empties: BoolProperty(
         name="Create Slot Empties",
         description="Create Empty objects for each Base Body slot",
+        default=True,
+    )
+    create_placeholders: BoolProperty(
+        name="Attach Placeholders",
+        description="Attach cube placeholders for part_id from data/parts/",
         default=True,
     )
 
