@@ -27,24 +27,22 @@ SIDE: **paramodel** — `projects/paramodel/` Master-directed (2026-08-02)
 | Item | Status |
 |------|--------|
 | Path | `projects/paramodel/` |
-| Addon | **v0.4.1** (GitHub main) |
+| Addon | **v0.5.0** (GitHub main) |
 | PM-1..PM-8 | Done |
-| PM-9 Armature | **코드 반영됨 / 로컬 재현 실패 중** |
+| PM-9 Basic armature | Superseded |
+| PM-11 SuperRobotRig | **코드 반영 (v0.5.0)** — `para_model.blend` Append |
 | Verified in Blender | Root + Slots + Parts OK |
-| Armature in Outliner | **미확인** (사용자 보고 미생성) |
+| Armature in Outliner | **로컬 재설치 후 확인 필요** |
 
-### Armature 이슈 (2026-08-02)
+### Armature (2026-08-02)
 
-- 증상: Load 후 `ParaModel_Armature` / `armature_*` 없음  
-- 가능 원인:  
-  1. 로컬 `/mnt/d/Atlas`가 GitHub main보다 뒤처짐 → zip에 armature 코드 미포함  
-  2. Blender에 구버전 애드온 잔존  
-  3. `mode_set` 컨텍스트 실패 (v0.4.1에서 완화 시도)  
-- 조치 권장: `git pull` → `package_addon.sh` → 애드온 Remove 후 재설치 → 패널 **v0.4.1** 확인
+- v0.5.0: 절차적 본 생성 제거 → `para_model.blend`의 `SuperRobotRig` Append
+- 슬롯 id와 본 이름이 같으면 bone-parent 시도
+- 조치: `git pull` → `package_addon.sh` → 애드온 Remove 후 재설치 → 패널 **v0.5.0 — SuperRobotRig** 확인
 
 ## Open
 
-- paramodel armature 재현/수정 확인  
+- paramodel SuperRobotRig 로컬 확인 (PM-10)
 - platform: 없음 (maintenance only)
 
 ## Do not

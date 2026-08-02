@@ -1,6 +1,6 @@
 # PROJECT_MAP
 
-> Updated: 2026-08-02 (paramodel status)
+> Updated: 2026-08-02 (paramodel v0.5.0)
 
 ## System
 
@@ -22,7 +22,7 @@
 
 | ID | Path | Notes |
 |----|------|-------|
-| paramodel | `projects/paramodel/` | ParaModel addon **v0.4.1**; armature verify pending |
+| paramodel | `projects/paramodel/` | ParaModel addon **v0.5.0**; SuperRobotRig from blend |
 | printguard | `projects/printguard/` | P2 docs |
 | coin-s | `projects/coin-s/` | submodule-oriented |
 | _template | `projects/_template/` | |

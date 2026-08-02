@@ -10,7 +10,7 @@ Min · F1–F4 · P0–P3 · R1–R7 · D28 S0–S5 · C1 · C3
 
 ## Side track — paramodel (Master-directed 2026-08-02)
 
-Path: `projects/paramodel/` · Addon target **v0.4.1**
+Path: `projects/paramodel/` · Addon target **v0.5.0**
 
 | ID | Task | Status |
 |----|------|--------|
@@ -22,14 +22,15 @@ Path: `projects/paramodel/` · Addon target **v0.4.1**
 | PM-6 | Mesh import + fallback | Done |
 | PM-7 | Parameters → root scale + props | Done |
 | PM-8 | package_addon.sh | Done |
-| PM-9 | Basic armature from slots | **Code in main / Blender verify FAIL** |
-| PM-10 | Armature: confirm local git pull + reinstall | Open |
+| PM-9 | Basic armature from slots | Superseded |
+| PM-10 | Armature: local pull + reinstall verify | Open |
+| PM-11 | Load SuperRobotRig from para_model.blend | **Done (v0.5.0)** |
 
 ## Open
 
 | ID | Task |
 |----|------|
-| PM-10 | 로컬 pull → v0.4.1 zip → Remove/Install → armature Outliner 확인 |
+| PM-10 | 로컬 pull → v0.5.0 zip → Remove/Install → SuperRobotRig Outliner 확인 |
 
 ## Hold
 
