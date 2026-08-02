@@ -29,7 +29,7 @@ class PARAMODEL_PT_main(Panel):
 
         layout.separator()
         box = layout.box()
-        box.label(text="v0.6.0 — SuperRobotRig procedural", icon="INFO")
+        box.label(text="v0.6.1 — SuperRobotRig mm", icon="INFO")
 
 
 classes = (
