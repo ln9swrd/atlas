@@ -16,6 +16,7 @@ class PARAMODEL_PT_main(Panel):
         layout.prop(settings, "data_path")
         layout.prop(settings, "selected_mecha")
         layout.prop(settings, "create_empties")
+        layout.prop(settings, "create_placeholders")
 
         layout.separator()
         layout.operator("paramodel.load_mecha", icon="IMPORT")
@@ -23,7 +24,7 @@ class PARAMODEL_PT_main(Panel):
 
         layout.separator()
         box = layout.box()
-        box.label(text="v0.1.0 — Base Body slots only", icon="INFO")
+        box.label(text="v0.2.0 — slots + placeholders", icon="INFO")
 
 
 classes = (
