@@ -6,43 +6,45 @@ Parametric mecha model system for Atlas / Excelion.
 
 ```
 projects/paramodel/
-├── addon/                 # Blender addon v0.3.0
+├── addon/                 # Blender addon v0.4.1
 ├── schema/
-├── data/
-│   ├── mecha/
-│   └── parts/
-│       └── meshes/        # optional .glb/.blend assets
-├── scripts/
-│   └── package_addon.sh   # zip for Blender Install
-└── dist/                  # package output (generated)
+├── data/mecha|parts/
+├── scripts/package_addon.sh
+└── dist/                  # generated zip
 ```
 
-## Status
+## Status (2026-08-02)
 
-- [x] PM-1 slots + position/rotation
-- [x] PM-2 mecha-metadata.schema.json
-- [x] PM-3 part library
-- [x] PM-4 placeholders
-- [x] PM-5 state registration
-- [x] PM-6 mesh import (glb/gltf/obj/fbx/blend, fallback placeholder)
-- [x] PM-7 parameters → root scale + custom props
-- [x] PM-8 package_addon.sh
+| Item | Status |
+|------|--------|
+| Slots + placeholders + params | Verified in Blender |
+| Mesh import path | Implemented (no mesh assets yet → placeholder) |
+| Armature (PM-9) | Code on GitHub main; **local Blender verify pending** |
 
-## Blender 설치
+## Install (중요)
+
+GitHub API로 푸시된 코드가 로컬에 없으면 zip에 반영되지 않습니다.
 
 ```bash
+cd /mnt/d/Atlas   # or your clone
+git pull origin main
 bash projects/paramodel/scripts/package_addon.sh
-# → projects/paramodel/dist/paramodel_addon_v0.3.0.zip
+# → dist/paramodel_addon_v0.4.1.zip
 ```
 
-Blender → Preferences → Add-ons → Install → 해당 zip  
-N패널 → **ParaModel** → Data Path = `.../data/mecha` → Load Mecha
+Blender:
+1. Preferences → Add-ons → ParaModel **Remove** (구버전 제거)
+2. Install → `paramodel_addon_v0.4.1.zip`
+3. 패널 하단 **v0.4.1 — armature fix** 확인
+4. **Create Armature** 체크 → Clear All → Load Mecha
+5. Outliner에 `ParaModel_Armature` / `armature_brave-001` 확인
 
-## Load 동작
+## Load 결과 기대
 
-1. Root empty (`root_{id}`) — height 기준 scale, mass/mobility/output props
-2. Slot empties — schema position/rotation, parented to root
-3. Parts — `part.mesh` 파일이 있으면 import, 없으면 placeholder 큐브
+- `ParaModel_Root` / `root_{id}`
+- `ParaModel_Slots` / `slot_*`
+- `ParaModel_Armature` / `armature_{id}` + bones
+- `ParaModel_Parts` / `part_*`
 
 ## Registered Units
 
