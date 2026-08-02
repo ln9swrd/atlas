@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 makerfac 안전 수집 스크립트
-- 이미 실행 중인 크롬(remote-debugging-port=9222)에 연결
-- 세션당 제한, 랜덤 대기, 글 ID 기준 재열람 방지, 일일 상한
-- 저장 형식: collected/posts.jsonl (JSON Lines)
+- 크롬 CDP 연결, 글 ID 중복 스킵, 일일/세션 한도
+- 게시판 여러 페이지를 돌며 신규 후보 수집
+- 저장: collected/posts.jsonl
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ import sys
 import time
 from datetime import date, datetime
 from pathlib import Path
+from urllib.parse import urlencode, urlparse, parse_qs, urlunparse
 
 try:
     from playwright.sync_api import sync_playwright
@@ -30,15 +31,13 @@ POSTS_JSONL = COLLECTED / "posts.jsonl"
 VIEWED = NOTES / "viewed-ids.md"
 SESSION_LOG = NOTES / "session-log.md"
 
-BOARD_URL = (
-    "https://cafe.naver.com/f-e/cafes/23815302/menus/24?viewType=L"
-)
+BOARD_BASE = "https://cafe.naver.com/f-e/cafes/23815302/menus/24"
 CDP_URL = "http://127.0.0.1:9222"
 
-# 세션/일일 한도 (필요 시 --limit / --daily-cap 으로 조정)
 DEFAULT_LIMIT = 50
 HARD_CAP = 60
 DAILY_CAP = 100
+DEFAULT_PAGES = 5
 MIN_DELAY = 6.0
 MAX_DELAY = 15.0
 
@@ -55,6 +54,11 @@ def normalize_article_url(url: str) -> str:
     if not aid:
         return url.split("?")[0]
     return f"https://cafe.naver.com/f-e/cafes/23815302/articles/{aid}"
+
+
+def board_url(page_num: int) -> str:
+    q = {"viewType": "L", "page": str(page_num)}
+    return f"{BOARD_BASE}?{urlencode(q)}"
 
 
 def is_noise_link(url: str, title: str) -> bool:
@@ -101,20 +105,18 @@ def count_today_in_viewed() -> int:
     if not VIEWED.exists():
         return 0
     today = date.today().isoformat()
-    n = 0
-    for line in VIEWED.read_text(encoding="utf-8").splitlines():
-        if line.startswith(f"- {today}"):
-            n += 1
-    return n
+    return sum(
+        1
+        for line in VIEWED.read_text(encoding="utf-8").splitlines()
+        if line.startswith(f"- {today}")
+    )
 
 
 def append_viewed(url: str, title: str) -> None:
     NOTES.mkdir(parents=True, exist_ok=True)
     if not VIEWED.exists():
         VIEWED.write_text(
-            "# 열람/저장 기록\n\n"
-            "글 ID 기준으로 한 번 처리한 글은 다시 열지 않습니다.\n\n"
-            "## 기록\n",
+            "# 열람/저장 기록\n\n글 ID 기준 재열람 금지.\n\n## 기록\n",
             encoding="utf-8",
         )
     aid = article_id(url) or "?"
@@ -159,11 +161,7 @@ def save_post(title: str, url: str, body: str) -> Path:
         "keywords": [],
         "need_summary": None,
         "body": (body or "")[:8000],
-        "business": {
-            "potential": None,
-            "reason": None,
-            "notes": None,
-        },
+        "business": {"potential": None, "reason": None, "notes": None},
         "status": "inbox",
     }
     with POSTS_JSONL.open("a", encoding="utf-8") as f:
@@ -171,19 +169,46 @@ def save_post(title: str, url: str, body: str) -> Path:
     return POSTS_JSONL
 
 
+def collect_links_from_page(page, viewed_ids: set[str], keyword: str) -> list[tuple[str, str]]:
+    anchors = page.locator('a[href*="/cafes/23815302/articles/"]').all()
+    out: list[tuple[str, str]] = []
+    seen: set[str] = set()
+    for a in anchors:
+        try:
+            href = a.get_attribute("href") or ""
+            title = (a.inner_text() or "").strip()
+        except Exception:
+            continue
+        if not href or not title:
+            continue
+        if href.startswith("/"):
+            href = "https://cafe.naver.com" + href
+        if is_noise_link(href, title):
+            continue
+        aid = article_id(href)
+        if not aid or aid in seen or aid in viewed_ids:
+            continue
+        if keyword and keyword.lower() not in title.lower():
+            continue
+        seen.add(aid)
+        out.append((title, href))
+    return out
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="makerfac 안전 수집")
-    parser.add_argument("--keyword", default="", help="검색 키워드 (선택)")
+    parser.add_argument("--keyword", default="", help="제목 키워드 필터")
+    parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
+    parser.add_argument("--cdp", default=CDP_URL)
+    parser.add_argument("--daily-cap", type=int, default=DAILY_CAP)
     parser.add_argument(
-        "--limit", type=int, default=DEFAULT_LIMIT, help="세션 최대 열람 수"
-    )
-    parser.add_argument("--cdp", default=CDP_URL, help="Chrome CDP URL")
-    parser.add_argument(
-        "--daily-cap", type=int, default=DAILY_CAP, help="하루 최대 열람 수"
+        "--pages", type=int, default=DEFAULT_PAGES,
+        help="목록에서 탐색할 최대 페이지 수 (기본 5)",
     )
     args = parser.parse_args()
     limit = max(1, min(args.limit, HARD_CAP))
     daily_cap = max(1, args.daily_cap)
+    max_pages = max(1, min(args.pages, 20))
 
     viewed_ids = load_viewed_ids()
     today_count = count_today_in_viewed()
@@ -195,6 +220,7 @@ def main() -> None:
 
     print(f"이미 기록된 글 ID: {len(viewed_ids)}개")
     print(f"오늘 처리: {today_count}/{daily_cap} → 이번 세션 한도 {limit}")
+    print(f"목록 페이지: 최대 {max_pages}페이지")
     print(f"저장: {POSTS_JSONL.relative_to(ROOT)} (JSONL)")
     print(f"대기 {MIN_DELAY}~{MAX_DELAY}s")
 
@@ -202,10 +228,7 @@ def main() -> None:
         try:
             browser = p.chromium.connect_over_cdp(args.cdp)
         except Exception as e:
-            print(
-                "크롬 연결 실패. 디버깅 포트로 크롬을 먼저 실행하세요.\n"
-                f"  CDP: {args.cdp}\n  오류: {e}"
-            )
+            print(f"크롬 연결 실패. CDP={args.cdp}\n  {e}")
             sys.exit(1)
 
         context = browser.contexts[0] if browser.contexts else browser.new_context()
@@ -214,37 +237,41 @@ def main() -> None:
         if args.keyword:
             print(f"키워드 필터: {args.keyword}")
 
-        print(f"이동: {BOARD_URL}")
-        page.goto(BOARD_URL, wait_until="domcontentloaded", timeout=60000)
-        human_delay()
-
-        anchors = page.locator('a[href*="/cafes/23815302/articles/"]').all()
         candidates: list[tuple[str, str]] = []
         seen_ids: set[str] = set()
-        for a in anchors:
-            try:
-                href = a.get_attribute("href") or ""
-                title = (a.inner_text() or "").strip()
-            except Exception:
-                continue
-            if not href or not title:
-                continue
-            if href.startswith("/"):
-                href = "https://cafe.naver.com" + href
-            if is_noise_link(href, title):
-                continue
-            aid = article_id(href)
-            if not aid or aid in seen_ids or aid in viewed_ids:
-                continue
-            if args.keyword and args.keyword.lower() not in title.lower():
-                continue
-            seen_ids.add(aid)
-            candidates.append((title, href))
 
-        print(f"신규 후보: {len(candidates)}개")
+        for pg in range(1, max_pages + 1):
+            url = board_url(pg)
+            print(f"\n목록 페이지 {pg}/{max_pages}: {url}")
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            except Exception as e:
+                print(f"  목록 로드 실패: {e}")
+                break
+            human_delay()
+            batch = collect_links_from_page(page, viewed_ids | seen_ids, args.keyword)
+            print(f"  이 페이지 신규: {len(batch)}개")
+            if not batch and pg > 1:
+                # 빈 페이지면 더 이상 없을 수 있음
+                print("  신규 없음 — 페이지 탐색 중단 가능")
+            for title, href in batch:
+                aid = article_id(href)
+                if aid and aid not in seen_ids:
+                    seen_ids.add(aid)
+                    candidates.append((title, href))
+            if len(candidates) >= limit:
+                print(f"  후보 {len(candidates)}개 ≥ 한도 {limit} — 목록 탐색 종료")
+                break
+
+        print(f"\n총 신규 후보: {len(candidates)}개")
+        if not candidates:
+            print(
+                "첫 N페이지 글이 모두 이미 기록되어 있습니다.\n"
+                "--pages 값을 늘리거나, 내일 새 글이 쌓인 뒤 다시 실행하세요."
+            )
+
         opened = 0
         saved = 0
-
         for title, href in candidates:
             if opened >= limit:
                 break
@@ -281,7 +308,6 @@ def main() -> None:
         print("\n=== 세션 종료 ===")
         print(f"열람: {opened} | 저장: {saved}")
         print(f"데이터: {POSTS_JSONL}")
-        print("의심 화면(캡차 등)이 보였다면 오늘은 추가 실행하지 마세요.")
 
 
 if __name__ == "__main__":
