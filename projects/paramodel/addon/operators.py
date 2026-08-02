@@ -7,7 +7,6 @@ from bpy.types import Operator
 
 
 def _addon_root():
-    """projects/paramodel/ (parent of addon/)."""
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -175,8 +174,6 @@ def create_slot_empties(mecha: dict, root=None, collection_name: str = "ParaMode
     return created
 
 
-# Bone hierarchy for basic mecha armature
-# parent_slot -> child_slot (None = root bone parent)
 _BONE_PARENT = {
     "torso_lower": None,
     "torso_upper": "torso_lower",
@@ -208,6 +205,14 @@ _BONE_LENGTH = {
 }
 
 
+def _set_active(obj):
+    """Make obj active and selected; deselect others."""
+    for o in bpy.context.view_layer.objects:
+        o.select_set(False)
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
+
+
 def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Armature"):
     """Create basic armature aligned to enabled Base Body slots."""
     slots = mecha.get("base_body", {}).get("slots", {})
@@ -215,7 +220,7 @@ def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Ar
     mecha_id = mecha.get("id", "mecha")
     arm_name = f"armature_{mecha_id}"
 
-    # Remove existing
+    # Remove existing object + data
     if arm_name in bpy.data.objects:
         bpy.data.objects.remove(bpy.data.objects[arm_name], do_unlink=True)
     if arm_name in bpy.data.armatures:
@@ -226,20 +231,38 @@ def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Ar
     coll = _ensure_collection(collection_name)
     coll.objects.link(arm_obj)
 
-    if root:
-        arm_obj.parent = root
-
     arm_obj["paramodel_armature"] = True
     arm_obj["paramodel_mecha_id"] = mecha_id
 
-    # Enter edit mode to create bones
-    bpy.context.view_layer.objects.active = arm_obj
-    bpy.ops.object.mode_set(mode="EDIT")
+    # Must be in OBJECT mode on a valid active object before EDIT
+    if bpy.context.object and bpy.context.object.mode != "OBJECT":
+        try:
+            bpy.ops.object.mode_set(mode="OBJECT")
+        except Exception:
+            pass
+
+    _set_active(arm_obj)
+
+    # Enter edit mode (with temp_override when available)
+    try:
+        if hasattr(bpy.context, "temp_override"):
+            with bpy.context.temp_override(
+                active_object=arm_obj,
+                object=arm_obj,
+                selected_objects=[arm_obj],
+                selected_editable_objects=[arm_obj],
+            ):
+                bpy.ops.object.mode_set(mode="EDIT")
+        else:
+            bpy.ops.object.mode_set(mode="EDIT")
+    except Exception as e:
+        # Fallback: still try once more after force-active
+        _set_active(arm_obj)
+        bpy.ops.object.mode_set(mode="EDIT")
 
     edit_bones = arm_data.edit_bones
     created_bones = []
 
-    # Order: parents before children
     order = [
         "torso_lower",
         "torso_upper",
@@ -265,14 +288,17 @@ def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Ar
         head = Vector((float(pos[0]), float(pos[1]), float(pos[2])))
         length = _BONE_LENGTH.get(slot_id, 0.3)
 
-        # Default bone points +Z (up) for torso/head, -Z for legs slightly
         if slot_id.startswith("leg"):
-            tail = head + Vector((0, 0, -length))
+            tail = head + Vector((0.0, 0.0, -length))
         elif slot_id.startswith("arm"):
             side = -1.0 if slot_id.endswith("_l") else 1.0
-            tail = head + Vector((side * length * 0.3, 0, -length * 0.8))
+            tail = head + Vector((side * length * 0.3, 0.0, -length * 0.8))
         else:
-            tail = head + Vector((0, 0, length))
+            tail = head + Vector((0.0, 0.0, length))
+
+        # Avoid zero-length bones
+        if (tail - head).length < 1e-6:
+            tail = head + Vector((0.0, 0.0, 0.1))
 
         bone = edit_bones.new(slot_id)
         bone.head = head
@@ -285,19 +311,38 @@ def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Ar
 
         created_bones.append(slot_id)
 
-    bpy.ops.object.mode_set(mode="OBJECT")
+    # Back to object mode
+    try:
+        if hasattr(bpy.context, "temp_override"):
+            with bpy.context.temp_override(
+                active_object=arm_obj,
+                object=arm_obj,
+                selected_objects=[arm_obj],
+            ):
+                bpy.ops.object.mode_set(mode="OBJECT")
+        else:
+            bpy.ops.object.mode_set(mode="OBJECT")
+    except Exception:
+        _set_active(arm_obj)
+        bpy.ops.object.mode_set(mode="OBJECT")
 
-    # Parent slot empties to corresponding pose bones (keep transform)
+    if root:
+        arm_obj.parent = root
+
+    # Parent slot empties to bones (after object mode)
     for slot_id in created_bones:
         slot_obj = bpy.data.objects.get(f"slot_{slot_id}")
         if not slot_obj:
             continue
+        # Clear previous parent (root) without moving world matrix first
+        mw = slot_obj.matrix_world.copy()
         slot_obj.parent = arm_obj
         slot_obj.parent_type = "BONE"
         slot_obj.parent_bone = slot_id
-        # Clear local offset so part stays at bone head
-        slot_obj.location = (0, 0, 0)
-        slot_obj.rotation_euler = (0, 0, 0)
+        slot_obj.matrix_world = mw
+
+    if not created_bones:
+        raise RuntimeError("No bones created — check enabled slots in mecha JSON")
 
     return arm_obj, created_bones
 
@@ -403,6 +448,13 @@ class PARAMODEL_OT_load_mecha(Operator):
             self.report({"ERROR"}, f"Invalid JSON: {e}")
             return {"CANCELLED"}
 
+        # Ensure object mode at start
+        if context.object and context.object.mode != "OBJECT":
+            try:
+                bpy.ops.object.mode_set(mode="OBJECT")
+            except Exception:
+                pass
+
         root = None
         if settings.apply_parameters:
             try:
@@ -421,13 +473,14 @@ class PARAMODEL_OT_load_mecha(Operator):
                 return {"CANCELLED"}
 
         n_bones = 0
-        if settings.create_armature:
+        if getattr(settings, "create_armature", False):
             try:
                 _, bones = create_armature(mecha, root=root)
                 n_bones = len(bones)
             except Exception as e:
-                self.report({"ERROR"}, f"Armature: {e}")
-                return {"CANCELLED"}
+                # Do not cancel whole load — report and continue
+                self.report({"WARNING"}, f"Armature failed: {e}")
+                print(f"ParaModel armature error: {e}")
 
         n_parts = 0
         n_mesh = 0
@@ -457,6 +510,12 @@ class PARAMODEL_OT_clear_slots(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
+        if context.object and context.object.mode != "OBJECT":
+            try:
+                bpy.ops.object.mode_set(mode="OBJECT")
+            except Exception:
+                pass
+
         removed = 0
         for obj in list(bpy.data.objects):
             if (
@@ -477,7 +536,6 @@ class PARAMODEL_OT_clear_slots(Operator):
             if coll_name in bpy.data.collections:
                 bpy.data.collections.remove(bpy.data.collections[coll_name])
 
-        # Orphan armatures
         for arm in list(bpy.data.armatures):
             if arm.name.startswith("armature_"):
                 bpy.data.armatures.remove(arm)
