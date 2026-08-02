@@ -2,6 +2,7 @@ import bpy
 import json
 import math
 import os
+from mathutils import Vector
 from bpy.types import Operator
 
 
@@ -52,11 +53,9 @@ def _ensure_collection(name: str):
 
 
 def _resolve_mesh_path(part: dict) -> str:
-    """Resolve absolute mesh path from part.mesh relative path."""
     mesh_rel = part.get("mesh")
     if not mesh_rel:
         return ""
-    # Allow absolute or relative to addon root / data/parts/
     if os.path.isabs(mesh_rel) and os.path.isfile(mesh_rel):
         return mesh_rel
     candidates = [
@@ -73,7 +72,6 @@ def _resolve_mesh_path(part: dict) -> str:
 
 
 def _import_mesh_file(filepath: str, name: str):
-    """Import glb/gltf/obj/fbx/blend; return list of new mesh objects."""
     before = set(bpy.data.objects)
     ext = os.path.splitext(filepath)[1].lower()
 
@@ -102,7 +100,6 @@ def _import_mesh_file(filepath: str, name: str):
 
 
 def create_root(mecha: dict, collection_name: str = "ParaModel_Root"):
-    """Create root empty; store parameters; apply height-based scale."""
     coll = _ensure_collection(collection_name)
     mecha_id = mecha.get("id", "mecha")
     name = f"root_{mecha_id}"
@@ -116,10 +113,7 @@ def create_root(mecha: dict, collection_name: str = "ParaModel_Root"):
     coll.objects.link(root)
 
     params = mecha.get("parameters") or {}
-    # Baseline design height for 25m class in Blender units (~2.0 unit body)
-    design_height = 2.0
     height = float(params.get("height") or 25.0)
-    # Map real meters to scene: 25m -> scale 1.0 relative to design_height body
     scale_factor = (height / 25.0) if height > 0 else 1.0
     root.scale = (scale_factor, scale_factor, scale_factor)
 
@@ -181,8 +175,134 @@ def create_slot_empties(mecha: dict, root=None, collection_name: str = "ParaMode
     return created
 
 
+# Bone hierarchy for basic mecha armature
+# parent_slot -> child_slot (None = root bone parent)
+_BONE_PARENT = {
+    "torso_lower": None,
+    "torso_upper": "torso_lower",
+    "head": "torso_upper",
+    "arm_l": "torso_upper",
+    "arm_r": "torso_upper",
+    "leg_l": "torso_lower",
+    "leg_r": "torso_lower",
+    "backpack": "torso_upper",
+    "skirt": "torso_lower",
+    "weapon_l": "arm_l",
+    "weapon_r": "arm_r",
+    "thruster": "torso_upper",
+}
+
+_BONE_LENGTH = {
+    "head": 0.25,
+    "torso_upper": 0.45,
+    "torso_lower": 0.35,
+    "arm_l": 0.55,
+    "arm_r": 0.55,
+    "leg_l": 0.7,
+    "leg_r": 0.7,
+    "backpack": 0.3,
+    "skirt": 0.25,
+    "weapon_l": 0.35,
+    "weapon_r": 0.35,
+    "thruster": 0.25,
+}
+
+
+def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Armature"):
+    """Create basic armature aligned to enabled Base Body slots."""
+    slots = mecha.get("base_body", {}).get("slots", {})
+    defaults = load_default_slots()
+    mecha_id = mecha.get("id", "mecha")
+    arm_name = f"armature_{mecha_id}"
+
+    # Remove existing
+    if arm_name in bpy.data.objects:
+        bpy.data.objects.remove(bpy.data.objects[arm_name], do_unlink=True)
+    if arm_name in bpy.data.armatures:
+        bpy.data.armatures.remove(bpy.data.armatures[arm_name])
+
+    arm_data = bpy.data.armatures.new(arm_name)
+    arm_obj = bpy.data.objects.new(arm_name, arm_data)
+    coll = _ensure_collection(collection_name)
+    coll.objects.link(arm_obj)
+
+    if root:
+        arm_obj.parent = root
+
+    arm_obj["paramodel_armature"] = True
+    arm_obj["paramodel_mecha_id"] = mecha_id
+
+    # Enter edit mode to create bones
+    bpy.context.view_layer.objects.active = arm_obj
+    bpy.ops.object.mode_set(mode="EDIT")
+
+    edit_bones = arm_data.edit_bones
+    created_bones = []
+
+    # Order: parents before children
+    order = [
+        "torso_lower",
+        "torso_upper",
+        "head",
+        "arm_l",
+        "arm_r",
+        "leg_l",
+        "leg_r",
+        "backpack",
+        "skirt",
+        "weapon_l",
+        "weapon_r",
+        "thruster",
+    ]
+
+    for slot_id in order:
+        slot_data = slots.get(slot_id)
+        if not slot_data or not slot_data.get("enabled", False):
+            continue
+
+        defn = defaults.get(slot_id, {})
+        pos = defn.get("position") or slot_data.get("position") or [0, 0, 0]
+        head = Vector((float(pos[0]), float(pos[1]), float(pos[2])))
+        length = _BONE_LENGTH.get(slot_id, 0.3)
+
+        # Default bone points +Z (up) for torso/head, -Z for legs slightly
+        if slot_id.startswith("leg"):
+            tail = head + Vector((0, 0, -length))
+        elif slot_id.startswith("arm"):
+            side = -1.0 if slot_id.endswith("_l") else 1.0
+            tail = head + Vector((side * length * 0.3, 0, -length * 0.8))
+        else:
+            tail = head + Vector((0, 0, length))
+
+        bone = edit_bones.new(slot_id)
+        bone.head = head
+        bone.tail = tail
+        bone.use_connect = False
+
+        parent_id = _BONE_PARENT.get(slot_id)
+        if parent_id and parent_id in edit_bones:
+            bone.parent = edit_bones[parent_id]
+
+        created_bones.append(slot_id)
+
+    bpy.ops.object.mode_set(mode="OBJECT")
+
+    # Parent slot empties to corresponding pose bones (keep transform)
+    for slot_id in created_bones:
+        slot_obj = bpy.data.objects.get(f"slot_{slot_id}")
+        if not slot_obj:
+            continue
+        slot_obj.parent = arm_obj
+        slot_obj.parent_type = "BONE"
+        slot_obj.parent_bone = slot_id
+        # Clear local offset so part stays at bone head
+        slot_obj.location = (0, 0, 0)
+        slot_obj.rotation_euler = (0, 0, 0)
+
+    return arm_obj, created_bones
+
+
 def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "ParaModel_Parts"):
-    """Attach mesh if available, else placeholder cube."""
     slots = mecha.get("base_body", {}).get("slots", {})
     coll = _ensure_collection(collection_name)
     attached = []
@@ -203,7 +323,6 @@ def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "
         part = load_part(part_id)
         mesh_name = f"part_{slot_id}_{part_id}"
 
-        # Remove previous
         if mesh_name in bpy.data.objects:
             bpy.data.objects.remove(bpy.data.objects[mesh_name], do_unlink=True)
 
@@ -219,7 +338,6 @@ def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "
 
         if imported:
             for obj in imported:
-                # Move to parts collection
                 for c in list(obj.users_collection):
                     c.objects.unlink(obj)
                 coll.objects.link(obj)
@@ -233,7 +351,6 @@ def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "
                 attached.append(obj.name)
             mesh_count += 1
         else:
-            # Placeholder cube
             size = (part.get("placeholder") or {}).get("size") or [0.3, 0.3, 0.3]
             sx, sy, sz = float(size[0]), float(size[1]), float(size[2])
 
@@ -265,7 +382,7 @@ def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "
 class PARAMODEL_OT_load_mecha(Operator):
     bl_idname = "paramodel.load_mecha"
     bl_label = "Load Mecha"
-    bl_description = "Load mecha: root+params, slots, mesh/placeholder parts"
+    bl_description = "Load mecha: root, slots, armature, mesh/placeholder parts"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -303,6 +420,15 @@ class PARAMODEL_OT_load_mecha(Operator):
                 self.report({"ERROR"}, str(e))
                 return {"CANCELLED"}
 
+        n_bones = 0
+        if settings.create_armature:
+            try:
+                _, bones = create_armature(mecha, root=root)
+                n_bones = len(bones)
+            except Exception as e:
+                self.report({"ERROR"}, f"Armature: {e}")
+                return {"CANCELLED"}
+
         n_parts = 0
         n_mesh = 0
         n_ph = 0
@@ -318,8 +444,8 @@ class PARAMODEL_OT_load_mecha(Operator):
 
         self.report(
             {"INFO"},
-            f"Loaded {mecha_id}: {n_slots} slots, {n_parts} parts "
-            f"(mesh={n_mesh}, placeholder={n_ph})",
+            f"Loaded {mecha_id}: {n_slots} slots, {n_bones} bones, "
+            f"{n_parts} parts (mesh={n_mesh}, ph={n_ph})",
         )
         return {"FINISHED"}
 
@@ -327,7 +453,7 @@ class PARAMODEL_OT_load_mecha(Operator):
 class PARAMODEL_OT_clear_slots(Operator):
     bl_idname = "paramodel.clear_slots"
     bl_label = "Clear All"
-    bl_description = "Remove ParaModel root, slots, and parts"
+    bl_description = "Remove ParaModel root, slots, armature, and parts"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -337,13 +463,24 @@ class PARAMODEL_OT_clear_slots(Operator):
                 obj.get("paramodel_slot") is not None
                 or obj.get("paramodel_part")
                 or obj.get("paramodel_root")
+                or obj.get("paramodel_armature")
             ):
                 bpy.data.objects.remove(obj, do_unlink=True)
                 removed += 1
 
-        for coll_name in ("ParaModel_Root", "ParaModel_Slots", "ParaModel_Parts"):
+        for coll_name in (
+            "ParaModel_Root",
+            "ParaModel_Slots",
+            "ParaModel_Parts",
+            "ParaModel_Armature",
+        ):
             if coll_name in bpy.data.collections:
                 bpy.data.collections.remove(bpy.data.collections[coll_name])
+
+        # Orphan armatures
+        for arm in list(bpy.data.armatures):
+            if arm.name.startswith("armature_"):
+                bpy.data.armatures.remove(arm)
 
         self.report({"INFO"}, f"Removed {removed} objects")
         return {"FINISHED"}
