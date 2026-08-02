@@ -1,6 +1,6 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: **idle**  
+ACTIVE_TARGET: **idle** (platform)  
 PRODUCT: **hold** — excelion / excelion-forge 개별 진행 안 함 (Master 2026-07-31)
 
 ## Direction
@@ -8,6 +8,7 @@ PRODUCT: **hold** — excelion / excelion-forge 개별 진행 안 함 (Master 20
 - Atlas = 플랫폼만 다룸  
 - 제품 프로젝트는 저장소만 분리해 둔 상태; **작업 시작하지 않음**  
 - **Atlas closeout 완료** (Master 2026-07-31)
+- **Side track**: `projects/paramodel/` Master-directed (2026-08-02) — parametric mecha + Blender addon v0.2.0
 
 ## Closed (min + hardening + closeout)
 
@@ -21,6 +22,7 @@ PRODUCT: **hold** — excelion / excelion-forge 개별 진행 안 함 (Master 20
 | D28 repo split S0–S5 | Done (S5-del: mono product mirrors removed) |
 | C1 S5-del | Done (b719513) |
 | C3 일단락 선언 | Done (Master confirm) |
+| ParaModel PM-1..PM-5 | Done (slots, schema, parts, placeholders, state) |
 
 ## Open
 
@@ -28,6 +30,6 @@ PRODUCT: **hold** — excelion / excelion-forge 개별 진행 안 함 (Master 20
 
 ## Do not
 
-- product feature / Prototype work  
+- product feature / Prototype work (excelion hold)  
 - dual-write into mono product paths  
 - core SDK rewrite / extension 부활
