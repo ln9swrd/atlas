@@ -11,7 +11,6 @@ def _addon_root():
 
 
 def load_mecha_json(data_path: str, mecha_id: str) -> dict:
-    """Load mecha metadata JSON by id."""
     filepath = os.path.join(data_path, f"{mecha_id}.json")
     if not os.path.isfile(filepath):
         raise FileNotFoundError(f"Mecha data not found: {filepath}")
@@ -20,7 +19,6 @@ def load_mecha_json(data_path: str, mecha_id: str) -> dict:
 
 
 def load_default_slots(schema_path: str = None) -> dict:
-    """Load default slot defs from base-body-slots.json."""
     if schema_path is None:
         schema_path = os.path.join(_addon_root(), "schema", "base-body-slots.json")
     if not os.path.isfile(schema_path):
@@ -36,7 +34,6 @@ def load_default_slots(schema_path: str = None) -> dict:
 
 
 def load_part(part_id: str) -> dict:
-    """Load part metadata from data/parts/{part_id}.json."""
     if not part_id:
         return {}
     path = os.path.join(_addon_root(), "data", "parts", f"{part_id}.json")
@@ -54,8 +51,90 @@ def _ensure_collection(name: str):
     return coll
 
 
-def create_slot_empties(mecha: dict, collection_name: str = "ParaModel_Slots"):
-    """Create Empty objects for each enabled Base Body slot with position/rotation."""
+def _resolve_mesh_path(part: dict) -> str:
+    """Resolve absolute mesh path from part.mesh relative path."""
+    mesh_rel = part.get("mesh")
+    if not mesh_rel:
+        return ""
+    # Allow absolute or relative to addon root / data/parts/
+    if os.path.isabs(mesh_rel) and os.path.isfile(mesh_rel):
+        return mesh_rel
+    candidates = [
+        os.path.join(_addon_root(), mesh_rel),
+        os.path.join(_addon_root(), "data", "parts", mesh_rel),
+        os.path.join(_addon_root(), "data", "parts", "meshes", mesh_rel),
+        os.path.join(_addon_root(), "data", "parts", "meshes", f"{part.get('id', '')}.glb"),
+        os.path.join(_addon_root(), "data", "parts", "meshes", f"{part.get('id', '')}.blend"),
+    ]
+    for c in candidates:
+        if c and os.path.isfile(c):
+            return c
+    return ""
+
+
+def _import_mesh_file(filepath: str, name: str):
+    """Import glb/gltf/obj/fbx/blend; return list of new mesh objects."""
+    before = set(bpy.data.objects)
+    ext = os.path.splitext(filepath)[1].lower()
+
+    if ext in (".glb", ".gltf"):
+        bpy.ops.import_scene.gltf(filepath=filepath)
+    elif ext == ".obj":
+        if bpy.app.version >= (4, 0, 0):
+            bpy.ops.wm.obj_import(filepath=filepath)
+        else:
+            bpy.ops.import_scene.obj(filepath=filepath)
+    elif ext == ".fbx":
+        bpy.ops.import_scene.fbx(filepath=filepath)
+    elif ext == ".blend":
+        with bpy.data.libraries.load(filepath, link=False) as (data_from, data_to):
+            data_to.objects = list(data_from.objects)
+        for obj in data_to.objects:
+            if obj is not None:
+                bpy.context.collection.objects.link(obj)
+    else:
+        return []
+
+    new_objs = [o for o in bpy.data.objects if o not in before and o.type == "MESH"]
+    if len(new_objs) == 1:
+        new_objs[0].name = name
+    return new_objs
+
+
+def create_root(mecha: dict, collection_name: str = "ParaModel_Root"):
+    """Create root empty; store parameters; apply height-based scale."""
+    coll = _ensure_collection(collection_name)
+    mecha_id = mecha.get("id", "mecha")
+    name = f"root_{mecha_id}"
+
+    if name in bpy.data.objects:
+        bpy.data.objects.remove(bpy.data.objects[name], do_unlink=True)
+
+    root = bpy.data.objects.new(name, None)
+    root.empty_display_type = "PLAIN_AXES"
+    root.empty_display_size = 0.5
+    coll.objects.link(root)
+
+    params = mecha.get("parameters") or {}
+    # Baseline design height for 25m class in Blender units (~2.0 unit body)
+    design_height = 2.0
+    height = float(params.get("height") or 25.0)
+    # Map real meters to scene: 25m -> scale 1.0 relative to design_height body
+    scale_factor = (height / 25.0) if height > 0 else 1.0
+    root.scale = (scale_factor, scale_factor, scale_factor)
+
+    root["paramodel_root"] = True
+    root["paramodel_mecha_id"] = mecha_id
+    root["paramodel_height"] = height
+    root["paramodel_mass"] = float(params.get("mass") or 0)
+    root["paramodel_mobility"] = float(params.get("mobility") or 0)
+    root["paramodel_output"] = float(params.get("output") or 0)
+    root["paramodel_armor"] = float(params.get("armor_thickness") or 0)
+
+    return root
+
+
+def create_slot_empties(mecha: dict, root=None, collection_name: str = "ParaModel_Slots"):
     slots = mecha.get("base_body", {}).get("slots", {})
     if not slots:
         raise ValueError("No base_body.slots found in mecha data")
@@ -88,6 +167,9 @@ def create_slot_empties(mecha: dict, collection_name: str = "ParaModel_Slots"):
                 math.radians(float(rot[2])),
             )
 
+        if root:
+            empty.parent = root
+
         empty["paramodel_slot"] = slot_id
         empty["paramodel_part_id"] = slot_data.get("part_id") or ""
         empty["paramodel_mecha_id"] = mecha.get("id", "")
@@ -99,11 +181,13 @@ def create_slot_empties(mecha: dict, collection_name: str = "ParaModel_Slots"):
     return created
 
 
-def attach_placeholders(mecha: dict, collection_name: str = "ParaModel_Parts"):
-    """Parent cube placeholders to slot empties based on part_id."""
+def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "ParaModel_Parts"):
+    """Attach mesh if available, else placeholder cube."""
     slots = mecha.get("base_body", {}).get("slots", {})
     coll = _ensure_collection(collection_name)
     attached = []
+    mesh_count = 0
+    placeholder_count = 0
 
     for slot_id, slot_data in slots.items():
         if not slot_data.get("enabled", False):
@@ -112,49 +196,76 @@ def attach_placeholders(mecha: dict, collection_name: str = "ParaModel_Parts"):
         if not part_id:
             continue
 
-        slot_name = f"slot_{slot_id}"
-        slot_obj = bpy.data.objects.get(slot_name)
+        slot_obj = bpy.data.objects.get(f"slot_{slot_id}")
         if not slot_obj:
             continue
 
         part = load_part(part_id)
-        size = (part.get("placeholder") or {}).get("size") or [0.3, 0.3, 0.3]
-        sx, sy, sz = float(size[0]), float(size[1]), float(size[2])
-
         mesh_name = f"part_{slot_id}_{part_id}"
+
+        # Remove previous
         if mesh_name in bpy.data.objects:
             bpy.data.objects.remove(bpy.data.objects[mesh_name], do_unlink=True)
 
-        # Cube mesh scaled to placeholder size
-        mesh = bpy.data.meshes.new(mesh_name + "_mesh")
-        obj = bpy.data.objects.new(mesh_name, mesh)
-        coll.objects.link(obj)
+        imported = []
+        if prefer_mesh:
+            mesh_path = _resolve_mesh_path(part)
+            if mesh_path:
+                try:
+                    imported = _import_mesh_file(mesh_path, mesh_name)
+                except Exception as e:
+                    print(f"ParaModel mesh import failed ({mesh_path}): {e}")
+                    imported = []
 
-        # Build unit cube then scale
-        import bmesh
-        bm = bmesh.new()
-        bmesh.ops.create_cube(bm, size=1.0)
-        bm.to_mesh(mesh)
-        bm.free()
-        obj.scale = (sx, sy, sz)
+        if imported:
+            for obj in imported:
+                # Move to parts collection
+                for c in list(obj.users_collection):
+                    c.objects.unlink(obj)
+                coll.objects.link(obj)
+                obj.parent = slot_obj
+                obj.location = (0, 0, 0)
+                obj.rotation_euler = (0, 0, 0)
+                obj["paramodel_part"] = True
+                obj["paramodel_part_id"] = part_id
+                obj["paramodel_slot"] = slot_id
+                obj["paramodel_mesh_source"] = "file"
+                attached.append(obj.name)
+            mesh_count += 1
+        else:
+            # Placeholder cube
+            size = (part.get("placeholder") or {}).get("size") or [0.3, 0.3, 0.3]
+            sx, sy, sz = float(size[0]), float(size[1]), float(size[2])
 
-        obj.parent = slot_obj
-        obj.location = (0, 0, 0)
-        obj.rotation_euler = (0, 0, 0)
+            mesh = bpy.data.meshes.new(mesh_name + "_mesh")
+            obj = bpy.data.objects.new(mesh_name, mesh)
+            coll.objects.link(obj)
 
-        obj["paramodel_part"] = True
-        obj["paramodel_part_id"] = part_id
-        obj["paramodel_slot"] = slot_id
+            import bmesh
+            bm = bmesh.new()
+            bmesh.ops.create_cube(bm, size=1.0)
+            bm.to_mesh(mesh)
+            bm.free()
+            obj.scale = (sx, sy, sz)
 
-        attached.append(mesh_name)
+            obj.parent = slot_obj
+            obj.location = (0, 0, 0)
+            obj.rotation_euler = (0, 0, 0)
+            obj["paramodel_part"] = True
+            obj["paramodel_part_id"] = part_id
+            obj["paramodel_slot"] = slot_id
+            obj["paramodel_mesh_source"] = "placeholder"
 
-    return attached
+            attached.append(mesh_name)
+            placeholder_count += 1
+
+    return attached, mesh_count, placeholder_count
 
 
 class PARAMODEL_OT_load_mecha(Operator):
     bl_idname = "paramodel.load_mecha"
     bl_label = "Load Mecha"
-    bl_description = "Load mecha JSON, create slot empties, attach part placeholders"
+    bl_description = "Load mecha: root+params, slots, mesh/placeholder parts"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -175,19 +286,31 @@ class PARAMODEL_OT_load_mecha(Operator):
             self.report({"ERROR"}, f"Invalid JSON: {e}")
             return {"CANCELLED"}
 
+        root = None
+        if settings.apply_parameters:
+            try:
+                root = create_root(mecha)
+            except Exception as e:
+                self.report({"ERROR"}, f"Root/params: {e}")
+                return {"CANCELLED"}
+
         n_slots = 0
-        n_parts = 0
         if settings.create_empties:
             try:
-                created = create_slot_empties(mecha)
+                created = create_slot_empties(mecha, root=root)
                 n_slots = len(created)
             except Exception as e:
                 self.report({"ERROR"}, str(e))
                 return {"CANCELLED"}
 
+        n_parts = 0
+        n_mesh = 0
+        n_ph = 0
         if settings.create_placeholders:
             try:
-                attached = attach_placeholders(mecha)
+                attached, n_mesh, n_ph = attach_parts(
+                    mecha, prefer_mesh=settings.prefer_mesh
+                )
                 n_parts = len(attached)
             except Exception as e:
                 self.report({"ERROR"}, str(e))
@@ -195,25 +318,30 @@ class PARAMODEL_OT_load_mecha(Operator):
 
         self.report(
             {"INFO"},
-            f"Loaded {mecha_id}: {n_slots} slots, {n_parts} placeholders",
+            f"Loaded {mecha_id}: {n_slots} slots, {n_parts} parts "
+            f"(mesh={n_mesh}, placeholder={n_ph})",
         )
         return {"FINISHED"}
 
 
 class PARAMODEL_OT_clear_slots(Operator):
     bl_idname = "paramodel.clear_slots"
-    bl_label = "Clear Slots"
-    bl_description = "Remove all ParaModel slot empties and part placeholders"
+    bl_label = "Clear All"
+    bl_description = "Remove ParaModel root, slots, and parts"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
         removed = 0
         for obj in list(bpy.data.objects):
-            if obj.get("paramodel_slot") is not None or obj.get("paramodel_part"):
+            if (
+                obj.get("paramodel_slot") is not None
+                or obj.get("paramodel_part")
+                or obj.get("paramodel_root")
+            ):
                 bpy.data.objects.remove(obj, do_unlink=True)
                 removed += 1
 
-        for coll_name in ("ParaModel_Slots", "ParaModel_Parts"):
+        for coll_name in ("ParaModel_Root", "ParaModel_Slots", "ParaModel_Parts"):
             if coll_name in bpy.data.collections:
                 bpy.data.collections.remove(bpy.data.collections[coll_name])
 
