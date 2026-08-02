@@ -1,6 +1,6 @@
 # CURRENT_STATE – makerfac-needs-research
 
-- **상태**: 초기 설정 완료
-- **다음 액션**: 질문&답변 게시판 수동 수집 시작
-- **수집 기준**: 세션당 20~30개, 모델링/STL/제작요청 관련 글 우선
-- **저장 형식**: 마크다운 (templates/post-template.md 사용)
+- **상태**: 안전 반자동 도구 준비 완료 (수집 0건)
+- **다음 액션**: 크롬 디버깅 모드 실행 → 로그인 → `collect_safe.py` 1세션
+- **수집 기준**: 세션 20~30개, 대기 8~20초, 일 50 이하, viewed-ids 스킵
+- **가이드**: `tools/SAFE_COLLECT.md`
