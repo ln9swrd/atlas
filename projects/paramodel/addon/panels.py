@@ -29,7 +29,7 @@ class PARAMODEL_PT_main(Panel):
 
         layout.separator()
         box = layout.box()
-        box.label(text="v0.4.1 — armature fix", icon="INFO")
+        box.label(text="v0.5.0 — SuperRobotRig", icon="INFO")
 
 
 classes = (

@@ -174,177 +174,105 @@ def create_slot_empties(mecha: dict, root=None, collection_name: str = "ParaMode
     return created
 
 
-_BONE_PARENT = {
-    "torso_lower": None,
-    "torso_upper": "torso_lower",
-    "head": "torso_upper",
-    "arm_l": "torso_upper",
-    "arm_r": "torso_upper",
-    "leg_l": "torso_lower",
-    "leg_r": "torso_lower",
-    "backpack": "torso_upper",
-    "skirt": "torso_lower",
-    "weapon_l": "arm_l",
-    "weapon_r": "arm_r",
-    "thruster": "torso_upper",
-}
-
-_BONE_LENGTH = {
-    "head": 0.25,
-    "torso_upper": 0.45,
-    "torso_lower": 0.35,
-    "arm_l": 0.55,
-    "arm_r": 0.55,
-    "leg_l": 0.7,
-    "leg_r": 0.7,
-    "backpack": 0.3,
-    "skirt": 0.25,
-    "weapon_l": 0.35,
-    "weapon_r": 0.35,
-    "thruster": 0.25,
-}
-
-
-def _set_active(obj):
-    """Make obj active and selected; deselect others."""
-    for o in bpy.context.view_layer.objects:
-        o.select_set(False)
-    obj.select_set(True)
-    bpy.context.view_layer.objects.active = obj
+def _find_rig_blend() -> str:
+    """Locate para_model.blend that contains SuperRobotRig."""
+    root = _addon_root()
+    candidates = [
+        os.path.join(root, "para_model.blend"),
+        os.path.join(os.path.dirname(root), "para_model.blend"),
+        os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "para_model.blend")),
+        os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "para_model.blend")),
+    ]
+    for path in candidates:
+        if path and os.path.isfile(path):
+            return path
+    return ""
 
 
 def create_armature(mecha: dict, root=None, collection_name: str = "ParaModel_Armature"):
-    """Create basic armature aligned to enabled Base Body slots."""
-    slots = mecha.get("base_body", {}).get("slots", {})
-    defaults = load_default_slots()
+    """Append SuperRobotRig from para_model.blend (user rig)."""
     mecha_id = mecha.get("id", "mecha")
-    arm_name = f"armature_{mecha_id}"
+    blend_path = _find_rig_blend()
+    if not blend_path:
+        raise FileNotFoundError(
+            "para_model.blend not found. Expected SuperRobotRig inside it."
+        )
 
-    # Remove existing object + data
-    if arm_name in bpy.data.objects:
-        bpy.data.objects.remove(bpy.data.objects[arm_name], do_unlink=True)
-    if arm_name in bpy.data.armatures:
-        bpy.data.armatures.remove(bpy.data.armatures[arm_name])
+    # Remove previous instances
+    for name in ("SuperRobotRig", f"armature_{mecha_id}"):
+        if name in bpy.data.objects:
+            bpy.data.objects.remove(bpy.data.objects[name], do_unlink=True)
 
-    arm_data = bpy.data.armatures.new(arm_name)
-    arm_obj = bpy.data.objects.new(arm_name, arm_data)
-    coll = _ensure_collection(collection_name)
-    coll.objects.link(arm_obj)
-
-    arm_obj["paramodel_armature"] = True
-    arm_obj["paramodel_mecha_id"] = mecha_id
-
-    # Must be in OBJECT mode on a valid active object before EDIT
+    # Ensure object mode
     if bpy.context.object and bpy.context.object.mode != "OBJECT":
         try:
             bpy.ops.object.mode_set(mode="OBJECT")
         except Exception:
             pass
 
-    _set_active(arm_obj)
+    before_objs = set(bpy.data.objects)
 
-    # Enter edit mode (with temp_override when available)
-    try:
-        if hasattr(bpy.context, "temp_override"):
-            with bpy.context.temp_override(
-                active_object=arm_obj,
-                object=arm_obj,
-                selected_objects=[arm_obj],
-                selected_editable_objects=[arm_obj],
-            ):
-                bpy.ops.object.mode_set(mode="EDIT")
-        else:
-            bpy.ops.object.mode_set(mode="EDIT")
-    except Exception as e:
-        # Fallback: still try once more after force-active
-        _set_active(arm_obj)
-        bpy.ops.object.mode_set(mode="EDIT")
+    with bpy.data.libraries.load(blend_path, link=False) as (data_from, data_to):
+        if "SuperRobotRig" not in data_from.objects:
+            available = list(data_from.objects)[:30]
+            raise RuntimeError(
+                f"SuperRobotRig not found in {blend_path}. Available: {available}"
+            )
+        data_to.objects = ["SuperRobotRig"]
 
-    edit_bones = arm_data.edit_bones
-    created_bones = []
+    coll = _ensure_collection(collection_name)
+    arm_obj = None
 
-    order = [
-        "torso_lower",
-        "torso_upper",
-        "head",
-        "arm_l",
-        "arm_r",
-        "leg_l",
-        "leg_r",
-        "backpack",
-        "skirt",
-        "weapon_l",
-        "weapon_r",
-        "thruster",
-    ]
-
-    for slot_id in order:
-        slot_data = slots.get(slot_id)
-        if not slot_data or not slot_data.get("enabled", False):
+    for obj in data_to.objects:
+        if obj is None:
             continue
+        for c in list(obj.users_collection):
+            c.objects.unlink(obj)
+        coll.objects.link(obj)
+        if obj.name == "SuperRobotRig" or obj.type == "ARMATURE":
+            arm_obj = obj
 
-        defn = defaults.get(slot_id, {})
-        pos = defn.get("position") or slot_data.get("position") or [0, 0, 0]
-        head = Vector((float(pos[0]), float(pos[1]), float(pos[2])))
-        length = _BONE_LENGTH.get(slot_id, 0.3)
+    if arm_obj is None:
+        # Fallback: pick newly added armature-type object
+        new_objs = [o for o in bpy.data.objects if o not in before_objs]
+        for o in new_objs:
+            if o.type == "ARMATURE":
+                arm_obj = o
+                break
+        if arm_obj is None and new_objs:
+            arm_obj = new_objs[0]
 
-        if slot_id.startswith("leg"):
-            tail = head + Vector((0.0, 0.0, -length))
-        elif slot_id.startswith("arm"):
-            side = -1.0 if slot_id.endswith("_l") else 1.0
-            tail = head + Vector((side * length * 0.3, 0.0, -length * 0.8))
-        else:
-            tail = head + Vector((0.0, 0.0, length))
+    if arm_obj is None:
+        raise RuntimeError("Failed to append SuperRobotRig from blend")
 
-        # Avoid zero-length bones
-        if (tail - head).length < 1e-6:
-            tail = head + Vector((0.0, 0.0, 0.1))
-
-        bone = edit_bones.new(slot_id)
-        bone.head = head
-        bone.tail = tail
-        bone.use_connect = False
-
-        parent_id = _BONE_PARENT.get(slot_id)
-        if parent_id and parent_id in edit_bones:
-            bone.parent = edit_bones[parent_id]
-
-        created_bones.append(slot_id)
-
-    # Back to object mode
-    try:
-        if hasattr(bpy.context, "temp_override"):
-            with bpy.context.temp_override(
-                active_object=arm_obj,
-                object=arm_obj,
-                selected_objects=[arm_obj],
-            ):
-                bpy.ops.object.mode_set(mode="OBJECT")
-        else:
-            bpy.ops.object.mode_set(mode="OBJECT")
-    except Exception:
-        _set_active(arm_obj)
-        bpy.ops.object.mode_set(mode="OBJECT")
+    arm_obj["paramodel_armature"] = True
+    arm_obj["paramodel_mecha_id"] = mecha_id
+    arm_obj["paramodel_rig_source"] = "SuperRobotRig"
 
     if root:
         arm_obj.parent = root
 
-    # Parent slot empties to bones (after object mode)
-    for slot_id in created_bones:
-        slot_obj = bpy.data.objects.get(f"slot_{slot_id}")
-        if not slot_obj:
-            continue
-        # Clear previous parent (root) without moving world matrix first
-        mw = slot_obj.matrix_world.copy()
-        slot_obj.parent = arm_obj
-        slot_obj.parent_type = "BONE"
-        slot_obj.parent_bone = slot_id
-        slot_obj.matrix_world = mw
+    # Bone-parent slots when bone names match slot ids
+    parented = []
+    if arm_obj.type == "ARMATURE" and arm_obj.data:
+        bone_names = {b.name for b in arm_obj.data.bones}
+        slots = mecha.get("base_body", {}).get("slots", {})
+        for slot_id, slot_data in slots.items():
+            if not slot_data.get("enabled", False):
+                continue
+            if slot_id not in bone_names:
+                continue
+            slot_obj = bpy.data.objects.get(f"slot_{slot_id}")
+            if not slot_obj:
+                continue
+            mw = slot_obj.matrix_world.copy()
+            slot_obj.parent = arm_obj
+            slot_obj.parent_type = "BONE"
+            slot_obj.parent_bone = slot_id
+            slot_obj.matrix_world = mw
+            parented.append(slot_id)
 
-    if not created_bones:
-        raise RuntimeError("No bones created — check enabled slots in mecha JSON")
-
-    return arm_obj, created_bones
+    return arm_obj, parented
 
 
 def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "ParaModel_Parts"):
@@ -427,7 +355,7 @@ def attach_parts(mecha: dict, prefer_mesh: bool = True, collection_name: str = "
 class PARAMODEL_OT_load_mecha(Operator):
     bl_idname = "paramodel.load_mecha"
     bl_label = "Load Mecha"
-    bl_description = "Load mecha: root, slots, armature, mesh/placeholder parts"
+    bl_description = "Load mecha: root, slots, SuperRobotRig, mesh/placeholder parts"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -536,9 +464,11 @@ class PARAMODEL_OT_clear_slots(Operator):
             if coll_name in bpy.data.collections:
                 bpy.data.collections.remove(bpy.data.collections[coll_name])
 
+        # Clean orphaned armature data blocks from SuperRobotRig / armature_*
         for arm in list(bpy.data.armatures):
-            if arm.name.startswith("armature_"):
-                bpy.data.armatures.remove(arm)
+            if arm.name.startswith("armature_") or arm.name == "SuperRobotRig":
+                if arm.users == 0:
+                    bpy.data.armatures.remove(arm)
 
         self.report({"INFO"}, f"Removed {removed} objects")
         return {"FINISHED"}
