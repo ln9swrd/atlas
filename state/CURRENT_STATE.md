@@ -27,18 +27,18 @@ SIDE: **paramodel** — `projects/paramodel/` Master-directed (2026-08-02)
 | Item | Status |
 |------|--------|
 | Path | `projects/paramodel/` |
-| Addon | **v0.5.0** (GitHub main) |
+| Addon | **v0.6.0** (GitHub main) |
 | PM-1..PM-8 | Done |
-| PM-9 Basic armature | Superseded |
-| PM-11 SuperRobotRig | **코드 반영 (v0.5.0)** — `para_model.blend` Append |
+| Armature | **SuperRobotRig procedural** (bone table from metarig.001) |
+| blend 의존 | 없음 |
 | Verified in Blender | Root + Slots + Parts OK |
 | Armature in Outliner | **로컬 재설치 후 확인 필요** |
 
 ### Armature (2026-08-02)
 
-- v0.5.0: 절차적 본 생성 제거 → `para_model.blend`의 `SuperRobotRig` Append
-- 슬롯 id와 본 이름이 같으면 bone-parent 시도
-- 조치: `git pull` → `package_addon.sh` → 애드온 Remove 후 재설치 → 패널 **v0.5.0 — SuperRobotRig** 확인
+- v0.6.0: SuperRobotRig 본 테이블을 코드에 하드코딩 → 직접 생성
+- blend 파일 불필요
+- 조치: `git pull` → `package_addon.sh` → 애드온 Remove 후 재설치 → 패널 **v0.6.0** 확인
 
 ## Open
 
