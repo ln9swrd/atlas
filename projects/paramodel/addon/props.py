@@ -21,8 +21,18 @@ class ParaModelSettings(PropertyGroup):
         default=True,
     )
     create_placeholders: BoolProperty(
-        name="Attach Placeholders",
-        description="Attach cube placeholders for part_id from data/parts/",
+        name="Attach Parts",
+        description="Attach mesh or placeholder cubes for part_id",
+        default=True,
+    )
+    prefer_mesh: BoolProperty(
+        name="Prefer Mesh File",
+        description="Import part.mesh (glb/blend/...) when file exists; else placeholder",
+        default=True,
+    )
+    apply_parameters: BoolProperty(
+        name="Apply Parameters",
+        description="Create root empty; scale by height; store mass/mobility/output",
         default=True,
     )
 
