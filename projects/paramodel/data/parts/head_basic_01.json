@@ -1,0 +1,8 @@
+{
+  "id": "head_basic_01",
+  "name": "Basic Head 01",
+  "slot_types": ["head"],
+  "category": "body",
+  "mesh": null,
+  "placeholder": { "size": [0.35, 0.4, 0.35] }
+}
