@@ -16,13 +16,16 @@ Min · F1–F4 · P0–P3 · R1–R7 · D28 S0–S5 (incl. S5-del) · domain_pol
 | PM-2 | mecha-metadata.schema.json | Done |
 | PM-3 | data/parts library + basic parts | Done |
 | PM-4 | Addon placeholder attach (v0.2.0) | Done |
-| PM-5 | state registration (this file / PROJECT_MAP) | Done |
+| PM-5 | state registration | Done |
+| PM-6 | Mesh import (glb/blend/...) + fallback | Done |
+| PM-7 | Parameters → root scale + custom props | Done |
+| PM-8 | package_addon.sh zip install | Done |
 
-Path: `projects/paramodel/`
+Path: `projects/paramodel/` · Addon **v0.3.0**
 
 ## Open
 
-없음 (platform). paramodel next optional: real mesh import, parameter drivers.
+없음 (platform).
 
 ## Hold
 
