@@ -2,7 +2,7 @@
 """
 makerfac 안전 수집 스크립트
 - 이미 실행 중인 크롬(remote-debugging-port=9222)에 연결
-- 세션당 소량, 긴 랜덤 대기, 글 ID 기준 재열람 방지, 일일 상한
+- 세션당 제한, 랜덤 대기, 글 ID 기준 재열람 방지, 일일 상한
 - 저장 형식: collected/posts.jsonl (JSON Lines)
 """
 
@@ -35,11 +35,12 @@ BOARD_URL = (
 )
 CDP_URL = "http://127.0.0.1:9222"
 
-DEFAULT_LIMIT = 25
-HARD_CAP = 30
-DAILY_CAP = 50
-MIN_DELAY = 8.0
-MAX_DELAY = 20.0
+# 세션/일일 한도 (필요 시 --limit / --daily-cap 으로 조정)
+DEFAULT_LIMIT = 50
+HARD_CAP = 60
+DAILY_CAP = 100
+MIN_DELAY = 6.0
+MAX_DELAY = 15.0
 
 ARTICLE_ID_RE = re.compile(r"/articles/(\d+)")
 
@@ -80,7 +81,6 @@ def load_viewed_ids() -> set[str]:
                 ids.add(aid)
         for m in re.finditer(r"id:(\d+)", text):
             ids.add(m.group(1))
-    # posts.jsonl 도 중복 기준으로 사용
     if POSTS_JSONL.exists():
         with POSTS_JSONL.open(encoding="utf-8") as f:
             for line in f:
@@ -147,7 +147,6 @@ def human_delay() -> None:
 
 
 def save_post(title: str, url: str, body: str) -> Path:
-    """JSONL 한 줄 append. 반환: posts.jsonl 경로."""
     COLLECTED.mkdir(parents=True, exist_ok=True)
     aid = article_id(url) or "unknown"
     record = {
