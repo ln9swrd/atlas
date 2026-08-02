@@ -18,6 +18,7 @@ class PARAMODEL_PT_main(Panel):
 
         col = layout.column(align=True)
         col.prop(settings, "create_empties")
+        col.prop(settings, "create_armature")
         col.prop(settings, "create_placeholders")
         col.prop(settings, "prefer_mesh")
         col.prop(settings, "apply_parameters")
@@ -28,7 +29,7 @@ class PARAMODEL_PT_main(Panel):
 
         layout.separator()
         box = layout.box()
-        box.label(text="v0.3.0 — mesh + params", icon="INFO")
+        box.label(text="v0.4.0 — armature", icon="INFO")
 
 
 classes = (
