@@ -13,7 +13,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ADDON_SRC="$ROOT/addon"
 DIST="$ROOT/dist"
-VERSION="0.3.0"
+VERSION="0.4.0"
 
 if [[ ! -f "$ADDON_SRC/__init__.py" ]]; then
   echo "ERROR: addon not found at $ADDON_SRC"
@@ -29,7 +29,6 @@ mkdir -p "$DIST"
 OUT="$DIST/paramodel_addon_v${VERSION}.zip"
 rm -f "$OUT"
 
-# Build zip with top-level folder 'paramodel/' (Blender module name)
 python3 - "$ADDON_SRC" "$OUT" <<'PY'
 import os
 import sys
