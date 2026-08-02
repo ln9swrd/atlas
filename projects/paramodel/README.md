@@ -6,50 +6,46 @@ Parametric mecha model system for Atlas / Excelion.
 
 ```
 projects/paramodel/
-├── addon/                          # Blender addon (v0.2.0)
-│   ├── __init__.py
-│   ├── operators.py                # Load / Clear / placeholders
-│   ├── panels.py
-│   └── props.py
+├── addon/                 # Blender addon v0.3.0
 ├── schema/
-│   ├── base-body-slots.json
-│   ├── mecha-metadata.schema.json
-│   └── mecha-metadata.example.json
-└── data/
-    ├── mecha/
-    │   └── brave-001.json
-    └── parts/
-        ├── README.md
-        ├── head_basic_01.json
-        ├── torso_upper_basic_01.json
-        ├── torso_lower_basic_01.json
-        ├── arm_basic_01.json
-        └── leg_basic_01.json
+├── data/
+│   ├── mecha/
+│   └── parts/
+│       └── meshes/        # optional .glb/.blend assets
+├── scripts/
+│   └── package_addon.sh   # zip for Blender Install
+└── dist/                  # package output (generated)
 ```
 
 ## Status
 
-- [x] Base Body slots + position/rotation (PM-1)
-- [x] mecha-metadata.schema.json (PM-2)
-- [x] Part library + basic parts (PM-3)
-- [x] Placeholder cube attach (PM-4, addon v0.2.0)
-- [x] state TASK_MAP / CURRENT_STATE (PM-5)
+- [x] PM-1 slots + position/rotation
+- [x] PM-2 mecha-metadata.schema.json
+- [x] PM-3 part library
+- [x] PM-4 placeholders
+- [x] PM-5 state registration
+- [x] PM-6 mesh import (glb/gltf/obj/fbx/blend, fallback placeholder)
+- [x] PM-7 parameters → root scale + custom props
+- [x] PM-8 package_addon.sh
 
-## Blender Addon 설치
+## Blender 설치
 
-1. `projects/paramodel/addon` 폴더를 zip으로 묶어 Install
-2. N 패널 → **ParaModel**
-3. Data Path = `.../projects/paramodel/data/mecha`
-4. Mecha ID = `brave-001` → Load Mecha
+```bash
+bash projects/paramodel/scripts/package_addon.sh
+# → projects/paramodel/dist/paramodel_addon_v0.3.0.zip
+```
+
+Blender → Preferences → Add-ons → Install → 해당 zip  
+N패널 → **ParaModel** → Data Path = `.../data/mecha` → Load Mecha
+
+## Load 동작
+
+1. Root empty (`root_{id}`) — height 기준 scale, mass/mobility/output props
+2. Slot empties — schema position/rotation, parented to root
+3. Parts — `part.mesh` 파일이 있으면 import, 없으면 placeholder 큐브
 
 ## Registered Units
 
-| ID | Name | Codename | Status |
-|----|------|----------|--------|
-| brave-001 | Brave | EX-BRAVE-001 | concept |
-
-## Notes
-
-- BlenderMCP와 별개
-- 슬롯 Empty + part placeholder 큐브까지 지원
-- 다음 후보: 실제 mesh import, parameter drivers
+| ID | Name | Status |
+|----|------|--------|
+| brave-001 | Brave | concept |
