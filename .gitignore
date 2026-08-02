@@ -57,5 +57,9 @@ logs/
 !projects/blender/shin getter robo/
 !projects/blender/shin getter robo/*.blend
 
+# ParaModel scene (Master-directed)
+!projects/paramodel/
+!projects/paramodel/**/*.blend
+
 # Ignore Cline rules file
 .clinerules
