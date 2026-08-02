@@ -3,6 +3,6 @@
   "name": "Basic Torso Lower 01",
   "slot_types": ["torso_lower"],
   "category": "body",
-  "mesh": null,
+  "mesh": "meshes/torso_lower_basic_01.glb",
   "placeholder": { "size": [0.55, 0.4, 0.35] }
 }
