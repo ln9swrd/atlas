@@ -1,0 +1,8 @@
+{
+  "id": "torso_lower_basic_01",
+  "name": "Basic Torso Lower 01",
+  "slot_types": ["torso_lower"],
+  "category": "body",
+  "mesh": null,
+  "placeholder": { "size": [0.55, 0.4, 0.35] }
+}
