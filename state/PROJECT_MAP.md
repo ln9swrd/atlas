@@ -1,6 +1,6 @@
 # PROJECT_MAP
 
-> Updated: 2026-07-31 (SERA = Cloud AI)
+> Updated: 2026-08-02 (paramodel under projects/)
 
 ## System
 
@@ -22,6 +22,7 @@
 
 | ID | Path | Notes |
 |----|------|-------|
+| paramodel | `projects/paramodel/` | ParaModel — parametric mecha + Blender addon v0.1.0 |
 | printguard | `projects/printguard/` | P2 docs |
 | coin-s | `projects/coin-s/` | submodule-oriented |
 | _template | `projects/_template/` | |
@@ -35,3 +36,4 @@ See prior PROJECT_MAP / `archive/`.
 - **프로젝트 형태 SERA** (`projects/sera`) — D19. 호칭 SERA(Cloud AI)는 유지.
 - atlas-extension (D22).
 - Dual-write product into mono: **forbidden**.
+- Root `ParaModel/` — moved to `projects/paramodel/` (2026-08-02).
