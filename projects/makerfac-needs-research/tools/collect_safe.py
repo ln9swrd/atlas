@@ -16,7 +16,7 @@ import sys
 import time
 from datetime import date, datetime
 from pathlib import Path
-from urllib.parse import urlencode, urlparse, parse_qs, urlunparse
+from urllib.parse import urlencode
 
 try:
     from playwright.sync_api import sync_playwright
@@ -169,16 +169,75 @@ def save_post(title: str, url: str, body: str) -> Path:
     return POSTS_JSONL
 
 
+def wait_list_stable(page) -> None:
+    """SPA 추가 네비게이션이 끝난 뒤 링크 추출."""
+    try:
+        page.wait_for_load_state("domcontentloaded", timeout=15000)
+    except Exception:
+        pass
+    try:
+        page.wait_for_load_state("networkidle", timeout=20000)
+    except Exception:
+        pass
+    # 글 링크가 나타날 때까지
+    try:
+        page.wait_for_selector(
+            'a[href*="/articles/"]',
+            timeout=20000,
+        )
+    except Exception:
+        pass
+    time.sleep(1.5)
+
+
+def extract_raw_links(page) -> list[dict]:
+    """한 번의 evaluate로 href/title 추출 (네비게이션에 덜 취약)."""
+    return page.evaluate(
+        """() => {
+          const out = [];
+          const seen = new Set();
+          for (const a of document.querySelectorAll('a[href*="/articles/"]')) {
+            let href = a.href || a.getAttribute('href') || '';
+            const title = (a.innerText || '').trim();
+            if (!href || !title) continue;
+            if (href.includes('commentFocus')) continue;
+            if (!href.includes('/cafes/23815302/articles/')) continue;
+            if (seen.has(href)) continue;
+            seen.add(href);
+            out.push({ href, title });
+          }
+          return out;
+        }"""
+    )
+
+
 def collect_links_from_page(page, viewed_ids: set[str], keyword: str) -> list[tuple[str, str]]:
-    anchors = page.locator('a[href*="/cafes/23815302/articles/"]').all()
+    raw: list[dict] = []
+    last_err: Exception | None = None
+    for attempt in range(1, 4):
+        try:
+            wait_list_stable(page)
+            raw = extract_raw_links(page) or []
+            last_err = None
+            break
+        except Exception as e:
+            last_err = e
+            msg = str(e)
+            print(f"  링크 추출 재시도 {attempt}/3: {msg[:80]}")
+            time.sleep(2.0 * attempt)
+            try:
+                page.wait_for_load_state("domcontentloaded", timeout=10000)
+            except Exception:
+                pass
+    if last_err and not raw:
+        print(f"  링크 추출 실패: {last_err}")
+        return []
+
     out: list[tuple[str, str]] = []
     seen: set[str] = set()
-    for a in anchors:
-        try:
-            href = a.get_attribute("href") or ""
-            title = (a.inner_text() or "").strip()
-        except Exception:
-            continue
+    for item in raw:
+        href = (item.get("href") or "").strip()
+        title = (item.get("title") or "").strip()
         if not href or not title:
             continue
         if href.startswith("/"):
@@ -193,6 +252,18 @@ def collect_links_from_page(page, viewed_ids: set[str], keyword: str) -> list[tu
         seen.add(aid)
         out.append((title, href))
     return out
+
+
+def goto_resilient(page, url: str) -> bool:
+    for attempt in range(1, 4):
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            wait_list_stable(page)
+            return True
+        except Exception as e:
+            print(f"  goto 재시도 {attempt}/3: {e}")
+            time.sleep(2.0 * attempt)
+    return False
 
 
 def main() -> None:
@@ -243,17 +314,12 @@ def main() -> None:
         for pg in range(1, max_pages + 1):
             url = board_url(pg)
             print(f"\n목록 페이지 {pg}/{max_pages}: {url}")
-            try:
-                page.goto(url, wait_until="domcontentloaded", timeout=60000)
-            except Exception as e:
-                print(f"  목록 로드 실패: {e}")
+            if not goto_resilient(page, url):
+                print("  목록 로드 실패 — 중단")
                 break
             human_delay()
             batch = collect_links_from_page(page, viewed_ids | seen_ids, args.keyword)
             print(f"  이 페이지 신규: {len(batch)}개")
-            if not batch and pg > 1:
-                # 빈 페이지면 더 이상 없을 수 있음
-                print("  신규 없음 — 페이지 탐색 중단 가능")
             for title, href in batch:
                 aid = article_id(href)
                 if aid and aid not in seen_ids:
@@ -266,8 +332,8 @@ def main() -> None:
         print(f"\n총 신규 후보: {len(candidates)}개")
         if not candidates:
             print(
-                "첫 N페이지 글이 모두 이미 기록되어 있습니다.\n"
-                "--pages 값을 늘리거나, 내일 새 글이 쌓인 뒤 다시 실행하세요."
+                "첫 N페이지 글이 모두 이미 기록되어 있거나 링크를 못 읽었습니다.\n"
+                "--pages 를 늘리거나 잠시 후 다시 실행하세요."
             )
 
         opened = 0
@@ -277,10 +343,8 @@ def main() -> None:
                 break
             print(f"\n[{opened + 1}/{limit}] {title[:60]}")
             print(f"  {href}")
-            try:
-                page.goto(href, wait_until="domcontentloaded", timeout=60000)
-            except Exception as e:
-                print(f"  열기 실패: {e}")
+            if not goto_resilient(page, href):
+                print("  열기 실패")
                 append_viewed(href, title + " [open-fail]")
                 human_delay()
                 opened += 1
@@ -288,15 +352,18 @@ def main() -> None:
 
             human_delay()
             body = ""
-            for sel in ["article", ".article-board", "#app", "body"]:
-                loc = page.locator(sel).first
-                try:
-                    if loc.count():
-                        body = loc.inner_text(timeout=5000)
-                        if len(body) > 80:
-                            break
-                except Exception:
-                    continue
+            try:
+                body = page.evaluate(
+                    """() => {
+                      const el = document.querySelector('article')
+                        || document.querySelector('.article-board')
+                        || document.querySelector('#app')
+                        || document.body;
+                      return el ? (el.innerText || '') : '';
+                    }"""
+                )
+            except Exception:
+                body = ""
 
             path = save_post(title, href, body or "")
             append_viewed(href, title)
