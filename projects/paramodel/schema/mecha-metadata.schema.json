@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "mecha-metadata.schema.json",
+  "title": "Mecha Metadata",
+  "description": "ParaModel mecha unit metadata (data/mecha/{id}.json)",
+  "type": "object",
+  "required": ["id", "name", "scale_class", "base_body"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$",
+      "description": "Unique mecha id (filename without .json)"
+    },
+    "name": { "type": "string" },
+    "codename": { "type": "string" },
+    "version": { "type": "string" },
+    "scale_class": {
+      "type": "string",
+      "enum": ["15m", "25m", "50m", "custom"]
+    },
+    "category": {
+      "type": "string",
+      "enum": ["player", "enemy", "boss", "npc", "prop"]
+    },
+    "description": { "type": "string" },
+    "base_body": {
+      "type": "object",
+      "required": ["template", "slots"],
+      "properties": {
+        "template": {
+          "type": "string",
+          "description": "Base body template id (e.g. standard_25m)"
+        },
+        "slots": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/slot_assignment"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "height": { "type": "number", "minimum": 0 },
+        "mass": { "type": "number", "minimum": 0 },
+        "armor_thickness": { "type": "number", "minimum": 0 },
+        "mobility": { "type": "number", "minimum": 0, "maximum": 1 },
+        "output": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": true
+    },
+    "visual": {
+      "type": "object",
+      "properties": {
+        "primary_color": { "type": "string" },
+        "secondary_color": { "type": "string" },
+        "accent_color": { "type": "string" },
+        "style_tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["concept", "wip", "prototype", "final", "deprecated"]
+    },
+    "created": { "type": "string" },
+    "updated": { "type": "string" },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "slot_assignment": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "part_id": {
+          "type": ["string", "null"],
+          "description": "Part library id; null if empty slot"
+        },
+        "enabled": { "type": "boolean" },
+        "mirror_source": {
+          "type": ["string", "null"],
+          "description": "Opposite slot id for symmetry"
+        },
+        "position": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "Optional override of default slot position"
+        },
+        "rotation": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "Optional override of default slot rotation (degrees)"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
