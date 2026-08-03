@@ -207,6 +207,7 @@ def create_slot_empties(mecha, root=None, collection_name="ParaModel_Slots"):
         pos = defn.get("position") or slot_data.get("position") or [0, 0, 0]
         rot = defn.get("rotation") or slot_data.get("rotation") or [0, 0, 0]
         if len(pos) >= 3:
+            # positions are Blender Z-up meters [x, y_forward, z_up]
             empty.location = (float(pos[0]) * uf, float(pos[1]) * uf, float(pos[2]) * uf)
         if len(rot) >= 3:
             empty.rotation_euler = tuple(math.radians(float(r)) for r in rot[:3])
@@ -243,15 +244,20 @@ def create_armature(mecha, root=None, collection_name="ParaModel_Armature"):
     _mode(arm_obj, "EDIT")
     created = []
     uf = _uf()
-    for name, parent_name, head, tail in _load_bones():
+    bones_data = _load_bones()
+    # Ground-align: shift so lowest bone tip is at z=0 (match slot ground origin)
+    min_z = min(min(h[2], t[2]) for _, _, h, t in bones_data)
+    z_off = -min_z
+    for name, parent_name, head, tail in bones_data:
         bone = arm_data.edit_bones.new(name)
-        bone.head = Vector(head) * uf
-        bone.tail = Vector(tail) * uf
+        bone.head = Vector((head[0], head[1], head[2] + z_off)) * uf
+        bone.tail = Vector((tail[0], tail[1], tail[2] + z_off)) * uf
         bone.use_connect = False
         if parent_name and parent_name in arm_data.edit_bones:
             bone.parent = arm_data.edit_bones[parent_name]
         created.append(name)
     _mode(arm_obj, "OBJECT")
+    arm_obj["paramodel_ground_offset_m"] = z_off
     if root:
         arm_obj.parent = root
     return arm_obj, created
@@ -368,7 +374,6 @@ class PARAMODEL_OT_load_mecha(Operator):
             n_parts = len(attached)
         primary, value, ref, sf = resolve_size(mecha)
         effective = sf * float(ws if ws else 0.01)
-        # ~30m real → ~0.3m with ws=0.01; clip_end 100m in scene units is ample
         _raise_clip_end(minimum=max(100.0, value * float(ws if ws else 0.01) * 20))
         self.report(
             {"INFO"},
