@@ -37,6 +37,53 @@ def load_mecha_json(data_path, mecha_id):
         return json.load(f)
 
 
+def load_template(template_id):
+    """Load schema/templates/{id}.json; empty dict if missing."""
+    if not template_id:
+        return {}
+    path = os.path.join(_addon_root(), "schema", "templates", f"{template_id}.json")
+    if not os.path.isfile(path):
+        # legacy alias
+        if template_id in ("standard_25m", "standard_15m", "standard_50m"):
+            path = os.path.join(_addon_root(), "schema", "templates", "humanoid.json")
+        if not os.path.isfile(path):
+            return {}
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def resolve_size(mecha):
+    """Return (primary, value_m, reference_m, scale_factor).
+
+    Contract: sf = value / template.reference_value
+    Fallback: parameters.height; reference default 2.0 (humanoid authored scale).
+    """
+    size = mecha.get("size") or {}
+    primary = size.get("primary") or "height"
+    value = size.get("value")
+    if value is None:
+        value = (mecha.get("parameters") or {}).get("height")
+    if value is None:
+        value = 25.0
+    value = float(value)
+
+    template_id = (
+        mecha.get("archetype")
+        or (mecha.get("base_body") or {}).get("template")
+        or "humanoid"
+    )
+    tmpl = load_template(template_id)
+    tsize = tmpl.get("size") or {}
+    ref = tsize.get("reference_value")
+    if ref is None:
+        ref = 2.0
+    ref = float(ref)
+    if ref <= 0:
+        ref = 2.0
+    sf = value / ref
+    return primary, value, ref, sf
+
+
 def load_default_slots(schema_path=None):
     if schema_path is None:
         schema_path = os.path.join(_addon_root(), "schema", "base-body-slots.json")
@@ -98,13 +145,16 @@ def create_root(mecha, collection_name="ParaModel_Root"):
     root.empty_display_type = "PLAIN_AXES"
     root.empty_display_size = _unit_to_bu(0.5)
     coll.objects.link(root)
-    params = mecha.get("parameters") or {}
-    height = float(params.get("height") or 25.0)
-    sf = (height / 25.0) if height > 0 else 1.0
+    primary, value, ref, sf = resolve_size(mecha)
     root.scale = (sf, sf, sf)
     root["paramodel_root"] = True
     root["paramodel_mecha_id"] = mecha_id
-    root["paramodel_height"] = height
+    root["paramodel_archetype"] = mecha.get("archetype") or ""
+    root["paramodel_size_primary"] = primary
+    root["paramodel_size_value"] = value
+    root["paramodel_size_reference"] = ref
+    root["paramodel_scale_factor"] = sf
+    params = mecha.get("parameters") or {}
     root["paramodel_mass"] = float(params.get("mass") or 0)
     root["paramodel_mobility"] = float(params.get("mobility") or 0)
     root["paramodel_output"] = float(params.get("output") or 0)
@@ -291,10 +341,12 @@ class PARAMODEL_OT_load_mecha(Operator):
         if s.create_placeholders:
             attached, n_mesh, n_ph = attach_parts(mecha, prefer_mesh=s.prefer_mesh)
             n_parts = len(attached)
+        primary, value, ref, sf = resolve_size(mecha)
         self.report(
             {"INFO"},
             f"Loaded {s.selected_mecha}: {n_slots} slots, {n_bones} bones, "
-            f"{n_parts} parts ({n_mesh} mesh / {n_ph} placeholder)",
+            f"{n_parts} parts ({n_mesh} mesh / {n_ph} placeholder), "
+            f"sf={sf:.3f} ({primary} {value}/{ref})",
         )
         return {"FINISHED"}
 

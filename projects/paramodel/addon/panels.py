@@ -29,7 +29,7 @@ class PARAMODEL_PT_main(Panel):
 
         layout.separator()
         box = layout.box()
-        box.label(text="v0.7.0 — mesh import", icon="INFO")
+        box.label(text="v0.7.1 — archetype/size", icon="INFO")
 
 
 classes = (

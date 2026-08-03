@@ -27,32 +27,20 @@ SIDE: **paramodel** — `projects/paramodel/` Master-directed (2026-08-02)
 | Item | Status |
 |------|--------|
 | Path | `projects/paramodel/` |
-| Addon | **v0.7.0** (GitHub main) |
-| PM-1..PM-8 | Done |
-| PM-12 SuperRobotRig procedural | Done |
-| Mesh import | **v0.7.0** via mesh_io (glb/gltf/obj/fbx/blend) |
-| Armature | **SuperRobotRig procedural** (bone table, no blend dep) |
-| blend 의존 | 없음 |
-| Verified in Blender | Root + Slots + Parts OK (prior) |
-| Armature / mesh in Outliner | **로컬 재설치 후 확인 필요 (PM-10)** |
-| GLB assets | 전부 identical placeholder cube (24 verts 수준). 실제 mecha mesh 없음 |
-
-### Mesh (2026-08-02 → v0.7.0)
-
-- `mesh_io.py` + operators attach_parts mesh path 해결
-- 규칙: `part.mesh` → `data/parts/meshes/{part_id}.glb` fallback
-- 실패 시 placeholder cube
-- brave-001: enabled 7 slots → 현재 7개 동일 cube 예상
-
-### Armature (2026-08-02)
-
-- SuperRobotRig 본 테이블 코드 하드코딩 → 직접 생성
-- blend 파일 불필요
+| Addon | **v0.7.1** (GitHub main) |
+| Design flow | Identity → Archetype → Size → Traits → Visual → Body |
+| Size contract | sf = value / template.reference (humanoid ref 2.0) |
+| Mesh import | v0.7.0 |
+| Armature | SuperRobotRig procedural |
+| Non-humanoid templates | planned |
+| GLB assets | identical placeholder cubes |
+| Local reinstall verify | **Open (PM-10)** — use v0.7.1 zip |
 
 ## Open
 
-- paramodel 로컬 재설치 검증 (PM-10): pull → package_addon.sh → Remove/Install → v0.7.0 패널 + SuperRobotRig + mesh source 확인
-- platform: 없음 (maintenance only)
+- PM-10: local pull → package v0.7.1 → Remove/Install → sf≈12.5 on brave-001
+- Axis unify (slots vs bones) — open
+- platform: maintenance only
 
 ## Do not
 

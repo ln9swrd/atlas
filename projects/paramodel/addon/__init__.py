@@ -1,10 +1,10 @@
 bl_info = {
     "name": "ParaModel",
     "author": "Atlas / Excelion",
-    "version": (0, 7, 0),
+    "version": (0, 7, 1),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > ParaModel",
-    "description": "Parametric mecha loader — slots, SuperRobotRig, mesh import (glb/gltf/obj/fbx/blend), params",
+    "description": "Parametric mecha loader — archetype/size contract, slots, SuperRobotRig, mesh import",
     "category": "Object",
 }
 
@@ -18,7 +18,7 @@ def register():
     props.register()
     operators.register()
     panels.register()
-    print("ParaModel addon registered (v0.7.0)")
+    print("ParaModel addon registered (v0.7.1)")
 
 
 def unregister():

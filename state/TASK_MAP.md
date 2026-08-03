@@ -10,32 +10,23 @@ Min · F1–F4 · P0–P3 · R1–R7 · D28 S0–S5 · C1 · C3
 
 ## Side track — paramodel (Master-directed 2026-08-02)
 
-Path: `projects/paramodel/` · Addon **v0.7.0** (main)
+Path: `projects/paramodel/` · Addon **v0.7.1** (main)
 
 | ID | Task | Status |
 |----|------|--------|
-| PM-1 | Base Body slots + position/rotation | Done |
-| PM-2 | mecha-metadata.schema.json | Done |
-| PM-3 | data/parts library + basic parts | Done |
-| PM-4 | Placeholder attach | Done |
-| PM-5 | state registration | Done |
-| PM-6 | Mesh import + fallback | **Done (v0.7.0)** |
-| PM-7 | Parameters → root scale + props | Done |
-| PM-8 | package_addon.sh | Done |
-| PM-9 | Basic armature from slots | Superseded |
-| PM-10 | Armature + mesh: local pull + reinstall verify | Open |
-| PM-11 | Load SuperRobotRig from blend | Superseded |
-| PM-12 | SuperRobotRig procedural (bone table) | **Done (v0.6.0+)** |
+| PM-1..PM-8 | Base pipeline + mesh | Done |
+| PM-12 | SuperRobotRig procedural | Done |
+| PM-13 | Archetype + Size schema/contract | **Done (v0.7.1)** |
+| PM-10 | Local reinstall verify (v0.7.1, sf check) | Open |
+| PM-14 | Axis unify slots/bones | Open |
+| PM-15 | Non-humanoid templates | Planned |
 
 ## Open
 
 | ID | Task |
 |----|------|
-| PM-10 | 로컬 pull → v0.7.0 zip → Remove/Install → 패널 v0.7.0 · SuperRobotRig · part_* mesh_source 확인 |
-
-## Note
-
-- GLB assets (`data/parts/meshes/*.glb`) are identical placeholder cubes. Real mecha meshes not yet exported.
+| PM-10 | pull → v0.7.1 zip → Install → brave-001 sf≈12.5 · SuperRobotRig · mesh_source |
+| PM-14 | slots vs bones up-axis |
 
 ## Hold
 

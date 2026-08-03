@@ -1,72 +1,55 @@
 # ParaModel
 
-Parametric mecha model system for Atlas / Excelion.
+Parametric mecha / unit model system for Atlas / Excelion.
 
-Character-design-like flow (intended):
+## Design flow
 
-1. **Identity** — id, name, category, tags
-2. **Size** — scale_class + height (drives global scale)
-3. **Traits** — mass, mobility, output, armor (features)
-4. **Visual** — colors, style_tags
-5. **Body** — base_body slots → parts (mesh or placeholder)
+```
+Identity → Archetype → Size → Traits → Visual → Body
+```
+
+- **Archetype:** humanoid (active); quadruped, multiped, aircraft, vessel (planned)
+- **Size:** `sf = size.value / template.reference_value` (humanoid ref = 2.0 m)
+
+See `DESIGN.md`.
 
 ## Structure
 
 ```
 projects/paramodel/
-├── addon/                 # Blender addon v0.7.0
+├── addon/                 # Blender addon v0.7.1
 ├── schema/
+│   ├── mecha-metadata.schema.json
+│   ├── base-body-slots.json
+│   └── templates/         # humanoid.json, …
 ├── data/mecha|parts/
-├── para_model.blend       # reference scene (optional)
 ├── scripts/package_addon.sh
-├── DESIGN.md              # flow vs implementation
-├── CHANGELOG.md
-└── dist/                  # generated zip
+├── DESIGN.md
+└── CHANGELOG.md
 ```
 
 ## Status (2026-08-03)
 
 | Item | Status |
 |------|--------|
-| Slots + placeholders + params | Verified structure |
-| Mesh import | **v0.7.0** — glb/gltf/obj/fbx/blend via `part.mesh` |
-| Armature | **SuperRobotRig** procedural (no blend dep) |
-| Top-level attrs → scene | Partial (see DESIGN.md) |
-| Size consistency | **Mismatch** — see DESIGN.md |
-
-## Mesh resolution
-
-1. `part.mesh` path relative to `data/parts/` (e.g. `meshes/arm_basic_01.glb`)
-2. Auto-fallback: `data/parts/meshes/{part_id}.{glb|gltf|obj|fbx|blend}`
-3. If missing or import fails → placeholder cube
-
-**Note:** Current `*.glb` files are identical placeholder cubes. Replace with real exports when available.
+| Archetype + Size contract | **v0.7.1** |
+| Mesh import | v0.7.0 |
+| SuperRobotRig | procedural |
+| Non-humanoid templates | planned |
+| Axis unify / visual mats | open |
 
 ## Install
 
 ```bash
-cd /mnt/d/Atlas   # or your clone
 git pull origin main
 bash projects/paramodel/scripts/package_addon.sh
-# → dist/paramodel_addon_v0.7.0.zip
+# → dist/paramodel_addon_v0.7.1.zip
 ```
 
-Blender:
-1. Preferences → Add-ons → ParaModel **Remove**
-2. Install → `paramodel_addon_v0.7.0.zip`
-3. 패널 하단 **v0.7.0 — mesh import** 확인
-4. **Prefer Mesh File** 체크 → Clear All → Load Mecha
-5. Outliner: `part_*` 에 mesh source 확인 (`paramodel_mesh_source`)
+Blender: Remove old ParaModel → Install zip → panel **v0.7.1 — archetype/size**.
 
-## Load 결과 기대
+## Registered units
 
-- `ParaModel_Root` / `root_{id}`
-- `ParaModel_Slots` / `slot_*`
-- `ParaModel_Armature` / `SuperRobotRig`
-- `ParaModel_Parts` / `part_{slot}_{part_id}` (mesh 또는 placeholder)
-
-## Registered Units
-
-| ID | Name | Status |
-|----|------|--------|
-| brave-001 | Brave | concept |
+| ID | Archetype | Size | Status |
+|----|-----------|------|--------|
+| brave-001 | humanoid | height 25 m | concept |

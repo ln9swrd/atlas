@@ -13,7 +13,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ADDON_SRC="$ROOT/addon"
 DIST="$ROOT/dist"
-VERSION="0.7.0"
+VERSION="0.7.1"
 
 if [[ ! -f "$ADDON_SRC/__init__.py" ]]; then
   echo "ERROR: addon not found at $ADDON_SRC"

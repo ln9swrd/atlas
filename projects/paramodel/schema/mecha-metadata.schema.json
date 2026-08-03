@@ -2,9 +2,9 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "mecha-metadata.schema.json",
   "title": "Mecha Metadata",
-  "description": "ParaModel mecha unit metadata (data/mecha/{id}.json)",
+  "description": "ParaModel unit metadata. Flow: Identity → Archetype → Size → Traits → Visual → Body",
   "type": "object",
-  "required": ["id", "name", "scale_class", "base_body"],
+  "required": ["id", "name", "archetype", "size", "base_body"],
   "properties": {
     "id": {
       "type": "string",
@@ -14,22 +14,45 @@
     "name": { "type": "string" },
     "codename": { "type": "string" },
     "version": { "type": "string" },
-    "scale_class": {
+    "archetype": {
       "type": "string",
-      "enum": ["15m", "25m", "50m", "custom"]
+      "enum": ["humanoid", "quadruped", "multiped", "aircraft", "vessel", "custom"],
+      "description": "Body plan; selects template (slots + rig + size primary)"
     },
     "category": {
       "type": "string",
       "enum": ["player", "enemy", "boss", "npc", "prop"]
     },
     "description": { "type": "string" },
+    "size": {
+      "type": "object",
+      "required": ["primary", "value"],
+      "properties": {
+        "scale_class": {
+          "type": "string",
+          "enum": ["15m", "25m", "50m", "custom"],
+          "description": "Label / default hint only — not the scale divisor"
+        },
+        "primary": {
+          "type": "string",
+          "enum": ["height", "length", "wingspan", "span", "beam"],
+          "description": "Which dimension value measures"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Target size in meters (sf = value / template.reference_value)"
+        }
+      },
+      "additionalProperties": false
+    },
     "base_body": {
       "type": "object",
       "required": ["template", "slots"],
       "properties": {
         "template": {
           "type": "string",
-          "description": "Base body template id (e.g. standard_25m)"
+          "description": "Template id, normally same as archetype (e.g. humanoid)"
         },
         "slots": {
           "type": "object",
@@ -41,12 +64,17 @@
     },
     "parameters": {
       "type": "object",
+      "description": "Traits (not size). size.value replaces parameters.height",
       "properties": {
-        "height": { "type": "number", "minimum": 0 },
         "mass": { "type": "number", "minimum": 0 },
         "armor_thickness": { "type": "number", "minimum": 0 },
         "mobility": { "type": "number", "minimum": 0, "maximum": 1 },
-        "output": { "type": "number", "minimum": 0, "maximum": 1 }
+        "output": { "type": "number", "minimum": 0, "maximum": 1 },
+        "height": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Deprecated; use size.value"
+        }
       },
       "additionalProperties": true
     },
