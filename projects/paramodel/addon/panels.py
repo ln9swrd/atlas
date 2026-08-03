@@ -30,7 +30,7 @@ class PARAMODEL_PT_main(Panel):
 
         layout.separator()
         box = layout.box()
-        box.label(text="v0.7.2 — working scale 1:100", icon="INFO")
+        box.label(text="v0.7.3 — Z-up axis unify", icon="INFO")
 
 
 classes = (
