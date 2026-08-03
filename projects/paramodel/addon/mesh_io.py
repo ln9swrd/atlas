@@ -2,13 +2,24 @@ import bpy
 import os
 
 
-def parts_dir(addon_root):
-    return os.path.join(addon_root, "data", "parts")
+def parts_dir(root):
+    """Return parts directory from project root or existing parts path."""
+    if not root:
+        return ""
+    if os.path.basename(root.rstrip(os.sep)) == "parts" and os.path.isdir(root):
+        return root
+    candidate = os.path.join(root, "data", "parts")
+    if os.path.isdir(candidate):
+        return candidate
+    candidate = os.path.join(root, "parts")
+    if os.path.isdir(candidate):
+        return candidate
+    return os.path.join(root, "data", "parts")
 
 
-def resolve_mesh_path(part, part_id, addon_root):
+def resolve_mesh_path(part, part_id, root):
     """Resolve absolute path to mesh file from part metadata or auto-convention."""
-    pdir = parts_dir(addon_root)
+    pdir = parts_dir(root)
     candidates = []
     mesh_rel = part.get("mesh")
     if mesh_rel:
