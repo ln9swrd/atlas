@@ -1,37 +1,22 @@
-# Part Meshes
-
-Place mesh files here referenced by `part.mesh`.
-
-## Naming convention (canonical)
+# Part meshes
 
 ```
-meshes/{part_id}.glb
+data/parts/meshes/{part_id}.glb
 ```
 
-Examples:
-- `meshes/arm_basic_01.glb`
-- `meshes/head_basic_01.glb`
-- `meshes/leg_basic_01.glb`
-- `meshes/torso_upper_basic_01.glb`
-- `meshes/torso_lower_basic_01.glb`
+## Generate basic silhouettes
 
-Supported: `.glb`, `.gltf`, `.obj`, `.fbx`, `.blend`
+Identical placeholder cubes can be replaced with distinct low-poly parts:
 
-Parts are reusable across slots (e.g. `arm_basic_01` for both `arm_l` and `arm_r`).
-Do **not** embed slot names in the mesh filename.
-
-Example part JSON:
-```json
-{
-  "id": "head_basic_01",
-  "mesh": "meshes/head_basic_01.glb",
-  "placeholder": { "size": [0.35, 0.4, 0.35] }
-}
+```bash
+pip install trimesh numpy
+python3 projects/paramodel/scripts/generate_basic_meshes.py
 ```
 
-If the mesh file is missing, the addon falls back to a placeholder cube.
+Then reload mecha in Blender (Clear All → Load Mecha).
 
-## Current status (2026-08-03)
+## Notes
 
-All existing `*.glb` files are **identical placeholder cubes** (same file size / content).
-No real exported mecha meshes yet. Replace with actual models when available.
+- Units: meters, Z-up, origin = slot center
+- Scale inherits from root (working scale × size factor)
+- For production mecha art: author in Blender and overwrite these GLBs
