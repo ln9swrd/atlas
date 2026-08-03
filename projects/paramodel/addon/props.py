@@ -1,5 +1,5 @@
 import bpy
-from bpy.props import StringProperty, BoolProperty
+from bpy.props import StringProperty, BoolProperty, FloatProperty
 from bpy.types import PropertyGroup
 
 
@@ -32,13 +32,22 @@ class ParaModelSettings(PropertyGroup):
     )
     apply_parameters: BoolProperty(
         name="Apply Parameters",
-        description="Create root empty; scale by height; store mass/mobility/output",
+        description="Create root empty; scale by height * working_scale; store mass/mobility/output",
         default=True,
     )
     create_armature: BoolProperty(
         name="Create Armature",
-        description="Build basic armature from slots; parent slots to bones",
+        description="Build SuperRobotRig; parent to root (inherits working scale)",
         default=True,
+    )
+    working_scale: FloatProperty(
+        name="Working Scale",
+        description="Viewport scale vs real meters. 0.01 = 1:100 (25m → ~0.25m). 1.0 = real size",
+        default=0.01,
+        min=0.0001,
+        max=10.0,
+        soft_min=0.001,
+        soft_max=1.0,
     )
 
 
