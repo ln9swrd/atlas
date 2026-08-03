@@ -19,12 +19,44 @@ def _uf():
     return _unit_to_bu(1.0)
 
 
-def _addon_root():
-    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+def _package_dir():
+    """Directory containing this addon module (operators.py)."""
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def _project_root():
+    """paramodel project root when running from repo (addon/ is one level down)."""
+    pkg = _package_dir()
+    parent = os.path.dirname(pkg)
+    if os.path.isdir(os.path.join(parent, "schema")):
+        return parent
+    if os.path.isdir(os.path.join(pkg, "schema")):
+        return pkg
+    return parent
+
+
+def _find_file(*relative_parts, data_path=None):
+    """Locate a project file across zip-install and repo layouts."""
+    candidates = []
+    pkg = _package_dir()
+    proj = _project_root()
+    candidates.append(os.path.join(pkg, *relative_parts))
+    candidates.append(os.path.join(proj, *relative_parts))
+    if data_path:
+        # data_path = .../data/mecha → project = .../paramodel
+        mecha_dir = os.path.abspath(data_path)
+        data_dir = os.path.dirname(mecha_dir)
+        paramodel_dir = os.path.dirname(data_dir)
+        candidates.append(os.path.join(paramodel_dir, *relative_parts))
+        candidates.append(os.path.join(data_dir, *relative_parts))
+    for path in candidates:
+        if path and os.path.isfile(path):
+            return path
+    return None
 
 
 def _load_bones():
-    path = os.path.join(os.path.dirname(__file__), "bones.json")
+    path = os.path.join(_package_dir(), "bones.json")
     with open(path, "r", encoding="utf-8") as f:
         return [(n, p, tuple(h), tuple(t)) for n, p, h, t in json.load(f)]
 
@@ -37,22 +69,20 @@ def load_mecha_json(data_path, mecha_id):
         return json.load(f)
 
 
-def load_template(template_id):
+def load_template(template_id, data_path=None):
     """Load schema/templates/{id}.json; empty dict if missing."""
     if not template_id:
         return {}
-    path = os.path.join(_addon_root(), "schema", "templates", f"{template_id}.json")
-    if not os.path.isfile(path):
-        # legacy alias
-        if template_id in ("standard_25m", "standard_15m", "standard_50m"):
-            path = os.path.join(_addon_root(), "schema", "templates", "humanoid.json")
-        if not os.path.isfile(path):
-            return {}
+    path = _find_file("schema", "templates", f"{template_id}.json", data_path=data_path)
+    if not path and template_id in ("standard_25m", "standard_15m", "standard_50m"):
+        path = _find_file("schema", "templates", "humanoid.json", data_path=data_path)
+    if not path:
+        return {}
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def resolve_size(mecha):
+def resolve_size(mecha, data_path=None):
     """Return (primary, value_m, reference_m, scale_factor).
 
     Contract: sf = value / template.reference_value
@@ -72,7 +102,7 @@ def resolve_size(mecha):
         or (mecha.get("base_body") or {}).get("template")
         or "humanoid"
     )
-    tmpl = load_template(template_id)
+    tmpl = load_template(template_id, data_path=data_path)
     tsize = tmpl.get("size") or {}
     ref = tsize.get("reference_value")
     if ref is None:
@@ -84,20 +114,34 @@ def resolve_size(mecha):
     return primary, value, ref, sf
 
 
-def load_default_slots(schema_path=None):
-    if schema_path is None:
-        schema_path = os.path.join(_addon_root(), "schema", "base-body-slots.json")
-    if not os.path.isfile(schema_path):
+def load_default_slots(data_path=None):
+    path = _find_file("schema", "base-body-slots.json", data_path=data_path)
+    if not path:
         return {}
-    with open(schema_path, "r", encoding="utf-8") as f:
+    with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return {s["id"]: s for s in data.get("default_slots", []) if s.get("id")}
 
 
-def load_part(part_id):
+def _parts_root(data_path=None):
+    """Directory containing part JSON files."""
+    if data_path:
+        mecha_dir = os.path.abspath(data_path)
+        data_dir = os.path.dirname(mecha_dir)
+        candidate = os.path.join(data_dir, "parts")
+        if os.path.isdir(candidate):
+            return candidate
+    for base in (_package_dir(), _project_root()):
+        candidate = os.path.join(base, "data", "parts")
+        if os.path.isdir(candidate):
+            return candidate
+    return os.path.join(_project_root(), "data", "parts")
+
+
+def load_part(part_id, data_path=None):
     if not part_id:
         return {}
-    path = os.path.join(mesh_io.parts_dir(_addon_root()), f"{part_id}.json")
+    path = os.path.join(_parts_root(data_path), f"{part_id}.json")
     if not os.path.isfile(path):
         return {}
     with open(path, "r", encoding="utf-8") as f:
@@ -153,7 +197,13 @@ def _raise_clip_end(minimum=100.0):
         pass
 
 
-def create_root(mecha, collection_name="ParaModel_Root", working_scale=0.01):
+def _parent_keep_local(child, parent):
+    """Parent child to parent; location/rotation stay as local coords."""
+    child.parent = parent
+    child.matrix_parent_inverse.identity()
+
+
+def create_root(mecha, collection_name="ParaModel_Root", working_scale=0.01, data_path=None):
     coll = _ensure_collection(collection_name)
     mecha_id = mecha.get("id", "mecha")
     name = f"root_{mecha_id}"
@@ -163,7 +213,7 @@ def create_root(mecha, collection_name="ParaModel_Root", working_scale=0.01):
     root.empty_display_type = "PLAIN_AXES"
     root.empty_display_size = _unit_to_bu(0.5)
     coll.objects.link(root)
-    primary, value, ref, sf = resolve_size(mecha)
+    primary, value, ref, sf = resolve_size(mecha, data_path=data_path)
     ws = float(working_scale) if working_scale else 0.01
     if ws <= 0:
         ws = 0.01
@@ -186,11 +236,11 @@ def create_root(mecha, collection_name="ParaModel_Root", working_scale=0.01):
     return root
 
 
-def create_slot_empties(mecha, root=None, collection_name="ParaModel_Slots"):
+def create_slot_empties(mecha, root=None, collection_name="ParaModel_Slots", data_path=None):
     slots = mecha.get("base_body", {}).get("slots", {})
     if not slots:
         raise ValueError("No base_body.slots found in mecha data")
-    defaults = load_default_slots()
+    defaults = load_default_slots(data_path=data_path)
     coll = _ensure_collection(collection_name)
     created = []
     uf = _uf()
@@ -203,21 +253,20 @@ def create_slot_empties(mecha, root=None, collection_name="ParaModel_Slots"):
         empty = bpy.data.objects.new(name, None)
         empty.empty_display_type = "ARROWS"
         empty.empty_display_size = _unit_to_bu(0.3)
+        coll.objects.link(empty)
+        if root:
+            _parent_keep_local(empty, root)
         defn = defaults.get(slot_id, {})
         pos = defn.get("position") or slot_data.get("position") or [0, 0, 0]
         rot = defn.get("rotation") or slot_data.get("rotation") or [0, 0, 0]
         if len(pos) >= 3:
-            # positions are Blender Z-up meters [x, y_forward, z_up]
             empty.location = (float(pos[0]) * uf, float(pos[1]) * uf, float(pos[2]) * uf)
         if len(rot) >= 3:
             empty.rotation_euler = tuple(math.radians(float(r)) for r in rot[:3])
-        if root:
-            empty.parent = root
         empty["paramodel_slot"] = slot_id
         empty["paramodel_part_id"] = slot_data.get("part_id") or ""
         empty["paramodel_mecha_id"] = mecha.get("id", "")
         empty["paramodel_connection_type"] = defn.get("connection_type", "")
-        coll.objects.link(empty)
         created.append(name)
     return created
 
@@ -245,7 +294,6 @@ def create_armature(mecha, root=None, collection_name="ParaModel_Armature"):
     created = []
     uf = _uf()
     bones_data = _load_bones()
-    # Ground-align: shift so lowest bone tip is at z=0 (match slot ground origin)
     min_z = min(min(h[2], t[2]) for _, _, h, t in bones_data)
     z_off = -min_z
     for name, parent_name, head, tail in bones_data:
@@ -259,15 +307,16 @@ def create_armature(mecha, root=None, collection_name="ParaModel_Armature"):
     _mode(arm_obj, "OBJECT")
     arm_obj["paramodel_ground_offset_m"] = z_off
     if root:
-        arm_obj.parent = root
+        _parent_keep_local(arm_obj, root)
+        arm_obj.location = (0, 0, 0)
     return arm_obj, created
 
 
-def attach_parts(mecha, prefer_mesh=True, collection_name="ParaModel_Parts"):
+def attach_parts(mecha, prefer_mesh=True, collection_name="ParaModel_Parts", data_path=None):
     slots = mecha.get("base_body", {}).get("slots", {})
     coll = _ensure_collection(collection_name)
     attached, mesh_count, placeholder_count = [], 0, 0
-    root = _addon_root()
+    parts_root = _parts_root(data_path)
     for slot_id, slot_data in slots.items():
         if not slot_data.get("enabled", False):
             continue
@@ -277,12 +326,15 @@ def attach_parts(mecha, prefer_mesh=True, collection_name="ParaModel_Parts"):
         slot_obj = bpy.data.objects.get(f"slot_{slot_id}")
         if not slot_obj:
             continue
-        part = load_part(part_id)
+        part = load_part(part_id, data_path=data_path)
         mesh_name = f"part_{slot_id}_{part_id}"
         if mesh_name in bpy.data.objects:
             bpy.data.objects.remove(bpy.data.objects[mesh_name], do_unlink=True)
         used = False
-        mesh_path = mesh_io.resolve_mesh_path(part, part_id, root) if prefer_mesh else None
+        mesh_path = (
+            mesh_io.resolve_mesh_path(part, part_id, os.path.dirname(parts_root))
+            if prefer_mesh else None
+        )
         if mesh_path:
             imported = mesh_io.import_mesh_file(mesh_path)
             if imported:
@@ -291,7 +343,7 @@ def attach_parts(mecha, prefer_mesh=True, collection_name="ParaModel_Parts"):
                     mesh_io.unlink_from_all_collections(obj)
                     coll.objects.link(obj)
                     obj.name = mesh_name
-                    obj.parent = slot_obj
+                    _parent_keep_local(obj, slot_obj)
                     obj.location = (0, 0, 0)
                     obj.rotation_euler = (0, 0, 0)
                     obj["paramodel_part"] = True
@@ -304,7 +356,7 @@ def attach_parts(mecha, prefer_mesh=True, collection_name="ParaModel_Parts"):
                     parent.empty_display_type = "PLAIN_AXES"
                     parent.empty_display_size = _unit_to_bu(0.15)
                     coll.objects.link(parent)
-                    parent.parent = slot_obj
+                    _parent_keep_local(parent, slot_obj)
                     parent.location = (0, 0, 0)
                     parent.rotation_euler = (0, 0, 0)
                     parent["paramodel_part"] = True
@@ -315,7 +367,8 @@ def attach_parts(mecha, prefer_mesh=True, collection_name="ParaModel_Parts"):
                         mesh_io.unlink_from_all_collections(obj)
                         coll.objects.link(obj)
                         obj.name = f"{mesh_name}_{i}"
-                        obj.parent = parent
+                        _parent_keep_local(obj, parent)
+                        obj.location = (0, 0, 0)
                         obj["paramodel_part"] = True
                         obj["paramodel_part_id"] = part_id
                         obj["paramodel_slot"] = slot_id
@@ -326,7 +379,7 @@ def attach_parts(mecha, prefer_mesh=True, collection_name="ParaModel_Parts"):
         if not used:
             size = (part.get("placeholder") or {}).get("size") or [0.3, 0.3, 0.3]
             obj = mesh_io.create_placeholder_cube(mesh_name, size, _uf(), coll)
-            obj.parent = slot_obj
+            _parent_keep_local(obj, slot_obj)
             obj.location = (0, 0, 0)
             obj.rotation_euler = (0, 0, 0)
             obj["paramodel_part"] = True
@@ -348,8 +401,9 @@ class PARAMODEL_OT_load_mecha(Operator):
         if not s.data_path:
             self.report({"ERROR"}, "Data Path is empty")
             return {"CANCELLED"}
+        data_path = s.data_path
         try:
-            mecha = load_mecha_json(s.data_path, s.selected_mecha)
+            mecha = load_mecha_json(data_path, s.selected_mecha)
         except Exception as e:
             self.report({"ERROR"}, str(e))
             return {"CANCELLED"}
@@ -359,8 +413,14 @@ class PARAMODEL_OT_load_mecha(Operator):
             except Exception:
                 pass
         ws = getattr(s, "working_scale", 0.01)
-        root = create_root(mecha, working_scale=ws) if s.apply_parameters else None
-        n_slots = len(create_slot_empties(mecha, root=root)) if s.create_empties else 0
+        root = (
+            create_root(mecha, working_scale=ws, data_path=data_path)
+            if s.apply_parameters else None
+        )
+        n_slots = (
+            len(create_slot_empties(mecha, root=root, data_path=data_path))
+            if s.create_empties else 0
+        )
         n_bones = 0
         if getattr(s, "create_armature", False):
             try:
@@ -370,17 +430,20 @@ class PARAMODEL_OT_load_mecha(Operator):
                 self.report({"WARNING"}, f"Armature failed: {e}")
         n_parts = n_mesh = n_ph = 0
         if s.create_placeholders:
-            attached, n_mesh, n_ph = attach_parts(mecha, prefer_mesh=s.prefer_mesh)
+            attached, n_mesh, n_ph = attach_parts(
+                mecha, prefer_mesh=s.prefer_mesh, data_path=data_path
+            )
             n_parts = len(attached)
-        primary, value, ref, sf = resolve_size(mecha)
+        primary, value, ref, sf = resolve_size(mecha, data_path=data_path)
         effective = sf * float(ws if ws else 0.01)
         _raise_clip_end(minimum=max(100.0, value * float(ws if ws else 0.01) * 20))
+        slot_src = "ok" if load_default_slots(data_path=data_path) else "MISSING_SCHEMA"
         self.report(
             {"INFO"},
             f"Loaded {s.selected_mecha}: {n_slots} slots, {n_bones} bones, "
             f"{n_parts} parts ({n_mesh} mesh / {n_ph} placeholder), "
             f"sf={sf:.3f} ws={float(ws):.4f} eff={effective:.4f} "
-            f"({primary} {value}/{ref})",
+            f"({primary} {value}/{ref}) slots={slot_src}",
         )
         return {"FINISHED"}
 
