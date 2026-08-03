@@ -2,6 +2,14 @@
 
 Parametric mecha model system for Atlas / Excelion.
 
+Character-design-like flow (intended):
+
+1. **Identity** — id, name, category, tags
+2. **Size** — scale_class + height (drives global scale)
+3. **Traits** — mass, mobility, output, armor (features)
+4. **Visual** — colors, style_tags
+5. **Body** — base_body slots → parts (mesh or placeholder)
+
 ## Structure
 
 ```
@@ -11,22 +19,28 @@ projects/paramodel/
 ├── data/mecha|parts/
 ├── para_model.blend       # reference scene (optional)
 ├── scripts/package_addon.sh
+├── DESIGN.md              # flow vs implementation
+├── CHANGELOG.md
 └── dist/                  # generated zip
 ```
 
-## Status (2026-08-02)
+## Status (2026-08-03)
 
 | Item | Status |
 |------|--------|
-|Slots + placeholders + params | Verified in Blender |
+| Slots + placeholders + params | Verified structure |
 | Mesh import | **v0.7.0** — glb/gltf/obj/fbx/blend via `part.mesh` |
 | Armature | **SuperRobotRig** procedural (no blend dep) |
+| Top-level attrs → scene | Partial (see DESIGN.md) |
+| Size consistency | **Mismatch** — see DESIGN.md |
 
 ## Mesh resolution
 
 1. `part.mesh` path relative to `data/parts/` (e.g. `meshes/arm_basic_01.glb`)
 2. Auto-fallback: `data/parts/meshes/{part_id}.{glb|gltf|obj|fbx|blend}`
 3. If missing or import fails → placeholder cube
+
+**Note:** Current `*.glb` files are identical placeholder cubes. Replace with real exports when available.
 
 ## Install
 

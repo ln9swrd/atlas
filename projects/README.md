@@ -9,10 +9,12 @@ See **`state/PROJECT_MAP.md`**.
 | Folder | Role |
 |--------|------|
 | `_template/` | New project `state/` template (**only**) |
-| `excelion/` | Game / IP (P0) |
-| `excelion-forge/` | Forge pipeline (P0, canonical) |
+| `paramodel/` | Parametric mecha (side track) — Blender addon + data |
 | `printguard/` | Business / pre-print (P2) |
 | `coin-s/` | Experiment (submodule, P3) |
+
+Product canonical repos (not under this tree):
+- `excelion` / `excelion-forge` — separate GitHub SoR (D28)
 
 ## Archived (not under projects/)
 
