@@ -135,7 +135,25 @@ def _mode(obj, mode):
         bpy.ops.object.mode_set(mode=mode)
 
 
-def create_root(mecha, collection_name="ParaModel_Root"):
+def _raise_clip_end(minimum=100.0):
+    """Ensure 3D view clip_end is large enough for the loaded model."""
+    try:
+        for window in bpy.context.window_manager.windows:
+            screen = window.screen
+            if not screen:
+                continue
+            for area in screen.areas:
+                if area.type != "VIEW_3D":
+                    continue
+                for space in area.spaces:
+                    if space.type == "VIEW_3D":
+                        if space.clip_end < minimum:
+                            space.clip_end = minimum
+    except Exception:
+        pass
+
+
+def create_root(mecha, collection_name="ParaModel_Root", working_scale=0.01):
     coll = _ensure_collection(collection_name)
     mecha_id = mecha.get("id", "mecha")
     name = f"root_{mecha_id}"
@@ -146,7 +164,11 @@ def create_root(mecha, collection_name="ParaModel_Root"):
     root.empty_display_size = _unit_to_bu(0.5)
     coll.objects.link(root)
     primary, value, ref, sf = resolve_size(mecha)
-    root.scale = (sf, sf, sf)
+    ws = float(working_scale) if working_scale else 0.01
+    if ws <= 0:
+        ws = 0.01
+    effective = sf * ws
+    root.scale = (effective, effective, effective)
     root["paramodel_root"] = True
     root["paramodel_mecha_id"] = mecha_id
     root["paramodel_archetype"] = mecha.get("archetype") or ""
@@ -154,6 +176,8 @@ def create_root(mecha, collection_name="ParaModel_Root"):
     root["paramodel_size_value"] = value
     root["paramodel_size_reference"] = ref
     root["paramodel_scale_factor"] = sf
+    root["paramodel_working_scale"] = ws
+    root["paramodel_effective_scale"] = effective
     params = mecha.get("parameters") or {}
     root["paramodel_mass"] = float(params.get("mass") or 0)
     root["paramodel_mobility"] = float(params.get("mobility") or 0)
@@ -328,7 +352,8 @@ class PARAMODEL_OT_load_mecha(Operator):
                 bpy.ops.object.mode_set(mode="OBJECT")
             except Exception:
                 pass
-        root = create_root(mecha) if s.apply_parameters else None
+        ws = getattr(s, "working_scale", 0.01)
+        root = create_root(mecha, working_scale=ws) if s.apply_parameters else None
         n_slots = len(create_slot_empties(mecha, root=root)) if s.create_empties else 0
         n_bones = 0
         if getattr(s, "create_armature", False):
@@ -342,11 +367,15 @@ class PARAMODEL_OT_load_mecha(Operator):
             attached, n_mesh, n_ph = attach_parts(mecha, prefer_mesh=s.prefer_mesh)
             n_parts = len(attached)
         primary, value, ref, sf = resolve_size(mecha)
+        effective = sf * float(ws if ws else 0.01)
+        # ~30m real → ~0.3m with ws=0.01; clip_end 100m in scene units is ample
+        _raise_clip_end(minimum=max(100.0, value * float(ws if ws else 0.01) * 20))
         self.report(
             {"INFO"},
             f"Loaded {s.selected_mecha}: {n_slots} slots, {n_bones} bones, "
             f"{n_parts} parts ({n_mesh} mesh / {n_ph} placeholder), "
-            f"sf={sf:.3f} ({primary} {value}/{ref})",
+            f"sf={sf:.3f} ws={float(ws):.4f} eff={effective:.4f} "
+            f"({primary} {value}/{ref})",
         )
         return {"FINISHED"}
 
