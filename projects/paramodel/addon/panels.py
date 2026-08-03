@@ -22,6 +22,7 @@ class PARAMODEL_PT_main(Panel):
         col.prop(settings, "create_placeholders")
         col.prop(settings, "prefer_mesh")
         col.prop(settings, "apply_parameters")
+        col.prop(settings, "working_scale")
 
         layout.separator()
         layout.operator("paramodel.load_mecha", icon="IMPORT")
@@ -29,7 +30,7 @@ class PARAMODEL_PT_main(Panel):
 
         layout.separator()
         box = layout.box()
-        box.label(text="v0.7.1 — archetype/size", icon="INFO")
+        box.label(text="v0.7.2 — working scale 1:100", icon="INFO")
 
 
 classes = (
