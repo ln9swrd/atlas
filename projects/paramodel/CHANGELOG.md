@@ -1,5 +1,12 @@
 # ParaModel CHANGELOG
 
+## v0.7.2 — 2026-08-03
+
+- **Working scale** (default 0.01 = 1:100) on root — rig, slots, parts all inherit
+- 25 m mecha → ~0.30 m viewport (was ~30 m / 29845 mm)
+- Scene prop `working_scale` (0.01 = model, 1.0 = real meters)
+- Load raises 3D view `clip_end` when needed
+
 ## v0.7.1 — 2026-08-03
 
 - **Structure:** Identity → Archetype → Size → Traits → Visual → Body
