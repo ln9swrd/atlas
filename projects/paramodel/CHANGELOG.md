@@ -1,5 +1,12 @@
 # ParaModel CHANGELOG
 
+## v0.7.4 — 2026-08-03
+
+- **Fix:** zip install missing schema → all slots at origin (cubes piled at world origin)
+- Bundle `schema/` into addon zip
+- Resolve schema/parts via package dir, project root, or data_path parent
+- Parent with identity matrix_parent_inverse so local coords respect root scale
+
 ## v0.7.3 — 2026-08-03
 
 - **PM-14 Axis unify:** slots → Blender Z-up `[x, y_forward, z_up]`
@@ -18,24 +25,16 @@
 - **Structure:** Identity → Archetype → Size → Traits → Visual → Body
 - `archetype` + `size.{scale_class,primary,value}` in mecha schema
 - `schema/templates/humanoid.json` — reference height 2.0 m
-- Scale: `sf = size.value / template.reference_value` (no more height/25)
-- Loader stores archetype/size props on root; load report includes sf
-- Other archetypes (quadruped, aircraft, vessel, …) planned only
+- Scale: `sf = size.value / template.reference_value`
 
 ## v0.7.0 — 2026-08-02
 
-- mesh_io: glb/gltf/obj/fbx/blend import
-- attach_parts: resolve `part.mesh` + auto-fallback `meshes/{part_id}.*`
-- missing/fail → placeholder cube; report mesh vs placeholder counts
-- mesh path convention: `{part_id}.glb`
+- mesh_io + attach_parts mesh import
 
 ## v0.6.2 — 2026-08-02
 
-- bones.json (meters) for unit-aware SuperRobotRig
-- operators unit-aware restore
+- bones.json (meters), unit-aware scale
 
 ## v0.6.0 — 2026-08-02
 
-- SuperRobotRig procedural (bone table in code / bones.json)
-- no blend dependency for armature
-- PM-1..PM-8 base pipeline
+- SuperRobotRig procedural; PM-1..PM-8 base pipeline
