@@ -20,12 +20,10 @@ def _uf():
 
 
 def _package_dir():
-    """Directory containing this addon module (operators.py)."""
     return os.path.dirname(os.path.abspath(__file__))
 
 
 def _project_root():
-    """paramodel project root when running from repo (addon/ is one level down)."""
     pkg = _package_dir()
     parent = os.path.dirname(pkg)
     if os.path.isdir(os.path.join(parent, "schema")):
@@ -36,14 +34,12 @@ def _project_root():
 
 
 def _find_file(*relative_parts, data_path=None):
-    """Locate a project file across zip-install and repo layouts."""
     candidates = []
     pkg = _package_dir()
     proj = _project_root()
     candidates.append(os.path.join(pkg, *relative_parts))
     candidates.append(os.path.join(proj, *relative_parts))
     if data_path:
-        # data_path = .../data/mecha → project = .../paramodel
         mecha_dir = os.path.abspath(data_path)
         data_dir = os.path.dirname(mecha_dir)
         paramodel_dir = os.path.dirname(data_dir)
@@ -70,7 +66,6 @@ def load_mecha_json(data_path, mecha_id):
 
 
 def load_template(template_id, data_path=None):
-    """Load schema/templates/{id}.json; empty dict if missing."""
     if not template_id:
         return {}
     path = _find_file("schema", "templates", f"{template_id}.json", data_path=data_path)
@@ -83,11 +78,6 @@ def load_template(template_id, data_path=None):
 
 
 def resolve_size(mecha, data_path=None):
-    """Return (primary, value_m, reference_m, scale_factor).
-
-    Contract: sf = value / template.reference_value
-    Fallback: parameters.height; reference default 2.0 (humanoid authored scale).
-    """
     size = mecha.get("size") or {}
     primary = size.get("primary") or "height"
     value = size.get("value")
@@ -96,7 +86,6 @@ def resolve_size(mecha, data_path=None):
     if value is None:
         value = 25.0
     value = float(value)
-
     template_id = (
         mecha.get("archetype")
         or (mecha.get("base_body") or {}).get("template")
@@ -124,7 +113,6 @@ def load_default_slots(data_path=None):
 
 
 def _parts_root(data_path=None):
-    """Directory containing part JSON files."""
     if data_path:
         mecha_dir = os.path.abspath(data_path)
         data_dir = os.path.dirname(mecha_dir)
@@ -180,7 +168,6 @@ def _mode(obj, mode):
 
 
 def _raise_clip_end(minimum=100.0):
-    """Ensure 3D view clip_end is large enough for the loaded model."""
     try:
         for window in bpy.context.window_manager.windows:
             screen = window.screen
@@ -198,7 +185,6 @@ def _raise_clip_end(minimum=100.0):
 
 
 def _parent_keep_local(child, parent):
-    """Parent child to parent; location/rotation stay as local coords."""
     child.parent = parent
     child.matrix_parent_inverse.identity()
 
@@ -331,10 +317,7 @@ def attach_parts(mecha, prefer_mesh=True, collection_name="ParaModel_Parts", dat
         if mesh_name in bpy.data.objects:
             bpy.data.objects.remove(bpy.data.objects[mesh_name], do_unlink=True)
         used = False
-        mesh_path = (
-            mesh_io.resolve_mesh_path(part, part_id, os.path.dirname(parts_root))
-            if prefer_mesh else None
-        )
+        mesh_path = mesh_io.resolve_mesh_path(part, part_id, parts_root) if prefer_mesh else None
         if mesh_path:
             imported = mesh_io.import_mesh_file(mesh_path)
             if imported:
