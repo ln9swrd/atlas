@@ -1,6 +1,6 @@
 # PROJECT_MAP
 
-> Updated: 2026-08-02 (paramodel v0.6.0)
+> Updated: 2026-08-03 (paramodel v0.7.0 sync)
 
 ## System
 
@@ -22,7 +22,7 @@
 
 | ID | Path | Notes |
 |----|------|-------|
-| paramodel | `projects/paramodel/` | ParaModel addon **v0.6.0**; SuperRobotRig procedural |
+| paramodel | `projects/paramodel/` | Addon **v0.7.0**; mesh import + SuperRobotRig procedural; GLB = placeholder cubes |
 | printguard | `projects/printguard/` | P2 docs |
 | coin-s | `projects/coin-s/` | submodule-oriented |
 | _template | `projects/_template/` | |

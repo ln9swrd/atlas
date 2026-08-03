@@ -30,3 +30,8 @@ Example part JSON:
 ```
 
 If the mesh file is missing, the addon falls back to a placeholder cube.
+
+## Current status (2026-08-03)
+
+All existing `*.glb` files are **identical placeholder cubes** (same file size / content).
+No real exported mecha meshes yet. Replace with actual models when available.
