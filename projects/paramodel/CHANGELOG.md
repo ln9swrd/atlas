@@ -1,5 +1,11 @@
 # ParaModel CHANGELOG
 
+## v0.7.3 — 2026-08-03
+
+- **PM-14 Axis unify:** slots → Blender Z-up `[x, y_forward, z_up]`
+- Slot origin = ground (feet); head z=1.8 at 2 m reference
+- SuperRobotRig ground-aligned (lowest bone → z=0)
+
 ## v0.7.2 — 2026-08-03
 
 - **Working scale** (default 0.01 = 1:100) on root — rig, slots, parts all inherit
