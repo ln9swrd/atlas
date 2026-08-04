@@ -10,7 +10,7 @@ SIDE: **HOLD** — paramodel 포함 모든 하위 프로젝트 중단 (Master 20
 - **하위 개별 프로젝트 전부 작업 중단** (코드·애드온·제품 기능 진행 안 함)  
 - 품질(모델링→애니)은 수작업 전제; 자동화로 품질 대체 불가 판단 후 hold  
 - Atlas closeout 유지 (Master 2026-07-31)  
-- **Cline 미사용** (2026-08-04): `.clineignore` 삭제, `.gitignore` clinerules 제거, DAILY_LOOP Cline 문구 제거
+- **Cline 미사용** (2026-08-04): D30; D15 superseded
 
 ## Platform (closed / maintenance)
 
@@ -23,6 +23,7 @@ SIDE: **HOLD** — paramodel 포함 모든 하위 프로젝트 중단 (Master 20
 | D28 repo split S0–S5 | Done |
 | C1 / C3 closeout | Done |
 | Cline surface 제거 | Done (2026-08-04) |
+| Doc hygiene HYG-1..3 | Done (2026-08-04) |
 | Ongoing | maintenance only |
 
 ## Sub-projects (all HOLD — 2026-08-04)
@@ -39,9 +40,16 @@ SIDE: **HOLD** — paramodel 포함 모든 하위 프로젝트 중단 (Master 20
 
 ## Open (platform only)
 
-- none product/side — all sub-project open tasks suspended  
-- platform: maintenance only  
-- residual hygiene: tracked `__pycache__/` bulk untrack (로컬 `git rm -r --cached '**/__pycache__'` 권장)
+- none — hygiene residual cleared 2026-08-04  
+- platform: maintenance only
+
+## Recent hygiene (2026-08-04)
+
+| ID | Change | Commit |
+|----|--------|--------|
+| HYG-2 | D15→D30 (Cline surface) | 5905b3a |
+| HYG-3 | ROADMAP maintenance banner | 7d6679f |
+| HYG-1 | no tracked `__pycache__` on main; gitignore OK | verified tree |
 
 ## Do not
 
