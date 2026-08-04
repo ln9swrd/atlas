@@ -1,6 +1,6 @@
 # Atlas Decision Log
 
-Status: Living log (2026-07-31)  
+Status: Living log (2026-08-04)  
 Discipline: `docs/06_OPERATIONS/DECISION_PROCESS.md` (P2-5)  
 Flow: **Draft → Master confirm → this file** (chat is not SoR)
 
@@ -21,11 +21,12 @@ Flow: **Draft → Master confirm → this file** (chat is not SoR)
 
 | ID | Decision | Notes |
 |----|----------|-------|
-| D07 | Cline: Subagents/Native/Parallel OFF 권장 | |
+| D07 | Cline: Subagents/Native/Parallel OFF 권장 | historical; surface removed D30 |
 | D08 | 로컬 AI는 WSL 권장 | |
-| D15 | Primary surface = Cline + Ollama | Continue 보조 |
+| D15 | ~~Primary surface = Cline + Ollama~~ | **Superseded by D30** (2026-08-04) |
 | D21 | **마스터** = 최종 권한; 단순 쉘 가능 | ROLE_SPLIT.md |
 | D22 | **atlas-extension 폐기** | issue #2 / PR #3 closed |
+| D30 | **Cline surface 미사용** | Master 2026-08-04. `.clineignore` 삭제, clinerules 제거, DAILY_LOOP Cline 문구 제거. Primary surface 재지정 전까지 docs/git + 로컬 도구만. Cline 재도입 금지(명시 지시 전). |
 
 ## Domain Isolation / VERIFY
 
