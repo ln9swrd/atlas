@@ -23,7 +23,7 @@ SIDE: **HOLD** — paramodel 포함 모든 하위 프로젝트 중단 (Master 20
 | D28 repo split S0–S5 | Done |
 | C1 / C3 closeout | Done |
 | Cline surface 제거 | Done (2026-08-04) |
-| Doc hygiene HYG-1..3 | Done (2026-08-04) |
+| Doc hygiene HYG-1..4 | Done (2026-08-04) |
 | Ongoing | maintenance only |
 
 ## Sub-projects (all HOLD — 2026-08-04)
@@ -40,8 +40,8 @@ SIDE: **HOLD** — paramodel 포함 모든 하위 프로젝트 중단 (Master 20
 
 ## Open (platform only)
 
-- none — hygiene residual cleared 2026-08-04  
-- platform: maintenance only
+- none — maintenance only  
+- residual historical Cline mentions in archive/process docs: leave (not SoR)
 
 ## Recent hygiene (2026-08-04)
 
@@ -49,7 +49,8 @@ SIDE: **HOLD** — paramodel 포함 모든 하위 프로젝트 중단 (Master 20
 |----|--------|--------|
 | HYG-2 | D15→D30 (Cline surface) | 5905b3a |
 | HYG-3 | ROADMAP maintenance banner | 7d6679f |
-| HYG-1 | no tracked `__pycache__` on main; gitignore OK | verified tree |
+| HYG-1 | no tracked `__pycache__` on main | verified |
+| HYG-4 | ROLE_SPLIT · GLOSSARY · 05_AGENTS · PROJECT_STATE_SCHEMA | 8c5680b…91a7b35 |
 
 ## Do not
 
