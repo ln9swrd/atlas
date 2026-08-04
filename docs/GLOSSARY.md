@@ -1,7 +1,7 @@
 # Atlas Concept Glossary
 
-Source: Original Conversations analysis + current repo docs
-Updated: 2026-07-31 (SERA = Cloud AI clarified)
+Source: Original Conversations analysis + current repo docs  
+Updated: 2026-08-04 (D30 Cline surface)
 
 ---
 
@@ -30,11 +30,13 @@ Updated: 2026-07-31 (SERA = Cloud AI clarified)
 
 | Term | Definition |
 |------|------------|
-| **Cline** | 현재 Primary work surface (VS Code agent + tools). |
-| **Roo** | Cline 실패 시 fallback agent. |
-| **Continue** | 선택적 autocomplete/chat 전용. 메인 에이전트 아님. |
-| **Ollama** | 로컬 LLM 호스트. 권장 `num_ctx` ≥ 32768. |
-| **SERA / Cloud AI (mode)** | **클라우드 AI.** 설계·분석·리뷰·문서 초안. 제품 프로젝트 아님. (`ROLE_SPLIT.md`, D11/D19) |
+| **Cline** | **Historical** primary VS Code agent surface. **Not in use** (D30, 2026-08-04). 재도입 금지(명시 지시 전). |
+| **Local agent** | Optional multi-step tool agent when Master enables one. Not required under D30. |
+| **Roo** | Historical Cline fallback. Not primary. |
+| **Continue** | Optional autocomplete/chat only. Not main agent. |
+| **Ollama** | Local LLM host. Recommended `num_ctx` ≥ 32768 when used. |
+| **SERA / Cloud AI (mode)** | **Cloud AI.** Design·analysis·review·doc drafts. Not a product project. (`ROLE_SPLIT.md`, D11/D19) |
+| **Primary surface (current)** | Git `state/` + Master + Cloud AI / authorized agent (D30). |
 
 ## Layers (conceptual)
 
@@ -48,10 +50,10 @@ Updated: 2026-07-31 (SERA = Cloud AI clarified)
 
 | Term | Definition |
 |------|------------|
-| **Exelion / Excelion** | 메카닉/게임 관련 도메인 프로젝트. |
-| **Excelion Forge** | Blender 리그 검증·파이프라인 도구. |
-| **PrintGuard** | 비즈니스/3D프린팅 관련 하위 프로젝트. |
-| **Coin-S** | 암호화폐 관련 실험 (Atlas 연동 수준 낮음). |
+| **Exelion / Excelion** | 메카닉/게임 관련 도메인 프로젝트. Canonical: `ln9swrd/excelion` (HOLD). |
+| **Excelion Forge** | Blender 리그 검증·파이프라인 도구. Canonical: `ln9swrd/excelion-forge` (HOLD). |
+| **PrintGuard** | 비즈니스/3D프린팅 관련 하위 프로젝트 (HOLD). |
+| **Coin-S** | 암호화폐 관련 실험 (HOLD). |
 | ~~**SERA (project)**~~ | **프로젝트 형태만 폐기 (D19).** 이름 = Cloud AI로 유지. |
 
 ## Process
