@@ -9,7 +9,7 @@
 | **Atlas** | DevOS — `ln9swrd/atlas` (platform only; active for maintenance) |
 | **SERA / Cloud AI** | Cloud AI 모드 (설계·분석·리뷰). 제품 아님 (D11/D19) |
 | **Kraken** | Layer name only (D24) |
-| **Cline / Continue** | Tools |
+| **Local agent / Continue** | Optional tools (Cline surface 미사용 — D30) |
 
 ## Product (canonical GitHub — SoR) — HOLD
 
@@ -18,7 +18,7 @@
 | **excelion** | https://github.com/ln9swrd/excelion | **HOLD** |
 | **excelion-forge** | https://github.com/ln9swrd/excelion-forge | **HOLD** |
 
-## Still in atlas only — HOLD
+## Still in atlas — HOLD
 
 | ID | Path | Status |
 |----|------|--------|
@@ -27,6 +27,7 @@
 | makerfac-needs-research | `projects/makerfac-needs-research/` | **HOLD** |
 | blender | `projects/blender/` | **HOLD** |
 | coin-s | `projects/coin-s/` | **HOLD** |
+| excelion (residual) | `projects/excelion/design/` only | **HOLD** — pointer README; not SoR |
 | _template | `projects/_template/` | template only |
 
 ## Archived
