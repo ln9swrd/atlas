@@ -1,6 +1,6 @@
 # Project State Schema
 
-Status: **Active** (G2, 2026-07-30)  
+Status: **Active** (G2, 2026-07-30 · D30 update 2026-08-04)  
 Applies to: every domain project under `projects/<name>/`  
 Does **not** replace Atlas root `state/` (that is DevOS-only).
 
@@ -23,11 +23,13 @@ Does **not** replace Atlas root `state/` (that is DevOS-only).
 
 | Mode | Who runs tools | State files |
 |------|----------------|-------------|
-| `cline` | Local Cline (+ Ollama) | Read/write project `state/` via Git |
-| `cloud` | Cloud AI (chat/PR suggestions) | Same paths; prefer PR or explicit edit |
-| `both` | Cline executes; cloud designs/reviews | `TASK_MAP` rows may set `assignee` |
+| `cloud` | Cloud AI (chat / Git API) | Same paths; explicit edit or PR |
+| `local-agent` | Optional local agent when Master enables | Read/write project `state/` via Git |
+| `both` | Local agent executes; cloud designs/reviews | `TASK_MAP` rows may set `assignee` |
+| ~~`cline`~~ | **Retired (D30)** | Treat legacy `ACTIVE_MODE: cline` as `cloud` or `local-agent` |
 
-Do not keep a second copy of status in chat-only memory.
+Do not keep a second copy of status in chat-only memory.  
+Cline surface 미사용 — 재도입 금지(명시 지시 전).
 
 ---
 
@@ -52,7 +54,7 @@ Template: `projects/_template/state/` (G3).
 # CURRENT_STATE — <project name>
 
 ACTIVE_TARGET: <one line>
-ACTIVE_MODE: cline | cloud | both
+ACTIVE_MODE: cloud | local-agent | both
 ACTIVE_BRANCH: <branch or n/a>
 STATUS: <one line>
 
@@ -79,7 +81,7 @@ Rules:
 | ID | Stable id (e.g. T-1, FEAT-3) |
 | Task | One actionable line |
 | Status | Pending / In progress / Done / Blocked |
-| Assignee | `human` / `cline` / `cloud` / `both` (optional) |
+| Assignee | `human` / `local-agent` / `cloud` / `both` (optional; legacy `cline` → `local-agent`) |
 | Evidence | Path, commit, or CLI note when Done |
 
 - Prefer small rows over large epics.
@@ -115,7 +117,7 @@ Never auto-dump Atlas `archive/` or `obsidian/` into project work context.
 | Root `state/` | Project `state/` |
 |---------------|------------------|
 | Platform L-*, G-*, IMP-* | Product/feature tasks |
-| D19, rebuild, Cline setup | App-specific NEXT |
+| D19, rebuild, surface policy | App-specific NEXT |
 
 When both change in one session, update **both** maps (rule: status on Git).
 
@@ -123,6 +125,7 @@ When both change in one session, update **both** maps (rule: status on Git).
 
 ## 9. Out of scope for this schema
 
-- Runtime DB, camera pipeline, forking Cline
-- Implementing cloud provider APIs
+- Runtime DB, camera pipeline
+- Reintroducing Cline without Master (D30)
+- Implementing cloud provider APIs as platform product
 - Replacing Evidence-First with chat claims
