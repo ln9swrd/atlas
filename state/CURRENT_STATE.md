@@ -17,44 +17,35 @@ SIDE: **HOLD** — paramodel 포함 모든 하위 프로젝트 중단 (Master 20
 | Area | Status |
 |------|--------|
 | Min M1–M7 | Done |
-| F1–F4 domain / path | Done + Evidence |
-| P0–P3 ops | Done |
-| R1–R7 review | Done |
-| D28 repo split S0–S5 | Done |
-| C1 / C3 closeout | Done |
-| Cline surface 제거 | Done (2026-08-04) |
-| Doc hygiene HYG-1..4 | Done (2026-08-04) |
+| F1–F4 · P0–P3 · R1–R7 · D28 · C1/C3 | Done |
+| Cline surface 제거 + D30 cascade | Done (2026-08-04) |
+| Doc hygiene HYG-1..5 | Done (2026-08-04) |
 | Ongoing | maintenance only |
 
 ## Sub-projects (all HOLD — 2026-08-04)
 
-| ID | Path / Canonical | Last known | Status |
-|----|------------------|------------|--------|
-| paramodel | `projects/paramodel/` | Addon ~v0.7.4; SuperRobotRig; placeholder GLB | **HOLD** |
-| printguard | `projects/printguard/` | P2 docs | **HOLD** |
-| makerfac-needs-research | `projects/makerfac-needs-research/` | research track | **HOLD** |
-| blender | `projects/blender/` | legacy addon / assets | **HOLD** |
-| coin-s | `projects/coin-s/` | submodule | **HOLD** |
-| excelion | `ln9swrd/excelion` | split SoR | **HOLD** |
-| excelion-forge | `ln9swrd/excelion-forge` | split SoR | **HOLD** |
+| ID | Path / Canonical | Status |
+|----|------------------|--------|
+| paramodel | `projects/paramodel/` | **HOLD** |
+| printguard / makerfac / blender / coin-s | `projects/*` | **HOLD** |
+| excelion / excelion-forge | GitHub canonical | **HOLD** |
 
 ## Open (platform only)
 
-- none — maintenance only  
-- residual historical Cline mentions in archive/process docs: leave (not SoR)
+- none  
+- historical Cline text in archive / old process docs: leave
 
 ## Recent hygiene (2026-08-04)
 
-| ID | Change | Commit |
-|----|--------|--------|
-| HYG-2 | D15→D30 (Cline surface) | 5905b3a |
-| HYG-3 | ROADMAP maintenance banner | 7d6679f |
-| HYG-1 | no tracked `__pycache__` on main | verified |
-| HYG-4 | ROLE_SPLIT · GLOSSARY · 05_AGENTS · PROJECT_STATE_SCHEMA | 8c5680b…91a7b35 |
+| ID | Change |
+|----|--------|
+| HYG-1..3 | pycache verify · D15→D30 · ROADMAP banner |
+| HYG-4 | ROLE_SPLIT · GLOSSARY · 05_AGENTS · PROJECT_STATE_SCHEMA |
+| HYG-5 | ATLAS_MIN_SCOPE · AGENT_REGISTRY · CONTEXT_INDEX |
 
 ## Do not
 
-- 하위 프로젝트 feature / PM-* / 제품 스프린트 재개 (명시 지시 전)  
-- dual-write into mono product paths  
+- 하위 프로젝트 feature 재개 (명시 지시 전)  
+- dual-write product paths  
 - core SDK rewrite / extension 부활  
 - Cline / .clinerules 재도입
