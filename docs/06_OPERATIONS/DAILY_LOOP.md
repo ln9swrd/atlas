@@ -1,6 +1,6 @@
 # Daily / Session Loop (실운용)
 
-Primary surface: **Cline + Ollama** (D15)  
+Primary surface: **Git `state/` + agent (Grok 등)**  
 SoR: **Git `state/`** (대화창 아님)  
 Min scope: `docs/07_ROADMAP/ATLAS_MIN_SCOPE.md`  
 Domain: `tools/domain_policy.py` (P2-1 Done)  
@@ -28,8 +28,6 @@ bash tools/atlas_status.sh
 2. `state/TASK_MAP.md` — 열린 항목
 3. `state/CONTEXT_INDEX.md` — 오늘 열 파일만
 4. `AGENTS.md` — 도메인·Evidence
-
-Cline: Custom instructions / .clinerules가 AGENTS 핵심을 가리키는지 확인.
 
 ---
 
