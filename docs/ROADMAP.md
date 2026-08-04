@@ -1,26 +1,36 @@
 # Atlas Roadmap
 
-## v1.2 — Runtime Kernel
+> **Status (2026-08-04)**  
+> Operational target is **idle / platform maintenance only** (`state/CURRENT_STATE.md`, D29).  
+> Below is **historical design roadmap** — not an active execution queue.  
+> Do not treat v1.3 / v2.0 phases as current open work without Master re-open.
+
+Live status: `state/CURRENT_STATE.md` · `state/TASK_MAP.md`  
+Platform closeout: Min · F1–F4 · P0–P3 · R1–R7 · D28 · C1/C3 **Done**
+
+---
+
+## v1.2 — Runtime Kernel (historical)
 - RuntimeContext
 - ContextResolver
 - Layer Architecture
 - Priority Engine
 
-## v1.3 — Execution Runtime
+## v1.3 — Execution Runtime (historical / not active queue)
 - Daily operations procedure
 - Scheduler
 - Event Loop
 - PluginHost
 - Task Executor
 
-## v2.0 — Autonomous DevOS (Designed, In Transition)
+## v2.0 — Autonomous DevOS (Designed — on hold)
 - Self Planning & Continuous Runtime
 - AI Decision (SERA AI Runtime Engine)
 - Multi Project Support & Sandboxed Application Host
 - Knowledge Layer and Knowledge Curator as first-class runtime services
 - Model-agnostic AI Runtime with adaptive routing and hardware-aware policy
 
-### v2.0 Phased Roadmap
+### v2.0 Phased Roadmap (on hold)
 * **Phase 1: Foundation (v1.5)**
   - Event Bus Core & SDK Interface 설계 및 Mock 연계
   - Memory/Knowledge File API 매핑
