@@ -4,12 +4,13 @@
 
 **Atlas platform only.** 모든 하위 개별 프로젝트 **중단(HOLD)**.  
 이전: Platform closeout Done (2026-07-31). Paramodel side track 진행 중이었으나 전면 hold.  
-**Cline 미사용** — surface 제거 완료 (2026-08-04).
+**Cline 미사용** — surface 제거 완료 (2026-08-04). D15 superseded by D30.
 
 ## Closed (platform)
 
 Min · F1–F4 · P0–P3 · R1–R7 · D28 S0–S5 · C1 · C3  
-Cline 제거: `.clineignore` 삭제 · `.gitignore` clinerules 제거 · `DAILY_LOOP` 문구 정리 (2026-08-04)
+Cline 제거: `.clineignore` 삭제 · `.gitignore` clinerules 제거 · `DAILY_LOOP` 문구 정리 (2026-08-04)  
+Doc hygiene 2026-08-04: D15→D30 · ROADMAP maintenance banner · HYG-1
 
 ## HOLD — all sub-projects (Master 2026-08-04)
 
@@ -39,8 +40,15 @@ Path: `projects/paramodel/` · Addon ~v0.7.4 (main at halt)
 
 | ID | Task |
 |----|------|
-| HYG-1 | tracked `__pycache__/` untrack (로컬 bulk `git rm -r --cached`) |
-| — | (product/side) 없음 — 전부 HOLD |
+| — | (platform open 없음 — maintenance only) |
+
+## Closed hygiene (2026-08-04)
+
+| ID | Task | Evidence |
+|----|------|----------|
+| HYG-1 | tracked `__pycache__/` untrack | main tree: `__pycache__` path 없음; `.gitignore` already has `__pycache__/` |
+| HYG-2 | D15 supersede / D30 | `docs/DECISIONS.md` commit 5905b3a |
+| HYG-3 | ROADMAP maintenance banner | `docs/ROADMAP.md` commit 7d6679f |
 
 ## Hold (explicit)
 
