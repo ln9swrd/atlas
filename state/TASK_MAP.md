@@ -1,38 +1,48 @@
 # TASK_MAP
 
-## Direction (Master 2026-07-31)
+## Direction (Master 2026-08-04)
 
-Platform only. Product projects **not started**. **Atlas closeout Done.**
+**Atlas platform only.** 모든 하위 개별 프로젝트 **중단(HOLD)**.  
+이전: Platform closeout Done (2026-07-31). Paramodel side track 진행 중이었으나 전면 hold.
 
 ## Closed (platform)
 
 Min · F1–F4 · P0–P3 · R1–R7 · D28 S0–S5 · C1 · C3
 
-## Side track — paramodel (Master-directed 2026-08-02)
+## HOLD — all sub-projects (Master 2026-08-04)
 
-Path: `projects/paramodel/` · Addon **v0.7.3** (main)
+| Scope | Notes |
+|-------|--------|
+| paramodel (PM-*) | side track 중단. PM-15 및 open 항목 전부 hold |
+| printguard | P2 docs — hold |
+| makerfac-needs-research | hold |
+| blender / coin-s | hold |
+| excelion / excelion-forge | product hold (기존 유지 + 재확인) |
 
-| ID | Task | Status |
-|----|------|--------|
+### Paramodel snapshot at halt
+
+Path: `projects/paramodel/` · Addon ~v0.7.4 (main at halt)
+
+| ID | Task | Status at halt |
+|----|------|----------------|
 | PM-1..PM-8 | Base pipeline + mesh | Done |
 | PM-12 | SuperRobotRig procedural | Done |
-| PM-13 | Archetype + Size schema/contract | Done (v0.7.1) |
-| PM-10 | Local reinstall verify + working scale 1:100 | **Done (v0.7.2)** |
-| PM-14 | Axis unify slots/bones Z-up + ground origin | **Done (v0.7.3)** |
-| PM-15 | Non-humanoid templates | Planned |
+| PM-13 | Archetype + Size | Done |
+| PM-10 | working scale 1:100 | Done |
+| PM-14 | Axis unify Z-up | Done |
+| PM-15 | Non-humanoid templates | **HOLD** |
+| — | real GLB / slot→bone / materials | **HOLD** |
 
 ## Open
 
 | ID | Task |
 |----|------|
-| PM-15 | non-humanoid templates (quadruped, aircraft, …) |
-| — | real mecha GLB meshes (still placeholder cubes) |
-| — | slot → bone parent |
-| — | visual materials |
+| — | (product/side) 없음 — 전부 HOLD |
 
-## Hold
+## Hold (explicit)
 
 | ID | Task |
 |----|------|
-| — | ACTIVE_TARGET product / excelion work |
+| — | ACTIVE_TARGET product / excelion / forge |
+| — | paramodel 및 기타 `projects/*` 작업 |
 | — | Forge Prototype sprint |

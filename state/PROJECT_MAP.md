@@ -1,31 +1,33 @@
 # PROJECT_MAP
 
-> Updated: 2026-08-03 (paramodel v0.7.0 sync)
+> Updated: 2026-08-04 — **all sub-projects HOLD** (Master)
 
 ## System
 
 | Name | Role |
 |------|------|
-| **Atlas** | DevOS — `ln9swrd/atlas` |
+| **Atlas** | DevOS — `ln9swrd/atlas` (platform only; active for maintenance) |
 | **SERA / Cloud AI** | Cloud AI 모드 (설계·분석·리뷰). 제품 아님 (D11/D19) |
 | **Kraken** | Layer name only (D24) |
 | **Cline / Continue** | Tools |
 
-## Product (canonical GitHub — SoR)
+## Product (canonical GitHub — SoR) — HOLD
 
-| ID | Canonical | Atlas |
-|----|-----------|-------|
-| **excelion** | https://github.com/ln9swrd/excelion | 미러 제거 (S5-del) |
-| **excelion-forge** | https://github.com/ln9swrd/excelion-forge | 미러 제거 (S5-del) |
+| ID | Canonical | Status |
+|----|-----------|--------|
+| **excelion** | https://github.com/ln9swrd/excelion | **HOLD** |
+| **excelion-forge** | https://github.com/ln9swrd/excelion-forge | **HOLD** |
 
-## Still in atlas only
+## Still in atlas only — HOLD
 
-| ID | Path | Notes |
-|----|------|-------|
-| paramodel | `projects/paramodel/` | Addon **v0.7.0**; mesh import + SuperRobotRig procedural; GLB = placeholder cubes |
-| printguard | `projects/printguard/` | P2 docs |
-| coin-s | `projects/coin-s/` | submodule-oriented |
-| _template | `projects/_template/` | |
+| ID | Path | Status |
+|----|------|--------|
+| paramodel | `projects/paramodel/` | **HOLD** (halt 2026-08-04; ~v0.7.4) |
+| printguard | `projects/printguard/` | **HOLD** |
+| makerfac-needs-research | `projects/makerfac-needs-research/` | **HOLD** |
+| blender | `projects/blender/` | **HOLD** |
+| coin-s | `projects/coin-s/` | **HOLD** |
+| _template | `projects/_template/` | template only |
 
 ## Archived
 
@@ -37,3 +39,4 @@ See prior PROJECT_MAP / `archive/`.
 - atlas-extension (D22).
 - Dual-write product into mono: **forbidden**.
 - Root `ParaModel/` — moved to `projects/paramodel/` (2026-08-02).
+- Sub-project active work: **forbidden until Master re-opens** (2026-08-04).

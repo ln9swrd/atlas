@@ -1,17 +1,17 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: **idle** (platform)  
-PRODUCT: **hold** — excelion / excelion-forge 개별 진행 안 함 (Master 2026-07-31)  
-SIDE: **paramodel** — `projects/paramodel/` Master-directed (2026-08-02)
+ACTIVE_TARGET: **idle** (platform only)  
+PRODUCT: **HOLD all** — excelion / excelion-forge / 기타 제품 (Master 2026-08-04)  
+SIDE: **HOLD** — paramodel 포함 모든 하위 프로젝트 중단 (Master 2026-08-04)
 
 ## Direction
 
-- Atlas = 플랫폼만 다룸  
-- 제품 프로젝트는 저장소만 분리; **작업 시작하지 않음**  
-- Atlas closeout 완료 (Master 2026-07-31)  
-- ParaModel은 Atlas 내 side track (제품 hold와 별개)
+- Atlas = 플랫폼만 유지·문서/상태 관리  
+- **하위 개별 프로젝트 전부 작업 중단** (코드·애드온·제품 기능 진행 안 함)  
+- 품질(모델링→애니)은 수작업 전제; 자동화로 품질 대체 불가 판단 후 hold  
+- Atlas closeout 유지 (Master 2026-07-31)
 
-## Platform (closed)
+## Platform (closed / maintenance)
 
 | Area | Status |
 |------|--------|
@@ -21,29 +21,27 @@ SIDE: **paramodel** — `projects/paramodel/` Master-directed (2026-08-02)
 | R1–R7 review | Done |
 | D28 repo split S0–S5 | Done |
 | C1 / C3 closeout | Done |
+| Ongoing | maintenance only |
 
-## ParaModel (side track)
+## Sub-projects (all HOLD — 2026-08-04)
 
-| Item | Status |
-|------|--------|
-| Path | `projects/paramodel/` |
-| Addon | **v0.7.1** (GitHub main) |
-| Design flow | Identity → Archetype → Size → Traits → Visual → Body |
-| Size contract | sf = value / template.reference (humanoid ref 2.0) |
-| Mesh import | v0.7.0 |
-| Armature | SuperRobotRig procedural |
-| Non-humanoid templates | planned |
-| GLB assets | identical placeholder cubes |
-| Local reinstall verify | **Open (PM-10)** — use v0.7.1 zip |
+| ID | Path / Canonical | Last known | Status |
+|----|------------------|------------|--------|
+| paramodel | `projects/paramodel/` | Addon ~v0.7.4; SuperRobotRig; placeholder GLB | **HOLD** |
+| printguard | `projects/printguard/` | P2 docs | **HOLD** |
+| makerfac-needs-research | `projects/makerfac-needs-research/` | research track | **HOLD** |
+| blender | `projects/blender/` | legacy addon / assets | **HOLD** |
+| coin-s | `projects/coin-s/` | submodule | **HOLD** |
+| excelion | `ln9swrd/excelion` | split SoR | **HOLD** |
+| excelion-forge | `ln9swrd/excelion-forge` | split SoR | **HOLD** |
 
-## Open
+## Open (platform only)
 
-- PM-10: local pull → package v0.7.1 → Remove/Install → sf≈12.5 on brave-001
-- Axis unify (slots vs bones) — open
+- none product/side — all sub-project open tasks suspended  
 - platform: maintenance only
 
 ## Do not
 
-- excelion / forge product feature (hold)  
+- 하위 프로젝트 feature / PM-* / 제품 스프린트 재개 (명시 지시 전)  
 - dual-write into mono product paths  
-- core SDK rewrite / extension 부활
+- core SDK rewrite / extension 부활  
