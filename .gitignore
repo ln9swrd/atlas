@@ -60,6 +60,3 @@ logs/
 # ParaModel scene (Master-directed)
 !projects/paramodel/
 !projects/paramodel/**/*.blend
-
-# Ignore Cline rules file
-.clinerules
