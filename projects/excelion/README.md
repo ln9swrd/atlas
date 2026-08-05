@@ -1,60 +1,54 @@
-# projects/excelion (atlas residual)
+# Excelion
 
-> **Product SoR is NOT here.**  
-> Canonical: **https://github.com/ln9swrd/excelion** (D28)  
-> Status: **HOLD** (Master 2026-08-04) — dual-write forbidden.
+Mission-Based 3D Action · 오리지널 메카 IP  
+**Atlas 하위 개별 프로젝트** · SoR = **`projects/excelion/`** (이 트리)
 
-This tree is a **residual design asset stash** left after repo split.  
-Do not treat it as the live game project. Do not expand product docs/code here.
+> AI가 게임을 만드는 것이 아니라, 개발자가 더 좋은 게임을 만들도록 AI가 반복 작업을 대신한다.
 
 ---
 
-## Canonical (use these)
+## Start here
 
-| What | Where |
-|------|--------|
-| Game design docs | `ln9swrd/excelion` → `docs/00_VISION` … `07_PIPELINE` |
-| Play design / state | `ln9swrd/excelion` → `state/` |
-| Charter / backlog | `ln9swrd/excelion` → root + `backlog.json` |
-| Forge pipeline | `ln9swrd/excelion-forge` |
+| 순서 | Path | 역할 |
+|------|------|------|
+| 1 | [state/CURRENT_STATE.md](state/CURRENT_STATE.md) | 지금 · Next |
+| 2 | [state/TASK_MAP.md](state/TASK_MAP.md) | 열린 작업 |
+| 3 | [docs/09_STORY_S1.md](docs/09_STORY_S1.md) | S1 13화 스토리 |
+| 4 | [docs/README.md](docs/README.md) | 설계 인덱스 |
+| 5 | [docs/08_PLAY_BRAVE.md](docs/08_PLAY_BRAVE.md) | 플레이 |
 
 ---
 
-## What remains in atlas
+## Snapshot
+
+| 항목 | 값 |
+|------|-----|
+| 장르 | Mission-Based 3D Action |
+| 주인공 | **리아** (16세) |
+| 성장 | **S-Core** (겟타선) |
+| S1 | **13화 = 13스테이지** |
+| 엔진 | Unreal · Blender |
+| 파이프라인 | `ln9swrd/excelion-forge` |
+
+---
+
+## Layout
 
 ```
 projects/excelion/
-  README.md          ← this file
-  design/
-    brave/           ← BRAVE mecha concept images (PNG/JPG)
-    nemesis/         ← Nemesis concept images
+  README.md
+  docs/           설계 SoR (00–09)
+  state/          운영 SoR
+  design/         컨셉 이미지 (brave / nemesis)
+  goals/ sprints/ 실행 로그
+  …
 ```
 
-### design/brave/
+## Related
 
-Concept / sheet images (ChatGPT · Gemini · local).  
-Referenced historically from excelion play design; **not** authoritative numbers.
-
-### design/nemesis/
-
-Enemy / rival concept image(s).
-
----
-
-## Rules
-
-1. **No dual-write** of product sources into mono (D28 / PROJECT_MAP).  
-2. New game docs → `ln9swrd/excelion` only.  
-3. New pipeline tools → `ln9swrd/excelion-forge` only.  
-4. ACTIVE_TARGET product re-open is Master-only; until then **HOLD**.  
-5. Large binaries: prefer LFS / external when moving; see `docs/06_OPERATIONS/BINARY_ASSET_POLICY.md`.
-
----
-
-## Optional later (Master)
-
-| Option | Note |
-|--------|------|
-| Keep as design reference only | Current default |
-| Move images into excelion repo | Cleaner product clone |
-| Archive under `archive/excelion-design/` | If mono should drop product paths entirely |
+| 위치 | 역할 |
+|------|------|
+| `projects/excelion/` | **게임 제품 SoR** (여기) |
+| `ln9swrd/excelion` | 이전 단독 레포 · 미러/아카이브 후보 |
+| `ln9swrd/excelion-forge` | Forge 파이프라인 |
+| atlas root `state/` | DevOS 플랫폼만 |
