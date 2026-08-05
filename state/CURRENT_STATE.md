@@ -1,22 +1,15 @@
 # CURRENT_STATE
 
-ACTIVE_TARGET: **idle** (platform) + excelion tree imported  
-PRODUCT: excelion SoR = **`projects/excelion/`** (2026-08-05)  
-SIDE: paramodel 등 **HOLD**
+ACTIVE_TARGET: **idle** (platform)  
+PRODUCT: excelion SoR = **`projects/excelion/`**  
+STANDALONE: `ln9swrd/excelion` = **CLOSED** (2026-08-05)
 
 ## Direction
 
-- Atlas = DevOS + 개별 프로젝트 트리
-- **Excelion 문서 SoR** = `projects/excelion/` (단독 레포에서 이전)
-- 플랫폼 closeout 유지 · Cline 미사용 (D30)
-
-## Recent
-
-| 2026-08-05 | excelion docs/state 를 `projects/excelion/` 으로 import |
-| 2026-08-04 | D30 hygiene · projects/excelion residual design |
+- Excelion 전부 `projects/excelion/`
+- 단독 레포 수정 금지 · GitHub **Archive** 권장
 
 ## Do not
 
-- `ln9swrd/excelion` 과 dual-write
+- CLOSED excelion remote 에 커밋
 - Cline 재도입
-- core SDK rewrite
