@@ -1,35 +1,24 @@
 # PROJECT_MAP
 
-> Updated: 2026-08-05 — **excelion SoR → atlas/projects/excelion**
+> Updated: 2026-08-05 — excelion standalone **CLOSED**
 
 ## System
 
-| Name | Role |
-|------|------|
-| **Atlas** | DevOS — `ln9swrd/atlas` |
-| **SERA / Cloud AI** | Cloud AI 모드 (D11/D19) |
-| **Kraken** | Layer name (D24) |
+| Atlas | DevOS |
+| SERA | Cloud AI |
 
 ## Product
 
 | ID | Canonical | Status |
 |----|-----------|--------|
-| **excelion** | **`atlas/projects/excelion/`** | SoR 이전 2026-08-05 |
-| **excelion-forge** | https://github.com/ln9swrd/excelion-forge | HOLD |
-| excelion (old remote) | https://github.com/ln9swrd/excelion | 미러/아카이브 후보 |
+| **excelion** | **`atlas/projects/excelion/`** | **SoR** |
+| excelion-forge | https://github.com/ln9swrd/excelion-forge | HOLD |
+| excelion (standalone) | https://github.com/ln9swrd/excelion | **CLOSED** |
 
-## Still in atlas — HOLD
+## HOLD
 
-| ID | Path | Status |
-|----|------|--------|
-| paramodel | `projects/paramodel/` | HOLD |
-| printguard | `projects/printguard/` | HOLD |
-| makerfac-needs-research | `projects/makerfac-needs-research/` | HOLD |
-| blender | `projects/blender/` | HOLD |
-| coin-s | `projects/coin-s/` | HOLD |
-| _template | `projects/_template/` | template |
+paramodel · printguard · makerfac · blender · coin-s · `_template`
 
-## Deprecated
+## Rule
 
-- Dual-write: 단독 `ln9swrd/excelion` 과 atlas 트리 **동시 수정 금지** — SoR는 atlas 경로만.
-- Sub-project feature: Master 재개 전 HOLD (excelion 문서는 유지·갱신 가능).
+Excelion 수정 = `projects/excelion/` only. CLOSED 레포 수정 금지.
