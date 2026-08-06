@@ -2,10 +2,13 @@
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| 스토리 · D1–D11 | Done | docs/ · design/ |
-| 콘티 A EP01–13 | Done | design/conti/ |
-| S1 텍스트 테스트 일괄 | Done | CONTI_CROSS_CHECK 등 |
-| **EP04·07 광기 WEAK 윤문** | **Done** | design/conti/EP04 · EP07 |
-| 시각화 전부 | **Hold** | |
-| Forge · 모델링 | **Hold** | |
-| 새 트랙 | Open | |
+| S1 텍스트·콘티·테스트 | Done | state/*_TEST* · conti/ |
+| **밸런스 계획 B0–B6** | **Plan Done** | BALANCE_PLAN_2026-08-06 |
+| B0 축·단위 고정 | Open | |
+| B1 BRAVE 1.0 | Open | |
+| B2 적 배수표 | Open | |
+| B3 EP 구간 목표 | Open | |
+| B4 루프 검증 | Open | |
+| B5 광기 충돌 검사 | Open | |
+| B6 SoR 승격 | Open | |
+| 시각화 · Forge | **Hold** | |

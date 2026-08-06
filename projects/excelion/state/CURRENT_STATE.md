@@ -1,17 +1,18 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **idle (S1 텍스트 테스트·윤문 완료)**  
-STATUS: 2026-08-06 · 시각화 보류 · 포지 Hold
+ACTIVE_TARGET: **밸런스 수치화 B0 대기**  
+STATUS: 2026-08-06 · 시각화·포지 Hold · 계획 수립 완료
 
 ## Done
 
-- 스토리 · Design D1–D11 · 콘티 EP01–13
-- 교차 검증 · 세스전 · EP9–12 감정 결 · 광기 일괄 · EP7 원격 일격
-- **EP04·EP07 광기 WEAK 윤문** (예측 불허 기동 · 균열 확대 명시)
+- S1 스토리·디자인·콘티·텍스트 테스트·WEAK 윤문
+- **밸런스 수치화 단계 계획** (`state/BALANCE_PLAN_2026-08-06.md`)
 
 ## Next
 
-새 트랙 지정 대기
+1. **B0** 축·단위 고정 (합의)
+2. B1 BRAVE 1.0 표
+3. B2 → B3 → B4 → B5 → B6
 
 ## Hold
 
