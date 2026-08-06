@@ -1,7 +1,8 @@
 # BRAVE FRAME_SPEC — D1
 
 > 2026-08-06 · Design D1  
-> 근거: `docs/06_MECHA.md` · `state/NAMES_SILHOUETTE_FIXED.md` · `00_VISION`
+> 근거: `docs/06_MECHA.md` · `state/NAMES_SILHOUETTE_FIXED.md` · `00_VISION`  
+> 품질: `design/DESIGN_QUALITY.md` — **반다이 로봇혼 / 센티넬 수준**
 
 **상태: TEXT-LOCK** (이미지 REF는 후순위 · 텍스트만으로 제작·식별 가능)
 
@@ -10,6 +11,8 @@
 ## 한 줄
 
 S1 전 구간 **동일 형태** · 25m humanoid · 단순·여성형·Imperial 여백 · 성장은 S-Core·광기 연출만 · **EP13만** 엑셀리온 전개.
+
+“simple”은 **실루엣·여백의 단순함**이다. 표면 디테일·패널 밀도는 로봇혼/센티넬 수준으로 올린다.
 
 ---
 
@@ -26,7 +29,7 @@ S1 전 구간 **동일 형태** · 25m humanoid · 단순·여성형·Imperial �
 | 색 primary | `#C0C8D0` (차가운 회백) |
 | 색 secondary | `#2A3A4A` (깊은 남회) |
 | 색 accent | `#E8A020` (호박 오렌지 · 관절·시선 포인트) |
-| style | modern_super · organic_mechanical · simple · retro · 90년대 감성 |
+| style | modern_super · organic_mechanical · simple(실루엣) · retro · 90년대 감성 + **Robot Spirits / Sentinel 밀도** |
 
 ---
 
@@ -38,6 +41,7 @@ S1 전 구간 **동일 형태** · 25m humanoid · 단순·여성형·Imperial �
 - **팔:** 상완·전완 단순 원통+판. 손/매니퓰레이터는 손가락형 가능하나 덩치로 실루엣 깨지 않음. 거포·방패를 기본 장착하지 않음.
 - **다리:** 허벅지·정강이 판 최소. 무릎 관절 읽힘. 발은 안정 접지형·과한 스파이크 없음.
 - **색 배치:** 몸 주색 primary · 틈·관절 secondary · 코어·눈·일부 라인만 accent.
+- **표면:** 고밀도 패널 라인·리벳·날카로운 엣지 (로봇혼/센티넬 피니시). 여백은 유지하되 면이 “비어 보이는” 저밀도 금지.
 
 ---
 
@@ -101,7 +105,8 @@ S1 전 구간 **동일 형태** · 25m humanoid · 단순·여성형·Imperial �
 ## 이미지
 
 `design/brave/` 컨셉은 **참고 풀**로만 둔다.  
-TEXT-LOCK 단계에서는 파일명 REF 지정 없음. 추후 보드/모델링 시 이 문서와 맞는 장만 채택.
+TEXT-LOCK 단계에서는 파일명 REF 지정 없음. 추후 보드/모델링 시 이 문서와 맞는 장만 채택.  
+채택 시 `DESIGN_QUALITY.md` 미달(저밀도·러프)이면 제작 레퍼런스로 쓰지 않는다.
 
 ---
 
@@ -111,6 +116,7 @@ TEXT-LOCK 단계에서는 파일명 REF 지정 없음. 추후 보드/모델링 �
 - 성인 히로인형 과무장·과장 실루엣
 - 세스/아슈르와 동일 실루엣 키
 - 팔레트 임의 변경(연출용 accent 한시 점등만 허용)
+- 실루엣 단순함을 이유로 패널·엣지 밀도를 낮추는 것
 
 ---
 
@@ -122,5 +128,6 @@ TEXT-LOCK 단계에서는 파일명 REF 지정 없음. 추후 보드/모델링 �
 | 2 | 실루엣 식별 문장 | 위 표 |
 | 3 | EP1–12 동일 프레임 | 명시 |
 | 4 | EP13=1단계 확장만 | 명시 |
+| 5 | 로봇혼/센티넬 밀도 | DESIGN_QUALITY |
 
 **D1 = TEXT-LOCK 완료.**
