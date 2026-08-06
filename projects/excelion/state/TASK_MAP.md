@@ -2,9 +2,9 @@
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| B0 축·단위 | Done | BALANCE_B0_UNITS |
-| B1 BRAVE 1.0 | Done (DRAFT) | BALANCE_BRAVE_1 |
-| **B2 적 배수표** | **Done (DRAFT)** | BALANCE_ENEMY_MULT |
-| B3 EP 구간 목표 | Open | |
-| B4–B6 | Open | |
+| B0–B2 | Done | BALANCE_* |
+| **B3 EP TTK/TTL** | **Done (DRAFT)** | BALANCE_EP_TARGETS |
+| B4 루프 검증 | Open | |
+| B5 광기 충돌 | Open | |
+| B6 SoR 승격 | Open | |
 | 시각화 · Forge | **Hold** | |
