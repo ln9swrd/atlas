@@ -6,33 +6,28 @@
 |------|-----|
 | `state/CURRENT_STATE.md` | Now |
 | `state/TASK_MAP.md` | Tasks |
+| `state/DESIGN_TASK_MAP.md` | 디자인 목록 |
 | `docs/09_STORY_S1.md` | S1 스토리 |
 | `docs/01_CHARACTER.md` | 리아 |
+| `docs/06_MECHA.md` | BRAVE 파라미터 |
 | `docs/08_PLAY_BRAVE.md` | 플레이 |
-| `docs/03_WORLD.md` | 세계 |
-| `state/EP1_EP8_SCENE_SCRIPT.md` | EP1·8 대본 |
-| `state/EP5_SCENE_SCRIPT.md` | EP5 균열 대본 |
-| `state/EP6_EP9_EP13_SCENE_SCRIPT.md` | EP6·9·13 대본 |
+| `state/NAMES_SILHOUETTE_FIXED.md` | 이름·실루엣 |
 | `state/ANIME_PASS1_10CUTS.md` | 1차 애니 10컷 |
-| `state/KAI_HABIT_FIXED.md` | 카이 습관·잔상 |
-| `state/MADNESS_SIGNAL_FIXED.md` | 광기 신호 고정 |
-| `state/SETH_BATTLE_FIXED.md` | 세스전 안 흔들림 |
-| `state/HAND_SYMBOLISM_SUMMARY.md` | 손 동작 상징 요약 |
-| `state/ASHUR_ARROGANCE_FIXED.md` | 아슈르 오만 구체화 |
-| `state/NAMES_SILHOUETTE_FIXED.md` | 정식 이름·실루엣 |
-| `state/BOSS_STATS_SETH_ASHUR.md` | 세스·아슈르 수치 |
-| `state/BOSS_WEAPON_SKILLS.md` | 보스 전용 무기 스킬 |
+| `state/MADNESS_SIGNAL_FIXED.md` | 광기 |
+| `state/KAI_HABIT_FIXED.md` | 카이 습관 |
+| `design/brave/` | BRAVE 컨셉 원본 |
+| `design/nemesis/` | 적/네메시스 후보 |
 
 ## By topic
 
 | Combat | docs/02 | Mission | docs/04 | Enemy | docs/05 |
-| Mecha | docs/06 | Pipeline | docs/07 |
+| Story scripts | state/EP* | Boss | state/BOSS_* |
 
 ## External
 
-| excelion-forge | 파이프라인 레포 |
+| excelion-forge | 파이프라인 |
 | projects/paramodel | ParaModel (HOLD) |
 
 ## Forbidden
 
-archive / obsidian / dual-write 무시하고 단독 레포만 수정하지 말 것 (SoR는 여기)
+단독 `ln9swrd/excelion` 수정 금지 (CLOSED)
