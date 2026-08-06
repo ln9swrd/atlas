@@ -1,6 +1,7 @@
 # THREEVIEW_CURRENT — 한 번에 하나만, 순서대로 순환
 
-> 자동화는 **CURRENT 1개만** 처리한 뒤, 아래 QUEUE의 **다음 항목**으로 CURRENT를 갱신한다.
+> 자동화는 **CURRENT 1개만** 처리한 뒤 QUEUE의 **다음**으로 CURRENT를 갱신한다.  
+> 대상은 `design/README.md`의 제작 단위만 사용한다.
 
 ## CURRENT
 
@@ -8,9 +9,7 @@
 character/lia
 ```
 
-## QUEUE (실행 순서)
-
-위에서 아래로 한 칸씩 진행. 끝에 도달하면 다시 처음으로.
+## QUEUE
 
 ```
 character/lia
