@@ -1,19 +1,16 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Design D2 — 엑셀리온 전개 스펙 (텍스트)**  
-STATUS: 2026-08-06 D1 TEXT-LOCK 완료
+ACTIVE_TARGET: **Design D3 — 적기 ORD 실루엣 (텍스트)**  
+STATUS: 2026-08-06 D2 TEXT-LOCK 완료
 
 ## Done
 
-- 스토리 S1 · 보완 v2 · Archive · 애니10컷 리스트
-- **D1 BRAVE FRAME_SPEC TEXT-LOCK** → `design/brave/FRAME_SPEC.md`
+- D1 BRAVE FRAME_SPEC
+- D2 EXCELION_SPEC (EP13 전개 1단계)
 
 ## Next
 
-1. **D2** 엑셀리온(EP13) 전개 1단계 텍스트 스펙
-2. D3~ 적기·인물·광기…
-
-목록: `state/DESIGN_TASK_MAP.md`
+**D3** ORD-GRUNT / HEAVY / GUN / MID 텍스트 식별 스펙
 
 ## SoR
 
