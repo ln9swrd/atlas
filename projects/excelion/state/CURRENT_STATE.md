@@ -1,15 +1,20 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Design D11 — 맵 무드 (텍스트)**  
-STATUS: 2026-08-06 D10 TEXT-LOCK 완료
+ACTIVE_TARGET: **idle (디자인 텍스트 스펙 완료)**  
+STATUS: 2026-08-06 Design D1–D11 TEXT-LOCK 전부 Done
 
 ## Done
 
-- D1–D10
+- 스토리 S1 · 보완 v2 · Archive · 애니10 리스트
+- **디자인 D1–D11** 텍스트 스펙 전부
 
-## Next
+## Next (선택)
 
-**D11** 지구 수성/공성 · 달 · 게이트 무드 3종 (디자인 목록 마지막)
+1. 이미지/보드 실사 · BRAVE 모델링 (forge/paramodel)
+2. T-2 · T-10 · T-15 (forge · Master)
+3. EP10–12 대본 확장 (스토리 선택)
+
+재개 시: `DESIGN_TASK_MAP` · 본 파일 · `CONTEXT_INDEX`
 
 ## SoR
 
