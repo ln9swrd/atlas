@@ -1,15 +1,18 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Conti A — EP07**  
-STATUS: 2026-08-06 EP06 콘티 Done · 콘티 우선 진행 중
+ACTIVE_TARGET: **idle (콘티 S1 전부 Done)**  
+STATUS: 2026-08-06 EP01–13 텍스트 콘티 완료
 
-## Done 콘티
+## Done
 
-EP01 · 05 · **06** · 08 · 09 · 13
+- 스토리 · Design D1–D11
+- **콘티 A EP01–13** 전부 (`design/conti/`)
 
-## Next
+## Next (선택)
 
-**EP07** (원격 일격 · 한 뿌리) → EP12 → 10–11 → 02–04
+1. 콘티 교차 검증 · 윤문
+2. 이미지 보드
+3. forge · 모델링
 
 ## SoR
 
