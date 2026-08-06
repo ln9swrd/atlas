@@ -42,15 +42,16 @@
 - 넓은 어깨·두꺼운 흉·짧은 다리
 - 스타일: 90년대 retro · 중압감
 
-## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+## AI 이미지 생성용 프롬프트 (Sunrise MG Spec V3)
 
 ### Positive Prompt
 ```text
-90s anime mecha setting model sheet, official production turnaround sheet of 'ORD-HEAVY' armor assault mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Extremely wide shoulders, thick heavy chest armor, short sturdy legs, low center of gravity. Dark slate gray and gunmetal mass-production industrial armor, single cold red visor sensor point. Heavy defensive armor plates, solid grounded presence. High quality official mecha design reference.
+ORD-HEAVY — OFFICIAL MECHANICAL DESIGN SHEET, official Japanese anime mechanical setting material. Looks like an official Sunrise mechanical reference book and Bandai Master Grade development sheet from the late 1990s. Ultra high-density industrial mechanical illustration, professional production model sheet, technical orthographic turnaround (Front / Side / Back / 3/4 View), mechanical engineering presentation, perfectly symmetrical construction drawing, extremely clean cel-shaded rendering, black technical line art, flat production colors, no painterly rendering, no cinematic lighting, white background, Japanese grid layout, mechanical callouts, color palette chips, material notes, detail closeups. Armor assault mecha ORD-HEAVY: extremely wide shoulders, thick heavy chest armor, short sturdy legs, low center of gravity, dark slate gray and gunmetal mass-production industrial armor, single cold red visor sensor point, heavy defensive armor plates, solid grounded presence.
 ```
 
 ### Negative Prompt
 ```text
-low quality, blurry, sketch, perspective view, dynamic pose, slender waist, long legs, wings, cape, crown, amber accents, organic muscles, chibi, cartoon, motion blur, background objects
+low quality, blurry, sketch, perspective distortion, dynamic combat pose, slender waist, long legs, wings, cape, crown, amber accents, organic muscles, chibi, cartoon, motion blur, painterly shading, cinematic lighting, dark background
 ```
+
 

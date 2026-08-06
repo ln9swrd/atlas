@@ -50,15 +50,16 @@
 - 세스기와 실루엣이 겹치지 않게
 - 스타일: 90년대 retro · 위계·원격
 
-## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+## AI 이미지 생성용 프롬프트 (Sunrise MG Spec V3)
 
 ### Positive Prompt
 ```text
-90s anime mecha setting model sheet, official production turnaround sheet of 'Ashur' final boss mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Extremely tall and slender vertical proportions, narrow high-set shoulders, small head with a vertical mechanical crown helmet and cold white glowing slit eyes. Long elegant mechanical neck, high thin waist, very long sleek legs with high heels. Dark navy blue low-saturation armor, gunmetal, matte titanium plates, cold ice-white chest core. Long mechanical vertical armor plates hanging down the back to the calves. Sleek, authoritative, majestic mechanical ruler design. High quality official mecha design reference.
+ASHUR — OFFICIAL MECHANICAL DESIGN SHEET, official Japanese anime mechanical setting material. Looks like an official Sunrise mechanical reference book and Bandai Master Grade development sheet from the late 1990s. Ultra high-density industrial mechanical illustration, professional production model sheet, technical orthographic turnaround (Front / Side / Back / 3/4 View), mechanical engineering presentation, perfectly symmetrical construction drawing, extremely clean cel-shaded rendering, black technical line art, flat production colors, no painterly rendering, no cinematic lighting, white background, Japanese grid layout, mechanical callouts, color palette chips, material notes, detail closeups. Final boss mecha Ashur: extremely tall vertical proportions, small head with vertical crown helmet, long mechanical neck, thin waist, dark navy blue low-saturation metal armor, gunmetal, matte titanium, cold white chest core light, long vertical back panel armor extending down to calves.
 ```
 
 ### Negative Prompt
 ```text
-low quality, blurry, sketch, perspective view, dynamic pose, weapon in hand, oversized shoulder, bulky armor, curved silhouette, demon horns, organic muscles, monster, cape, feather wings, fantasy armor, red glowing eyes, excessive spikes, asymmetrical design, exaggerated proportions, chibi, cartoon, motion blur, background objects
+low quality, blurry, sketch, perspective distortion, dynamic combat pose, weapon in hand, oversized bulky shoulders, curved organic silhouette, demon horns, organic muscles, monster, cape, feather wings, fantasy armor, red glowing eyes, excessive spikes, asymmetrical design, exaggerated proportions, chibi, cartoon, motion blur, painterly shading, cinematic lens flare, dark background
 ```
+
 

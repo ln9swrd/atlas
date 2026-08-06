@@ -47,15 +47,16 @@
 - 코어·accent 라인 강조
 - 스타일: 90년대 retro · BRAVE 확장형
 
-## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+## AI 이미지 생성용 프롬프트 (Sunrise MG Spec V3)
 
 ### Positive Prompt
 ```text
-90s anime mecha setting model sheet, official production turnaround sheet of 'Excelion' unsealed protagonist mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Identical 25m humanoid body frame as BRAVE-001 with 1st stage unsealed light wings. A pair of short radiant light-wing panels extending from shoulders and upper back. Increased panel lines and glowing chest core, cold blue-gray armor with expanded amber orange energy lines. High quality official mecha design reference.
+EXCELION — OFFICIAL MECHANICAL DESIGN SHEET, official Japanese anime mechanical setting material. Looks like an official Sunrise mechanical reference book and Bandai Master Grade development sheet from the late 1990s. Ultra high-density industrial mechanical illustration, professional production model sheet, technical orthographic turnaround (Front / Side / Back / 3/4 View), mechanical engineering presentation, perfectly symmetrical construction drawing, extremely clean cel-shaded rendering, black technical line art, flat production colors, no painterly rendering, no cinematic lighting, white background, Japanese grid layout, mechanical callouts, color palette chips, material notes, detail closeups. Unsealed protagonist mecha Excelion: identical 25m humanoid body frame as BRAVE-001 with 1st stage unsealed radiant light wings extending from shoulders and upper back, increased panel lines and glowing chest core, cold blue-gray armor with expanded amber orange energy lines.
 ```
 
 ### Negative Prompt
 ```text
-low quality, blurry, sketch, perspective view, dynamic pose, oversized wings, giant backpack, complete body redesign, heavy cannon, red eyes, spikes, organic muscles, chibi, cartoon, motion blur, background objects
+low quality, blurry, sketch, perspective distortion, dynamic combat pose, oversized wings, giant backpack, complete body redesign, heavy cannon, red eyes, spikes, organic muscles, chibi, cartoon, motion blur, painterly shading, cinematic lighting, dark background
 ```
+
 

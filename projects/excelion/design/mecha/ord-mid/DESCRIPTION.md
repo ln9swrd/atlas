@@ -42,15 +42,16 @@
 - 중형 덩치 + 병기 과다로 GRUNT/HEAVY와 구분
 - 스타일: 90년대 retro · 중보스 존재감
 
-## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+## AI 이미지 생성용 프롬프트 (Sunrise MG Spec V3)
 
 ### Positive Prompt
 ```text
-90s anime mecha setting model sheet, official production turnaround sheet of 'ORD-MID' mid-boss commander mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Medium-heavy industrial mecha frame, multiple shoulder missile pods and forearm weapon mounts. Dark slate gray armor, red sensor point. Heavy mass-production elite unit silhouette, complex angular paneling. High quality official mecha design reference.
+ORD-MID — OFFICIAL MECHANICAL DESIGN SHEET, official Japanese anime mechanical setting material. Looks like an official Sunrise mechanical reference book and Bandai Master Grade development sheet from the late 1990s. Ultra high-density industrial mechanical illustration, professional production model sheet, technical orthographic turnaround (Front / Side / Back / 3/4 View), mechanical engineering presentation, perfectly symmetrical construction drawing, extremely clean cel-shaded rendering, black technical line art, flat production colors, no painterly rendering, no cinematic lighting, white background, Japanese grid layout, mechanical callouts, color palette chips, material notes, detail closeups. Mid-boss commander mecha ORD-MID: medium-heavy industrial mecha frame, multiple shoulder missile pods and forearm weapon mounts, dark slate gray armor, red sensor point, heavy mass-production elite unit silhouette, complex angular paneling.
 ```
 
 ### Negative Prompt
 ```text
-low quality, blurry, sketch, perspective view, dynamic pose, hero proportions, wings, cape, crown, amber accents, organic muscles, chibi, cartoon, motion blur, background objects
+low quality, blurry, sketch, perspective distortion, dynamic combat pose, hero proportions, wings, cape, crown, amber accents, organic muscles, chibi, cartoon, motion blur, painterly shading, cinematic lighting, dark background
 ```
+
 
