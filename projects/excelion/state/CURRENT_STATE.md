@@ -1,26 +1,19 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Design D1 — BRAVE 프레임 고정**  
-STATUS: 2026-08-06 디자인 전환
+ACTIVE_TARGET: **Design D2 — 엑셀리온 전개 스펙 (텍스트)**  
+STATUS: 2026-08-06 D1 TEXT-LOCK 완료
 
-## Done (스토리)
+## Done
 
-- S1 스토리·보완 v2 · Archive · 1차 애니 10컷 리스트
+- 스토리 S1 · 보완 v2 · Archive · 애니10컷 리스트
+- **D1 BRAVE FRAME_SPEC TEXT-LOCK** → `design/brave/FRAME_SPEC.md`
 
-## Design
+## Next
 
-| ID | 항목 | Status |
-|----|------|--------|
-| D1 | BRAVE 프레임 고정 | **Active** |
-| D2–D11 | 엑셀리온·적기·인물·광기·애니·UI·맵 | Open |
+1. **D2** 엑셀리온(EP13) 전개 1단계 텍스트 스펙
+2. D3~ 적기·인물·광기…
 
 목록: `state/DESIGN_TASK_MAP.md`
-
-## Next (D1)
-
-1. `design/brave/` 기존 컨셉 정리·선정
-2. `design/brave/FRAME_SPEC.md` 작성 (전면/측면/색/슬롯/금지)
-3. Done 후 D2
 
 ## SoR
 
