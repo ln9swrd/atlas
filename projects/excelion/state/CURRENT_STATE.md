@@ -1,15 +1,15 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Design D7 — 아슈르·세스 인물 실루엣**  
-STATUS: 2026-08-06 D6 TEXT-LOCK 완료
+ACTIVE_TARGET: **Design D8 — 광기 시각 0–5 (텍스트)**  
+STATUS: 2026-08-06 D7 TEXT-LOCK 완료
 
 ## Done
 
-- D1–D6 (기체 + 인물 4인)
+- D1–D7 (기체 · 인물 전체)
 
 ## Next
 
-**D7** 아슈르·세스 인물 텍스트
+**D8** 광기 시각 연출 텍스트 (`MADNESS_SIGNAL_FIXED` 연동)
 
 ## SoR
 
