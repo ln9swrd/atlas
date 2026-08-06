@@ -15,6 +15,7 @@
 | `state/SETH_BATTLE_FIXED.md` | 세스전 안 흔들림 |
 | `state/HAND_SYMBOLISM_SUMMARY.md` | 손 동작 상징 요약 |
 | `state/ASHUR_ARROGANCE_FIXED.md` | 아슈르 오만 구체화 |
+| `state/NAMES_SILHOUETTE_FIXED.md` | 정식 이름·실루엣 |
 
 ## By topic
 
