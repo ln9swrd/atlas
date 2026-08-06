@@ -1,14 +1,6 @@
-# THREEVIEW_CURRENT — 이번 실행 대상 (하나만)
+# THREEVIEW_CURRENT — 한 번에 하나만, 순서대로 순환
 
-> 자동화가 **이 파일에 적힌 한 줄만** 처리합니다.  
-> 작업 후 직접 다음 대상으로 바꾸세요.
-
-## 사용법
-
-1. 아래 `CURRENT` 한 줄만 수정한다.
-2. 형식: `카테고리/이름`
-3. 자동화 실행(매일 17:40 또는 수동) → 해당 DESCRIPTION.md 읽고 삼면도/레퍼런스만 작업.
-4. 끝나면 다음 대상으로 CURRENT를 바꾼다.
+> 자동화는 **CURRENT 1개만** 처리한 뒤, 아래 QUEUE의 **다음 항목**으로 CURRENT를 갱신한다.
 
 ## CURRENT
 
@@ -16,43 +8,40 @@
 character/lia
 ```
 
-## 선택 가능한 목록
+## QUEUE (실행 순서)
 
-### character/
-- character/lia
-- character/kai
-- character/yuna
-- character/rei
-- character/ashur
-- character/seth
+위에서 아래로 한 칸씩 진행. 끝에 도달하면 다시 처음으로.
 
-### mecha/
-- mecha/brave
-- mecha/excelion
-- mecha/ashur
-- mecha/seth
-- mecha/ord-grunt
-- mecha/ord-heavy
-- mecha/ord-gun
-- mecha/ord-mid
+```
+character/lia
+character/kai
+character/yuna
+character/rei
+character/ashur
+character/seth
+mecha/brave
+mecha/excelion
+mecha/ashur
+mecha/seth
+mecha/ord-grunt
+mecha/ord-heavy
+mecha/ord-gun
+mecha/ord-mid
+env/earth-defense
+env/earth-siege
+env/lunar
+env/gate
+weapon/brave-blade
+weapon/brave-cannon
+weapon/brave-drone
+weapon/seth-line-resolver
+weapon/seth-seal-plate
+weapon/ashur-order-sight
+weapon/ashur-decree-field
+```
 
-### env/
-- env/earth-defense
-- env/earth-siege
-- env/lunar
-- env/gate
+## 완료 로그
 
-### weapon/
-- weapon/brave-blade
-- weapon/brave-cannon
-- weapon/brave-drone
-- weapon/seth-line-resolver
-- weapon/seth-seal-plate
-- weapon/ashur-order-sight
-- weapon/ashur-decree-field
-
-## 완료 메모 (선택)
-
-| 날짜 | 대상 | 결과 |
-|------|------|------|
-| | | |
+| 날짜 | 대상 | 결과 | 다음 CURRENT |
+|------|------|------|-------------|
+| | | | |
