@@ -1,21 +1,20 @@
 # CURRENT_STATE — excelion
 
 ACTIVE_TARGET: SoR complete under atlas; standalone CLOSED  
-STATUS: 2026-08-06 스토리 보완 v2 완료
+STATUS: 2026-08-06 1차 애니 10컷 · Archive 확인
 
-## Done (스토리 보완 v2)
+## Done
 
-- 카이 습관·잔상 고정 → `state/KAI_HABIT_FIXED.md`
-- EP6·EP9·EP13 장면 대본 → `state/EP6_EP9_EP13_SCENE_SCRIPT.md`
-- 09_STORY_S1 · 01_CHARACTER 반영 (EP9–12 외부 체감 · 한 뿌리 · 게이트 암시)
-- 카이 정체=동료 잠금
+- 스토리 보완 v2 (카이 습관·잔상 · EP6/9/13 대본 · 09/01)
+- `ln9swrd/excelion` **이미 Archive** (archived=true · CLOSED.md)
+- 1차 애니 10컷 리스트 → `state/ANIME_PASS1_10CUTS.md`
 
 ## Next
 
-1. Master: `ln9swrd/excelion` **Archive**
-2. 윤문 / 1차 애니 10개 (EP1·5·6·8·9·13 우선)
-3. BRAVE 프레임 제작
-4. (선택) EP10–12 장면 대본 확장
+1. **BRAVE 프레임 제작** (제작 파이프라인)
+2. 썸네일 스케치 / 보드 툴 (10컷 기준)
+3. (선택) EP10–12 장면 대본 확장
+4. T-2 · T-10 · T-15 (forge · Master)
 
 ## SoR
 
@@ -23,5 +22,4 @@ STATUS: 2026-08-06 스토리 보완 v2 완료
 
 ## 최근
 
-- 스토리 보완 v2 → Done
-- EP5 대본 · 보스 수치 · 이름 실루엣 · 아슈르 오만 → Done
+- Archive 확인 · ANIME_PASS1_10CUTS → Done
