@@ -1,10 +1,10 @@
 # Standalone repo CLOSED
 
-Date: 2026-08-05
+Date: 2026-08-05 · Confirmed archived: 2026-08-06
 
 | Former | Status |
 |--------|--------|
-| https://github.com/ln9swrd/excelion | **CLOSED** — do not edit |
+| https://github.com/ln9swrd/excelion | **CLOSED · archived=true** — do not edit |
 | Canonical | `atlas/projects/excelion/` |
 
-GitHub UI에서 Archive repository 권장 (API 미제공).
+Archive 완료 (GitHub `archived: true`). 추가 UI 작업 불필요.
