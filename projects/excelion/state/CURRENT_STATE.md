@@ -1,13 +1,14 @@
 # CURRENT_STATE — excelion
 
 ACTIVE_TARGET: SoR complete under atlas; standalone CLOSED  
-STATUS: 2026-08-06 스토리 보완 (유나·레이·아슈르)
+STATUS: 2026-08-06 정식 이름·실루엣 고정 · 재미 실측 1–4 Done
 
 ## Next
 
-1. Master: GitHub에서 `ln9swrd/excelion` **Archive** (Settings → Archive)
-2. 정식 이름·실루엣
+1. Master: GitHub에서 `ln9swrd/excelion` **Archive**
+2. 보스 수치 (세스·아슈르)
 3. 윤문 / 1차 애니 10개
+4. BRAVE 프레임 제작 (backlog)
 
 ## SoR
 
@@ -15,6 +16,5 @@ STATUS: 2026-08-06 스토리 보완 (유나·레이·아슈르)
 
 ## 최근
 
-- 스토리 보완 → `docs/09_STORY_S1.md` · `docs/01_CHARACTER.md`
-- 아슈르 오만 → `state/ASHUR_ARROGANCE_FIXED.md`
-- 세스전 · 광기 · EP1·EP8 대본 · 손 상징 → state/
+- 이름·실루엣 → `state/NAMES_SILHOUETTE_FIXED.md`
+- 스토리 보완 · 아슈르 오만 · 세스 · 광기 · EP 대본 → state/ · docs/
