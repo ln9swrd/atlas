@@ -1,20 +1,17 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **idle (디자인 텍스트 스펙 완료)**  
-STATUS: 2026-08-06 Design D1–D11 TEXT-LOCK 전부 Done
+ACTIVE_TARGET: **Conti A — EP02 또는 우선 EP5**  
+STATUS: 2026-08-06 텍스트 콘티 시작 · EP01 Done
 
 ## Done
 
-- 스토리 S1 · 보완 v2 · Archive · 애니10 리스트
-- **디자인 D1–D11** 텍스트 스펙 전부
+- 스토리 · Design D1–D11 TEXT-LOCK
+- 콘티 규칙 · **EP01 콘티** (`design/conti/EP01_CONTI.md`)
 
-## Next (선택)
+## Next
 
-1. 이미지/보드 실사 · BRAVE 모델링 (forge/paramodel)
-2. T-2 · T-10 · T-15 (forge · Master)
-3. EP10–12 대본 확장 (스토리 선택)
-
-재개 시: `DESIGN_TASK_MAP` · 본 파일 · `CONTEXT_INDEX`
+- 권장: EP05 콘티 (대본 완비) 또는 EP02
+- 표: `state/CONTI_MAP.md`
 
 ## SoR
 
