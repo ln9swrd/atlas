@@ -11,6 +11,7 @@
 | `docs/08_PLAY_BRAVE.md` | 플레이 |
 | `docs/03_WORLD.md` | 세계 |
 | `state/EP1_EP8_SCENE_SCRIPT.md` | 재미 실측 대본 |
+| `state/MADNESS_SIGNAL_FIXED.md` | 광기 신호 고정 |
 
 ## By topic
 
