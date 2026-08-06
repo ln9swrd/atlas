@@ -2,8 +2,7 @@
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| B0–B3 | Done | BALANCE_* |
-| **B4 루프 검증** | **PASS** | BALANCE_LOOP_CHECK |
-| B5 광기 충돌 | Open | |
+| B0–B4 | Done | BALANCE_* |
+| **B5 광기·규칙 충돌** | **PASS** | BALANCE_RULE_CHECK |
 | B6 SoR 승격 | Open | |
 | 시각화 · Forge | **Hold** | |
