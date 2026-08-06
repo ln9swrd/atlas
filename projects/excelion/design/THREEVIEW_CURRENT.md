@@ -6,7 +6,7 @@
 ## CURRENT
 
 ```
-character/kai
+character/yuna
 ```
 
 ## QUEUE
@@ -44,3 +44,4 @@ weapon/ashur-decree-field
 | 날짜 | 대상 | 결과 | 다음 CURRENT |
 |------|------|------|-------------|
 | 2026-08-06 | character/lia | 삼면도 생성 (A-pose, orthographic, white bg, 16세 비율, 손 강조); NOTES 갱신 | character/kai |
+| 2026-08-06 | character/kai | 삼면도 생성 (A-pose, orthographic, white bg, 한 치 큼·안정 어깨, 통신 장비 자연스럽게); NOTES 추가 | character/yuna |
