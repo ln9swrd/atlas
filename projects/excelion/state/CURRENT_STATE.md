@@ -1,15 +1,15 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Design D10 — UI 최소 3요소**  
-STATUS: 2026-08-06 D9 TEXT-LOCK 완료
+ACTIVE_TARGET: **Design D11 — 맵 무드 (텍스트)**  
+STATUS: 2026-08-06 D10 TEXT-LOCK 완료
 
 ## Done
 
-- D1–D9
+- D1–D10
 
 ## Next
 
-**D10** 동조율 · 목표 · 통신 UI 텍스트 스펙
+**D11** 지구 수성/공성 · 달 · 게이트 무드 3종 (디자인 목록 마지막)
 
 ## SoR
 
