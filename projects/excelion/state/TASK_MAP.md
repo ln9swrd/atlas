@@ -2,8 +2,8 @@
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
-| 스토리 S1·보완 | Done | docs/ · state/ |
-| D1–D11 디자인 텍스트 | Done | design/ |
-| **콘티 A EP01** | **Done** | design/conti/EP01_CONTI.md |
-| 콘티 A EP02+ | Open | CONTI_MAP |
+| 스토리 · D1–D11 | Done | docs/ · design/ |
+| 콘티 EP01 · EP05 | Done | design/conti/ |
+| **콘티 EP08** | **Open** | CONTI_MAP |
+| 콘티 EP09·13… | Open | |
 | T-2 · T-10 · T-15 | Pending | |
