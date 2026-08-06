@@ -16,15 +16,13 @@
 | **광기 신호 연출 고정** | **Done** | `state/MADNESS_SIGNAL_FIXED.md` |
 | **세스전 안 흔들림** | **Done** | `state/SETH_BATTLE_FIXED.md` |
 | **아슈르 오만** | **Done** | `state/ASHUR_ARROGANCE_FIXED.md` |
-| **스토리 보완** | **Done** | `docs/09` · `docs/01` 유나·레이·아슈르 |
+| **스토리 보완** | **Done** | `docs/09` · `docs/01` |
+| **정식 이름·실루엣** | **Done** | `state/NAMES_SILHOUETTE_FIXED.md` |
 
-### 다음 (재미 실측)
+### 재미 실측 (S1 설계)
 
-1. ~~EP1·EP8 장면 대본~~ → Done
-2. ~~매 화 광기 신호 연출 고정~~ → Done
-3. ~~세스전 안 흔들림~~ → Done
-4. 정식 이름·실루엣
+1–4 전부 Done.
 
 ### OPEN
 
-보스 수치 · e.md archive · T-2 / T-10 / T-15
+보스 수치 · e.md archive · T-2 / T-10 / T-15 · 윤문/1차 애니 10 · BRAVE 프레임
