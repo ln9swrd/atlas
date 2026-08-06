@@ -41,3 +41,16 @@
 - 뷰: 정면 · 측면 · 후면 (orthographic)
 - 중형 덩치 + 병기 과다로 GRUNT/HEAVY와 구분
 - 스타일: 90년대 retro · 중보스 존재감
+
+## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+
+### Positive Prompt
+```text
+90s anime mecha setting model sheet, official production turnaround sheet of 'ORD-MID' mid-boss commander mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Medium-heavy industrial mecha frame, multiple shoulder missile pods and forearm weapon mounts. Dark slate gray armor, red sensor point. Heavy mass-production elite unit silhouette, complex angular paneling. High quality official mecha design reference.
+```
+
+### Negative Prompt
+```text
+low quality, blurry, sketch, perspective view, dynamic pose, hero proportions, wings, cape, crown, amber accents, organic muscles, chibi, cartoon, motion blur, background objects
+```
+

@@ -41,3 +41,16 @@
 - 뷰: 정면 · 측면 · 후면 (orthographic)
 - 포신·센서가 실루엣에서 먼저 읽히게
 - 스타일: 90년대 retro · 원거리 병기
+
+## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+
+### Positive Prompt
+```text
+90s anime mecha setting model sheet, official production turnaround sheet of 'ORD-GUN' long-range artillery mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Slender boxy torso frame dominated by shoulder-mounted long cannon barrels and sensor optics. Dark slate gray industrial finish, single red sensor lens. Distinctive artillery silhouette with prominent long gun barrels. High quality official mecha design reference.
+```
+
+### Negative Prompt
+```text
+low quality, blurry, sketch, perspective view, dynamic pose, melee sword, shield, wings, cape, crown, amber accents, organic muscles, chibi, cartoon, motion blur, background objects
+```
+

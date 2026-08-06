@@ -48,3 +48,16 @@
 - 차단벽 같은 몸통 · 장식 최소
 - 아슈르기와 실루엣이 겹치지 않게
 - 스타일: 90년대 retro · 단정·차단
+
+## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+
+### Positive Prompt
+```text
+90s anime mecha setting model sheet, official production turnaround sheet of 'Seth' elite commander mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Angular neat humanoid silhouette, barrier-like flat chest armor, solid defensive posture. Low-saturation blue-gray and dark charcoal metal armor, subtle cold white sensor slit. Minimalist decoration, no crown, no cape, no wings, no weapons in hand, firm grounded wall-like mechanical presence. High quality official mecha design reference.
+```
+
+### Negative Prompt
+```text
+low quality, blurry, sketch, perspective view, dynamic pose, giant weapons, wings, cape, crown, oversized shoulders, red glowing eyes, spikes, organic muscles, fantasy armor, chibi, cartoon, motion blur, background objects
+```
+

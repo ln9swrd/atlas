@@ -46,3 +46,16 @@
 - 짧은 광익이 어깨~등에서 좌우로 펼쳐진 인상
 - 코어·accent 라인 강조
 - 스타일: 90년대 retro · BRAVE 확장형
+
+## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+
+### Positive Prompt
+```text
+90s anime mecha setting model sheet, official production turnaround sheet of 'Excelion' unsealed protagonist mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Identical 25m humanoid body frame as BRAVE-001 with 1st stage unsealed light wings. A pair of short radiant light-wing panels extending from shoulders and upper back. Increased panel lines and glowing chest core, cold blue-gray armor with expanded amber orange energy lines. High quality official mecha design reference.
+```
+
+### Negative Prompt
+```text
+low quality, blurry, sketch, perspective view, dynamic pose, oversized wings, giant backpack, complete body redesign, heavy cannon, red eyes, spikes, organic muscles, chibi, cartoon, motion blur, background objects
+```
+

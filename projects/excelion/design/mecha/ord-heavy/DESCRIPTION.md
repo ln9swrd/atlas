@@ -41,3 +41,16 @@
 - 뷰: 정면 · 측면 · 후면 (orthographic)
 - 넓은 어깨·두꺼운 흉·짧은 다리
 - 스타일: 90년대 retro · 중압감
+
+## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+
+### Positive Prompt
+```text
+90s anime mecha setting model sheet, official production turnaround sheet of 'ORD-HEAVY' armor assault mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Extremely wide shoulders, thick heavy chest armor, short sturdy legs, low center of gravity. Dark slate gray and gunmetal mass-production industrial armor, single cold red visor sensor point. Heavy defensive armor plates, solid grounded presence. High quality official mecha design reference.
+```
+
+### Negative Prompt
+```text
+low quality, blurry, sketch, perspective view, dynamic pose, slender waist, long legs, wings, cape, crown, amber accents, organic muscles, chibi, cartoon, motion blur, background objects
+```
+

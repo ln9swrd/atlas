@@ -49,3 +49,16 @@
 - 높은 중심 · 손/무장 최소화
 - 세스기와 실루엣이 겹치지 않게
 - 스타일: 90년대 retro · 위계·원격
+
+## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+
+### Positive Prompt
+```text
+90s anime mecha setting model sheet, official production turnaround sheet of 'Ashur' final boss mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Extremely tall and slender vertical proportions, narrow high-set shoulders, small head with a vertical mechanical crown helmet and cold white glowing slit eyes. Long elegant mechanical neck, high thin waist, very long sleek legs with high heels. Dark navy blue low-saturation armor, gunmetal, matte titanium plates, cold ice-white chest core. Long mechanical vertical armor plates hanging down the back to the calves. Sleek, authoritative, majestic mechanical ruler design. High quality official mecha design reference.
+```
+
+### Negative Prompt
+```text
+low quality, blurry, sketch, perspective view, dynamic pose, weapon in hand, oversized shoulder, bulky armor, curved silhouette, demon horns, organic muscles, monster, cape, feather wings, fantasy armor, red glowing eyes, excessive spikes, asymmetrical design, exaggerated proportions, chibi, cartoon, motion blur, background objects
+```
+

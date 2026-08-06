@@ -41,3 +41,16 @@
 - 뷰: 정면 · 측면 · 후면 (orthographic)
 - 각진·투박·양산형
 - 스타일: 90년대 retro · 기능·투박
+
+## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+
+### Positive Prompt
+```text
+90s anime mecha setting model sheet, official production turnaround sheet of 'ORD-GRUNT' mass-production enemy mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. Compact angular head, short boxy torso, simple blocky limbs, no decorative ornamentation. Dark slate gray industrial paint, single red sensor visor. Utilitarian mass-produced mechanical soldier silhouette. High quality official mecha design reference.
+```
+
+### Negative Prompt
+```text
+low quality, blurry, sketch, perspective view, dynamic pose, complex decorations, wings, cape, crown, amber accents, hero proportions, organic muscles, chibi, cartoon, motion blur, background objects
+```
+

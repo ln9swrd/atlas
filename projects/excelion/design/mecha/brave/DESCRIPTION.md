@@ -53,3 +53,16 @@
 - 25m humanoid 비율 · 여성형 허리 라인
 - 백팩/스커트/무기 슬롯 비활성 (단순)
 - 스타일: 90년대 retro · modern_super · simple
+
+## AI 이미지 생성용 프롬프트 (Prompt Spec V2)
+
+### Positive Prompt
+```text
+90s anime mecha setting model sheet, official production turnaround sheet of 'BRAVE-001' protagonist mecha. Full body orthographic sheet showing front view, side view, and back view aligned on pure white background. T-pose neutral stance, no shadows, no perspective distortion. Classic 90s Japanese anime mecha schematic blueprint, crisp black line art, precise flat cel shading. 25-meter height humanoid proportions, sleek feminine waistline, small head with clean helmet visor and horizontal glowing slit. Cold blue-gray primary armor (#C0C8D0), deep navy-gray secondary joints (#2A3A4A), amber orange eye accent (#E8A020). Flat clean armor plates, no heavy backpack, no wings, no weapons in hand, simple elegant heroic silhouette. High quality official mecha design reference.
+```
+
+### Negative Prompt
+```text
+low quality, blurry, sketch, perspective view, dynamic pose, heavy weapons, bulky armor, wings, cape, oversized backpack, demon horns, organic muscles, red eyes, excessive spikes, asymmetrical design, chibi, cartoon, motion blur, background objects
+```
+
