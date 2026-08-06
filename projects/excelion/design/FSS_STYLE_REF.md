@@ -28,13 +28,60 @@ FSS 스타일 = **기사·귀족의 예술품으로서의 메카**.
 | 다리 | 길고 날씬 · 접지감은 유지하되 “달리는 기사” 인상. 가끔 힐/포인트 풋 암시 |
 | 손 | 정교한 매니퓰레이터 · 덩치로 실루엣을 깨지 않음 |
 
-### 2.2 표면 · 디테일 밀도
+### 2.2 표면 · 디테일 밀도 (상세)
 
-- **고밀도 패널 라인** + 리벳·분할이 명확
-- 장갑이 “판을 붙인 것”이 아니라 **조각된 금속 예술**처럼 보임
-- 곡면과 각면의 혼용 (유기적 곡선 + 날카로운 엣지)
-- 장식성: 문양·프레resco 느낌의 선·문장이 가능하나 **과하면 실루엣 파괴**
-- 품질감: 로봇혼 / 센티넬 / 볼크스 IMS급 피니시와 자연스럽게 맞음
+FSS 메카의 표면은 “그려 넣은 선”이 아니라 **주조·절삭·연마된 금속 조각**처럼 읽힌다.
+
+#### 패널 라인
+
+| 항목 | 내용 |
+|------|------|
+| 밀도 | **고밀도**. 면이 비어 보이지 않게, 그러나 선이 난잡하지 않음 |
+| 성격 | 기능 분할 + 미적 분할이 동시에 존재. “기계 부품 경계”처럼 읽힘 |
+| 깊이 | 얕은 홈이 아니라 **뚜렷한 단차·절개**로 보임 (로봇혼/센티넬급) |
+| 방향 | 수직·수평·대각이 균형을 이룸. 한 방향으로만 흐르지 않음 |
+| 금지 | 저밀도 카툰 라인 · 너무 가는 단일 선만으로 채우기 · 실루엣을 깨는 과다 교차 |
+
+#### 엣지 · 모서리
+
+| 항목 | 내용 |
+|------|------|
+| 기본 | **날카롭고 깨끗함**. 뭉개지거나 둥글게 뭉개진 인상 금지 |
+| 혼용 | 큰 면은 약간의 곡률, 패널 경계·장갑 끝은 예리 |
+| 읽힘 | “깎아 만든 금속” · 플라스틱 사출 느낌 지양 |
+
+#### 리벳 · 패스너 · 미세 요소
+
+- 리벳·볼트·핀이 **규칙적으로** 배치되어 공업적 설득력을 줌
+- 과다 난립 금지 · “장식용 점”이 아니라 조립·고정 요소로 읽히게
+- 센서 슬릿·벤트·미세 홈이 면 안에 자연스럽게 파임
+
+#### 곡면 vs 각면
+
+- **유기적 곡선**(어깨·허벅지·헬멧 윤곽) + **각진 장갑 판**이 한 기체 안에 공존
+- 곡선만 있으면 생물체, 각만 있으면 양산 병기 → FSS는 둘의 균형
+- 곡선 위에도 패널 라인이 따라가며 “깎인 곡면”으로 만듦
+
+#### 마감 · 재질 읽힘
+
+| 요소 | 방향 |
+|------|------|
+| 기본 마감 | **매트 + 세미글로스 혼용**. 전체가 한 가지 광택이 아님 |
+| 금속감 | 저채도 고급 금속 (티타늄·건메탈·다크스틸 계열) |
+| 하이라이트 | 엣지·돌출부에만 얇고 정확한 하이라이트 · 페인터리 그라데이션 금지 |
+| 질감 | “연마된 금속” · “도장된 장갑” · 가끔 반투명/적층 암시(고급기) |
+| 금지 | 카툰 플랫 단색 · 과한 반사·렌즈플레어 · 녹·풍화 과다(기본 상태는 청결·고급) |
+
+#### 장식 문양 (선택)
+
+- 문장·선각·프레resco성 라인 가능
+- **실루엣과 주요 패널을 방해하지 않는 범위**에서만
+- Excelion 적용 시: BRAVE·아슈르는 절제, ORD는 거의 없음, 세스는 장식 최소 유지
+
+#### 한 줄로 정리
+
+> 고밀도 패널 + 날카로운 엣지 + 매트/세미글로스 금속 마감 = **조각된 기사 갑옷**  
+> 선이 많아도 난잡하지 않고, 면이 있어도 비어 보이지 않음.
 
 ### 2.3 분위기 · 읽힘
 
@@ -45,7 +92,7 @@ FSS 스타일 = **기사·귀족의 예술품으로서의 메카**.
 | 살아 있는 기계 | 순수 무기보다 “의지와 품격이 있는 존재” |
 | 귀족성 | 양산기와 확실히 구분되는 고급감·유일성 |
 
-### 2.4 색 · 마감
+### 2.4 색 · 마감 (요약)
 
 - 금속감 강함 (매트 + 세미글로스 혼용)
 - 저채도 고급 금속 + 포인트 컬러 (금·은·냉색 악센트 등)
@@ -58,20 +105,20 @@ FSS 스타일 = **기사·귀족의 예술품으로서의 메카**.
 
 FSS는 **참고 방향**이다. 기존 TEXT-LOCK을 덮어쓰지 않는다.
 
-| 기체 | FSS에서 가져올 수 있는 것 | 가져오면 안 되는 것 |
-|------|---------------------------|---------------------|
-| **BRAVE** | 우아한 비율 · 여백 속 고급 표면 밀도 · 여성형 우아함 | 과한 장식·뿔·가면·힐로 실루엣 붕괴 |
-| **엑셀리온** | 광익·광윤과 어울리는 “열린 예술품” 인상 | 완전 다른 두 번째 기체로 읽히는 변화 |
-| **세스** | 정제된 각·차단의 **고급감** | FSS식 장식·위계 장식 (세스는 장식 최소) |
-| **아슈르** | 위계·길이·원격 존재감과 맞는 **귀족적 위압** | 손/무장이 드러나거나 광기형 일그러짐 |
-| **ORD** | (거의 가져오지 않음) | FSS 고급감 부여 시 양산 정체성 붕괴 |
+| 기체 | FSS 표면에서 가져올 것 | 가져오면 안 되는 것 |
+|------|------------------------|---------------------|
+| **BRAVE** | 여백 속에서도 패널·엣지가 고급으로 읽히는 밀도 | 과한 문양·장식으로 여백 파괴 |
+| **엑셀리온** | 광 라인과 패널이 공존하는 조각감 | 형태 자체를 FSS로 교체 |
+| **세스** | 각진 차단면에 **날카로운 엣지·정돈된 패널** | 장식 문양·위계 장식 |
+| **아슈르** | 긴 면에 흐르는 고급 패널·위압적 금속감 | 손/무장 노출 · 광기형 일그러진 표면 |
+| **ORD** | (거의 없음) 기능적 각·투박함 유지 | FSS 고급 마감으로 양산감 상실 |
 
 ### 원칙
 
-1. **실루엣 키워드 우선** (CAST / MECHA_SPEC / FRAME_SPEC)
+1. **실루엣 키워드 우선**
 2. FSS는 **표면 처리·품격·디테일 밀도**를 올리는 데 사용
 3. “FSS 카피”가 아니라 “FSS급 완성도 + Excelion 고유 실루엣”
-4. `DESIGN_QUALITY.md` (로봇혼/센티넬)와 방향이 일치함 → 채택 가능
+4. `DESIGN_QUALITY.md` (로봇혼/센티넬)와 방향 일치 → 채택 가능
 
 ---
 
@@ -82,18 +129,21 @@ FSS는 **참고 방향**이다. 기존 TEXT-LOCK을 덮어쓰지 않는다.
 - ORD에 FSS 고급감 부여
 - “FSS 스타일이니까”라며 TEXT-LOCK 비율·색·금지 조항 무시
 - 저밀도·카툰화 (FSS 본연과도 반대)
+- 패널 라인을 “예쁜 선”으로만 그리고 단차·엣지 없이 처리
 
 ---
 
 ## 5. 제작 시 프롬프트 보조 문구 (참고)
 
 ```
-Five Star Stories Mortar Headd inspired elegance and mechanical density,
-knightly aristocratic presence, refined elongated humanoid proportions,
-intricate industrial panel lines with sculptural armor quality,
-premium metal finish (matte + semi-gloss), sharp clean edges,
-Bandai Robot Spirits / Sentinel level detail density,
-NOT a direct copy of any specific FSS unit, preserve Excelion silhouette keywords.
+Five Star Stories Mortar Headd surface quality:
+high-density industrial panel lines with clear depth and segmentation,
+sharp clean armor edges, precise rivets and fasteners,
+sculptural metal armor (matte + semi-gloss mix),
+organic curves combined with angular plates,
+premium figure-grade finish (Bandai Robot Spirits / Sentinel level),
+no cartoon flat shading, no rough sketch, no low-density simplification,
+preserve Excelion silhouette keywords — NOT a copy of any specific FSS unit.
 ```
 
 ---
@@ -105,4 +155,4 @@ NOT a direct copy of any specific FSS unit, preserve Excelion silhouette keyword
 - `design/enemy/ASHUR_MECHA_SPEC.md` · `SETH_MECHA_SPEC.md` · `ORD_SPEC.md`
 - 각 `mecha/*/DESCRIPTION.md` · `OFFICIAL_SETTING.md`
 
-**FSS = 품격과 밀도 참조. 실루엣과 금지 조항은 Excelion TEXT-LOCK이 우선.**
+**FSS 표면 = 조각된 금속의 밀도·엣지·마감. 실루엣과 금지는 Excelion TEXT-LOCK이 우선.**
