@@ -1,15 +1,15 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Design D9 — 애니 10컷 보드 (텍스트)**  
-STATUS: 2026-08-06 D8 TEXT-LOCK 완료
+ACTIVE_TARGET: **Design D10 — UI 최소 3요소**  
+STATUS: 2026-08-06 D9 TEXT-LOCK 완료
 
 ## Done
 
-- D1–D8 (기체 · 인물 · 광기 시각)
+- D1–D9
 
 ## Next
 
-**D9** ANIME_PASS1 10컷을 보드용 텍스트로 고정
+**D10** 동조율 · 목표 · 통신 UI 텍스트 스펙
 
 ## SoR
 
