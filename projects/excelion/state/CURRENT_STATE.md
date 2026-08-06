@@ -1,15 +1,15 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Design D5 — 아슈르기 텍스트 스펙**  
-STATUS: 2026-08-06 D4 TEXT-LOCK 완료
+ACTIVE_TARGET: **Design D6 — 인물 실루엣 4인 (텍스트)**  
+STATUS: 2026-08-06 D5 TEXT-LOCK 완료
 
 ## Done
 
-- D1–D4 (BRAVE · 엑셀리온 · ORD · 세스기)
+- D1–D5 기체 스펙 전부 TEXT-LOCK
 
 ## Next
 
-**D5** 아슈르기 (위계·길이·원격 · ≠ 세스)
+**D6** 리아·카이·유나·레이 실루엣 텍스트
 
 ## SoR
 
