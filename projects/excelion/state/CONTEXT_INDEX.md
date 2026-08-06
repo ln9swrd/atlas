@@ -10,6 +10,7 @@
 | `docs/01_CHARACTER.md` | 리아 |
 | `docs/08_PLAY_BRAVE.md` | 플레이 |
 | `docs/03_WORLD.md` | 세계 |
+| `state/EP1_EP8_SCENE_SCRIPT.md` | 재미 실측 대본 |
 
 ## By topic
 
