@@ -1,23 +1,21 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **idle (밸런스 B0–B6 완료)**  
-STATUS: 2026-08-06 · 수치 초안 SoR 승격 · 시각화·포지 Hold
+ACTIVE_TARGET: **idle (밸런스 검토·보완 Done)**  
+STATUS: 2026-08-06 · B0–B6 + 검토 보완 · 시각화·포지 Hold
 
 ## Done
 
-- S1 스토리·콘티·텍스트 테스트
-- **밸런스 수치화 B0–B6** (`state/BALANCE_SOR.md`)
+- 밸런스 B0–B6 승격
+- **B단계 검토·보완** (`BALANCE_REVIEW_2026-08-06.md`) — 상태 정합 · 단일 진실 · 적 DMG · HP 의도 · S-Core 샘플
 
 ## Next
 
-새 트랙 지정 대기  
-(실기 튜닝 · 시각화 · 포지 · 플레이 설계 등)
+새 트랙 지정 대기
 
 ## Hold
 
-- 모든 시각화
-- Forge · 모델링
+- 시각화 · Forge
 
 ## SoR
 
-`atlas/projects/excelion/` only
+`atlas/projects/excelion/` only · 밸런스 요약 `state/BALANCE_SOR.md`
