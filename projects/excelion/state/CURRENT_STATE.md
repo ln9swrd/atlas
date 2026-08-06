@@ -1,16 +1,16 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **밸런스 B4 대기**  
-STATUS: 2026-08-06 · B0–B3 Done · 시각화·포지 Hold
+ACTIVE_TARGET: **밸런스 B5 대기**  
+STATUS: 2026-08-06 · B0–B4 Done · 시각화·포지 Hold
 
 ## Done
 
-- B0 단위 · B1 BRAVE · B2 적 배수 · **B3 EP 목표** (`BALANCE_EP_TARGETS.md`)
+- B0–B3 표 · **B4 루프 검증 PASS** (`BALANCE_LOOP_CHECK.md`)
 
 ## Next
 
-1. **B4** 전투 루프 검증
-2. B5 광기 충돌 · B6 승격
+1. **B5** 광기·규칙 충돌 검사
+2. B6 SoR 승격
 
 ## Hold
 
