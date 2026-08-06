@@ -3,9 +3,8 @@
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
 | 스토리 S1·보완 | Done | docs/ · state/ |
-| D1 BRAVE | Done | design/brave/FRAME_SPEC.md |
-| D2 엑셀리온 | Done | design/brave/EXCELION_SPEC.md |
-| D3 ORD 적기 | Done | design/enemy/ORD_SPEC.md |
-| **D4 세스기** | **Open** | DESIGN_TASK_MAP |
-| D5–D11 | Open | |
+| D1–D3 | Done | design/brave · design/enemy/ORD_SPEC |
+| D4 세스기 | Done | design/enemy/SETH_MECHA_SPEC.md |
+| **D5 아슈르기** | **Open** | DESIGN_TASK_MAP |
+| D6–D11 | Open | |
 | T-2 · T-10 · T-15 | Pending | |
