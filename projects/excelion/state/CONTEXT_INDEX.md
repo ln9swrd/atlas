@@ -17,6 +17,7 @@
 | `state/ASHUR_ARROGANCE_FIXED.md` | 아슈르 오만 구체화 |
 | `state/NAMES_SILHOUETTE_FIXED.md` | 정식 이름·실루엣 |
 | `state/BOSS_STATS_SETH_ASHUR.md` | 세스·아슈르 수치 |
+| `state/BOSS_WEAPON_SKILLS.md` | 보스 전용 무기 스킬 |
 
 ## By topic
 
