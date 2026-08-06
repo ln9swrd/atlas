@@ -13,6 +13,7 @@
 | `state/EP1_EP8_SCENE_SCRIPT.md` | EP1·8 대본 |
 | `state/EP5_SCENE_SCRIPT.md` | EP5 균열 대본 |
 | `state/EP6_EP9_EP13_SCENE_SCRIPT.md` | EP6·9·13 대본 |
+| `state/ANIME_PASS1_10CUTS.md` | 1차 애니 10컷 |
 | `state/KAI_HABIT_FIXED.md` | 카이 습관·잔상 |
 | `state/MADNESS_SIGNAL_FIXED.md` | 광기 신호 고정 |
 | `state/SETH_BATTLE_FIXED.md` | 세스전 안 흔들림 |
