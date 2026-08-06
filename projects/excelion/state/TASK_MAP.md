@@ -9,20 +9,11 @@
 
 | ID | Task | Status |
 |----|------|--------|
-| SOR-A · P1–P3 · 세스 | Done | |
-| FUN_GATES | Done | `state/FUN_GATES_2026-08-06.md` |
-| **검토 보완** | **Done** | 01 표 복구 · 카이 잔상 · 아슈르 대사 분리 · EP8 부분 성공 · 후반 감정 결 |
-| **EP1·EP8 장면 대본** | **Done** | `state/EP1_EP8_SCENE_SCRIPT.md` |
-| **광기 신호 연출 고정** | **Done** | `state/MADNESS_SIGNAL_FIXED.md` |
-| **세스전 안 흔들림** | **Done** | `state/SETH_BATTLE_FIXED.md` |
-| **아슈르 오만** | **Done** | `state/ASHUR_ARROGANCE_FIXED.md` |
-| **스토리 보완** | **Done** | `docs/09` · `docs/01` |
-| **정식 이름·실루엣** | **Done** | `state/NAMES_SILHOUETTE_FIXED.md` |
-
-### 재미 실측 (S1 설계)
-
-1–4 전부 Done.
+| 재미 실측 1–4 | Done | 대본·광기·세스·이름실루엣 |
+| **스토리 보완** | **Done** | docs/09 · 01 |
+| **아슈르 오만** | **Done** | state/ASHUR_ARROGANCE_FIXED.md |
+| **보스 수치** | **Done** | state/BOSS_STATS_SETH_ASHUR.md |
 
 ### OPEN
 
-보스 수치 · e.md archive · T-2 / T-10 / T-15 · 윤문/1차 애니 10 · BRAVE 프레임
+e.md archive · T-2 / T-10 / T-15 · 윤문/1차 애니 10 · BRAVE 프레임 · standalone Archive
