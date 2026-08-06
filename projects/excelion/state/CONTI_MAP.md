@@ -1,22 +1,22 @@
 # CONTI_MAP — 텍스트 콘티 A
 
-## Done
+> 2026-08-06 · **S1 EP01–13 전부 Done**
 
-| ID | EP | 파일 |
-|----|-----|------|
-| C-RULE | 규칙 | design/conti/00_CONTI_RULES.md |
-| C-EP01 | EP1 | EP01_CONTI.md |
-| C-EP05 | EP5 | EP05_CONTI.md |
-| **C-EP06** | EP6 | **EP06_CONTI.md** |
-| C-EP08 | EP8 | EP08_CONTI.md |
-| C-EP09 | EP9 | EP09_CONTI.md |
-| C-EP13 | EP13 | EP13_CONTI.md |
-
-## Open (콘티 우선 잔여)
-
-| EP | 우선 | 비고 |
+| EP | 파일 | 핵심 |
 |----|------|------|
-| **07** | **다음** | 원격 일격 · 한 뿌리 |
-| 12 | 높음 | 합류 · EP13 직전 |
-| 10–11 | 중 | 수용·전조 |
-| 02–04 | 중 | 애착 빌드 |
+| RULE | 00_CONTI_RULES.md | 형식·소스 |
+| 01 | EP01_CONTI | 동기화 · 광기 0 |
+| 02 | EP02_CONTI | 거점 · 유나 시선 |
+| 03 | EP03_CONTI | 구출 · 대가 |
+| 04 | EP04_CONTI | 대안 실패 · 아슈르 이름 |
+| 05 | EP05_CONTI | MID · 레이 정점 |
+| 06 | EP06_CONTI | 세스 · 시선 |
+| 07 | EP07_CONTI | 원격 일격 · 한 뿌리 |
+| 08 | EP08_CONTI | 상실 · 3초 |
+| 09 | EP09_CONTI | 급이 아니다 · 잔상 |
+| 10 | EP10_CONTI | 수용 · 잔상 |
+| 11 | EP11_CONTI | 전조 빛 · 후퇴 |
+| 12 | EP12_CONTI | 합류 · 붙잡기 |
+| 13 | EP13_CONTI | 엑셀리온 · 관측 |
+
+경로: `design/conti/`
