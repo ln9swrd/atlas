@@ -1,25 +1,27 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: SoR complete under atlas; standalone CLOSED  
-STATUS: 2026-08-06 1차 애니 10컷 · Archive 확인
+ACTIVE_TARGET: **Design D1 — BRAVE 프레임 고정**  
+STATUS: 2026-08-06 디자인 전환
 
-## Done
+## Done (스토리)
 
-- 스토리 보완 v2 (카이 습관·잔상 · EP6/9/13 대본 · 09/01)
-- `ln9swrd/excelion` **이미 Archive** (archived=true · CLOSED.md)
-- 1차 애니 10컷 리스트 → `state/ANIME_PASS1_10CUTS.md`
+- S1 스토리·보완 v2 · Archive · 1차 애니 10컷 리스트
 
-## Next
+## Design
 
-1. **BRAVE 프레임 제작** (제작 파이프라인)
-2. 썸네일 스케치 / 보드 툴 (10컷 기준)
-3. (선택) EP10–12 장면 대본 확장
-4. T-2 · T-10 · T-15 (forge · Master)
+| ID | 항목 | Status |
+|----|------|--------|
+| D1 | BRAVE 프레임 고정 | **Active** |
+| D2–D11 | 엑셀리온·적기·인물·광기·애니·UI·맵 | Open |
+
+목록: `state/DESIGN_TASK_MAP.md`
+
+## Next (D1)
+
+1. `design/brave/` 기존 컨셉 정리·선정
+2. `design/brave/FRAME_SPEC.md` 작성 (전면/측면/색/슬롯/금지)
+3. Done 후 D2
 
 ## SoR
 
 `atlas/projects/excelion/` only
-
-## 최근
-
-- Archive 확인 · ANIME_PASS1_10CUTS → Done
