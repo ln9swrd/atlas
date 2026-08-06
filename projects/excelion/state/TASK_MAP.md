@@ -10,10 +10,11 @@
 | ID | Task | Status |
 |----|------|--------|
 | 재미 실측 1–4 | Done | 대본·광기·세스·이름실루엣 |
-| **스토리 보완** | **Done** | docs/09 · 01 |
-| **아슈르 오만** | **Done** | state/ASHUR_ARROGANCE_FIXED.md |
-| **보스 수치** | **Done** | state/BOSS_STATS_SETH_ASHUR.md |
+| 스토리 보완 (유나·레이·아슈르) | Done | docs/09 · 01 |
+| 아슈르 오만 | Done | state/ASHUR_ARROGANCE_FIXED.md |
+| 보스 수치 | Done | state/BOSS_STATS_SETH_ASHUR.md |
+| **스토리 보완 v2** | **Done** | KAI_HABIT · EP6/9/13 대본 · 09/01 반영 |
 
 ### OPEN
 
-e.md archive · T-2 / T-10 / T-15 · 윤문/1차 애니 10 · BRAVE 프레임 · standalone Archive
+e.md archive · T-2 / T-10 / T-15 · 윤문/1차 애니 10 · BRAVE 프레임 · standalone Archive · (선택) EP10–12 대본
