@@ -12,10 +12,11 @@
 | SOR-A · P1–P3 · 세스 | Done | |
 | FUN_GATES | Done | `state/FUN_GATES_2026-08-06.md` |
 | **검토 보완** | **Done** | 01 표 복구 · 카이 잔상 · 아슈르 대사 분리 · EP8 부분 성공 · 후반 감정 결 |
+| **EP1·EP8 장면 대본** | **Done** | `state/EP1_EP8_SCENE_SCRIPT.md` |
 
 ### 다음 (재미 실측)
 
-1. EP1·EP8 장면 대본
+1. ~~EP1·EP8 장면 대본~~ → Done
 2. 매 화 광기 신호 연출 고정
 3. 세스전 안 흔들림
 4. 정식 이름·실루엣
