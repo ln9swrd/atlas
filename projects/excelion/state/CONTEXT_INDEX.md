@@ -14,6 +14,7 @@
 | `state/MADNESS_SIGNAL_FIXED.md` | 광기 신호 고정 |
 | `state/SETH_BATTLE_FIXED.md` | 세스전 안 흔들림 |
 | `state/HAND_SYMBOLISM_SUMMARY.md` | 손 동작 상징 요약 |
+| `state/ASHUR_ARROGANCE_FIXED.md` | 아슈르 오만 구체화 |
 
 ## By topic
 
