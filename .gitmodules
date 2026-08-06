@@ -9,3 +9,11 @@
 [submodule "projects/aws-mcp"]
 	path = projects/aws-mcp
 	url = https://github.com/RafalWilinski/aws-mcp
+
+[submodule "projects/blender-open-mcp"]
+	path = projects/blender-open-mcp
+	url = https://github.com/dhakalnirajan/blender-open-mcp.git
+
+[submodule "projects/wafermap-converter"]
+	path = projects/wafermap-converter
+	url = https://github.com/ln9swrd/atlas
