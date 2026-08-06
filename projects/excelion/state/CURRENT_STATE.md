@@ -1,15 +1,15 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Conti A — EP09**  
-STATUS: 2026-08-06 EP08 콘티 Done
+ACTIVE_TARGET: **Conti A — EP13**  
+STATUS: 2026-08-06 EP09 콘티 Done
 
 ## Done
 
-- 콘티 EP01 · EP05 · **EP08**
+- 콘티 EP01 · EP05 · EP08 · **EP09**
 
 ## Next
 
-**EP09** (빈 주파수 · 「아직 급이 아니다」 · 열혈 구호 없음)
+**EP13** (엑셀리온 · 게이트 · 시간을 벌었다)
 
 ## SoR
 
