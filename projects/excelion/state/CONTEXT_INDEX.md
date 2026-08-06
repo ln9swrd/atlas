@@ -13,6 +13,7 @@
 | `state/EP1_EP8_SCENE_SCRIPT.md` | 재미 실측 대본 |
 | `state/MADNESS_SIGNAL_FIXED.md` | 광기 신호 고정 |
 | `state/SETH_BATTLE_FIXED.md` | 세스전 안 흔들림 |
+| `state/HAND_SYMBOLISM_SUMMARY.md` | 손 동작 상징 요약 |
 
 ## By topic
 
