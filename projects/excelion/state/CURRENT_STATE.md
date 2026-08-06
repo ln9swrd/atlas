@@ -1,7 +1,7 @@
 # CURRENT_STATE — excelion
 
 ACTIVE_TARGET: SoR complete under atlas; standalone CLOSED  
-STATUS: 2026-08-06 아슈르 오만 구체화 고정
+STATUS: 2026-08-06 스토리 보완 (유나·레이·아슈르)
 
 ## Next
 
@@ -15,8 +15,6 @@ STATUS: 2026-08-06 아슈르 오만 구체화 고정
 
 ## 최근
 
-- EP1·EP8 장면 대본 → `state/EP1_EP8_SCENE_SCRIPT.md`
-- 광기 신호 고정 → `state/MADNESS_SIGNAL_FIXED.md`
-- 세스전 안 흔들림 → `state/SETH_BATTLE_FIXED.md`
-- 손 상징 요약 → `state/HAND_SYMBOLISM_SUMMARY.md`
+- 스토리 보완 → `docs/09_STORY_S1.md` · `docs/01_CHARACTER.md`
 - 아슈르 오만 → `state/ASHUR_ARROGANCE_FIXED.md`
+- 세스전 · 광기 · EP1·EP8 대본 · 손 상징 → state/
