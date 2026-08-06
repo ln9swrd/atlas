@@ -10,3 +10,13 @@
 | T-2 | forge 링크 | Pending | |
 | T-10 | Forge 모듈 스펙 | Pending | |
 | T-15 | Master 검수 | Pending | |
+
+## 소년만화 단계 수정 (User 2026-08-06)
+
+| ID | Task | Status | Evidence |
+|----|------|--------|----------|
+| SH-1 | 01_CHARACTER 라이벌·동료·행동증명 축 | **Done** | commit 40fc43b · 2026-08-06 |
+| SH-2 | 09_STORY_S1 EP별 관객 질문 → 목표/승패형 | Pending | |
+| SH-3 | S-Core 단계·보스 페이즈 명시 (02/05) | Pending | |
+| SH-4 | EP7–8 라이벌 아크 재구성 | Pending | |
+| SH-5 | 전체 톤 체크 (소년만화 쾌감) | Pending | |
