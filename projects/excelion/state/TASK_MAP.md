@@ -15,6 +15,8 @@
 | **EP1·EP8 장면 대본** | **Done** | `state/EP1_EP8_SCENE_SCRIPT.md` |
 | **광기 신호 연출 고정** | **Done** | `state/MADNESS_SIGNAL_FIXED.md` |
 | **세스전 안 흔들림** | **Done** | `state/SETH_BATTLE_FIXED.md` |
+| **아슈르 오만** | **Done** | `state/ASHUR_ARROGANCE_FIXED.md` |
+| **스토리 보완** | **Done** | `docs/09` · `docs/01` 유나·레이·아슈르 |
 
 ### 다음 (재미 실측)
 
