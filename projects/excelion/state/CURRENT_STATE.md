@@ -1,16 +1,15 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **Conti A — EP08**  
-STATUS: 2026-08-06 EP05 콘티 Done
+ACTIVE_TARGET: **Conti A — EP09**  
+STATUS: 2026-08-06 EP08 콘티 Done
 
 ## Done
 
-- EP01 · **EP05** 텍스트 콘티
-- Design D1–D11 · 스토리
+- 콘티 EP01 · EP05 · **EP08**
 
 ## Next
 
-**EP08** 상실 콘티 (과부하 3초 · 카이 희생)
+**EP09** (빈 주파수 · 「아직 급이 아니다」 · 열혈 구호 없음)
 
 ## SoR
 
