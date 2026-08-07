@@ -19,13 +19,14 @@
 ## Done
 
 - 메인 SoR 네메시스 교체 (docs · state · design)
-- novel CHARACTER / MECHA / **COMBAT** 바이블 V2
-- REBUILD_ANALYSIS_PLAN 소년만화 원칙
+- novel 바이블 3종 V2
+- **novel ep05 · ep06 · ep09** 아슈르→네메시스 명칭 교체
+  - ep06/ep09는 메인 SoR와 불일치(초안) · 재작성 대상 표시
 
 ## Next
 
-1. novel EP 본문 아슈르 잔여 검색 (있으면 교체)
-2. 실기 플레이테스트 재개 여부
+1. 실기 플레이테스트 재개 여부 판단
+2. 또는 novel EP 메인 SoR 정합 재작성 (EP6 세스 등)
 
 ## Hold
 
