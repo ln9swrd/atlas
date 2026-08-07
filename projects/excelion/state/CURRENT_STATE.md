@@ -18,24 +18,25 @@
 
 ## Done (최근)
 
-- 루트 README · PROJECT_MEMORY 수정
-- novel/REBUILD_ANALYSIS_PLAN 소년만화 원칙
+- 루트 README · PROJECT_MEMORY
+- novel 소년만화 원칙
 - docs/09_STORY_S1 네메시스 + 24화
-- **state/NEMESIS_ARROGANCE_FIXED** 신설
-- **state/ASHUR_ARROGANCE_FIXED** 폐기 표시
-- **state/BOSS_STATS** 아슈르→네메시스 명칭 교체
+- state/NEMESIS_ARROGANCE_FIXED 신설
+- state/ASHUR_ARROGANCE 폐기
+- state/BOSS_STATS 네메시스
+- **state/BOSS_WEAPON_SKILLS** 네메시스 (SK-N)
 
 ## Next (순서대로)
 
 1. ~~docs/09_STORY_S1~~ Done
-2. ~~state 보스 핵심 (오만·수치)~~ Done
-3. `state/BOSS_WEAPON_SKILLS.md` 네메시스 반영 (남은 state)
-4. `design/character` · `design/enemy` · `design/mecha` 아슈르 부분 교체
+2. ~~state 보스 핵심~~ Done
+3. ~~BOSS_WEAPON_SKILLS~~ Done
+4. `design/character` · `design/enemy` · `design/mecha` 아슈르 → 네메시스
 5. novel 바이블·EP 정리
 
 ## Hold
 
-- 실기 플레이테스트 — 스토리 방향 확정 후
+- 실기 플레이테스트
 - 시각화 · Forge
 
 ## SoR
