@@ -1,12 +1,14 @@
-# Exelion Project Charter
+# Excelion Project Charter
 
 ## 1. Purpose
-Exelion is the first validation project for Atlas DevOS in a real production context. It exists to build a compelling mecha IP experience while simultaneously validating Atlas as a development operating system.
+Excelion is the first validation project for Atlas DevOS in a real production context. It exists to build a compelling mecha IP experience while simultaneously validating Atlas as a development operating system.
 
 ## 2. Success Criteria
 - A playable prototype or vertical slice is completed.
 - Core mecha IP assets and supporting production pipeline are established.
 - Atlas helps reduce bottlenecks and improve delivery speed in a measurable way.
+
+**Current:** Story/design text continues. Visualization · Forge · ParaModel are **HOLD** (Master 2026-08-04).
 
 ## 3. Scope
 ### Included
@@ -24,6 +26,7 @@ Exelion is the first validation project for Atlas DevOS in a real production con
 - Atlas rules and review flow are followed.
 - Reuse and automation are prioritized over ad-hoc work.
 - Solo or small-team workflow where possible.
+- Fun shonen story first; systems serve story.
 
 ## 5. Location
-Canonical product tree: **`atlas/projects/excelion/`** (Master 2026-08-05).
+Canonical product tree: **`atlas/projects/excelion/`**.
