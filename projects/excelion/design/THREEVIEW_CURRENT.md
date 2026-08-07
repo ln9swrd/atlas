@@ -6,7 +6,7 @@
 ## CURRENT
 
 ```
-character/ashur
+character/seth
 ```
 
 ## QUEUE
@@ -48,3 +48,4 @@ weapon/ashur-decree-field
 | 2026-08-06 | character/yuna | 삼면도 생성 (A-pose, orthographic, white bg, 거리·시선·가장자리, 절제된 존재감); NOTES 추가 | character/rei |
 | 2026-08-06 | mecha/brave | 순서 외 생성 (A-pose, orthographic, 여백·여성형·단순, #C0C8D0/#2A3A4A/#E8A020); NOTES 추가 | character/rei (유지) |
 | 2026-08-06 | character/rei | 삼면도 생성 (A-pose, orthographic, white bg, 단정·지휘·침묵, 절제); NOTES 추가 | character/ashur |
+| 2026-08-07 | character/ashur | 삼면도 생성 (A-pose, orthographic, white bg, 길·위계·높은 중심, 손 최소화, 무표정 판정); NOTES·prompt 추가 | character/seth |
