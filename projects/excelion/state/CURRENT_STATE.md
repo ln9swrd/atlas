@@ -18,20 +18,24 @@
 
 ## Done (최근)
 
-- 루트 README · PROJECT_MEMORY 수정 (24화 + 네메시스)
-- novel/REBUILD_ANALYSIS_PLAN 소년만화 원칙 고정
-- **docs/09_STORY_S1.md** 아슈르→네메시스 + 24화 목표 반영
+- 루트 README · PROJECT_MEMORY 수정
+- novel/REBUILD_ANALYSIS_PLAN 소년만화 원칙
+- docs/09_STORY_S1 네메시스 + 24화
+- **state/NEMESIS_ARROGANCE_FIXED** 신설
+- **state/ASHUR_ARROGANCE_FIXED** 폐기 표시
+- **state/BOSS_STATS** 아슈르→네메시스 명칭 교체
 
 ## Next (순서대로)
 
-1. ~~docs/09_STORY_S1.md~~ **Done**
-2. `state/` 보스 관련 문서 (ASHUR_* → NEMESIS 기준)
-3. `design/character` · `design/enemy` · `design/mecha` 아슈르 부분 교체
-4. novel 바이블·EP 정리 (소년만화 기준)
+1. ~~docs/09_STORY_S1~~ Done
+2. ~~state 보스 핵심 (오만·수치)~~ Done
+3. `state/BOSS_WEAPON_SKILLS.md` 네메시스 반영 (남은 state)
+4. `design/character` · `design/enemy` · `design/mecha` 아슈르 부분 교체
+5. novel 바이블·EP 정리
 
 ## Hold
 
-- 실기 플레이테스트 (EP1·EP6·EP8) — 스토리 방향 확정 후 재개
+- 실기 플레이테스트 — 스토리 방향 확정 후
 - 시각화 · Forge
 
 ## SoR
