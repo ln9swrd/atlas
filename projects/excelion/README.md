@@ -13,7 +13,7 @@ Mission-Based 3D Action · 오리지널 메카 IP
 |------|------|------|
 | 1 | [state/CURRENT_STATE.md](state/CURRENT_STATE.md) | 지금 · Next |
 | 2 | [state/TASK_MAP.md](state/TASK_MAP.md) | 열린 작업 |
-| 3 | [docs/09_STORY_S1.md](docs/09_STORY_S1.md) | S1 13화 스토리 |
+| 3 | [docs/09_STORY_S1.md](docs/09_STORY_S1.md) | S1 스토리 |
 | 4 | [docs/README.md](docs/README.md) | 설계 인덱스 |
 | 5 | [docs/08_PLAY_BRAVE.md](docs/08_PLAY_BRAVE.md) | 플레이 |
 
@@ -26,9 +26,17 @@ Mission-Based 3D Action · 오리지널 메카 IP
 | 장르 | Mission-Based 3D Action |
 | 주인공 | **리아** (16세) |
 | 성장 | **S-Core** (겟타선) |
-| S1 | **13화 = 13스테이지** |
+| S1 | **24화 목표** (필요 시 증감 가능) |
+| 최종 보스 | **네메시스** (여성형) |
 | 엔진 | Unreal · Blender |
 | 파이프라인 | `ln9swrd/excelion-forge` |
+
+---
+
+## 최우선 원칙
+
+- 분량에 상관없이 **재미 있는 소년만화**
+- 스토리에 게임에 구현될 거의 모든 것이 담겨야 한다
 
 ---
 
@@ -37,9 +45,10 @@ Mission-Based 3D Action · 오리지널 메카 IP
 ```
 projects/excelion/
   README.md
-  docs/           설계 SoR (00–09)
+  docs/           설계 SoR
   state/          운영 SoR
   design/         컨셉 이미지 (brave / nemesis)
+  novel/          스토리 본문·바이블
   goals/ sprints/ 실행 로그
   …
 ```
