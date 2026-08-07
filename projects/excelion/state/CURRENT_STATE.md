@@ -4,13 +4,14 @@
 
 ## ACTIVE_TARGET
 
-**M2b** · EP14–16 Done · EP17 시놉 초안 · **Next EP17 본문**
+**M2b** · EP14–16 Done · EP17 시놉+전투방안 · **Next EP17 본문**
 
 ## Done
 
 - EP1–13 밀도 · EP14–24 시놉
 - EP14–16 본문
-- **EP17 시놉시스 초안** (`novel/EP17_SYNOPSIS_DRAFT.md`)
+- EP17 시놉시스 초안
+- **EP17 전투 장면 구체화 방안** (`novel/EP17_COMBAT_PLAN.md`)
 
 ## Next
 
