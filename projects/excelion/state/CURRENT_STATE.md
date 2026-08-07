@@ -19,18 +19,15 @@
 ## Done (최근)
 
 - 루트 · novel 원칙 · docs/09_STORY_S1
-- state 보스 (오만·수치·무기스킬)
-- **design/BOSS_CAST** 네메시스
-- **design/enemy/NEMESIS_MECHA_SPEC** 신설
-- **design/enemy/ASHUR_MECHA_SPEC** 폐기
-- **design/nemesis/** 공식 폴더 승격
+- state 보스 전체 (오만·수치·무기)
+- design BOSS_CAST · NEMESIS_MECHA_SPEC · nemesis/
+- design/character/ashur · mecha/ashur 폐기
+- **docs/05_ENEMY** · **docs/01_CHARACTER** 네메시스
 
 ## Next (순서대로)
 
-1~4. ~~docs · state · design 핵심~~ Done
-5. `design/character/ashur/` · `design/mecha/ashur/` 폐기 표시 (잔여)
-6. `docs/05_ENEMY.md` · `docs/01_CHARACTER.md` 네메시스 반영
-7. novel 바이블·EP 정리 (소년만화 기준)
+1~6. ~~메인 SoR 네메시스 교체~~ Done
+7. **novel** 바이블·EP 정리 (소년만화 기준 · 네메시스)
 
 ## Hold
 
