@@ -1,7 +1,7 @@
 # 06_MECHA — 기체 파라미터
 
-출처: `projects/paramodel/data/mecha/brave-001.json` + DESIGN.md  
-상세 디자인: `docs/03_MECHA/BRAVE_SPEC.md`
+출처: paramodel brave-001 (HOLD)  
+상세 디자인: `design/brave/FRAME_SPEC.md` · `design/brave/EXCELION_SPEC.md`
 
 ## BRAVE-001 (초기형)
 | 필드 | 값 |
@@ -9,10 +9,10 @@
 | id | brave-001 |
 | name | Brave |
 | codename | EX-BRAVE-001 |
-| archetype | humanoid |
+| archetype | humanoid · female super robot |
 | category | player |
-| size | height 25.0 m (scale_class 25m) |
-| 설명 | 초기형 브레이브. 단순 실루엣, 성장 전 기본 기체 |
+| size | height 25.0 m |
+| 설명 | 초기형. 단순 실루엣 · S1 형태 고정 |
 
 ## 파라미터 (concept)
 | 항목 | 값 |
@@ -27,12 +27,8 @@
 - style_tags: modern_super, organic_mechanical, simple, retro
 
 ## 슬롯 (base_body humanoid)
-head, torso_upper, torso_lower, arm_l/r, leg_l/r 활성
+head, torso_upper, torso_lower, arm_l/r, leg_l/r 활성  
 backpack / skirt / weapon / thruster = 비활성 (초기형)
-
-## Size 계약 (ParaModel)
-- template reference_value 2.0 m → value 25 → **sf = 12.5**
-- scale_class는 라벨일 뿐 divisor 아님
 
 ## 엑셀리온 (진화 1단계)
 
@@ -45,7 +41,7 @@ backpack / skirt / weapon / thruster = 비활성 (초기형)
 | 전투 | 봉쇄 무시/조기 소멸 · ×1.5 · N04 취소 |
 | 초필 | 엑셀리온 플레어 |
 
-상세: `docs/03_MECHA/BRAVE_SPEC.md`
+상세: `design/brave/EXCELION_SPEC.md`
 
 ## 상태
 - status: concept + 엑셀리온 규칙 고정
