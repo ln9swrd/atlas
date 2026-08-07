@@ -27,7 +27,7 @@ Season 1 Story Reconstruction (24화 목표)
 ## Current Tasks
 
 1. 루트 문서 방향 통일 (진행 중)
-2. 아슈르 → 네메시스 최종보스 반영
+2. ~~아슈르 → 네메시스 최종보스 반영~~ **완료** (심화 반영 2026-08-07)
 3. Season 1 스토리 재구성 (24화 기준)
 4. EP 재작성
 5. 캐릭터·메카 문서 확장
@@ -49,9 +49,13 @@ Concept:
 **최종 보스** · Female super robot based on gravity control.
 
 Concept:
-- Gravity
+- Gravity (공간의 등급)
 - Cosmic power
-- Absolute force
+- Absolute force / Hierarchy
+
+심화 문서:
+- `state/NEMESIS_ARROGANCE_FIXED.md`
+- `design/enemy/NEMESIS_MECHA_SPEC.md`
 
 ### ASHUR
 
