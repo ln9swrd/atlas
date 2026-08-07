@@ -1,24 +1,39 @@
 # CURRENT_STATE — excelion
 
-ACTIVE_TARGET: **실기 플레이테스트 범위 Done → 실행 대기**  
-STATUS: 2026-08-06 · 플레이 설계·미션 표시·테스트 범위 확정 · EP7 장면 대본 구체화 · 시각화·Forge Hold
+> Updated: 2026-08-07
 
-## Done
+## ACTIVE_TARGET
 
-- 밸런스 B0–B6 승격
-- 플레이 설계 6단계 + 전투패턴 예시
-- 다음 미션 수치 표시
-- **실기 플레이테스트 범위** (`PLAYTEST_SCOPE_2026-08-06.md`)
-- **EP7 장면 대본** (`EP7_SCENE_SCRIPT.md`) · 원격 일격·한 뿌리·광기 경계 구체화
+**24화 스토리 완성 + 네메시스 최종보스 반영**
 
-## Next
+## 고정 결정 (중단 후 재개 시 기준)
 
-1차 플레이테스트 실행 (EP1·EP6·EP8)
+| 항목 | 결정 |
+|------|------|
+| 화수 | **24화 목표** (필요 시 증감 가능) |
+| 최종 보스 | **네메시스** (여성형) |
+| 아슈르 | 최종보스에서 제외 (네메시스로 교체) |
+| 톤 | **재미 있는 소년만화** (분량 무관) |
+| 스토리 원칙 | 게임에 구현될 거의 모든 것이 스토리에 담겨야 함 |
+
+## Done (최근)
+
+- 루트 README · PROJECT_MEMORY 수정 (24화 + 네메시스)
+- novel/REBUILD_ANALYSIS_PLAN 에 소년만화 최우선 원칙 고정
+- 루트 하위 폴더 현황 파악
+
+## Next (순서대로)
+
+1. `docs/09_STORY_S1.md` — 아슈르 → 네메시스 반영 + 24화 방향 정리
+2. `state/` 보스 관련 문서 (ASHUR_* → NEMESIS 기준)
+3. `design/character` · `design/enemy` · `design/mecha` 아슈르 부분 교체
+4. novel 바이블·EP 정리 (소년만화 기준)
 
 ## Hold
 
-- 시각화 · Forge (수동 작업 성격으로 보류)
+- 실기 플레이테스트 (EP1·EP6·EP8) — 스토리 방향 확정 후 재개
+- 시각화 · Forge
 
 ## SoR
 
-`atlas/projects/excelion/` only · 밸런스 요약 `state/BALANCE_SOR.md`
+`atlas/projects/excelion/` only
