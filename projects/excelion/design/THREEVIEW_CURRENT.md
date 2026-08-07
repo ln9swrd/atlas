@@ -16,11 +16,9 @@ character/lia
 character/kai
 character/yuna
 character/rei
-character/ashur
 character/seth
 mecha/brave
 mecha/excelion
-mecha/ashur
 mecha/seth
 mecha/ord-grunt
 mecha/ord-heavy
@@ -35,8 +33,6 @@ weapon/brave-cannon
 weapon/brave-drone
 weapon/seth-line-resolver
 weapon/seth-seal-plate
-weapon/ashur-order-sight
-weapon/ashur-decree-field
 ```
 
 ## 완료 로그
@@ -48,4 +44,5 @@ weapon/ashur-decree-field
 | 2026-08-06 | character/yuna | 삼면도 생성 (A-pose, orthographic, white bg, 거리·시선·가장자리, 절제된 존재감); NOTES 추가 | character/rei |
 | 2026-08-06 | mecha/brave | 순서 외 생성 (A-pose, orthographic, 여백·여성형·단순, #C0C8D0/#2A3A4A/#E8A020); NOTES 추가 | character/rei (유지) |
 | 2026-08-06 | character/rei | 삼면도 생성 (A-pose, orthographic, white bg, 단정·지휘·침묵, 절제); NOTES 추가 | character/ashur |
-| 2026-08-07 | character/ashur | 삼면도 생성 (A-pose, orthographic, white bg, 길·위계·높은 중심, 손 최소화, 무표정 판정); NOTES·prompt 추가 | character/seth |
+| 2026-08-07 | character/ashur | 삼면도 생성 후 **폴더 삭제** (최종보스=네메시스). 큐에서 제거 | character/seth |
+| 2026-08-07 | (cleanup) | QUEUE에서 character/ashur · mecha/ashur · weapon/ashur-* 제거 | character/seth |
