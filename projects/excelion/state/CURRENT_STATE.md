@@ -18,21 +18,19 @@
 
 ## Done (최근)
 
-- 루트 README · PROJECT_MEMORY
-- novel 소년만화 원칙
-- docs/09_STORY_S1 네메시스 + 24화
-- state/NEMESIS_ARROGANCE_FIXED 신설
-- state/ASHUR_ARROGANCE 폐기
-- state/BOSS_STATS 네메시스
-- **state/BOSS_WEAPON_SKILLS** 네메시스 (SK-N)
+- 루트 · novel 원칙 · docs/09_STORY_S1
+- state 보스 (오만·수치·무기스킬)
+- **design/BOSS_CAST** 네메시스
+- **design/enemy/NEMESIS_MECHA_SPEC** 신설
+- **design/enemy/ASHUR_MECHA_SPEC** 폐기
+- **design/nemesis/** 공식 폴더 승격
 
 ## Next (순서대로)
 
-1. ~~docs/09_STORY_S1~~ Done
-2. ~~state 보스 핵심~~ Done
-3. ~~BOSS_WEAPON_SKILLS~~ Done
-4. `design/character` · `design/enemy` · `design/mecha` 아슈르 → 네메시스
-5. novel 바이블·EP 정리
+1~4. ~~docs · state · design 핵심~~ Done
+5. `design/character/ashur/` · `design/mecha/ashur/` 폐기 표시 (잔여)
+6. `docs/05_ENEMY.md` · `docs/01_CHARACTER.md` 네메시스 반영
+7. novel 바이블·EP 정리 (소년만화 기준)
 
 ## Hold
 
