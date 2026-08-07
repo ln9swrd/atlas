@@ -16,9 +16,9 @@
 | **ui/** | UI 최소 스펙 | 2D 우선 |
 | **conti/** | 에피소드 콘티 | 스토리보드 |
 | **anime/** | 애니 패스 보드 | |
-| **brave/** | BRAVE **컨셉 이미지 풀** (구 작업물) | 제작 SoR ≠ 여기 → `mecha/brave` |
+| **brave/** | BRAVE **컨셉 이미지 풀** | 제작 SoR ≠ 여기 → `mecha/brave` |
 | **enemy/** | 적 기체 **스펙 원본** (TEXT-LOCK) | 제작 단위 → `mecha/*` |
-| **nemesis/** | 아슈르 계열 컨셉 이미지 풀 | 제작 → `mecha/ashur` |
+| **nemesis/** | **네메시스** 최종보스 컨셉 이미지 풀 | 스펙 → `enemy/NEMESIS_MECHA_SPEC.md` |
 | **THREEVIEW_CURRENT.md** | 삼면도 자동화 큐 (1개씩) | |
 | **DESIGN_QUALITY.md** | 품질 바 (로봇혼·센티넬) | **LOCK** |
 
@@ -41,10 +41,12 @@
 |-------------|----------|
 | `character/CAST_SILHOUETTE.md`, `BOSS_CAST.md` | `character/<name>/` |
 | `brave/FRAME_SPEC.md`, `EXCELION_SPEC.md` | `mecha/brave`, `mecha/excelion` |
-| `enemy/ORD_SPEC.md`, `SETH_MECHA_SPEC.md`, `ASHUR_MECHA_SPEC.md` | `mecha/ord-*`, `seth`, `ashur` |
+| `enemy/ORD_SPEC.md`, `SETH_MECHA_SPEC.md`, `NEMESIS_MECHA_SPEC.md` | `mecha/ord-*`, `seth` |
 | `env/MAP_MOOD.md` | `env/earth-*`, `lunar`, `gate` |
 | `effect/MADNESS_VISUAL.md` | 연출 (필요 시 effect 하위 확장) |
 | `ui/UI_MIN.md` | UI (3D 비우선) |
+
+**폐기:** 아슈르 최종보스·`mecha/ashur`·`character/ashur`·ashur 무기 — 2026-08-07 삭제. 최종보스 = **네메시스**.
 
 ## 삼면도 큐
 
