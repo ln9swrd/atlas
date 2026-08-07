@@ -4,17 +4,17 @@
 
 ## ACTIVE_TARGET
 
-**M2b** · EP14–18 Done · **Next EP19**
+**M2b** · EP14–18 Done · EP19 시놉 · **Next EP19 본문**
 
 ## Done
 
 - EP1–13 밀도 · EP14–24 시놉
 - EP14–18 본문
-- EP17 시놉·전투·BT·통합지시 · 서사 구조 기초
+- **EP19 시놉시스** (`novel/EP19_SYNOPSIS.md`)
 
 ## Next
 
-1. EP19 「붕괴 예고」
+1. EP19 「붕괴 예고」 본문
 2. EP20~
 3. M3 수치 (병행 가능)
 
