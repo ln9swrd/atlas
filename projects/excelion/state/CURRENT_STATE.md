@@ -19,12 +19,12 @@
 ## Done (최근)
 
 - 루트 README · PROJECT_MEMORY 수정 (24화 + 네메시스)
-- novel/REBUILD_ANALYSIS_PLAN 에 소년만화 최우선 원칙 고정
-- 루트 하위 폴더 현황 파악
+- novel/REBUILD_ANALYSIS_PLAN 소년만화 원칙 고정
+- **docs/09_STORY_S1.md** 아슈르→네메시스 + 24화 목표 반영
 
 ## Next (순서대로)
 
-1. `docs/09_STORY_S1.md` — 아슈르 → 네메시스 반영 + 24화 방향 정리
+1. ~~docs/09_STORY_S1.md~~ **Done**
 2. `state/` 보스 관련 문서 (ASHUR_* → NEMESIS 기준)
 3. `design/character` · `design/enemy` · `design/mecha` 아슈르 부분 교체
 4. novel 바이블·EP 정리 (소년만화 기준)
