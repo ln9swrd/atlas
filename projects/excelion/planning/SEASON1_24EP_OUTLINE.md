@@ -1,30 +1,50 @@
 # EXCELION SEASON 1
-# 24 Episode Outline
+# 24 EPISODE OUTLINE
 
 
 ## ACT 1
-EP01-EP06
+## EP01-EP06
 
 Theme:
-붕괴 이후 생존
+After Collapse
+
+Focus:
+- BRAVE awakening
+- Survivor world
+- First battles
 
 
 ## ACT 2
-EP07-EP14
+## EP07-EP14
 
 Theme:
-세계의 진실
+Truth of the Collapse
+
+Focus:
+- NEMESIS
+- EXCELION Project
+- ASHUR introduction
 
 
 ## ACT 3
-EP15-EP21
+## EP15-EP21
 
 Theme:
-최후 전쟁
+Final War
+
+Focus:
+- BRAVE evolution
+- Enemy fortress
+- Final preparations
 
 
 ## ACT 4
-EP22-EP24
+## EP22-EP24
 
 Theme:
-새로운 시대
+New Era
+
+Focus:
+- Final battle
+- World reconstruction
+- Future possibility

@@ -1,7 +1,12 @@
 # DOCS RESTRUCTURE PLAN
 
 
-## New Structure
+## Purpose
+
+Create unified development documentation.
+
+
+## Categories
 
 
 01_WORLD
@@ -15,11 +20,8 @@
 05_ART
 
 
-Purpose:
-
-Create unified development bible
-for:
+All categories must support:
 
 - Novel
 - Game
-- Art
+- Visual Design

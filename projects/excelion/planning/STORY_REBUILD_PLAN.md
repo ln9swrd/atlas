@@ -1,33 +1,30 @@
 # EXCELION STORY REBUILD PLAN
 
-## Goal
+## Purpose
 
-13 Episode structure → 24 Episode Season 1
-
-## Objective
-
-- Expand character arcs
-- Improve world building
-- Connect story and gameplay
-- Define mecha progression
+Expand existing 13 episode story into a complete 24 episode Season 1.
 
 
-## Current Issues
+## Problems of Previous Structure
 
 - Story pacing too fast
-- Boss introduction insufficient
-- Character motivation lacks depth
-- Gameplay stages not synchronized
+- Character growth insufficient
+- Boss introductions lack impact
+- Mecha progression needs expansion
+- Gameplay and story synchronization required
 
 
-## Reconstruction Principle
+## New Structure
 
-Each episode contains:
+24 Episode Season Format.
+
+
+Each Episode Contains:
 
 - Story
 - Character Development
 - Mecha Appearance
 - Battle Sequence
-- Boss
+- Boss Encounter
 - Gameplay Stage
 - Setting Reveal
