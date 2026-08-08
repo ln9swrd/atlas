@@ -1,46 +1,41 @@
 # THREEVIEW_CURRENT — 한 번에 하나만
 
-> CURRENT 1개 처리 후 QUEUE 다음으로 갱신.
+> 2026-08-09 · ORDER 비주얼 리부트
+
+## STOP (리부트 완료 전 제작 금지)
+
+```
+mecha/ord-*
+mecha/creil
+mecha/aegis
+mecha/seth   (ELITE · PHASE 3까지 대기 권장)
+```
 
 ## CURRENT
 
 ```
-mecha/brave  (이미지 HOLD · 검수 대기)
+ORDER 실루엣 리부트 (이미지 아닌 텍스트 후보)
+— mecha/ORDER_DESIGN_LANGUAGE.md
 ```
 
-## QUEUE
+## QUEUE (리부트 후)
 
 ```
-mecha/excelion
-mecha/seth
+mecha/ord-grunt   (실루엣 3안 후)
+mecha/ord-mid
+mecha/ord-gun
+mecha/ord-heavy
 mecha/creil
 mecha/aegis
-mecha/nemesis
-mecha/ord-grunt
-mecha/ord-heavy
-mecha/ord-gun
-mecha/ord-mid
-env/earth-defense
-env/earth-siege
-env/lunar
-env/gate
-weapon/brave-blade
-weapon/brave-cannon
-weapon/brave-drone
-weapon/seth-line-resolver
-weapon/seth-seal-plate
+mecha/seth
+mecha/brave       (PHASE 4 · 이미지 HOLD)
+mecha/excelion
+mecha/nemesis     (ORDER 비종속)
+…
 ```
-
-## 완료 로그 (요약)
-
-| 날짜 | 대상 | 결과 |
-|------|------|------|
-| 2026-08-06~08 | character/* · seth | 삼면도 세션 생성 |
-| 2026-08-08 | mecha/brave | M5 · PNG HOLD · BRAVE_FINAL_SPEC Done |
-| 2026-08-08 | mecha 재편 | creil·aegis·nemesis DESCRIPTION · D12/D13 LOCK |
 
 ## 규칙
 
-- 제작 단위 = `mecha/<unit>/DESCRIPTION.md` 1차
-- 스펙 충돌 시 enemy/brave 원본 우선
-- 이미지 생성·커밋 = **HOLD**
+- ORDER: 실루엣 Test A–E 통과 전 최종 삼면도 금지
+- CANON 전투 루프는 FINAL_SPEC 유지
+- 이미지 생성 자체는 Master HOLD 가능 · 리부트와 별개
