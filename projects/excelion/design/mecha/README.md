@@ -1,6 +1,8 @@
 # mecha/ — 기체 제작 단위 (중심)
 
 > 삼면도·모델링 SoR는 **여기만**. 스펙 원본은 `../enemy/` · `../brave/`.
+>
+> **Master List:** [MECHA_MASTER_LIST.md](MECHA_MASTER_LIST.md) (EP01~EP24 전수조사 기준)
 
 ## 목록
 
@@ -35,3 +37,10 @@ mecha/<unit>/
 ## 삼면도 큐
 
 `../THREEVIEW_CURRENT.md` — CURRENT 1개씩.
+
+## 전수조사 상태 (2026-08-08)
+
+- EP01~EP24 전수추출 완료
+- MISSING 기체 없음
+- UNCONFIRMED 3건 (지원기 · 내부 적 · 관측 실루엣)
+- 다음: AEGIS 상세 설정집 우선 검토
