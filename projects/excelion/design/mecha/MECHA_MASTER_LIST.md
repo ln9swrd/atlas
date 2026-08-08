@@ -1,57 +1,69 @@
 # MECHA_MASTER_LIST
 
-> Updated: 2026-08-09 · **12보스안** · 레이스 반영 · 엑셀리온 보스 제외
+> Updated: 2026-08-09 · 재등장 축소 · EP19/20 신규 슬롯
 
 ## 요약
 
 | 분류 | 수 |
 |------|----|
-| EXISTING | 10 |
-| **BOSS-12 신규** | 4 (오라클·보이드·카일·레이스) |
-| UNCONFIRMED | 3 (S1 비승격) |
+| 주인공 | 2 (BRAVE · EXCELION) |
+| 이름 확정 보스 | 10 |
+| **이름 미정 신규 보스** | 2 (EP19 · EP20) |
+| 양산 ORD | 3 |
+| UNCONFIRMED | 3 |
+
+**재등장 금지:** 크레일 재투입 삭제. 네메시스만 다페이즈.
 
 ---
 
-## 12보스 로스터 (S1)
+## 보스 로스터 (S1)
 
-| # | ID | 이름 | First EP | 폴더 | Priority |
-|---|-----|------|----------|------|----------|
-| 1 | ORD-MID | 미드 | EP05 | ord-mid | B |
-| 2 | SETH | 세스 | EP06 | seth | A |
-| 3 | ORACLE | 오라클 | EP07 | oracle | A |
-| 4 | NEMESIS-A | 네메시스 (1차) | EP09 | nemesis | S |
-| 5 | VOID | 보이드 | EP11/12 | void | A |
-| 6 | **RACE** | **레이스** | EP13 | race | A |
-| 7 | CREIL | 크레일 | EP15 | creil | A |
-| 8 | KYLE | 카일 | EP16/17 | kyle | A |
-| 9 | CREIL-R | 크레일 재투입 | EP20 | creil | A |
-| 10 | AEGIS | 아이기스 | EP21 | aegis | A |
-| 11 | NEMESIS-B | 네메시스 (판정) | EP23 | nemesis | S |
-| 12 | NEMESIS-F | 네메시스 (최종) | EP24 | nemesis | S |
+| # | ID | 이름 | EP | 폴더 | 상태 |
+|---|-----|------|-----|------|------|
+| 1 | ORD-MID | 미드 | 5 | ord-mid | 확정 |
+| 2 | SETH | 세스 | 6 | seth | 확정 |
+| 3 | ORACLE | 오라클 | 7 | oracle | 확정 |
+| 4 | NEMESIS-A | 네메시스 (1차) | 9 | nemesis | 확정 |
+| 5 | VOID | 보이드 | 11/12 | void | 확정 |
+| 6 | RACE | 레이스 | 13 | race | 확정 |
+| 7 | CREIL | 크레일 | 15 | creil | 확정 · **1회만** |
+| 8 | KYLE | 카일 | 16/17 | kyle | 확정 |
+| 9 | **EP19-NEW** | **(이름 미정)** | **19** | — | **신규 확정 · 이름 대기** |
+| 10 | **EP20-NEW** | **(이름 미정)** | **20** | — | **신규 확정 · 크레일 재투입 대체** |
+| 11 | AEGIS | 아이기스 | 21 | aegis | 확정 |
+| 12 | NEMESIS-B/F | 네메시스 (판정·최종) | 23–24 | nemesis | 확정 |
 
-**BRAVE / EXCELION = 주인공 기체. 보스 슬롯 아님.**  
-네메시스는 1기체 다페이즈. 크레일 재투입은 신규 메시 아님.
+**BRAVE / EXCELION = 주인공. 보스 아님.**
+
+### 이름 미정 슬롯
+
+| 슬롯 | EP | 역할 메모 | 후보 |
+|------|-----|-----------|------|
+| EP19-NEW | 19 | 붕괴 예고 · 돌입 직전 관문 | 미정 |
+| EP20-NEW | 20 | 레이드 · 크레일 재투입 대체 | 톤(후보) |
 
 ---
 
-## EXISTING (전체)
+## EXISTING (기체 폴더)
 
 | ID | First EP | Design Status | FINAL | Priority |
 |----|----------|---------------|-------|----------|
-| BRAVE | EP01 | FRAME+DESC | **BRAVE_FINAL_SPEC** | S |
-| EXCELION | EP11/13 | SPEC+DESC | **EXCELION_FINAL_SPEC** | S |
-| NEMESIS | EP04 | SPEC+DESC | **NEMESIS_FINAL_SPEC** | S |
-| SETH | EP06 | SPEC+DESC | **SETH_FINAL_SPEC** | A |
-| CREIL | EP14/15 | SPEC+DESC | **CREIL_FINAL_SPEC** | A |
-| AEGIS | EP18/19 | SPEC+DESC | **AEGIS_FINAL_SPEC** | A |
-| ORACLE | EP07 | DESC 신설 | — | A |
-| VOID | EP11/12 | DESC 신설 | — | A |
-| KYLE | EP16/17 | DESC 신설 | — | A |
-| **RACE** | EP13 | DESC 신설 | — | A |
+| BRAVE | EP01 | FRAME+DESC | BRAVE_FINAL_SPEC | S |
+| EXCELION | EP11/13 | SPEC+DESC | EXCELION_FINAL_SPEC | S |
+| NEMESIS | EP04 | SPEC+DESC | NEMESIS_FINAL_SPEC | S |
+| SETH | EP06 | SPEC+DESC | SETH_FINAL_SPEC | A |
+| CREIL | EP15 | SPEC+DESC | CREIL_FINAL_SPEC | A |
+| AEGIS | EP21 | SPEC+DESC | AEGIS_FINAL_SPEC | A |
+| ORACLE | EP07 | DESC | — | A |
+| VOID | EP11/12 | DESC | — | A |
+| KYLE | EP16/17 | DESC | — | A |
+| RACE | EP13 | DESC | — | A |
 | ORD-GRUNT | EP01 | DESC | ORD_FINAL | A |
 | ORD-MID | EP05 | DESC | ORD_FINAL | B |
 | ORD-GUN | EP01+ | DESC | ORD_FINAL | B |
 | ORD-HEAVY | EP01+ | DESC | ORD_FINAL | B |
+
+EP19-NEW · EP20-NEW: 이름 확정 후 폴더 신설.
 
 ---
 
@@ -59,17 +71,17 @@
 
 | ID | 판정 | 비고 |
 |----|------|------|
-| SUPPORT | 역할 메타 | 엄호 · 독립 설정집 없음 |
+| SUPPORT | 역할 메타 | 엄호 |
 | INTERNAL | 맵 적/함정 | ORD 변형·트랩 |
-| OBSERVE | 연출 1컷 | S2 여지 · S1 FINAL 금지 |
+| OBSERVE | 연출 1컷 | S2 여지 |
 
 ---
 
 ## 상태
 
 ```
-CURRENT: 12보스 · 레이스 추가 · 엑셀리온 보스 제외
-NEXT: 신규 4종 실루엣 3안 · FINAL_SPEC 초안
-DONE: MASTER_LIST 정합
+CURRENT: EP19·EP20 신규 보스 확정 · 이름 미정 · 크레일 재투입 삭제
+NEXT: EP19/20 이름·Shape 확정 → 폴더·DESCRIPTION
+DONE: 재등장 축소 (크레일 1회만)
 BLOCKED: 이미지
 ```
