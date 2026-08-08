@@ -14,11 +14,13 @@
 | `creil/` | 크레일기 | `enemy/CREIL_MECHA_SPEC` | DESCRIPTION |
 | `aegis/` | 아이기스기 | `enemy/AEGIS_MECHA_SPEC` | DESCRIPTION |
 | `nemesis/` | 네메시스기 | `enemy/NEMESIS_MECHA_SPEC` | DESCRIPTION |
-| `ord-grunt/` | ORD 잡 | `enemy/ORD_SPEC` | DESCRIPTION |
+| `ord-grunt/` | ORD 잡 | `enemy/ORD_SPEC` · **ORD_FINAL_SPEC** | DESCRIPTION |
 | `ord-heavy/` | ORD 중 | 동 | DESCRIPTION |
 | `ord-gun/` | ORD 원거리 | 동 | DESCRIPTION |
 | `ord-mid/` | ORD-MID | 동 | DESCRIPTION |
 | `threeview/` | 공통 스킬 | `threeview/SKILL.md` | — |
+
+**FINAL_SPEC:** [ORD_FINAL_SPEC.md](ORD_FINAL_SPEC.md) — STEP 8 TEXT-LOCK (2026-08-08)
 
 **폐기:** `ashur/` (2026-08-07).
 

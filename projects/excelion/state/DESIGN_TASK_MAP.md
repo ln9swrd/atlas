@@ -1,12 +1,12 @@
 # DESIGN_TASK_MAP — Excelion
 
-> 2026-08-07 · 아슈르 폐기 · 네메시스·크레일·아이기스
+> 2026-08-08 · STEP 8 ORD Base FINAL_SPEC 완료
 
 | ID | 항목 | 상태 | 산출물 |
 |----|------|------|--------|
 | D1 | BRAVE 프레임 | Done | design/brave/FRAME_SPEC.md |
 | D2 | 엑셀리온 전개 | Done | design/brave/EXCELION_SPEC.md |
-| D3 | ORD 4종 | Done | design/enemy/ORD_SPEC.md |
+| D3 | ORD 4종 | Done | design/enemy/ORD_SPEC.md · **mecha/ORD_FINAL_SPEC.md** |
 | D4 | 세스기 | Done | design/enemy/SETH_MECHA_SPEC.md |
 | D5 | **네메시스기** | Done | design/enemy/NEMESIS_MECHA_SPEC.md |
 | D6 | 인물 4인 | Done | design/character/CAST_SILHOUETTE.md |
@@ -21,6 +21,12 @@
 ## 폐기
 
 - D5 구: ASHUR_MECHA_SPEC (삭제 2026-08-07)
+
+## STEP 기록
+
+| STEP | 내용 | 상태 |
+|------|------|------|
+| 8 | ORD Base FINAL_SPEC (GRUNT/HEAVY/GUN/MID) | **Done** 2026-08-08 |
 
 ## 이후 (디자인 외)
 
