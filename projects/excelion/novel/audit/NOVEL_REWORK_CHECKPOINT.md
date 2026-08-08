@@ -7,30 +7,25 @@
 
 | 항목 | 값 |
 |------|-----|
-| 현재 작업 ID | **EP14–17 밀도 다듬기** |
-| 상태 | **DONE** |
-| 마지막 완료 | EP14~17 밀도 · EP17 Part3 전투 비트 통합 |
-| 다음 작업 | M3 수치 또는 idle |
-| 변경한 파일 | `ep14.md`~`ep17.md`, 본 체크포인트, `state/CURRENT_STATE.md` |
-| 미해결 문제 | 없음 (선택 작업 완료) |
-| 중요한 결정 | EP17 해금 = 손 체감 · 경로 승리 |
-| 다음 세션에서 먼저 읽을 파일 | CURRENT_STATE |
+| 현재 작업 ID | **M3 밸런스 수치** |
+| 상태 | **DONE** (초안) |
+| 마지막 완료 | 후반 보스 B1 · EP14–24 목표 · 마일스톤 |
+| 다음 작업 | M3 잔여(선택) / M4 / idle |
+| 변경한 파일 | BOSS_STATS · ENEMY_MULT · EP_TARGETS · SOR · MILESTONES · CURRENT_STATE |
+| 미해결 문제 | 스킬 카드·맵 샘플 (선택) |
+| 중요한 결정 | B1 스케일 · 크레일480 · 아이기스800 · 네메시스최종1400 |
+| 다음 세션에서 먼저 읽을 파일 | CURRENT_STATE · BALANCE_SOR |
 
 ## 작업 이력
 
-### P0~P12 — DONE
-### EP14–24 본문 — DONE
-### EP13 A안 위상 — DONE
-### EP10·11 잔상 — DONE (PASS)
-### EP14–17 밀도 — DONE
+### P0~P12 · EP본문 · EP13 A안 · 잔상 · EP14–17 밀도 — DONE
+### M3 수치 초안 — DONE
 
 ---
 
 ```
-P0~P12          DONE
-EP14~24         DONE
-EP13 A안        DONE
-EP10·11 잔상    DONE
-EP14~17 밀도    DONE
-Next            M3 또는 idle
+Novel rework     DONE
+M2b              DONE
+M3 수치 초안     DONE
+Next             M3 잔여 / M4 / idle
 ```
