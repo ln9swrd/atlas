@@ -1,6 +1,6 @@
 # ORDER_DESIGN_LANGUAGE — 진영 비주얼 리부트
 
-> 2026-08-09 · PHASE 1  
+> 2026-08-09 · PHASE 1 + 12보스 확장  
 > 공통 표면 규칙: **`design/MECHA_3TONE_LOW_DETAIL.md`** (전 진영)
 
 **상태: LOCK (진영 기준)**
@@ -11,7 +11,7 @@
 
 | 적용 | 비적용(언어 종속 금지) |
 |------|------------------------|
-| ORD 4종 · CREIL · AEGIS · SETH | NEMESIS · BRAVE/EXCELION |
+| ORD 4종 · CREIL · AEGIS · SETH · **ORACLE · VOID · KYLE** | NEMESIS · BRAVE/EXCELION |
 
 CANON(전투·EP·Loop) 유지. VISUAL는 본 문서 + 3TONE.
 
@@ -58,9 +58,12 @@ Test A–E (흑실루엣·무채·무장제거·3초·소화면) 필수.
 | MID | 길게 뻗어 전장을 가리키는 지배 몸 |
 | GUN | 포신을 몸의 축으로 삼은 사격 괴물 |
 | HEAVY | 몸통이 스스로 걸어다니는 압도 괴체 |
-| CREIL | 가로로 밀어붙이는 거대한 면의 몸 |
+| CREIL | 가로로 밀어붙이는 거대한 면압 몸 |
 | AEGIS | 수직으로 솟아 버티는 수호의 기둥 몸 |
 | SETH | 정제된 완성형 지배 기체 |
+| **ORACLE** | 공간을 눌러 내리는는 원격의 눈 |
+| **VOID** | 갈라진 틈에서 스며 나오는 잔영 몸 |
+| **KYLE** | 세스보다 날카롭고 크레일보다 가벼운 돌격 몸 |
 
 ---
 
@@ -77,25 +80,29 @@ Test A–E (흑실루엣·무채·무장제거·3초·소화면) 필수.
 | CREIL | 백·청 |
 | AEGIS | 보라·흑 / 버건디 계열 가능 |
 | SETH | 금속 백 + 금 포인트 |
+| ORACLE | 냉백·심청 · 센서 과다 |
+| VOID | 저채도 흑·회 · 일그러진 엣지 |
+| KYLE | 청회·은 · 날카로운 포인트 |
 
 공통 20–30%만 공유. BRAVE 호박을 ORDER 주조에 쓰지 않음.
 
 ---
 
-## 6. CREIL vs AEGIS
+## 6. CREIL vs AEGIS · 신규 차별
 
-가로 면의 밀어붙임 vs 수직 기둥으로 버티기. 유사 시 실패.
+- 가로 면압 vs 수직 기둥
+- ORACLE: 원격·눈 · 본체 약
+- VOID: 불완전·잔영 · 게이트 잔재
+- KYLE: 속도·찌르기 · 세스/크레일과 겹치지 않게
 
 ---
 
 ## 7. 물리 요구 · 절차
 
-GRUNT~SETH 물리 요구는 계획서 유지.  
-절차: Statement → 실루엣 3–5 → Test → 3톤 → 구조 → 삼면도.
-
+절차: Statement → 실루엣 3–5 → Test → 3톤 → 구조 → 삼면도.  
 **실루엣 전 최종 삼면도 금지.**
 
 ```
-CURRENT: ORDER language + 3TONE 연동 LOCK · 슈퍼로봇 과장 톤
-NEXT: ORD-GRUNT 실루엣 3안
+CURRENT: 12보스 Shape LOCK · 오라클·보이드·카일 추가
+NEXT: 실루엣 3안 (신규 3종 우선)
 ```
