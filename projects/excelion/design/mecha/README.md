@@ -9,9 +9,9 @@
 | `brave/` | BRAVE-001 | `brave/FRAME_SPEC` | DESCRIPTION · threeview |
 | `excelion/` | EP13 전개 | `brave/EXCELION_SPEC` | DESCRIPTION |
 | `seth/` | 세스기 | `enemy/SETH_MECHA_SPEC` | DESCRIPTION |
-| `creil/` | 크레일기 | `enemy/CREIL_MECHA_SPEC` | **DESCRIPTION 신설** |
-| `aegis/` | 아이기스기 | `enemy/AEGIS_MECHA_SPEC` | **DESCRIPTION 신설** |
-| `nemesis/` | 네메시스기 | `enemy/NEMESIS_MECHA_SPEC` | **DESCRIPTION 신설** |
+| `creil/` | 크레일기 | `enemy/CREIL_MECHA_SPEC` | DESCRIPTION |
+| `aegis/` | 아이기스기 | `enemy/AEGIS_MECHA_SPEC` | DESCRIPTION |
+| `nemesis/` | 네메시스기 | `enemy/NEMESIS_MECHA_SPEC` | DESCRIPTION |
 | `ord-grunt/` | ORD 잡 | `enemy/ORD_SPEC` | DESCRIPTION |
 | `ord-heavy/` | ORD 중 | 동 | DESCRIPTION |
 | `ord-gun/` | ORD 원거리 | 동 | DESCRIPTION |
