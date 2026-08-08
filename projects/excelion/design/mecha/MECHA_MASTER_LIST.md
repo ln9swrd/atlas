@@ -1,13 +1,13 @@
 # MECHA_MASTER_LIST
 
-> Updated: 2026-08-09 · **12보스안** 반영
+> Updated: 2026-08-09 · **12보스안** · 레이스 반영 · 엑셀리온 보스 제외
 
 ## 요약
 
 | 분류 | 수 |
 |------|----|
 | EXISTING | 10 |
-| **BOSS-12 신규** | 3 (오라클·보이드·카일) |
+| **BOSS-12 신규** | 4 (오라클·보이드·카일·레이스) |
 | UNCONFIRMED | 3 (S1 비승격) |
 
 ---
@@ -21,7 +21,7 @@
 | 3 | ORACLE | 오라클 | EP07 | oracle | A |
 | 4 | NEMESIS-A | 네메시스 (1차) | EP09 | nemesis | S |
 | 5 | VOID | 보이드 | EP11/12 | void | A |
-| 6 | EXCELION-CLASH | 엑셀리온 대결 | EP13 | excelion | S |
+| 6 | **RACE** | **레이스** | EP13 | race | A |
 | 7 | CREIL | 크레일 | EP15 | creil | A |
 | 8 | KYLE | 카일 | EP16/17 | kyle | A |
 | 9 | CREIL-R | 크레일 재투입 | EP20 | creil | A |
@@ -29,7 +29,8 @@
 | 11 | NEMESIS-B | 네메시스 (판정) | EP23 | nemesis | S |
 | 12 | NEMESIS-F | 네메시스 (최종) | EP24 | nemesis | S |
 
-네메시스는 1기체 다페이즈. 엑셀리온·크레일 재투입은 신규 메시 아님.
+**BRAVE / EXCELION = 주인공 기체. 보스 슬롯 아님.**  
+네메시스는 1기체 다페이즈. 크레일 재투입은 신규 메시 아님.
 
 ---
 
@@ -43,9 +44,10 @@
 | SETH | EP06 | SPEC+DESC | **SETH_FINAL_SPEC** | A |
 | CREIL | EP14/15 | SPEC+DESC | **CREIL_FINAL_SPEC** | A |
 | AEGIS | EP18/19 | SPEC+DESC | **AEGIS_FINAL_SPEC** | A |
-| **ORACLE** | EP07 | DESC 신설 | — | A |
-| **VOID** | EP11/12 | DESC 신설 | — | A |
-| **KYLE** | EP16/17 | DESC 신설 | — | A |
+| ORACLE | EP07 | DESC 신설 | — | A |
+| VOID | EP11/12 | DESC 신설 | — | A |
+| KYLE | EP16/17 | DESC 신설 | — | A |
+| **RACE** | EP13 | DESC 신설 | — | A |
 | ORD-GRUNT | EP01 | DESC | ORD_FINAL | A |
 | ORD-MID | EP05 | DESC | ORD_FINAL | B |
 | ORD-GUN | EP01+ | DESC | ORD_FINAL | B |
@@ -66,8 +68,8 @@
 ## 상태
 
 ```
-CURRENT: 12보스안 · 오라클·보이드·카일 DESC 신설
-NEXT: FINAL_SPEC 초안 · 실루엣 3안
-DONE: MASTER_LIST 12보스 연결
+CURRENT: 12보스 · 레이스 추가 · 엑셀리온 보스 제외
+NEXT: 신규 4종 실루엣 3안 · FINAL_SPEC 초안
+DONE: MASTER_LIST 정합
 BLOCKED: 이미지
 ```

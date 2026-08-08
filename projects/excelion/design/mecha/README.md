@@ -4,9 +4,9 @@
 
 | 문서 | 적용 |
 |------|------|
-| **`../MECHA_3TONE_LOW_DETAIL.md`** | **전 기체 LOCK** · 3톤·저표면·제한 패널 |
+| **`../MECHA_3TONE_LOW_DETAIL.md`** | **전 기체 LOCK** |
 | `../DESIGN_QUALITY.md` | 피니시 상한 |
-| `ORDER_DESIGN_LANGUAGE.md` | ORDER 계열 실루엣·색 · **슈퍼로봇 과장** |
+| `ORDER_DESIGN_LANGUAGE.md` | ORDER 실루엣·색 · 슈퍼로봇 과장 |
 | `MECHA_MASTER_LIST.md` | **12보스 로스터** |
 
 프롬프트 공통 꼬리:
@@ -15,16 +15,16 @@ clean large armor surfaces, low surface detail, three dominant color tones,
 restrained panel lines, detailed articulation joints only
 ```
 
-## ORDER 리부트 + 12보스
+## 12보스 + ORDER
 
-ord-* · creil · aegis · seth · **oracle · void · kyle** → 실루엣 후보 확정 전 **최종 삼면도 STOP**.  
-CANON 전투는 `*_FINAL_SPEC` / `ORD_FINAL_SPEC`.  
-**군사·건축 비유 금지 · 오더 진영 개성·슈퍼로봇 톤.**
+ord-* · creil · aegis · seth · oracle · void · kyle · **race**  
+→ 실루엣 후보 확정 전 **최종 삼면도 STOP**.  
+**BRAVE / EXCELION = 주인공. 보스 아님.**
 
 ## 폴더
 
 | 경로 | 진영 |
 |------|------|
-| brave · excelion | 아군 |
+| brave · excelion | 아군 (주인공) |
 | nemesis | 초월 |
-| ord-* · creil · aegis · seth · oracle · void · kyle | 오더 |
+| ord-* · creil · aegis · seth · oracle · void · kyle · race | 오더 |
