@@ -5,7 +5,7 @@
 ## CURRENT
 
 ```
-mecha/brave
+mecha/brave  (이미지 HOLD · 검수 대기)
 ```
 
 ## QUEUE
@@ -36,10 +36,11 @@ weapon/seth-seal-plate
 | 날짜 | 대상 | 결과 |
 |------|------|------|
 | 2026-08-06~08 | character/* · seth | 삼면도 세션 생성 |
-| 2026-08-08 | mecha/brave | M5 재생성 · 검수 대기 |
-| 2026-08-08 | mecha 재편 | creil·aegis·nemesis DESCRIPTION 추가 · QUEUE 반영 |
+| 2026-08-08 | mecha/brave | M5 · PNG HOLD · BRAVE_FINAL_SPEC Done |
+| 2026-08-08 | mecha 재편 | creil·aegis·nemesis DESCRIPTION · D12/D13 LOCK |
 
 ## 규칙
 
 - 제작 단위 = `mecha/<unit>/DESCRIPTION.md` 1차
 - 스펙 충돌 시 enemy/brave 원본 우선
+- 이미지 생성·커밋 = **HOLD**

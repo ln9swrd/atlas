@@ -2,8 +2,8 @@
 
 | 항목 | 내용 |
 |------|------|
-| 날짜 | 2026-08-08 · M5 재개 |
-| 소스 | DESCRIPTION.md + mecha/threeview/SKILL.md |
+| 날짜 | 2026-08-08 · M5 |
+| 소스 | DESCRIPTION.md · BRAVE_FINAL_SPEC.md · mecha/threeview/SKILL.md |
 | 뷰 | front · side · back (orthographic) |
 | 포즈 | A-pose / T-pose, limbs clear |
 | 배경 | pure white |
@@ -16,8 +16,9 @@
 ## 결과
 
 - 2026-08-06: 세션 생성 (PNG 미커밋)
-- 2026-08-08: M5 Hold 해제 · 재생성 지시
+- 2026-08-08: M5 재생성 지시 · **PNG 레포 미반영**
+- 이미지 생성 = **HOLD** (Master)
 
 ## 다음
 
-생성 검수 후 QUEUE 다음 CURRENT로 갱신.
+이미지 HOLD 해제 시 생성·검수 후 QUEUE 다음 CURRENT로 갱신.

@@ -1,6 +1,6 @@
 # BRAVE (brave-001) — 기체 삼면도 레퍼런스
 
-> 출처: FRAME_SPEC.md · docs/06_MECHA.md
+> 출처: FRAME_SPEC.md · BRAVE_FINAL_SPEC.md · docs/06_MECHA.md
 
 ## 기본 정보
 
@@ -42,7 +42,7 @@
 
 - S1 중반 형태 변경
 - 성인 히로인형 과무장·과장 실루엣
-- 세스/아슈르와 동일 실루엣
+- 세스/네메시스와 동일 실루엣
 - 팔레트 임의 변경
 
 ## 삼면도 생성 지침
@@ -65,5 +65,3 @@ BRAVE-001 — OFFICIAL MECHANICAL DESIGN SHEET, official Japanese anime mechanic
 ```text
 low quality, blurry, sketch, perspective distortion, dynamic combat pose, heavy weapons, bulky armor, wings, cape, oversized backpack, demon horns, organic muscles, red eyes, excessive spikes, asymmetrical design, chibi, cartoon, motion blur, painterly shading, cinematic lighting, dark background
 ```
-
-
