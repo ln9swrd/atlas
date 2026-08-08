@@ -1,62 +1,23 @@
-# 아이기스기 (Aegis Mecha) — 기체 삼면도 레퍼런스
+# 아이기스기 — 기체 레퍼런스
 
-> 출처: `enemy/AEGIS_MECHA_SPEC.md`
+> 공통: `MECHA_3TONE_LOW_DETAIL` 필수  
+> ORDER Shape: **움직이는 방어탑 (수직)**  
+> 시각: **리부트 대기** · CREIL과 강제 차별
 
-## 기본 정보
+## CANON (유지)
 
-| 항목 | 내용 |
-|------|------|
-| 기수 | 아이기스 (위계 대행 · 인격 주연 아님) |
-| 등장 | EP19 예고 · **EP21** 격파 |
-| 키워드 | 방패 · 입구 · 기능 · 접지 · **오만 없음** |
+EP21 · 문 열림 · 가드 게이지 Loop · AEGIS_FINAL
 
-## 실루엣 (네메시스와 필수 구분)
+## 시각 목표 (리부트)
 
-| | 네메시스 | 아이기스 |
-|--|----------|----------|
-| 역할 | 등급·최종 | **방패·입구** |
-| 태도 | 오만 | **기능만** |
-| 실루엣 | 세로로 김 · 손 숨김 | **가로로 넓음 · 방패면 · 손/판 노출** |
-| 다리 | 부유·원격 | **넓게 접지** |
+- 수직 · 중심축 · 다단 방어 · 높은 센서 · 안정 하체
+- 3톤 예: T1 버건디/와인 · T2 다크 건메탈·자주 · T3 적~주황 에너지
+- 방패도 **동일 3톤** · 큰 면 단순 · 과장 방패·전완
 
-아이기스 ≠ 작은 네메시스.
+## 구 시각 (SUPERSEDED)
 
-## 체형 · 외형
+가로 넓은 정면만으로는 CREIL과 겹칠 위험 → **탑형 재설계**
 
-- humanoid 가능 · **가로로 넓은 정면** · 벽·문 인상
-- 두부: 센서·슬릿 · 왕관·오만 장식 최소화/없음
-- 몸통: 두꺼운 흉·방패 일체 · 차단면
-- 팔·손: 방패 운용 · 반격 암 · **기능이 보이게**
-- 다리: 넓게 접지 · 부유 금지
-- 배면: 게이트/통로 연결감 가능 · 망토형 위계 과장 금지
+## 삼면도
 
-## 색
-
-저채도 회·청흑. 네메시스 보라를 **약하게만** 엣지/슬릿. 주조 동일 금지.
-
-금지: BRAVE 호박 · 광기 적열 · 화려 왕관색.
-
-## 읽힘
-
-입구를 막는다 · 격파=길이 열림뿐
-
-## 금지
-
-- 네메시스 실루엣·대사 복제
-- 「급이 아니다」계열
-- 감정 폭발 · 비극 주연
-- 손 완전 숨김으로 네메시스화
-
-## 삼면도 지침
-
-- A/T-pose · 순백 · orthographic
-- 정면에서 넓은 방패면·문 인상
-- Bandai MG / Robot Spirits 밀도
-
-## AI Positive (요약)
-
-Aegis gate-shield mecha, wide frontal shield wall silhouette, grounded heavy stance, low-sat gray-blue armor, functional arms and visible shield plates, no crown no arrogance, orthographic turnaround, white background, Bandai MG density.
-
-## Negative
-
-perspective, tall slender nemesis silhouette, hidden hands, cape, crown, amber accent, organic, chibi, sketch, dynamic pose
+STOP
