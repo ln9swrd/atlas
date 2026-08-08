@@ -7,23 +7,22 @@
 
 | 항목 | 값 |
 |------|-----|
-| 현재 작업 ID | **M3 잔여** |
+| 현재 작업 ID | **M4 수직 슬라이스** |
 | 상태 | **DONE** |
-| 마지막 완료 | 크레일·아이기스 스킬 카드 · EP15/21 맵 샘플 |
-| 다음 작업 | M4 또는 idle |
-| 변경한 파일 | BOSS_WEAPON_SKILLS · STAGE_MAP_SAMPLE · MILESTONES · CURRENT_STATE |
-| 미해결 문제 | 없음 (M3 초안 완료) |
-| 중요한 결정 | B1 · 크레일 방패면 · 아이기스 기능 방패 |
-| 다음 세션에서 먼저 읽을 파일 | CURRENT_STATE |
+| 마지막 완료 | EP1·6·8 플레이 설계 잠금 |
+| 다음 작업 | idle 또는 Hold 해제 시 M5 |
+| 변경한 파일 | VERTICAL_SLICE_EP1_6_8.md · MILESTONES · CURRENT_STATE |
+| 미해결 문제 | 없음 (문서 트랙 M0–M4 완료) |
+| 중요한 결정 | EP8 게임/스토리 이중 층 · 세스 안 흔들림 |
+| 다음 세션에서 먼저 읽을 파일 | CURRENT_STATE · VERTICAL_SLICE |
 
 ## 작업 이력
 
-### Novel rework · M2b · M3 수치·스킬·맵 — DONE
+### Novel · M2b · M3 · M4 — DONE
 
 ---
 
 ```
-Novel + M2b     DONE
-M3              DONE
-Next            M4 / idle
+M0–M4    DONE
+Next     idle / M5(Hold)
 ```
