@@ -1,6 +1,6 @@
 # DESIGN_TASK_MAP — Excelion
 
-> 2026-08-08 · D12 CREIL TEXT-LOCK · STEP 8 Done
+> 2026-08-08 · D1–D13 전부 TEXT-LOCK 완료
 
 | ID | 항목 | 상태 | 산출물 |
 |----|------|------|--------|
@@ -16,7 +16,7 @@
 | D10 | UI 최소 | Done | design/ui/UI_MIN.md |
 | D11 | 맵 무드 | Done | design/env/MAP_MOOD.md |
 | D12 | 크레일기 | **Done** | design/enemy/CREIL_MECHA_SPEC.md |
-| D13 | 아이기스기 | **초안** | design/enemy/AEGIS_MECHA_SPEC.md |
+| D13 | 아이기스기 | **Done** | design/enemy/AEGIS_MECHA_SPEC.md |
 
 ## 폐기
 
@@ -28,7 +28,15 @@
 |------|------|------|
 | 8 | ORD Base FINAL_SPEC | **Done** 2026-08-08 |
 | — | D12 CREIL TEXT-LOCK | **Done** 2026-08-08 |
+| — | D13 AEGIS TEXT-LOCK | **Done** 2026-08-08 |
 
-## 이후 (디자인 외)
+## 디자인 텍스트 트랙
 
+**D1–D13 = 전부 Done.**  
 이미지 생성·모델링·forge — **HOLD**.
+
+## 잔여 (선택)
+
+- mecha/brave 삼면도 검수 (THREEVIEW CURRENT)
+- BRAVE_FINAL_SPEC 작성
+- FSS 문서 ASHUR 잔여 정리
