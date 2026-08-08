@@ -1,18 +1,17 @@
 # MECHA_MASTER_LIST
 
-> Updated: 2026-08-09 · 재등장 축소 · EP19/20 신규 슬롯
+> Updated: 2026-08-09 · 보스명 네메시스 계열 통일
 
 ## 요약
 
 | 분류 | 수 |
 |------|----|
 | 주인공 | 2 (BRAVE · EXCELION) |
-| 이름 확정 보스 | 10 |
-| **이름 미정 신규 보스** | 2 (EP19 · EP20) |
+| 이름 확정 보스 | 12 슬롯 (고유 기체 10 + 네메시스 다페이즈) |
 | 양산 ORD | 3 |
 | UNCONFIRMED | 3 |
 
-**재등장 금지:** 크레일 재투입 삭제. 네메시스만 다페이즈.
+**재등장:** 크레일 1회만. 네메시스만 다페이즈.
 
 ---
 
@@ -22,25 +21,23 @@
 |---|-----|------|-----|------|------|
 | 1 | ORD-MID | 미드 | 5 | ord-mid | 확정 |
 | 2 | SETH | 세스 | 6 | seth | 확정 |
-| 3 | ORACLE | 오라클 | 7 | oracle | 확정 |
+| 3 | ARGOS | **아르고스** | 7 | argos | 확정 (구 오라클) |
 | 4 | NEMESIS-A | 네메시스 (1차) | 9 | nemesis | 확정 |
-| 5 | VOID | 보이드 | 11/12 | void | 확정 |
-| 6 | RACE | 레이스 | 13 | race | 확정 |
-| 7 | CREIL | 크레일 | 15 | creil | 확정 · **1회만** |
-| 8 | KYLE | 카일 | 16/17 | kyle | 확정 |
-| 9 | **EP19-NEW** | **(이름 미정)** | **19** | — | **신규 확정 · 이름 대기** |
-| 10 | **EP20-NEW** | **(이름 미정)** | **20** | — | **신규 확정 · 크레일 재투입 대체** |
+| 5 | EREBOS | **에레보스** | 11/12 | erebos | 확정 (구 보이드) |
+| 6 | KERBEROS | **케르베로스** | 13 | kerberos | 확정 (구 레이스) |
+| 7 | CREIL | 크레일 | 15 | creil | 확정 · 1회만 |
+| 8 | PHOBOS | **포보스** | 16/17 | phobos | 확정 (구 카일) |
+| 9 | ADRASTE | **아드라스테** | 19 | adraste | 확정 |
+| 10 | DEIMOS | **데이모스** | 20 | deimos | 확정 |
 | 11 | AEGIS | 아이기스 | 21 | aegis | 확정 |
 | 12 | NEMESIS-B/F | 네메시스 (판정·최종) | 23–24 | nemesis | 확정 |
 
 **BRAVE / EXCELION = 주인공. 보스 아님.**
 
-### 이름 미정 슬롯
+### 명명 계열
 
-| 슬롯 | EP | 역할 메모 | 후보 |
-|------|-----|-----------|------|
-| EP19-NEW | 19 | 붕괴 예고 · 돌입 직전 관문 | 미정 |
-| EP20-NEW | 20 | 레이드 · 크레일 재투입 대체 | 톤(후보) |
+네메시스 축(신화·위계·응보)에 맞춤.  
+유지: 세스 · 크레일 · 아이기스 · 미드 · 네메시스.
 
 ---
 
@@ -54,16 +51,18 @@
 | SETH | EP06 | SPEC+DESC | SETH_FINAL_SPEC | A |
 | CREIL | EP15 | SPEC+DESC | CREIL_FINAL_SPEC | A |
 | AEGIS | EP21 | SPEC+DESC | AEGIS_FINAL_SPEC | A |
-| ORACLE | EP07 | DESC | — | A |
-| VOID | EP11/12 | DESC | — | A |
-| KYLE | EP16/17 | DESC | — | A |
-| RACE | EP13 | DESC | — | A |
+| ARGOS | EP07 | DESC | — | A |
+| EREBOS | EP11/12 | DESC | — | A |
+| KERBEROS | EP13 | DESC | — | A |
+| PHOBOS | EP16/17 | DESC | — | A |
+| ADRASTE | EP19 | DESC | — | A |
+| DEIMOS | EP20 | DESC | — | A |
 | ORD-GRUNT | EP01 | DESC | ORD_FINAL | A |
 | ORD-MID | EP05 | DESC | ORD_FINAL | B |
 | ORD-GUN | EP01+ | DESC | ORD_FINAL | B |
 | ORD-HEAVY | EP01+ | DESC | ORD_FINAL | B |
 
-EP19-NEW · EP20-NEW: 이름 확정 후 폴더 신설.
+구 폴더(oracle/void/race/kyle) → 신규 ID로 이전. 참조 시 신규명 사용.
 
 ---
 
@@ -80,8 +79,8 @@ EP19-NEW · EP20-NEW: 이름 확정 후 폴더 신설.
 ## 상태
 
 ```
-CURRENT: EP19·EP20 신규 보스 확정 · 이름 미정 · 크레일 재투입 삭제
-NEXT: EP19/20 이름·Shape 확정 → 폴더·DESCRIPTION
-DONE: 재등장 축소 (크레일 1회만)
+CURRENT: 보스명 통일 · 아드라스테·데이모스 포함
+NEXT: Shape 실루엣 3안 · 스토리 EP 연결 패치
+DONE: 이름 확정
 BLOCKED: 이미지
 ```
