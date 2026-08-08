@@ -1,6 +1,6 @@
 # CREIL_MECHA_SPEC — 크레일기 (ORD-ELITE)
 
-> 2026-08-07 · EP15 보스  
+> 2026-08-08 · EP15 보스  
 > 근거: `novel/EP14_24_PLOT.md` · `SETH_MECHA_SPEC` · `05_ENEMY`
 
 **상태: 초안 (TEXT-LOCK 후보)**
@@ -82,11 +82,11 @@
 
 ---
 
-## 제작 연결 (예정)
+## 제작 연결
 
 | 스펙 | 제작 |
 |------|------|
-| 이 문서 | `mecha/creil/` (미작성) |
+| 이 문서 | `mecha/creil/DESCRIPTION.md` (완료) |
 
 ---
 
