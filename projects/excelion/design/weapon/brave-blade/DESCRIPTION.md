@@ -1,31 +1,59 @@
-# BRAVE 블레이드 — 무기 레퍼런스
+# BRAVE 블레이드 — WEAPON SHEET
 
-> 출처: BOSS_WEAPON_SKILLS (리아 무기 차별) · FRAME_SPEC
+> 소속: BRAVE · 리아  
+> 연동: BRAVE_FINAL_SPEC · FRAME_SPEC · BOSS_WEAPON_SKILLS
 
-## 소속
+**상태: Sheet 텍스트 LOCK · PNG HOLD**
 
-리아 / BRAVE · 근접
+---
 
-## 키워드
+## 01 Identity
 
-**단순 · 기동 · accent 포인트**
+| 항목 | 값 |
+|------|-----|
+| id | weapon-brave-blade |
+| 역할 | 근접 주 옵션 |
+| 장착 | 손/암 하드포인트 |
 
-## 형태
+## 02 Silhouette / Form
 
-- 메카 스케일 검/블레이드 · 과한 톱니·사슬 금지
-- 손/암 하드포인트에 장착
-- 실루엣이 BRAVE 팔 라인을 깨지 않음
+- 메카 스케일 검·블레이드 · 비율 길고 단순
+- 과한 톱니·사슬·거대 가드 금지
+- **수납/휴 시 BRAVE 팔 라인 비파괴**
+- 전개 시에만 날 실루엣 추가
 
-## 색
+## 03 Color
 
-- primary/secondary 계열 + accent `#E8A020` 엣지 가능
+- BRAVE primary/secondary · 엣지 accent `#E8A020` 가능
 
-## 금지
+## 04 Stow / Deploy
 
-- 세스/아슈르 무기 카피
-- 거포급으로 실루엣 지배
+| 상태 | 규칙 |
+|------|------|
+| 삼면도 기본 | 비무장 또는 수납 |
+| 전투 | 장착·휘두름 |
+| 금지 | 상시 거대 검으로 실루엣 지배 |
 
-## 삼면도 지침
+## 05 Combat Signal
 
-- 정면·측면·평면(또는 후면)
-- 장착 상태와 분리 상태 중 하나 이상 명시
+- 스윙 예고: 짧은 암 동작 · accent 점등
+- 히트: 클린 금속/광 엣지 · 과한 혈효 금지
+
+## 06 Game Hook
+
+- 근접 콤보 끝·카운터 옵션
+- 수치는 state 트랙
+
+## 07 Three-view Req
+
+- Front / Side / Top(or Rear)
+- 분리 상태 1 + 장착 스케일 메모(손 대비)
+
+## 08 Forbidden
+
+- 세스 리졸버·네메시스 원격 인상
+- ORD-GUN/거포급 실루엣
+
+## 09 Open
+
+- 수납 위치(허리/등/암) 최종 픽
