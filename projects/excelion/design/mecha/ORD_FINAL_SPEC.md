@@ -8,7 +8,7 @@
 
 ## 공통 CANON
 
-Order 양산·중형. 성장 없음. 병력 압박.  
+오더 양산·중형. 성장 없음. 압박.  
 BRAVE 호박 주조 금지.
 
 ### 3TONE (시각)
@@ -20,10 +20,10 @@ BRAVE 호박 주조 금지.
 
 | 기 | 문장 |
 |----|------|
-| GRUNT | 낮게 깔린 군집 전투 보행기계 |
-| MID | 길게 뻗은 전장 통제자 |
-| GUN | 총을 중심으로 기울어진 사격 플랫폼 |
-| HEAVY | 두 다리로 걷는 요새 |
+| GRUNT | 떼로 덮치는 하층 투기 기계 |
+| MID | 길게 뻗어 전장을 가리키는 지배 몸 |
+| GUN | 포신을 몸의 축으로 삼은 사격 괴물 |
+| HEAVY | 몸통이 스스로 걸어다니는 압도 괴체 |
 
 ---
 
@@ -34,7 +34,7 @@ BRAVE 호박 주조 금지.
 **GUN:** 원거리→근접 약  
 **MID:** 다병기 패턴→약점 창→P2
 
-식별 키워드(역할): GRUNT 양산 · HEAVY 무거움 · GUN 원거리 · MID EP5 병기 — **형태는 리부트 Shape로 재해석**.
+식별 키워드(역할): GRUNT 양산 · HEAVY 무거움 · GUN 사격 · MID EP5 병기 — **형태는 리부트 Shape로 재해석**.
 
 ## 삼면도
 
@@ -42,5 +42,5 @@ STOP until silhouette shortlist (ORDER_DESIGN_LANGUAGE).
 
 ```
 CANON: stable
-VISUAL: reboot in progress
+VISUAL: reboot in progress · 슈퍼로봇 과장
 ```
