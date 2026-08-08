@@ -1,18 +1,18 @@
 # mecha/ — 기체 제작 단위
 
-## 공통
-
-| 문서 | 적용 |
-|------|------|
-| `../MECHA_3TONE_LOW_DETAIL.md` | 전 기체 LOCK |
-| `ORDER_DESIGN_LANGUAGE.md` | ORDER · 슈퍼로봇 과장 |
-| `MECHA_MASTER_LIST.md` | 보스 로스터 |
-
 ## 보스명 (네메시스 계열)
 
-argos · erebos · kerberos · phobos · adraste · deimos  
-+ 유지: seth · creil · aegis · nemesis · ord-*
+| 이름 | 폴더 |
+|------|------|
+| 헤카톤 | hekaton |
+| 콜로서스 | colossus |
+| 아르고스 | argos |
+| 에레보스 | erebos |
+| 케르베로스 | kerberos |
+| 포보스 | phobos |
+| 아드라스테 | adraste |
+| 데이모스 | deimos |
+| 크레일 · 아이기스 · 네메시스 | creil · aegis · nemesis |
 
-**BRAVE / EXCELION = 주인공. 보스 아님.**
-
-구 폴더명(oracle/void/race/kyle) 사용 금지 · 신규 ID 사용.
+**BRAVE / EXCELION = 주인공.**  
+구명(미드·세스·오라클·보이드·레이스·카일) design 참조 금지.
