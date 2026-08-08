@@ -6,6 +6,7 @@
 
 - **재미 있는 소년만화** · 전투가 먼저
 - 메인 SoR 우선 (`design/enemy/NEMESIS_MECHA_SPEC` · `SETH_MECHA_SPEC` · `CREIL_MECHA_SPEC` · `AEGIS_MECHA_SPEC`)
+- FINAL: `design/mecha/*/…_FINAL_SPEC.md` · `ORD_FINAL_SPEC.md`
 
 ---
 
@@ -16,10 +17,11 @@
 | 분류 | 차원 대응형 인간형 슈퍼로봇 |
 | 파일럿 | 리아 |
 | 역할 | 인류 최후 방어 · 희망 · 선택 |
-| 키 | ~18–25m급 · 날렵 · 백색·청·황금 |
+| 키 | **25 m** · 날렵 · 회백·남회·호박 accent |
 
 전투: 근접 고속 · 대시·콤보·카운터·필살  
-성장: 공명 → 엑셀리온 진화 (후반)
+성장: 공명 → 엑셀리온 진화 (후반)  
+상세: `mecha/brave/BRAVE_FINAL_SPEC.md`
 
 ---
 
@@ -33,7 +35,7 @@
 | 키 | 세로로 김 · 높은 중심 · 손 안 보임 · 블랙 크롬·보라 |
 
 전투: 원격 · 공간 봉쇄 · 판결 일격 · 오만 실루엣  
-상세: `design/enemy/NEMESIS_MECHA_SPEC.md` · `mecha/nemesis/DESCRIPTION.md`
+상세: `NEMESIS_MECHA_SPEC` · `mecha/nemesis/NEMESIS_FINAL_SPEC.md`
 
 **아슈르기 = 사용하지 않음 (네메시스로 교체)**
 
@@ -48,7 +50,7 @@
 | 키 | 단정·차단·근육질 전사 · ~30m · 손 보임 |
 
 전투: 분석·압박·차단 · EP6 격파 가능  
-상세: `design/enemy/SETH_MECHA_SPEC.md` · `mecha/seth/DESCRIPTION.md`
+상세: `SETH_MECHA_SPEC` · `mecha/seth/SETH_FINAL_SPEC.md`
 
 ---
 
@@ -61,9 +63,7 @@
 | 키 | 단정·차단 · **가로 방패면** · ~30m · 손 보임 · 사연 없음 |
 
 전투: 차단·처리 · 전선 도구 · EP15  
-상세: `design/enemy/CREIL_MECHA_SPEC.md` · `mecha/creil/DESCRIPTION.md`
-
-세스와 동일 층 · 실루엣 키 1개만 차별 (방패면)
+상세: `CREIL_MECHA_SPEC` · `mecha/creil/CREIL_FINAL_SPEC.md`
 
 ---
 
@@ -75,10 +75,8 @@
 | 역할 | 입구 방어 · 기능만 · 오만 없음 |
 | 키 | 가로로 넓음 · 방패면 · 접지 · 손/판 노출 |
 
-전투: 방패·입구 차단 · EP21 격파  
-상세: `design/enemy/AEGIS_MECHA_SPEC.md` · `mecha/aegis/DESCRIPTION.md`
-
-네메시스와 필수 구분 (세로 vs 가로 · 오만 vs 기능)
+전투: 가드 게이지·반격 · EP21 격파  
+상세: `AEGIS_MECHA_SPEC` · `mecha/aegis/AEGIS_FINAL_SPEC.md`
 
 ---
 
