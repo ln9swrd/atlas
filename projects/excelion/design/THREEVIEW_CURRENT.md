@@ -6,7 +6,7 @@
 ## CURRENT
 
 ```
-character/seth
+mecha/brave
 ```
 
 ## QUEUE
@@ -46,3 +46,4 @@ weapon/seth-seal-plate
 | 2026-08-06 | character/rei | 삼면도 생성 (A-pose, orthographic, white bg, 단정·지휘·침묵, 절제); NOTES 추가 | character/ashur |
 | 2026-08-07 | character/ashur | 삼면도 생성 후 **폴더 삭제** (최종보스=네메시스). 큐에서 제거 | character/seth |
 | 2026-08-07 | (cleanup) | QUEUE에서 character/ashur · mecha/ashur · weapon/ashur-* 제거 | character/seth |
+| 2026-08-08 | character/seth | 삼면도 생성 (A-pose, orthographic, white bg, 단정·차단·전선 밀도, 무표정, 처리 손); NOTES·prompt·negative 추가 | mecha/brave |
