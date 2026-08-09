@@ -1,0 +1,28 @@
+# Issue #32 — applied from pyproject.toml.draft
+# CI still uses requirements-dev.txt (no CI change in this PR).
+# editable install / path-hack cleanup: out of scope.
+
+[project]
+name = "atlas"
+version = "0.0.0"
+description = "Atlas DevOS runtime"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+# vision extra: defined for future opt-in only; not installed in CI.
+# VisualPerceptionEngine removed (Issue #33 R1); extra deferred until product need.
+vision = [
+    "opencv-python-headless>=4.8",
+    "torch",
+    "torchvision",
+    "Pillow",
+    "numpy",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
