@@ -21,6 +21,7 @@ let sfx = null;
 let stage = null;
 let boss = null;
 let lastDeath = '';
+let lastBossFile = null;
 
 const debug = { hb: false, god: false, speed: 1, hits: 0 };
 
@@ -45,14 +46,25 @@ async function loadData() {
 
 async function startBoss(file) {
   const def = await loadBossFile(file);
-  stage.setBoss(def);
+  lastBossFile = file;
+  stage.setBoss(def, file);
   playerSys.reset();
   boss = makeBossFromDef(def, 640, H / 2);
   lastDeath = '';
   ui.setReason('');
-  ui.showBanner(def.displayName, 1.6);
+  ui.showBanner(def.displayName, 1.4);
   sfx.warn();
+  sfx.phaseBgm && sfx.phaseBgm(1);
   debug.hits = 0;
+}
+
+function onPhaseChange(e, phase) {
+  feel.flashWhite = 0.2;
+  feel.addShake(0.25);
+  const label = stage.phaseLabel();
+  ui.showBanner(label, 2.0);
+  sfx.warn();
+  sfx.phaseBgm && sfx.phaseBgm(phase);
 }
 
 function onHitPlayer(e) {
@@ -60,6 +72,7 @@ function onHitPlayer(e) {
   if (debug.god || p.invuln > 0 || stage.status !== 'fight') return;
   p.hp -= e.damage;
   stage.hitsTaken++;
+  stage.breakCombo();
   debug.hits = stage.hitsTaken;
   p.flash = 0.12;
   feel.flashRed = 0.14;
@@ -92,15 +105,14 @@ function playerAttack() {
     boss.hp -= 14;
     boss.flash = 0.1;
     boss.scale = 0.88;
-    // near-invuln dodge window as PERFECT on contact while dashing
     if (p.invuln > 0 && p.dashAge <= timing.perfect) {
       feel.triggerPerfect();
-      stage.perfects++;
+      stage.addJudgment('PERFECT');
       sfx.perfect();
       ui.setReason('PERFECT');
     } else if (p.invuln > 0) {
       feel.triggerGood();
-      stage.goods++;
+      stage.addJudgment('GOOD');
       sfx.hit();
       ui.setReason('GOOD');
     } else {
@@ -108,15 +120,13 @@ function playerAttack() {
       feel.addHitstop(0.05);
       feel.addShake(0.1);
       sfx.hit();
+      stage.addJudgment('MISS');
     }
     if (boss.hp <= 0) {
       boss.alive = false;
       stage.onClear();
       sfx.clear();
       ui.showBanner('CLEAR', 99);
-      ui.setReason(
-        `TIME ${stage.stageTime | 0}s · HITS ${stage.hitsTaken} · P${stage.perfects}/G${stage.goods}`
-      );
     }
   }
 }
@@ -126,24 +136,49 @@ function update(dt) {
   if (feel.tick(scaled)) return;
   const t = scaled * feel.timeScale();
 
-  ui.tick(t, stage.status === 'clear', stage.status === 'fail');
+  ui.tick(t, stage.status === 'clear' || stage.status === 'fail');
 
   if (stage.status !== 'fight') return;
   stage.stageTime += t;
   playerSys.update(t, keys, { W, H });
   if (playerSys.consumeAttackBuffer()) playerAttack();
-  if (boss) updateBoss(boss, t, playerSys.p, W, H, sfx, onHitPlayer, stage);
-  ui.update(playerSys.p, boss ? [boss] : [], playerSys.dashCd, {
-    ...debug,
-    loop: false,
-  });
+  if (boss) updateBoss(boss, t, playerSys.p, W, H, sfx, onHitPlayer, stage, onPhaseChange);
+  ui.update(playerSys.p, boss, playerSys.dashCd, debug, stage);
+}
+
+function drawTimingBar() {
+  const p = playerSys.p;
+  const barW = 200;
+  const barH = 10;
+  const x = W / 2 - barW / 2;
+  const y = H - 28;
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.fillRect(x - 4, y - 4, barW + 8, barH + 8);
+  // GOOD zones
+  ctx.fillStyle = '#3d5a80';
+  ctx.fillRect(x, y, barW, barH);
+  // PERFECT center
+  const pw = barW * 0.22;
+  ctx.fillStyle = '#3fb950';
+  ctx.fillRect(x + (barW - pw) / 2, y, pw, barH);
+  // cursor from dashAge while invuln or idle center
+  let t = 0.5;
+  if (p.invuln > 0) {
+    t = Math.min(1, p.dashAge / (timing.good * 2));
+  }
+  const cx = x + t * barW;
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(cx - 1, y - 2, 2, barH + 4);
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '9px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('GOOD  PERFECT  GOOD', W / 2, y - 6);
 }
 
 function drawPlayer() {
   const p = playerSys.p;
   ctx.save();
   if (p.invuln > 0 && ((p.invuln * 18) | 0) % 2 === 0) ctx.globalAlpha = 0.4;
-  // silhouette: capsule body
   ctx.fillStyle = p.flash > 0 ? '#ff6b6b' : '#7ec8ff';
   ctx.beginPath();
   ctx.ellipse(p.x, p.y, p.r * 0.7, p.r * 1.15, 0, 0, Math.PI * 2);
@@ -172,10 +207,10 @@ function drawSelect() {
   ctx.fillStyle = '#e6edf3';
   ctx.font = 'bold 22px system-ui';
   ctx.textAlign = 'center';
-  ctx.fillText('EXCELION  V5', W / 2, H / 2 - 70);
+  ctx.fillText('EXCELION  V6', W / 2, H / 2 - 70);
   ctx.font = '14px system-ui';
   ctx.fillStyle = '#8b949e';
-  ctx.fillText('Select boss — keys 1 / 2 / 3', W / 2, H / 2 - 40);
+  ctx.fillText('Select boss — 1 / 2 / 3', W / 2, H / 2 - 40);
   if (roster) {
     roster.bosses.forEach((b, i) => {
       ctx.fillStyle = '#58a6ff';
@@ -183,6 +218,34 @@ function drawSelect() {
       ctx.fillText(b.label, W / 2, H / 2 + i * 28);
     });
   }
+}
+
+function drawResult() {
+  ctx.fillStyle = 'rgba(0,0,0,0.65)';
+  ctx.fillRect(0, 0, W, H);
+  ctx.textAlign = 'center';
+  if (stage.status === 'clear') {
+    ctx.fillStyle = '#3fb950';
+    ctx.font = 'bold 32px system-ui';
+    ctx.fillText('CLEAR', W / 2, H / 2 - 70);
+  } else {
+    ctx.fillStyle = '#f85149';
+    ctx.font = 'bold 28px system-ui';
+    ctx.fillText('YOU DIED', W / 2, H / 2 - 70);
+    ctx.fillStyle = '#ff7b72';
+    ctx.font = '13px system-ui';
+    ctx.fillText(lastDeath, W / 2, H / 2 - 42);
+  }
+  ctx.fillStyle = '#e6edf3';
+  ctx.font = '18px system-ui';
+  ctx.fillText(`SCORE  ${stage.score}`, W / 2, H / 2 - 10);
+  ctx.font = '14px system-ui';
+  ctx.fillText(`Accuracy  ${stage.accuracy()}%`, W / 2, H / 2 + 16);
+  ctx.fillText(`Max Combo  ${stage.maxCombo}`, W / 2, H / 2 + 38);
+  ctx.fillText(`P ${stage.perfects}  G ${stage.goods}  M ${stage.misses}  Hits ${stage.hitsTaken}`, W / 2, H / 2 + 60);
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '13px system-ui';
+  ctx.fillText('Enter — Retry · R — Boss Select', W / 2, H / 2 + 92);
 }
 
 function draw() {
@@ -219,6 +282,7 @@ function draw() {
 
   if (boss) drawBoss(ctx, boss, debug.hb);
   drawPlayer();
+  if (stage.status === 'fight') drawTimingBar();
 
   if (feel.invert > 0) {
     ctx.fillStyle = `rgba(255,255,255,${feel.invert * 0.5})`;
@@ -239,30 +303,7 @@ function draw() {
     ctx.fillRect(0, 0, W, H);
   }
 
-  if (stage.status === 'clear' || stage.status === 'fail') {
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.textAlign = 'center';
-    if (stage.status === 'clear') {
-      ctx.fillStyle = '#3fb950';
-      ctx.font = 'bold 32px system-ui';
-      ctx.fillText('CLEAR', W / 2, H / 2 - 36);
-      ctx.fillStyle = '#e6edf3';
-      ctx.font = '15px system-ui';
-      ctx.fillText(`Time ${stage.stageTime | 0}s · Hits ${stage.hitsTaken}`, W / 2, H / 2);
-      ctx.fillText(`PERFECT ${stage.perfects} · GOOD ${stage.goods}`, W / 2, H / 2 + 24);
-    } else {
-      ctx.fillStyle = '#f85149';
-      ctx.font = 'bold 28px system-ui';
-      ctx.fillText('YOU DIED', W / 2, H / 2 - 28);
-      ctx.fillStyle = '#ff7b72';
-      ctx.font = '14px system-ui';
-      ctx.fillText(lastDeath, W / 2, H / 2 + 4);
-    }
-    ctx.fillStyle = '#8b949e';
-    ctx.font = '13px system-ui';
-    ctx.fillText('R — menu · 1/2/3 — retry boss', W / 2, H / 2 + 56);
-  }
+  if (stage.status === 'clear' || stage.status === 'fail') drawResult();
   ctx.restore();
 }
 
@@ -273,6 +314,9 @@ window.addEventListener('keydown', (e) => {
     stage.backToSelect();
     boss = null;
     ui.showBanner('SELECT 1/2/3', 99);
+  }
+  if (e.code === 'Enter' && (stage.status === 'clear' || stage.status === 'fail') && lastBossFile) {
+    startBoss(lastBossFile);
   }
   if (e.code === 'Digit1' || e.code === 'Numpad1') startBoss('boss_brave.json');
   if (e.code === 'Digit2' || e.code === 'Numpad2') startBoss('boss_mass.json');
@@ -297,7 +341,6 @@ window.addEventListener('keydown', (e) => {
     boss.alive = false;
     stage.onClear();
     sfx.clear();
-    ui.showBanner('CLEAR', 99);
   }
   if (e.code === 'F4') {
     e.preventDefault();
@@ -305,7 +348,6 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.code === 'F5' && boss) {
     e.preventDefault();
-    // force next phase
     const th = boss.def.phaseThresholds || [1, 0.66, 0.33];
     if (boss.phase === 1) boss.hp = boss.maxHp * th[1] - 1;
     else if (boss.phase === 2) boss.hp = boss.maxHp * th[2] - 1;
