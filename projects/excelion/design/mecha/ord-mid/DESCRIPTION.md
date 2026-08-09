@@ -1,12 +1,13 @@
-# ORD-MID — 기체 레퍼런스
+# 몬투 (Montu) — 기체 레퍼런스 · 구 ORD-MID
 
 > 공통: `MECHA_3TONE_LOW_DETAIL` 필수  
 > ORDER Shape: **길게 뻗어 전장을 가리키는 지배 몸**  
-> 시각: **리부트 대기**
+> 시각: **리부트 대기**  
+> 스토리 이름: **몬투** · 설계 코드: hekaton / ord-mid
 
 ## CANON
 
-EP5 중보스 · 병기감 · ORD_FINAL §E
+EP5 중보스 · 병기감 · 전쟁·군인 · ORD_FINAL §E
 
 ## 시각 목표
 
