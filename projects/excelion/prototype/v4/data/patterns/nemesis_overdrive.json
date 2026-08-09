@@ -1,0 +1,12 @@
+{
+  "id": "nemesis_overdrive",
+  "label": "OVERDRIVE",
+  "timeline": [
+    { "t": 0, "action": "telegraph", "duration": 250, "visual": "flash_red", "audio": "warning_beep" },
+    { "t": 250, "action": "redirect_chain", "count": 4, "gap": 160, "speed": 660 },
+    { "t": 1100, "action": "telegraph", "duration": 200, "visual": "flash_red", "audio": "warning_beep" },
+    { "t": 1300, "action": "feint_cancel", "window": 120, "speed": 640 },
+    { "t": 1800, "action": "burst", "count": 5, "gap": 150, "speed": 680, "telegraph": 0.28 },
+    { "t": 2800, "action": "delay", "ms": 280 }
+  ]
+}
