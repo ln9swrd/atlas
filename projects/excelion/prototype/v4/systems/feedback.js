@@ -1,4 +1,4 @@
-/** Feel Polish — hitstop · zoom · desaturate · combo edge glow */
+/** Addiction polish — variable hitstop · ease zoom · miss learn · vignette */
 
 export function createFeedback() {
   return {
@@ -10,34 +10,55 @@ export function createFeedback() {
     bossTint: 0,
     invert: 0,
     zoom: 0,
+    zoomHold: 0,
     telegraphFlash: 0,
     distort: 0,
     phaseZoom: 0,
     desaturate: 0,
+    vignette: 0,
+    whiteFrame: 0,
+    timingError: '',
+    timingErrorT: 0,
+    telegraphReplay: 0,
+    lastAimX: -1,
+    lastAimY: 0,
+    lastTelegraphColor: 'rgba(255,55,40,0.8)',
 
-    onPerfect() {
-      this.slow = Math.max(this.slow, 0.1);
-      this.flashWhite = 0.18;
-      this.lineFlash = 0.14;
-      this.zoom = Math.max(this.zoom, 0.28);
-      this.shake = Math.max(this.shake, 0.06);
+    onPerfect(combo = 0) {
+      const extra = Math.min(0.04, combo * 0.001);
+      this.slow = Math.max(this.slow, 0.12 + extra);
+      this.flashWhite = 0.2;
+      this.lineFlash = 0.15;
+      this.zoom = Math.max(this.zoom, 0.32);
+      this.zoomHold = Math.max(this.zoomHold, 0.12);
+      this.whiteFrame = 1;
+      this.shake = Math.max(this.shake, 0.05);
     },
     onGood() {
       this.slow = Math.max(this.slow, 0.06);
-      this.flashWhite = 0.07;
+      this.flashWhite = 0.08;
       this.shake = Math.max(this.shake, 0.05);
     },
-    onMiss() {
-      this.shake = Math.max(this.shake, 0.32);
-      this.flashRed = 0.16;
-    },
-    onHurt() {
+    onMiss(deltaMs) {
       this.shake = Math.max(this.shake, 0.34);
       this.flashRed = 0.18;
+      if (typeof deltaMs === 'number') {
+        const sign = deltaMs >= 0 ? '+' : '';
+        this.timingError = `${sign}${Math.round(deltaMs)}ms`;
+        this.timingErrorT = 1.2;
+      }
+      this.telegraphReplay = 0.3;
+    },
+    onHurt() {
+      this.shake = Math.max(this.shake, 0.36);
+      this.flashRed = 0.2;
       this.bossTint = 0.12;
     },
-    onTelegraph() {
-      this.telegraphFlash = 0.12;
+    onTelegraph(aimX, aimY, color) {
+      this.telegraphFlash = 0.1;
+      if (aimX != null) this.lastAimX = aimX;
+      if (aimY != null) this.lastAimY = aimY;
+      if (color) this.lastTelegraphColor = color;
     },
     onCriticalEnter() {
       this.flashRed = 0.35;
@@ -56,6 +77,9 @@ export function createFeedback() {
       this.phaseZoom = 0.38;
       this.flashWhite = 0.12;
     },
+    setComboVignette(combo) {
+      this.vignette = combo >= 50 ? 0.35 : combo >= 25 ? 0.15 : 0;
+    },
 
     tick(dt) {
       for (const k of [
@@ -66,23 +90,29 @@ export function createFeedback() {
         'lineFlash',
         'bossTint',
         'invert',
-        'zoom',
         'telegraphFlash',
         'distort',
         'phaseZoom',
+        'timingErrorT',
+        'telegraphReplay',
       ]) {
         if (this[k] > 0) this[k] -= dt;
       }
-      // desaturate stays while finale; decay only when cleared externally
+      if (this.whiteFrame > 0) this.whiteFrame -= 1;
+      // easeOut zoom restore after hold
+      if (this.zoomHold > 0) this.zoomHold -= dt;
+      else if (this.zoom > 0) this.zoom = Math.max(0, this.zoom - dt * 1.8);
     },
 
     timeScale() {
-      if (this.slow > 0.05) return 0.82;
+      if (this.slow > 0.08) return 0.8;
       if (this.slow > 0) return 0.88;
       return 1;
     },
     zoomScale() {
-      return 1 + Math.max(0, this.zoom) * 0.12 + Math.max(0, this.phaseZoom) * 0.09;
+      const z = Math.max(0, this.zoom);
+      const ease = z * z; // ease-out feel when decaying
+      return 1 + ease * 0.14 + Math.max(0, this.phaseZoom) * 0.09;
     },
 
     comboTier(combo) {
@@ -93,8 +123,20 @@ export function createFeedback() {
     },
 
     drawOverlays(ctx, W, H, opts = {}) {
+      if (this.whiteFrame > 0) {
+        ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        ctx.fillRect(0, 0, W, H);
+      }
       if (this.desaturate > 0 || opts.finale) {
         ctx.fillStyle = 'rgba(40,35,50,0.22)';
+        ctx.fillRect(0, 0, W, H);
+      }
+      if (this.vignette > 0 || (opts.combo || 0) >= 50) {
+        const v = Math.max(this.vignette, (opts.combo || 0) >= 50 ? 0.3 : 0);
+        const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.75);
+        g.addColorStop(0, 'rgba(0,0,0,0)');
+        g.addColorStop(1, `rgba(0,0,0,${v})`);
+        ctx.fillStyle = g;
         ctx.fillRect(0, 0, W, H);
       }
       if (this.distort > 0) {
@@ -106,9 +148,21 @@ export function createFeedback() {
           ctx.stroke();
         }
       }
-      if (this.telegraphFlash > 0) {
-        ctx.fillStyle = `rgba(255,60,40,${this.telegraphFlash * 0.25})`;
+      if (this.telegraphFlash > 0 || this.telegraphReplay > 0) {
+        const a = Math.max(this.telegraphFlash, this.telegraphReplay) * 0.35;
+        ctx.fillStyle = `rgba(255,60,40,${a})`;
         ctx.fillRect(0, 0, W, H);
+        // replay last aim line for learning
+        if (this.telegraphReplay > 0) {
+          ctx.strokeStyle = this.lastTelegraphColor;
+          ctx.lineWidth = 4;
+          ctx.setLineDash([8, 6]);
+          ctx.beginPath();
+          ctx.moveTo(W * 0.7, H * 0.5);
+          ctx.lineTo(W * 0.7 + this.lastAimX * 400, H * 0.5 + this.lastAimY * 400);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
       }
       if (this.lineFlash > 0) {
         ctx.strokeStyle = `rgba(255,255,255,${this.lineFlash * 2})`;
@@ -124,8 +178,8 @@ export function createFeedback() {
         ctx.fillStyle = `rgba(255,40,40,${Math.min(0.55, this.flashRed * 2.2)})`;
         ctx.fillRect(0, 0, W, H);
       }
-      if (this.flashWhite > 0) {
-        ctx.fillStyle = `rgba(255,255,255,${this.flashWhite * 1.35})`;
+      if (this.flashWhite > 0 && this.whiteFrame <= 0) {
+        ctx.fillStyle = `rgba(255,255,255,${this.flashWhite * 1.2})`;
         ctx.fillRect(0, 0, W, H);
       }
       if (this.bossTint > 0) {
@@ -140,13 +194,13 @@ export function createFeedback() {
       }
       const combo = opts.combo || 0;
       if (combo >= 10) {
-        const a = combo >= 50 ? 0.65 : combo >= 25 ? 0.4 : 0.22;
+        const a = combo >= 50 ? 0.7 : combo >= 25 ? 0.4 : 0.22;
         ctx.strokeStyle = `rgba(240,193,74,${a})`;
         ctx.lineWidth = combo >= 50 ? 8 : combo >= 25 ? 5 : 3;
         ctx.strokeRect(3, 3, W - 6, H - 6);
         if (combo >= 50) {
-          ctx.shadowColor = 'rgba(240,193,74,0.6)';
-          ctx.shadowBlur = 18;
+          ctx.shadowColor = 'rgba(240,193,74,0.65)';
+          ctx.shadowBlur = 20;
           ctx.strokeRect(6, 6, W - 12, H - 12);
           ctx.shadowBlur = 0;
         }
@@ -154,21 +208,35 @@ export function createFeedback() {
       if (opts.lowHp) {
         ctx.fillStyle = 'rgba(180,20,40,0.1)';
         ctx.fillRect(0, 0, W, H);
-        ctx.strokeStyle = 'rgba(255,60,60,0.4)';
-        ctx.lineWidth = 3;
-        ctx.strokeRect(2, 2, W - 4, H - 4);
+      }
+      // timing error badge
+      if (this.timingErrorT > 0 && this.timingError) {
+        ctx.fillStyle = `rgba(255,120,100,${Math.min(1, this.timingErrorT)})`;
+        ctx.font = 'bold 18px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText(this.timingError, W / 2, H * 0.42);
       }
     },
 
     drawPlayerAura(ctx, p, combo) {
       const tier = this.comboTier(combo);
-      if (tier === 0) return;
+      if (tier === 0 && combo < 50) return;
       ctx.save();
-      ctx.strokeStyle = `rgba(126,200,255,${0.35 + tier * 0.15})`;
-      ctx.lineWidth = 2 + tier;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r + 6 + tier * 2, 0, Math.PI * 2);
-      ctx.stroke();
+      if (tier >= 1) {
+        ctx.strokeStyle = `rgba(126,200,255,${0.35 + tier * 0.15})`;
+        ctx.lineWidth = 2 + tier;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r + 6 + tier * 2, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      if (combo >= 50) {
+        const pulse = 1 + Math.sin(performance.now() / 120) * 0.08;
+        ctx.strokeStyle = 'rgba(240,193,74,0.55)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, (p.r + 18) * pulse, 0, Math.PI * 2);
+        ctx.stroke();
+      }
       if (tier >= 2) {
         ctx.globalAlpha = 0.4;
         ctx.fillStyle = '#7ec8ff';
@@ -188,4 +256,10 @@ export function computeRank(accuracy, maxCombo, hitsTaken, cleared) {
   if (accuracy >= 75 && hitsTaken <= 3) return 'A';
   if (accuracy >= 55) return 'B';
   return 'C';
+}
+
+/** Estimate timing error from dashAge vs perfect window */
+export function estimateDeltaMs(dashAge, perfectWindow = 0.05) {
+  if (dashAge <= 0) return 80;
+  return Math.round((dashAge - perfectWindow) * 1000);
 }
