@@ -1,4 +1,4 @@
-/** Boss + telegraph pulse / feint wobble / distance falloff */
+/** Boss + telegraph final 0.1s emphasis · smoothed telegraphScale */
 
 export function makeBossFromDef(def, x, y) {
   const patternDriven = Array.isArray(def.phases) && def.phases[0] && def.phases[0].patterns;
@@ -32,6 +32,8 @@ export function makeBossFromDef(def, x, y) {
     adaptSpeed: 1,
     adaptFake: 0,
     telegraphScale: 1,
+    telegraphScaleTarget: 1,
+    adaptSamples: 0,
     patternDriven,
     patternCursor: 0,
     extraPatterns: [],
@@ -76,12 +78,21 @@ export function updateAdaptive(e, stage) {
   const maxF = rules.maxFakeRate || 0.7;
   e.adaptSpeed = Math.min(maxS, 1 + (stage.perfects || 0) * (rules.perfectStreakSpeed || 0.05));
   e.adaptFake = Math.min(maxF, (stage.misses || 0) * (rules.missFakeBonus || 0.08));
-  // telegraph length: high perfect% → shorter, many miss → longer
-  const j = Math.max(1, (stage.perfects || 0) + (stage.goods || 0) + (stage.misses || 0));
-  const pr = (stage.perfects || 0) / j;
-  if (pr > 0.6) e.telegraphScale = Math.max(0.85, 1 - (pr - 0.6));
-  else if ((stage.misses || 0) >= 3) e.telegraphScale = Math.min(1.15, 1 + 0.05 * Math.min(4, stage.misses));
-  else e.telegraphScale = 1;
+
+  e.adaptSamples = (e.adaptSamples || 0) + 1;
+  // only after ~5 judgments start moving telegraphScale
+  if (e.adaptSamples < 5) {
+    e.telegraphScaleTarget = 1;
+  } else {
+    const j = Math.max(1, (stage.perfects || 0) + (stage.goods || 0) + (stage.misses || 0));
+    const pr = (stage.perfects || 0) / j;
+    let target = 1;
+    if (pr > 0.6) target = Math.max(0.88, 1 - (pr - 0.6) * 0.4);
+    else if ((stage.misses || 0) >= 3) target = Math.min(1.12, 1 + 0.03 * Math.min(4, stage.misses));
+    e.telegraphScaleTarget = target;
+  }
+  // smooth lerp — no single-miss spikes
+  e.telegraphScale += ((e.telegraphScaleTarget || 1) - (e.telegraphScale || 1)) * 0.12;
 }
 
 function pickAction(e) {
@@ -277,10 +288,18 @@ export function drawBoss(ctx, e, debugHB, player) {
       dash = [10, 6];
     }
 
-    // pulse near impact; feint wobble
     let pulse = 1;
+    let brightness = 1;
     if (timeToImpact < 0.4 && e.state === 'telegraph') {
       pulse = 1 + Math.sin(performance.now() / 50) * 0.06;
+    }
+    // final 0.1s — forced emphasis
+    if (timeToImpact < 0.1 && e.state === 'telegraph') {
+      pulse = 1.2;
+      brightness = 1.5;
+      baseR = Math.min(255, Math.round(baseR * brightness));
+      baseG = Math.min(255, Math.round(baseG * brightness));
+      baseB = Math.min(255, Math.round(baseB * brightness));
     }
     let wobbleX = 0;
     let wobbleY = 0;
@@ -305,7 +324,7 @@ export function drawBoss(ctx, e, debugHB, player) {
         const d = Math.hypot(midX - player.x, midY - player.y);
         near = Math.max(near, 1 - Math.min(1, d / 320));
       }
-      const alpha = (0.35 + progress * 0.55) * (0.4 + near * 0.6);
+      const alpha = Math.min(1, (0.35 + progress * 0.55) * (0.4 + near * 0.6) * brightness);
       ctx.strokeStyle = `rgba(${baseR},${baseG},${baseB},${alpha})`;
       ctx.lineWidth = (1.5 + progress * 4) * (0.6 + near * 0.9) * pulse;
       ctx.setLineDash(dash);
@@ -317,7 +336,7 @@ export function drawBoss(ctx, e, debugHB, player) {
     ctx.setLineDash([]);
     ctx.fillStyle = `rgba(${baseR},${baseG},${baseB},${0.6 + progress * 0.4})`;
     ctx.beginPath();
-    ctx.arc(e.x + e.aimX * 70 + wobbleX, e.y + e.aimY * 70 + wobbleY, 3 + progress * 4, 0, Math.PI * 2);
+    ctx.arc(e.x + e.aimX * 70 + wobbleX, e.y + e.aimY * 70 + wobbleY, 3 + progress * 4 * pulse, 0, Math.PI * 2);
     ctx.fill();
   }
 
