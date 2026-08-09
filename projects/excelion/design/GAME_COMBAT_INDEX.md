@@ -1,6 +1,6 @@
 # GAME_COMBAT_INDEX — 전투 루프 색인
 
-> 2026-08-08 · 이미지 HOLD 구간용  
+> 2026-08-09 · 이미지 HOLD 구간용  
 > 목적: FINAL §18/§28을 구현 트랙이 한곳에서 참조
 
 **상태: 운용**
@@ -20,11 +20,11 @@
 
 | 기 | EP | 문서 | 루프 한 줄 |
 |----|-----|------|------------|
-| ORD-MID | 5 | ORD_FINAL_SPEC §E | 다병기 패턴 → 약점 창 → P2 |
-| SETH | 6 | seth/SETH_FINAL_SPEC | 차단·씰 → 집념 돌파 → 보고 끝 |
-| CREIL | 15/20 | creil/CREIL_FINAL_SPEC | 거점 사수·방패면 → 측면 → 도구 정지 |
-| AEGIS | 21 | aegis/AEGIS_FINAL_SPEC | 가드 게이지 → 반격 텔레그래프 → 측면/Break → 문 열림 |
-| NEMESIS | 7/9/23–24 | nemesis/NEMESIS_FINAL_SPEC | 원격 중력 → 전면 압박 → 디센트 → 오만 유지 |
+| **몬투** | 5 | ORD_FINAL_SPEC §E · hekaton | 다병기 패턴 → 약점 창 → P2 |
+| 세스 | 6 | seth/SETH_FINAL_SPEC | 차단·씰 → 집념 돌파 → 보고 끝 |
+| 세크 (구 크레일) | 15 | creil/CREIL_FINAL_SPEC | 거점 사수·방패면 → 측면 → 도구 정지 |
+| 와제 (구 아이기스) | 21 | aegis/AEGIS_FINAL_SPEC | 가드 게이지 → 반격 텔레그래프 → 측면/Break → 문 열림 |
+| 네메시스 | 7/9/23–24 | nemesis/NEMESIS_FINAL_SPEC | 원격 중력 → 전면 압박 → 디센트 → 오만 유지 |
 
 ---
 
@@ -60,7 +60,7 @@
 ---
 
 ```
-CURRENT: GAME_COMBAT_INDEX
+CURRENT: GAME_COMBAT_INDEX · 몬투 반영
 NEXT: state 수치 테이블 확정 작업
 BLOCKED: 이미지
 ```
