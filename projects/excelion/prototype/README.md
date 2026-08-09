@@ -1,25 +1,20 @@
 # Excelion Prototype
 
-## Phase 2 (권장)
+## Phase 3 — Vertical Slice (권장)
 
 ```
-prototype/playable_v2.html
+prototype/playable_v3.html
 ```
 
-브라우저에서 연다.
+| | |
+|--|--|
+| 루프 | Start → W1 → W2 → Boss → Result → Retry |
+| 타이밍 | TOO EARLY / TOO LATE / FAKE READ |
+| Anubis P2 | 방향 전환 2회 → 최종 · 속도 1.2–1.4 |
+| SFX | WebAudio 더미 (whoosh/hit/rumble) |
+| Debug | F1 HB · F2 God · F3 Boss skip |
 
-| 내용 | |
-|------|--|
-| Wave 1 | 몬투 ×3 |
-| Wave 2 | Fast(짧은 경고) · Fake(페인트→딜레이) |
-| Boss | ANUBIS — 3연 돌진·방향 전환·HP 페이즈 |
-| UI | HP · 대시 쿨 · 배너 |
-| 손맛 | 히트스톱 · 쉐이크 차등 · 플래시 |
+## 이전
 
-## Phase 1
-
-`playable_v1.html` — 돌진 1패턴 코어 루프
-
-## 제외
-
-Unreal · 고퀄 모델 · 본 애니 · VFX 폴리시
+- `playable_v2.html` 경험 밀도
+- `playable_v1.html` 코어 루프
