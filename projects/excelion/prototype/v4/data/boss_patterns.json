@@ -1,0 +1,45 @@
+{
+  "montu": {
+    "telegraph": 0.8,
+    "chargeSpeed": 500,
+    "chargeDuration": 0.48,
+    "damage": 22,
+    "hp": 50
+  },
+  "fast": {
+    "telegraph": 0.4,
+    "chargeSpeed": 640,
+    "chargeDuration": 0.45,
+    "damage": 22,
+    "hp": 42
+  },
+  "fake": {
+    "paint": 0.4,
+    "cancel": 0.3,
+    "telegraph": 0.22,
+    "chargeSpeed": 520,
+    "chargeDuration": 0.48,
+    "damage": 22,
+    "hp": 42
+  },
+  "anubis": {
+    "hp": 300,
+    "damage": 30,
+    "phase1": [
+      { "type": "normal", "telegraph": 0.65, "speed": 540, "duration": 0.4 },
+      { "type": "combo", "count": 3, "telegraph": 0.55, "gap": 0.26, "speed": 540, "duration": 0.4 }
+    ],
+    "phase2": [
+      { "type": "redirect", "redirects": 2, "telegraph": 0.45, "gap": 0.22, "speedMin": 1.2, "speedMax": 1.4, "baseSpeed": 540, "duration": 0.4 },
+      { "type": "fast", "telegraph": 0.4, "speed": 620, "duration": 0.38 }
+    ],
+    "phaseThreshold": 0.5
+  },
+  "timing": {
+    "perfect": 0.05,
+    "good": 0.12,
+    "dashInvuln": 0.3,
+    "dashDuration": 0.28,
+    "dashCooldown": 0.85
+  }
+}
