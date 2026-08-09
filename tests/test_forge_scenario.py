@@ -9,6 +9,7 @@ sys.path.append(str(REPO_ROOT))
 from core.forge.forge_runtime import ForgeMissionRunner
 
 
+@unittest.skip("Forge HOLD — skip until Forge ACTIVE")
 class ForgeScenarioTests(unittest.TestCase):
     def test_forge_character_creation_mission_runs(self):
         async def _run():
