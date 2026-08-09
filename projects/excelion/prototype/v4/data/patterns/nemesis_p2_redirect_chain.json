@@ -1,0 +1,11 @@
+{
+  "id": "nemesis_p2_redirect_chain",
+  "label": "Redirect Chain",
+  "timeline": [
+    { "t": 0, "action": "spawn", "type": "fast", "speed": 600, "telegraph": 0.4, "duration": 0.36 },
+    { "t": 500, "action": "redirect_chain", "count": 3, "spread": 30, "gap": 200, "speed": 580 },
+    { "t": 1600, "action": "feint", "paint": 300, "cancel": 250, "telegraph": 180, "speed": 560 },
+    { "t": 2600, "action": "burst", "count": 3, "gap": 200, "speed": 620, "telegraph": 0.32 },
+    { "t": 3600, "action": "delay", "ms": 350 }
+  ]
+}

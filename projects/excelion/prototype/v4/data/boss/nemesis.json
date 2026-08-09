@@ -1,0 +1,81 @@
+{
+  "id": "nemesis",
+  "displayName": "NEMESIS",
+  "legacyFileId": "ashur",
+  "role": "final_wall",
+  "adaptive": true,
+  "color": "#8b3dff",
+  "shape": "triangle",
+  "hp": 320,
+  "damage": 28,
+  "radius": 34,
+  "phaseThresholds": [1.0, 0.55, 0.25],
+  "critical": {
+    "hpThreshold": 0.3,
+    "label": "CRITICAL — OVERDRIVE",
+    "modifiers": { "speed": 1.25, "feintRate": 0.2, "delayVariance": -0.1 },
+    "addPatterns": ["nemesis_overdrive"]
+  },
+  "finale": {
+    "hpThreshold": 0.1,
+    "label": "PHASE 4 — FINALE",
+    "addPatterns": ["nemesis_finale"],
+    "modifiers": { "speed": 1.35, "feintRate": 0.35 }
+  },
+  "phaseLabels": {
+    "1": "PHASE 1 — OBSERVE",
+    "2": "PHASE 2 — MIRROR",
+    "3": "PHASE 3 — JUDGMENT",
+    "critical": "CRITICAL — OVERDRIVE",
+    "4": "PHASE 4 — FINALE"
+  },
+  "phases": [
+    {
+      "id": 1,
+      "patterns": ["nemesis_intro", "nemesis_redirect_basic"],
+      "modifier": { "speed_scale": 1.0, "fake_rate": 0.15 }
+    },
+    {
+      "id": 2,
+      "patterns": ["nemesis_p2_redirect_chain"],
+      "modifier": { "speed_scale": 1.15, "fake_rate": 0.25 }
+    },
+    {
+      "id": 3,
+      "patterns": ["nemesis_p2_redirect_chain", "nemesis_pressure"],
+      "modifier": { "speed_scale": 1.25, "fake_rate": 0.35 }
+    }
+  ],
+  "chains": [
+    {
+      "from": "nemesis_intro",
+      "to": "nemesis_pressure",
+      "condition": "perfectStreak>=5"
+    },
+    {
+      "from": "nemesis_redirect_basic",
+      "to": "nemesis_p2_redirect_chain",
+      "condition": "perfectStreak>=3"
+    }
+  ],
+  "adaptiveRules": {
+    "onPerfectStreak": {
+      "speedMultiplier": 1.2,
+      "addPattern": "nemesis_pressure",
+      "threshold": 5
+    },
+    "onMissSpike": {
+      "feintChance": 0.4,
+      "delayIncrease": 150,
+      "threshold": 3
+    },
+    "perfectStreakSpeed": 0.05,
+    "missFakeBonus": 0.08,
+    "maxSpeedScale": 1.55,
+    "maxFakeRate": 0.75,
+    "style": {
+      "earlyFeintBonus": 0.12,
+      "lateSpeedBonus": 0.08
+    }
+  }
+}

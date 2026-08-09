@@ -1,0 +1,10 @@
+{
+  "id": "seth_seal",
+  "label": "Seal Read",
+  "timeline": [
+    { "t": 0, "action": "spawn", "type": "normal", "speed": 420, "telegraph": 0.9, "duration": 0.5 },
+    { "t": 1100, "action": "feint", "paint": 450, "cancel": 350, "telegraph": 250, "speed": 480 },
+    { "t": 2400, "action": "shield", "ms": 600 },
+    { "t": 3200, "action": "delay", "ms": 400 }
+  ]
+}

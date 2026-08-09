@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Excelion Pattern Editor</title>
+<style>
+  body { font-family: system-ui; background: #0d1117; color: #e6edf3; margin: 16px; }
+  textarea { width: 100%; height: 280px; background: #161b22; color: #e6edf3; border: 1px solid #30363d; padding: 8px; font-family: ui-monospace, monospace; font-size: 12px; }
+  button { margin: 4px 4px 0 0; padding: 6px 12px; background: #21262d; color: #e6edf3; border: 1px solid #30363d; border-radius: 4px; cursor: pointer; }
+  #timeline { margin-top: 12px; height: 48px; background: #21262d; border-radius: 4px; position: relative; }
+  .ev { position: absolute; top: 8px; width: 8px; height: 32px; background: #58a6ff; border-radius: 2px; }
+  #out { margin-top: 8px; font-size: 12px; color: #8b949e; }
+  a { color: #58a6ff; }
+</style>
+</head>
+<body>
+<h1>Pattern Editor (DSL)</h1>
+<p>JSON 타임라인 편집 → 검증 · 미리보기. 게임: <a href="../index.html">v4 index</a></p>
+<textarea id="json">{
+  "id": "my_pattern",
+  "label": "Test",
+  "timeline": [
+    { "t": 0, "action": "spawn", "type": "normal", "speed": 500, "telegraph": 0.6, "duration": 0.4 },
+    { "t": 800, "action": "redirect_chain", "count": 3, "gap": 200, "speed": 560 },
+    { "t": 1600, "action": "feint", "paint": 300, "cancel": 250, "telegraph": 180, "speed": 520 },
+    { "t": 2400, "action": "burst", "count": 3, "gap": 220, "speed": 580 }
+  ]
+}</textarea>
+<div>
+  <button type="button" id="validate">Validate</button>
+  <button type="button" id="preview">Preview timeline</button>
+  <button type="button" id="addSpawn">+ spawn</button>
+  <button type="button" id="addRedirect">+ redirect_chain</button>
+  <button type="button" id="addFeint">+ feint</button>
+</div>
+<div id="timeline"></div>
+<div id="out"></div>
+<script>
+const ta = document.getElementById('json');
+const out = document.getElementById('out');
+const tl = document.getElementById('timeline');
+
+function parse() {
+  return JSON.parse(ta.value);
+}
+
+document.getElementById('validate').onclick = () => {
+  try {
+    const p = parse();
+    if (!p.id || !Array.isArray(p.timeline)) throw new Error('id + timeline required');
+    const actions = ['spawn','delay','feint','feint_cancel','redirect','redirect_chain','burst','shield'];
+    p.timeline.forEach((e, i) => {
+      if (typeof e.t !== 'number') throw new Error('event '+i+' missing t');
+      if (!actions.includes(e.action)) throw new Error('unknown action '+e.action);
+    });
+    out.textContent = 'OK · ' + p.timeline.length + ' events · max t=' + Math.max(...p.timeline.map(e => e.t));
+  } catch (err) {
+    out.textContent = 'Error: ' + err.message;
+  }
+};
+
+document.getElementById('preview').onclick = () => {
+  try {
+    const p = parse();
+    const max = Math.max(1, ...p.timeline.map(e => e.t));
+    tl.innerHTML = '';
+    p.timeline.forEach(e => {
+      const d = document.createElement('div');
+      d.className = 'ev';
+      d.style.left = (e.t / max * 100) + '%';
+      d.title = e.t + ' ' + e.action;
+      tl.appendChild(d);
+    });
+    out.textContent = 'Preview · scale 0–' + max + 'ms';
+  } catch (err) {
+    out.textContent = err.message;
+  }
+};
+
+function addEvent(obj) {
+  try {
+    const p = parse();
+    const max = p.timeline.reduce((m, e) => Math.max(m, e.t), 0);
+    p.timeline.push({ t: max + 400, ...obj });
+    ta.value = JSON.stringify(p, null, 2);
+  } catch (err) {
+    out.textContent = err.message;
+  }
+}
+document.getElementById('addSpawn').onclick = () => addEvent({ action: 'spawn', type: 'normal', speed: 500, telegraph: 0.6, duration: 0.4 });
+document.getElementById('addRedirect').onclick = () => addEvent({ action: 'redirect_chain', count: 3, gap: 200, speed: 560 });
+document.getElementById('addFeint').onclick = () => addEvent({ action: 'feint', paint: 300, cancel: 250, telegraph: 180, speed: 520 });
+</script>
+</body>
+</html>

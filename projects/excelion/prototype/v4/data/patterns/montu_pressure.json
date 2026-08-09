@@ -1,0 +1,9 @@
+{
+  "id": "montu_pressure",
+  "label": "Pressure",
+  "timeline": [
+    { "t": 0, "action": "spawn", "type": "normal", "speed": 480, "telegraph": 0.85, "duration": 0.48 },
+    { "t": 1000, "action": "burst", "count": 2, "gap": 300, "speed": 520, "telegraph": 0.55 },
+    { "t": 2200, "action": "spawn", "type": "fast", "speed": 600, "telegraph": 0.4, "duration": 0.36 }
+  ]
+}

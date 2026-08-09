@@ -1,0 +1,44 @@
+{
+  "id": "ashur",
+  "displayName": "NEMESIS",
+  "note": "Legacy file id only. Canon = Nemesis.",
+  "role": "final_wall",
+  "adaptive": true,
+  "color": "#8b3dff",
+  "shape": "triangle",
+  "hp": 320,
+  "damage": 28,
+  "radius": 34,
+  "phaseThresholds": [1.0, 0.55, 0.25],
+  "phaseLabels": {
+    "1": "PHASE 1 — OBSERVE",
+    "2": "PHASE 2 — MIRROR",
+    "3": "PHASE 3 — JUDGMENT"
+  },
+  "phaseModifiers": {
+    "1": { "speed_scale": 1.0, "fake_rate": 0.15 },
+    "2": { "speed_scale": 1.15, "fake_rate": 0.25 },
+    "3": { "speed_scale": 1.25, "fake_rate": 0.35 }
+  },
+  "adaptiveRules": {
+    "perfectStreakSpeed": 0.05,
+    "missFakeBonus": 0.08,
+    "maxSpeedScale": 1.45,
+    "maxFakeRate": 0.7
+  },
+  "phases": {
+    "1": [
+      { "type": "normal", "telegraph": 0.7, "speed": 520, "duration": 0.42 },
+      { "type": "combo", "count": 3, "telegraph": 0.55, "gap": 0.28, "speed": 540, "duration": 0.4 }
+    ],
+    "2": [
+      { "type": "redirect", "redirects": 2, "telegraph": 0.45, "gap": 0.22, "speed": 560, "duration": 0.38 },
+      { "type": "fast", "telegraph": 0.38, "speed": 640, "duration": 0.35 }
+    ],
+    "3": [
+      { "type": "redirect", "redirects": 3, "telegraph": 0.35, "gap": 0.18, "speed": 600, "duration": 0.36 },
+      { "type": "fake", "paint": 0.3, "cancel": 0.25, "telegraph": 0.18, "speed": 580, "duration": 0.36 },
+      { "type": "combo", "count": 4, "telegraph": 0.32, "gap": 0.2, "speed": 620, "duration": 0.34 }
+    ]
+  }
+}

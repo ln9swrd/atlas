@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Excelion — Playable</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #0d1117; color: #e6edf3; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
+  h1 { font-size: 1.1rem; margin-bottom: 8px; letter-spacing: 0.04em; }
+  #wrap { position: relative; width: 800px; max-width: 100%; }
+  canvas { display: block; width: 100%; background: #161b22; border: 1px solid #30363d; border-radius: 6px; touch-action: none; }
+  #overlay { position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 10px 12px; }
+  .bars { display: flex; flex-direction: column; gap: 5px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+  .bar-bg { flex: 1; height: 9px; background: #21262d; border-radius: 3px; overflow: hidden; border: 1px solid #30363d; }
+  .bar-fill { height: 100%; transition: width 0.08s linear; }
+  #php { background: linear-gradient(90deg,#2ea043,#3fb950); }
+  #bhp { background: linear-gradient(90deg,#da3633,#f85149); }
+  #dash { background: linear-gradient(90deg,#1f6feb,#58a6ff); }
+  #scoreline { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-top: 4px; }
+  #score { color: #e6edf3; }
+  #combo { color: #f0c14a; }
+  #banner { text-align: center; font-size: 16px; font-weight: 800; text-shadow: 0 2px 8px #000; min-height: 1.5em; }
+  #reason { color: #ff7b72; font-size: 13px; font-weight: 700; text-align: center; min-height: 1.3em; }
+  #guide { color: #8b949e; font-size: 12px; text-align: center; min-height: 1.2em; }
+  #dbg { font-size: 10px; color: #8b949e; }
+  #help { width: 800px; max-width: 100%; margin-top: 8px; font-size: 12px; color: #8b949e; line-height: 1.5; }
+  #btns { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  button { padding: 8px 14px; background: #21262d; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  button.primary { background: #238636; border-color: #2ea043; }
+  button:hover { filter: brightness(1.1); }
+  #boot { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(13,17,23,0.92); border-radius: 6px; z-index: 5; }
+  #boot h2 { font-size: 28px; margin-bottom: 8px; }
+  #boot p { color: #8b949e; margin-bottom: 16px; text-align: center; max-width: 360px; line-height: 1.4; }
+  #boot.hidden { display: none; }
+</style>
+</head>
+<body>
+<h1>EXCELION</h1>
+<div id="wrap">
+  <canvas id="c" width="800" height="480"></canvas>
+  <div id="boot">
+    <h2>EXCELION</h2>
+    <p>노란/빨간 예고선을 읽고 대시하세요.<br/>중앙 타이밍 = PERFECT</p>
+    <button type="button" class="primary" id="btnStart">Start — NEMESIS</button>
+    <button type="button" id="btnTutorial">Tutorial</button>
+  </div>
+  <div id="overlay">
+    <div>
+      <div class="bars">
+        <div class="bar-row"><span>YOU</span><div class="bar-bg"><div class="bar-fill" id="php" style="width:100%"></div></div></div>
+        <div class="bar-row"><span id="blabel">—</span><div class="bar-bg"><div class="bar-fill" id="bhp" style="width:0%"></div></div></div>
+        <div class="bar-row"><span>DASH</span><div class="bar-bg"><div class="bar-fill" id="dash" style="width:100%"></div></div></div>
+      </div>
+      <div id="scoreline"><span id="score">SCORE 0</span><span id="combo"></span></div>
+      <div id="dbg"></div>
+    </div>
+    <div>
+      <div id="banner"></div>
+      <div id="reason"></div>
+      <div id="guide"></div>
+    </div>
+  </div>
+</div>
+<div id="btns">
+  <button type="button" id="restart">Menu (R)</button>
+  <button type="button" id="btnShare">Share</button>
+</div>
+<div id="help">
+  <b>조작</b> WASD 이동 · Space 대시 · J 공격 · 1/2/3 보스<br/>
+  <b>예고</b> 빨강=위험 · 노랑=페인트 · 흰색=확정 돌진<br/>
+  <b>결과</b> P 리플레이 · G 고스트 · Enter 재도전
+</div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
