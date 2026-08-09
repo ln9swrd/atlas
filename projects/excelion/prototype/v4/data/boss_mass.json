@@ -8,6 +8,16 @@
   "damage": 18,
   "radius": 26,
   "phaseThresholds": [1.0, 0.6, 0.3],
+  "phaseLabels": {
+    "1": "PHASE 1 — SEAL READ",
+    "2": "PHASE 2 — DELAY PROTOCOL",
+    "3": "PHASE 3 — FALSE SAFETY"
+  },
+  "phaseModifiers": {
+    "1": { "speed_scale": 1.0, "fake_rate": 0.3 },
+    "2": { "speed_scale": 1.05, "fake_rate": 0.45 },
+    "3": { "speed_scale": 1.15, "fake_rate": 0.55 }
+  },
   "phases": {
     "1": [
       { "type": "normal", "telegraph": 0.9, "speed": 420, "duration": 0.5 },
