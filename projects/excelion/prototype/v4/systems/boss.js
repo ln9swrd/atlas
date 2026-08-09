@@ -1,4 +1,4 @@
-/** Boss + telegraph distance falloff (closer = thicker & more opaque) */
+/** Boss + telegraph pulse / feint wobble / distance falloff */
 
 export function makeBossFromDef(def, x, y) {
   const patternDriven = Array.isArray(def.phases) && def.phases[0] && def.phases[0].patterns;
@@ -31,6 +31,7 @@ export function makeBossFromDef(def, x, y) {
     afterimage: [],
     adaptSpeed: 1,
     adaptFake: 0,
+    telegraphScale: 1,
     patternDriven,
     patternCursor: 0,
     extraPatterns: [],
@@ -75,19 +76,34 @@ export function updateAdaptive(e, stage) {
   const maxF = rules.maxFakeRate || 0.7;
   e.adaptSpeed = Math.min(maxS, 1 + (stage.perfects || 0) * (rules.perfectStreakSpeed || 0.05));
   e.adaptFake = Math.min(maxF, (stage.misses || 0) * (rules.missFakeBonus || 0.08));
+  // telegraph length: high perfect% → shorter, many miss → longer
+  const j = Math.max(1, (stage.perfects || 0) + (stage.goods || 0) + (stage.misses || 0));
+  const pr = (stage.perfects || 0) / j;
+  if (pr > 0.6) e.telegraphScale = Math.max(0.85, 1 - (pr - 0.6));
+  else if ((stage.misses || 0) >= 3) e.telegraphScale = Math.min(1.15, 1 + 0.05 * Math.min(4, stage.misses));
+  else e.telegraphScale = 1;
 }
 
 function pickAction(e) {
   const list = phaseList(e);
   const mod = getMod(e);
-  if (!list.length) return { type: 'normal', telegraph: 0.7, speed: 500, duration: 0.45 };
+  const ts = e.telegraphScale || 1;
+  if (!list.length) return { type: 'normal', telegraph: 0.7 * ts, speed: 500, duration: 0.45 };
   if (mod.fake_rate > 0 && Math.random() < mod.fake_rate) {
     e.patternIdx++;
-    return { type: 'fake', paint: 0.35, cancel: 0.3, telegraph: 0.2, speed: 520 * mod.speed_scale, duration: 0.4 };
+    return {
+      type: 'fake',
+      paint: 0.35,
+      cancel: 0.3,
+      telegraph: 0.2 * ts,
+      speed: 520 * mod.speed_scale,
+      duration: 0.4,
+    };
   }
   const act = { ...list[e.patternIdx % list.length] };
   e.patternIdx++;
   if (act.speed) act.speed *= mod.speed_scale;
+  if (act.telegraph) act.telegraph *= ts;
   return act;
 }
 
@@ -224,7 +240,6 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
   }
 }
 
-/** Segmented telegraph: opacity & width rise toward player */
 export function drawBoss(ctx, e, debugHB, player) {
   if (!e.alive) return;
   for (const a of e.afterimage) {
@@ -238,6 +253,7 @@ export function drawBoss(ctx, e, debugHB, player) {
 
   if (e.state === 'telegraph' || e.state === 'fake_paint' || e.state === 'fake_cancel') {
     const progress = e.telegraphMax > 0 ? 1 - Math.max(0, e.timer) / e.telegraphMax : 0.5;
+    const timeToImpact = Math.max(0, e.timer);
     let baseR, baseG, baseB, dash;
     if (e.state === 'fake_paint') {
       baseR = 255;
@@ -261,16 +277,27 @@ export function drawBoss(ctx, e, debugHB, player) {
       dash = [10, 6];
     }
 
+    // pulse near impact; feint wobble
+    let pulse = 1;
+    if (timeToImpact < 0.4 && e.state === 'telegraph') {
+      pulse = 1 + Math.sin(performance.now() / 50) * 0.06;
+    }
+    let wobbleX = 0;
+    let wobbleY = 0;
+    if (e.state === 'fake_paint') {
+      wobbleX = Math.sin(performance.now() / 40) * 6;
+      wobbleY = Math.cos(performance.now() / 55) * 4;
+    }
+
     const segs = 12;
     const maxDist = 900;
     for (let i = 0; i < segs; i++) {
       const t0 = i / segs;
       const t1 = (i + 1) / segs;
-      const x0 = e.x + e.aimX * maxDist * t0;
-      const y0 = e.y + e.aimY * maxDist * t0;
-      const x1 = e.x + e.aimX * maxDist * t1;
-      const y1 = e.y + e.aimY * maxDist * t1;
-      // closer to player along ray → thicker / more opaque
+      const x0 = e.x + wobbleX + e.aimX * maxDist * t0;
+      const y0 = e.y + wobbleY + e.aimY * maxDist * t0;
+      const x1 = e.x + wobbleX + e.aimX * maxDist * t1;
+      const y1 = e.y + wobbleY + e.aimY * maxDist * t1;
       let near = 0.35 + t0 * 0.65;
       if (player) {
         const midX = (x0 + x1) / 2;
@@ -280,7 +307,7 @@ export function drawBoss(ctx, e, debugHB, player) {
       }
       const alpha = (0.35 + progress * 0.55) * (0.4 + near * 0.6);
       ctx.strokeStyle = `rgba(${baseR},${baseG},${baseB},${alpha})`;
-      ctx.lineWidth = (1.5 + progress * 4) * (0.6 + near * 0.9);
+      ctx.lineWidth = (1.5 + progress * 4) * (0.6 + near * 0.9) * pulse;
       ctx.setLineDash(dash);
       ctx.beginPath();
       ctx.moveTo(x0, y0);
@@ -290,7 +317,7 @@ export function drawBoss(ctx, e, debugHB, player) {
     ctx.setLineDash([]);
     ctx.fillStyle = `rgba(${baseR},${baseG},${baseB},${0.6 + progress * 0.4})`;
     ctx.beginPath();
-    ctx.arc(e.x + e.aimX * 70, e.y + e.aimY * 70, 3 + progress * 4, 0, Math.PI * 2);
+    ctx.arc(e.x + e.aimX * 70 + wobbleX, e.y + e.aimY * 70 + wobbleY, 3 + progress * 4, 0, Math.PI * 2);
     ctx.fill();
   }
 
