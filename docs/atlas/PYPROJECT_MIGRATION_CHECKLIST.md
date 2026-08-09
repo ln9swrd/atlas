@@ -1,44 +1,49 @@
 # pyproject.toml Migration Checklist — Issue #32
 
-> Source draft: `pyproject.toml.draft` (if present on branch) / DEPENDENCY_STRATEGY.md  
-> **Do not apply to main until approved.**
+> Source: `pyproject.toml.draft` → applied as `pyproject.toml`  
+> DEPENDENCY_STRATEGY.md · **1st implementation PR scope only**
 
 ## Checklist
 
 ### requirements-dev
 
-- [ ] Keep `requirements-dev.txt` working during transition
-- [ ] Either pin `pytest>=8.0` or switch to `pip install ".[dev]"`
-- [ ] CI still installs a minimal dev set
+- [x] Keep `requirements-dev.txt` working during transition
+- [x] Either pin `pytest>=8.0` or switch to `pip install ".[dev]"` — **kept pin**
+- [x] CI still installs a minimal dev set
 
 ### optional vision
 
-- [ ] `vision` extra lists: opencv-python-headless, torch, torchvision, Pillow, numpy
-- [ ] Not installed in default CI
-- [ ] Align with R1: after VisualPerception removal, extra may be deferred
+- [x] `vision` extra lists: opencv-python-headless, torch, torchvision, Pillow, numpy
+- [x] Not installed in default CI
+- [x] Align with R1: after VisualPerception removal, extra deferred (comment in pyproject.toml)
 
 ### CI
 
-- [ ] `.github/workflows/ci.yml` continues green on ubuntu + Python 3.11
-- [ ] No accidental install of torch in CI
-- [ ] unittest discover path unchanged
+- [x] `.github/workflows/ci.yml` continues green on ubuntu + Python 3.11 — **no change this PR**
+- [x] No accidental install of torch in CI
+- [x] unittest discover path unchanged
 
 ### editable install
 
-- [ ] Decide whether package is installable (`pip install -e .`)
-- [ ] If yes: verify `core` importable without path hacks
-- [ ] If no: document running tests from repo root only
+- [x] Decide whether package is installable (`pip install -e .`) — **No for 1st PR**
+- [x] If no: document running tests from repo root only (CI + TESTING_POLICY)
 
 ### Python version
 
-- [ ] `requires-python = ">=3.11"` matches CI
-- [ ] No 3.12-only syntax without CI matrix update
+- [x] `requires-python = ">=3.11"` matches CI
+- [x] No 3.12-only syntax without CI matrix update
 
-## Recommended first implementation PR (later)
+## 1st implementation (this PR)
 
 1. Add real `pyproject.toml` from draft
 2. Leave `requirements-dev.txt` as thin pytest pin
-3. Do not change CI command yet
-4. Validate locally: `pip install -r requirements-dev.txt && unittest discover`
+3. Do not change CI command
+4. Validate via CI: `pip install -r requirements-dev.txt && unittest discover`
 
-**Status:** Checklist only — application blocked.
+## Out of scope (this PR)
+
+- CI switch to `pip install ".[dev]"`
+- editable install / removing sys.path hacks in tests
+- Excelion / Forge / vision runtime
+
+**Status:** Implementation PR — await CI + master approve.

@@ -1,25 +1,3 @@
-# DRAFT — not applied. Review only (Issue #32).
-# Rename to pyproject.toml in a dedicated implementation PR after approval.
-
-[project]
-name = "atlas"
-version = "0.0.0"
-description = "Atlas DevOS runtime"
-requires-python = ">=3.11"
-dependencies = []
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=8.0",
-]
-vision = [
-    "opencv-python-headless>=4.8",
-    "torch",
-    "torchvision",
-    "Pillow",
-    "numpy",
-]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
+# SUPERSEDED by pyproject.toml (Issue #32 implementation PR).
+# Kept briefly for history; safe to delete after merge.
+# See pyproject.toml and docs/atlas/PYPROJECT_MIGRATION_CHECKLIST.md.
