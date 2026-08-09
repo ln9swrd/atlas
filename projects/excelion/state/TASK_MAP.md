@@ -1,5 +1,7 @@
 # TASK_MAP — excelion
 
+> Updated: 2026-08-09 · SoR sync
+
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
 | S1 텍스트·콘티·테스트 | Done | state/ |
@@ -9,6 +11,10 @@
 | **실기 플레이테스트 범위** | **Done** | PLAYTEST_SCOPE_2026-08-06.md |
 | **EP7 장면 대본** | **Done** | EP7_SCENE_SCRIPT.md |
 | **PHASE12_TUNING** | **Done** | PHASE12_TUNING.md |
-| 1차 플레이테스트 실행 | Open | EP1·EP6·EP8 |
-| 시각화 · Forge | **Hold** | |
+| **1차 플레이테스트 실행** | **Done** | PLAYTEST_RESULT_2026-08-09.md |
+| **P1 EP1 Kai seed** | **Done** | PR #53 · P1_KAI_SEED_VERIFY |
+| **P3 Ashur→Nemesis** | **Done** | PR #54 · P3_NEMESIS_CANON_VERIFY |
+| **P2 EP8 Result UI Spec** | **Done** | PR #55 · EP8_RESULT_UI_SPEC.md |
+| **ORD-GRUNT 실루엣 텍스트 3안** | **Next** | DESIGN_TASK_MAP |
+| 시각화 (M5 PNG) · Forge 활성 | **Hold** | M5 HOLD · forge DEPRECATION |
 | 새 트랙 | Open | |
