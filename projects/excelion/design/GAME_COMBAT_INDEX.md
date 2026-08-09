@@ -1,7 +1,7 @@
 # GAME_COMBAT_INDEX — 전투 루프 색인
 
-> 2026-08-09 · 이미지 HOLD 구간용  
-> 목적: FINAL §18/§28을 구현 트랙이 한곳에서 참조
+> 2026-08-09 · midboss v1.1  
+> 목적: 규칙·수치·Phase 문서를 한곳에서 참조
 
 **상태: 운용**
 
@@ -16,15 +16,25 @@
 
 ---
 
-## 보스
+## 중간보스 Phase
+
+| 기 | EP | Phase 문서 | 루프 한 줄 |
+|----|-----|------------|------------|
+| **몬투** | 5 | `MIDBOSS_PHASE_DETAIL` | 다병기 → 약점 창 → 공간붕괴·폭발 |
+| **세스** | 6 | `MIDBOSS_PHASE_DETAIL` | 씰 → 표시 불신 → 이중 조건 |
+| **아누비스** | 7 | `ANUBIS_PHASE` | 규칙 제시 → 왜곡 → 붕괴 |
+
+공통 구조: `MIDBOSS_DESIGN` · 타입 A/B/C
+
+---
+
+## 기타 보스
 
 | 기 | EP | 문서 | 루프 한 줄 |
 |----|-----|------|------------|
-| **몬투** | 5 | ORD_FINAL_SPEC §E · hekaton | 다병기 패턴 → 약점 창 → P2 |
-| 세스 | 6 | seth/SETH_FINAL_SPEC | 차단·씰 → 집념 돌파 → 보고 끝 |
-| 세크 (구 크레일) | 15 | creil/CREIL_FINAL_SPEC | 거점 사수·방패면 → 측면 → 도구 정지 |
-| 와제 (구 아이기스) | 21 | aegis/AEGIS_FINAL_SPEC | 가드 게이지 → 반격 텔레그래프 → 측면/Break → 문 열림 |
-| 네메시스 | 7/9/23–24 | nemesis/NEMESIS_FINAL_SPEC | 원격 중력 → 전면 압박 → 디센트 → 오만 유지 |
+| 세크 | 15 | creil/CREIL_FINAL_SPEC | 방패면 → 측면 → 도구 정지 |
+| 와제 | 21 | aegis/AEGIS_FINAL_SPEC | 가드 → 반격 → 문 |
+| 네메시스 | 9 · 23–24 | nemesis/NEMESIS_FINAL_SPEC | 등급 벽 · 다페이즈 |
 
 ---
 
@@ -38,29 +48,27 @@
 
 ---
 
-## 수치 SoR
+## 수치 · 곡선 · 튜닝
 
 | 항목 | 위치 |
 |------|------|
-| 보스 HP 초안 | state/BOSS_STATS_SETH_NEMESIS.md 등 |
-| 확정 밸런스 | **미완 · 다음 작업** |
-| 규칙(루프) | 각 *_FINAL_SPEC |
+| 중간보스 수치 | **design/combat/BOSS_STATS.md** |
+| 난이도 곡선 | design/combat/DIFFICULTY_CURVE.md |
+| 스킬 대응 | design/combat/SKILL_COUNTER_TABLE.md |
+| 튜닝 기준 | design/combat/TUNING_GUIDE.md |
+| 레거시 표 | state/BOSS_STATS_SETH_NEMESIS.md |
 
-규칙과 숫자를 분리: 본 인덱스는 **규칙 포인터**만.
-
----
-
-## 구현 체크 (공통)
-
-1. 플레이어 신호 (게이지·텔레그래프·중력 왜곡) 있는가  
-2. 대응 행동 30초 안에 읽히는가  
-3. 종료 조건이 스토리 EP와 맞는가  
-4. 금지 연출(오만 붕괴·비극 주연 등)이 코드/연출에 없는가  
+Phase 전환 = **시간+트리거** · HP% 금지.
 
 ---
+
+## 구현 체크
+
+1. 텔레그래프·신호 있는가  
+2. 대응이 30초 안에 읽히는가  
+3. 학습→왜곡→신규 흐름인가  
+4. 랜덤 즉사·비가시 공격 없는가  
 
 ```
-CURRENT: GAME_COMBAT_INDEX · 몬투 반영
-NEXT: state 수치 테이블 확정 작업
-BLOCKED: 이미지
+CURRENT: GAME_COMBAT_INDEX · midboss combat folder 연동
 ```
