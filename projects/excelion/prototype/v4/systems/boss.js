@@ -1,4 +1,4 @@
-/** Boss from JSON + modifiers + patternDriven mode */
+/** Boss AI + telegraph visibility (red danger / yellow feint / white confirm) */
 
 export function makeBossFromDef(def, x, y) {
   const patternDriven = Array.isArray(def.phases) && def.phases[0] && def.phases[0].patterns;
@@ -34,6 +34,7 @@ export function makeBossFromDef(def, x, y) {
     patternDriven,
     patternCursor: 0,
     extraPatterns: [],
+    telegraphMax: 0,
   };
 }
 
@@ -76,15 +77,6 @@ export function updateAdaptive(e, stage) {
   const fBonus = (stage.misses || 0) * (rules.missFakeBonus || 0.08);
   e.adaptSpeed = Math.min(maxS, 1 + pBonus);
   e.adaptFake = Math.min(maxF, fBonus);
-  if (rules.onPerfectStreak && stage.perfects >= 5 && rules.onPerfectStreak.addPattern) {
-    if (!e.extraPatterns.includes(rules.onPerfectStreak.addPattern)) {
-      e.extraPatterns.push(rules.onPerfectStreak.addPattern);
-    }
-    e.adaptSpeed = Math.min(maxS, e.adaptSpeed * (rules.onPerfectStreak.speedMultiplier || 1.2));
-  }
-  if (rules.onMissSpike && stage.misses >= 3) {
-    e.adaptFake = Math.min(maxF, e.adaptFake + (rules.onMissSpike.feintChance || 0.4));
-  }
 }
 
 function pickAction(e) {
@@ -120,7 +112,7 @@ function startCharge(e, duration, speed, sfx) {
 export function syncPhase(e, stage, onPhaseChange) {
   const ratio = e.hp / e.maxHp;
   const next = stage.computePhase(ratio, e.def.phaseThresholds);
-  if (next !== e.phase) {
+  if (next !== e.phase && !e.finale) {
     e.phase = next;
     stage.phase = next;
     e.patternIdx = 0;
@@ -147,13 +139,14 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
   e.afterimage = e.afterimage.filter((a) => a.life > 0);
 
   if (e.state === 'idle') {
-    if (e.patternDriven) return; // Pattern Runner drives commands
+    if (e.patternDriven) return;
     if (e.timer > 0) return;
     const act = pickAction(e);
     e._act = act;
     if (act.type === 'fake') {
       e.state = 'fake_paint';
       e.timer = act.paint ?? 0.4;
+      e.telegraphMax = e.timer;
       aimAt(e, player);
       if (sfx) sfx.warn();
     } else if (act.type === 'combo') {
@@ -161,6 +154,7 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
       e.redirectLeft = 0;
       e.state = 'telegraph';
       e.timer = act.telegraph;
+      e.telegraphMax = e.timer;
       aimAt(e, player);
       if (sfx) sfx.warn();
     } else if (act.type === 'redirect') {
@@ -168,6 +162,7 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
       e.comboLeft = 0;
       e.state = 'telegraph';
       e.timer = act.telegraph;
+      e.telegraphMax = e.timer;
       aimAt(e, player);
       if (sfx) sfx.warn();
     } else {
@@ -175,6 +170,7 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
       e.redirectLeft = 0;
       e.state = 'telegraph';
       e.timer = act.telegraph ?? 0.7;
+      e.telegraphMax = e.timer;
       aimAt(e, player);
       if (sfx) sfx.warn();
     }
@@ -188,6 +184,7 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
       aimAt(e, player);
       e.state = 'telegraph';
       e.timer = (e._act && e._act.telegraph) || 0.22;
+      e.telegraphMax = e.timer;
       if (sfx) sfx.warn();
     }
   } else if (e.state === 'telegraph') {
@@ -214,11 +211,13 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
         aimAt(e, player);
         e.state = 'telegraph';
         e.timer = gap;
+        e.telegraphMax = gap;
       } else if (e.comboLeft > 1) {
         e.comboLeft--;
         aimAt(e, player);
         e.state = 'telegraph';
         e.timer = gap;
+        e.telegraphMax = gap;
       } else {
         e.comboLeft = 0;
         e.redirectLeft = 0;
@@ -244,23 +243,49 @@ export function drawBoss(ctx, e, debugHB) {
     ctx.fill();
     ctx.globalAlpha = 1;
   }
-  if (e.state === 'telegraph' || e.state === 'fake_paint') {
-    const col = e.state === 'fake_paint' ? 'rgba(160,170,255,0.55)' : 'rgba(255,200,40,0.92)';
+
+  // Telegraph hierarchy: danger red · feint yellow · confirm white
+  if (e.state === 'telegraph' || e.state === 'fake_paint' || e.state === 'fake_cancel') {
+    const progress =
+      e.telegraphMax > 0 ? 1 - Math.max(0, e.timer) / e.telegraphMax : 0.5;
+    let col;
+    let dash;
+    if (e.state === 'fake_paint') {
+      col = `rgba(255, 210, 40, ${0.55 + progress * 0.35})`; // yellow feint
+      dash = [6, 10];
+    } else if (e.state === 'fake_cancel') {
+      col = 'rgba(180, 180, 200, 0.4)';
+      dash = [4, 14];
+    } else if (progress > 0.72) {
+      col = `rgba(255, 255, 255, ${0.75 + progress * 0.25})`; // white confirm
+      dash = [];
+    } else {
+      col = `rgba(255, 55, 40, ${0.55 + progress * 0.4})`; // red danger
+      dash = [10, 6];
+    }
+    const lw = 2 + progress * 5;
     ctx.strokeStyle = col;
-    ctx.lineWidth = e._act && e._act.type === 'fast' ? 3 : 4;
-    ctx.setLineDash(e.state === 'fake_paint' ? [5, 12] : [10, 8]);
+    ctx.lineWidth = lw;
+    ctx.setLineDash(dash);
     ctx.beginPath();
     ctx.moveTo(e.x, e.y);
     ctx.lineTo(e.x + e.aimX * 900, e.y + e.aimY * 900);
     ctx.stroke();
     ctx.setLineDash([]);
+    // tip marker
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(e.x + e.aimX * 80, e.y + e.aimY * 80, 4 + progress * 3, 0, Math.PI * 2);
+    ctx.fill();
   }
+
   if (e.state === 'fake_cancel') {
-    ctx.fillStyle = 'rgba(100,120,180,0.15)';
+    ctx.fillStyle = 'rgba(100,120,180,0.12)';
     ctx.beginPath();
     ctx.arc(e.x, e.y, 55, 0, Math.PI * 2);
     ctx.fill();
   }
+
   ctx.save();
   ctx.translate(e.x, e.y);
   ctx.scale(e.scale, e.scale);
