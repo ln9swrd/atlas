@@ -19,4 +19,4 @@
 
 ## 다음
 
-CURRENT → `character/ashur`
+CURRENT → 다음 캐릭터 삼면도 큐 (ashur 경로 폐기 · 사용 금지)
