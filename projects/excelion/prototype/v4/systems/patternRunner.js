@@ -1,6 +1,6 @@
 /**
- * Pattern Runner — timeline DSL executor (ms-based t)
- * Actions: spawn, delay, feint, feint_cancel, redirect, redirect_chain, burst, shield
+ * Pattern Runner — timeline DSL
+ * Actions: telegraph, spawn, delay, feint, feint_cancel, redirect, redirect_chain, burst, shield
  */
 
 export function createPatternRunner() {
@@ -28,10 +28,6 @@ export function createPatternRunner() {
       this.queue = [];
     },
 
-    /**
-     * ctx: { boss, player, speedScale, fakeBoost, onEvent }
-     * Returns list of commands for boss AI to consume
-     */
     tick(dtMs, ctx) {
       if (!this.active) return [];
       this.elapsed += dtMs;
@@ -42,23 +38,28 @@ export function createPatternRunner() {
         if (cmd) cmds.push(cmd);
         this.debugLog.push({ t: this.elapsed, action: ev.action });
         if (this.debugLog.length > 12) this.debugLog.shift();
-        if (ctx.onEvent) ctx.onEvent(ev);
+        if (ctx.onEvent) ctx.onEvent(ev, cmd);
       }
-      if (this.nextIdx >= this.queue.length) {
-        this.active = false;
-      }
+      if (this.nextIdx >= this.queue.length) this.active = false;
       return cmds;
     },
 
     execute(ev, ctx) {
       const sc = ctx.speedScale || 1;
       switch (ev.action) {
+        case 'telegraph':
+          return {
+            kind: 'pre_telegraph',
+            duration: (ev.duration || 200) / 1000,
+            visual: ev.visual || 'flash_red',
+            audio: ev.audio || 'warning_beep',
+          };
         case 'spawn':
           return {
             kind: 'telegraph_charge',
             type: ev.type || 'normal',
             speed: (ev.speed || 500) * sc,
-            telegraph: (ev.telegraph || 0.6) / Math.max(0.8, sc),
+            telegraph: Math.max(0.35, (ev.telegraph || 0.6) / Math.max(0.8, sc)),
             duration: ev.duration || 0.4,
           };
         case 'burst':
@@ -67,7 +68,7 @@ export function createPatternRunner() {
             count: ev.count || 3,
             gap: (ev.gap || 250) / 1000,
             speed: (ev.speed || 540) * sc,
-            telegraph: ev.telegraph || 0.4,
+            telegraph: Math.max(0.28, ev.telegraph || 0.4),
             duration: ev.duration || 0.38,
           };
         case 'redirect':
@@ -77,7 +78,7 @@ export function createPatternRunner() {
             count: ev.count || 2,
             gap: (ev.gap || 220) / 1000,
             speed: (ev.speed || 560) * sc,
-            telegraph: (ev.telegraph || 0.35) / 1000 < 1 ? ev.telegraph || 0.35 : (ev.telegraph || 350) / 1000,
+            telegraph: typeof ev.telegraph === 'number' && ev.telegraph > 1 ? ev.telegraph / 1000 : ev.telegraph || 0.4,
             spread: ev.spread || 0,
           };
         case 'feint':
@@ -93,7 +94,7 @@ export function createPatternRunner() {
             kind: 'fake',
             paint: 0.25,
             cancel: (ev.window || 150) / 1000,
-            telegraph: 0.15,
+            telegraph: 0.18,
             speed: (ev.speed || 580) * sc,
           };
         case 'shield':
@@ -116,9 +117,14 @@ export function createPatternRunner() {
   };
 }
 
-/** Apply a runner command onto boss entity */
-export function applyPatternCmd(boss, cmd, player) {
+export function applyPatternCmd(boss, cmd, player, hooks = {}) {
   if (!cmd || !boss) return;
+  if (cmd.kind === 'pre_telegraph') {
+    if (hooks.onTelegraph) hooks.onTelegraph(cmd);
+    boss.state = 'recover';
+    boss.timer = cmd.duration;
+    return;
+  }
   const dx = player.x - boss.x;
   const dy = player.y - boss.y;
   const len = Math.hypot(dx, dy) || 1;
@@ -154,7 +160,7 @@ export function applyPatternCmd(boss, cmd, player) {
       type: 'redirect',
       gap: cmd.gap,
       speed: cmd.speed,
-      telegraph: typeof cmd.telegraph === 'number' ? cmd.telegraph : 0.35,
+      telegraph: cmd.telegraph || 0.4,
       duration: 0.38,
     };
     boss.redirectLeft = cmd.count;
