@@ -1,4 +1,4 @@
-/** Boss AI + telegraph visibility (red danger / yellow feint / white confirm) */
+/** Boss + telegraph distance falloff (closer = thicker & more opaque) */
 
 export function makeBossFromDef(def, x, y) {
   const patternDriven = Array.isArray(def.phases) && def.phases[0] && def.phases[0].patterns;
@@ -73,10 +73,8 @@ export function updateAdaptive(e, stage) {
   const rules = e.def.adaptiveRules || {};
   const maxS = rules.maxSpeedScale || 1.45;
   const maxF = rules.maxFakeRate || 0.7;
-  const pBonus = (stage.perfects || 0) * (rules.perfectStreakSpeed || 0.05);
-  const fBonus = (stage.misses || 0) * (rules.missFakeBonus || 0.08);
-  e.adaptSpeed = Math.min(maxS, 1 + pBonus);
-  e.adaptFake = Math.min(maxF, fBonus);
+  e.adaptSpeed = Math.min(maxS, 1 + (stage.perfects || 0) * (rules.perfectStreakSpeed || 0.05));
+  e.adaptFake = Math.min(maxF, (stage.misses || 0) * (rules.missFakeBonus || 0.08));
 }
 
 function pickAction(e) {
@@ -85,14 +83,7 @@ function pickAction(e) {
   if (!list.length) return { type: 'normal', telegraph: 0.7, speed: 500, duration: 0.45 };
   if (mod.fake_rate > 0 && Math.random() < mod.fake_rate) {
     e.patternIdx++;
-    return {
-      type: 'fake',
-      paint: 0.35,
-      cancel: 0.3,
-      telegraph: 0.2,
-      speed: 520 * mod.speed_scale,
-      duration: 0.4,
-    };
+    return { type: 'fake', paint: 0.35, cancel: 0.3, telegraph: 0.2, speed: 520 * mod.speed_scale, duration: 0.4 };
   }
   const act = { ...list[e.patternIdx % list.length] };
   e.patternIdx++;
@@ -233,7 +224,8 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
   }
 }
 
-export function drawBoss(ctx, e, debugHB) {
+/** Segmented telegraph: opacity & width rise toward player */
+export function drawBoss(ctx, e, debugHB, player) {
   if (!e.alive) return;
   for (const a of e.afterimage) {
     ctx.globalAlpha = Math.max(0, a.life * 2.2);
@@ -244,38 +236,61 @@ export function drawBoss(ctx, e, debugHB) {
     ctx.globalAlpha = 1;
   }
 
-  // Telegraph hierarchy: danger red · feint yellow · confirm white
   if (e.state === 'telegraph' || e.state === 'fake_paint' || e.state === 'fake_cancel') {
-    const progress =
-      e.telegraphMax > 0 ? 1 - Math.max(0, e.timer) / e.telegraphMax : 0.5;
-    let col;
-    let dash;
+    const progress = e.telegraphMax > 0 ? 1 - Math.max(0, e.timer) / e.telegraphMax : 0.5;
+    let baseR, baseG, baseB, dash;
     if (e.state === 'fake_paint') {
-      col = `rgba(255, 210, 40, ${0.55 + progress * 0.35})`; // yellow feint
+      baseR = 255;
+      baseG = 210;
+      baseB = 40;
       dash = [6, 10];
     } else if (e.state === 'fake_cancel') {
-      col = 'rgba(180, 180, 200, 0.4)';
+      baseR = 180;
+      baseG = 180;
+      baseB = 200;
       dash = [4, 14];
     } else if (progress > 0.72) {
-      col = `rgba(255, 255, 255, ${0.75 + progress * 0.25})`; // white confirm
+      baseR = 255;
+      baseG = 255;
+      baseB = 255;
       dash = [];
     } else {
-      col = `rgba(255, 55, 40, ${0.55 + progress * 0.4})`; // red danger
+      baseR = 255;
+      baseG = 55;
+      baseB = 40;
       dash = [10, 6];
     }
-    const lw = 2 + progress * 5;
-    ctx.strokeStyle = col;
-    ctx.lineWidth = lw;
-    ctx.setLineDash(dash);
-    ctx.beginPath();
-    ctx.moveTo(e.x, e.y);
-    ctx.lineTo(e.x + e.aimX * 900, e.y + e.aimY * 900);
-    ctx.stroke();
+
+    const segs = 12;
+    const maxDist = 900;
+    for (let i = 0; i < segs; i++) {
+      const t0 = i / segs;
+      const t1 = (i + 1) / segs;
+      const x0 = e.x + e.aimX * maxDist * t0;
+      const y0 = e.y + e.aimY * maxDist * t0;
+      const x1 = e.x + e.aimX * maxDist * t1;
+      const y1 = e.y + e.aimY * maxDist * t1;
+      // closer to player along ray → thicker / more opaque
+      let near = 0.35 + t0 * 0.65;
+      if (player) {
+        const midX = (x0 + x1) / 2;
+        const midY = (y0 + y1) / 2;
+        const d = Math.hypot(midX - player.x, midY - player.y);
+        near = Math.max(near, 1 - Math.min(1, d / 320));
+      }
+      const alpha = (0.35 + progress * 0.55) * (0.4 + near * 0.6);
+      ctx.strokeStyle = `rgba(${baseR},${baseG},${baseB},${alpha})`;
+      ctx.lineWidth = (1.5 + progress * 4) * (0.6 + near * 0.9);
+      ctx.setLineDash(dash);
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+    }
     ctx.setLineDash([]);
-    // tip marker
-    ctx.fillStyle = col;
+    ctx.fillStyle = `rgba(${baseR},${baseG},${baseB},${0.6 + progress * 0.4})`;
     ctx.beginPath();
-    ctx.arc(e.x + e.aimX * 80, e.y + e.aimY * 80, 4 + progress * 3, 0, Math.PI * 2);
+    ctx.arc(e.x + e.aimX * 70, e.y + e.aimY * 70, 3 + progress * 4, 0, Math.PI * 2);
     ctx.fill();
   }
 
