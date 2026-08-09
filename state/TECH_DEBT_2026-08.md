@@ -1,26 +1,32 @@
-# Tech Debt — 2026-08 (Phase 4 reorder)
+# Tech Debt — 2026-08
 
-## Ready
+## Active issues
 
-| Issue | Title | Notes |
-|-------|-------|-------|
-| #31 | consolidate test execution strategy | Plan: `docs/atlas/TEST_MIGRATION_PLAN.md` · 안 B |
-| #33 | Redesign VisualPerception architecture | Plan: `docs/atlas/VISUAL_PERCEPTION_REMOVAL_PLAN.md` · R1 |
+| Issue | Title | Priority | Est. effort | Status |
+|-------|-------|----------|-------------|--------|
+| #31 | consolidate test execution strategy | **P1** | M (move ~13 files, CI verify, policy fix) | Decision: 안 B · code gated |
+| #32 | Introduce pyproject.toml and dependency management | **P2** | S–M (add pyproject, keep requirements-dev) | Draft only · not applied |
+| #33 | Redesign VisualPerception architecture | **P2** | S under R1 (remove stub) | Decision: R1 · code gated |
 
-## Planned
+## Completed recently
 
-| Issue | Title | Notes |
-|-------|-------|-------|
-| #32 | Introduce pyproject.toml and dependency management | Checklist: `docs/atlas/PYPROJECT_MIGRATION_CHECKLIST.md` · draft only |
+- CI dev deps (#26)
+- Optional / experimental vision guards (#25, #27)
+- Forge legacy test removal (#24)
+- Archive node_modules cleanup (#28)
+- Testing policy (#29)
 
-## Blocked
+## Implementation start matrix
 
-| Issue | Reason |
-|-------|--------|
-| — | None |
+| Work | Start now? |
+|------|------------|
+| Merge docs PR #35–#38 | **Yes** (recommended) |
+| #31 code migration | No — after master approve |
+| #32 apply pyproject.toml | No — draft review only |
+| #33 remove VisualPerceptionEngine | No — after master approve |
 
-## Implementation gate
+## Excelion / HOLD
 
-All of #31 / #32 / #33 **code** work requires explicit master approval.
-
-Docs merged: PR #35–#38 (see `state/PHASE4_MERGE_RESULT.md`).
+- Excelion: ACTIVE (no change this phase)
+- Forge / UE / Visualization: HOLD
+- Allowed: Novel, Worldbuilding, Design, Documentation
