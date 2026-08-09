@@ -1,0 +1,27 @@
+{
+  "id": "ashur",
+  "displayName": "NEMESIS",
+  "note": "File id ashur is legacy path only. Canon final boss = Nemesis. Do not restore Ashur lore.",
+  "role": "final_wall",
+  "color": "#8b3dff",
+  "shape": "triangle",
+  "hp": 320,
+  "damage": 28,
+  "radius": 34,
+  "phaseThresholds": [1.0, 0.55, 0.25],
+  "phases": {
+    "1": [
+      { "type": "normal", "telegraph": 0.7, "speed": 520, "duration": 0.42 },
+      { "type": "combo", "count": 3, "telegraph": 0.55, "gap": 0.28, "speed": 540, "duration": 0.4 }
+    ],
+    "2": [
+      { "type": "redirect", "redirects": 2, "telegraph": 0.45, "gap": 0.22, "speed": 560, "duration": 0.38 },
+      { "type": "fast", "telegraph": 0.38, "speed": 640, "duration": 0.35 }
+    ],
+    "3": [
+      { "type": "redirect", "redirects": 3, "telegraph": 0.35, "gap": 0.18, "speed": 600, "duration": 0.36 },
+      { "type": "fake", "paint": 0.3, "cancel": 0.25, "telegraph": 0.18, "speed": 580, "duration": 0.36 },
+      { "type": "combo", "count": 4, "telegraph": 0.32, "gap": 0.2, "speed": 620, "duration": 0.34 }
+    ]
+  }
+}
