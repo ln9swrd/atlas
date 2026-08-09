@@ -1,12 +1,7 @@
 /**
- * Audio interface — file slots under assets/audio/ when present,
- * else WebAudio oscillator fallback.
- * Paths (future):
- *   assets/audio/hit.wav
- *   assets/audio/miss.wav
- *   assets/audio/warning.wav
- *   assets/audio/dash.wav
- *   assets/audio/charge.wav
+ * Audio — WebAudio fallback.
+ * Optional files (place under projects/excelion/assets/audio/):
+ *   hit.wav · perfect.wav · warning.wav · dash.wav · charge.wav
  */
 
 let actx = null;
@@ -37,6 +32,10 @@ export function createAudio() {
     resume: ensure,
     dash: () => beep(180, 0.08, 'sawtooth', 0.03),
     hit: () => beep(120, 0.06, 'square', 0.05),
+    perfect: () => {
+      beep(520, 0.06, 'sine', 0.05);
+      setTimeout(() => beep(780, 0.1, 'sine', 0.04), 40);
+    },
     hurt: () => beep(80, 0.12, 'sawtooth', 0.06),
     miss: () => beep(90, 0.08, 'triangle', 0.03),
     charge: () => beep(55, 0.2, 'triangle', 0.05),
