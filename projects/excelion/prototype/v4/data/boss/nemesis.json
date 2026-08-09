@@ -1,0 +1,49 @@
+{
+  "id": "nemesis",
+  "displayName": "NEMESIS",
+  "legacyFileId": "ashur",
+  "role": "final_wall",
+  "adaptive": true,
+  "color": "#8b3dff",
+  "shape": "triangle",
+  "hp": 320,
+  "damage": 28,
+  "radius": 34,
+  "phaseThresholds": [1.0, 0.55, 0.25],
+  "phaseLabels": {
+    "1": "PHASE 1 — OBSERVE",
+    "2": "PHASE 2 — MIRROR",
+    "3": "PHASE 3 — JUDGMENT"
+  },
+  "phases": [
+    {
+      "id": 1,
+      "patterns": ["nemesis_intro", "nemesis_redirect_basic"],
+      "modifier": { "speed_scale": 1.0, "fake_rate": 0.15 }
+    },
+    {
+      "id": 2,
+      "patterns": ["nemesis_p2_redirect_chain"],
+      "modifier": { "speed_scale": 1.15, "fake_rate": 0.25 }
+    },
+    {
+      "id": 3,
+      "patterns": ["nemesis_p2_redirect_chain", "nemesis_pressure"],
+      "modifier": { "speed_scale": 1.25, "fake_rate": 0.35 }
+    }
+  ],
+  "adaptiveRules": {
+    "onPerfectStreak": {
+      "speedMultiplier": 1.2,
+      "addPattern": "nemesis_pressure"
+    },
+    "onMissSpike": {
+      "feintChance": 0.4,
+      "delayIncrease": 150
+    },
+    "perfectStreakSpeed": 0.05,
+    "missFakeBonus": 0.08,
+    "maxSpeedScale": 1.45,
+    "maxFakeRate": 0.7
+  }
+}
