@@ -1,4 +1,4 @@
-/** State-based audio layers — PERFECT reverb stack · MISS thud · combo harmony */
+/** PERFECT rhythm chords · finale low-pass feel */
 
 let actx = null;
 let drone = null;
@@ -36,6 +36,7 @@ function stopNode(n) {
 
 export function createAudioLayer() {
   let comboTier = 0;
+  let perfectStreak = 0;
   let critical = false;
 
   return {
@@ -46,19 +47,29 @@ export function createAudioLayer() {
       beep(60, 0.09, 'triangle', 0.035);
     },
     perfect: () => {
-      // high + short "reverb" echoes
+      perfectStreak++;
+      // 1–3 single, 4–9 dual, 10+ chord
       beep(660, 0.07, 'sine', 0.06);
-      beep(990, 0.1, 'sine', 0.045, 0.05);
-      beep(1320, 0.12, 'sine', 0.03, 0.1);
-      beep(660, 0.18, 'sine', 0.02, 0.14);
-      if (comboTier >= 2) beep(1760, 0.08, 'sine', 0.025, 0.16);
+      if (perfectStreak >= 4) beep(830, 0.09, 'sine', 0.04, 0.03);
+      if (perfectStreak >= 10) {
+        beep(990, 0.1, 'sine', 0.035, 0.05);
+        beep(1320, 0.12, 'sine', 0.025, 0.08);
+      } else {
+        beep(990, 0.1, 'sine', 0.04, 0.05);
+        beep(1320, 0.1, 'sine', 0.025, 0.1);
+      }
+      if (comboTier >= 2) beep(1760, 0.08, 'sine', 0.022, 0.14);
+    },
+    resetPerfectStreak() {
+      perfectStreak = 0;
     },
     hurt: () => {
+      perfectStreak = 0;
       beep(70, 0.14, 'sawtooth', 0.07);
       beep(35, 0.22, 'triangle', 0.05);
     },
     miss: () => {
-      // dull low thud
+      perfectStreak = 0;
       beep(70, 0.12, 'triangle', 0.055);
       beep(42, 0.2, 'sawtooth', 0.05);
       beep(28, 0.25, 'sine', 0.04);
@@ -134,8 +145,9 @@ export function createAudioLayer() {
         const o = actx.createOscillator();
         const g = actx.createGain();
         o.type = 'sine';
-        o.frequency.value = critical ? 88 + phase * 6 : 55 + phase * 18;
-        g.gain.value = critical ? 0.022 : 0.012;
+        // finale/critical: lower, heavier
+        o.frequency.value = critical || phase >= 4 ? 48 + phase * 4 : 55 + phase * 18;
+        g.gain.value = critical || phase >= 4 ? 0.028 : 0.012;
         o.connect(g);
         g.connect(actx.destination);
         o.start();
