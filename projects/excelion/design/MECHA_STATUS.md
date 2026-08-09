@@ -15,7 +15,7 @@
 | Done | TEXT-LOCK 또는 문서 완료 |
 | Partial | 요약/초안 · 30절 FINAL 미달 |
 | Open | 미착수 |
-| HOLD | 이미지·모델링·Forge |
+| HOLD | 이미지·모델링 |
 | N/A | 해당 없음 |
 
 ---

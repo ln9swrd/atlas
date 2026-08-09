@@ -8,7 +8,9 @@ Excelion is the first validation project for Atlas DevOS in a real production co
 - Core mecha IP assets and supporting production pipeline are established.
 - Atlas helps reduce bottlenecks and improve delivery speed in a measurable way.
 
-**Current:** Story/design text continues. Visualization · Forge · ParaModel are **HOLD** (Master 2026-08-04).
+**Current:** Story/design text continues. Visualization · ParaModel are **HOLD** (Master 2026-08-04).  
+**Active production path:** Meshy AI → Blender → FBX → UE (`state/MESHY_BLENDER_PIPELINE_SPEC.md`).  
+`excelion-forge` is a **DEPRECATION CANDIDATE** (non-primary; external assets preserved; do not delete in this phase).
 
 ## 3. Scope
 ### Included

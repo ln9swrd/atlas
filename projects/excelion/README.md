@@ -5,7 +5,10 @@ Mission-Based 3D Action · 오리지널 메카 IP
 
 > AI가 게임을 만드는 것이 아니라, 개발자가 더 좋은 게임을 만들도록 AI가 반복 작업을 대신한다.
 
-**상태:** 스토리·설계 텍스트 진행 · 시각화·Forge·ParaModel = **HOLD** (Master 2026-08-04)
+**상태:** 스토리·설계 텍스트 진행 · 시각화·ParaModel = **HOLD** (Master 2026-08-04)  
+**제작 파이프라인 (활성):** Meshy AI → Blender → FBX → UE  
+(`state/MESHY_BLENDER_PIPELINE_SPEC.md` · TBD 유지)  
+`ln9swrd/excelion-forge` = **DEPRECATION CANDIDATE** (비활성 · 외부 자산 보존 · 삭제 금지)
 
 ---
 
@@ -34,7 +37,7 @@ Mission-Based 3D Action · 오리지널 메카 IP
 | ELITE | 세스 (EP6) · 크레일 (EP15) |
 | 방패 | 아이기스 (EP21) |
 | 엔진 | Unreal · Blender |
-| 파이프라인 | `ln9swrd/excelion-forge` (**HOLD**) |
+| 파이프라인 | Meshy → Blender → FBX → UE |
 
 ---
 
@@ -63,5 +66,5 @@ projects/excelion/
 |------|------|
 | `projects/excelion/` | **게임 제품 SoR** (여기) |
 | `ln9swrd/excelion` | 이전 단독 레포 · CLOSED |
-| `ln9swrd/excelion-forge` | Forge · **HOLD** |
+| `ln9swrd/excelion-forge` | 구 파이프라인 · **DEPRECATION CANDIDATE** (보존) |
 | atlas root | DevOS 플랫폼 · 하위 개별 HOLD |

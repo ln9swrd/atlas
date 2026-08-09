@@ -1,6 +1,6 @@
 # DOC_MAP — Excelion
 
-Updated: 2026-08-07  
+Updated: 2026-08-09  
 **SoR root:** `atlas/projects/excelion/`
 
 | 계층 | 경로 |
@@ -10,7 +10,8 @@ Updated: 2026-08-07
 | Art | `design/` |
 | Story | `novel/` |
 | Execution | `sprints/` · `backlog.json` |
-| Sister | `ln9swrd/excelion-forge` (HOLD) |
+| Pipeline Spec | `state/MESHY_BLENDER_PIPELINE_SPEC.md` |
+| Legacy pipeline | `ln9swrd/excelion-forge` (**DEPRECATION CANDIDATE** · 비활성) |
 
 ## Design
 
@@ -25,3 +26,4 @@ Updated: 2026-08-07
 - 단독 `ln9swrd/excelion` 수정 (CLOSED)
 - 채팅을 SoR로 쓰지 말 것
 - 아슈르를 최종보스로 재도입
+- excelion-forge를 활성 제작 경로로 재지정

@@ -12,6 +12,7 @@
 - Phase A: NOVEL_CANON · EPISODE_MATRIX
 - **구멍 패치: A안 시놉·대본 · ep01 경로**
 - **PHASE12_TUNING.md** (PERFECT/MISS 루프 플레이 감각 정리)
+- Forge 제거 범위 감사 · Meshy→Blender 파이프라인 Spec (문서)
 
 ## ATLAS maintenance tasks completed
 
@@ -28,6 +29,11 @@
 4. (선택) PHASE12_TUNING → 코드 반영
 5. Merge open maintenance PRs
 
+## Pipeline
+
+- **Active:** Meshy → Blender → FBX → UE (`MESHY_BLENDER_PIPELINE_SPEC` · TBD 유지)
+- excelion-forge: **DEPRECATION CANDIDATE** (비활성 · 외부 자산 보존)
+
 ## Hold
 
-Forge · UE · Visualization
+UE 실기 · Visualization · ParaModel
