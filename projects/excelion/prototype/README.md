@@ -1,20 +1,19 @@
 # Excelion Prototype
 
-## Phase 3 — Vertical Slice (권장)
+## V4 Modular (권장 · 확장용)
 
 ```
-prototype/playable_v3.html
+prototype/v4/
 ```
 
-| | |
-|--|--|
-| 루프 | Start → W1 → W2 → Boss → Result → Retry |
-| 타이밍 | TOO EARLY / TOO LATE / FAKE READ |
-| Anubis P2 | 방향 전환 2회 → 최종 · 속도 1.2–1.4 |
-| SFX | WebAudio 더미 (whoosh/hit/rumble) |
-| Debug | F1 HB · F2 God · F3 Boss skip |
+HTTP 서빙 필요: `cd v4 && npx --yes serve .`
 
-## 이전
+## 단일 파일 (간단 실행)
 
-- `playable_v2.html` 경험 밀도
-- `playable_v1.html` 코어 루프
+| 파일 | |
+|------|--|
+| playable_v3.html | Vertical slice |
+| playable_v2.html | 밀도 |
+| playable_v1.html | 코어 루프 |
+
+v3는 더블클릭으로 실행 가능. v4는 모듈/JSON용 서버 필요.
