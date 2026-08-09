@@ -8,6 +8,16 @@
   "damage": 20,
   "radius": 22,
   "phaseThresholds": [1.0, 0.66, 0.33],
+  "phaseLabels": {
+    "1": "PHASE 1 — PRESSURE",
+    "2": "PHASE 2 — COMBO FIRE",
+    "3": "PHASE 3 — OVERDRIVE"
+  },
+  "phaseModifiers": {
+    "1": { "speed_scale": 1.0, "fake_rate": 0 },
+    "2": { "speed_scale": 1.1, "fake_rate": 0 },
+    "3": { "speed_scale": 1.2, "fake_rate": 0.1 }
+  },
   "phases": {
     "1": [
       { "type": "normal", "telegraph": 0.85, "speed": 480, "duration": 0.48 },
