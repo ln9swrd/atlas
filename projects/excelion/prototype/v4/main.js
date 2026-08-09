@@ -1,8 +1,9 @@
 import { createTiming, createFeel } from './systems/timing.js';
 import { createPlayer } from './systems/player.js';
-import { makeEnemy, updateEnemy, drawEnemy } from './systems/boss.js';
+import { makeBossFromDef, updateBoss, drawBoss } from './systems/boss.js';
 import { createUI } from './systems/ui.js';
 import { createAudio } from './systems/audio.js';
+import { createStage } from './systems/stage.js';
 
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
@@ -10,94 +11,70 @@ const W = 800;
 const H = 480;
 
 const keys = {};
-let data = null;
+let roster = null;
+let bossCache = {};
 let timing = null;
 let feel = null;
 let playerSys = null;
 let ui = null;
 let sfx = null;
-
-let enemies = [];
-let wave = 0;
-let started = false;
-let gameOver = false;
-let cleared = false;
-let stageTime = 0;
-let hitsTaken = 0;
+let stage = null;
+let boss = null;
 let lastDeath = '';
 
-const debug = { hb: false, god: false, speed: 1, loop: false, hits: 0 };
+const debug = { hb: false, god: false, speed: 1, hits: 0 };
+
+async function loadBossFile(file) {
+  if (bossCache[file]) return bossCache[file];
+  const res = await fetch('./data/' + file);
+  const j = await res.json();
+  bossCache[file] = j;
+  return j;
+}
 
 async function loadData() {
-  const res = await fetch('./data/boss_patterns.json');
-  data = await res.json();
-  timing = createTiming(data.timing);
+  const res = await fetch('./data/roster.json');
+  roster = await res.json();
+  timing = createTiming(roster.timing);
   feel = createFeel();
-  playerSys = createPlayer(data.timing, W, H);
+  playerSys = createPlayer(roster.timing, W, H);
   ui = createUI();
   sfx = createAudio();
+  stage = createStage();
 }
 
-function spawnWave(n) {
-  enemies = [];
-  if (n === 1) {
-    ui.showBanner('WAVE 1');
-    sfx.warn();
-    enemies = [
-      makeEnemy('montu', 600, 150, data),
-      makeEnemy('montu', 680, 240, data),
-      makeEnemy('montu', 600, 350, data),
-    ];
-  } else if (n === 2) {
-    ui.showBanner('WAVE 2 — READ THE FAKE');
-    sfx.warn();
-    enemies = [
-      makeEnemy('fast', 640, 170, data),
-      makeEnemy('fake', 700, 300, data),
-      makeEnemy('montu', 580, 260, data),
-    ];
-  } else if (n === 3) {
-    ui.showBanner('⚠ BOSS — ANUBIS');
-    sfx.charge();
-    enemies = [makeEnemy('anubis', 640, H / 2, data)];
-  }
-}
-
-function startGame() {
-  gameOver = false;
-  cleared = false;
-  started = true;
+async function startBoss(file) {
+  const def = await loadBossFile(file);
+  stage.setBoss(def);
+  playerSys.reset();
+  boss = makeBossFromDef(def, 640, H / 2);
   lastDeath = '';
   ui.setReason('');
-  playerSys.reset();
-  wave = 1;
-  stageTime = 0;
-  hitsTaken = 0;
+  ui.showBanner(def.displayName, 1.6);
+  sfx.warn();
   debug.hits = 0;
-  spawnWave(1);
-  ui.update(playerSys.p, enemies, playerSys.dashCd, debug);
 }
 
 function onHitPlayer(e) {
   const p = playerSys.p;
-  if (debug.god || p.invuln > 0 || gameOver || cleared) return;
+  if (debug.god || p.invuln > 0 || stage.status !== 'fight') return;
   p.hp -= e.damage;
-  hitsTaken++;
-  debug.hits = hitsTaken;
+  stage.hitsTaken++;
+  debug.hits = stage.hitsTaken;
   p.flash = 0.12;
   feel.flashRed = 0.14;
-  feel.addShake(e.type === 'anubis' ? 0.35 : 0.22);
-  feel.addHitstop(e.type === 'anubis' ? 0.12 : 0.1);
-  if (e.type === 'anubis') feel.bossTint = 0.15;
+  feel.addShake(0.28);
+  feel.addHitstop(0.1);
+  feel.bossTint = 0.12;
   sfx.hurt();
 
   let reason;
-  if (e.type === 'fake') reason = timing.classifyFakeFail();
+  if (e._act && e._act.type === 'fake') reason = timing.classifyFakeFail();
   else if (e.comboLeft > 0 || e.redirectLeft > 0) reason = timing.classifyComboFail();
   else reason = timing.classifyDodge(p.dashAge, p.invuln, false);
 
   if (p.hp <= 0) {
-    gameOver = true;
+    stage.onFail();
     lastDeath = reason;
     ui.setReason(reason);
     ui.showBanner('YOU DIED', 99);
@@ -107,47 +84,39 @@ function onHitPlayer(e) {
 }
 
 function playerAttack() {
-  if (gameOver || cleared || !started) return;
+  if (stage.status !== 'fight' || !boss || !boss.alive) return;
   const p = playerSys.p;
-  for (const e of enemies) {
-    if (!e.alive) continue;
-    const dx = e.x - p.x;
-    const dy = e.y - p.y;
-    if (dx * dx + dy * dy < (p.r + e.r + 22) ** 2) {
-      e.hp -= e.type === 'anubis' ? 11 : 17;
-      e.flash = 0.1;
-      e.scale = 0.88;
+  const dx = boss.x - p.x;
+  const dy = boss.y - p.y;
+  if (dx * dx + dy * dy < (p.r + boss.r + 22) ** 2) {
+    boss.hp -= 14;
+    boss.flash = 0.1;
+    boss.scale = 0.88;
+    // near-invuln dodge window as PERFECT on contact while dashing
+    if (p.invuln > 0 && p.dashAge <= timing.perfect) {
+      feel.triggerPerfect();
+      stage.perfects++;
+      sfx.perfect();
+      ui.setReason('PERFECT');
+    } else if (p.invuln > 0) {
+      feel.triggerGood();
+      stage.goods++;
+      sfx.hit();
+      ui.setReason('GOOD');
+    } else {
       feel.flashWhite = 0.05;
       feel.addHitstop(0.05);
-      feel.addShake(e.type === 'anubis' ? 0.18 : 0.1);
-      if (e.type === 'anubis') feel.bossTint = 0.08;
+      feel.addShake(0.1);
       sfx.hit();
-      // success slow-mo
-      feel.slow = Math.max(feel.slow, 0.1);
-      if (e.hp <= 0) e.alive = false;
     }
-  }
-}
-
-function checkWaveClear() {
-  if (gameOver || cleared || !started) return;
-  if (enemies.length && enemies.every((e) => !e.alive)) {
-    if (debug.loop && wave === 3) {
-      spawnWave(3);
-      return;
-    }
-    if (wave === 1) {
-      wave = 2;
-      spawnWave(2);
-    } else if (wave === 2) {
-      wave = 3;
-      spawnWave(3);
-    } else if (wave === 3) {
-      wave = 4;
-      cleared = true;
+    if (boss.hp <= 0) {
+      boss.alive = false;
+      stage.onClear();
       sfx.clear();
       ui.showBanner('CLEAR', 99);
-      ui.setReason(`TIME ${stageTime | 0}s · HITS ${hitsTaken}`);
+      ui.setReason(
+        `TIME ${stage.stageTime | 0}s · HITS ${stage.hitsTaken} · P${stage.perfects}/G${stage.goods}`
+      );
     }
   }
 }
@@ -157,37 +126,37 @@ function update(dt) {
   if (feel.tick(scaled)) return;
   const t = scaled * feel.timeScale();
 
-  ui.tick(t, cleared, gameOver);
-  if (!started || gameOver || cleared) return;
-  stageTime += t;
+  ui.tick(t, stage.status === 'clear', stage.status === 'fail');
 
+  if (stage.status !== 'fight') return;
+  stage.stageTime += t;
   playerSys.update(t, keys, { W, H });
   if (playerSys.consumeAttackBuffer()) playerAttack();
-
-  for (const e of enemies) {
-    updateEnemy(e, t, playerSys.p, data, W, H, sfx, onHitPlayer);
-  }
-  checkWaveClear();
-  ui.update(playerSys.p, enemies, playerSys.dashCd, debug);
+  if (boss) updateBoss(boss, t, playerSys.p, W, H, sfx, onHitPlayer, stage);
+  ui.update(playerSys.p, boss ? [boss] : [], playerSys.dashCd, {
+    ...debug,
+    loop: false,
+  });
 }
 
 function drawPlayer() {
   const p = playerSys.p;
   ctx.save();
   if (p.invuln > 0 && ((p.invuln * 18) | 0) % 2 === 0) ctx.globalAlpha = 0.4;
+  // silhouette: capsule body
   ctx.fillStyle = p.flash > 0 ? '#ff6b6b' : '#7ec8ff';
   ctx.beginPath();
-  ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+  ctx.ellipse(p.x, p.y, p.r * 0.7, p.r * 1.15, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = '#3a7ca5';
+  ctx.fillStyle = '#e8f4ff';
   ctx.beginPath();
-  ctx.arc(p.x, p.y, p.r * 0.55, 0, Math.PI * 2);
+  ctx.arc(p.x + p.facing * 4, p.y - p.r * 0.5, 5, 0, Math.PI * 2);
   ctx.fill();
   if (p.invuln > 0) {
     ctx.strokeStyle = 'rgba(88,166,255,0.7)';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r + 5, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, p.r + 6, 0, Math.PI * 2);
     ctx.stroke();
   }
   ctx.restore();
@@ -199,8 +168,29 @@ function drawPlayer() {
   }
 }
 
+function drawSelect() {
+  ctx.fillStyle = '#e6edf3';
+  ctx.font = 'bold 22px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('EXCELION  V5', W / 2, H / 2 - 70);
+  ctx.font = '14px system-ui';
+  ctx.fillStyle = '#8b949e';
+  ctx.fillText('Select boss — keys 1 / 2 / 3', W / 2, H / 2 - 40);
+  if (roster) {
+    roster.bosses.forEach((b, i) => {
+      ctx.fillStyle = '#58a6ff';
+      ctx.font = '16px system-ui';
+      ctx.fillText(b.label, W / 2, H / 2 + i * 28);
+    });
+  }
+}
+
 function draw() {
   ctx.save();
+  const z = feel.zoomScale();
+  ctx.translate(W / 2, H / 2);
+  ctx.scale(z, z);
+  ctx.translate(-W / 2, -H / 2);
   if (feel.shake > 0) {
     const s = feel.shake * 16;
     ctx.translate((Math.random() - 0.5) * s, (Math.random() - 0.5) * s);
@@ -221,21 +211,21 @@ function draw() {
     ctx.stroke();
   }
 
-  if (!started) {
-    ctx.fillStyle = '#e6edf3';
-    ctx.font = 'bold 22px system-ui';
-    ctx.textAlign = 'center';
-    ctx.fillText('EXCELION  V4', W / 2, H / 2 - 20);
-    ctx.font = '14px system-ui';
-    ctx.fillStyle = '#8b949e';
-    ctx.fillText('Press R to Start · needs local server for modules', W / 2, H / 2 + 16);
+  if (stage.status === 'select') {
+    drawSelect();
     ctx.restore();
     return;
   }
 
-  for (const e of enemies) drawEnemy(ctx, e, debug.hb);
+  if (boss) drawBoss(ctx, boss, debug.hb);
   drawPlayer();
 
+  if (feel.invert > 0) {
+    ctx.fillStyle = `rgba(255,255,255,${feel.invert * 0.5})`;
+    ctx.globalCompositeOperation = 'difference';
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over';
+  }
   if (feel.flashRed > 0) {
     ctx.fillStyle = `rgba(255,40,40,${Math.min(0.45, feel.flashRed * 2.2)})`;
     ctx.fillRect(0, 0, W, H);
@@ -249,18 +239,18 @@ function draw() {
     ctx.fillRect(0, 0, W, H);
   }
 
-  if (gameOver || cleared) {
+  if (stage.status === 'clear' || stage.status === 'fail') {
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
     ctx.fillRect(0, 0, W, H);
     ctx.textAlign = 'center';
-    if (cleared) {
+    if (stage.status === 'clear') {
       ctx.fillStyle = '#3fb950';
       ctx.font = 'bold 32px system-ui';
       ctx.fillText('CLEAR', W / 2, H / 2 - 36);
       ctx.fillStyle = '#e6edf3';
       ctx.font = '15px system-ui';
-      ctx.fillText(`Time  ${stageTime | 0}s`, W / 2, H / 2);
-      ctx.fillText(`Hits  ${hitsTaken}`, W / 2, H / 2 + 24);
+      ctx.fillText(`Time ${stage.stageTime | 0}s · Hits ${stage.hitsTaken}`, W / 2, H / 2);
+      ctx.fillText(`PERFECT ${stage.perfects} · GOOD ${stage.goods}`, W / 2, H / 2 + 24);
     } else {
       ctx.fillStyle = '#f85149';
       ctx.font = 'bold 28px system-ui';
@@ -271,7 +261,7 @@ function draw() {
     }
     ctx.fillStyle = '#8b949e';
     ctx.font = '13px system-ui';
-    ctx.fillText('R — Retry', W / 2, H / 2 + 56);
+    ctx.fillText('R — menu · 1/2/3 — retry boss', W / 2, H / 2 + 56);
   }
   ctx.restore();
 }
@@ -279,7 +269,14 @@ function draw() {
 window.addEventListener('keydown', (e) => {
   keys[e.code] = true;
   sfx && sfx.resume();
-  if (e.code === 'KeyR') startGame();
+  if (e.code === 'KeyR') {
+    stage.backToSelect();
+    boss = null;
+    ui.showBanner('SELECT 1/2/3', 99);
+  }
+  if (e.code === 'Digit1' || e.code === 'Numpad1') startBoss('boss_brave.json');
+  if (e.code === 'Digit2' || e.code === 'Numpad2') startBoss('boss_mass.json');
+  if (e.code === 'Digit3' || e.code === 'Numpad3') startBoss('boss_ashur.json');
   if (e.code === 'KeyJ' || e.code === 'KeyZ') playerSys && playerSys.queueAttack();
   if (e.code === 'Space' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
     e.preventDefault();
@@ -294,24 +291,30 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault();
     debug.god = !debug.god;
   }
-  if (e.code === 'F3') {
+  if (e.code === 'F3' && boss) {
     e.preventDefault();
-    if (wave < 3) {
-      wave = 3;
-      spawnWave(3);
-    } else if (enemies[0]) {
-      enemies[0].hp = 0;
-      enemies[0].alive = false;
-      checkWaveClear();
-    }
+    boss.hp = 0;
+    boss.alive = false;
+    stage.onClear();
+    sfx.clear();
+    ui.showBanner('CLEAR', 99);
   }
   if (e.code === 'F4') {
     e.preventDefault();
     debug.speed = debug.speed === 1 ? 0.5 : debug.speed === 0.5 ? 1.5 : 1;
   }
-  if (e.code === 'F5') {
+  if (e.code === 'F5' && boss) {
     e.preventDefault();
-    debug.loop = !debug.loop;
+    // force next phase
+    const th = boss.def.phaseThresholds || [1, 0.66, 0.33];
+    if (boss.phase === 1) boss.hp = boss.maxHp * th[1] - 1;
+    else if (boss.phase === 2) boss.hp = boss.maxHp * th[2] - 1;
+  }
+  if (e.code === 'F6' && boss) {
+    e.preventDefault();
+    boss.patternIdx++;
+    boss.state = 'idle';
+    boss.timer = 0.1;
   }
 });
 window.addEventListener('keyup', (e) => {
@@ -321,13 +324,17 @@ canvas.addEventListener('mousedown', () => {
   sfx && sfx.resume();
   playerSys && playerSys.queueAttack();
 });
-document.getElementById('restart').onclick = () => startGame();
+document.getElementById('restart').onclick = () => {
+  stage.backToSelect();
+  boss = null;
+  ui.showBanner('SELECT 1/2/3', 99);
+};
 
 let last = performance.now();
 function frame(now) {
   const dt = Math.min(0.033, (now - last) / 1000);
   last = now;
-  if (data) {
+  if (roster) {
     update(dt);
     draw();
   }
@@ -336,11 +343,10 @@ function frame(now) {
 
 loadData()
   .then(() => {
-    ui.showBanner('PRESS R TO START', 99);
+    ui.showBanner('SELECT BOSS 1 / 2 / 3', 99);
     requestAnimationFrame(frame);
   })
   .catch((err) => {
     console.error(err);
-    document.getElementById('banner').textContent =
-      'Load failed — serve v4/ via http (e.g. npx serve)';
+    document.getElementById('banner').textContent = 'Load failed — serve v4/ via http';
   });
