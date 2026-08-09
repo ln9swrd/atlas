@@ -1,7 +1,8 @@
 # NOVEL_CANON — Season 1 정본 잠금
 
 > 2026-08-09 · Phase A-1 · **12보스 동기화**  
-> 근거: `docs/09_STORY_S1.md` · EP 본문 · 스펙 · `state/BOSS_EP_MAP.md`
+> 근거: `docs/09_STORY_S1.md` · EP 본문 · 스펙 · `state/BOSS_EP_MAP.md`  
+> **EP01 경로: Master 결정 B (2026-08-09) — P-B 정본 LOCK**
 
 **상태: LOCK (신규 설정 추가 금지 · 충돌 시 이 문서 우선 정합)**
 
@@ -15,7 +16,9 @@
 | 후반 시놉 | `novel/EP14_24_SYNOPSIS.md` | EP14–24 목표·문장 |
 | Continuity | `novel/EPISODE_MATRIX.md` | 24화 표준 필드 |
 | 본문 EP02–24 | `novel/ep02.md` … `ep24.md` | 정본 소설 |
-| 본문 EP01 | `novel/EP01_세계가_끝났는데_나는_아직_여기_있다.md` (및 `EP01_REWRITE.md`) | **ep01.md 파일명 없음** · 이 경로 사용 |
+| **본문 EP01** | **`novel/EP01_세계가_끝났는데_나는_아직_여기_있다.md`** | **정본 (P-B) · Master B LOCK · ep01.md 없음** |
+| EP01 아웃라인 | `novel/EP01_REWRITE.md` | **ENHANCEMENT / OUTLINE** · 본문 아님 (P-C) |
+| EP01 대체본 | `novel/EP01_마지막_기동/Scene01~06` | **LEGACY / ALTERNATE** · 보존 · 정본 아님 (P-A) |
 | 습관·잔상 | `state/KAI_HABIT_FIXED.md` | 카이 H1–H3 · EP9–11 |
 | 밸런스 | `state/BALANCE_SOR.md` | B1 수치 |
 | 수직 슬라이스 | `state/VERTICAL_SLICE_EP1_6_8.md` | EP1·6·8 플레이 잠금 |
@@ -24,6 +27,8 @@
 | 메카 스펙 | `design/enemy/*_MECHA_SPEC.md` · `design/brave/*` | 실루엣·역할 |
 
 본문과 시놉 충돌 시: **본문 우선 · 시놉/SoR 수정**.
+
+EP01 인용·편집 시: **P-B만** 정본. P-A 병합·P-B 재작성은 별도 Master 승인 없이 금지.
 
 ---
 
@@ -97,6 +102,7 @@
 | 4 | 카이 잔상 EP9–11만 | OK |
 | 5 | Continuity Matrix | OK |
 | 6 | 12보스 매핑 | `BOSS_EP_MAP` · 세크/와제 |
-| 7 | ep01.md 파일명 | **없음** · 대체 경로 사용 |
+| 7 | ep01.md 파일명 | **없음** · **P-B** 대체 경로 사용 (Master B) |
+| 8 | EP01 경로 CONFLICT | **해소** — P-B LOCK · P-A LEGACY · P-C OUTLINE |
 
-**Canon Lock + 12보스 동기화 Done.**
+**Canon Lock + 12보스 동기화 Done · EP01 Path B LOCK.**
