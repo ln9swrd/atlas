@@ -13,13 +13,21 @@
 - **구멍 패치: A안 시놉·대본 · ep01 경로**
 - **PHASE12_TUNING.md** (PERFECT/MISS 루프 플레이 감각 정리)
 
+## ATLAS maintenance tasks completed
+
+- CI dependency fix (`fix/ci-dev-dependencies`)
+- VisualPerception clarification (`fix/visual-perception-guard`)
+- Archive cleanup (REBUILD.md; node_modules removal pending local)
+- Testing policy added (`docs/testing-policy`)
+
 ## Next
 
 1. idle
 2. M5 삼면도 큐
 3. 레거시 애니/콘티 Ashur·EP13 대사 정리 (선택)
 4. (선택) PHASE12_TUNING → 코드 반영
+5. Merge open maintenance PRs
 
 ## Hold
 
-Forge · UE
+Forge · UE · Visualization
