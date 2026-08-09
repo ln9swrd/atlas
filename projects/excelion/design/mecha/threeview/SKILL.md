@@ -9,7 +9,8 @@ description: Generate consistent three-view (front, side, back) mecha design tur
 
 Create professional orthographic mecha design sheets (front, side, back) for Excelion units. Ensures silhouette consistency and suitability as 3D modeling reference.
 
-**품질 기준:** `../DESIGN_QUALITY.md` — **반다이 로봇혼 / 센티넬 수준** 필수.
+**조형 기준:** `../SUPER_ROBOT_DESIGN_LANGUAGE.md` — **SUPER ROBOT FIRST** 필수.  
+**피니시:** 로봇혼/센티넬 수준의 **마감** (패널 과밀·건담식 디테일은 목표 아님).
 
 ## Storage Convention
 
@@ -17,7 +18,7 @@ Create professional orthographic mecha design sheets (front, side, back) for Exc
 projects/excelion/design/mecha/<unit-name>/threeview/
 ```
 
-Read each unit's DESCRIPTION.md as the primary reference before generating.
+Read each unit's DESCRIPTION.md and SUPER_ROBOT_DESIGN_LANGUAGE before generating.
 
 ## Prompt Rules
 
@@ -26,11 +27,17 @@ Read each unit's DESCRIPTION.md as the primary reference before generating.
 - T-pose or neutral standing pose with clear limb separation
 - Identical proportions and details across all three views
 - Emphasize silhouette keywords from DESCRIPTION.md
-- **Quality bar (mandatory):** Bandai Robot Spirits / Sentinel level finish
-  - Ultra high-density industrial panel lines, precise rivets and surface segmentation
-  - Sharp clean edges, premium figure-quality mechanical detail
-  - Matte and semi-gloss metal surfaces
+- **SUPER ROBOT FIRST (mandatory)**
+  - Heroic / iconic large armor volumes
+  - Curved outer forms on chest, shoulders, limbs
+  - Character-like head — not pure sensor block
+  - Low panel density relative to form
+  - Explicitly **not Gundam**, **not real-robot mobile suit**
+- **Finish bar:** Bandai Robot Spirits / Sentinel **surface quality**
+  - Sharp clean edges, premium figure finish
+  - Matte and semi-gloss metal
   - Official product reference quality
-  - No sketch, no rough, no low-density simplification
-- Style base: 90s retro proportions & silhouette + modern high-end figure density
+  - No sketch, no rough, no low-effort simplification
+  - **Do not** equate quality with ultra-dense industrial panel spam
+- Style base: super-robot proportions & silhouette + modern high-end figure finish
 - Never sacrifice silhouette keywords for extra detail
