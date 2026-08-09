@@ -5,7 +5,7 @@ without requiring cv2/torch installed.
 """
 
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 
 class TestVisualPerceptionExperimental(unittest.TestCase):
@@ -29,9 +29,13 @@ class TestVisualPerceptionExperimental(unittest.TestCase):
         """When deps load successfully, _load_model raises NotImplementedError."""
         from core.tools.visual_perception import VisualPerceptionEngine
 
+        fake_torch = MagicMock()
+        fake_torch.cuda.is_available.return_value = False
+        fake_torch.device.return_value = "cpu"
+
         fake_deps = {
             "cv2": object(),
-            "torch": type("T", (), {"device": lambda *a, **k: "cpu", "cuda": type("C", (), {"is_available": lambda: False})()})(),
+            "torch": fake_torch,
             "models": object(),
             "transforms": object(),
             "Image": object(),
