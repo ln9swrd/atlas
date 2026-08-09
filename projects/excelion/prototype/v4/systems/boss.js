@@ -1,6 +1,7 @@
-/** Boss from JSON + modifiers + adaptive Nemesis */
+/** Boss from JSON + modifiers + patternDriven mode */
 
 export function makeBossFromDef(def, x, y) {
+  const patternDriven = Array.isArray(def.phases) && def.phases[0] && def.phases[0].patterns;
   return {
     def,
     type: def.id,
@@ -14,7 +15,7 @@ export function makeBossFromDef(def, x, y) {
     maxHp: def.hp,
     damage: def.damage || 22,
     state: 'idle',
-    timer: 0.8,
+    timer: 0.5,
     aimX: -1,
     aimY: 0,
     vx: 0,
@@ -30,6 +31,9 @@ export function makeBossFromDef(def, x, y) {
     afterimage: [],
     adaptSpeed: 1,
     adaptFake: 0,
+    patternDriven,
+    patternCursor: 0,
+    extraPatterns: [],
   };
 }
 
@@ -42,11 +46,20 @@ function aimAt(e, player) {
 }
 
 function phaseList(e) {
+  if (e.patternDriven) return [];
   const key = String(e.phase);
   return e.def.phases[key] || e.def.phases['1'] || [];
 }
 
 function getMod(e) {
+  if (e.patternDriven) {
+    const ph = e.def.phases.find((p) => p.id === e.phase) || e.def.phases[e.phase - 1];
+    const m = (ph && ph.modifier) || {};
+    return {
+      speed_scale: (m.speed_scale || 1) * (e.adaptSpeed || 1),
+      fake_rate: Math.min(0.95, (m.fake_rate || 0) + (e.adaptFake || 0)),
+    };
+  }
   const m = (e.def.phaseModifiers && e.def.phaseModifiers[String(e.phase)]) || {};
   return {
     speed_scale: (m.speed_scale || 1) * (e.adaptSpeed || 1),
@@ -54,7 +67,6 @@ function getMod(e) {
   };
 }
 
-/** Update adaptive scales from stage stats (Nemesis only) */
 export function updateAdaptive(e, stage) {
   if (!e.def.adaptive || !stage) return;
   const rules = e.def.adaptiveRules || {};
@@ -64,14 +76,21 @@ export function updateAdaptive(e, stage) {
   const fBonus = (stage.misses || 0) * (rules.missFakeBonus || 0.08);
   e.adaptSpeed = Math.min(maxS, 1 + pBonus);
   e.adaptFake = Math.min(maxF, fBonus);
+  if (rules.onPerfectStreak && stage.perfects >= 5 && rules.onPerfectStreak.addPattern) {
+    if (!e.extraPatterns.includes(rules.onPerfectStreak.addPattern)) {
+      e.extraPatterns.push(rules.onPerfectStreak.addPattern);
+    }
+    e.adaptSpeed = Math.min(maxS, e.adaptSpeed * (rules.onPerfectStreak.speedMultiplier || 1.2));
+  }
+  if (rules.onMissSpike && stage.misses >= 3) {
+    e.adaptFake = Math.min(maxF, e.adaptFake + (rules.onMissSpike.feintChance || 0.4));
+  }
 }
 
 function pickAction(e) {
   const list = phaseList(e);
   const mod = getMod(e);
   if (!list.length) return { type: 'normal', telegraph: 0.7, speed: 500, duration: 0.45 };
-
-  // chance to inject fake based on fake_rate
   if (mod.fake_rate > 0 && Math.random() < mod.fake_rate) {
     e.patternIdx++;
     return {
@@ -83,11 +102,9 @@ function pickAction(e) {
       duration: 0.4,
     };
   }
-
   const act = { ...list[e.patternIdx % list.length] };
   e.patternIdx++;
   if (act.speed) act.speed *= mod.speed_scale;
-  if (act.telegraph && act.type === 'fast') act.telegraph *= Math.max(0.7, 1 / mod.speed_scale);
   return act;
 }
 
@@ -107,6 +124,7 @@ export function syncPhase(e, stage, onPhaseChange) {
     e.phase = next;
     stage.phase = next;
     e.patternIdx = 0;
+    e.patternCursor = 0;
     e.state = 'recover';
     e.timer = 0.7;
     if (onPhaseChange) onPhaseChange(e, next);
@@ -129,6 +147,7 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
   e.afterimage = e.afterimage.filter((a) => a.life > 0);
 
   if (e.state === 'idle') {
+    if (e.patternDriven) return; // Pattern Runner drives commands
     if (e.timer > 0) return;
     const act = pickAction(e);
     e._act = act;
@@ -210,7 +229,7 @@ export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhase
   } else if (e.state === 'recover') {
     if (e.timer <= 0) {
       e.state = 'idle';
-      e.timer = 0.35 + Math.random() * 0.3;
+      e.timer = 0.25;
     }
   }
 }
