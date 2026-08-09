@@ -1,0 +1,9 @@
+{
+  "id": "nemesis_pressure",
+  "label": "Pressure",
+  "timeline": [
+    { "t": 0, "action": "burst", "count": 4, "gap": 180, "speed": 640, "telegraph": 0.3, "duration": 0.34 },
+    { "t": 1200, "action": "feint_cancel", "window": 150, "speed": 600 },
+    { "t": 1800, "action": "redirect_chain", "count": 2, "gap": 160, "speed": 620 }
+  ]
+}
