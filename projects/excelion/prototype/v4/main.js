@@ -4,6 +4,7 @@ import { makeBossFromDef, updateBoss, drawBoss } from './systems/boss.js';
 import { createUI } from './systems/ui.js';
 import { createAudio } from './systems/audio.js';
 import { createStage } from './systems/stage.js';
+import { createPatternRunner, applyPatternCmd } from './systems/patternRunner.js';
 
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
@@ -13,6 +14,7 @@ const H = 480;
 const keys = {};
 let roster = null;
 let bossCache = {};
+let patternCache = {};
 let timing = null;
 let feel = null;
 let playerSys = null;
@@ -20,16 +22,25 @@ let ui = null;
 let sfx = null;
 let stage = null;
 let boss = null;
+let runner = null;
 let lastDeath = '';
 let lastBossFile = null;
 
-const debug = { hb: false, god: false, speed: 1, hits: 0 };
+const debug = { hb: false, god: false, speed: 1, hits: 0, timeline: false };
 
 async function loadBossFile(file) {
   if (bossCache[file]) return bossCache[file];
   const res = await fetch('./data/' + file);
   const j = await res.json();
   bossCache[file] = j;
+  return j;
+}
+
+async function loadPattern(id) {
+  if (patternCache[id]) return patternCache[id];
+  const res = await fetch('./data/patterns/' + id + '.json');
+  const j = await res.json();
+  patternCache[id] = j;
   return j;
 }
 
@@ -42,6 +53,20 @@ async function loadData() {
   ui = createUI();
   sfx = createAudio();
   stage = createStage();
+  runner = createPatternRunner();
+}
+
+async function startNextPattern() {
+  if (!boss || !boss.patternDriven) return;
+  const ph = boss.def.phases.find((p) => p.id === boss.phase) || boss.def.phases[boss.phase - 1];
+  if (!ph) return;
+  let list = (ph.patterns || []).slice();
+  if (boss.extraPatterns.length) list = list.concat(boss.extraPatterns);
+  if (!list.length) return;
+  const id = list[boss.patternCursor % list.length];
+  boss.patternCursor++;
+  const pat = await loadPattern(id);
+  runner.load(pat);
 }
 
 async function startBoss(file) {
@@ -56,6 +81,10 @@ async function startBoss(file) {
   sfx.warn();
   sfx.phaseBgm && sfx.phaseBgm(1);
   debug.hits = 0;
+  if (boss.patternDriven) {
+    runner.stop();
+    await startNextPattern();
+  }
 }
 
 function onPhaseChange(e, phase) {
@@ -65,6 +94,11 @@ function onPhaseChange(e, phase) {
   ui.showBanner(label, 2.0);
   sfx.warn();
   sfx.phaseBgm && sfx.phaseBgm(phase);
+  e.patternCursor = 0;
+  if (e.patternDriven) {
+    runner.stop();
+    startNextPattern();
+  }
 }
 
 function onHitPlayer(e) {
@@ -80,20 +114,16 @@ function onHitPlayer(e) {
   feel.addHitstop(0.1);
   feel.bossTint = 0.12;
   sfx.hurt();
-
   let reason;
   if (e._act && e._act.type === 'fake') reason = timing.classifyFakeFail();
   else if (e.comboLeft > 0 || e.redirectLeft > 0) reason = timing.classifyComboFail();
   else reason = timing.classifyDodge(p.dashAge, p.invuln, false);
-
   if (p.hp <= 0) {
     stage.onFail();
     lastDeath = reason;
     ui.setReason(reason);
     ui.showBanner('YOU DIED', 99);
-  } else {
-    ui.setReason(reason);
-  }
+  } else ui.setReason(reason);
 }
 
 function playerAttack() {
@@ -137,11 +167,34 @@ function update(dt) {
   const t = scaled * feel.timeScale();
 
   ui.tick(t, stage.status === 'clear' || stage.status === 'fail');
-
   if (stage.status !== 'fight') return;
   stage.stageTime += t;
   playerSys.update(t, keys, { W, H });
   if (playerSys.consumeAttackBuffer()) playerAttack();
+
+  if (boss && boss.patternDriven) {
+    const mod = boss.def.phases.find((p) => p.id === boss.phase);
+    const speedScale = ((mod && mod.modifier && mod.modifier.speed_scale) || 1) * (boss.adaptSpeed || 1);
+    const delayBoost =
+      boss.def.adaptiveRules && boss.def.adaptiveRules.onMissSpike && stage.misses >= 3
+        ? boss.def.adaptiveRules.onMissSpike.delayIncrease || 0
+        : 0;
+    if (!runner.active && boss.state === 'idle') {
+      startNextPattern();
+    }
+    const cmds = runner.tick(t * 1000, {
+      boss,
+      player: playerSys.p,
+      speedScale,
+      delayBoost,
+    });
+    for (const c of cmds) {
+      if (boss.state === 'idle' || boss.state === 'recover') applyPatternCmd(boss, c, playerSys.p);
+      else applyPatternCmd(boss, c, playerSys.p);
+      if (sfx) sfx.warn();
+    }
+  }
+
   if (boss) updateBoss(boss, t, playerSys.p, W, H, sfx, onHitPlayer, stage, onPhaseChange);
   ui.update(playerSys.p, boss, playerSys.dashCd, debug, stage);
 }
@@ -154,25 +207,33 @@ function drawTimingBar() {
   const y = H - 28;
   ctx.fillStyle = 'rgba(0,0,0,0.45)';
   ctx.fillRect(x - 4, y - 4, barW + 8, barH + 8);
-  // GOOD zones
   ctx.fillStyle = '#3d5a80';
   ctx.fillRect(x, y, barW, barH);
-  // PERFECT center
   const pw = barW * 0.22;
   ctx.fillStyle = '#3fb950';
   ctx.fillRect(x + (barW - pw) / 2, y, pw, barH);
-  // cursor from dashAge while invuln or idle center
   let t = 0.5;
-  if (p.invuln > 0) {
-    t = Math.min(1, p.dashAge / (timing.good * 2));
-  }
-  const cx = x + t * barW;
+  if (p.invuln > 0) t = Math.min(1, p.dashAge / (timing.good * 2));
   ctx.fillStyle = '#fff';
-  ctx.fillRect(cx - 1, y - 2, 2, barH + 4);
-  ctx.fillStyle = '#8b949e';
-  ctx.font = '9px system-ui';
-  ctx.textAlign = 'center';
-  ctx.fillText('GOOD  PERFECT  GOOD', W / 2, y - 6);
+  ctx.fillRect(x + t * barW - 1, y - 2, 2, barH + 4);
+}
+
+function drawPatternOverlay() {
+  if (!debug.timeline || !runner) return;
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(8, 80, 260, 120);
+  ctx.fillStyle = '#58a6ff';
+  ctx.font = '11px system-ui';
+  ctx.textAlign = 'left';
+  ctx.fillText(`Pattern: ${runner.patternId || '—'}`, 16, 98);
+  ctx.fillStyle = '#e6edf3';
+  ctx.fillText(`t=${runner.elapsed | 0}ms  next#${runner.nextIdx}`, 16, 114);
+  const next = runner.nextEvent();
+  if (next) ctx.fillText(`next: ${next.action} @${next.t}`, 16, 130);
+  runner.debugLog.slice(-5).forEach((d, i) => {
+    ctx.fillStyle = '#8b949e';
+    ctx.fillText(`${d.t | 0} ${d.action}`, 16, 148 + i * 12);
+  });
 }
 
 function drawPlayer() {
@@ -183,17 +244,6 @@ function drawPlayer() {
   ctx.beginPath();
   ctx.ellipse(p.x, p.y, p.r * 0.7, p.r * 1.15, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = '#e8f4ff';
-  ctx.beginPath();
-  ctx.arc(p.x + p.facing * 4, p.y - p.r * 0.5, 5, 0, Math.PI * 2);
-  ctx.fill();
-  if (p.invuln > 0) {
-    ctx.strokeStyle = 'rgba(88,166,255,0.7)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r + 6, 0, Math.PI * 2);
-    ctx.stroke();
-  }
   ctx.restore();
   if (debug.hb) {
     ctx.strokeStyle = '#0ff';
@@ -207,7 +257,7 @@ function drawSelect() {
   ctx.fillStyle = '#e6edf3';
   ctx.font = 'bold 22px system-ui';
   ctx.textAlign = 'center';
-  ctx.fillText('EXCELION  V6', W / 2, H / 2 - 70);
+  ctx.fillText('EXCELION  V7 DSL', W / 2, H / 2 - 70);
   ctx.font = '14px system-ui';
   ctx.fillStyle = '#8b949e';
   ctx.fillText('Select boss — 1 / 2 / 3', W / 2, H / 2 - 40);
@@ -242,10 +292,8 @@ function drawResult() {
   ctx.font = '14px system-ui';
   ctx.fillText(`Accuracy  ${stage.accuracy()}%`, W / 2, H / 2 + 16);
   ctx.fillText(`Max Combo  ${stage.maxCombo}`, W / 2, H / 2 + 38);
-  ctx.fillText(`P ${stage.perfects}  G ${stage.goods}  M ${stage.misses}  Hits ${stage.hitsTaken}`, W / 2, H / 2 + 60);
   ctx.fillStyle = '#8b949e';
-  ctx.font = '13px system-ui';
-  ctx.fillText('Enter — Retry · R — Boss Select', W / 2, H / 2 + 92);
+  ctx.fillText('Enter — Retry · R — Boss Select', W / 2, H / 2 + 70);
 }
 
 function draw() {
@@ -260,35 +308,16 @@ function draw() {
   }
   ctx.fillStyle = '#161b22';
   ctx.fillRect(-20, -20, W + 40, H + 40);
-  ctx.strokeStyle = '#21262d';
-  for (let x = 0; x < W; x += 40) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, H);
-    ctx.stroke();
-  }
-  for (let y = 0; y < H; y += 40) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(W, y);
-    ctx.stroke();
-  }
-
   if (stage.status === 'select') {
     drawSelect();
     ctx.restore();
     return;
   }
-
   if (boss) drawBoss(ctx, boss, debug.hb);
   drawPlayer();
-  if (stage.status === 'fight') drawTimingBar();
-
-  if (feel.invert > 0) {
-    ctx.fillStyle = `rgba(255,255,255,${feel.invert * 0.5})`;
-    ctx.globalCompositeOperation = 'difference';
-    ctx.fillRect(0, 0, W, H);
-    ctx.globalCompositeOperation = 'source-over';
+  if (stage.status === 'fight') {
+    drawTimingBar();
+    drawPatternOverlay();
   }
   if (feel.flashRed > 0) {
     ctx.fillStyle = `rgba(255,40,40,${Math.min(0.45, feel.flashRed * 2.2)})`;
@@ -298,11 +327,6 @@ function draw() {
     ctx.fillStyle = `rgba(255,255,255,${feel.flashWhite * 1.4})`;
     ctx.fillRect(0, 0, W, H);
   }
-  if (feel.bossTint > 0) {
-    ctx.fillStyle = `rgba(120,40,180,${feel.bossTint})`;
-    ctx.fillRect(0, 0, W, H);
-  }
-
   if (stage.status === 'clear' || stage.status === 'fail') drawResult();
   ctx.restore();
 }
@@ -313,6 +337,7 @@ window.addEventListener('keydown', (e) => {
   if (e.code === 'KeyR') {
     stage.backToSelect();
     boss = null;
+    runner && runner.stop();
     ui.showBanner('SELECT 1/2/3', 99);
   }
   if (e.code === 'Enter' && (stage.status === 'clear' || stage.status === 'fail') && lastBossFile) {
@@ -320,14 +345,14 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.code === 'Digit1' || e.code === 'Numpad1') startBoss('boss_brave.json');
   if (e.code === 'Digit2' || e.code === 'Numpad2') startBoss('boss_mass.json');
-  if (e.code === 'Digit3' || e.code === 'Numpad3') startBoss('boss_ashur.json');
+  if (e.code === 'Digit3' || e.code === 'Numpad3') startBoss('boss/nemesis.json');
   if (e.code === 'KeyJ' || e.code === 'KeyZ') playerSys && playerSys.queueAttack();
   if (e.code === 'Space' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
     e.preventDefault();
     playerSys && playerSys.queueDash();
     playerSys && playerSys.tryDash(sfx);
   }
-  if (e.code === 'F1') {
+  if (e.code === 'F1' || e.code === 'F8') {
     e.preventDefault();
     debug.hb = !debug.hb;
   }
@@ -354,9 +379,14 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.code === 'F6' && boss) {
     e.preventDefault();
-    boss.patternIdx++;
     boss.state = 'idle';
-    boss.timer = 0.1;
+    boss.timer = 0;
+    runner.stop();
+    startNextPattern();
+  }
+  if (e.code === 'F7') {
+    e.preventDefault();
+    debug.timeline = !debug.timeline;
   }
 });
 window.addEventListener('keyup', (e) => {
@@ -369,6 +399,7 @@ canvas.addEventListener('mousedown', () => {
 document.getElementById('restart').onclick = () => {
   stage.backToSelect();
   boss = null;
+  runner && runner.stop();
   ui.showBanner('SELECT 1/2/3', 99);
 };
 
