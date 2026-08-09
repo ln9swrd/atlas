@@ -22,7 +22,12 @@
 
 ## HOLD
 
-ORDER 최종 삼면도 · 이미지 생성 · Forge
+ORDER 최종 삼면도 · 이미지 생성
+
+## Pipeline note
+
+제작 경로 활성 = Meshy → Blender → FBX → UE (Spec TBD 유지).  
+excelion-forge = DEPRECATION CANDIDATE · 이미지 HOLD와 별개.
 
 ```
 CURRENT: 3TONE standard applied

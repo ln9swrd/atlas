@@ -25,7 +25,7 @@
 | **스토리** | S1 골격·novel·보스맵 존재 · 텍스트 SoR |
 | **시스템** | COMBAT_LOOP · Phase · 피드백 정의 · 코드 미구현 |
 | **비주얼** | 스펙·3톤 규칙 · **모델링 자산 부재** → 플레이 불가 |
-| **파이프라인** | Forge / ParaModel / 시각화 = **HOLD** |
+| **파이프라인** | **활성** Meshy → Blender → FBX → UE · ParaModel/시각화 = **HOLD** · excelion-forge = DEPRECATION CANDIDATE |
 
 ---
 
@@ -74,3 +74,4 @@
 - `docs/IMPLEMENTATION_QUEUE.md`
 - `docs/ASSET_GUIDELINE.md`
 - `docs/PROJECT_RELATION.md`
+- `state/MESHY_BLENDER_PIPELINE_SPEC.md`
