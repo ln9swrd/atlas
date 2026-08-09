@@ -9,8 +9,9 @@
 Atlas 2.0 커널은 기동 시 또는 동적 로드 명령 수신 시, 사전에 정의된 응용 프로그램 디렉터리(`projects/`, `apps/`)를 스캔하여 로드 가능한 애플리케이션을 자동으로 탐색합니다.
 
 ### 1.1 탐색 기준
-* 지정된 하위 폴더 내에 **[manifest.json](file:///mnt/d/Atlas/projects/forge/manifest.json)** 파일이 존재해야 합니다.
+* 지정된 하위 폴더 내에 **manifest.json** 파일이 존재해야 합니다.
 * Manifest 파일 내에 `entry_point` 필드로 지정된 Python 모듈 및 클래스 경로가 유효해야 합니다.
+* 참고: 과거 실험용 `projects/forge` 트리는 `archive/projects-forge-legacy/`로 이동됨 (운영 경로 아님).
 
 ---
 
@@ -50,9 +51,9 @@ sequenceDiagram
 
     K->>PH: initialize_host()
     PH->>PH: Scan directories for 'manifest.json'
-    Note over PH: Found manifest.json in projects/forge/
+    Note over PH: Found manifest.json under projects/<app>/
     PH->>PH: Validate SDK version & required services
-    PH->>PH: Load module 'projects.forge.app:ForgeApplication'
+    PH->>PH: Load module from entry_point (package.module:Class)
     PH->>App: Instantiate Class
     PH->>App: on_install() [Call Hook]
     PH->>App: on_load() [Call Hook]
