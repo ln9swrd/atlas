@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Excelion V4 — Modular Prototype</title>
+<title>Excelion V5 — Content</title>
 <style>
   * { box-sizing: border-box; margin: 0; }
   body { background: #0d1117; color: #e6edf3; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
@@ -26,7 +26,7 @@
 </style>
 </head>
 <body>
-<h1>Excelion · V4 Modular</h1>
+<h1>Excelion · V5 Content</h1>
 <div id="wrap">
   <canvas id="c" width="800" height="480"></canvas>
   <div id="overlay">
@@ -44,12 +44,12 @@
     </div>
   </div>
 </div>
-<div><button type="button" id="restart">Retry (R)</button></div>
+<div><button type="button" id="restart">Menu (R)</button></div>
 <div id="help">
-  <b>실행</b> 이 폴더를 HTTP로 서빙 (ES modules + fetch JSON)<br/>
-  <code>npx --yes serve .</code> 후 <code>/index.html</code><br/>
-  <b>Debug</b> F1 HB · F2 God · F3 Boss skip · F4 speed · F5 pattern loop<br/>
-  패턴 추가 = <code>data/boss_patterns.json</code> 수정
+  <b>실행</b> <code>npx --yes serve .</code> in this folder<br/>
+  <b>보스</b> 1 MONTU · 2 SETH · 3 NEMESIS (3페이즈 JSON)<br/>
+  <b>Debug</b> F1 HB · F2 God · F3 Clear · F4 Speed · F5 Phase · F6 Skip pattern<br/>
+  데이터: <code>data/boss_*.json</code> · 문서: <code>docs/BOSS_DESIGN.md</code>
 </div>
 <script type="module" src="./main.js"></script>
 </body>
