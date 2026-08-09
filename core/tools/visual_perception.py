@@ -1,8 +1,12 @@
 # core/tools/visual_perception.py
 
 """
-Visual Perception Module Integration Tools
-Provides utilities for camera feed processing and object detection integration.
+EXPERIMENTAL MODULE
+
+This implementation is not a production-ready YOLO pipeline.
+
+Current implementation exists only for interface validation
+and optional dependency testing.
 
 Optional dependencies (lazy-loaded on first use):
   - opencv-python (cv2)
@@ -67,6 +71,7 @@ class VisualPerceptionEngine:
         """Initialize with YOLOv8 model for object detection.
 
         Requires optional packages: opencv-python, torch, torchvision, Pillow, numpy.
+        This module is experimental and not production-ready.
         """
         deps = _require_vision_deps()
         self._cv2 = deps["cv2"]
@@ -81,12 +86,10 @@ class VisualPerceptionEngine:
         self.model.to(self.device)
 
     def _load_model(self, path: str):
-        """Load PyTorch model with version pinning"""
-        # Example: Use specific version of YOLOv8
-        model = self._models.get_model("yolov8s", pretrained=True)
-        model.load_state_dict(self._torch.load(path, map_location=self.device))
-        model.eval()
-        return model
+        """Load PyTorch model — currently experimental / not implemented for production."""
+        raise NotImplementedError(
+            "VisualPerceptionEngine is currently experimental."
+        )
 
     def process_frame(self, frame) -> Dict[str, List[Dict]]:
         """
