@@ -1,10 +1,12 @@
 # BRAVE_FINAL_SPEC — mecha/brave
 
-> 2026-08-08 · STEP 7 (30절)  
+> 2026-08-10 · SUPER_ROBOT_DESIGN_LANGUAGE 정렬  
 > 원본: `brave/FRAME_SPEC.md` · `BRAVE_INFLUENCE.md` · `06_MECHA`  
 > 스토리: EP01–24 · EPISODE_MATRIX
 
 **상태: FINAL (플레이어 기체 · 전투·구현 레이어 포함)**
+
+상위: `../SUPER_ROBOT_DESIGN_LANGUAGE.md`
 
 ---
 
@@ -16,7 +18,7 @@
 | 이름 | BRAVE / Brave |
 | codename | EX-BRAVE-001 |
 | 파일럿 | 리아 |
-| 분류 | 플레이어 · 여성 슈퍼로봇 · 차원 대응형 |
+| 분류 | 플레이어 · **여성적 비례 SUPER ROBOT** · 차원 대응형 |
 | 키 | **25 m** |
 
 ## 02 Story Role
@@ -32,8 +34,11 @@
 
 ## 03 Design Philosophy
 
-- **여백 · 여성형 · 단순** (실루엣)
-- 중밀도 패널 · 로봇혼/센티넬 피니시 (`SUPER_ROBOT_MODERN` · `DESIGN_QUALITY`)
+- **SUPER ROBOT FIRST** — 건담/리얼로봇 금지
+- **여성적 비례의 슈퍼로봇** (날씬 휴머노이드 축소 금지)
+- 여백 · 단순 · **영웅 실루엣** · 곡선 외곽
+- 3톤 · 저밀도 패널 유지 (`MECHA_3TONE`)
+- 중밀도 이하 패널 · 로봇혼/센티넬 **피니시** (조형 언어는 슈퍼로봇)
 - 진겟타 기세 · 마징가 아이콘 · **형태 카피 금지**
 - 핀 패널 평시 닫힘 · 드론 출격 시만
 
@@ -41,12 +46,13 @@
 
 | 축 | 묘사 |
 |----|------|
-| 전체 | 머리 작게 · 어깨 과하지 않음 · 허리 한 단 · 다리 김 |
-| 머리 | 헬멧 · 가로 슬릿/렌즈 · 뿔·안테나 없음 |
-| 흉 | Imperial 여백 · 코어 라인 accent |
-| 팔 | 원통+판 · 기본 거포·방패 없음 |
-| 다리 | 판 최소 · 접지 안정 |
+| 전체 | 영웅형 · 머리 캐릭터성 · 어깨 덩어리 분명 · 허리 한 단 · 다리 길되 **질량** |
+| 머리 | 헬멧 · 가로 슬릿/렌즈 · 영웅적 형상 · 뿔·안테나 없음 |
+| 흉 | Imperial 여백 + **아이콘 코어** · 큰 곡면 장갑 |
+| 팔 | 곡면+판 · 슈퍼로봇 팔 질량 · 기본 거포·방패 없음 |
+| 다리 | 판 최소 · 접지 안정 · 허벅지·종아리 덩어리 |
 | 배면 | 백팩·스러스터 없음 (초기형) |
+| 동작 | 정지 시에도 돌진·타격·필살 연상 |
 
 ## 05 Dimensions
 
@@ -58,7 +64,7 @@
 
 ## 06 Mechanical Structure
 
-- humanoid base_body
+- humanoid base_body · **슈퍼로봇 조형**
 - 슬롯 활성: head, torso_u/l, arm_l/r, leg_l/r
 - 비활성(S1 초기): backpack, skirt, weapon, thruster
 - 핀 패널: 메쉬 디테일 · 평시 닫힘
@@ -71,26 +77,26 @@
 | secondary | `#2A3A4A` |
 | accent | `#E8A020` |
 
-매트+세미글로스 · 날카로운 엣지 · 70s 평면 금지 · 과밀도 그리블 금지.
+매트+세미글로스 · 큰 면 우선 · 과밀도 그리블 금지 · 패널은 보조.
 
 ## 08 Head / Sensor
 
-- 바이저 슬릿 · 시선 accent
-- 조종석이 “사람 탄 기계”로 읽힘
+- 바이저 슬릿 · 시선 accent · **캐릭터성**
+- 「사람 탄 기계」가 아니라 **탑승 슈퍼로봇의 얼굴**
 
 ## 09 Torso / Core
 
 - 중앙 코어 · 필살·브레스트 계열 **빛·발사** (문양 카피 금지)
-- 여백 유지
+- 여백 + 아이콘성 동시
 
 ## 10 Arms / Hands
 
-- 단순 · 손가락형 가능
+- 단순 · 손가락형 가능 · 질량 유지
 - 분리 타격 = 드론/연출 (로켓펀치 직카피 금지)
 
 ## 11 Legs / Feet
 
-- 기동·접지 · 과한 스파이크 없음
+- 기동·접지 · 과한 스파이크 없음 · 종아리 덩어리
 
 ## 12 Propulsion
 
@@ -141,12 +147,9 @@
 → (엑셀리온) 봉쇄 무시·배수·플레어
 ```
 
-적 루프가 아니라 **조작 리듬** 정의. 상세 수치 state/조작 트랙.
-
 ## 19 AI Behavior
 
-N/A (플레이어).  
-아군 NPC 탑승 시: 리아 없거나 지원 모드만 · 본 문서 범위 외.
+N/A (플레이어).
 
 ## 20 Weakness / Counter
 
@@ -174,20 +177,20 @@ S1 중반 **형태 변경으로 손상 표현 금지**.
 
 ## 23 Animation
 
-- 기동감 있는 여성형 보행·대시
+- 기동감 있는 슈퍼로봇 보행·대시 (여성 비례 유지)
 - 핀 패널 개폐 단시간
 - 엑셀리온: 윤곽 확장 1단계
 
 ## 24 Three-view Requirements
 
 - Front/Side/Back orthographic · 순백 · A/T-pose
-- 25m · 여성형 허리 · 비무장 · 백팩 없음
-- Positive/Negative: 기존 DESCRIPTION 프롬프트 유지
+- 25m · 여성 비례 + 슈퍼로봇 질량 · 비무장 · 백팩 없음
+- Positive/Negative: DESCRIPTION 프롬프트
 
 ## 25 Turnaround Requirements
 
-- 8방향에서 여백·여성형 유지
-- ORD/세스/네메시스와 실루엣 충돌 없을 것
+- 8방향에서 여백·여성 비례·슈퍼로봇 덩어리 유지
+- ORD/콜로서스/네메시스와 실루엣 충돌 없을 것
 
 ## 26 Exploded Parts
 
@@ -204,14 +207,12 @@ blade · cannon · drone 각 수납/전개
 | 설정 | 01–16 · FRAME |
 | 행동 규칙 | 플레이어 입력 맵 · 콤보 · 필살 |
 | 신호 | 코어 게이지 · 광기 레벨 UI · 과부하 경고 |
-| 대응 | (적 기준) 플레이어가 회피·딜·필살로 응답 |
-| 피격 | 일반·가드·무적 프레임은 액션 트랙 |
 | 경직 | 가벼움 우선 (슈퍼로봇 쾌감) |
-| 파츠 | 연출 손상 · 스탯 파츠 파괴는 선택 |
 | 종료 | 미션 목표 · 스토리 이벤트 |
 
 ## 29 Source / Canon References
 
+- `../SUPER_ROBOT_DESIGN_LANGUAGE.md`
 - `brave/FRAME_SPEC.md` · `BRAVE_INFLUENCE.md` · `EXCELION_SPEC.md`
 - `mecha/brave/DESCRIPTION.md`
 - docs/06_MECHA · MADNESS_VISUAL · weapon/brave-*
@@ -232,23 +233,18 @@ blade · cannon · drone 각 수납/전개
 - S1 중반 형태 변경 · 남성 bulk · 성인 히로인 과무장
 - 진겟타·마징가 형태 직카피 · 팔레트 임의 변경
 - 핀/드론 상시 전개로 여백 파괴 · 70s 평면 저밀도
+- **건담/리얼로봇 · 패널 과밀 · 날씬 휴머노이드 축소**
 
 ---
 
 ## 상태 블록
 
 ```
-CURRENT: STEP 7 BRAVE_FINAL_SPEC 30절 Done
+CURRENT: SUPER ROBOT FIRST 정렬 · 여성 비례 슈퍼로봇 명시
 DONE: 플레이어 기체 FINAL · 조작 루프 골격 · 엑셀리온 연결
-NEXT: STEP 8 ORD Base + 4종 FINAL
+NEXT: 삼면도 PNG · 액션 수치
 BLOCKED: PNG HOLD · 액션 수치
-SOURCE: FRAME · INFLUENCE · 06_MECHA · EP01–24
-DECISIONS:
-  - 25m · 여백·여성형·단순 · EP1–12 동일 형태
-  - 성장=연출/엑셀리온
-OPEN QUESTIONS:
-  - 콤보 수치
-  - 엑셀리온 시트 분리 여부
+PRESERVE: 25m · 3톤 · 여백 · 저밀도 패널 · EP1–12 동일 형태
 ```
 
-**STEP 7 = Done.**
+**STEP 7 = Done · 2026-08-10 언어 정렬.**

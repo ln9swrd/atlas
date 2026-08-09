@@ -1,17 +1,33 @@
 # ORDER_DESIGN_LANGUAGE — 진영 비주얼 리부트
 
-> 2026-08-09 · 헤카톤·콜로서스 반영
+> 2026-08-10 · **SUPER_ROBOT_DESIGN_LANGUAGE 하위**  
+> 헤카톤·콜로서스 반영
 
 **상태: LOCK**
+
+상위: `SUPER_ROBOT_DESIGN_LANGUAGE.md` — 충돌 시 상위 우선.
 
 ---
 
 ## 적용
 
 ORD 양산 · CREIL · AEGIS · **HEKATON · COLOSSUS** · ARGOS · EREBOS · KERBEROS · PHOBOS · ADRASTE · DEIMOS  
-비적용: NEMESIS · BRAVE/EXCELION
+비적용(별 스펙): NEMESIS · BRAVE/EXCELION — **그러나 둘 다 SUPER ROBOT FIRST는 동일**
 
-군사·건축 비유 금지 · 슈퍼로봇 과장 · 오더 진영.
+군사·건축 비유 금지 · **슈퍼로봇 과장** · 오더 진영.
+
+---
+
+## 조형 (ORDER 공통)
+
+| 원칙 | 내용 |
+|------|------|
+| SUPER ROBOT | 1차 분류 · 리얼/군용 슈트 인상 금지 |
+| CURVED FORM | 흉·견·사지 외곽에 곡선·곡면 적극 |
+| HEROIC/MONSTROUS SILHOUETTE | 멀리서 역할이 읽히는 **큰 덩어리** |
+| 패널 | 보조만 · 과밀 금지 |
+
+Shape Statement는 **아이콘 문장**이며, 구현 시 hard-surface only로 축소하지 않는다.
 
 ---
 
@@ -46,6 +62,6 @@ PHOBOS Shape 문장의 「세스」는 곧 「콜로서스」로 읽음.
 | (나머지) | 이전 표 유지 |
 
 ```
-CURRENT: 이름·Shape LOCK
+CURRENT: 이름·Shape LOCK · SUPER ROBOT FIRST 상위 정렬
 NEXT: 실루엣 3안 · 본문 개명 패치
 ```
