@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Excelion V4 — Modular Prototype</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #0d1117; color: #e6edf3; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
+  h1 { font-size: 0.95rem; margin-bottom: 6px; opacity: 0.9; }
+  #wrap { position: relative; width: 800px; max-width: 100%; }
+  canvas { display: block; width: 100%; background: #161b22; border: 1px solid #30363d; border-radius: 6px; touch-action: none; }
+  #overlay { position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 10px 12px; }
+  .bars { display: flex; flex-direction: column; gap: 5px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+  .bar-bg { flex: 1; height: 9px; background: #21262d; border-radius: 3px; overflow: hidden; border: 1px solid #30363d; }
+  .bar-fill { height: 100%; }
+  #php { background: linear-gradient(90deg,#2ea043,#3fb950); }
+  #bhp { background: linear-gradient(90deg,#da3633,#f85149); }
+  #dash { background: linear-gradient(90deg,#1f6feb,#58a6ff); }
+  #banner { text-align: center; font-size: 16px; font-weight: 800; text-shadow: 0 2px 8px #000; min-height: 1.5em; }
+  #reason { color: #ff7b72; font-size: 13px; font-weight: 700; text-align: center; min-height: 1.3em; }
+  #dbg { font-size: 10px; color: #8b949e; }
+  #help { width: 800px; max-width: 100%; margin-top: 8px; font-size: 12px; color: #8b949e; line-height: 1.45; }
+  button { margin: 4px 4px 0 0; padding: 6px 12px; background: #21262d; color: #e6edf3; border: 1px solid #30363d; border-radius: 4px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Excelion · V4 Modular</h1>
+<div id="wrap">
+  <canvas id="c" width="800" height="480"></canvas>
+  <div id="overlay">
+    <div>
+      <div class="bars">
+        <div class="bar-row"><span>YOU</span><div class="bar-bg"><div class="bar-fill" id="php" style="width:100%"></div></div></div>
+        <div class="bar-row"><span id="blabel">—</span><div class="bar-bg"><div class="bar-fill" id="bhp" style="width:0%"></div></div></div>
+        <div class="bar-row"><span>DASH</span><div class="bar-bg"><div class="bar-fill" id="dash" style="width:100%"></div></div></div>
+      </div>
+      <div id="dbg"></div>
+    </div>
+    <div>
+      <div id="banner"></div>
+      <div id="reason"></div>
+    </div>
+  </div>
+</div>
+<div><button type="button" id="restart">Retry (R)</button></div>
+<div id="help">
+  <b>실행</b> 이 폴더를 HTTP로 서빙 (ES modules + fetch JSON)<br/>
+  <code>npx --yes serve .</code> 후 <code>/index.html</code><br/>
+  <b>Debug</b> F1 HB · F2 God · F3 Boss skip · F4 speed · F5 pattern loop<br/>
+  패턴 추가 = <code>data/boss_patterns.json</code> 수정
+</div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
