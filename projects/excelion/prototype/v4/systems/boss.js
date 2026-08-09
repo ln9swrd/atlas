@@ -79,13 +79,15 @@ export function updateAdaptive(e, stage) {
   e.adaptSpeed = Math.min(maxS, 1 + (stage.perfects || 0) * (rules.perfectStreakSpeed || 0.05));
   e.adaptFake = Math.min(maxF, (stage.misses || 0) * (rules.missFakeBonus || 0.08));
 
-  e.adaptSamples = (e.adaptSamples || 0) + 1;
+  // sample count = actual judgments (PERFECT/GOOD/MISS), not frames
+  const j = (stage.perfects || 0) + (stage.goods || 0) + (stage.misses || 0);
+  e.adaptSamples = j;
   // only after ~5 judgments start moving telegraphScale
-  if (e.adaptSamples < 5) {
+  if (j < 5) {
     e.telegraphScaleTarget = 1;
   } else {
-    const j = Math.max(1, (stage.perfects || 0) + (stage.goods || 0) + (stage.misses || 0));
-    const pr = (stage.perfects || 0) / j;
+    const denom = Math.max(1, j);
+    const pr = (stage.perfects || 0) / denom;
     let target = 1;
     if (pr > 0.6) target = Math.max(0.88, 1 - (pr - 0.6) * 0.4);
     else if ((stage.misses || 0) >= 3) target = Math.min(1.12, 1 + 0.03 * Math.min(4, stage.misses));
