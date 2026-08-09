@@ -6,7 +6,24 @@ import { createStage } from './systems/stage.js';
 import { createPatternRunner, applyPatternCmd } from './systems/patternRunner.js';
 import { createFeedback, computeRank } from './systems/feedback.js';
 import { createAudioLayer } from './systems/audioLayer.js';
-import { resolveChains, applyCritical, adaptiveSnapshot } from './systems/adaptive.js';
+import {
+  resolveChains,
+  applyCritical,
+  applyFinale,
+  adaptiveSnapshot,
+  createStyleTracker,
+  applyStyleAdaptive,
+  coachTip,
+} from './systems/adaptive.js';
+import {
+  createReplayRecorder,
+  saveReplay,
+  getReplay,
+  createReplayPlayer,
+  exportReplayJSON,
+  listReplays,
+} from './systems/replay.js';
+import { createGhost } from './systems/ghost.js';
 
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
@@ -26,25 +43,29 @@ let sfx = null;
 let stage = null;
 let boss = null;
 let runner = null;
+let rec = null;
+let ghost = null;
+let style = null;
+let replayPlayer = null;
 let lastDeath = '';
 let lastBossFile = null;
 let lastPatternId = null;
 let improved = false;
 let lastRank = 'C';
+let tip = '';
+let mode = 'play'; // play | replay
 
 window.debugNemesis = false;
 const debug = { hb: false, god: false, speed: 1, hits: 0, timeline: false };
 
 async function loadBossFile(file) {
   if (bossCache[file]) return bossCache[file];
-  const res = await fetch('./data/' + file);
-  bossCache[file] = await res.json();
+  bossCache[file] = await (await fetch('./data/' + file)).json();
   return bossCache[file];
 }
 async function loadPattern(id) {
   if (patternCache[id]) return patternCache[id];
-  const res = await fetch('./data/patterns/' + id + '.json');
-  patternCache[id] = await res.json();
+  patternCache[id] = await (await fetch('./data/patterns/' + id + '.json')).json();
   return patternCache[id];
 }
 async function loadData() {
@@ -56,32 +77,41 @@ async function loadData() {
   sfx = createAudioLayer();
   stage = createStage();
   runner = createPatternRunner();
+  rec = createReplayRecorder();
+  ghost = createGhost();
+  style = createStyleTracker();
 }
 
 async function startNextPattern() {
   if (!boss || !boss.patternDriven) return;
   const chainTo = resolveChains(boss.def, lastPatternId, stage);
   const ph = boss.def.phases.find((p) => p.id === boss.phase) || boss.def.phases[boss.phase - 1];
-  if (!ph && !chainTo) return;
-  let list = (ph && ph.patterns ? ph.patterns.slice() : []);
+  let list = ph && ph.patterns ? ph.patterns.slice() : [];
   if (boss.extraPatterns.length) list = boss.extraPatterns.concat(list);
+  if (!list.length && !chainTo) return;
   let id = chainTo || list[boss.patternCursor % Math.max(1, list.length)];
   if (!chainTo) boss.patternCursor++;
   lastPatternId = id;
-  const pat = await loadPattern(id);
-  runner.load(pat);
+  runner.load(await loadPattern(id));
 }
 
 async function startBoss(file) {
+  mode = 'play';
+  replayPlayer = null;
   const def = await loadBossFile(file);
   lastBossFile = file;
   stage.setBoss(def, file);
   playerSys.reset();
   boss = makeBossFromDef(def, 640, H / 2);
   boss.critical = false;
+  boss.finale = false;
   lastDeath = '';
   lastPatternId = null;
   improved = false;
+  tip = '';
+  style.reset();
+  rec.start();
+  ghost.start();
   ui.setReason('');
   ui.showBanner(def.displayName, 1.4);
   sfx.warn();
@@ -125,6 +155,9 @@ function onHitPlayer(e) {
   if (e._act && e._act.type === 'fake') reason = timing.classifyFakeFail();
   else if (e.comboLeft > 0 || e.redirectLeft > 0) reason = timing.classifyComboFail();
   else reason = timing.classifyDodge(p.dashAge, p.invuln, false);
+  style.recordMissReason(reason);
+  style.recordDodge(p.dashAge, p.invuln > 0);
+  applyStyleAdaptive(boss, style.stats());
   if (p.hp <= 0) {
     stage.onFail();
     lastDeath = reason;
@@ -146,6 +179,7 @@ function playerAttack() {
       stage.addJudgment('PERFECT');
       sfx.perfect();
       ui.setReason('PERFECT');
+      style.recordDodge(p.dashAge, true);
       sfx.setComboTier(fb.comboTier(stage.combo));
       if (stage.combo >= 10) sfx.setHarmony(true);
     } else if (p.invuln > 0) {
@@ -153,6 +187,7 @@ function playerAttack() {
       stage.addJudgment('GOOD');
       sfx.hit();
       ui.setReason('GOOD');
+      style.recordDodge(p.dashAge, true);
       sfx.setComboTier(fb.comboTier(stage.combo));
     } else {
       fb.onMiss();
@@ -160,8 +195,15 @@ function playerAttack() {
       stage.addJudgment('MISS');
       sfx.setHarmony(false);
     }
+    applyStyleAdaptive(boss, style.stats());
     if (applyCritical(boss, stage, fb, sfx)) {
       ui.showBanner(boss.def.critical.label || 'CRITICAL', 2.2);
+    }
+    if (applyFinale(boss, stage, fb, sfx)) {
+      ui.showBanner(boss.def.finale.label || 'FINALE', 2.4);
+      runner.stop();
+      boss.state = 'idle';
+      startNextPattern();
     }
     if (boss.hp <= 0) {
       boss.alive = false;
@@ -173,7 +215,18 @@ function playerAttack() {
 }
 
 function finishResult(cleared) {
+  rec.stop();
   lastRank = computeRank(stage.accuracy(), stage.maxCombo, stage.hitsTaken, cleared);
+  tip = coachTip(stage, style.stats(), lastDeath);
+  const meta = {
+    boss: lastBossFile,
+    score: stage.score,
+    rank: lastRank,
+    acc: stage.accuracy(),
+    cleared,
+  };
+  saveReplay(rec, meta);
+  if (cleared) ghost.saveIfS(lastRank, rec.frames, meta);
   if (cleared && lastBossFile && lastBossFile.includes('nemesis')) {
     try {
       const prev = JSON.parse(localStorage.getItem(BEST_KEY) || 'null');
@@ -183,10 +236,27 @@ function finishResult(cleared) {
           BEST_KEY,
           JSON.stringify({ score: stage.score, rank: lastRank, acc: stage.accuracy() })
         );
-      } else if (prev && stage.score > prev.score * 0.95) improved = true;
+      } else if (prev && stage.score >= prev.score) improved = true;
     } catch (_) {}
   }
   ui.showBanner(cleared ? 'CLEAR' : 'YOU DIED', 99);
+}
+
+function startReplay(index = 0) {
+  const data = getReplay(index);
+  if (!data) {
+    ui.showBanner('NO REPLAY', 1.5);
+    return;
+  }
+  mode = 'replay';
+  replayPlayer = createReplayPlayer(data);
+  if (data.boss) startBoss(data.boss).then(() => {
+    mode = 'replay';
+    rec.stop();
+    replayPlayer.start();
+    ghost.enabled = false;
+  });
+  else ui.showBanner('REPLAY LOADED', 1);
 }
 
 function update(dt) {
@@ -196,18 +266,38 @@ function update(dt) {
   ui.tick(t, stage.status === 'clear' || stage.status === 'fail');
   if (stage.status !== 'fight') return;
   stage.stageTime += t;
-  playerSys.update(t, keys, { W, H });
-  if (playerSys.consumeAttackBuffer()) playerAttack();
+
+  if (mode === 'replay' && replayPlayer) {
+    const events = replayPlayer.tick();
+    for (const ev of events) {
+      if (ev.type === 'dash') playerSys.tryDash(sfx);
+      if (ev.type === 'attack') playerAttack();
+    }
+    const gp = replayPlayer.ghostPos();
+    if (gp) {
+      playerSys.p.x = gp.x;
+      playerSys.p.y = gp.y;
+    }
+  } else {
+    playerSys.update(t, keys, { W, H });
+    rec.samplePos(playerSys.p.x, playerSys.p.y);
+    if (playerSys.consumeAttackBuffer()) {
+      rec.push('attack');
+      playerAttack();
+    }
+  }
 
   if (boss && boss.patternDriven) {
     const mod = boss.def.phases.find((p) => p.id === boss.phase);
     let speedScale = ((mod && mod.modifier && mod.modifier.speed_scale) || 1) * (boss.adaptSpeed || 1);
-    if (boss.critical && boss.def.critical?.modifiers?.speed) {
-      speedScale *= boss.def.critical.modifiers.speed / Math.max(1, boss.adaptSpeed);
+    if (boss.finale && boss.def.finale?.modifiers?.speed) {
+      speedScale = Math.max(speedScale, boss.def.finale.modifiers.speed);
+    } else if (boss.critical && boss.def.critical?.modifiers?.speed) {
       speedScale = Math.max(speedScale, boss.def.critical.modifiers.speed);
     }
     const delayBoost =
-      boss.def.adaptiveRules?.onMissSpike && stage.misses >= (boss.def.adaptiveRules.onMissSpike.threshold || 3)
+      boss.def.adaptiveRules?.onMissSpike &&
+      stage.misses >= (boss.def.adaptiveRules.onMissSpike.threshold || 3)
         ? boss.def.adaptiveRules.onMissSpike.delayIncrease || 0
         : 0;
     if (!runner.active && boss.state === 'idle') startNextPattern();
@@ -236,9 +326,30 @@ function update(dt) {
 
   if (boss) {
     applyCritical(boss, stage, fb, sfx);
+    if (applyFinale(boss, stage, fb, sfx)) {
+      ui.showBanner(boss.def.finale.label || 'FINALE', 2.4);
+      runner.stop();
+      boss.state = 'idle';
+      startNextPattern();
+    }
     updateBoss(boss, t, playerSys.p, W, H, sfx, onHitPlayer, stage, onPhaseChange);
   }
   ui.update(playerSys.p, boss, playerSys.dashCd, debug, stage);
+}
+
+function drawJudgmentBars() {
+  const total = Math.max(1, stage.perfects + stage.goods + stage.misses);
+  const w = 180;
+  const x = W / 2 - w / 2;
+  const y = H / 2 + 100;
+  const pw = (stage.perfects / total) * w;
+  const gw = (stage.goods / total) * w;
+  ctx.fillStyle = '#3fb950';
+  ctx.fillRect(x, y, pw, 8);
+  ctx.fillStyle = '#58a6ff';
+  ctx.fillRect(x + pw, y, gw, 8);
+  ctx.fillStyle = '#f85149';
+  ctx.fillRect(x + pw + gw, y, w - pw - gw, 8);
 }
 
 function drawTimingBar() {
@@ -260,33 +371,19 @@ function drawTimingBar() {
 
 function drawDebugNemesis() {
   if (!window.debugNemesis || !boss) return;
-  const snap = adaptiveSnapshot(boss, stage);
+  const snap = adaptiveSnapshot(boss, stage, style.stats());
   ctx.fillStyle = 'rgba(0,0,0,0.6)';
-  ctx.fillRect(W - 200, 80, 192, 100);
+  ctx.fillRect(W - 210, 80, 202, 120);
   ctx.fillStyle = '#f0c14a';
   ctx.font = '11px system-ui';
   ctx.textAlign = 'left';
-  const lines = [
-    `phase ${snap.phase}${snap.critical ? ' CRIT' : ''}`,
+  [
+    `P${snap.phase}${snap.finale ? ' FIN' : snap.critical ? ' CRIT' : ''}`,
     `spd ${snap.adaptSpeed} fake ${snap.adaptFake}`,
     `pat ${runner?.patternId || '-'}`,
-    `combo ${snap.combo} P${snap.perfects} M${snap.misses}`,
-  ];
-  lines.forEach((l, i) => ctx.fillText(l, W - 192, 98 + i * 16));
-}
-
-function drawPatternOverlay() {
-  if (!debug.timeline || !runner) return;
-  ctx.fillStyle = 'rgba(0,0,0,0.55)';
-  ctx.fillRect(8, 80, 260, 110);
-  ctx.fillStyle = '#58a6ff';
-  ctx.font = '11px system-ui';
-  ctx.textAlign = 'left';
-  ctx.fillText(`Pattern: ${runner.patternId || '—'}`, 16, 98);
-  ctx.fillStyle = '#e6edf3';
-  ctx.fillText(`t=${runner.elapsed | 0}ms`, 16, 114);
-  const next = runner.nextEvent();
-  if (next) ctx.fillText(`next: ${next.action} @${next.t}`, 16, 130);
+    `early ${snap.earlyInputRate} late ${snap.lateInputRate}`,
+    `ghost ${ghost.enabled ? 'ON' : 'off'}`,
+  ].forEach((l, i) => ctx.fillText(l, W - 202, 98 + i * 16));
 }
 
 function drawPlayer() {
@@ -312,7 +409,7 @@ function drawSelect() {
   ctx.fillStyle = '#e6edf3';
   ctx.font = 'bold 22px system-ui';
   ctx.textAlign = 'center';
-  ctx.fillText('EXCELION  V8 NEMESIS', W / 2, H / 2 - 70);
+  ctx.fillText('EXCELION  V9', W / 2, H / 2 - 70);
   ctx.font = '14px system-ui';
   ctx.fillStyle = '#8b949e';
   ctx.fillText('1 MONTU · 2 SETH · 3 NEMESIS', W / 2, H / 2 - 40);
@@ -331,29 +428,35 @@ function drawResult() {
   if (stage.status === 'clear') {
     ctx.fillStyle = '#3fb950';
     ctx.font = 'bold 32px system-ui';
-    ctx.fillText('CLEAR', W / 2, H / 2 - 90);
+    ctx.fillText('CLEAR', W / 2, H / 2 - 100);
   } else {
     ctx.fillStyle = '#f85149';
     ctx.font = 'bold 28px system-ui';
-    ctx.fillText('YOU DIED', W / 2, H / 2 - 90);
+    ctx.fillText('YOU DIED', W / 2, H / 2 - 100);
     ctx.fillStyle = '#ff7b72';
     ctx.font = '13px system-ui';
-    ctx.fillText(lastDeath, W / 2, H / 2 - 62);
+    ctx.fillText(lastDeath, W / 2, H / 2 - 72);
   }
   ctx.fillStyle = '#f0c14a';
   ctx.font = 'bold 36px system-ui';
-  ctx.fillText(`RANK ${lastRank}`, W / 2, H / 2 - 28);
+  ctx.fillText(`RANK ${lastRank}`, W / 2, H / 2 - 40);
   ctx.fillStyle = '#e6edf3';
   ctx.font = '18px system-ui';
-  ctx.fillText(`SCORE  ${stage.score}`, W / 2, H / 2 + 8);
+  ctx.fillText(`SCORE  ${stage.score}`, W / 2, H / 2 - 4);
   ctx.font = '14px system-ui';
-  ctx.fillText(`Accuracy ${stage.accuracy()}% · Max Combo ${stage.maxCombo}`, W / 2, H / 2 + 32);
+  ctx.fillText(`Accuracy ${stage.accuracy()}% · Max Combo ${stage.maxCombo}`, W / 2, H / 2 + 20);
+  if (tip) {
+    ctx.fillStyle = '#ffa657';
+    ctx.fillText(tip, W / 2, H / 2 + 44);
+  }
   if (improved) {
     ctx.fillStyle = '#58a6ff';
-    ctx.fillText('You Improved', W / 2, H / 2 + 54);
+    ctx.fillText('You Improved', W / 2, H / 2 + 64);
   }
+  drawJudgmentBars();
   ctx.fillStyle = '#8b949e';
-  ctx.fillText('Enter — Retry · R — Select', W / 2, H / 2 + 80);
+  ctx.font = '12px system-ui';
+  ctx.fillText('Enter Retry · P Replay · G Ghost · R Select', W / 2, H / 2 + 130);
 }
 
 function draw() {
@@ -366,7 +469,7 @@ function draw() {
     const s = fb.shake * 16;
     ctx.translate((Math.random() - 0.5) * s, (Math.random() - 0.5) * s);
   }
-  ctx.fillStyle = boss && boss.critical ? '#1a0a18' : '#161b22';
+  ctx.fillStyle = boss && (boss.finale || boss.critical) ? '#1a0a18' : '#161b22';
   ctx.fillRect(-20, -20, W + 40, H + 40);
   if (stage.status === 'select') {
     drawSelect();
@@ -374,10 +477,10 @@ function draw() {
     return;
   }
   if (boss) drawBoss(ctx, boss, debug.hb);
+  if (ghost && mode === 'play') ghost.draw(ctx);
   drawPlayer();
   if (stage.status === 'fight') {
     drawTimingBar();
-    drawPatternOverlay();
     drawDebugNemesis();
   }
   fb.drawOverlays(ctx, W, H);
@@ -389,10 +492,21 @@ window.addEventListener('keydown', (e) => {
   keys[e.code] = true;
   sfx && sfx.resume();
   if (e.code === 'KeyR') {
+    if (stage.status === 'clear' || stage.status === 'fail') {
+      /* menu */
+    }
     stage.backToSelect();
     boss = null;
     runner && runner.stop();
+    mode = 'play';
     ui.showBanner('SELECT 1/2/3', 99);
+  }
+  if (e.code === 'KeyP' && (stage.status === 'clear' || stage.status === 'fail')) {
+    startReplay(0);
+  }
+  if (e.code === 'KeyG') {
+    const on = ghost.toggle();
+    ui.setReason(on ? 'GHOST ON' : 'GHOST OFF');
   }
   if (e.code === 'Enter' && (stage.status === 'clear' || stage.status === 'fail') && lastBossFile) {
     startBoss(lastBossFile);
@@ -400,11 +514,19 @@ window.addEventListener('keydown', (e) => {
   if (e.code === 'Digit1' || e.code === 'Numpad1') startBoss('boss_brave.json');
   if (e.code === 'Digit2' || e.code === 'Numpad2') startBoss('boss_mass.json');
   if (e.code === 'Digit3' || e.code === 'Numpad3') startBoss('boss/nemesis.json');
-  if (e.code === 'KeyJ' || e.code === 'KeyZ') playerSys && playerSys.queueAttack();
+  if (e.code === 'KeyJ' || e.code === 'KeyZ') {
+    if (mode === 'play') {
+      playerSys && playerSys.queueAttack();
+      rec && rec.push('attack');
+    }
+  }
   if (e.code === 'Space' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
     e.preventDefault();
-    playerSys && playerSys.queueDash();
-    playerSys && playerSys.tryDash(sfx);
+    if (mode === 'play') {
+      playerSys && playerSys.queueDash();
+      playerSys && playerSys.tryDash(sfx);
+      rec && rec.push('dash');
+    }
   }
   if (e.code === 'F1' || e.code === 'F8') {
     e.preventDefault();
@@ -451,7 +573,10 @@ window.addEventListener('keyup', (e) => {
 });
 canvas.addEventListener('mousedown', () => {
   sfx && sfx.resume();
-  playerSys && playerSys.queueAttack();
+  if (mode === 'play') {
+    playerSys && playerSys.queueAttack();
+    rec && rec.push('attack');
+  }
 });
 document.getElementById('restart').onclick = () => {
   stage.backToSelect();
@@ -459,6 +584,27 @@ document.getElementById('restart').onclick = () => {
   runner && runner.stop();
   ui.showBanner('SELECT 1/2/3', 99);
 };
+
+// Debug API
+window.playReplay = (id) => startReplay(typeof id === 'number' ? id : 0);
+window.toggleGhost = () => ghost.toggle();
+window.exportReplay = () => {
+  const j = exportReplayJSON(0);
+  console.log(j);
+  return j;
+};
+window.forcePhase = (n) => {
+  if (!boss) return;
+  if (n >= 4) {
+    boss.hp = boss.maxHp * 0.09;
+    applyFinale(boss, stage, fb, sfx);
+    ui.showBanner('FINALE', 2);
+    runner.stop();
+    startNextPattern();
+  } else if (n === 3) boss.hp = boss.maxHp * 0.29;
+  else if (n === 2) boss.hp = boss.maxHp * 0.54;
+};
+window.listReplays = listReplays;
 
 let last = performance.now();
 function frame(now) {
