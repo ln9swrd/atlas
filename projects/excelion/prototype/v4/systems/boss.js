@@ -1,4 +1,4 @@
-/** Boss from individual JSON defs + drawing */
+/** Boss from JSON + modifiers + adaptive Nemesis */
 
 export function makeBossFromDef(def, x, y) {
   return {
@@ -28,6 +28,8 @@ export function makeBossFromDef(def, x, y) {
     alive: true,
     _act: null,
     afterimage: [],
+    adaptSpeed: 1,
+    adaptFake: 0,
   };
 }
 
@@ -44,11 +46,48 @@ function phaseList(e) {
   return e.def.phases[key] || e.def.phases['1'] || [];
 }
 
+function getMod(e) {
+  const m = (e.def.phaseModifiers && e.def.phaseModifiers[String(e.phase)]) || {};
+  return {
+    speed_scale: (m.speed_scale || 1) * (e.adaptSpeed || 1),
+    fake_rate: Math.min(0.95, (m.fake_rate || 0) + (e.adaptFake || 0)),
+  };
+}
+
+/** Update adaptive scales from stage stats (Nemesis only) */
+export function updateAdaptive(e, stage) {
+  if (!e.def.adaptive || !stage) return;
+  const rules = e.def.adaptiveRules || {};
+  const maxS = rules.maxSpeedScale || 1.45;
+  const maxF = rules.maxFakeRate || 0.7;
+  const pBonus = (stage.perfects || 0) * (rules.perfectStreakSpeed || 0.05);
+  const fBonus = (stage.misses || 0) * (rules.missFakeBonus || 0.08);
+  e.adaptSpeed = Math.min(maxS, 1 + pBonus);
+  e.adaptFake = Math.min(maxF, fBonus);
+}
+
 function pickAction(e) {
   const list = phaseList(e);
+  const mod = getMod(e);
   if (!list.length) return { type: 'normal', telegraph: 0.7, speed: 500, duration: 0.45 };
-  const act = list[e.patternIdx % list.length];
+
+  // chance to inject fake based on fake_rate
+  if (mod.fake_rate > 0 && Math.random() < mod.fake_rate) {
+    e.patternIdx++;
+    return {
+      type: 'fake',
+      paint: 0.35,
+      cancel: 0.3,
+      telegraph: 0.2,
+      speed: 520 * mod.speed_scale,
+      duration: 0.4,
+    };
+  }
+
+  const act = { ...list[e.patternIdx % list.length] };
   e.patternIdx++;
+  if (act.speed) act.speed *= mod.speed_scale;
+  if (act.telegraph && act.type === 'fast') act.telegraph *= Math.max(0.7, 1 / mod.speed_scale);
   return act;
 }
 
@@ -61,20 +100,23 @@ function startCharge(e, duration, speed, sfx) {
   if (sfx) sfx.charge();
 }
 
-export function syncPhase(e, stage) {
+export function syncPhase(e, stage, onPhaseChange) {
   const ratio = e.hp / e.maxHp;
   const next = stage.computePhase(ratio, e.def.phaseThresholds);
   if (next !== e.phase) {
     e.phase = next;
+    stage.phase = next;
     e.patternIdx = 0;
     e.state = 'recover';
-    e.timer = 0.6;
+    e.timer = 0.7;
+    if (onPhaseChange) onPhaseChange(e, next);
   }
 }
 
-export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage) {
+export function updateBoss(e, dt, player, W, H, sfx, onHitPlayer, stage, onPhaseChange) {
   if (!e.alive) return;
-  syncPhase(e, stage);
+  updateAdaptive(e, stage);
+  syncPhase(e, stage, onPhaseChange);
   e.timer -= dt;
   if (e.flash > 0) e.flash -= dt;
   if (e.scale < 1) e.scale = Math.min(1, e.scale + dt * 2.5);
