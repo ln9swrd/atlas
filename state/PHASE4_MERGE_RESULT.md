@@ -8,6 +8,7 @@
 | #36 | docs(deps): dependency management strategy | `14df08ac71fc11db870a6ec4818650cfae796299` |
 | #38 | docs(state): ATLAS phase2 review snapshot | `50034de737ce42aac8db47635f55de353caad8fa` |
 | #37 | docs(vision): visual perception redesign proposal | `a12bee386ac9ef6d716b306b5409c35ddefc7611` |
+| #40 | docs(phase4): merge results + implementation plans (no code) | `deb6d81050f4ee97c98594bfe17201653ecfe882` |
 
 ## Date
 
@@ -15,10 +16,10 @@
 
 ## Reviewer
 
-Agent (automated review per Phase 3: CI success + clean mergeable + docs-only)
+Agent (docs-only review; same-author APPROVE blocked by GitHub — COMMENT review submitted)
 
 ## Notes
 
-- Merge order: #35 → #36 → #38 → #37 (base-branch refresh between merges)
+- Merge order: #35 → #36 → #38 → #37 → #40
 - No code/runtime changes in these PRs
-- Post-merge main HEAD includes all four docs
+- #31 / #32 / #33 implementation remains gated (separate PRs only)
