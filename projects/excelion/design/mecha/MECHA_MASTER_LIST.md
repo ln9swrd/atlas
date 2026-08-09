@@ -1,6 +1,9 @@
 # MECHA_MASTER_LIST
 
-> Updated: 2026-08-09 · 헤카톤·콜로서스 반영 · **몬투** 스토리명
+> Updated: 2026-08-10 · **SUPER_ROBOT_DESIGN_LANGUAGE** 상위 적용  
+> 헤카톤·콜로서스 반영 · **몬투** 스토리명
+
+**전 기체 1차 분류: SUPER ROBOT.** 이름·EP·역할은 본 표 유지.
 
 ## 요약
 
@@ -75,7 +78,7 @@
 ## 상태
 
 ```
-CURRENT: 몬투 스토리명 LOCK · 헤카톤 설계코드 유지
-NEXT: 설계코드↔스토리명 매핑 완전 고정
-DONE: design/mecha 로스터 · ORD-MID→몬투 반영
+CURRENT: SUPER ROBOT FIRST 상위 문서 연결
+NEXT: 잔여 기체 DESCRIPTION 일괄 문구 정렬 (선택)
+DONE: 로스터 · 몬투 반영 · 디자인 언어 상위 고정
 ```
