@@ -1,0 +1,25 @@
+{
+  "id": "brave",
+  "displayName": "MONTU",
+  "role": "first_wall",
+  "color": "#c44",
+  "shape": "box",
+  "hp": 220,
+  "damage": 20,
+  "radius": 22,
+  "phaseThresholds": [1.0, 0.66, 0.33],
+  "phases": {
+    "1": [
+      { "type": "normal", "telegraph": 0.85, "speed": 480, "duration": 0.48 },
+      { "type": "normal", "telegraph": 0.75, "speed": 500, "duration": 0.45 }
+    ],
+    "2": [
+      { "type": "combo", "count": 2, "telegraph": 0.55, "gap": 0.3, "speed": 520, "duration": 0.42 },
+      { "type": "normal", "telegraph": 0.7, "speed": 540, "duration": 0.4 }
+    ],
+    "3": [
+      { "type": "combo", "count": 3, "telegraph": 0.45, "gap": 0.22, "speed": 560, "duration": 0.38 },
+      { "type": "fast", "telegraph": 0.4, "speed": 620, "duration": 0.36 }
+    ]
+  }
+}
