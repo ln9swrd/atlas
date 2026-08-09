@@ -1,0 +1,26 @@
+{
+  "id": "mass",
+  "displayName": "SETH",
+  "role": "judgment",
+  "color": "#4a6a9a",
+  "shape": "shield",
+  "hp": 260,
+  "damage": 18,
+  "radius": 26,
+  "phaseThresholds": [1.0, 0.6, 0.3],
+  "phases": {
+    "1": [
+      { "type": "normal", "telegraph": 0.9, "speed": 420, "duration": 0.5 },
+      { "type": "fake", "paint": 0.45, "cancel": 0.35, "telegraph": 0.25, "speed": 480, "duration": 0.45 }
+    ],
+    "2": [
+      { "type": "fake", "paint": 0.4, "cancel": 0.4, "telegraph": 0.22, "speed": 500, "duration": 0.42 },
+      { "type": "delay", "telegraph": 1.1, "speed": 450, "duration": 0.55 }
+    ],
+    "3": [
+      { "type": "fake", "paint": 0.35, "cancel": 0.45, "telegraph": 0.2, "speed": 540, "duration": 0.4 },
+      { "type": "combo", "count": 2, "telegraph": 0.5, "gap": 0.35, "speed": 480, "duration": 0.4 },
+      { "type": "delay", "telegraph": 1.0, "speed": 500, "duration": 0.48 }
+    ]
+  }
+}
