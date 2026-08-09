@@ -1,14 +1,31 @@
 {
   "id": "ashur",
   "displayName": "NEMESIS",
-  "note": "File id ashur is legacy path only. Canon final boss = Nemesis. Do not restore Ashur lore.",
+  "note": "Legacy file id only. Canon = Nemesis.",
   "role": "final_wall",
+  "adaptive": true,
   "color": "#8b3dff",
   "shape": "triangle",
   "hp": 320,
   "damage": 28,
   "radius": 34,
   "phaseThresholds": [1.0, 0.55, 0.25],
+  "phaseLabels": {
+    "1": "PHASE 1 — OBSERVE",
+    "2": "PHASE 2 — MIRROR",
+    "3": "PHASE 3 — JUDGMENT"
+  },
+  "phaseModifiers": {
+    "1": { "speed_scale": 1.0, "fake_rate": 0.15 },
+    "2": { "speed_scale": 1.15, "fake_rate": 0.25 },
+    "3": { "speed_scale": 1.25, "fake_rate": 0.35 }
+  },
+  "adaptiveRules": {
+    "perfectStreakSpeed": 0.05,
+    "missFakeBonus": 0.08,
+    "maxSpeedScale": 1.45,
+    "maxFakeRate": 0.7
+  },
   "phases": {
     "1": [
       { "type": "normal", "telegraph": 0.7, "speed": 520, "duration": 0.42 },
