@@ -1,10 +1,21 @@
-# MECHA_3TONE_LOW_DETAIL — 공통 디자인 기준 v1.0
+# MECHA_3TONE_LOW_DETAIL — 공통 디자인 기준 v1.1
 
 > 2026-08-09  
 > 목적: 전 메카 **3톤 색 + 낮은 표면 디테일 + 제한 패널라인**  
 > 연동: `DESIGN_QUALITY` · `SUPER_ROBOT_MODERN` · `ORDER_DESIGN_LANGUAGE`
 
 **상태: LOCK (전 진영 공통)**
+
+---
+
+## 0. 하드 상한 (2026-08-09)
+
+| 항목 | 상한 |
+|------|------|
+| **색상** | **최대 3톤** (주·보조·포인트) |
+| **패널라인 단계** | **최대 3레벨** (필수·기능·개성) |
+
+4톤 이상 · 레벨 4 이상 패널 = **실패**.
 
 ---
 
@@ -20,12 +31,11 @@
 
 > 디테일을 줄이는 대신 개성을 키운다.
 
-Excelion 메카 ≠ 복잡 군사도면.  
 **단순한데도 한눈에 기억되는 메카.**
 
 ---
 
-## 2. 색상 — 기본 3톤
+## 2. 색상 — 최대 3톤
 
 | 톤 | 면적 | 역할 |
 |----|------|------|
@@ -33,26 +43,16 @@ Excelion 메카 ≠ 복잡 군사도면.
 | **Tone 2 보조** | 20–30% | 흉·팔·다리·어깨·무장 구분 |
 | **Tone 3 포인트** | 5–10% | 눈·코어·에너지·무장 핵심 |
 
-원칙: 정확히 3색 페인팅이 아니라 **세 색상군으로 읽히게**.
+원칙: 세 색상군으로 읽히게. **4색 이상 금지.**
 
-허용: 프레임 어두운 금속·작은 관절 = 중립 보조.  
-금지: 작은 색을 쌓아 5–6색처럼 보이게 하기.
-
-### 색 분할 금지
-
-- 장갑 조각마다 다른 색
-- 작은 패널마다 색 변경
-- 의미 없는 스트라이프 반복
-- 부품마다 다른 색
-- 무장만의 과도한 별도 색 체계
+허용: 프레임 어두운 금속·작은 관절 = Tone 2에 흡수.  
+금지: 작은 색을 쌓아 5–6색처럼 보이게 하기 · 패널마다 색 변경 · 무장만의 별도 색 체계.
 
 **색은 실루엣·형태 강조용.** 장갑 설명용이 아님.
 
-ORDER 기체별 주색 후보는 `ORDER_DESIGN_LANGUAGE` §5. 실루엣 확정 후 3톤으로 확정.
-
 ---
 
-## 3. 패널라인 — 3단계
+## 3. 패널라인 — 최대 3레벨
 
 | Level | 내용 |
 |-------|------|
@@ -60,7 +60,7 @@ ORDER 기체별 주색 후보는 `ORDER_DESIGN_LANGUAGE` §5. 실루엣 확정 �
 | **2 기능** | 가동·개폐·변형·결합·에너지·냉각/추진 |
 | **3 개성** | 얼굴·코어·대표 무장·상징 장갑만 제한적 |
 
-금지: 넓은 면을 작은 사각형·선으로 지속 분할.
+금지: Level 4+ · 넓은 면을 작은 사각형·선으로 지속 분할 · 선 개수로 품질 증명.
 
 `SUPER_ROBOT_MODERN`과 정합: 주 라인 소수 · 선≠품질.
 
@@ -78,18 +78,13 @@ ORDER 기체별 주색 후보는 `ORDER_DESIGN_LANGUAGE` §5. 실루엣 확정 �
 | 관절 일반 | **높음** |
 | 대표 무장 | 중간 · 핵심 기믹만 |
 
-> 움직이는 곳은 복잡하게, 덮인 곳은 단순하게.  
-> 관절=기능 · 장갑=형태.
-
-의도적 여백: 흉·어깨·상완·허벅지·종아리·대형 무장 넓은 면.
+> 움직이는 곳은 복잡하게, 덮인 곳은 단순하게.
 
 ---
 
 ## 5. 개성 = 과장 (패널 추가 아님)
 
 기체당 **강한 시각 특징 ≥1**
-
-예: 과장 무장 · 독특한 두 · 과장 전완 · 어깨 · 다리 · 비대칭 · 등 · 방패 · 체형 대비
 
 | 나쁜 개성 | 좋은 개성 |
 |-----------|-----------|
@@ -99,89 +94,43 @@ ORDER 기체별 주색 후보는 `ORDER_DESIGN_LANGUAGE` §5. 실루엣 확정 �
 
 ## 6. 검증
 
-### 거리
-
 | 거리 | 통과 조건 |
 |------|-----------|
 | 5m | 실루엣·대표 특징 먼저 |
-| 1m | 3톤·큰 장갑 형태 |
+| 1m | **3톤**·큰 장갑 형태 |
 | 피규어 | 관절·무장 기믹 |
 
 패널이 실루엣보다 먼저 → **디테일 과다**.
 
-### 흑실루엣 (필수)
-
-- [ ] 고유 체형
-- [ ] 대표 무장
-- [ ] 머리 형태 기억
-- [ ] 동진영 타기체와 구별
-- [ ] 핵심 특징(방패 등)
-
-실패 시 **패널 추가 금지 · 실루엣 수정**.
+흑실루엣: 고유 체형 · 대표 무장 · 머리 · 동진영 구별. 실패 시 **패널 추가 금지 · 실루엣 수정**.
 
 ---
 
 ## 7. 진영 적용
 
-**ORDER · 아군 · 네메시스 전부** 동일 공통 규칙.
-
-| 공통 | 개별 |
-|------|------|
-| 3톤 · 저표면 · 제한 패널 · 관절 집중 · 큰 면 · 실루엣 우선 | 고유 실루엣·무장·과장·3톤 조합·캐릭터 |
-
-획일화 금지: 규칙은 복잡도만 통제.
+ORDER · 아군 · 네메시스 **전부** 동일: 색 최대 3 · 패널 최대 3레벨.
 
 ---
 
-## 8. AEGIS 적용 예시 (리부트 후 참고)
+## 8. 프롬프트
 
-강하게: 과장 대형 방패 · 전완 · 머리 · 코어 · 방패 기믹  
-단순: 흉 외장 · 허벅지·종아리 · 어깨·등 외장  
-3톤 예: 버건디 / 다크 건메탈·자주 / 적~주황 에너지  
-방패도 **동일 3톤 안** · 별도 색 체계 분리 금지.
-
-(최종 색·실루엣은 ORDER 리부트 실루엣 확정 후.)
-
----
-
-## 9. 프롬프트
-
-### 권장
 ```text
 Original humanoid super robot, strong unique silhouette, exaggerated signature feature,
-clean large armor surfaces, low surface detail, three dominant color tones,
-restrained panel lines, detailed articulation joints, distinctive signature weapon,
-collectible figure quality, strong character identity.
-```
-
-### 회피
-```text
-overly detailed armor, excessive panel lines, dense mechanical greebles,
-cluttered surface, excessive color variation, generic mass-production robot,
-military hardware aesthetic.
+clean large armor surfaces, low surface detail, maximum three dominant color tones,
+restrained panel lines (max three levels), detailed articulation joints,
+collectible figure quality. No excessive panel lines, no color fragmentation beyond three tones.
 ```
 
 ---
 
-## 10. 체크리스트 (요약)
+## 9. 관련
 
-실루엣 · 3톤 · 큰 면 · 기능 패널 · 관절 · 과장 개성 · 피규어성  
-→ §6·§14 계획서 전문과 동일 기준.
+- `DESIGN_QUALITY.md` — 피니시 상한
+- `SUPER_ROBOT_MODERN.md` — BRAVE
+- `BOSS_CAST.md` — 보스 실루엣
 
----
-
-## 11. 기존 문서 정합
-
-| 문서 | 관계 |
-|------|------|
-| DESIGN_QUALITY | 피니시 상한 유지 · **정보량 절제** 강화 |
-| SUPER_ROBOT_MODERN | BRAVE 중밀도 = 본 기준과 동일 방향 |
-| ORDER_DESIGN_LANGUAGE | 실루엣 다양성 + 본 3톤/저디테일 |
-| DESCRIPTION 프롬프트 | 리부트 시 본 §9로 교체 |
-
-**선 수·그리블 ≠ 품질. 기억되는 실루엣 = 품질.**
+**선 수·색 수 ≠ 품질. 기억되는 실루엣 = 품질.**
 
 ```
-CURRENT: MECHA_3TONE_LOW_DETAIL LOCK
-NEXT: ORD-GRUNT 실루엣 3안 (본 기준 적용)
+CURRENT: MECHA_3TONE_LOW_DETAIL LOCK v1.1 — 색·패널 최대 3
 ```
