@@ -1,9 +1,9 @@
-/** Player movement, dash, input buffer */
+/** Player movement, dash, input buffer + lifecycle reset */
 
-export function createPlayer(timingCfg, W, H) {
+export function createPlayer(timingCfg = {}, W = 800, H = 480) {
   const dashInvuln = timingCfg.dashInvuln ?? 0.3;
   const dashDuration = timingCfg.dashDuration ?? 0.28;
-  const dashCd = timingCfg.dashCooldown ?? 0.85;
+  const dashCdMax = timingCfg.dashCd ?? 0.85;
 
   const p = {
     x: 180,
@@ -24,20 +24,26 @@ export function createPlayer(timingCfg, W, H) {
 
   const BUFFER = 0.12;
 
-  return {
+  function reset() {
+    p.x = 180;
+    p.y = H / 2;
+    p.hp = p.maxHp || 100;
+    p.dashT = 0;
+    p.dashCd = 0;
+    p.invuln = 0;
+    p.dashAge = 0;
+    p.bufferAttack = 0;
+    p.bufferDash = 0;
+    p.flash = 0;
+    p.facing = 1;
+  }
+
+  const api = {
     p,
     dashInvuln,
     dashDuration,
-    dashCd,
-    queue() {
-      p.x = 180;
-      p.y = H / 2;
-      p.hp = 100;
-      p.dashT = p.dashCd = p.invuln = 0;
-      p.dashAge = 0;
-      p.bufferAttack = p.bufferDash = 0;
-      p.flash = 0;
-    },
+    dashCd: dashCdMax,
+    reset,
     queueAttack() {
       p.bufferAttack = BUFFER;
     },
@@ -48,7 +54,7 @@ export function createPlayer(timingCfg, W, H) {
       if (p.dashCd > 0 || p.dashT > 0) return false;
       p.dashT = dashDuration;
       p.invuln = dashInvuln;
-      p.dashCd = dashCd;
+      p.dashCd = dashCdMax;
       p.dashAge = 0;
       p.bufferDash = 0;
       if (sfx) sfx.dash();
@@ -57,17 +63,18 @@ export function createPlayer(timingCfg, W, H) {
     update(dt, keys, bounds) {
       if (p.bufferAttack > 0) p.bufferAttack -= dt;
       if (p.bufferDash > 0) p.bufferDash -= dt;
-
       if (p.bufferDash > 0) this.tryDash();
 
-      let mx = 0, my = 0;
+      let mx = 0;
+      let my = 0;
       if (keys['KeyW'] || keys['ArrowUp']) my -= 1;
       if (keys['KeyS'] || keys['ArrowDown']) my += 1;
       if (keys['KeyA'] || keys['ArrowLeft']) mx -= 1;
       if (keys['KeyD'] || keys['ArrowRight']) mx += 1;
       if (mx || my) {
         const len = Math.hypot(mx, my);
-        mx /= len; my /= len;
+        mx /= len;
+        my /= len;
         p.facing = mx >= 0 ? 1 : -1;
         const sp = p.speed * (p.dashT > 0 ? 2.5 : 1);
         p.x += mx * sp * dt;
@@ -92,4 +99,8 @@ export function createPlayer(timingCfg, W, H) {
       return false;
     },
   };
+
+  // explicit bind — survives accidental reassignment of method ref
+  api.reset = reset.bind(api);
+  return api;
 }
