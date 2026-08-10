@@ -1,9 +1,10 @@
 # UNREAL_DEVELOPMENT_CHARTER — Excelion
 
 > 2026-08-10 · Unreal 실기 준비용 기준 문서  
-> 원천: PROJECT_CHARTER · 00_VISION · 08_PLAY_BRAVE · SUPER_ROBOT_DESIGN_LANGUAGE · VERTICAL_SLICE_EP1_6_8
+> 원천: PROJECT_CHARTER · 00_VISION · 08_PLAY_BRAVE · SUPER_ROBOT_DESIGN_LANGUAGE · VERTICAL_SLICE_EP1_6_8  
+> VS 보스: **세스** (P0 LOCK)
 
-**상태: 초안 · 실기 착수 전 기준**
+**상태: P0 정합**
 
 ---
 
@@ -24,10 +25,10 @@ Excelion을 **Mission-Based 3D Action**으로 실제 플레이 가능한 형태�
 
 | 항목 | 값 | 상태 |
 |------|-----|------|
-| 주 플랫폼 | PC (Windows) | 제안 |
+| 주 플랫폼 | PC (Windows) · Win64 | **LOCK** (P0) |
 | 부 플랫폼 | TBD (콘솔 검토 가능) | TBD |
-| 입력 | 게임패드 우선 (Switch 패드 기준 설계 존재) · 키보드/마우스 병행 | LOCK 의도 |
-| 해상도 / FPS | `TECHNICAL_REQUIREMENTS.md` 참조 | TBD |
+| 입력 | 게임패드 우선 · 키보드/마우스 병행 | LOCK 의도 |
+| 해상도 / FPS | 60 FPS 목표 · `TECHNICAL_REQUIREMENTS` | FPS **LOCK** |
 
 ---
 
@@ -82,12 +83,12 @@ Excelion을 **Mission-Based 3D Action**으로 실제 플레이 가능한 형태�
 - 보스 패턴은 정직한 텔레그래프 → 학습 → 왜곡 → 붕괴 구조.
 - 플레이어 쾌감: 가벼운 경직 · 명확한 한 방 · S-Core “끌어냈다” 체감.
 
-구현 진입점 순서 (기존):
+구현 진입점 순서:
 1. Phase 상태 머신
 2. 예고·판정 공통
 3. 플레이어 이동/공격/피격
 4. 적 패턴 1개
-5. 보스 1종
+5. 보스 1종 (**세스**)
 6. 피드백 버스
 
 ---
@@ -98,7 +99,7 @@ Excelion을 **Mission-Based 3D Action**으로 실제 플레이 가능한 형태�
 - Unreal 프로젝트 골격 (C++ + Blueprint)
 - BRAVE 플레이어 기체 기본 이동·전투
 - ORD-GRUNT 등 양산 적 1종
-- 보스 1종 (Vertical Slice 기준)
+- 보스 1종 (**세스** · Vertical Slice / P0)
 - 기본 UI (HP · S-Core · Heat)
 - 기본 VFX/Audio 훅
 - Data Asset / Data Table 기반 수치
@@ -115,18 +116,19 @@ Excelion을 **Mission-Based 3D Action**으로 실제 플레이 가능한 형태�
 
 ## 8. Vertical Slice 목표
 
-기존 잠금: `state/VERTICAL_SLICE_EP1_6_8.md`
+기존 잠금: `state/VERTICAL_SLICE_EP1_6_8.md`  
+VS 보스: `docs/UNREAL_PRE_IMPLEMENTATION_DECISIONS.md` **세스 LOCK**
 
-Unreal 1차 목표 (제안):
+Unreal 1차 목표:
 - 5~10분 플레이 가능한 전투 데모
 - 플레이어 메카 1 (BRAVE)
 - 적 메카 1종 (ORD-GRUNT 권장)
-- 보스 1 (세스 또는 몬투 중 선택 · TBD)
+- 보스 1 (**세스**)
 - 전투 지역 1
 - 무기 2~3 · 필살기 1
 - 기본 UI · 기본 VFX
 
-기존 EP1/6/8 설계와 충돌 시 **기존 설정을 우선**한다.
+기존 EP1/6/8 설계와 충돌 시 **기존 설정 · P0 LOCK 우선**.
 
 ---
 
@@ -135,7 +137,7 @@ Unreal 1차 목표 (제안):
 1. 플레이어 이동·대시·기본 공격
 2. 히트 판정 · 데미지 · 피드백
 3. S-Core 게이지 · 필살
-4. 적 AI (단순 추적·공격) → 보스 Phase
+4. 적 AI (단순 추적·공격) → 보스 Phase (세스)
 5. 카메라·락온
 6. UI·세이브 (최소)
 7. 데이터 드리븐 수치
@@ -149,19 +151,18 @@ C++: 핵심 로직·컴포넌트 · Blueprint: 콘텐츠 조정·연출·에디�
 | 항목 | 상태 |
 |------|------|
 | 스토리·전투·기체 설계 | 텍스트 진행 · 다수 LOCK/FINAL |
+| P0 기술 결정 | **LOCK** |
 | 시각화 · ParaModel | HOLD |
 | 파이프라인 (Meshy→Blender→FBX→UE) | 문서 계약만 · 구현 TBD |
-| Unreal 프로젝트 | **미생성** |
-| 본 문서 세트 | 작성 중 |
+| Unreal 프로젝트 | **미생성** (UE 환경 대기) |
 
 ---
 
 ## 11. 다음 단계
 
-1. 본 Charter 및 연계 문서 세트 완료
-2. `UNREAL_PREPARATION_STATUS.md` 갱신
-3. Master 검토 → 보완
-4. (승인 후) Unreal 프로젝트 생성 · 최소 골격 구현
+1. UE 5.4.x 설치 환경에서 프로젝트 생성
+2. 최소 골격 구현 (이동 · 히트 · Damage · S-Core)
+3. 세스 1 Phase 검증
 
 ---
 
