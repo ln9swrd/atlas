@@ -1,8 +1,9 @@
 # COMBAT_SYSTEM — 구현용 전투 시스템
 
-> 2026-08-09  
+> 2026-08-09 · 갱신 2026-08-10  
 > 원천: `design/combat/PATTERN_EXECUTION_SPEC` · `COMBAT_LOOP` · `FEEDBACK_SYSTEM` · `ANUBIS_MECHANICS`  
-> 목적: **기획이 아니라 구현 가능한 형태**
+> 목적: **기획이 아니라 구현 가능한 형태**  
+> VS 보스: **세스** (P0 LOCK)
 
 ---
 
@@ -82,7 +83,8 @@
 | 2 | 예고·판정 공통 |
 | 3 | 플레이어 이동/공격/피격 |
 | 4 | 적 패턴 1개 |
-| 5 | 보스 1종 (몬투 권장) |
+| 5 | 보스 1종 (**세스** · VS P0 LOCK) |
 | 6 | 피드백 버스 |
 
-매핑: `design/combat/IMPLEMENTATION_MAP.md`
+매핑: `design/combat/IMPLEMENTATION_MAP.md`  
+몬투는 EP5 스펙·스토리용으로 유지. Unreal VS 1차 보스는 세스.
