@@ -1,62 +1,98 @@
 # AXION Prototype v0.1 Agent Status
 
-> Updated: 2026-08-10
-> Agent: Git implementation agent
+> Updated: 2026-08-10 23:00 KST
 > Branch: `agent/excelion-axion-v01`
+> Resume point for next session
 
 ## Current Phase
-Phase 1–6 Foundation (C++ skeleton) — Git side complete
+Phase 1 — Player Foundation (Local Editor setup)
 
 ## Status
-[~] In Progress (Git foundation done, Local verification pending)
+[~] In Progress
 
-## Completed (Git)
-- Phase 0 Git verification of .uproject / Source / Config / Build.cs / Target.cs
-- UHealthComponent (MaxHealth, CurrentHealth, ApplyDamage, Death, Reset)
-- UCombatComponent (Attack, SphereTrace hit detection, cooldown/state)
-- AExcelionCharacter (Movement, Camera boom, Enhanced Input stubs, Dash + Invulnerability, Health/Combat integration)
-- AExcelionEnemy base (Idle → Chase → Attack → Recovery)
-- ASpeedEnemy (fast / low HP / weak)
-- APowerEnemy (slow / high HP / strong)
-- ASethBoss (Idle → Combat → Warning → Attack → Recovery → Death, Pattern 01 with debug sphere telegraph)
-- AExcelionGameMode (Playing / Victory / Defeat / Retry hooks)
-- Excelion.Build.cs updated (EnhancedInput, AIModule, NavigationSystem)
+## Completed
 
-## In Progress
-- None on Git side
+### Git / C++
+- [x] Phase 0 Git verification
+- [x] UHealthComponent
+- [x] UCombatComponent (Sphere Trace)
+- [x] AExcelionCharacter (Movement, Camera, Dash, Input stubs)
+- [x] AExcelionEnemy / ASpeedEnemy / APowerEnemy
+- [x] ASethBoss + Pattern 01
+- [x] AExcelionGameMode (Victory / Defeat / Retry hooks)
+- [x] Excelion.Build.cs (EnhancedInput, include paths)
+- [x] Compile fixes (include paths, attack timing, Seth damage)
 
-## Blocked / Local Verification Required
-- [LOCAL] Unreal Editor launch with UE 5.3.2
-- [LOCAL] C++ Module Build (MSVC compatibility note: ConcurrentLinearAllocator.h)
-- [LOCAL] Editor Target Build
-- [LOCAL] Create Enhanced Input assets (IA_Move, IA_Look, IA_Attack, IA_Dash + Mapping Context)
-- [LOCAL] Assign Input assets to ExcelionCharacter defaults or Blueprint
-- [LOCAL] Create test map / Blockout level
-- [LOCAL] Place AXION, SpeedEnemy, PowerEnemy, SethBoss
-- [LOCAL] PIE playtest of full loop
-- [LOCAL] Wire GameMode NotifyPlayerDeath / NotifyBossDeath from OnDeath callbacks if needed
+### Local Build
+- [x] .NET 6.0 installed
+- [x] MSVC 14.36 toolchain used (no ConcurrentLinearAllocator issue)
+- [x] **ExcelionEditor Win64 Development build SUCCEEDED**
+  - UnrealEditor-Excelion.dll linked
+  - Total time ~27s
 
-## Git Verification
-- Files inspected: Excelion.uproject, Source/*, Config/*, IMPLEMENTATION_QUEUE.md, PLAYABLE_SCOPE_V1.md
+## In Progress / Next (LOCAL)
+
+다음 세션에서 이어서 할 작업:
+
+1. **Enhanced Input 에셋 생성**
+   - Content/Input/
+   - IA_Move (Axis2D), IA_Look (Axis2D), IA_Attack (Bool), IA_Dash (Bool)
+   - IMC_Default 매핑 (WASD, Mouse, LMB, Shift/Space)
+
+2. **BP_AXION 생성**
+   - ExcelionCharacter 기반 Blueprint
+   - IMC + Input Action 할당
+
+3. **테스트 맵**
+   - MAP_AXION_Test (바닥 + Player Start + 조명)
+
+4. **Project Settings**
+   - Default GameMode = ExcelionGameMode
+   - Default Pawn = BP_AXION
+   - Default Map = MAP_AXION_Test
+
+5. **PIE 검증 (Phase 1)**
+   - 스폰 / 이동 / 카메라
+
+## Blocked
+없음
+
+## Local Verification Required (remaining)
+- [ ] Enhanced Input assets
+- [ ] BP_AXION + Input binding
+- [ ] Test map
+- [ ] GameMode / Pawn / Map defaults
+- [ ] PIE Phase 1 (move + camera)
+- [ ] Later: enemies, boss, full combat loop
+
+## Git Info
+- Repository: ln9swrd/atlas
 - Branch: agent/excelion-axion-v01
-- Base commit: 58b37d0 (Unreal skeleton)
-- Latest commits on branch:
-  - 91963e6 feat(excelion): add health and combat components
-  - b9433f7 feat(excelion): add AXION character foundation with movement, camera, dash
-  - ad10e44 feat(excelion): add enemy foundation, speed/power enemies, and Seth boss
-  - 3257b4a feat(excelion): add prototype game mode and update Build.cs
-  - (this) docs(excelion): record AXION prototype v0.1 agent status
+- Base skeleton: 58b37d0
+- C++ foundation commits: 91963e6 … db03af3 (Build.cs + compile fixes)
+- Do **not** commit Intermediate / Binaries / Saved / .vs / .sln
 
-## Next Action
-1. Master PC: open project in UE 5.3.2 and resolve any compile issues (especially MSVC version).
-2. Create Enhanced Input assets and assign them.
-3. Create simple Blockout map and spawn points.
-4. PIE validate Phase 1 → 6 success criteria.
-5. After local verification, merge `agent/excelion-axion-v01` into main.
+## How to Resume
+
+```bash
+cd /mnt/d/Atlas   # or D:\Atlas
+git fetch origin
+git checkout agent/excelion-axion-v01
+git pull origin agent/excelion-axion-v01
+```
+
+Open:
+```
+D:\Atlas\projects\excelion\game\Excelion\Excelion.uproject
+```
+
+If rebuild needed:
+```cmd
+"C:\Program Files\Epic Games\UE_5.3\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.exe" ExcelionEditor Win64 Development -Project="D:\Atlas\projects\excelion\game\Excelion\Excelion.uproject" -WaitMutex
+```
 
 ## Notes
-- No .uasset / .umap created (cannot be reliably generated via Git API).
-- No Intermediate / Binaries / Saved / .vs committed.
-- Existing design documents were not modified.
-- Scope strictly limited to Prototype v0.1.
-- Build Status: **NOT VERIFIED**
+- Unreal Editor was not fully set up with Input/Map in this session.
+- C++ side is compile-ready for Prototype v0.1 scope.
+- Build Status: **VERIFIED (Editor target, Development, Win64)**
+- Scope unchanged: no final art, no network, no extra systems.
