@@ -2,20 +2,19 @@
 
 > Updated: 2026-08-10  
 > 회사 측 사전준비 **종료**  
-> Novel→Gameplay: `docs/NOVEL_TO_GAMEPLAY_READINESS.md`  
+> Novel→Gameplay · Story→Mecha Registry 완료  
 > First Build WO: `state/WORK_ORDER_UNREAL_FIRST_BUILD.md`
 
 ---
 
 ## 완료 (회사)
 
-- P0 LOCK · Readiness · 보스/Data SSOT
-- WORK_ORDER_UNREAL_FIRST_BUILD
-- **Novel → Gameplay 점검 완료**
-  - 판정: **READY WITH CONDITIONS**
-  - P0: 없음
-  - P1: 없음 (UE 패치만 개발 PC)
-  - P2: 전체 EP 태깅·맵 테마·컷신 파이프라인 등
+- P0 LOCK · Unreal Readiness · 보스/Data SSOT
+- Novel → Gameplay Readiness (**READY WITH CONDITIONS**)
+- **Story → Mecha Registry**
+  - `docs/MECHA_STORY_APPEARANCE_REGISTER.md`
+  - MASTER_LIST에 Appearance·Gameplay Role·Asset Priority 반영
+  - P0 누락 없음 · VS 기체(BRAVE·ORD-GRUNT·세스) REGISTERED
 
 ## 미착수
 
@@ -25,14 +24,12 @@
 
 `WORK_ORDER_UNREAL_FIRST_BUILD.md` 실행.
 
-첫 성공: BRAVE 스폰 → 이동 → 히트 → Damage → S-Core.
-
-소설 원문 추가 작업 불필요.
+제작 우선: BRAVE → ORD-GRUNT → 세스(COLOSSUS) 플레이스홀더.
 
 ## P0 / P1 / P2
 
 | 등급 | 상태 |
 |------|------|
 | P0 | 없음 |
-| P1 | UE 패치 = 개발 PC LOCK |
-| P2 | 카메라·FBX·성능·컷신 등 |
+| P1 | UE 패치 = 개발 PC |
+| P2 | 네크/토트/암밋 스토리명–슬롯 표기 · 카메라/FBX/성능 |
