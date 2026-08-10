@@ -1,20 +1,20 @@
 # MECHA_MASTER_LIST
 
-> Updated: 2026-08-10 · **SUPER_ROBOT_DESIGN_LANGUAGE** 상위 적용  
-> 헤카톤·콜로서스 반영 · **몬투** 스토리명  
-> 스토리 등장 연결: `docs/MECHA_STORY_APPEARANCE_REGISTER.md`
+> Updated: 2026-08-10 · **주역기 정식명 AXION** (구 가칭 BRAVE)  
+> SUPER_ROBOT_DESIGN_LANGUAGE 상위 적용  
+> 스토리 등장: `docs/MECHA_STORY_APPEARANCE_REGISTER.md`  
+> 명칭: `docs/NAMING_STATUS.md`
 
-**전 기체 1차 분류: SUPER ROBOT.** 이름·EP·역할은 본 표 유지.  
-**메카 SSOT = 본 문서.** 소설 등장은 Appearance Register에서 관리.
+**전 기체 1차 분류: SUPER ROBOT.**  
+**메카 SSOT = 본 문서.**
 
 ## 요약
 
 | 분류 | 수 |
 |------|----|
-| 주인공 | 2 (BRAVE · EXCELION) |
+| 주인공 | 2 (**AXION** · EXCELION) |
 | 이름 확정 보스 | 12 슬롯 |
 | 양산 ORD | 3 |
-| UNCONFIRMED | 3 |
 
 **재등장:** 크레일 1회만. 네메시스만 다페이즈.
 
@@ -37,35 +37,22 @@
 | 11 | AEGIS | **와제** | 아이기스 | 21 | aegis | BOSS | A | 확정 |
 | 12 | NEMESIS-B/F | 네메시스 (판정·최종) | 네메시스 | 23–24 | nemesis | BOSS | S | 확정 |
 
-**BRAVE / EXCELION = 주인공. 보스 아님.**  
-스토리 전용 이름(네크·토트·암밋 등): `BOSS_EP_MAP` · Appearance Register 참조. 신규 ID 창작하지 않음.
-
-### 개명 이력
-
-| 구 | 신 (설계) | 스토리 |
-|----|-----------|--------|
-| 미드 / ORD-MID | 헤카톤 | **몬투** |
-| 세스 / SETH | 콜로서스 | 세스 (유지) |
-| 오라클 | 아르고스 | 아누비스 |
-| 보이드 | 에레보스 | 호르 등 |
-| 레이스 | 케르베로스 | — |
-| 카일 | 포보스 | — |
-| 크레일 | 크레일 | **세크** |
-| 아이기스 | 아이기스 | **와제** |
+**AXION / EXCELION = 주인공. 보스 아님.**  
+구 가칭 BRAVE = AXION. 폴더 `mecha/brave`는 레거시 경로.
 
 ---
 
 ## EXISTING (기체 폴더)
 
-| ID | First EP | Appearance (요약) | Design Status | FINAL | Priority | Gameplay Role |
-|----|----------|-------------------|---------------|-------|----------|---------------|
-| BRAVE | EP01 | 01–24 | FRAME+DESC | BRAVE_FINAL_SPEC | S | PLAYABLE |
+| ID | First EP | Appearance | Design Status | FINAL | Priority | Gameplay Role |
+|----|----------|------------|---------------|-------|----------|---------------|
+| **AXION** | EP01 | 01–24 | FRAME+DESC | (구 BRAVE_FINAL_SPEC) | S | PLAYABLE |
 | EXCELION | EP11/13 | 11–24 | SPEC+DESC | EXCELION_FINAL_SPEC | S | PLAYABLE |
 | NEMESIS | EP04 | 이름/원경/09/23–24 | SPEC+DESC | NEMESIS_FINAL_SPEC | S | BOSS |
-| **COLOSSUS** | EP06 | 06 only | DESC + 구 SETH_FINAL 이관 | 구 SETH_FINAL_SPEC | A | BOSS (VS) |
+| COLOSSUS | EP06 | 06 only | DESC + SETH 이관 | 구 SETH_FINAL | A | BOSS (VS) |
 | CREIL | EP15 | 15 only | SPEC+DESC | CREIL_FINAL_SPEC | A | BOSS |
 | AEGIS | EP21 | 21 | SPEC+DESC | AEGIS_FINAL_SPEC | A | BOSS |
-| **HEKATON (몬투)** | EP05 | 05 | DESC | 구 ORD-MID | B | BOSS |
+| HEKATON | EP05 | 05 | DESC | 구 ORD-MID | B | BOSS |
 | ARGOS | EP07 | 07 | DESC | — | A | BOSS |
 | EREBOS | EP11/12 | 10–11 · 18 | DESC | — | A | BOSS |
 | KERBEROS | EP13 | 13 전후 | DESC | — | A | BOSS |
@@ -81,7 +68,6 @@
 ## 상태
 
 ```
-CURRENT: SUPER ROBOT FIRST · Story Appearance Register 연결
-NEXT: 잔여 스토리명(네크/토트/암밋) ↔ 슬롯 표기 P2
-DONE: 로스터 · 몬투 · VS=세스 · 등장 EP 요약
+CURRENT: 주역기 AXION LOCK · S-Core 가칭 TBD
+LEGACY: BRAVE 폴더/파일명 이력 유지
 ```
