@@ -8,7 +8,7 @@
 
 /**
  * Minimal combat component for Prototype v0.1.
- * Handles attack state, cooldown, and simple sphere-trace hit detection.
+ * Handles attack state, duration, and simple sphere-trace hit detection.
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class EXCELION_API UCombatComponent : public UActorComponent
@@ -21,7 +21,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	/** Attempt to perform an attack. Returns true if attack started. */
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	bool TryAttack();
 
@@ -40,14 +39,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float AttackRadius = 60.f;
 
+	/** Total attack duration before returning to idle. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	float AttackCooldown = 0.4f;
+	float AttackDuration = 0.4f;
 
+	/** Time after attack start when damage is applied. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	float AttackCooldownTime = 0.15f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	float AttackCooldownEndTime = 0.35f;
+	float DamageWindowStart = 0.15f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TArray<TEnumAsByte<EObjectTypeQuery>> AttackObjectTypes;

@@ -34,13 +34,13 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	AttackTimer += DeltaTime;
 
-	if (!bDamageAppliedThisAttack && AttackTimer >= AttackDamageTime && AttackTimer <= AttackDamageEndTime)
+	if (!bDamageAppliedThisAttack && AttackTimer >= DamageWindowStart)
 	{
 		PerformHitDetection();
 		bDamageAppliedThisAttack = true;
 	}
 
-	if (AttackTimer >= AttackCooldown)
+	if (AttackTimer >= AttackDuration)
 	{
 		EndAttack();
 	}
