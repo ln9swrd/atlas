@@ -1,6 +1,6 @@
 # IMPLEMENTATION_QUEUE — 실행 큐
 
-> 2026-08-09 · playable V1 기준
+> 2026-08-09 · 갱신 2026-08-10 · playable V1 · VS 보스 **세스** (P0 LOCK)
 
 ---
 
@@ -8,7 +8,7 @@
 
 - [ ] `assets/placeholder/player` BRAVE 더미
 - [ ] `assets/placeholder/enemy` 속도형·파워형 각 1
-- [ ] `assets/placeholder/boss` 몬투 더미 (크기만 압도)
+- [ ] `assets/placeholder/boss` **세스** 더미 (크기만 압도)
 
 ---
 
@@ -28,17 +28,17 @@
 
 ---
 
-## 3순위 · 보스
+## 3순위 · 보스 (VS = 세스)
 
-- [ ] 몬투 Phase 골격 (시간 트리거)
-- [ ] 패턴 1–2개 (`PATTERN_EXECUTION_SPEC` M1/M2)
+- [ ] 세스 Phase 골격 (시간·씰 트리거)
+- [ ] 패턴 1–2개 (`PATTERN_EXECUTION_SPEC` S*)
 - [ ] 재도전 루프
 
 ---
 
 ## 4순위 · 확장 (V1 후)
 
-- [ ] 세스 씰
+- [ ] 몬투 (EP5 · 별도)
 - [ ] 아누비스 인지 레이어
 - [ ] 피드백 풀셋 · 실패 원인 UI
 
