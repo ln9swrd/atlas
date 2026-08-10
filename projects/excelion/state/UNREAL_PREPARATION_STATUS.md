@@ -2,29 +2,32 @@
 
 > Updated: 2026-08-10  
 > 회사 측 사전준비 **종료**  
-> Novel→Gameplay · Story→Mecha Registry 완료  
-> First Build WO: `state/WORK_ORDER_UNREAL_FIRST_BUILD.md`
+> 명칭: `docs/NAMING_STATUS.md`
 
 ---
 
+## 명칭 (Unreal 구현 전 LOCK)
+
+| 항목 | 상태 |
+|------|------|
+| 주역 메카 | **AXION** — LOCK (구 가칭 BRAVE) |
+| S-Core | **가칭 / TBD** |
+| Unreal 구현 명칭 | AXION 기준 |
+
 ## 완료 (회사)
 
-- P0 LOCK · Unreal Readiness · 보스/Data SSOT
-- Novel → Gameplay Readiness (**READY WITH CONDITIONS**)
-- **Story → Mecha Registry**
-  - `docs/MECHA_STORY_APPEARANCE_REGISTER.md`
-  - MASTER_LIST에 Appearance·Gameplay Role·Asset Priority 반영
-  - P0 누락 없음 · VS 기체(BRAVE·ORD-GRUNT·세스) REGISTERED
+- P0 LOCK · Readiness · 보스/Data SSOT
+- Novel → Gameplay · Story → Mecha Registry
+- **AXION 명칭 정리** (핵심 SSOT·Unreal 경로 문서)
 
 ## 미착수
 
-- Unreal 프로젝트 생성 · 최소 골격 · Build/Run
+- Unreal 프로젝트 · 최소 골격 · Build/Run
 
 ## 다음 (개발 PC)
 
-`WORK_ORDER_UNREAL_FIRST_BUILD.md` 실행.
-
-제작 우선: BRAVE → ORD-GRUNT → 세스(COLOSSUS) 플레이스홀더.
+`WORK_ORDER_UNREAL_FIRST_BUILD.md`  
+AXION 스폰 → 이동 → Hit → Damage → S-Core(가칭)
 
 ## P0 / P1 / P2
 
@@ -32,4 +35,4 @@
 |------|------|
 | P0 | 없음 |
 | P1 | UE 패치 = 개발 PC |
-| P2 | 네크/토트/암밋 스토리명–슬롯 표기 · 카메라/FBX/성능 |
+| P2 | 소설 원문 BRAVE 잔존 · 레거시 폴더명 · S-Core 정식명 |
