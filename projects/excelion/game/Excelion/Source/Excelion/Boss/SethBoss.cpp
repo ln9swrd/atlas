@@ -73,7 +73,6 @@ void ASethBoss::UpdateBoss(float DeltaTime)
 		}
 		else
 		{
-			// Face player
 			const FVector Dir = (TargetActor->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
 			if (!Dir.IsNearlyZero())
 			{
@@ -134,7 +133,6 @@ void ASethBoss::StartPattern01()
 		return;
 	}
 
-	// Target location: player current position (telegraph)
 	PatternTargetLocation = TargetActor->GetActorLocation();
 	PatternTargetLocation.Z = GetActorLocation().Z;
 
@@ -148,7 +146,6 @@ void ASethBoss::ExecutePatternWarning()
 
 void ASethBoss::ExecutePatternAttack()
 {
-	// Apply damage to player if inside radius
 	if (!TargetActor.IsValid())
 	{
 		return;
@@ -160,17 +157,19 @@ void ASethBoss::ExecutePatternAttack()
 		AExcelionCharacter* PlayerChar = Cast<AExcelionCharacter>(TargetActor.Get());
 		if (PlayerChar && !PlayerChar->IsInvulnerable())
 		{
-			PlayerChar->TakeDamage(PatternDamage, FDamageEvent(), GetController(), this);
+			UHealthComponent* PlayerHealth = PlayerChar->FindComponentByClass<UHealthComponent>();
+			if (PlayerHealth)
+			{
+				PlayerHealth->ApplyDamage(PatternDamage);
+			}
 		}
 	}
 
-	// Debug flash
 	DrawDebugSphere(GetWorld(), PatternTargetLocation, PatternRadius, 24, FColor::Red, false, 0.5f, 0, 3.f);
 }
 
 void ASethBoss::DrawPatternDebug()
 {
-	// Warning circle (yellow)
 	DrawDebugSphere(GetWorld(), PatternTargetLocation, PatternRadius, 24, FColor::Yellow, false, -1.f, 0, 2.f);
 }
 
