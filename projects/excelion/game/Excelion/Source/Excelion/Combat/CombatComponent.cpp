@@ -40,7 +40,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		bDamageAppliedThisAttack = true;
 	}
 
-	if (AttackTimer >= AttackDuration)
+	if (AttackTimer >= AttackCooldown)
 	{
 		EndAttack();
 	}
