@@ -8,6 +8,16 @@ public class Excelion : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+		PublicIncludePaths.AddRange(new string[]
+		{
+			ModuleDirectory
+		});
+
+		PrivateIncludePaths.AddRange(new string[]
+		{
+			ModuleDirectory
+		});
+
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core",
