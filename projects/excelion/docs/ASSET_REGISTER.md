@@ -1,7 +1,8 @@
 # ASSET_REGISTER — Excelion
 
 > 2026-08-10 · 확정된 에셋만 기록 · 임의 추가 금지  
-> 원천: MECHA_MASTER_LIST · BRAVE_FINAL_SPEC · weapon/* · VERTICAL_SLICE
+> 원천: MECHA_MASTER_LIST · AXION 스펙(구 BRAVE_FINAL) · weapon/* · VERTICAL_SLICE  
+> 명칭: `docs/NAMING_STATUS.md` — 주역 **AXION** · S-Core **가칭/TBD**
 
 **상태: 초안 · VS 우선**
 
@@ -14,8 +15,8 @@ Unreal 적용 = None / Placeholder / Partial / Done
 
 | 이름 | 종류 | 용도 | 우선순위 | 제작 상태 | Unreal | 선행 작업 | 비고 |
 |------|------|------|----------|-----------|--------|-----------|------|
-| BRAVE | Player | 주인공기 | S | Spec FINAL | None | 삼면도 PNG HOLD · 리그 | 25m · 여성 비례 슈퍼로봇 |
-| EXCELION | Player 진화 | EP13+ | S | Spec | None | BRAVE 골격 공유 | 동일 골격 1단계 |
+| **AXION** | Player | 주인공기 | S | Spec FINAL | None | 삼면도 PNG HOLD · 리그 | 25m · 여성 비례 슈퍼로봇 · 구 가칭 BRAVE |
+| EXCELION | Player 진화 | EP13+ | S | Spec | None | AXION 골격 공유 | 동일 골격 1단계 |
 
 ---
 
@@ -33,13 +34,11 @@ Unreal 적용 = None / Placeholder / Partial / Done
 
 | 이름 | 종류 | 용도 | 우선순위 | 제작 상태 | Unreal | 선행 작업 | 비고 |
 |------|------|------|----------|-----------|--------|-----------|------|
-| 세스 (COLOSSUS) | Boss | EP6 | A | Spec 이관 | None | | VS 후보 |
+| 세스 (COLOSSUS) | Boss | EP6 | A | Spec 이관 | None | | VS |
 | 몬투 (HEKATON) | Boss | EP5 | B | DESC | None | | |
 | 네메시스 | Boss | EP9/23–24 | S | FINAL_SPEC | None | | 다페이즈 |
 | 크레일 (세크) | Boss | EP15 | A | FINAL_SPEC | None | | 1회만 |
 | 아이기스 (와제) | Boss | EP21 | A | FINAL_SPEC | None | | |
-
-(기타 로스터: MECHA_MASTER_LIST 참조 · VS에 불필요하면 여기 미기입)
 
 ---
 
@@ -47,9 +46,9 @@ Unreal 적용 = None / Placeholder / Partial / Done
 
 | 이름 | 종류 | 용도 | 우선순위 | 제작 상태 | Unreal | 선행 작업 | 비고 |
 |------|------|------|----------|-----------|--------|-----------|------|
-| brave-blade | Melee | 근접 | S | DESC | None | | |
-| brave-cannon | Ranged | 중거리 | S | DESC | None | | |
-| brave-drone | Aux | 보조 | A | DESC | None | | |
+| axion-blade (구 brave-blade) | Melee | 근접 | S | DESC | None | | 레거시 폴더명 가능 |
+| axion-cannon (구 brave-cannon) | Ranged | 중거리 | S | DESC | None | | |
+| axion-drone (구 brave-drone) | Aux | 보조 | A | DESC | None | | |
 
 ---
 
@@ -57,44 +56,18 @@ Unreal 적용 = None / Placeholder / Partial / Done
 
 | 이름 | 종류 | 용도 | 우선순위 | 제작 상태 | Unreal | 선행 작업 | 비고 |
 |------|------|------|----------|-----------|--------|-----------|------|
-| player_brave 기본 세트 | Anim | Idle/Move/Dash/Attack/Hit/Down/Special | S | 기획 | None | 리그 · fps TBD | 1차 10클립 목표 참고 |
+| player_axion 기본 세트 | Anim | Idle/Move/Dash/Attack/Hit/Down/Special | S | 기획 | None | 리그 · 30fps | |
 
 ---
 
-## ENVIRONMENT
+## ENVIRONMENT / VFX / AUDIO / UI
 
-| 이름 | 종류 | 용도 | 우선순위 | 제작 상태 | Unreal | 선행 작업 | 비고 |
-|------|------|------|----------|-----------|--------|-----------|------|
-| VS 전투 지역 1 | Level | 데모 맵 | S | 무드 문서 | None | | 단일 레벨 목표 |
-
----
-
-## VFX
-
-| 이름 | 종류 | 용도 | 우선순위 | 제작 상태 | Unreal | 선행 작업 | 비고 |
-|------|------|------|----------|-----------|--------|-----------|------|
-| Hit / Special / Warn / Core | Niagara | 피드백 | S | 가이드 | None | | VFX_GUIDELINE |
-
----
-
-## AUDIO
-
-| 이름 | 종류 | 용도 | 우선순위 | 제작 상태 | Unreal | 선행 작업 | 비고 |
-|------|------|------|----------|-----------|--------|-----------|------|
-| Hit / Dash / Special / Warn | SFX | 피드백 | S | 미착수 | None | | 최소 세트 |
-
----
-
-## UI
-
-| 이름 | 종류 | 용도 | 우선순위 | 제작 상태 | Unreal | 선행 작업 | 비고 |
-|------|------|------|----------|-----------|--------|-----------|------|
-| HUD | UMG | HP·S-Core·Heat·락온 | S | UI_MIN 참고 | None | | |
-| Result | UMG | 클리어/실패 | A | EP8 Result Spec | None | | |
+기존 ASSET_REGISTER 초안 유지. HUD: HP · **S-Core(가칭)** · Heat · 락온.
 
 ---
 
 ## 갱신 규칙
 
 - 확정된 이름·역할만 추가
-- 상태 변경 시 본 표와 Git 동시 갱신
+- 주역기 = **AXION**
+- S-Core = 가칭 TBD
