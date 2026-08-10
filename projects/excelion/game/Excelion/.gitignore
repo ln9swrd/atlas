@@ -1,0 +1,24 @@
+# Visual Studio
+.vs/
+*.sln
+*.suo
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.VC.db
+*.VC.db-shm
+*.VC.db-wal
+
+# Unreal generated
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+
+# PDB / symbols
+*.pdb
+*.exp
+*.lib
+*.dll
+*.exe
