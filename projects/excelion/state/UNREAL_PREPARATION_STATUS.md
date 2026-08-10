@@ -1,73 +1,58 @@
 # UNREAL_PREPARATION_STATUS — Excelion
 
 > Updated: 2026-08-10  
-> Work order: `state/WORK_ORDER_UNREAL_PREP.md`  
 > P0: `docs/UNREAL_PRE_IMPLEMENTATION_DECISIONS.md`  
 > Readiness: `docs/UNREAL_IMPLEMENTATION_READINESS.md`  
-> Commit: b8051e6652252079ca32d91be0b478ab945b8e86
+> Data SSOT: `design/mecha/MECHA_DATA_SCHEMA.md`
 
 ---
 
 ## 완료
 
-### 1차 준비 (d95fd57)
-- 조사 + Charter · Architecture · Technical Requirements
-- CORE_GAMEPLAY · COMBAT_SYSTEM · MECHA_SYSTEM · MECHA_DATA_SCHEMA
-- ART_* · ASSET_REGISTER · VERTICAL_SLICE · 본 상태 문서 초판
-- Master 검토 **승인**
-
-### P0 결정 — LOCK (Master 승인 2026-08-10)
+### P0 LOCK
 - UE 5.4.x · VS 보스 세스 · PC Win64 · 60 FPS
-- In-place + CharacterMovement · 애니 30 fps · PascalCase Bone
-- GAS 1차 제외
+- In-place + CM · 애니 30 fps · PascalCase Bone · GAS 제외
 
-### Unreal 설치 전 최종 사전점검 — 완료 (2026-08-10)
-- `docs/UNREAL_IMPLEMENTATION_READINESS.md` 작성
-- 판정: **READY WITH CONDITIONS**
-- P0 문제 없음
-- 최소 골격 구조·Input·Hit/Damage·S-Core·폴더·파이프라인·구현 순서 검증
-- 현재 회사 환경에는 Unreal Engine 미설치 → 실제 프로젝트 생성/빌드 불가
+### Unreal 설치 전 사전점검
+- Readiness 문서 · 판정 READY WITH CONDITIONS
+
+### P1 SSOT 정리 (2026-08-10)
+- **보스:** Unreal/VS 관련 문서에서 VS 보스 = **세스** 통일
+  - VERTICAL_SLICE · UNREAL_DEVELOPMENT_CHARTER · COMBAT_SYSTEM · PLAYABLE_SCOPE_V1 · IMPLEMENTATION_QUEUE
+  - 스토리/EP5 몬투는 유지 (중보스)
+- **Data Schema:** `MECHA_DATA_SCHEMA.md`를 SSOT로 지정
+  - Static Configuration = Data Asset/Table
+  - Runtime State = C++ Component/Actor
+- UE 5.4 구체 패치: 개발 환경 설치 시 확정 (임의 번호 미지정)
 
 ---
 
-## 진행 중
+## P0 / P1 / P2
 
-- **없음**
+| 등급 | 내용 | 상태 |
+|------|------|------|
+| **P0** | 구현 차단 이슈 | **없음** |
+| **P1** | 보스 SSOT · Data Schema SSOT | **정리 완료** |
+| **P1** | UE 5.4 실제 패치 버전 | 개발 PC에서 확정 |
+| **P2** | 카메라·FBX scale·액터/Niagara 상한·해상도·LOD | 프로토타입 측정 |
 
 ---
 
 ## 다음 작업
 
-### UE 5.4 설치 환경에서
+회사 환경: Unreal 사전준비 **사실상 완료**. 추가 문서 확장보다 개발 PC로 이동.
 
-1. UE 5.4.x 구체 패치 선정·기록
-2. 프로젝트 생성 (C++ · Win64 · 최소 플러그인)
-3. 최소 골격 구현 (GameMode · BRAVE · Input · 이동 · 카메라 · Hit · Damage · S-Core · 테스트 맵)
-4. Build / Run 검증 후 Git commit + 결과 보고
+개발 PC (UE 5.4 설치 후):
+1. 패치 버전 기록
+2. 프로젝트 생성 (C++ · Win64 · 최소)
+3. 최소 골격 (이동 · Hit · Damage · S-Core · 테스트 맵)
+4. Build/Run · Git 보고
 
-**범위 초과 금지.** 완성 모델·애니·보스 AI·UI·VFX·스토리·세이브 제외.
-
----
-
-## 결정 상태
-
-| # | 항목 | 상태 |
-|---|------|------|
-| P0-1 | UE 5.4.x | **LOCK** |
-| P0-2 | VS 보스 = 세스 | **LOCK** |
-| P0-3 | PC Win64 | **LOCK** |
-| P0-4 | 60 FPS | **LOCK** |
-| P0-5 | In-place + CM | **LOCK** |
-| P0-6 | 애니 30 fps | **LOCK** |
-| P0-7 | Bone Naming | **LOCK** |
-| — | GAS | **제외 LOCK** |
-| Readiness | 사전점검 | **완료** |
-| P1 | 카메라·패치 버전·문서 동기화 등 | 구현 중 해결 |
+**범위 초과 금지.**
 
 ---
 
 ## 연속 작업 메모
 
-- 최신 main 기준: `0807487` → 이후 readiness 커밋 `b8051e6`
-- Unreal 실제 작업은 UE 설치 환경에서만 수행
-- 문제 발생 시 범위 확장하지 말고 본 문서에 기록 후 중단
+- Unreal 실행 불가 환경에서는 프로젝트 생성 시도하지 않음
+- 문제 발생 시 범위 확장하지 말고 본 문서 기록 후 중단
