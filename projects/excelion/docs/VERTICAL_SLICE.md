@@ -1,9 +1,10 @@
 # VERTICAL_SLICE — Unreal 준비용
 
 > 2026-08-10  
-> 원천: state/VERTICAL_SLICE_EP1_6_8.md (설계 잠금) · UNREAL_DEVELOPMENT_CHARTER
+> 원천: state/VERTICAL_SLICE_EP1_6_8.md (설계 잠금) · UNREAL_DEVELOPMENT_CHARTER  
+> VS 보스: **세스** (P0 LOCK · UNREAL_PRE_IMPLEMENTATION_DECISIONS)
 
-**상태: 초안 · 기존 EP1/6/8 잠금 우선**
+**상태: P0 정합 · VS 보스 확정**
 
 ---
 
@@ -21,7 +22,7 @@
 |------|------|
 | 플레이어 메카 | BRAVE 1 |
 | 적 메카 | ORD-GRUNT 1종 (무리) |
-| 보스 | 1 (세스 또는 몬투 · **선택 TBD**) |
+| 보스 | **세스** (EP6 · P0 LOCK) |
 | 전투 지역 | 1 |
 | 무기 | blade · cannon · (drone 선택) |
 | 전투 | 기본 이동·대시·공격·회피·히트 |
@@ -31,21 +32,24 @@
 
 스토리 비트(카이 통신 등)는 **선택** · 전투 루프 검증이 우선.
 
+**참고:** 몬투는 EP5 중보스이며 스토리/스펙 유지. Unreal VS 1차 보스는 세스.
+
 ---
 
 ## 3. 기존 잠금과의 관계
 
 - EP1 / EP6 / EP8 목표·페이즈·클리어 조건은 `state/VERTICAL_SLICE_EP1_6_8.md` 기준.
 - Unreal VS는 위 문서의 **전투 루프·수치 앵커**를 재사용한다.
-- 충돌 시 **기존 설정 우선**.
+- VS 보스 선택: `docs/UNREAL_PRE_IMPLEMENTATION_DECISIONS.md` **세스 LOCK**.
+- 충돌 시 **P0 LOCK · 기존 설정 우선**.
 
 ---
 
-## 4. 성공 기준 (제안)
+## 4. 성공 기준
 
 - 접근→콤보→밀기→필살 루프가 막힘 없이 돌아간다.
 - 히트·회피·필살 피드백이 즉각적이다.
-- 보스 1 Phase 이상 학습 가능하다.
+- 세스 1 Phase 이상 학습 가능하다.
 - 5~10분 안에 클리어 또는 의도된 실패를 경험한다.
 
 ---
@@ -60,8 +64,7 @@
 
 ---
 
-## 6. TBD
+## 6. TBD (VS 보스 제외)
 
-- VS용 보스 최종 선택 (세스 vs 몬투)
 - 맵 테마 (지구 수성/공성 중)
 - 정확한 시간 목표 측정 방법
