@@ -19,7 +19,8 @@ Doc hygiene 2026-08-04: D15→D30 · ROADMAP maintenance banner · HYG-1
 | paramodel (PM-*) | side track 중단. PM-15 및 open 항목 전부 hold |
 | printguard | P2 docs — hold |
 | makerfac-needs-research | hold |
-| blender / coin-s | hold |
+| blender | hold |
+| coin-s | **path absent** (2026-08-11) — do not recreate without Master |
 | excelion / excelion-forge | product hold (기존 유지 + 재확인) |
 
 ### Paramodel snapshot at halt

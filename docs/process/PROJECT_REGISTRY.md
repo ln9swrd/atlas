@@ -4,7 +4,7 @@ Known **domain** projects on Atlas. Platform = Atlas DevOS (not listed as a deli
 
 Source of path truth: `state/PROJECT_MAP.md`  
 State schema: `docs/process/PROJECT_STATE_SCHEMA.md`  
-Updated: 2026-07-30
+Updated: 2026-08-11 (R4/R5 residue sync)
 
 ## Active / planned domain projects
 
@@ -13,13 +13,13 @@ Updated: 2026-07-30
 | Excelion (Exelion) | `projects/excelion/` | active | game_ip | **critical** | missing | Main mecha/IP product |
 | Excelion Forge | `projects/excelion-forge/` | active | pipeline | **high** | missing | Blender/rig validation pipeline (canonical Forge) |
 | PrintGuard | `projects/printguard/` | planning | business | medium | missing | Pre-print QA initiative |
-| Coin-S | `projects/coin-s/` | planning | software | low | n/a (submodule) | Analysis experiment |
+| Coin-S | *(path absent)* | **absent** | software | low | n/a | Was planning/submodule; directory not in tree (2026-08-11). Do not recreate without Master |
 
 ## Platform-adjacent
 
 | Name | Path | Status | Notes |
 | :--- | :--- | :--- | :--- |
-| atlas-extension | `projects/atlas-extension/` | secondary | issue #2 / PR #3; secondary to Cline |
+| atlas-extension | *(removed)* | **deprecated (D22)** | issue #2 / PR #3 closed; archive cleaned 2026-08-11 |
 
 ## Deprecated
 
