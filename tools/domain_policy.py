@@ -27,7 +27,6 @@ SYSTEM_ALLOW_PREFIXES: tuple[str, ...] = (
     "tools/",
     "docs/",
     "core/",
-    "atlas-runtime/",
     "tests/",
     "logs/",
     "config/",
