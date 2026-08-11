@@ -1,8 +1,0 @@
-# Inference module (stub)
-
-class Inference:
-    def __init__(self):
-        pass
-
-    def infer(self, observation):
-        return observation
