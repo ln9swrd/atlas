@@ -122,3 +122,59 @@ Engram 제거 및 R1–R9 잔여 정리 이후 `main`의 **실제 SoR vs 불필�
 ## 비범위 준수
 
 삭제 · Excelion 변경 · Unreal · force push · 리팩터 · dependency 제거 **없음**.
+
+---
+
+## 3rd Cleanup Execution — 2026-08-11 (re-verify)
+
+기준 감사 문서 본 절의 REMOVE CANDIDATE 4항을 **최신 main**에서 재검증함.
+
+작업 시작 SHA: `7df8f6fbed10ddbdc7cbc802c28944f4aa4dad3e`
+
+### REMOVE CANDIDATE — 이미 삭제됨 (추가 git rm 0)
+
+| 경로 | 현재 HEAD | 선행 실행 |
+|------|-----------|-----------|
+| `src/` (AUDIT_KERNEL_CONTRACTS.md) | **GONE** | approved structure cleanup |
+| `scripts/update_project_docs.py` | **GONE** | same |
+| `config/print_settings.yaml` | **GONE** | same / P4 계열 |
+| `docs/process/root-temp/` | **GONE** | archive-move → `archive/process-root-temp/` |
+
+이번 단계에서 **신규 삭제 파일 수: 0** · **용량: 0**.
+
+재검증: tools/tests/.github 에서 경로 참조 **0**.
+
+### DUPLICATE CANDIDATE — deletion deferred
+
+| 경로 | 상태 | 이유 |
+|------|------|------|
+| `atlas-runtime/` ↔ `core/` | runtime root **이미 archive** (`archive/atlas-runtime-legacy/`) · core **KEEP** | SoR 확정 후 처리됨; 추가 삭제 없음 |
+| `blender-mcp-main` ↔ `blender-open-mcp` | **P2 archive** → `archive/projects-unregistered/` | 보류 후 일괄 archive 완료 |
+| `docs/process/` ↔ `docs/` | 잔여 process 문서 **보류** | source-of-truth 별도 확인 필요 |
+
+### INVESTIGATE FURTHER — deferred / 후속 처리
+
+| 항목 | 상태 |
+|------|------|
+| R5 4프로젝트 | **P2 archive 완료** |
+| `core/vision` | **KEEP** (CI DigitalVision) |
+| Alpha/Beta 본문 | **P3 review** · 옵션 1/2 대기 |
+| `docs/process/` 잔여 | 추가 조사 필요 시 별도 |
+
+### 보호 확인
+
+excelion / `_template` / forge-legacy / archive 보호 · Unreal: **변경 없음** (본 단계)
+
+### 검증
+
+| 항목 | 결과 |
+|------|------|
+| 참조 재검색 | PASS |
+| 구조 (후보 GONE) | PASS |
+| 테스트 | N/A (삭제 0) |
+| Git (문서 커밋 전) | CLEAN |
+
+### 남은 후보
+
+- `docs/process/` 잔여 vs `docs/` 중복 정리 (Master 승인 후)
+- P3 Alpha/Beta 트리 복원 옵션
