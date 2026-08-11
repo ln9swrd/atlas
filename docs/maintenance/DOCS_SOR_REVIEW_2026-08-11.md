@@ -3,111 +3,14 @@
 조사일: 2026-08-11  
 시작 SHA: `74663e015040d9ba41abb91eba1a949fce46e27a`  
 대상: `docs/` · `docs/process/`  
-역할: **조사만** (삭제·이동·통합 **0**) — 이후 Execution 절에서 스텁 5개 삭제 기록
+역할: 조사 + 후속 기록 (스텁 제거 실행 · Registry/State 관계 조사)
 
 ---
 
 ## 1. SoR 결론 (한 줄)
 
-**경우 A + 부분 역할 분리:**  
-**운영·설계 SoR = `docs/` (특히 `docs/06_OPERATIONS/`, `docs/DECISIONS.md`, `docs/00_VISION`–`07_ROADMAP`, `docs/adr/`) + `state/` + `AGENTS.md`.**  
-**`docs/process/` = 과거 process 작업 산출물·스텁·위생 보고서 영역 (운영 SoR 아님).**
-
----
-
-## 2. 구조 요약
-
-| 영역 | 파일 수(대략) | 역할 |
-|------|---------------|------|
-| `docs/` 루트 md | 21 | 설계·런타임·로드맵·릴리스 요약 |
-| `docs/00_VISION` … `07_ROADMAP` | 번호 체계 설계 | README “Live design docs” |
-| `docs/06_OPERATIONS/` | 8 | **세션 루프·Decision·state 규율** |
-| `docs/adr/` | 11 | ADR 인덱스 |
-| `docs/maintenance/` | 15+ | 저장소 정리 감사 (메타) |
-| `docs/process/` | **35→30** (스텁 5 제거 후) | process 실험·감사·스텁·포인터 |
-| `docs/atlas/`, `PLAYBOOKS/`, `agents/`, `roadmap/` | 다수 | 부가 설계·요약 |
-
-`state/CONTEXT_INDEX.md` **Always** 표에 포함된 문서 경로:
-
-- `docs/06_OPERATIONS/{DAILY_LOOP,DECISION_PROCESS,STATE_DISCIPLINE,BINARY_ASSET_POLICY}.md`
-- `docs/DECISIONS.md`
-- `docs/05_AGENTS/ROLE_SPLIT.md`
-- `docs/GLOSSARY.md`
-
-**`docs/process/`는 CONTEXT_INDEX Always/Optional에 없음.**
-
----
-
-## 3. 참조 분석
-
-| 검사 | 결과 |
-|------|------|
-| `README.md` / `AGENTS.md` → `docs/process` | **0** |
-| `state/` → `docs/process` | **0** |
-| `tools/` · `scripts/` · `.github/` · `config/` · `core/` → `docs/process` | **0** |
-| CI 워크플로가 process md 로드 | **0** |
-| `docs/atlas/*` → `ATLAS_REVIEW_CONTEXT.md` | **있음** (검토 렌즈 링크 4건) |
-| process 내부 상호 링크 | 다수 (CORE_INDEX ↔ DUPLICATE_POLICY, STATUS→AUDIT 등) |
-
-운영 자동화·에이전트 컨텍스트의 **공식 문서 그래프는 `docs/` + `state/`**.  
-`docs/process/` 참조는 주로 **같은 디렉터리 내부** 또는 **docs/atlas 역사 요약**에 한정.
-
----
-
-## 4. 이름 충돌 (동일 역할 후보)
-
-| 파일 | `docs/` | `docs/process/` | 관계 |
-|------|---------|-----------------|------|
-| `DESIGN_PRINCIPLES.md` | 8 lines 실문 | **REMOVED stub** | SoR = docs/ |
-| `EXECUTION_MODEL.md` | 23 lines 실문 | **REMOVED stub** | SoR = docs/ |
-| Architecture | `ARCHITECTURE.md` 199 lines | **REMOVED** ATLAS_ARCHITECTURE stub | SoR = docs/ |
-| Release notes | `RELEASE_NOTES_v1.2.md` | `RELEASE_NOTES.md` (v1.0 foundation) | process = **구버전 / Historical** |
-| Vision | `00_VISION/` | `VISION.md` (Sera 제거 등) | process = **구 전략 메모 / Historical** |
-
----
-
-## 5. Git 이력 (요약)
-
-- process 다수 스텁·FOUNDATION: **2026-07-25** Runtime V2 묶음 커밋.
-- 위생/정리 보고서: **2026-07-20 ~ 07-30**.
-- Alpha/Beta 본문: R9에서 path 제거 · 포인터만 **2026-08-11**.
-- 스텁 5개 삭제: **2026-08-11** Execution.
-- 루트 `docs/` 번호 체계·OPERATIONS·DECISIONS: CONTEXT_INDEX와 함께 **현재 운영 기준**.
-
----
-
-## 8. 후속 후보 (스텁 제거 후 남은 것)
-
-### REMOVE CANDIDATE
-
-- **완료** (스텁 5개)
-
-### ARCHIVE CANDIDATE
-
-권장 경로 예: `archive/docs-process-legacy/` (Master 승인 후)
-
-- 위생·감사 보고서, IMPLEMENTATION/STATUS, MARKDOWN_*, ROOT_DOCUMENT_RELOCATION
-- RELEASE_NOTES, CONTRIBUTING, PROJECT_LIFECYCLE, VISION, todo, ENVIRONMENTS
-- FORGE_*, PRIORITY_ENGINE_POST_ALPHA_PLAN, CONTRACT/DECISION plan 계열
-- DUPLICATE_POLICY, CORE_INDEX
-- BUSINESS_AGENT_REGISTRY_REVIEW
-
-### MERGE CANDIDATE (보류)
-
-- `ATLAS_DEVOS_PRINCIPLES` ↔ `docs/DESIGN_PRINCIPLES` / `00_VISION`
-- `ATLAS_RUNTIME_BOUNDARY_ANALYSIS` ↔ `docs/ATLAS_RUNTIME_BOUNDARY.md`
-- `ATLAS_DECISION_CONTRACT_SPEC` ↔ `docs/DECISIONS` / `06_OPERATIONS/DECISION_PROCESS`
-- `PROJECT_REGISTRY` ↔ `state/PROJECT_MAP.md`
-
-### INVESTIGATE
-
-- `PROJECT_REGISTRY.md` / `PROJECT_STATE_SCHEMA.md`
-- `ATLAS_REVIEW_CONTEXT.md` — 링크 4건 · 이동 시 일괄 갱신 필요
-
-### KEEP in process
-
-- `README_ARCHIVED_*` 포인터 2개
-- `ATLAS_REVIEW_CONTEXT.md` until link migration
+**경우 A:** 운영·설계 SoR = `docs/` (특히 `06_OPERATIONS/`, `DECISIONS.md`, 번호 체계, `adr/`) + `state/` + `AGENTS.md`.  
+**`docs/process/` = legacy / historical process 영역 (운영 SoR 아님).**
 
 ---
 
@@ -131,7 +34,69 @@
 - `ATLAS_REVIEW_CONTEXT.md` 및 나머지 `docs/process/` legacy
 - process archive 일괄 이동 **미수행**
 
-### 재검증
+---
 
-- tools/tests/CI/state 의 `docs/process/<stub>` 경로 참조: **0**
-- 역사·maintenance 문서의 과거 경로 언급: 보존
+## Project Registry / State SoR — 2026-08-11
+
+시작 SHA: `ae07310ae54133c51866da6e20db28714ac006c2`  
+역할: **조사만** (state/ · process/ · projects/ **미변경**)
+
+### 실제 경로
+
+| 항목 | 경로 |
+|------|------|
+| PROJECT_REGISTRY | `docs/process/PROJECT_REGISTRY.md` |
+| PROJECT_STATE_SCHEMA | `docs/process/PROJECT_STATE_SCHEMA.md` |
+| PROJECT_MAP | `state/PROJECT_MAP.md` |
+
+### 내용·역할
+
+| 항목 | 역할 | 계층 |
+|------|------|------|
+| **PROJECT_MAP** | 디스크상 프로젝트 경로·등록 상태의 **현재 목록** | **Current State / Path SoR** |
+| **PROJECT_REGISTRY** | 도메인 프로젝트 표·의도·온보딩 안내. 본문이 **`state/PROJECT_MAP.md`를 path truth로 명시** | **Definition / catalog** (MAP에 종속) |
+| **PROJECT_STATE_SCHEMA** | `projects/<name>/state/` 파일 형식·Atlas root state와 분리 규칙 | **Schema SoR** (도메인 state) |
+
+세 문서는 **동일 복사본이 아님.**
+
+- MAP = 무엇이 어디에 있는가 (지금)
+- REGISTRY = 무엇을 제품으로 다루는가 + 설명 (MAP 참조)
+- SCHEMA = 프로젝트 state 파일을 어떻게 쓸 것인가
+
+### 실제 참조
+
+| 참조자 | 대상 | 비고 |
+|--------|------|------|
+| `PROJECT_REGISTRY.md` | → `state/PROJECT_MAP.md`, → `PROJECT_STATE_SCHEMA` | 자체 선언 |
+| `projects/README.md` | → `state/PROJECT_MAP.md` | 경로 SoR |
+| `projects/_template/**` | → `PROJECT_STATE_SCHEMA.md` | 온보딩 스키마 |
+| tools / scripts / .github / core | **0** | runtime 미로드 |
+| AGENTS.md | **0** 직접 파일명 | 도메인 분리만 |
+
+### Git 이력
+
+- SCHEMA: G2 도입 (07-30) · D30 모드 갱신
+- REGISTRY: 레지스트리 정렬 · R4/R5 sync (08-11) · path truth를 MAP으로 명시
+- MAP: 제품 SoR 경로·CLOSED·R5 archive 반영 등 **state 운영 이력**
+
+### 판단 표
+
+| 항목 | 역할 | 실제 참조 | SoR | 중복 | 판단 |
+|------|------|-----------|-----|------|------|
+| PROJECT_REGISTRY | Definition/catalog | template 외·MAP 가리킴 | **아니오** (path는 MAP) | MAP과 **목록 겹침 가능** · 역할은 다름 | **KEEP** (삭제 금지) · 장기 MERGE→README/MAP 가능 |
+| PROJECT_STATE_SCHEMA | Schema | `_template` **활성** | **Schema SoR** | MAP과 **비중복** | **KEEP** |
+| PROJECT_MAP | Current path state | projects/README, REGISTRY | **Path / listing SoR** | — | **KEEP / SoR** |
+
+### 결론 (경우 **B** 변형)
+
+| 질문 | 답 |
+|------|-----|
+| Project Definition / catalog | `PROJECT_REGISTRY` (보조) + `projects/README` |
+| Schema SoR | **`docs/process/PROJECT_STATE_SCHEMA.md`** |
+| Current State / Path SoR | **`state/PROJECT_MAP.md`** |
+| Legacy | **없음** (셋 다 역할 있음) |
+| REMOVE | **0** |
+| ARCHIVE | REGISTRY만 **장기** 후보 (지금 아님) |
+| Next action | MAP↔REGISTRY 목록 정합만 유지 · SCHEMA는 `_template`와 함께 유지 · **삭제/통합 금지 until Master** |
+
+**잘못 합치면:** 스키마와 현재 목록이 섞이거나, path truth가 process로 옮겨져 CONTEXT/state 규율과 충돌할 수 있음.
