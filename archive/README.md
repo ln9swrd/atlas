@@ -11,6 +11,7 @@ Live sources: `docs/`, `state/`, root `README.md`.
 | `summary/` | Numbered conversation summaries (exact dups 061/062/063/065/066 removed 2026-07-30) |
 | `recovered/` | `*_RECOVERED*`, baseline duplicates |
 | `legacy_files/` | Pre-rebuild root/legacy snapshots |
+| `docs-process-legacy/` | Legacy `docs/process/` docs (archived 2026-08-11) |
 | `conversations/` | (optional) Raw / named conversation exports |
 
 ## Migration status
@@ -23,8 +24,8 @@ Live sources: `docs/`, `state/`, root `README.md`.
 
 ## Core / duplicate policy
 
-- Core index: `docs/process/CORE_INDEX.md`
-- Duplicate policy: `docs/process/DUPLICATE_POLICY.md`
+- Core index: `archive/docs-process-legacy/CORE_INDEX.md`
+- Duplicate policy: `archive/docs-process-legacy/DUPLICATE_POLICY.md`
 - Decision log / glossary: `docs/DECISIONS.md`, `docs/GLOSSARY.md`
 
 ## Rules
