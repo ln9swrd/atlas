@@ -15,14 +15,14 @@ See **`state/PROJECT_MAP.md`**.
 
 ### Unregistered / vendored (HOLD — policy 2026-08-11)
 
-Not on historical PROJECT_MAP; present on disk. **No ACTIVE work.** Treat as HOLD until Master decides keep / split / archive.
+Archived 2026-08-11. **No ACTIVE work.**
 
 | Folder | Nature |
 |--------|--------|
-| `3GUpbit/` | Local experiment (Python) |
-| `aws-mcp/` | Vendored AWS MCP server copy |
-| `blender-mcp-main/` | Vendored BlenderMCP |
-| `blender-open-mcp/` | Vendored Ollama Blender MCP |
+| `3GUpbit/` | Archived → `archive/projects-unregistered/3GUpbit/` |
+| `aws-mcp/` | Archived → `archive/projects-unregistered/aws-mcp/` |
+| `blender-mcp-main/` | Archived → `archive/projects-unregistered/blender-mcp-main/` |
+| `blender-open-mcp/` | Archived → `archive/projects-unregistered/blender-open-mcp/` |
 
 ### Absent (docs only — path removed)
 

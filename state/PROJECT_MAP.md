@@ -19,10 +19,10 @@
 
 paramodel · printguard · makerfac-needs-research · blender · `_template`
 
-## HOLD — unregistered on disk (R5 · 2026-08-11)
+## Archived — former R5 unregistered (2026-08-11)
 
 `3GUpbit` · `aws-mcp` · `blender-mcp-main` · `blender-open-mcp`  
-→ 정책 확정 전 ACTIVE 금지. 삭제/이전은 Master 승인 후.
+→ `archive/projects-unregistered/`. ACTIVE 금지. 복원은 Master 승인 후.
 
 ## Absent
 
