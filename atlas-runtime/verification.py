@@ -1,8 +1,0 @@
-# Verification module (stub)
-
-class Verification:
-    def __init__(self):
-        pass
-
-    def verify(self, data):
-        return True
