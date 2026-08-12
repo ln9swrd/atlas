@@ -60,7 +60,7 @@
 | 네크 | 엄호 차단 | 16–17 |
 | 소벡 | 레이드 핵 | 20 |
 
-기체: 세크 → `CREIL_MECHA_SPEC` (이름 동기화 예정) · 나머지 초안
+기체: 세크 → `SEKH_MECHA_SPEC.md` · 나머지 초안
 
 ---
 
@@ -75,7 +75,7 @@
 | 읽힘 | “막는 문. 등급을 매기지 않는다.” |
 
 금지: 네메시스 축소판 · 「급이 아니다」 계열  
-기체: `AEGIS_MECHA_SPEC.md` (이름 동기화 예정)
+기체: `WADJET_MECHA_SPEC.md`
 
 ---
 
@@ -115,8 +115,8 @@
 |------|-----------|
 | 네메시스 | `NEMESIS_MECHA_SPEC` |
 | 세스 | `SETH_MECHA_SPEC` |
-| 세크 | `CREIL_MECHA_SPEC` (동기화 예정) |
-| 와제 | `AEGIS_MECHA_SPEC` (동기화 예정) |
+| 세크 | `SEKH_MECHA_SPEC.md` |
+| 와제 | `WADJET_MECHA_SPEC.md` |
 | 아누·호르·토트·네크·소벡·암밋 | 초안 |
 
 ---
