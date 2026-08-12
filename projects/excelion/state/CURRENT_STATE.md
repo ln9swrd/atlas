@@ -1,10 +1,10 @@
 # CURRENT_STATE — excelion
 
-> Updated: 2026-08-12 · Git consistency (C1–C3) · prior SoR sync 2026-08-09
+> Updated: 2026-08-12 · ORD-GRUNT DECISION C (HOLD) · G1/G2 SoR wording
 
 ## ACTIVE_TARGET
 
-**SoR sync (ops) → 다음 제품 작업 = ORD-GRUNT silhouette 3 concepts (text only)**
+**ORD-GRUNT DECISION: C (HOLD)** · 텍스트 실루엣 3안 산출 완료 · shortlist SWARM COLUMN · 후속 제품 착수 없음
 
 ## Done
 
@@ -23,7 +23,7 @@
 
 ## Next
 
-1. **ORD-GRUNT** 실루엣 텍스트 3안 (`DESIGN_TASK_MAP`) — **제품 Next**
+1. **ORD-GRUNT** 텍스트 실루엣 3안 **Done** · shortlist **SWARM COLUMN** · **DECISION C = HOLD** (LOCK·흑실루엣·삼면도·Meshy/UE 미착수) — `DESIGN_GATE` · `NEXT_STAGE_DECISION`
 2. (ops) SoR 잔여 정합 확인
 3. (선택) 레거시 콘티/애니 잔존 점검 — 캐논 변경 없음
 
@@ -40,6 +40,7 @@
 | UE 실기 (M6) | HOLD |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
+| **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
 
 ## Notes
 
