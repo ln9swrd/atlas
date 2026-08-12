@@ -1,0 +1,9 @@
+# Unreal Engine / Visual Studio generated artifacts
+# Do not commit these — regenerate locally via UE / Generate Project Files
+
+*.sln
+*.vcxproj*
+.vs/
+Binaries/
+Intermediate/
+Saved/
