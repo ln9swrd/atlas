@@ -1,6 +1,6 @@
 # TASK_MAP — excelion
 
-> Updated: 2026-08-09 · SoR sync
+> Updated: 2026-08-12 · Git consistency · prior SoR sync 2026-08-09
 
 | ID | Task | Status | Evidence |
 |----|------|--------|----------|
@@ -15,6 +15,7 @@
 | **P1 EP1 Kai seed** | **Done** | PR #53 · P1_KAI_SEED_VERIFY |
 | **P3 Ashur→Nemesis** | **Done** | PR #54 · P3_NEMESIS_CANON_VERIFY |
 | **P2 EP8 Result UI Spec** | **Done** | PR #55 · EP8_RESULT_UI_SPEC.md |
+| **Unreal Git 정합 (.gitignore · EngineAssociation 5.4)** | **Done** | PR #101 · PR #102 · be224e8 |
 | **ORD-GRUNT 실루엣 텍스트 3안** | **Next** | DESIGN_TASK_MAP |
 | 시각화 (M5 PNG) · Forge 활성 | **Hold** | M5 HOLD · forge DEPRECATION |
 | 새 트랙 | Open | |

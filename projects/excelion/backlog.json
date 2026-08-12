@@ -1,6 +1,6 @@
 {
   "status": "HOLD",
-  "note": "Master 2026-08-04: paramodel 중단. 구 forge 경로 폐기 후보. 항목 동결. 시각화 재개 시 재평가. Active pipeline = Meshy	o Blender	o FBX	o UE.",
+  "note": "Master 2026-08-04: paramodel 중단. 구 forge 경로 폐기 후보. 항목 동결. 시각화 재개 시 재평가. Active pipeline = Meshy → Blender → FBX → UE.",
   "updated": "2026-08-09",
   "items": [
     {

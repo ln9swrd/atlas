@@ -1,6 +1,6 @@
 # EXCELION PROJECT MEMORY
 
-> Updated: 2026-08-07
+> Updated: 2026-08-12 · AXION LOCK note (NAMING_STATUS)
 
 ## Current Phase
 
@@ -33,8 +33,9 @@ Season 1 Story Reconstruction (24화 목표) · 설계 정리 진행
 
 ## Core Entities
 
-### BRAVE
-Humanity's final super robot · Hope · Will · Evolution through battle
+### AXION (구 가칭 BRAVE)
+Humanity's final super robot · Hope · Will · Evolution through battle  
+**Unreal/신규 문서 명칭 = AXION** (`docs/NAMING_STATUS.md` LOCK · 2026-08-10). 레거시 경로·소설 원문의 BRAVE 표기는 이력으로 유지.
 
 ### NEMESIS
 **최종 보스** · 중력·위계·등급 · 여성형  

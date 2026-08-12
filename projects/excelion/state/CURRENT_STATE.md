@@ -1,6 +1,6 @@
 # CURRENT_STATE — excelion
 
-> Updated: 2026-08-09 · **SoR sync** (Master)
+> Updated: 2026-08-12 · Git consistency (C1–C3) · prior SoR sync 2026-08-09
 
 ## ACTIVE_TARGET
 
@@ -15,6 +15,11 @@
   - P1 Kai seed H1「콜.」 · PR #53
   - P3 Ashur→Nemesis · PR #54
   - P2 EP8 Result UI Spec · PR #55 (`8d9dbc2f…`)
+
+- **Git Unreal prep (2026-08-12)**
+  - PR #101 MERGED — `game/Excelion/.gitignore` (생성물 보호)
+  - PR #102 MERGED — EngineAssociation `"5.3"` → `"5.4"` (실기 검증 대상 UE 5.4.4)
+  - UE Generate/Build/Editor 실기 = 여전히 HOLD (개발 PC)
 
 ## Next
 
