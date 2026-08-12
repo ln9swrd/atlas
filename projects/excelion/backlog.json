@@ -1,1 +1,55 @@
-PLACEHOLDER
+{
+  "status": "HOLD",
+  "note": "Master 2026-08-04: paramodel 중단. 구 forge 경로 폐기 후보. 항목 동결. 시각화 재개 시 재평가. Active pipeline = Meshy → Blender → FBX → UE.",
+  "updated": "2026-08-09",
+  "items": [
+    {
+      "id": "EX-BRAVE-001",
+      "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)",
+      "target_stage": "Blender - 모델링",
+      "est_time": 180,
+      "projected_gain": 12.0,
+      "focus_area": "modeling",
+      "category": "Blender Modeling",
+      "bottleneck": "Topology",
+      "assignee_role": "Blender + Review",
+      "status": "HOLD"
+    },
+    {
+      "id": "EX-BRAVE-002",
+      "description": "Brave 기본 프레임 UV 매핑 및 Export",
+      "target_stage": "Blender - UV 매핑",
+      "est_time": 120,
+      "projected_gain": 5.0,
+      "focus_area": "uv_mapping",
+      "category": "Blender UV",
+      "bottleneck": "Seams & Texel Density",
+      "assignee_role": "Blender",
+      "status": "HOLD"
+    },
+    {
+      "id": "EX-BRAVE-003",
+      "description": "Brave 외장 장갑 1개 제작",
+      "target_stage": "Blender - Export 준비",
+      "est_time": 150,
+      "projected_gain": 6.0,
+      "focus_area": "materials",
+      "category": "Blender Export",
+      "bottleneck": "Material Instance Validation",
+      "assignee_role": "Blender + Rule Engine",
+      "status": "HOLD"
+    },
+    {
+      "id": "EX-BRAVE-004",
+      "description": "Brave Unreal Engine 임포트 및 셋업",
+      "target_stage": "Unreal - 임포트/설정",
+      "est_time": 240,
+      "projected_gain": 7.0,
+      "focus_area": "unreal_setup",
+      "category": "Unreal Setup",
+      "bottleneck": "Import/Collision",
+      "assignee_role": "UE",
+      "status": "HOLD"
+    }
+  ]
+}
