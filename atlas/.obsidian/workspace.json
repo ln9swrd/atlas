@@ -11,34 +11,13 @@
             "id": "f5115f7d11f0c765",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "bases",
               "state": {
-                "file": "환영합니다!.md",
-                "mode": "source",
-                "source": false
+                "file": "무제.base",
+                "viewName": "표"
               },
-              "icon": "lucide-file",
-              "title": "환영합니다!"
-            }
-          }
-        ]
-      },
-      {
-        "id": "fedb7f9d063bfcf2",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "864ba0ab9bbc832a",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "링크를 만들거나.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "링크를 만들거나"
+              "icon": "lucide-table",
+              "title": "무제"
             }
           }
         ]
@@ -208,11 +187,11 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "864ba0ab9bbc832a",
+  "active": "f5115f7d11f0c765",
   "lastOpenFiles": [
-    "환영합니다!.md",
     "링크를 만들거나.md",
     "무제.base",
+    "환영합니다!.md",
     "readme.md"
   ]
 }
