@@ -5,6 +5,7 @@
 | Path | Role |
 |------|------|
 | `state/CURRENT_STATE.md` | Now / Next |
+| `state/SOT_MAP.md` | 정본·수정 권한 지도 (AI 필수) |
 | `state/TASK_MAP.md` | Open tasks |
 | `docs/` | Design |
 | `novel/` | Story |
@@ -21,3 +22,4 @@
 - Dual-write to closed `ln9swrd/excelion`
 - Treating chat as SoR
 - Reactivating excelion-forge as primary path without Master decision
+- LOCK 경로 임의 수정 (SOT_MAP · AGENTS.md 준수)
