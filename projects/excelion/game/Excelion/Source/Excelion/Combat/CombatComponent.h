@@ -50,11 +50,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TArray<TEnumAsByte<EObjectTypeQuery>> AttackObjectTypes;
 
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void PerformHitDetection();
+
 protected:
 	bool bIsAttacking = false;
 	float AttackTimer = 0.f;
 	bool bDamageAppliedThisAttack = false;
 
-	void PerformHitDetection();
 	void EndAttack();
 };

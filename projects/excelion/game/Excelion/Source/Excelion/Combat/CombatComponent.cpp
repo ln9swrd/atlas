@@ -2,6 +2,7 @@
 
 #include "Combat/CombatComponent.h"
 #include "Combat/HealthComponent.h"
+#include "Combat/ExcelionFeedbackSubsystem.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
@@ -114,6 +115,14 @@ void UCombatComponent::PerformHitDetection()
 		if (TargetHealth && !TargetHealth->IsDead())
 		{
 			TargetHealth->ApplyDamage(AttackDamage);
+
+			if (UWorld* World = GetWorld())
+			{
+				if (UExcelionFeedbackSubsystem* Feedback = World->GetSubsystem<UExcelionFeedbackSubsystem>())
+				{
+					Feedback->BroadcastHitImpact(Hit.ImpactPoint, Hit.ImpactNormal, false);
+				}
+			}
 		}
 	}
 }
