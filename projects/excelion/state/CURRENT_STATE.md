@@ -37,12 +37,12 @@
 - **U1-A~C & U1-C1~C6 실기 언리얼 로그 검증 완전 통과 (2026-08-14)** — `run_pie_automation_proof.py` 언리얼 5.4 실기 실행 결과 9개 전 항목 PASS 확인 (`U1 PLAYER PROOF — VERIFIED`)
 - **Phase 3-B Minimal BP_DummyTarget 구축 완료 (2026-08-14)** — 순수 C++ `AExcelionDummyTarget` 상속 및 `BP_DummyTarget.uasset` 생성/저장 확인 (`MaxHealth = 100.f`, `CapsuleCollision=Pawn`, `FallbackCube`) (VERIFIED)
 - **Phase 3-C & 3-D U2 Core Combat Proof 언리얼 5.4 실기 실행 완전 통과 (2026-08-14)** — `run_u2_combat_core_proof.py` 언리얼 5.4 에디터 실기 실행 결과 `Excelion.log`에 `[U2-A PASS]`, `[U2-B PASS]`, `[U2-C PASS]`, `[U2-D PASS]` 전 항목 100% 성공 검증 확인 (`U2 CORE COMBAT PROOF — VERIFIED`)
-- **Phase 4-C — P0 Runtime Binding Implementation 완료 (2026-08-14)** — C++ 생성자의 HP 100/Attack 25/MoveSpeed 600 하드코딩 완전 제거, `MechaDataAsset == nullptr` 시 경고 후 초기화 중단 안전장치 확보, `DA_AXION_Stats` $\rightarrow$ `BP_ExcelionCharacter` CDO 바인딩 및 언리얼 5.4.4 실기 구동 결과 `MaxHP=100.0`, `AttackPower=25.0`, `MoveSpeed=600.0` 100% 반영 검증 통과 (`P0 RUNTIME BINDING — VERIFIED`)
+- **Phase U2-E — Attack → Feedback C++ Bridge 연동 완료 (2026-08-14)** — `CombatComponent::PerformHitDetection()` 내 타깃 HitConfirm 시점에 `GetWorld()->GetSubsystem<UExcelionFeedbackSubsystem>()` 직접 접근 및 `BroadcastHitImpact()` 호출 C++ 브릿지 완성, 타깃 데미지(25.0f) 손상 없이 언리얼 5.4.4 실기 구동 검증 완전 통과 (`U2-E ATTACK -> FEEDBACK BRIDGE — VERIFIED`)
 
 ## Next
 
-1. **U2-E/F/G Gameplay Bridge C++ 연동 준비 (Master 승인 대기)**:
-   - Attack $\rightarrow$ Feedback, Attack $\rightarrow$ Heat, Skill $\rightarrow$ S-Core 연동 설계 및 승인 대기
+1. **U2-F Attack $\rightarrow$ Heat 연동 기획/규칙 Master 결정 대기**:
+   - 근접 메인 공격 시 Heat 부과 여부 및 `HeatCost` 차감 타이밍(시도 vs 히트) 기획 결정 후 진행
 2. **Phase 4-A — U3 Enemy / Boss Combat Integration (HOLD)**
 3. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
@@ -56,7 +56,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Feedback Bridge 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -66,12 +66,11 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-14)**:
-  - **작업명**: Phase 4-C — P0 Runtime Binding Implementation & Verification
-  - **현재 상태**: VERIFIED (Build, Binding, Null Guard & UE 5.4.4 Commandlet Verification 100% Passed)
+  - **작업명**: Phase U2-E — Attack $\rightarrow$ Feedback C++ Bridge Integration & Verification
+  - **현재 상태**: VERIFIED (Build, C++ Direct Access, Null Guard, Damage 25.0 Preserved & UE 5.4.4 Verification 100% Passed)
   - **완료**:
-    - `AExcelionCharacter` 생성자 내 C++ 스탯 하드코딩(100/25/600) 제거 및 DataAsset Null 방어막 구현
-    - `DA_AXION_Stats` SSOT 에셋 생성/연결 및 `BP_ExcelionCharacter` CDO `mecha_data_asset` 주입
-    - `run_p0_runtime_binding_proof.py` 구동으로 언리얼 5.4.4 실기 환경에서 `MaxHP=100`, `AttackPower=25`, `MoveSpeed=600` Runtime 바인딩 검증 완료 (`P0-RB ALL VERIFIED`)
-  - **변경 파일**: `ExcelionCharacter.h`, `ExcelionCharacter.cpp`, `run_p0_runtime_binding_proof.py`, `wire_p0_runtime_binding.py`, `BP_ExcelionCharacter.uasset`, `projects/excelion/state/CURRENT_STATE.md`
-  - **다음 작업**: Master 지시 및 U2-E/F/G Gameplay Bridge 연동 승인 대기
+    - `CombatComponent::PerformHitDetection()` hit-confirm 지점에 C++ `UExcelionFeedbackSubsystem` 직접 호출 및 `BroadcastHitImpact` 연동
+    - `run_u2_extended_proof.py` 구동으로 언리얼 5.4.4 실기 환경에서 `[U2-E-C PASS]` 및 U2-A~D Regression 유지 확인
+  - **변경 파일**: `CombatComponent.h`, `CombatComponent.cpp`, `run_u2_extended_proof.py`, `projects/excelion/state/CURRENT_STATE.md`
+  - **다음 작업**: Master 지시 및 U2-F Heat 연동 규칙 결정 대기
   - **재개 조건**: Master 지시 시
