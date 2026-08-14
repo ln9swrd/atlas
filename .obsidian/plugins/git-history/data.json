@@ -1,0 +1,14 @@
+{
+  "commitTemplate": "",
+  "pullStrategy": "merge",
+  "autoFetchEnabled": false,
+  "autoFetchInterval": 300,
+  "diffViewMode": "side-by-side",
+  "onlySupportedFileTypes": true,
+  "showStatusBar": true,
+  "treeView": false,
+  "debounceMs": 1000,
+  "showNestedRepos": false,
+  "lastWhatsNewVersion": "1.4.0",
+  "terminalShell": ""
+}

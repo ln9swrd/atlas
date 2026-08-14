@@ -1,0 +1,240 @@
+{
+  "main": {
+    "id": "ced583a60ebef4b2",
+    "type": "split",
+    "children": [
+      {
+        "id": "a3dcdb66c09a1e5b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f5115f7d11f0c765",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "링크를 만들거나.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "링크를 만들거나"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7076a92448593e9f",
+    "type": "split",
+    "children": [
+      {
+        "id": "c974f1a5f5d8bb7d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "57fcd7f246a58beb",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "47bf527c03e435a4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "9327806f74acd2a1",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          },
+          {
+            "id": "5cdf6555acb54796",
+            "type": "leaf",
+            "state": {
+              "type": "vault-changelog-view",
+              "state": {},
+              "icon": "folder-clock",
+              "title": "Vault changelog"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "967528403a4f8f94",
+    "type": "split",
+    "children": [
+      {
+        "id": "f4fc014caf4f9c0c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c9ba4db09f2ad4eb",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "링크를 만들거나.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "백링크"
+            }
+          },
+          {
+            "id": "edca1a7ca4c61db9",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "링크를 만들거나.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "나가는 링크"
+            }
+          },
+          {
+            "id": "8d5c563fe729bcdb",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "cb6d9029ff46e575",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "e6e74da82fdd4255",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "링크를 만들거나.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "개요"
+            }
+          },
+          {
+            "id": "0a729c1ac434eef9",
+            "type": "leaf",
+            "state": {
+              "type": "sync-status-view",
+              "state": {},
+              "icon": "git-compare",
+              "title": "Sync status"
+            }
+          },
+          {
+            "id": "819f3c181b058179",
+            "type": "leaf",
+            "state": {
+              "type": "file-changelog-view",
+              "state": {},
+              "icon": "file-clock",
+              "title": "File changelog"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false,
+      "obsidian-git:Open Git source control": false,
+      "github-sync:Sync with Remote": false,
+      "git-integration:Open git menu": false,
+      "git-file-sync:Open sync status": false,
+      "git-file-sync:Push to GitLab": false,
+      "git-vault-sync:Git Vault Sync: Sync vault": false,
+      "git-vault-sync:Git Vault Sync: Review changes & sync": false,
+      "git-history:Git history": false,
+      "git-history:Open terminal": false,
+      "github-publish:GitHub Publish setup": false,
+      "github-updater:Install Plugin from GitHub": false
+    }
+  },
+  "active": "f5115f7d11f0c765",
+  "lastOpenFiles": [
+    "무제.base",
+    "환영합니다!.md",
+    "무제 1.base",
+    "링크를 만들거나.md",
+    "readme.md"
+  ]
+}
