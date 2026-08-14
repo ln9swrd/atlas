@@ -1,0 +1,20 @@
+{
+  "remoteUrl": "https://github.com/ln9swrd/atlas",
+  "branch": "main",
+  "authorName": "",
+  "authorEmail": "",
+  "username": "ln9swrd",
+  "token": "",
+  "commitMessage": "vault sync {{date}}",
+  "autoSyncEnabled": false,
+  "autoSyncInterval": 10,
+  "syncOnStartup": false,
+  "lastSyncAt": 0,
+  "excludePaths": ".obsidian/workspace.json\n.obsidian/workspace-mobile.json\n.DS_Store\n.trash/",
+  "language": "auto",
+  "syncEngine": "auto",
+  "apiBaseline": {
+    "commitSha": null,
+    "shas": {}
+  }
+}

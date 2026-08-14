@@ -11,14 +11,10 @@
             "id": "f5115f7d11f0c765",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "링크를 만들거나.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "링크를 만들거나"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "그래프 뷰"
             }
           }
         ]
@@ -199,9 +195,29 @@
               "icon": "file-clock",
               "title": "File changelog"
             }
+          },
+          {
+            "id": "abe6ccec3d1c86e3",
+            "type": "leaf",
+            "state": {
+              "type": "git-history-source-control",
+              "state": {},
+              "icon": "git-branch",
+              "title": "Source control"
+            }
+          },
+          {
+            "id": "cf13ccc08446f5ea",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
         ],
-        "currentTab": 5
+        "currentTab": 8
       }
     ],
     "direction": "horizontal",
@@ -231,10 +247,12 @@
   },
   "active": "f5115f7d11f0c765",
   "lastOpenFiles": [
-    "무제.base",
-    "환영합니다!.md",
+    "무제.canvas",
+    "2026-08-14.md",
     "무제 1.base",
     "링크를 만들거나.md",
+    "무제.base",
+    "환영합니다!.md",
     "readme.md"
   ]
 }
