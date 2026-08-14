@@ -2,7 +2,8 @@
 
 > 2026-08-06 · Master 지시  
 > 적용: BRAVE 우선 · 아군 슈퍼로봇 계열 공통 참고  
-> 연동: `DESIGN_QUALITY.md` · `FRAME_SPEC.md` · `BRAVE_INFLUENCE.md`
+> 연동: `DESIGN_QUALITY.md` · `FRAME_SPEC.md` · `BRAVE_INFLUENCE.md`  
+> **Canon 계층:** `design/CANON_HIERARCHY.md` — SUPER_ROBOT_DESIGN_LANGUAGE 하위 · 구현 방법 (Model A)
 
 **상태: LOCK**
 
@@ -124,6 +125,7 @@ silhouette and core accent read first at distance.
 ## 9. 관련
 
 - `DESIGN_QUALITY.md` — 피니시 상한
+- `mecha/SUPER_ROBOT_DESIGN_LANGUAGE.md` — 정체성 (상위)
 - `brave/FRAME_SPEC.md` · `BRAVE_INFLUENCE.md`
 - `FSS_STYLE_REF.md` — 표면 참고 시에도 **선 과다 금지** 우선
 
