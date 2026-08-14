@@ -69,15 +69,17 @@ void AExcelionCharacter::PostInitializeComponents()
 	ApplyMechaDataAsset();
 }
 
-void AExcelionCharacter::ApplyMechaDataAsset()
+void AExcelionCharacter::ApplyMechaDataAsset(UExcelionMechaDataAsset* InMechaDataAsset)
 {
-	if (!MechaDataAsset)
+	UExcelionMechaDataAsset* TargetData = InMechaDataAsset ? InMechaDataAsset : MechaDataAsset;
+
+	if (!TargetData)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AExcelionCharacter] MechaDataAsset is NULL on %s! Runtime stats not set from SSOT."), *GetName());
 		return;
 	}
 
-	const FExcelionMechaBaseStats& Stats = MechaDataAsset->BaseStats;
+	const FExcelionMechaBaseStats& Stats = TargetData->BaseStats;
 
 	if (HealthComponent)
 	{
@@ -96,7 +98,7 @@ void AExcelionCharacter::ApplyMechaDataAsset()
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("[AExcelionCharacter] Applied MechaDataAsset (%s) to %s: MaxHP=%.1f, AttackPower=%.1f, MoveSpeed=%.1f"),
-		*MechaDataAsset->GetName(), *GetName(), Stats.MaxHP, Stats.AttackPower, Stats.MoveSpeed);
+		*TargetData->GetName(), *GetName(), Stats.MaxHP, Stats.AttackPower, Stats.MoveSpeed);
 }
 
 void AExcelionCharacter::BeginPlay()

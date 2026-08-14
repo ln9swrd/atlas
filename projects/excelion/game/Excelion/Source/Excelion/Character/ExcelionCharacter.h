@@ -34,7 +34,8 @@ public:
 	virtual void BeginPlay() override;
 
 	/** Applies stats from MechaDataAsset SSOT to runtime components. */
-	void ApplyMechaDataAsset();
+	UFUNCTION(BlueprintCallable, Category = "AXION|Mecha")
+	void ApplyMechaDataAsset(UExcelionMechaDataAsset* InMechaDataAsset = nullptr);
 
 	/** Called when character dies. */
 	UFUNCTION()
