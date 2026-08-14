@@ -63,5 +63,6 @@
   - **작업명**: Excelion 언리얼 5.4 C++ 핵심 코어 구축 및 언리얼 전용 MCP 서버(unreal-mcp-server) 연동 완료
   - **현재 상태**: VERIFIED (C++ 로딩 검증 완료 & MCP 서버 연동 세팅 완비)
   - **완료**: `SCoreComponent`, `MadnessComponent`, `ExcelionCharacter`, `SethBoss`, `ExcelionGameMode`, `ExcelionMechaDataAsset`, `ExcelionFeedbackSubsystem`, `ExcelionHUDWidget`, `unreal_mcp_server.py`, `.agents/mcp_config.json`
+  - **관련 커밋**: `4068e04` (`feat(excelion): implement C++ mecha core, S-Core, Madness, SethBoss Phase 2, UMG HUD, and Unreal MCP server`)
   - **다음 작업**: 언리얼 에디터 `Remote Control API` 플러그인 활성화 및 MCP 통한 실시간 에디터 제어 테스트
   - **재개 조건**: Master의 후속 지시 시
