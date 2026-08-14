@@ -37,7 +37,7 @@
 - **U1-A~C & U1-C1~C6 실기 언리얼 로그 검증 완전 통과 (2026-08-14)** — `run_pie_automation_proof.py` 언리얼 5.4 실기 실행 결과 9개 전 항목 PASS 확인 (`U1 PLAYER PROOF — VERIFIED`)
 - **Phase 3-B Minimal BP_DummyTarget 구축 완료 (2026-08-14)** — 순수 C++ `AExcelionDummyTarget` 상속 및 `BP_DummyTarget.uasset` 생성/저장 확인 (`MaxHealth = 100.f`, `CapsuleCollision=Pawn`, `FallbackCube`) (VERIFIED)
 - **Phase 3-C & 3-D U2 Core Combat Proof 언리얼 5.4 실기 실행 완전 통과 (2026-08-14)** — `run_u2_combat_core_proof.py` 언리얼 5.4 에디터 실기 실행 결과 `Excelion.log`에 `[U2-A PASS]`, `[U2-B PASS]`, `[U2-C PASS]`, `[U2-D PASS]` 전 항목 100% 성공 검증 확인 (`U2 CORE COMBAT PROOF — VERIFIED`)
-- **Phase U2-E — Attack → Feedback C++ Bridge Invocation 연동 완료 (2026-08-14)** — `CombatComponent::PerformHitDetection()` 내 타깃 HitConfirm 시점에 `GetWorld()->GetSubsystem<UExcelionFeedbackSubsystem>()` 직접 접근 및 `BroadcastHitImpact()` 호출 C++ 브릿지 연동 검증 통과 (Broadcast 호출까지 증명, 실제 HitStop/CameraShake 최종 체감 효과는 미검증으로 분리) (`U2-E ATTACK -> FEEDBACK BRIDGE INVOCATION — VERIFIED`)
+- **Phase U2-E — Attack → Feedback Bridge Invocation VERIFIED (2026-08-14)** — `CombatComponent::PerformHitDetection()` 내 타깃 HitConfirm 시점에 `BroadcastHitImpact()` 호출까지 검증 완료 (실제 HitStop/CameraShake의 최종 체감 효과는 미검증으로 분리)
 
 ## Next
 
@@ -67,7 +67,7 @@
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-14)**:
   - **작업명**: Phase U2-E — Attack $\rightarrow$ Feedback C++ Bridge Invocation & Pre-Commit Audit
-  - **현재 상태**: Bridge Invocation VERIFIED (Build, C++ Direct Access, Null Guard, Broadcast HitImpact Invocation Passed; Final HitStop/Shake unverified)
+  - **현재 상태**: Attack → Feedback Bridge Invocation VERIFIED (BroadcastHitImpact 호출까지 검증, 실제 HitStop/CameraShake 최종 체감 효과는 미검증)
   - **완료**:
     - `CombatComponent::PerformHitDetection()` hit-confirm 지점에 C++ `UExcelionFeedbackSubsystem` 직접 호출 및 `BroadcastHitImpact` 연동 (테스트 전용 중복 `ECC_Pawn` 방어 코드 제거 정돈 완료)
     - `run_u2_extended_proof.py` 구동으로 언리얼 5.4.4 실기 환경에서 `[U2-E-C PASS]` (Invocation Verified) 및 U2-A~D, U2-F/G Regression 유지 확인

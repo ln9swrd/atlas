@@ -51,9 +51,15 @@ def run_u2_extended_proof():
 
     combat_comp = player.get_component_by_class(unreal.CombatComponent)
     if combat_comp and dummy:
-        # Trigger C++ BeginPlay in commandlet test environment if needed
-        if hasattr(combat_comp, "begin_play"):
-            combat_comp.begin_play()
+        # Ensure attack_object_types contains Pawn (OBJECT_TYPE_QUERY3) if not initialized by BeginPlay in commandlet
+        obj_types = combat_comp.get_editor_property("attack_object_types")
+        if not obj_types or len(obj_types) == 0:
+            combat_comp.set_editor_property("attack_object_types", [
+                unreal.ObjectTypeQuery.OBJECT_TYPE_QUERY1,
+                unreal.ObjectTypeQuery.OBJECT_TYPE_QUERY2,
+                unreal.ObjectTypeQuery.OBJECT_TYPE_QUERY3,
+                unreal.ObjectTypeQuery.OBJECT_TYPE_QUERY4
+            ])
 
         # Initial Target HP
         target_health = dummy.get_component_by_class(unreal.HealthComponent)
