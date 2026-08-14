@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "ExcelionGameMode.generated.h"
 
 UENUM(BlueprintType)
 enum class EExcelionGameState : uint8
@@ -15,6 +14,8 @@ enum class EExcelionGameState : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnExcelionGameStateChangedSignature, EExcelionGameState, NewState);
+
+#include "ExcelionGameMode.generated.h"
 
 /**
  * GameMode for Excelion Prototype.

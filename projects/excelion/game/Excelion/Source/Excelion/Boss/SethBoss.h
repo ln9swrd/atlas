@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "SethBoss.generated.h"
-
-class UHealthComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBossPhaseChangedSignature, int32, NewPhase);
 
@@ -28,6 +25,8 @@ enum class ESethBossPhase : uint8
 	Phase2Transition,
 	Phase2
 };
+
+#include "SethBoss.generated.h"
 
 /**
  * Seth Boss — Vertical Slice Boss (UE 5.4)
