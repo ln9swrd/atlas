@@ -1,20 +1,24 @@
 {
   "main": {
-    "id": "ced583a60ebef4b2",
+    "id": "43d4f9d89e7b6632",
     "type": "split",
     "children": [
       {
-        "id": "a3dcdb66c09a1e5b",
+        "id": "7eca6fbff7afcf2f",
         "type": "tabs",
         "children": [
           {
-            "id": "f5115f7d11f0c765",
+            "id": "70dd136b1dd73ba2",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "그래프 뷰"
+              "type": "markdown",
+              "state": {
+                "file": "state/TASK_MAP.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "TASK_MAP"
             }
           }
         ]
@@ -23,15 +27,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "7076a92448593e9f",
+    "id": "257f10bfa241fb2f",
     "type": "split",
     "children": [
       {
-        "id": "c974f1a5f5d8bb7d",
+        "id": "fae2287aebe44540",
         "type": "tabs",
         "children": [
           {
-            "id": "57fcd7f246a58beb",
+            "id": "9b0c18792c3c6d82",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -46,7 +50,7 @@
             }
           },
           {
-            "id": "47bf527c03e435a4",
+            "id": "541ce57b77fba14e",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -63,7 +67,7 @@
             }
           },
           {
-            "id": "9327806f74acd2a1",
+            "id": "da4c81a715b21e70",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -74,16 +78,6 @@
               "icon": "lucide-bookmark",
               "title": "북마크"
             }
-          },
-          {
-            "id": "5cdf6555acb54796",
-            "type": "leaf",
-            "state": {
-              "type": "vault-changelog-view",
-              "state": {},
-              "icon": "folder-clock",
-              "title": "Vault changelog"
-            }
           }
         ]
       }
@@ -92,20 +86,20 @@
     "width": 300
   },
   "right": {
-    "id": "967528403a4f8f94",
+    "id": "701964ab1595f5f0",
     "type": "split",
     "children": [
       {
-        "id": "f4fc014caf4f9c0c",
+        "id": "19e2ff5b3f7be1c4",
         "type": "tabs",
         "children": [
           {
-            "id": "c9ba4db09f2ad4eb",
+            "id": "41092b739252f52d",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "링크를 만들거나.md",
+                "file": "state/TASK_MAP.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -119,12 +113,12 @@
             }
           },
           {
-            "id": "edca1a7ca4c61db9",
+            "id": "582a5e60edb9b63a",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "링크를 만들거나.md",
+                "file": "state/TASK_MAP.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -133,7 +127,7 @@
             }
           },
           {
-            "id": "8d5c563fe729bcdb",
+            "id": "db1dffdf488977b0",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -148,7 +142,7 @@
             }
           },
           {
-            "id": "cb6d9029ff46e575",
+            "id": "9e27635f646698c6",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -162,12 +156,12 @@
             }
           },
           {
-            "id": "e6e74da82fdd4255",
+            "id": "c64161f3488cf474",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "링크를 만들거나.md",
+                "file": "state/TASK_MAP.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -175,53 +169,13 @@
               "icon": "lucide-list",
               "title": "개요"
             }
-          },
-          {
-            "id": "0a729c1ac434eef9",
-            "type": "leaf",
-            "state": {
-              "type": "sync-status-view",
-              "state": {},
-              "icon": "git-compare",
-              "title": "Sync status"
-            }
-          },
-          {
-            "id": "819f3c181b058179",
-            "type": "leaf",
-            "state": {
-              "type": "file-changelog-view",
-              "state": {},
-              "icon": "file-clock",
-              "title": "File changelog"
-            }
-          },
-          {
-            "id": "abe6ccec3d1c86e3",
-            "type": "leaf",
-            "state": {
-              "type": "git-history-source-control",
-              "state": {},
-              "icon": "git-branch",
-              "title": "Source control"
-            }
-          },
-          {
-            "id": "cf13ccc08446f5ea",
-            "type": "leaf",
-            "state": {
-              "type": "git-view",
-              "state": {},
-              "icon": "git-pull-request",
-              "title": "Source Control"
-            }
           }
-        ],
-        "currentTab": 8
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -231,28 +185,13 @@
       "daily-notes:오늘의 일일 노트 열기": false,
       "templates:템플릿 삽입": false,
       "command-palette:명령어 팔레트 열기": false,
-      "bases:새 베이스 생성하기": false,
-      "obsidian-git:Open Git source control": false,
-      "github-sync:Sync with Remote": false,
-      "git-integration:Open git menu": false,
-      "git-file-sync:Open sync status": false,
-      "git-file-sync:Push to GitLab": false,
-      "git-vault-sync:Git Vault Sync: Sync vault": false,
-      "git-vault-sync:Git Vault Sync: Review changes & sync": false,
-      "git-history:Git history": false,
-      "git-history:Open terminal": false,
-      "github-publish:GitHub Publish setup": false,
-      "github-updater:Install Plugin from GitHub": false
+      "bases:새 베이스 생성하기": false
     }
   },
-  "active": "cf13ccc08446f5ea",
+  "active": "70dd136b1dd73ba2",
   "lastOpenFiles": [
-    "무제.canvas",
-    "2026-08-14.md",
-    "무제 1.base",
-    "링크를 만들거나.md",
-    "무제.base",
-    "환영합니다!.md",
-    "readme.md"
+    "projects/excelion/README.md",
+    "AGENTS.md",
+    "README.md"
   ]
 }
