@@ -82,7 +82,7 @@ void AExcelionCharacter::ApplyMechaDataAsset()
 	if (HealthComponent)
 	{
 		HealthComponent->MaxHealth = Stats.MaxHP;
-		HealthComponent->CurrentHealth = Stats.MaxHP;
+		HealthComponent->ResetHealth();
 	}
 
 	if (CombatComponent)
