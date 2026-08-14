@@ -41,6 +41,10 @@ AExcelionCharacter::AExcelionCharacter()
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.35f;
 
+	// Mesh default offset inside capsule
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+
 	// Components
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	HealthComponent->MaxHealth = 100.f;
@@ -49,6 +53,17 @@ AExcelionCharacter::AExcelionCharacter()
 	CombatComponent->AttackDamage = 25.f;
 
 	SCoreComponent = CreateDefaultSubobject<USCoreComponent>(TEXT("SCoreComponent"));
+
+	// Fallback visual mesh so character is immediately visible in Play without manual asset setup
+	FallbackVisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FallbackVisualMesh"));
+	FallbackVisualMesh->SetupAttachment(RootComponent);
+	FallbackVisualMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 1.8f));
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultCubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if (DefaultCubeMesh.Succeeded())
+	{
+		FallbackVisualMesh->SetStaticMesh(DefaultCubeMesh.Object);
+	}
 }
 
 void AExcelionCharacter::BeginPlay()

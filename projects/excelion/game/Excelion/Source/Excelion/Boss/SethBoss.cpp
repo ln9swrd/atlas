@@ -17,6 +17,17 @@ ASethBoss::ASethBoss()
 
 	GetCharacterMovement()->MaxWalkSpeed = 200.f;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	// Fallback visual mesh for Seth Boss
+	FallbackVisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FallbackVisualMesh"));
+	FallbackVisualMesh->SetupAttachment(RootComponent);
+	FallbackVisualMesh->SetRelativeScale3D(FVector(1.2f, 1.2f, 2.5f));
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultCylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	if (DefaultCylinderMesh.Succeeded())
+	{
+		FallbackVisualMesh->SetStaticMesh(DefaultCylinderMesh.Object);
+	}
 }
 
 void ASethBoss::BeginPlay()

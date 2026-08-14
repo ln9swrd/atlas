@@ -65,6 +65,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	USCoreComponent* SCoreComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
+	UStaticMeshComponent* FallbackVisualMesh;
+
 	// ----- Enhanced Input (assets to be created in Editor) -----
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputMappingContext* DefaultMappingContext;

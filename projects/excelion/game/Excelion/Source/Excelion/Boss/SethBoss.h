@@ -52,6 +52,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	UHealthComponent* HealthComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
+	UStaticMeshComponent* FallbackVisualMesh;
+
 	// ----- Phase Control -----
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Phase")
 	float Phase2HPThreshold = 0.5f; // Phase 2 triggers at 50% HP
