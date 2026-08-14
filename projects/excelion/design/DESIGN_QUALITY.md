@@ -2,7 +2,8 @@
 
 > 2026-08-09 · 3톤/저디테일 연동  
 > **품질 목표: 반다이 로봇혼 · 센티넬 수준 피니시**  
-> **정보량: `MECHA_3TONE_LOW_DETAIL` · `SUPER_ROBOT_MODERN`**
+> **정보량: `MECHA_3TONE_LOW_DETAIL` · `SUPER_ROBOT_MODERN`**  
+> **Canon 계층:** `design/CANON_HIERARCHY.md` — 최상위 품질 상한 (Model A)
 
 **상태: LOCK**
 
@@ -69,7 +70,8 @@ No hyper-busy greeble, no sketch, no rough, no excessive color fragmentation.
 ## 관련
 
 - `MECHA_3TONE_LOW_DETAIL.md` — **공통 3톤·패널·밀도 SoR**
-- `SUPER_ROBOT_MODERN.md` — 슈퍼로봇 패널
+- `mecha/SUPER_ROBOT_DESIGN_LANGUAGE.md` — 정체성 (하위)
+- `SUPER_ROBOT_MODERN.md` — 슈퍼로봇 패널 (하위)
 - `ORDER_DESIGN_LANGUAGE.md` — ORDER 실루엣·색 방향
 
 **DESIGN_QUALITY = 피니시 상한 + 정보량 절제.**
