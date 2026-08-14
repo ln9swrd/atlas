@@ -23,7 +23,7 @@ struct EXCELION_API FExcelionMechaBaseStats
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	FName MechaId = "brave-001";
+	FName MechaId = "axion-001";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	FText DisplayName;

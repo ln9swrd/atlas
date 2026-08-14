@@ -64,11 +64,14 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-14)**:
-  - **작업명**: Excelion 전투 파라미터 및 Seth 보스 AI 패턴 튜닝 완수 (Aggressive / Hard Preset)
-  - **현재 상태**: VERIFIED (Hard Preset C++ 파라미터 적용 및 DLL 빌드 완료)
+  - **작업명**: Excelion 메카 데이터 에셋 2종(`DA_AXION_Stats`, `DA_SethBoss_Stats`) 파이프라인 자동화 구축 및 검증 완료
+  - **현재 상태**: VERIFIED (데이터 에셋 2종 생성 완료 및 main 저장소 동기화)
   - **완료**:
-    - **AXION 플레이어 (`ExcelionCharacter`)**: DashDistance 600u, DashDuration 0.20s, DashCooldown 1.0s, InvulnerabilityDuration 0.25s (정밀 타이트한 무적 프레임)
-    - **Seth 보스 (`SethBoss`)**: Phase2HPThreshold 60% HP (조기 이행), PatternInterval 2.8s, WarningDuration 0.8s (빠른 전조), AttackDuration 0.4s, RecoveryDuration 0.8s, PatternDamage 55.f, PatternRadius 400.f (Area Blast 광범위), PatternRange 1500.f (Beam Charge 장거리)
-  - **변경 파일**: `Source/Excelion/Character/ExcelionCharacter.h`, `Source/Excelion/Boss/SethBoss.h`
-  - **다음 작업**: 언리얼 에디터 5.4 실행 및 실기 전투 플레이테스트
+    - `Source/Excelion/Data/ExcelionMechaDataAsset.h`: 기본 `MechaId` 식별자를 `axion-001` 정식명으로 변경
+    - `Scripts/create_data_assets_automation.py`: 파이썬 기반 데이터 에셋 자동 생성 스크립트 작성 및 호출
+    - `/Game/Data/` 에셋 생성 검증:
+      - `DA_AXION_Stats.uasset` (MaxHP=100.0, Armor=10.0, Scale=25m, Atk=25.0, Category=Player)
+      - `DA_SethBoss_Stats.uasset` (MaxHP=480.0, Armor=20.0, Scale=30m, Atk=55.0, Category=Boss)
+  - **변경 파일**: `Source/Excelion/Data/ExcelionMechaDataAsset.h`, `Content/Data/*.uasset`, `Scripts/create_data_assets_automation.py`
+  - **다음 작업**: 언리얼 에디터 UMG HUD (`WBP_ExcelionHUD`) 뷰포트 레이아웃 배치 및 플레이테스트
   - **재개 조건**: Master 지시 시
