@@ -6,8 +6,8 @@ Master 승인 또는 내용 보강이 필요한 문서.
 
 ## 현재
 
-| 문서 | 이유 |
+| 문서 | 상태 |
 |------|------|
-| (루트 유지) mecha/SUPER_ROBOT_DESIGN_LANGUAGE.md | LOCK 후보 → Canon Hierarchy에 포함됨. 내용 변경 없이 계층만 확정 |
+| mecha/SUPER_ROBOT_DESIGN_LANGUAGE.md | **LOCK 승격 완료** (Model A · 2026-08-14). review 대상 아님 |
 
-내용 변경·병합은 2차 범위 밖.
+현재 대기 중인 LOCK 후보 없음.
