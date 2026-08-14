@@ -11,6 +11,17 @@ class UHealthComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBossPhaseChangedSignature, int32, NewPhase);
 
 UENUM(BlueprintType)
+enum class ESethBossState : uint8
+{
+	Idle,
+	Combat,
+	Warning,
+	Attack,
+	Recovery,
+	Death
+};
+
+UENUM(BlueprintType)
 enum class ESethBossPhase : uint8
 {
 	Phase1,
