@@ -37,10 +37,7 @@
 - **U1-A~C & U1-C1~C6 실기 언리얼 로그 검증 완전 통과 (2026-08-14)** — `run_pie_automation_proof.py` 언리얼 5.4 실기 실행 결과 9개 전 항목 PASS 확인 (`U1 PLAYER PROOF — VERIFIED`)
 - **Phase 3-B Minimal BP_DummyTarget 구축 완료 (2026-08-14)** — 순수 C++ `AExcelionDummyTarget` 상속 및 `BP_DummyTarget.uasset` 생성/저장 확인 (`MaxHealth = 100.f`, `CapsuleCollision=Pawn`, `FallbackCube`) (VERIFIED)
 - **Phase 3-C & 3-D U2 Core Combat Proof 언리얼 5.4 실기 실행 완전 통과 (2026-08-14)** — `run_u2_combat_core_proof.py` 언리얼 5.4 에디터 실기 실행 결과 `Excelion.log`에 `[U2-A PASS]`, `[U2-B PASS]`, `[U2-C PASS]`, `[U2-D PASS]` 전 항목 100% 성공 검증 확인 (`U2 CORE COMBAT PROOF — VERIFIED`)
-- **U2-E~G Read-Only Execution Proof 실기 실행 완료 (2026-08-14)** — `run_u2_extended_proof.py` 구동으로 C++ 단독 API/컴포넌트 검증 수행:
-  - `U2-E Feedback API`: Subsystem C++ 등록 PASS (`U2-E-A`), 파이썬 리플렉션 취득 FAIL (`U2-E-B`, UCLASS BlueprintType 미지정), Attack Bridge GAP (`U2-E-C`)
-  - `U2-F Heat Component`: 축적(`U2-F-A`), Clamp(`U2-F-B`), 오버히트(`U2-F-C`), 15.0 Heat units/s 방열(`U2-F-D`) 4개 전 항목 PASS (`VERIFIED`), Attack Bridge GAP
-  - `U2-G S-Core Core`: 패시브 충전률 5.0/s (`U2-G-A`), Clamp(`U2-G-B`), 소비 성공 100->60 (`U2-G-C`), 잔량 부족 실패 및 보존 (`U2-G-D`) 4개 전 항목 PASS (`VERIFIED`), Skill Bridge GAP
+- **Phase 4-C — P0 Runtime Binding Implementation 완료 (2026-08-14)** — C++ 생성자의 HP 100/Attack 25/MoveSpeed 600 하드코딩 완전 제거, `MechaDataAsset == nullptr` 시 경고 후 초기화 중단 안전장치 확보, `DA_AXION_Stats` $\rightarrow$ `BP_ExcelionCharacter` CDO 바인딩 및 언리얼 5.4.4 실기 구동 결과 `MaxHP=100.0`, `AttackPower=25.0`, `MoveSpeed=600.0` 100% 반영 검증 통과 (`P0 RUNTIME BINDING — VERIFIED`)
 
 ## Next
 
@@ -59,7 +56,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & U2-F/G Component Proof 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -69,13 +66,12 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-14)**:
-  - **작업명**: U2-E~G Read-Only Execution Proof (Feedback API, Heat Component, S-Core Core)
-  - **현재 상태**: Core/API Proof VERIFIED (Gameplay Bridges remain GAP)
+  - **작업명**: Phase 4-C — P0 Runtime Binding Implementation & Verification
+  - **현재 상태**: VERIFIED (Build, Binding, Null Guard & UE 5.4.4 Commandlet Verification 100% Passed)
   - **완료**:
-    - `run_u2_extended_proof.py` 파이프라인 무수정 하네스 구축 및 언리얼 5.4.4 실기 커맨드렛 구동 완료:
-      - **U2-E Feedback**: Subsystem Class C++ 등록 PASS (`U2-E-A`), 파이썬 리플렉션 FAIL (`U2-E-B`, BlueprintType 미지정), Attack Bridge GAP (`U2-E-C`)
-      - **U2-F Heat Component**: F-A~F-D 4개 전 항목 PASS (Accumulation 50.0, Clamp 100.0, Overheat=True, Rate 15.0 Heat units/s), Attack Bridge GAP
-      - **U2-G S-Core Core**: G-A~G-D 4개 전 항목 PASS (ChargeRate 5.0/s, Clamp 100.0, Consume 100->60, Insufficient Fail 60 Retention), Skill Bridge GAP
-  - **변경 파일**: `game/Excelion/Scripts/run_u2_extended_proof.py`, `game/Excelion/Saved/Logs/Excelion.log`, `state/CURRENT_STATE.md`
-  - **다음 작업**: Master 승인 대기
+    - `AExcelionCharacter` 생성자 내 C++ 스탯 하드코딩(100/25/600) 제거 및 DataAsset Null 방어막 구현
+    - `DA_AXION_Stats` SSOT 에셋 생성/연결 및 `BP_ExcelionCharacter` CDO `mecha_data_asset` 주입
+    - `run_p0_runtime_binding_proof.py` 구동으로 언리얼 5.4.4 실기 환경에서 `MaxHP=100`, `AttackPower=25`, `MoveSpeed=600` Runtime 바인딩 검증 완료 (`P0-RB ALL VERIFIED`)
+  - **변경 파일**: `ExcelionCharacter.h`, `ExcelionCharacter.cpp`, `run_p0_runtime_binding_proof.py`, `wire_p0_runtime_binding.py`, `BP_ExcelionCharacter.uasset`, `projects/excelion/state/CURRENT_STATE.md`
+  - **다음 작업**: Master 지시 및 U2-E/F/G Gameplay Bridge 연동 승인 대기
   - **재개 조건**: Master 지시 시
