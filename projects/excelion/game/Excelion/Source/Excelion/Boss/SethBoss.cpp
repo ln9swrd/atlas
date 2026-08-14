@@ -13,7 +13,7 @@ ASethBoss::ASethBoss()
 	PrimaryActorTick.bCanEverTick = true;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-	HealthComponent->MaxHealth = 500.f;
+	HealthComponent->MaxHealth = 480.f;
 
 	GetCharacterMovement()->MaxWalkSpeed = 200.f;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
