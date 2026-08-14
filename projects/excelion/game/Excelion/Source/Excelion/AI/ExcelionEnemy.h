@@ -4,10 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "ExcelionEnemy.generated.h"
-
-class UHealthComponent;
-class UCombatComponent;
 
 UENUM(BlueprintType)
 enum class EEnemyAIState : uint8
@@ -18,6 +14,11 @@ enum class EEnemyAIState : uint8
 	Recovery,
 	Dead
 };
+
+#include "ExcelionEnemy.generated.h"
+
+class UHealthComponent;
+class UCombatComponent;
 
 /**
  * Base Enemy class for Prototype v0.1.

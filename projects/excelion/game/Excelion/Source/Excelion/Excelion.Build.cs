@@ -26,7 +26,10 @@ public class Excelion : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"AIModule",
-			"NavigationSystem"
+			"NavigationSystem",
+			"UMG",
+			"Slate",
+			"SlateCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

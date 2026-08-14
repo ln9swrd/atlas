@@ -17,6 +17,17 @@ ASethBoss::ASethBoss()
 
 	GetCharacterMovement()->MaxWalkSpeed = 200.f;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	// Fallback visual mesh for Seth Boss
+	FallbackVisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FallbackVisualMesh"));
+	FallbackVisualMesh->SetupAttachment(RootComponent);
+	FallbackVisualMesh->SetRelativeScale3D(FVector(1.2f, 1.2f, 2.5f));
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultCylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	if (DefaultCylinderMesh.Succeeded())
+	{
+		FallbackVisualMesh->SetStaticMesh(DefaultCylinderMesh.Object);
+	}
 }
 
 void ASethBoss::BeginPlay()
@@ -35,8 +46,29 @@ void ASethBoss::Tick(float DeltaTime)
 
 	if (CurrentState != ESethBossState::Death)
 	{
+		CheckPhaseTransition();
 		UpdateBoss(DeltaTime);
 	}
+}
+
+void ASethBoss::CheckPhaseTransition()
+{
+	if (CurrentPhase == ESethBossPhase::Phase1 && HealthComponent)
+	{
+		const float HealthRatio = HealthComponent->GetHealthPercent();
+		if (HealthRatio <= Phase2HPThreshold)
+		{
+			TriggerPhase2();
+		}
+	}
+}
+
+void ASethBoss::TriggerPhase2()
+{
+	CurrentPhase = ESethBossPhase::Phase2;
+	GetCharacterMovement()->MaxWalkSpeed = 320.f; // Increased speed in Phase 2
+	PatternInterval = 2.8f; // Faster pattern interval
+	OnPhaseChanged.Broadcast(2);
 }
 
 void ASethBoss::UpdateBoss(float DeltaTime)
@@ -69,7 +101,7 @@ void ASethBoss::UpdateBoss(float DeltaTime)
 
 		if (StateTimer >= PatternInterval)
 		{
-			StartPattern01();
+			SelectNextPattern();
 		}
 		else
 		{
@@ -126,51 +158,97 @@ AActor* ASethBoss::FindPlayer() const
 	return UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
 
+void ASethBoss::SelectNextPattern()
+{
+	if (!TargetActor.IsValid()) return;
+
+	if (CurrentPhase == ESethBossPhase::Phase2)
+	{
+		// Toggle or pick pattern in Phase 2
+		ActivePatternIndex = (ActivePatternIndex == 1) ? 2 : 1;
+	}
+	else
+	{
+		ActivePatternIndex = 1;
+	}
+
+	if (ActivePatternIndex == 1)
+	{
+		StartPattern01();
+	}
+	else
+	{
+		StartPattern02();
+	}
+}
+
 void ASethBoss::StartPattern01()
 {
-	if (!TargetActor.IsValid())
-	{
-		return;
-	}
+	if (!TargetActor.IsValid()) return;
 
 	PatternTargetLocation = TargetActor->GetActorLocation();
 	PatternTargetLocation.Z = GetActorLocation().Z;
-
 	SetState(ESethBossState::Warning);
 }
 
-void ASethBoss::ExecutePatternWarning()
+void ASethBoss::StartPattern02()
 {
-	// Handled in Tick via DrawPatternDebug
+	if (!TargetActor.IsValid()) return;
+
+	PatternTargetLocation = TargetActor->GetActorLocation();
+	BeamDirection = (TargetActor->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
+	SetState(ESethBossState::Warning);
 }
 
 void ASethBoss::ExecutePatternAttack()
 {
-	if (!TargetActor.IsValid())
-	{
-		return;
-	}
+	if (!TargetActor.IsValid()) return;
 
-	const float Dist = FVector::Dist2D(TargetActor->GetActorLocation(), PatternTargetLocation);
-	if (Dist <= PatternRadius)
+	AExcelionCharacter* PlayerChar = Cast<AExcelionCharacter>(TargetActor.Get());
+	if (!PlayerChar || PlayerChar->IsInvulnerable()) return;
+
+	if (ActivePatternIndex == 1)
 	{
-		AExcelionCharacter* PlayerChar = Cast<AExcelionCharacter>(TargetActor.Get());
-		if (PlayerChar && !PlayerChar->IsInvulnerable())
+		// Pattern 01 Area Blast
+		const float Dist = FVector::Dist2D(PlayerChar->GetActorLocation(), PatternTargetLocation);
+		if (Dist <= PatternRadius)
 		{
-			UHealthComponent* PlayerHealth = PlayerChar->FindComponentByClass<UHealthComponent>();
-			if (PlayerHealth)
+			if (UHealthComponent* PlayerHealth = PlayerChar->FindComponentByClass<UHealthComponent>())
 			{
 				PlayerHealth->ApplyDamage(PatternDamage);
 			}
 		}
+		DrawDebugSphere(GetWorld(), PatternTargetLocation, PatternRadius, 24, FColor::Red, false, 0.5f, 0, 3.f);
 	}
+	else if (ActivePatternIndex == 2)
+	{
+		// Pattern 02 Beam Charge
+		const FVector BeamEnd = GetActorLocation() + (BeamDirection * PatternRange);
+		const FVector PlayerLoc = PlayerChar->GetActorLocation();
+		const float DistToLine = FMath::PointDistToSegment(PlayerLoc, GetActorLocation(), BeamEnd);
 
-	DrawDebugSphere(GetWorld(), PatternTargetLocation, PatternRadius, 24, FColor::Red, false, 0.5f, 0, 3.f);
+		if (DistToLine <= 120.f)
+		{
+			if (UHealthComponent* PlayerHealth = PlayerChar->FindComponentByClass<UHealthComponent>())
+			{
+				PlayerHealth->ApplyDamage(PatternDamage * 1.25f);
+			}
+		}
+		DrawDebugLine(GetWorld(), GetActorLocation(), BeamEnd, FColor::Red, false, 0.6f, 0, 15.f);
+	}
 }
 
 void ASethBoss::DrawPatternDebug()
 {
-	DrawDebugSphere(GetWorld(), PatternTargetLocation, PatternRadius, 24, FColor::Yellow, false, -1.f, 0, 2.f);
+	if (ActivePatternIndex == 1)
+	{
+		DrawDebugSphere(GetWorld(), PatternTargetLocation, PatternRadius, 24, FColor::Yellow, false, -1.f, 0, 2.f);
+	}
+	else if (ActivePatternIndex == 2)
+	{
+		const FVector BeamEnd = GetActorLocation() + (BeamDirection * PatternRange);
+		DrawDebugLine(GetWorld(), GetActorLocation(), BeamEnd, FColor::Yellow, false, -1.f, 0, 5.f);
+	}
 }
 
 bool ASethBoss::IsDead() const
@@ -183,6 +261,4 @@ void ASethBoss::OnDeath()
 	SetState(ESethBossState::Death);
 	GetCharacterMovement()->DisableMovement();
 	SetActorEnableCollision(false);
-
-	// TODO: Notify GameMode for Victory (Phase 6)
 }

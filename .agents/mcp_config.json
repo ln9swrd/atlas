@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "unreal-engine": {
+      "command": "python3",
+      "args": [
+        "/mnt/d/Atlas/tools/unreal_mcp_server.py"
+      ],
+      "env": {
+        "UNREAL_HOST": "http://127.0.0.1:3010"
+      }
+    }
+  }
+}
