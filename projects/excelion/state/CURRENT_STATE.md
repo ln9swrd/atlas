@@ -31,12 +31,14 @@
   - UE Generate/Build/Editor 실기 = 여전히 HOLD (개발 PC)
 
 - **Ops (2026-08-13)** — SOT_MAP · AGENTS 수정권한/Handoff 규칙 추가 (정본 본문 변경 없음)
+- **Unreal C++ & Script Prep (2026-08-14)** — Master 승인으로 `USCoreComponent`, `MadnessComponent`, `ExcelionCharacter`, `ExcelionMechaDataAsset`, `ExcelionHUDWidget`, `ExcelionFeedbackSubsystem` C++ 생성, `build_cli.ps1`, `import_assets_automation.py` 생성 완료
+- **Unreal 5.4 실기 검증 완료 (2026-08-14)** — 개발 PC에서 `build_cli.ps1` C++ 빌드 및 언리얼 에디터 5.4 정상 로딩 실기 검증 완료 (VERIFIED)
 
 ## Next
 
-1. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
-2. (ops) SoR 잔여 정합 확인 — SOT_MAP 기준
-3. (선택) 레거시 콘티/애니 잔존 점검 — 캐논 변경 없음
+1. **에셋/블루프린트 파이프라인 수립**: C++ 클래스 기반 파생 블루프린트 에셋(`BP_ExcelionCharacter`, `BP_SethBoss` 등) 및 UMG HUD 위젯 템플릿 연동
+2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
+3. (ops) SoR 잔여 정합 확인 — SOT_MAP 기준
 
 ## Pipeline
 
@@ -48,7 +50,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | HOLD |
+| UE 실기 (M6) | **VERIFIED (기반 C++ 로딩 정상)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -57,4 +59,9 @@
 
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
-- 작업 종료 시 Handoff: 작업명 / 완료·미완료 / 변경 파일 / 다음 / 재개 조건
+- **Handoff (2026-08-14)**:
+  - **작업명**: Excelion 언리얼 5.4 C++ 핵심 코어 구축 및 언리얼 전용 MCP 서버(unreal-mcp-server) 연동 완료
+  - **현재 상태**: VERIFIED (C++ 로딩 검증 완료 & MCP 서버 연동 세팅 완비)
+  - **완료**: `SCoreComponent`, `MadnessComponent`, `ExcelionCharacter`, `SethBoss`, `ExcelionGameMode`, `ExcelionMechaDataAsset`, `ExcelionFeedbackSubsystem`, `ExcelionHUDWidget`, `unreal_mcp_server.py`, `.agents/mcp_config.json`
+  - **다음 작업**: 언리얼 에디터 `Remote Control API` 플러그인 활성화 및 MCP 통한 실시간 에디터 제어 테스트
+  - **재개 조건**: Master의 후속 지시 시

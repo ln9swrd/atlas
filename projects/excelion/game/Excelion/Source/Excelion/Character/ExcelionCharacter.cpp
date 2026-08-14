@@ -3,6 +3,7 @@
 #include "Character/ExcelionCharacter.h"
 #include "Combat/HealthComponent.h"
 #include "Combat/CombatComponent.h"
+#include "Combat/SCoreComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -46,6 +47,8 @@ AExcelionCharacter::AExcelionCharacter()
 
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	CombatComponent->AttackDamage = 25.f;
+
+	SCoreComponent = CreateDefaultSubobject<USCoreComponent>(TEXT("SCoreComponent"));
 }
 
 void AExcelionCharacter::BeginPlay()

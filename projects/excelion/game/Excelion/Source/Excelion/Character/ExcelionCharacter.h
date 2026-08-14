@@ -13,10 +13,11 @@ class UInputMappingContext;
 class UInputAction;
 class UHealthComponent;
 class UCombatComponent;
+class USCoreComponent;
 
 /**
  * AXION Player Character — Prototype v0.1
- * Movement, Camera, Attack, Dash, Health.
+ * Movement, Camera, Attack, Dash, Health, S-Core.
  */
 UCLASS()
 class EXCELION_API AExcelionCharacter : public ACharacter
@@ -43,6 +44,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "AXION|Dash")
 	bool IsInvulnerable() const { return bIsInvulnerable; }
 
+	UFUNCTION(BlueprintPure, Category = "AXION|Combat")
+	USCoreComponent* GetSCoreComponent() const { return SCoreComponent; }
+
 protected:
 	// ----- Camera -----
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
@@ -57,6 +61,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	UCombatComponent* CombatComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	USCoreComponent* SCoreComponent;
 
 	// ----- Enhanced Input (assets to be created in Editor) -----
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")

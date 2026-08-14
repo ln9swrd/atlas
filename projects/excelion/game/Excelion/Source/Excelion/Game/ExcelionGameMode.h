@@ -14,9 +14,11 @@ enum class EExcelionGameState : uint8
 	Defeat
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnExcelionGameStateChangedSignature, EExcelionGameState, NewState);
+
 /**
- * Minimal GameMode for AXION Prototype v0.1.
- * Provides Victory / Defeat / Retry hooks.
+ * GameMode for Excelion Prototype.
+ * Handles HUD Spawning, Victory / Defeat state transition, and Retry.
  */
 UCLASS()
 class EXCELION_API AExcelionGameMode : public AGameModeBase
@@ -40,11 +42,21 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Game")
 	EExcelionGameState GetExcelionGameState() const { return CurrentGameState; }
 
+	UPROPERTY(BlueprintAssignable, Category = "Game|Events")
+	FOnExcelionGameStateChangedSignature OnGameStateChanged;
+
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<class UExcelionHUDWidget> HUDWidgetClass;
+
+	UPROPERTY(BlueprintReadOnly, Category = "UI")
+	class UExcelionHUDWidget* ActiveHUDWidget;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	EExcelionGameState CurrentGameState = EExcelionGameState::Playing;
 
 	void SetGameState(EExcelionGameState NewState);
 	void HandleVictory();
 	void HandleDefeat();
+	void SetupHUD();
 };

@@ -2,6 +2,8 @@
 
 #include "Game/ExcelionGameMode.h"
 #include "Character/ExcelionCharacter.h"
+#include "Boss/SethBoss.h"
+#include "UI/ExcelionHUDWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
@@ -14,6 +16,27 @@ void AExcelionGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentGameState = EExcelionGameState::Playing;
+	SetupHUD();
+}
+
+void AExcelionGameMode::SetupHUD()
+{
+	if (HUDWidgetClass && GetWorld())
+	{
+		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (PC)
+		{
+			ActiveHUDWidget = CreateWidget<UExcelionHUDWidget>(PC, HUDWidgetClass);
+			if (ActiveHUDWidget)
+			{
+				AExcelionCharacter* PlayerChar = Cast<AExcelionCharacter>(PC->GetPawn());
+				ASethBoss* BossPawn = Cast<ASethBoss>(UGameplayStatics::GetActorOfClass(GetWorld(), ASethBoss::StaticClass()));
+
+				ActiveHUDWidget->InitializeHUD(PlayerChar, BossPawn);
+				ActiveHUDWidget->AddToViewport();
+			}
+		}
+	}
 }
 
 void AExcelionGameMode::NotifyPlayerDeath()
@@ -42,6 +65,7 @@ void AExcelionGameMode::Retry()
 void AExcelionGameMode::SetGameState(EExcelionGameState NewState)
 {
 	CurrentGameState = NewState;
+	OnGameStateChanged.Broadcast(CurrentGameState);
 }
 
 void AExcelionGameMode::HandleVictory()
