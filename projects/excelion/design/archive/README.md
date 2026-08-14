@@ -4,12 +4,13 @@
 
 히스토리 보존용. 현재 작업 기준이 아니다.
 
-## 포함 예정 / 포함
+## 포함
 
-| 문서 | 원래 위치 | 상태 |
-|------|-----------|------|
-| DESIGN_AUDIT.md | design/ 루트 | STEP 1 Done |
-| UNCONFIRMED_MECHA_REVIEW.md | design/ 루트 | STEP 11 Done |
-| STORY_DESIGN_CONFLICTS.md | design/ 루트 | STEP 2 Done (참고 가치로 루트 유지 가능) |
+| 문서 | 상태 |
+|------|------|
+| DESIGN_AUDIT.md | STEP 1 Done |
+| UNCONFIRMED_MECHA_REVIEW.md | STEP 11 Done |
 
-실제 이동은 링크 영향 최소화 후 진행.
+루트에 남은 동명 파일은 리다이렉트 스텁이다.
+
+STORY_DESIGN_CONFLICTS.md · MECHA_STATUS.md 는 아직 루트 유지 (운영/참조 가치).
