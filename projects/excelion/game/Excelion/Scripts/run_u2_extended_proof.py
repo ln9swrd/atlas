@@ -51,6 +51,10 @@ def run_u2_extended_proof():
 
     combat_comp = player.get_component_by_class(unreal.CombatComponent)
     if combat_comp and dummy:
+        # Trigger C++ BeginPlay in commandlet test environment if needed
+        if hasattr(combat_comp, "begin_play"):
+            combat_comp.begin_play()
+
         # Initial Target HP
         target_health = dummy.get_component_by_class(unreal.HealthComponent)
         hp_before = target_health.get_editor_property("current_health") if target_health else 100.0
