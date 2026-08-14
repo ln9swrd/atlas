@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "projects/excelion/prototype/v4/README.md",
                 "mode": "source",
                 "source": false
               },
@@ -99,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
+                "file": "projects/excelion/prototype/v4/README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -118,7 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md",
+                "file": "projects/excelion/prototype/v4/README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -161,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "README.md",
+                "file": "projects/excelion/prototype/v4/README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -190,6 +190,12 @@
   },
   "active": "de4c70f95cb00277",
   "lastOpenFiles": [
+    "projects/excelion/prototype/README.md",
+    "projects/excelion/ENVIRONMENT_PLAN.md",
+    "projects/excelion/PROJECT_CHARTER.md",
+    "projects/excelion/PROJECT_MEMORY.md",
+    "projects/excelion/README.md",
+    "README.md",
     "state/TASK_MAP.md",
     "scratch/disable_bloat_services.ps1",
     "projects/excelion/state/AXION_V0_1_AGENT_STATUS.md",
@@ -202,8 +208,6 @@
     "projects/excelion/game/Excelion/Source/Excelion/Combat/CombatComponent.cpp",
     "projects/excelion/game/Excelion/Source/Excelion/Combat",
     "projects/excelion/game/Excelion/Source/Excelion/Character/ExcelionCharacter.h",
-    "projects/excelion/README.md",
-    "AGENTS.md",
-    "README.md"
+    "AGENTS.md"
   ]
 }
