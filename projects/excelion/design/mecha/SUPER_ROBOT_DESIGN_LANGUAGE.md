@@ -1,9 +1,10 @@
 # SUPER_ROBOT_DESIGN_LANGUAGE — 전 메카 공통
 
 > 2026-08-10 · **전 `design/mecha` 상위 기준**  
-> 적용: BRAVE · EXCELION · NEMESIS · ORDER 전 종 · 전 보스
+> 적용: BRAVE · EXCELION · NEMESIS · ORDER 전 종 · 전 보스  
+> **Canon 계층:** `design/CANON_HIERARCHY.md` — DESIGN_QUALITY 하위 · SUPER_ROBOT_MODERN 상위 (Model A · 2026-08-14 Master 승인)
 
-**상태: LOCK 후보**
+**상태: LOCK**
 
 ---
 
@@ -137,14 +138,17 @@ utilitarian hard-surface only, skinny humanoid robot, model-kit overdetail
 ## 9. 문서 계층
 
 ```
-SUPER_ROBOT_DESIGN_LANGUAGE.md    ← 본 문서 (최상위)
-  ├ ORDER_DESIGN_LANGUAGE.md
-  ├ MECHA_3TONE_LOW_DETAIL (공통 톤)
-  ├ 각 기체 DESCRIPTION / FINAL_SPEC
-  └ threeview/SKILL · TOPOLOGY_GUIDE
+DESIGN_QUALITY.md                    ← 피니시 상한 (상위)
+  └── SUPER_ROBOT_DESIGN_LANGUAGE.md ← 본 문서 (정체성)
+        └── SUPER_ROBOT_MODERN.md    ← 구현 방법 (중밀도 패널)
+              ├── ORDER_DESIGN_LANGUAGE.md
+              ├── MECHA_3TONE_LOW_DETAIL
+              ├── 각 기체 DESCRIPTION / FINAL_SPEC
+              └── threeview/SKILL · TOPOLOGY_GUIDE
 ```
 
-충돌 시 **본 문서 우선**.
+충돌 시 **상위 문서 우선** (`design/CANON_HIERARCHY.md`).  
+본 문서는 DESIGN_QUALITY 하위 · SUPER_ROBOT_MODERN 상위.
 
 ---
 
@@ -161,7 +165,8 @@ SUPER_ROBOT_DESIGN_LANGUAGE.md    ← 본 문서 (최상위)
 문제 시 해당 MD 추가 수정.
 
 ```
-CURRENT: SUPER ROBOT FIRST · CURVED FORM · HEROIC SILHOUETTE LOCK 후보
+CURRENT: SUPER ROBOT FIRST · CURVED FORM · HEROIC SILHOUETTE LOCK
 PRESERVE: 이름·EP·무장·역할·3톤·BRAVE 여성형
 FORBIDDEN: 건담/리얼로봇 유도 상위 키워드
+HIERARCHY: DESIGN_QUALITY → 본 문서 → SUPER_ROBOT_MODERN (Model A)
 ```
