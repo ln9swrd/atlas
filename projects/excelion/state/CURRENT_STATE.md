@@ -37,13 +37,16 @@
 - **U1-A~C & U1-C1~C6 실기 언리얼 로그 검증 완전 통과 (2026-08-14)** — `run_pie_automation_proof.py` 언리얼 5.4 실기 실행 결과 9개 전 항목 PASS 확인 (`U1 PLAYER PROOF — VERIFIED`)
 - **Phase 3-B Minimal BP_DummyTarget 구축 완료 (2026-08-14)** — 순수 C++ `AExcelionDummyTarget` 상속 및 `BP_DummyTarget.uasset` 생성/저장 확인 (`MaxHealth = 100.f`, `CapsuleCollision=Pawn`, `FallbackCube`) (VERIFIED)
 - **Phase 3-C & 3-D U2 Core Combat Proof 언리얼 5.4 실기 실행 완전 통과 (2026-08-14)** — `run_u2_combat_core_proof.py` 언리얼 5.4 에디터 실기 실행 결과 `Excelion.log`에 `[U2-A PASS]`, `[U2-B PASS]`, `[U2-C PASS]`, `[U2-D PASS]` 전 항목 100% 성공 검증 확인 (`U2 CORE COMBAT PROOF — VERIFIED`)
+- **U2-E~G Read-Only Execution Proof 실기 실행 완료 (2026-08-14)** — `run_u2_extended_proof.py` 구동으로 C++ 단독 API/컴포넌트 검증 수행:
+  - `U2-E Feedback API`: Subsystem C++ 등록 PASS (`U2-E-A`), 파이썬 리플렉션 취득 FAIL (`U2-E-B`, UCLASS BlueprintType 미지정), Attack Bridge GAP (`U2-E-C`)
+  - `U2-F Heat Component`: 축적(`U2-F-A`), Clamp(`U2-F-B`), 오버히트(`U2-F-C`), 15.0 Heat units/s 방열(`U2-F-D`) 4개 전 항목 PASS (`VERIFIED`), Attack Bridge GAP
+  - `U2-G S-Core Core`: 패시브 충전률 5.0/s (`U2-G-A`), Clamp(`U2-G-B`), 소비 성공 100->60 (`U2-G-C`), 잔량 부족 실패 및 보존 (`U2-G-D`) 4개 전 항목 PASS (`VERIFIED`), Skill Bridge GAP
 
 ## Next
 
-1. **Phase 4-A — U3 S-Core Level System Proof (실기 검증)**:
-   - S-Core 흡수, 충전 게이지, 레벨업 튜닝 검증
-2. **Phase 4-B — U4 Feedback Subsystem & UI Wiring**:
-   - `ExcelionFeedbackSubsystem` 카메라 셰이크 및 `WBP_ExcelionHUD` 체력바 동기화 검증
+1. **U2-E/F/G Gameplay Bridge C++ 연동 준비 (Master 승인 대기)**:
+   - Attack $\rightarrow$ Feedback, Attack $\rightarrow$ Heat, Skill $\rightarrow$ S-Core 연동 설계 및 승인 대기
+2. **Phase 4-A — U3 Enemy / Boss Combat Integration (HOLD)**
 3. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
@@ -56,7 +59,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Proof 실기 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & U2-F/G Component Proof 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -66,16 +69,13 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-14)**:
-  - **작업명**: Phase 3-C & Phase 3-D — U2 Core Combat Proof 언리얼 5.4 실기 실행 및 PASS 검증
-  - **현재 상태**: VERIFIED (Unreal Engine 5.4.4 `UnrealEditor-Cmd.exe` 실기 실행 및 `Excelion.log` PASS 확보 완료)
+  - **작업명**: U2-E~G Read-Only Execution Proof (Feedback API, Heat Component, S-Core Core)
+  - **현재 상태**: Core/API Proof VERIFIED (Gameplay Bridges remain GAP)
   - **완료**:
-    - `run_u2_combat_core_proof.py` 파이프라인 버그 수정 (`get_component_by_class`, callable property 호환성 처리)
-    - 언리얼 5.4 에디터 커맨드렛 실기 실행 완료:
-      - `[U2-A PASS]` TryAttack=True, IsAttacking=True
-      - `[U2-B PASS]` Hit Detection & Object Query on BP_DummyTarget (Range=150u, Radius=60u)
-      - `[U2-C PASS]` Damage Application confirmed: 100.0 -> 75.0 HP (Applied=25.0)
-      - `[U2-D PASS]` Health Reduction & Death confirmed: HP=0.0, IsDead=True
-      - `U2 Core Combat Proof Verification Completed Successfully` 로그 도출
-  - **변경 파일**: `game/Excelion/Scripts/run_u2_combat_core_proof.py`, `game/Excelion/Saved/Logs/Excelion.log`, `state/CURRENT_STATE.md`
-  - **다음 작업**: Master 승인 대기 / Phase 4-A U3 S-Core Level System Proof
+    - `run_u2_extended_proof.py` 파이프라인 무수정 하네스 구축 및 언리얼 5.4.4 실기 커맨드렛 구동 완료:
+      - **U2-E Feedback**: Subsystem Class C++ 등록 PASS (`U2-E-A`), 파이썬 리플렉션 FAIL (`U2-E-B`, BlueprintType 미지정), Attack Bridge GAP (`U2-E-C`)
+      - **U2-F Heat Component**: F-A~F-D 4개 전 항목 PASS (Accumulation 50.0, Clamp 100.0, Overheat=True, Rate 15.0 Heat units/s), Attack Bridge GAP
+      - **U2-G S-Core Core**: G-A~G-D 4개 전 항목 PASS (ChargeRate 5.0/s, Clamp 100.0, Consume 100->60, Insufficient Fail 60 Retention), Skill Bridge GAP
+  - **변경 파일**: `game/Excelion/Scripts/run_u2_extended_proof.py`, `game/Excelion/Saved/Logs/Excelion.log`, `state/CURRENT_STATE.md`
+  - **다음 작업**: Master 승인 대기
   - **재개 조건**: Master 지시 시
