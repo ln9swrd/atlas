@@ -1,6 +1,7 @@
 // Copyright Excelion. All Rights Reserved.
 
 #include "Character/ExcelionCharacter.h"
+#include "Data/ExcelionMechaDataAsset.h"
 #include "Combat/HealthComponent.h"
 #include "Combat/CombatComponent.h"
 #include "Combat/SCoreComponent.h"
@@ -37,7 +38,6 @@ AExcelionCharacter::AExcelionCharacter()
 	// Character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.35f;
 
@@ -47,11 +47,7 @@ AExcelionCharacter::AExcelionCharacter()
 
 	// Components
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-	HealthComponent->MaxHealth = 100.f;
-
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
-	CombatComponent->AttackDamage = 25.f;
-
 	SCoreComponent = CreateDefaultSubobject<USCoreComponent>(TEXT("SCoreComponent"));
 
 	// Fallback visual mesh so character is immediately visible in Play without manual asset setup
@@ -64,6 +60,43 @@ AExcelionCharacter::AExcelionCharacter()
 	{
 		FallbackVisualMesh->SetStaticMesh(DefaultCubeMesh.Object);
 	}
+}
+
+void AExcelionCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	ApplyMechaDataAsset();
+}
+
+void AExcelionCharacter::ApplyMechaDataAsset()
+{
+	if (!MechaDataAsset)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AExcelionCharacter] MechaDataAsset is NULL on %s! Runtime stats not set from SSOT."), *GetName());
+		return;
+	}
+
+	const FExcelionMechaBaseStats& Stats = MechaDataAsset->BaseStats;
+
+	if (HealthComponent)
+	{
+		HealthComponent->MaxHealth = Stats.MaxHP;
+		HealthComponent->CurrentHealth = Stats.MaxHP;
+	}
+
+	if (CombatComponent)
+	{
+		CombatComponent->AttackDamage = Stats.AttackPower;
+	}
+
+	if (UCharacterMovementComponent* MoveComp = GetCharacterMovement())
+	{
+		MoveComp->MaxWalkSpeed = Stats.MoveSpeed;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("[AExcelionCharacter] Applied MechaDataAsset (%s) to %s: MaxHP=%.1f, AttackPower=%.1f, MoveSpeed=%.1f"),
+		*MechaDataAsset->GetName(), *GetName(), Stats.MaxHP, Stats.AttackPower, Stats.MoveSpeed);
 }
 
 void AExcelionCharacter::BeginPlay()

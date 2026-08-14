@@ -70,6 +70,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	USCoreComponent* SCoreComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mecha")
+	UExcelionMechaDataAsset* MechaDataAsset;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
 	UStaticMeshComponent* FallbackVisualMesh;
 
