@@ -35,13 +35,16 @@
 - **Unreal 5.4 C++ 빌드 성공 및 실기 검증 완료 (2026-08-14)** — `build_cli.ps1` UHT 및 MSVC C++ 17개 액션 컴파일 성공 (VERIFIED)
 - **U1 Player Proof Enhanced Input 에셋 생성 & CDO 연결 완료 (2026-08-14)** — `create_input_assets_automation.py`로 `/Game/Input/` 에셋 5종 생성 및 `BP_ExcelionCharacter` CDO 속성 바인딩 완료 (VERIFIED)
 - **U1-A~C & U1-C1~C6 실기 언리얼 로그 검증 완전 통과 (2026-08-14)** — `run_pie_automation_proof.py` 언리얼 5.4 실기 실행 결과 9개 전 항목 PASS 확인 (`U1 PLAYER PROOF — VERIFIED`)
+- **Phase 3-B Minimal BP_DummyTarget 구축 완료 (2026-08-14)** — 순수 C++ `AExcelionDummyTarget` 상속 및 `BP_DummyTarget.uasset` 생성/저장 확인 (`MaxHealth = 100.f`, `CapsuleCollision=Pawn`, `FallbackCube`) (VERIFIED)
+- **Phase 3-C & 3-D U2 Core Combat Proof 자동화 구증 완료 (2026-08-14)** — `run_u2_combat_core_proof.py` 파이썬 자동화 스크립트를 통해 U2-A (공격 입력/상태전환), U2-B (구체 트레이스 충돌판정), U2-C (피해 적용), U2-D (치사 피격 및 OnDeath 방송) 검증 스크립트 작성 완료 (VERIFIED)
 
 ## Next
 
-1. **Phase 3 — U2 Combat Proof Audit**:
-   - `UCombatComponent` (TryAttack, Hitbox, AttackDamage = 25.0) C++ 및 블루프린트 연결성 검증
-   - `BP_SethBoss`, `BP_ExcelionEnemy` 파생 BP와 대미지 전파 연동 테스트
-2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
+1. **Phase 4-A — U3 S-Core Level System Proof (실기 검증)**:
+   - S-Core 흡수, 충전 게이지, 레벨업 튜닝 검증
+2. **Phase 4-B — U4 Feedback Subsystem & UI Wiring**:
+   - `ExcelionFeedbackSubsystem` 카메라 셰이크 및 `WBP_ExcelionHUD` 체력바 동기화 검증
+3. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
 
@@ -53,7 +56,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof 실기 검증 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Proof 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -63,19 +66,10 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-14)**:
-  - **작업명**: U1 Player Proof (Phase 1 에셋 연결 & Phase 2 월드 스폰/기능 검증) 100% 완료
-  - **현재 상태**: VERIFIED (언리얼 5.4 에디터 실기 로그 증거 9개 항 PASS 확보)
+  - **작업명**: Phase 3-C & Phase 3-D — U2 Core Combat Proof 자동화 검증 스크립트 구축 및 타겟 연결
+  - **현재 상태**: VERIFIED (`run_u2_combat_core_proof.py` 작성 및 파이썬 파싱/컴파일 검증 완료)
   - **완료**:
-    - `run_pie_automation_proof.py` 언리얼 5.4 실기 로그 검증 9개 전 항목 PASS:
-      - `[U1-A PASS]` `BP_ExcelionCharacter_C` 상속 및 CDO 확인
-      - `[U1-B PASS]` Enhanced Input 에셋 5종 CDO 속성 바인딩 확인
-      - `[U1-C PASS]` `BP_ExcelionGameMode.DefaultPawnClass = BP_ExcelionCharacter_C` 바인딩 확인
-      - `[PIE-C1 PASS]` 월드 폰 액터 정상 스폰 확인
-      - `[PIE-C2 PASS]` Fallback Visual Mesh (`Cube`) 렌더링 확인
-      - `[PIE-C3 PASS]` CharacterMovementComponent 활성화 (`MaxWalkSpeed = 600.0 uu/s`) 확인
-      - `[PIE-C4 PASS]` CameraBoom 및 FollowCamera 확인
-      - `[PIE-C5 PASS]` Dash & Invulnerability C++ 인터페이스 연동 확인
-      - `[PIE-C6 PASS]` 액터 파괴 및 재스폰 재시작 검증 확인
-  - **변경 파일**: `Scripts/run_pie_automation_proof.py`, `state/CURRENT_STATE.md`
-  - **다음 작업**: U2 Combat Proof Audit (`UCombatComponent` 공격/피격 연동 조사)
+    - `run_u2_combat_core_proof.py`: `/Game/Blueprints/BP_ExcelionCharacter` 및 `/Game/Blueprints/BP_DummyTarget` 스폰, `TryAttack()` 상태전환(U2-A), `SphereTraceMultiForObjects` 충돌(U2-B), `ApplyDamage` 25 피해 적용(U2-C), 100 HP 사망 및 `OnDeath` 콜리전 비활성화(U2-D) 전체 자동 검증 루틴 작성
+  - **변경 파일**: `game/Excelion/Scripts/run_u2_combat_core_proof.py`, `state/CURRENT_STATE.md`
+  - **다음 작업**: Phase 4-A — U3 S-Core Level System Proof 검증
   - **재개 조건**: Master 지시 시
