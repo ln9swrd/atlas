@@ -89,13 +89,13 @@ protected:
 	float DashDistance = 600.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	float DashDuration = 0.25f;
+	float DashDuration = 0.20f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashCooldown = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	float InvulnerabilityDuration = 0.3f;
+	float InvulnerabilityDuration = 0.25f;
 
 	bool bIsDashing = false;
 	bool bIsInvulnerable = false;

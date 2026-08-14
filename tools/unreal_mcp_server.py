@@ -12,38 +12,29 @@ def log_debug(msg):
     sys.stderr.write(f"[Unreal-MCP] {msg}\n")
     sys.stderr.flush()
 
-def get_unreal_host():
+def get_target_hosts():
     if "UNREAL_HOST" in os.environ:
-        return os.environ["UNREAL_HOST"]
+        return [os.environ["UNREAL_HOST"]]
     
-    # Try local ports and WSL gateway IP
-    hosts_to_try = ["http://127.0.0.1:3010", "http://localhost:3010"]
+    ports = [3010, 30010]
+    hosts = []
+    for port in ports:
+        hosts.append(f"http://127.0.0.1:{port}")
+        hosts.append(f"http://localhost:{port}")
     try:
         if os.path.exists("/etc/resolv.conf"):
             with open("/etc/resolv.conf", "r") as f:
                 for line in f:
                     if "nameserver" in line:
                         wsl_ip = line.split()[1]
-                        hosts_to_try.append(f"http://{wsl_ip}:3010")
+                        for port in ports:
+                            hosts.append(f"http://{wsl_ip}:{port}")
     except Exception:
         pass
-    return hosts_to_try[0]
+    return hosts
 
 def make_unreal_request(endpoint, payload=None, method="PUT"):
-    if "UNREAL_HOST" in os.environ:
-        target_hosts = [os.environ["UNREAL_HOST"]]
-    else:
-        target_hosts = ["http://127.0.0.1:3010", "http://localhost:3010"]
-        try:
-            if os.path.exists("/etc/resolv.conf"):
-                with open("/etc/resolv.conf", "r") as f:
-                    for line in f:
-                        if "nameserver" in line:
-                            wsl_ip = line.split()[1]
-                            target_hosts.append(f"http://{wsl_ip}:3010")
-        except Exception:
-            pass
-
+    target_hosts = get_target_hosts()
     last_error = None
     data = json.dumps(payload).encode('utf-8') if payload else None
     headers = {'Content-Type': 'application/json'}

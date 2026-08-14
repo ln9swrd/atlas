@@ -17,6 +17,9 @@ enum class EEnemyAIState : uint8
 
 #include "ExcelionEnemy.generated.h"
 
+class UHealthComponent;
+class UCombatComponent;
+
 /**
  * Base Enemy class for Prototype v0.1.
  * Minimal AI: Idle -> Chase -> Attack -> Recovery.

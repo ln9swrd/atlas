@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBossPhaseChangedSignature, int32, NewPhase);
-
 UENUM(BlueprintType)
 enum class ESethBossState : uint8
 {
@@ -27,6 +25,10 @@ enum class ESethBossPhase : uint8
 };
 
 #include "SethBoss.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBossPhaseChangedSignature, int32, NewPhase);
+
+class UHealthComponent;
 
 /**
  * Seth Boss — Vertical Slice Boss (UE 5.4)
@@ -67,32 +69,32 @@ protected:
 
 	// ----- Phase Control -----
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Phase")
-	float Phase2HPThreshold = 0.5f; // Phase 2 triggers at 50% HP
+	float Phase2HPThreshold = 0.6f; // Phase 2 triggers at 60% HP
 
 	UPROPERTY(BlueprintReadOnly, Category = "Boss|Phase")
 	ESethBossPhase CurrentPhase = ESethBossPhase::Phase1;
 
 	// ----- Pattern Parameters -----
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Pattern")
-	float PatternInterval = 4.0f;
+	float PatternInterval = 2.8f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Pattern")
-	float WarningDuration = 1.2f;
+	float WarningDuration = 0.8f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Pattern")
-	float AttackDuration = 0.6f;
+	float AttackDuration = 0.4f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Pattern")
-	float RecoveryDuration = 1.5f;
+	float RecoveryDuration = 0.8f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Pattern")
-	float PatternDamage = 40.f;
+	float PatternDamage = 55.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Pattern")
-	float PatternRadius = 300.f;
+	float PatternRadius = 400.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss|Pattern")
-	float PatternRange = 800.f;
+	float PatternRange = 1500.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boss")
 	float DetectionRange = 2000.f;

@@ -13,9 +13,9 @@ enum class EExcelionGameState : uint8
 	Defeat
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnExcelionGameStateChangedSignature, EExcelionGameState, NewState);
-
 #include "ExcelionGameMode.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnExcelionGameStateChangedSignature, EExcelionGameState, NewState);
 
 /**
  * GameMode for Excelion Prototype.
