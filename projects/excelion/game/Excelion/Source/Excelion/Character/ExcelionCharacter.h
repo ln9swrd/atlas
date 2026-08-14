@@ -14,6 +14,7 @@ class UInputAction;
 class UHealthComponent;
 class UCombatComponent;
 class USCoreComponent;
+class UExcelionMechaDataAsset;
 
 /**
  * AXION Player Character — Prototype v0.1
@@ -29,7 +30,11 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
+
+	/** Applies stats from MechaDataAsset SSOT to runtime components. */
+	void ApplyMechaDataAsset();
 
 	/** Called when character dies. */
 	UFUNCTION()
