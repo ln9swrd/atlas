@@ -37,7 +37,7 @@
 - **U1-A~C & U1-C1~C6 실기 언리얼 로그 검증 완전 통과 (2026-08-14)** — `run_pie_automation_proof.py` 언리얼 5.4 실기 실행 결과 9개 전 항목 PASS 확인 (`U1 PLAYER PROOF — VERIFIED`)
 - **Phase 3-B Minimal BP_DummyTarget 구축 완료 (2026-08-14)** — 순수 C++ `AExcelionDummyTarget` 상속 및 `BP_DummyTarget.uasset` 생성/저장 확인 (`MaxHealth = 100.f`, `CapsuleCollision=Pawn`, `FallbackCube`) (VERIFIED)
 - **Phase 3-C & 3-D U2 Core Combat Proof 언리얼 5.4 실기 실행 완전 통과 (2026-08-14)** — `run_u2_combat_core_proof.py` 언리얼 5.4 에디터 실기 실행 결과 `Excelion.log`에 `[U2-A PASS]`, `[U2-B PASS]`, `[U2-C PASS]`, `[U2-D PASS]` 전 항목 100% 성공 검증 확인 (`U2 CORE COMBAT PROOF — VERIFIED`)
-- **Phase U2-E — Attack → Feedback C++ Bridge 연동 완료 (2026-08-14)** — `CombatComponent::PerformHitDetection()` 내 타깃 HitConfirm 시점에 `GetWorld()->GetSubsystem<UExcelionFeedbackSubsystem>()` 직접 접근 및 `BroadcastHitImpact()` 호출 C++ 브릿지 완성, 타깃 데미지(25.0f) 손상 없이 언리얼 5.4.4 실기 구동 검증 완전 통과 (`U2-E ATTACK -> FEEDBACK BRIDGE — VERIFIED`)
+- **Phase U2-E — Attack → Feedback C++ Bridge Invocation 연동 완료 (2026-08-14)** — `CombatComponent::PerformHitDetection()` 내 타깃 HitConfirm 시점에 `GetWorld()->GetSubsystem<UExcelionFeedbackSubsystem>()` 직접 접근 및 `BroadcastHitImpact()` 호출 C++ 브릿지 연동 검증 통과 (Broadcast 호출까지 증명, 실제 HitStop/CameraShake 최종 체감 효과는 미검증으로 분리) (`U2-E ATTACK -> FEEDBACK BRIDGE INVOCATION — VERIFIED`)
 
 ## Next
 
@@ -56,7 +56,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Feedback Bridge 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge Invocation 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -66,11 +66,11 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-14)**:
-  - **작업명**: Phase U2-E — Attack $\rightarrow$ Feedback C++ Bridge Integration & Verification
-  - **현재 상태**: VERIFIED (Build, C++ Direct Access, Null Guard, Damage 25.0 Preserved & UE 5.4.4 Verification 100% Passed)
+  - **작업명**: Phase U2-E — Attack $\rightarrow$ Feedback C++ Bridge Invocation & Pre-Commit Audit
+  - **현재 상태**: Bridge Invocation VERIFIED (Build, C++ Direct Access, Null Guard, Broadcast HitImpact Invocation Passed; Final HitStop/Shake unverified)
   - **완료**:
-    - `CombatComponent::PerformHitDetection()` hit-confirm 지점에 C++ `UExcelionFeedbackSubsystem` 직접 호출 및 `BroadcastHitImpact` 연동
-    - `run_u2_extended_proof.py` 구동으로 언리얼 5.4.4 실기 환경에서 `[U2-E-C PASS]` 및 U2-A~D Regression 유지 확인
+    - `CombatComponent::PerformHitDetection()` hit-confirm 지점에 C++ `UExcelionFeedbackSubsystem` 직접 호출 및 `BroadcastHitImpact` 연동 (테스트 전용 중복 `ECC_Pawn` 방어 코드 제거 정돈 완료)
+    - `run_u2_extended_proof.py` 구동으로 언리얼 5.4.4 실기 환경에서 `[U2-E-C PASS]` (Invocation Verified) 및 U2-A~D, U2-F/G Regression 유지 확인
   - **변경 파일**: `CombatComponent.h`, `CombatComponent.cpp`, `run_u2_extended_proof.py`, `projects/excelion/state/CURRENT_STATE.md`
-  - **다음 작업**: Master 지시 및 U2-F Heat 연동 규칙 결정 대기
+  - **다음 작업**: Master 커밋 승인 및 U2-F Heat 연동 규칙 결정 대기
   - **재개 조건**: Master 지시 시

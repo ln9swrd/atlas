@@ -74,11 +74,6 @@ void UCombatComponent::PerformHitDetection()
 		return;
 	}
 
-	if (AttackObjectTypes.Num() == 0)
-	{
-		AttackObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-	}
-
 	const FVector Start = Owner->GetActorLocation();
 	const FVector Forward = Owner->GetActorForwardVector();
 	const FVector End = Start + Forward * AttackRange;
