@@ -31,8 +31,8 @@ def run_u2_combat_proof():
         return False
         
     # Get components
-    combat_comp = player.find_component_by_class(unreal.CombatComponent)
-    dummy_health = dummy.find_component_by_class(unreal.HealthComponent)
+    combat_comp = player.get_component_by_class(unreal.CombatComponent)
+    dummy_health = dummy.get_component_by_class(unreal.HealthComponent)
     
     if not combat_comp or not dummy_health:
         unreal.log_error("[U2-FAIL] CombatComponent or HealthComponent missing")
@@ -46,7 +46,7 @@ def run_u2_combat_proof():
 
     # U2-A: Attack Input & State Transition
     b_attack_started = combat_comp.try_attack()
-    is_attacking = combat_comp.is_attacking()
+    is_attacking = combat_comp.is_attacking() if callable(combat_comp.is_attacking) else combat_comp.is_attacking
     if b_attack_started or is_attacking:
         unreal.log(f"[U2-A PASS] Attack Input & State Transition active: TryAttack={b_attack_started}, IsAttacking={is_attacking}")
     else:
@@ -54,7 +54,7 @@ def run_u2_combat_proof():
 
     # U2-B & U2-C: Hit Detection & Damage Application (Hit 1: 100 HP -> 75 HP)
     applied_dmg1 = dummy_health.apply_damage(atk_damage)
-    hp_after_hit1 = dummy_health.get_current_health()
+    hp_after_hit1 = dummy_health.get_current_health() if callable(dummy_health.get_current_health) else dummy_health.get_current_health
     
     if hp_after_hit1 < init_hp and applied_dmg1 > 0.0:
         unreal.log(f"[U2-B PASS] Hit Detection & Object Query confirmed on BP_DummyTarget (Range=150u, Radius=60u)")
@@ -66,8 +66,8 @@ def run_u2_combat_proof():
     dummy_health.apply_damage(atk_damage)
     dummy_health.apply_damage(atk_damage)
     applied_dmg4 = dummy_health.apply_damage(atk_damage)
-    hp_after_hit4 = dummy_health.get_current_health()
-    is_dead = dummy_health.is_dead()
+    hp_after_hit4 = dummy_health.get_current_health() if callable(dummy_health.get_current_health) else dummy_health.get_current_health
+    is_dead = dummy_health.is_dead() if callable(dummy_health.is_dead) else dummy_health.is_dead
     
     if hp_after_hit4 <= 0.0 and is_dead:
         unreal.log(f"[U2-D PASS] Health Reduction & Death confirmed: HP={hp_after_hit4}, IsDead={is_dead}")
