@@ -82,12 +82,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Default Mapping Context"))
 	TObjectPtr<class UInputMappingContext> DefaultMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Move Action"))
-	TObjectPtr<class UInputAction> MoveAction;
+	// Movement actions - separate for each axis (Axis1D for proper value handling)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Move Forward Action"))
+	TObjectPtr<class UInputAction> MoveForwardAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Look Action"))
-	TObjectPtr<class UInputAction> LookAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Move Right Action"))
+	TObjectPtr<class UInputAction> MoveRightAction;
 
+	// Unified Movement and Look actions (created at runtime)
+	TObjectPtr<class UInputAction> MoveAction;  // Runtime-created: WASD → Axis2D
+	TObjectPtr<class UInputAction> LookAction;  // Runtime-created: MouseX/Y → Axis2D
+
+	// Look actions - separate for each axis (Axis1D) - DEPRECATED
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Look X Action"))
+	TObjectPtr<class UInputAction> LookXAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Look Y Action"))
+	TObjectPtr<class UInputAction> LookYAction;
+
+	// Combat actions
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Attack Action"))
 	TObjectPtr<class UInputAction> AttackAction;
 

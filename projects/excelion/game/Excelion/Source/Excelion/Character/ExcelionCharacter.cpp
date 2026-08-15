@@ -90,12 +90,16 @@ AExcelionCharacter::AExcelionCharacter()
 	if (DefaultMappingContext && MoveAction)
 	{
 		// Movement: WASD → MoveAction (Axis2D)
-		// Each key needs to be mapped individually
-		DefaultMappingContext->MapKey(MoveAction, EKeys::W);
-		DefaultMappingContext->MapKey(MoveAction, EKeys::A);
-		DefaultMappingContext->MapKey(MoveAction, EKeys::S);
-		DefaultMappingContext->MapKey(MoveAction, EKeys::D);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] MoveAction mapped: W/A/S/D - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+		// CRITICAL: MapKey returns FEnhancedActionKeyMapping& - modify Value property after
+		FEnhancedActionKeyMapping& W_Mapping = DefaultMappingContext->MapKey(MoveAction, EKeys::W);
+		W_Mapping.Value = FInputActionValue(FVector2D(0.f, 1.f));  // Forward
+		FEnhancedActionKeyMapping& S_Mapping = DefaultMappingContext->MapKey(MoveAction, EKeys::S);
+		S_Mapping.Value = FInputActionValue(FVector2D(0.f, -1.f)); // Backward
+		FEnhancedActionKeyMapping& A_Mapping = DefaultMappingContext->MapKey(MoveAction, EKeys::A);
+		A_Mapping.Value = FInputActionValue(FVector2D(-1.f, 0.f)); // Left
+		FEnhancedActionKeyMapping& D_Mapping = DefaultMappingContext->MapKey(MoveAction, EKeys::D);
+		D_Mapping.Value = FInputActionValue(FVector2D(1.f, 0.f));  // Right
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] MoveAction mapped: W(0,1)/S(0,-1)/A(-1,0)/D(1,0) - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
 	}
 	
 	if (DefaultMappingContext && LookAction)
