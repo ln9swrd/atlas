@@ -311,29 +311,16 @@ void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound MoveRightAction"));
 		}
 		
-		// Look: Bind X axis (horizontal mouse movement)
+		// Look: Use the existing Look function (will receive separate X/Y values)
 		if (LookXAction)
 		{
-			EnhancedInputComponent->BindAction(LookXAction, ETriggerEvent::Triggered, this, [this](const FInputActionValue& Value)
-			{
-				if (APlayerController* PC = Cast<APlayerController>(Controller))
-				{
-					PC->AddYawInput(Value.Get<float>());
-				}
-			});
+			EnhancedInputComponent->BindAction(LookXAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
 			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound LookXAction"));
 		}
 		
-		// Look: Bind Y axis (vertical mouse movement)
 		if (LookYAction)
 		{
-			EnhancedInputComponent->BindAction(LookYAction, ETriggerEvent::Triggered, this, [this](const FInputActionValue& Value)
-			{
-				if (APlayerController* PC = Cast<APlayerController>(Controller))
-				{
-					PC->AddPitchInput(Value.Get<float>());
-				}
-			});
+			EnhancedInputComponent->BindAction(LookYAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
 			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound LookYAction"));
 		}
 		
@@ -359,53 +346,9 @@ void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void AExcelionCharacter::Move(const FInputActionValue& Value)
 {
-	const FVector2D MovementVector = Value.Get<FVector2D>();
-	
-	// ===== DEBUG: Check what value we're receiving =====
-	static bool bFirstLog = true;
-	if (bFirstLog)
-	{
-		bFirstLog = false;
-		UE_LOG(LogTemp, Error, TEXT("[MOVE DEBUG] First Move() called with Value: X=%.3f Y=%.3f"), MovementVector.X, MovementVector.Y);
-		UE_LOG(LogTemp, Error, TEXT("[MOVE DEBUG] MoveAction: %s"), MoveAction ? *MoveAction->GetName() : TEXT("NULL"));
-		UE_LOG(LogTemp, Error, TEXT("[MOVE DEBUG] DefaultMappingContext: %s"), DefaultMappingContext ? *DefaultMappingContext->GetName() : TEXT("NULL"));
-		if (DefaultMappingContext)
-		{
-			UE_LOG(LogTemp, Error, TEXT("[MOVE DEBUG] DefaultMappingContext has %d mappings"), DefaultMappingContext->GetMappings().Num());
-		}
-	}
-	
-	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Move called: Value=%s"), *MovementVector.ToString());
-
-	if (bIsDashing)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[MOVE] BLOCKED: bIsDashing=true"));
-		return;
-	}
-	if (IsDead())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[MOVE] BLOCKED: IsDead=true"));
-		return;
-	}
-
-	if (MovementVector.IsNearlyZero())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[MOVE] Input is nearly zero, skipping"));
-		return;
-	}
-
-	const FVector ForwardDir = GetActorForwardVector();
-	const FVector RightDir = GetActorRightVector();
-
-	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Adding input: Forward=%.2f (Y), Right=%.2f (X)"),
-		MovementVector.Y, MovementVector.X);
-	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Directions - Forward=%s, Right=%s"),
-		*ForwardDir.ToString(), *RightDir.ToString());
-
-	AddMovementInput(ForwardDir, MovementVector.Y);
-	AddMovementInput(RightDir, MovementVector.X);
-
-	UE_LOG(LogTemp, Warning, TEXT("[MOVE] AddMovementInput completed"));
+	// This function is kept for backward compatibility but is no longer used.
+	// Input is now routed through MoveForward() and MoveRight() instead.
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Move() called (legacy - should not happen with Axis1D actions)"));
 }
 
 void AExcelionCharacter::MoveForward(float Value)

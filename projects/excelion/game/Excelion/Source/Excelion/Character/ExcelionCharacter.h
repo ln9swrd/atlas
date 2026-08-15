@@ -89,11 +89,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Move Right Action"))
 	TObjectPtr<class UInputAction> MoveRightAction;
 
-	// Unified Movement and Look actions (created at runtime)
-	TObjectPtr<class UInputAction> MoveAction;  // Runtime-created: WASD → Axis2D
-	TObjectPtr<class UInputAction> LookAction;  // Runtime-created: MouseX/Y → Axis2D
-
-	// Look actions - separate for each axis (Axis1D) - DEPRECATED
+	// Look actions - separate for each axis (Axis1D)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Look X Action"))
 	TObjectPtr<class UInputAction> LookXAction;
 
