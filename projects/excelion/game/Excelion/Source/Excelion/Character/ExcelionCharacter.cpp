@@ -70,14 +70,25 @@ AExcelionCharacter::AExcelionCharacter()
 	DefaultMappingContext = NewObject<UInputMappingContext>(this, TEXT("DefaultMappingContext"));
 	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created DefaultMappingContext: %s"), DefaultMappingContext ? TEXT("SUCCESS") : TEXT("FAILED"));
 	
-	MoveAction = NewObject<UInputAction>(this, TEXT("MoveAction"));
-	MoveAction->ValueType = EInputActionValueType::Axis2D;
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created MoveAction (Axis2D): %s"), MoveAction ? TEXT("SUCCESS") : TEXT("FAILED"));
+	// Movement: Each axis direction gets a separate Axis1D action for proper value handling
+	MoveForwardAction = NewObject<UInputAction>(this, TEXT("MoveForwardAction"));
+	MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created MoveForwardAction (Axis1D): %s"), MoveForwardAction ? TEXT("SUCCESS") : TEXT("FAILED"));
 	
-	LookAction = NewObject<UInputAction>(this, TEXT("LookAction"));
-	LookAction->ValueType = EInputActionValueType::Axis2D;
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created LookAction (Axis2D): %s"), LookAction ? TEXT("SUCCESS") : TEXT("FAILED"));
+	MoveRightAction = NewObject<UInputAction>(this, TEXT("MoveRightAction"));
+	MoveRightAction->ValueType = EInputActionValueType::Axis1D;
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created MoveRightAction (Axis1D): %s"), MoveRightAction ? TEXT("SUCCESS") : TEXT("FAILED"));
 	
+	// Look: Separate X/Y actions for mouse input
+	LookXAction = NewObject<UInputAction>(this, TEXT("LookXAction"));
+	LookXAction->ValueType = EInputActionValueType::Axis1D;
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created LookXAction (Axis1D): %s"), LookXAction ? TEXT("SUCCESS") : TEXT("FAILED"));
+	
+	LookYAction = NewObject<UInputAction>(this, TEXT("LookYAction"));
+	LookYAction->ValueType = EInputActionValueType::Axis1D;
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created LookYAction (Axis1D): %s"), LookYAction ? TEXT("SUCCESS") : TEXT("FAILED"));
+	
+	// Combat actions
 	AttackAction = NewObject<UInputAction>(this, TEXT("AttackAction"));
 	AttackAction->ValueType = EInputActionValueType::Boolean;
 	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created AttackAction (Boolean): %s"), AttackAction ? TEXT("SUCCESS") : TEXT("FAILED"));
@@ -87,47 +98,51 @@ AExcelionCharacter::AExcelionCharacter()
 	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created DashAction (Boolean): %s"), DashAction ? TEXT("SUCCESS") : TEXT("FAILED"));
 
 	// Map keys to actions via the input mapping context
-	if (DefaultMappingContext && MoveAction)
+	// Movement: Forward axis (W=+1, S=-1)
+	if (DefaultMappingContext && MoveForwardAction)
 	{
-		// Movement: WASD → MoveAction (Axis2D)
-		// CRITICAL: MapKey returns FEnhancedActionKeyMapping& - modify Value property after
-		FEnhancedActionKeyMapping& W_Mapping = DefaultMappingContext->MapKey(MoveAction, EKeys::W);
-		W_Mapping.Value = FInputActionValue(FVector2D(0.f, 1.f));  // Forward
-		FEnhancedActionKeyMapping& S_Mapping = DefaultMappingContext->MapKey(MoveAction, EKeys::S);
-		S_Mapping.Value = FInputActionValue(FVector2D(0.f, -1.f)); // Backward
-		FEnhancedActionKeyMapping& A_Mapping = DefaultMappingContext->MapKey(MoveAction, EKeys::A);
-		A_Mapping.Value = FInputActionValue(FVector2D(-1.f, 0.f)); // Left
-		FEnhancedActionKeyMapping& D_Mapping = DefaultMappingContext->MapKey(MoveAction, EKeys::D);
-		D_Mapping.Value = FInputActionValue(FVector2D(1.f, 0.f));  // Right
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] MoveAction mapped: W(0,1)/S(0,-1)/A(-1,0)/D(1,0) - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+		DefaultMappingContext->MapKey(MoveForwardAction, EKeys::W);
+		DefaultMappingContext->MapKey(MoveForwardAction, EKeys::S);
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] MoveForwardAction mapped: W/S"));
 	}
 	
-	if (DefaultMappingContext && LookAction)
+	// Movement: Right axis (D=+1, A=-1)
+	if (DefaultMappingContext && MoveRightAction)
 	{
-		// Camera: Mouse → LookAction (Axis2D)
-		DefaultMappingContext->MapKey(LookAction, EKeys::MouseX);
-		DefaultMappingContext->MapKey(LookAction, EKeys::MouseY);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] LookAction mapped: MouseX/MouseY - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+		DefaultMappingContext->MapKey(MoveRightAction, EKeys::D);
+		DefaultMappingContext->MapKey(MoveRightAction, EKeys::A);
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] MoveRightAction mapped: D/A"));
 	}
 	
+	// Look: X axis (Mouse movement)
+	if (DefaultMappingContext && LookXAction)
+	{
+		DefaultMappingContext->MapKey(LookXAction, EKeys::MouseX);
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] LookXAction mapped: MouseX"));
+	}
+	
+	// Look: Y axis (Mouse movement)
+	if (DefaultMappingContext && LookYAction)
+	{
+		DefaultMappingContext->MapKey(LookYAction, EKeys::MouseY);
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] LookYAction mapped: MouseY"));
+	}
+	
+	// Combat actions
 	if (DefaultMappingContext && AttackAction)
 	{
-		// Attack: LMB → AttackAction
 		DefaultMappingContext->MapKey(AttackAction, EKeys::LeftMouseButton);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] AttackAction mapped: LeftMouseButton - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] AttackAction mapped: LeftMouseButton"));
 	}
 	
 	if (DefaultMappingContext && DashAction)
 	{
-		// Dash: Shift → DashAction
 		DefaultMappingContext->MapKey(DashAction, EKeys::LeftShift);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] DashAction mapped: LeftShift - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] DashAction mapped: LeftShift"));
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[EXCELION INIT] Input context created in code - IMC: %s, Move: %s, Look: %s (Final IMC Mapping Count: %d)"),
+	UE_LOG(LogTemp, Warning, TEXT("[EXCELION INIT] Input context created in code - IMC: %s (Total Mappings: %d)"),
 		DefaultMappingContext ? *DefaultMappingContext->GetName() : TEXT("FAILED"),
-		MoveAction ? *MoveAction->GetName() : TEXT("FAILED"),
-		LookAction ? *LookAction->GetName() : TEXT("FAILED"),
 		DefaultMappingContext ? DefaultMappingContext->GetMappings().Num() : 0);
 }
 
