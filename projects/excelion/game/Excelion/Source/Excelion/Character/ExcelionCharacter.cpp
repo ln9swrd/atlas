@@ -204,17 +204,21 @@ void AExcelionCharacter::BeginPlay()
 	}
 
 	// Note: Enhanced Input Mapping Context registration.
-	// We create DefaultMappingContext in code and register it here.
+	// CRITICAL: We MUST remove all existing contexts first, otherwise IMC_Default will override our runtime context.
 	if (APlayerController* PC = Cast<APlayerController>(Controller))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] PlayerController found - registering input context"));
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] PlayerController found - clearing old contexts and registering new one"));
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
 		{
+			// CRITICAL: Remove ALL existing mapping contexts to prevent conflicts
+			Subsystem->ClearAllMappings();
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Cleared all existing mapping contexts"));
+			
 			if (DefaultMappingContext)
 			{
 				// Priority 0 = highest priority (processed first)
 				Subsystem->AddMappingContext(DefaultMappingContext, 0);
-				UE_LOG(LogTemp, Warning, TEXT("[INPUT] DefaultMappingContext registered with priority 0"));
+				UE_LOG(LogTemp, Warning, TEXT("[INPUT] DefaultMappingContext registered with priority 0 (ONLY context)"));
 			}
 			else
 			{
@@ -306,6 +310,21 @@ void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 void AExcelionCharacter::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();
+	
+	// ===== DEBUG: Check what value we're receiving =====
+	static bool bFirstLog = true;
+	if (bFirstLog)
+	{
+		bFirstLog = false;
+		UE_LOG(LogTemp, Error, TEXT("[MOVE DEBUG] First Move() called with Value: X=%.3f Y=%.3f"), MovementVector.X, MovementVector.Y);
+		UE_LOG(LogTemp, Error, TEXT("[MOVE DEBUG] MoveAction: %s"), MoveAction ? *MoveAction->GetName() : TEXT("NULL"));
+		UE_LOG(LogTemp, Error, TEXT("[MOVE DEBUG] DefaultMappingContext: %s"), DefaultMappingContext ? *DefaultMappingContext->GetName() : TEXT("NULL"));
+		if (DefaultMappingContext)
+		{
+			UE_LOG(LogTemp, Error, TEXT("[MOVE DEBUG] DefaultMappingContext has %d mappings"), DefaultMappingContext->GetMappings().Num());
+		}
+	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Move called: Value=%s"), *MovementVector.ToString());
 
 	if (bIsDashing)
