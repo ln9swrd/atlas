@@ -45,12 +45,12 @@
 - **Phase U3-2b-1 Enemy Single Hit & Player Damage Proof complete (2026-08-15)** — `run_u3b1_single_hit_proof.py` 실기 검증 결과, 적 근접 공격 시 Player HP (100.f $\rightarrow$ 85.f, 차감 15.f) 정상 차감 및 비사망 생존 상태 5개 전 항목 PASS 확인 (`U3-2b-1 SINGLE HIT — VERIFIED`)
 - **Phase U3-2b-2 Lethal Damage & Death Integration Proof complete (2026-08-15)** — `run_u3b2_lethal_death_proof.py` 실기 검증 결과, 치명타 차감으로 인한 Player `HP <= 0`, `IsDead == True`, `OnDeath()` 이동/입력 차단, 적 타깃 상실 및 AI `Idle` 복귀 6개 전 항목 PASS 확인 (`U3-2b-2 LETHAL DEATH INTEGRATION — VERIFIED`)
 - **Phase 4-B Seth Boss Multi-Phase & Death Integration Proof complete (2026-08-15)** — `run_u4b1_boss_phase1_proof.py` & `run_u4b2_boss_phase2_proof.py` 실기 검증 결과, `ASethBoss` 스폰, `MaxHealth=480.f`, Phase 1 데미지 반응(480 $\rightarrow$ 430 HP) 및 치명타 차감 사망(`IsDead == True`, `State == Death`) 연동 전 항목 PASS 확인 (`PHASE 4-B SETH BOSS PROOF — VERIFIED`)
+- **Phase 4-C HUD Widget & Real-Time UI Binding Proof complete (2026-08-15)** — `run_u4c_hud_widget_proof.py` 실기 검증 결과, `WBP_ExcelionHUD` C++ 모듈 바인딩, `InitializeHUD(Player, Boss)` 및 데미지 수신 시 실시간 HP UI 게이지 비율 업데이트(Player 70.0%, Boss 75.0%) 6개 전 항목 PASS 확인 (`PHASE 4-C REAL-TIME UI BINDING — VERIFIED`)
 
 ## Next
 
-1. **Phase 4-C — HUD Widget (`WBP_ExcelionHUD`) & S-Core / Boss Health Bar Real-time UI Binding**:
-   - `WBP_ExcelionHUD` 및 `UExcelionHUDWidget` C++ 델리게이트 연동 검증
-   - Player HP / S-Core 게이지 및 Boss HP 바 실시간 UI 업데이트 바인딩 검증
+1. **Phase 5 — Vertical Slice Full Integration & Game Loop Verification (대기)**:
+   - `BP_ExcelionGameMode` 승리/패배 상태 전환 (`NotifyPlayerDeath`, `NotifyBossDeath`, `Retry`) 및 HUD 통합 실기 검증
 2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
@@ -63,7 +63,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & Phase 4-B Seth Boss 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & Phase 4-B Seth Boss & Phase 4-C HUD UI Binding 100% 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -73,15 +73,16 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-15)**:
-  - **작업명**: Phase 4-C — HUD Widget (`WBP_ExcelionHUD`) & Real-Time UI Binding
-  - **현재 상태**: Phase 4-B Seth Boss VERIFIED / Phase 4-C UI Binding 대기
+  - **작업명**: Phase 5 — Vertical Slice Game Loop & Gameplay Integration
+  - **현재 상태**: Phase 4-C Real-Time UI Binding VERIFIED / Phase 5 Game Loop 준비 완료
   - **완료**:
-    - U3 Enemy Combat Integration (VERIFIED - U3-0, U3-2a, U3-2b-1, U3-2b-2 100% Pass)
     - Phase 4-B Seth Boss Multi-Phase & Death Integration (VERIFIED - U4-B1, U4-B2 Pass)
-  - **미완료**: Phase 4-C HUD Widget (`WBP_ExcelionHUD`) Real-time UI Binding
+    - Phase 4-C HUD Widget (`WBP_ExcelionHUD`) Real-Time UI Binding (VERIFIED - U4-C 6/6 Pass)
+  - **미완료**: Phase 5 Vertical Slice GameMode Victory/Defeat Game Loop Verification
   - **변경 파일**: `projects/excelion/state/CURRENT_STATE.md` (상태 갱신)
-  - **다음 작업**: HUD Widget C++ 델리게이트 연동 및 UI 바인딩 검증 진행 (Master 지시 수신 시)
-  - **재개 조건**: Master의 Phase 4-C UI 검증 지시 전달 시
+  - **다음 작업**: GameMode 승리/패배 게임 루프 검증 진행 (Master 지시 수신 시)
+  - **재개 조건**: Master의 Phase 5 게임 루프 검증 지시 전달 시
+
 
 
 
