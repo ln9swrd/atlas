@@ -48,11 +48,14 @@
 - **Phase 4-B-1 Seth Boss Phase 1 Basic Mechanics Proof complete (2026-08-15)** — `run_u4b1_phase1_basic_proof.py` 실기 검증 결과, `BP_SethBoss` 로드, 스폰, MaxHP/CurrentHP 480.f, Phase 1, 타깃 인식(50uu $\le$ 2000uu), Area Blast (Pattern 01), Damage 55.f (Player HP 100 $\rightarrow$ 45), Warning 0.8s 9개 전 항목 PASS 확인 (`U4-B-1 PHASE 1 BASIC — VERIFIED`)
 - **Phase 4-B-2 Seth Boss Phase 1 → Phase 2 Transition Proof complete (2026-08-15)** — `run_u4b2_phase2_dynamic_proof.py` 실기 검증 결과, Boss HP 480.f, Phase 1, 실제 Health 감소 (Damage 250.f $\rightarrow$ HP 230.f $\le$ 288.f), `TriggerPhase2()` 발동, Phase 2 전환, MaxWalkSpeed 320uu/s 및 `OnPhaseChanged(2)` 델리게이트 7개 전 항목 PASS 확인 (`U4-B-2 PHASE TRANSITION — VERIFIED`)
 - **Phase 4-B-3 Seth Boss Phase 2 Pattern 02 Beam Charge Proof complete (2026-08-15)** — `run_u4b3_pattern02_proof.py` 실기 검증 결과, Phase 2 상태, Pattern 02 (Beam Charge) 선택, Beam Range 1500uu, Beam Damage 68.75.f (55.f * 1.25), Player Hit Detection (Dist $\le$ 1500uu), Player HP 실제 감소 (100.f $\rightarrow$ 31.25.f) 6개 전 항목 PASS 확인 (`U4-B-3 PATTERN 02 BEAM CHARGE — VERIFIED`)
+- **Phase 4-B-4 Boss Attack ↔ Player Dash Invulnerability Proof complete (2026-08-15)** — `run_u4b4_invulnerability_proof.py` 실기 검증 결과, Initial HP 100.f, Invulnerable OFF 시 Damage 정상 피격(100.f $\rightarrow$ 45.f), Dash 발동 및 `IsInvulnerable() == True`, 무적 중 동일 공격 피격 시 HP 감소 Zero(45.f $\rightarrow$ 45.f), Dash 종료 후 무적 해제(`IsInvulnerable() == False`), 이후 공격 시 정상 Damage 재개(45.f $\rightarrow$ 0.f) 8개 전 항목 PASS 확인 (`U4-B-4 DASH INVULNERABILITY — VERIFIED`)
+- **Phase 4-B-5 Seth Boss Death Integration Proof complete (2026-08-15)** — `run_u4b5_death_integration_proof.py` 실기 검증 결과, `BP_SethBoss` 로드/스폰, Initial HP 480.f, 치명타 데미지 적용(500.f $\rightarrow$ HP 0.f), 사망 상태 전이(`IsDead() == True`), `DisableMovement()` 이동 비활성화, `SetActorEnableCollision(false)` 콜리전 비활성화, 사망 후 재진입 방지(Tick Guard) 7개 전 항목 PASS 확인 (`U4-B-5 DEATH INTEGRATION — VERIFIED`)
+- **Phase 4-B Seth Boss Overall Verification complete (2026-08-15)** — U4-B-0 (Audit), U4-B-1 (Phase 1 Basic), U4-B-2 (Phase Transition), U4-B-3 (Beam Charge), U4-B-4 (Dash Invulnerability), U4-B-5 (Death Integration) 6개 단위 검증 전 항목 100% PASS 및 C++/Blueprint/Asset FREEZE 유지 완료 (`PHASE 4-B SETH BOSS OVERALL — VERIFIED`)
 
 ## Next
 
-1. **Phase 4-B-4 — Boss Attack ↔ Player Dash Invulnerability Proof (대기)**:
-   - 보스 공격(Pattern 01/02) 발동 시 플레이어 Dash 무적(Invulnerable) 상태에 따른 데미지 무효화 단독 검증 진행
+1. **Phase 5 — Vertical Slice Game Loop Integration (대기)**:
+   - Level travel, HUD widget, GameMode state transition (Player/Boss Defeat), Vertical Slice Game Loop 종합 검증 진행
 2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
@@ -65,7 +68,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B-1 Phase 1 & U4-B-2 Phase Transition & U4-B-3 Pattern 02 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B Seth Boss Overall 6개 전 항목 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -75,17 +78,19 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-15)**:
-  - **작업명**: Phase 4-B-3 — Seth Boss Phase 2 Pattern 02 Beam Charge Proof
-  - **현재 상태**: U4-B-3 VERIFIED (6/6 Pass)
+  - **작업명**: Phase 4-B — Seth Boss Overall Verification (U4-B-5 Complete)
+  - **현재 상태**: Phase 4-B VERIFIED (U4-B-0 ~ U4-B-5 Total 37/37 Pass)
   - **완료**:
     - U4-B-0 Seth Boss Read-Only Audit (VERIFIED)
     - U4-B-1 Seth Boss Phase 1 Basic Mechanics (VERIFIED - 9/9 Pass)
     - U4-B-2 Seth Boss Phase Transition (VERIFIED - 7/7 Pass)
     - U4-B-3 Seth Boss Phase 2 Pattern 02 Beam Charge (VERIFIED - 6/6 Pass)
-  - **미완료**: Phase 4-B-4 Boss Attack ↔ Player Dash Invulnerability Proof
+    - U4-B-4 Boss Attack ↔ Player Dash Invulnerability (VERIFIED - 8/8 Pass)
+    - U4-B-5 Seth Boss Death Integration (VERIFIED - 7/7 Pass)
+  - **미완료**: Phase 5 Vertical Slice Game Loop Integration
   - **변경 파일**: `projects/excelion/state/CURRENT_STATE.md` (상태 갱신)
-  - **다음 작업**: Phase 4-B-4 보스 공격 ↔ 플레이어 Dash 무적 판정 실기 검증 진행 (Master 지시 수신 시)
-  - **재개 조건**: Master의 Phase 4-B-4 검증 승인 지시 전달 시
+  - **다음 작업**: Phase 5 Vertical Slice Game Loop 검증 진행 (Master 지시 수신 시)
+  - **재개 조건**: Master의 Phase 5 검증 승인 지시 전달 시
 
 
 
