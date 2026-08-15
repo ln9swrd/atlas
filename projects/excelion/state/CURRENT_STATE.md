@@ -38,13 +38,15 @@
 - **Phase 3-B Minimal BP_DummyTarget 구축 완료 (2026-08-14)** — 순수 C++ `AExcelionDummyTarget` 상속 및 `BP_DummyTarget.uasset` 생성/저장 확인 (`MaxHealth = 100.f`, `CapsuleCollision=Pawn`, `FallbackCube`) (VERIFIED)
 - **Phase 3-C & 3-D U2 Core Combat Proof 언리얼 5.4 실기 실행 완전 통과 (2026-08-14)** — `run_u2_combat_core_proof.py` 언리얼 5.4 에디터 실기 실행 결과 `Excelion.log`에 `[U2-A PASS]`, `[U2-B PASS]`, `[U2-C PASS]`, `[U2-D PASS]` 전 항목 100% 성공 검증 확인 (`U2 CORE COMBAT PROOF — VERIFIED`)
 - **Phase U2-E — Attack → Feedback Bridge Invocation VERIFIED (2026-08-14)** — `CombatComponent::PerformHitDetection()` 내 타깃 HitConfirm 시점에 `BroadcastHitImpact()` 호출까지 검증 완료 (실제 HitStop/CameraShake의 최종 체감 효과는 미검증으로 분리)
+- **Phase U2-H Physical GUI Input Proof complete (2026-08-15)** — UE 5.4.4 GUI PIE 실기에서 W, S, A, D, Mouse, LMB, SpaceBar 7개 물리 입력 전 항목 100% 정상 작동 확인 (`U2-H PHYSICAL GUI INPUT — VERIFIED`)
 
 ## Next
 
-1. **U2-F Attack $\rightarrow$ Heat 연동 기획/규칙 Master 결정 대기**:
-   - 근접 메인 공격 시 Heat 부과 여부 및 `HeatCost` 차감 타이밍(시도 vs 히트) 기획 결정 후 진행
-2. **Phase 4-A — U3 Enemy / Boss Combat Integration (HOLD)**
-3. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
+1. **Phase 4-A — U3 Enemy / Boss Combat Integration 사전 조사 (Read-Only Audit)**:
+   - U2-F Heat 연동은 DEFERRED (브레스트 캐논 구현 단계 진입 시 연결)
+   - Canon(`Enemy`, `Boss`) 및 기존 C++/Blueprint/Data Asset(`Health`, `Combat`, `Target`, `Damage`, `Death`) Read-Only Audit 진행
+   - U2 Combat 연결점 분석, 중복/충돌/누락 점검 및 구현 단위 제안 준비
+2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
 
@@ -56,7 +58,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge Invocation 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge Invocation & U2-H Physical Input 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -65,12 +67,18 @@
 
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
-- **Handoff (2026-08-14)**:
-  - **작업명**: Phase U2-E — Attack $\rightarrow$ Feedback C++ Bridge Invocation & Pre-Commit Audit
-  - **현재 상태**: Attack → Feedback Bridge Invocation VERIFIED (BroadcastHitImpact 호출까지 검증, 실제 HitStop/CameraShake 최종 체감 효과는 미검증)
+- **Handoff (2026-08-15)**:
+  - **작업명**: Phase 4-A — U3 Enemy / Boss Combat Integration Read-Only Audit
+  - **현재 상태**: U2-H VERIFIED / Phase 4-A U3 Read-Only Audit 대기
   - **완료**:
-    - `CombatComponent::PerformHitDetection()` hit-confirm 지점에 C++ `UExcelionFeedbackSubsystem` 직접 호출 및 `BroadcastHitImpact` 연동 (테스트 전용 중복 `ECC_Pawn` 방어 코드 제거 정돈 완료)
-    - `run_u2_extended_proof.py` 구동으로 언리얼 5.4.4 실기 환경에서 `[U2-E-C PASS]` (Invocation Verified) 및 U2-A~D, U2-F/G Regression 유지 확인
-  - **변경 파일**: `CombatComponent.h`, `CombatComponent.cpp`, `run_u2_extended_proof.py`, `projects/excelion/state/CURRENT_STATE.md`
-  - **다음 작업**: Master 커밋 승인 및 U2-F Heat 연동 규칙 결정 대기
-  - **재개 조건**: Master 지시 시
+    - U2-E Attack → Feedback Bridge Invocation (VERIFIED)
+    - U2-F Heat (DESIGN COMPLETE / DEFERRED — 브레스트 캐논 구현 시 연결)
+    - U2-H-B Input Action & Mapping Context Mappings (VERIFIED)
+    - U2-H-C Runtime Character Wiring & Physical GUI Input (VERIFIED - 7/7 Pass)
+  - **미완료**: U3 Enemy / Boss Combat Integration 사전 조사 (Read-Only Audit)
+  - **변경 파일**: `projects/excelion/state/CURRENT_STATE.md` (상태 갱신)
+  - **다음 작업**: Canon 및 C++/BP/DataAsset 대조 분석 (Enemy, Boss, Health, Combat, Target, Damage, Death)
+  - **재개 조건**: Master의 Read-Only Audit 수행 지시 수신 시
+
+
+
