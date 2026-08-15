@@ -5,7 +5,7 @@
 > 실제 삼면도 PNG · Concept Image · Mesh · Blender 수정 **금지**  
 > 목적: 현재 TEXT-LOCK만으로 Mesh 제작용 Production Reference를 구성할 수 있는지 정리하고, 삼면도 제작 전 확정 항목을 분리한다
 
-**상태: Production Reference Spec 작성 완료 · Master 결정 대기**
+**상태: Production Reference Spec 작성 완료 · §8 MASTER APPROVED (2026-08-16)**
 
 ---
 
@@ -18,6 +18,7 @@
 - Three-view 요구사항 정리
 - Mesh 제작 전/후 조건 분리
 - Concept 활용 기준
+- §8 Master 승인사항 기록
 - 문서 저장
 - Commit
 
@@ -33,10 +34,9 @@
 - 관절 각도 한계 수치
 - 최종 UV / Material instance 경로
 
-### Master 결정 필요
-- 삼면도 제작 전 최소 항목 승인 목록 (본 문서 §8)
-- 삼면도 없이도 P0 Mesh 블록아웃 허용 여부
-- Concept PNG 활용 수준 (REFERENCE only 유지 권고)
+### Master 결정
+- §8 6항 **APPROVED** (2026-08-16) — 본 문서 §8 참조
+- 삼면도 제작 범위 · Mesh 착수 → **아직 미결정** (별도 지시)
 
 ### 변경하지 않은 것
 - Canon · Novel · Unreal · Blueprint · Asset · Animation · VFX · Audio · Input · ORD-GRUNT · Design 파일
@@ -122,7 +122,7 @@ INFERRED를 LOCKED로 바꾸지 않는다.
 | 관절 각도 한계 | — | — | **UNKNOWN** |
 | 폴리곤 상한 | — | — | **UNKNOWN** |
 
-**참고:** `mecha/seth/DESCRIPTION.md`의 “리부트 대기 · 실루엣 3안 전 최종 삼면도 STOP”은 **시각 리부트 정책**이다. SETH_FINAL_SPEC · FORM의 TEXT-LOCK 외형 키워드는 유지. 리부트 후보를 Canon으로 승격하지 않는다.
+**참고:** `mecha/seth/DESCRIPTION.md`의 “리부트 대기 · 실루엣 3안 전 최종 삼면도 STOP”은 과거 시각 리부트 정책 문구이다. **§8 Master 결정에 따라 TEXT-LOCK(FORM · SETH_FINAL_SPEC)을 유지하며 리부트하지 않는다.** 리부트 후보를 Canon으로 승격하지 않는다.
 
 ---
 
@@ -202,12 +202,15 @@ INFERRED를 LOCKED로 바꾸지 않는다.
 - 관절 주름·가동 여유 공간의 형상
 - 발 접지 면적·피벗 정합을 도면으로 고정
 
-### C. Master 결정 필요
+### C. Master 결정 (§8 반영)
 
-- 삼면도 없이 P0 Mesh(Meshy/블록아웃) 착수 허용 여부
-- AXION / SETH 제작 순서
-- SETH “시각 리부트”와 TEXT-LOCK의 병행 규칙 (DESCRIPTION STOP vs FORM LOCK)
-- Concept PNG를 삼면도 대용으로 쓸지 여부 (권고: **쓰지 않음**)
+| 항목 | 결정 |
+|------|------|
+| 삼면도 없이 P0 Mesh | **금지** |
+| SETH 시각 리부트 vs TEXT-LOCK | **TEXT-LOCK 유지 · 리부트하지 않음** |
+| Concept PNG | **REFERENCE only** · Canon 변경 근거 금지 |
+| AXION / SETH 제작 순서 | **미결정** (별도 지시) |
+| 삼면도 제작 범위 | **미결정** (별도 지시) |
 
 ---
 
@@ -219,9 +222,11 @@ INFERRED를 LOCKED로 바꾸지 않는다.
 | **Production Reference** | orthographic · 비율·실루엣 고정용 | Concept PNG는 **이 수준으로 승격하지 않음** |
 | **Visual Reference** | 분위기·밀도·핀 패널 참고 | design/brave 다수 PNG = **이 수준만** |
 
-충돌 시: **TEXT-LOCK 우선** · 이미지는 보고만 하고 수정하지 않음 · Master 결정 대상.
+충돌 시: **TEXT-LOCK 우선** · 이미지는 보고만 하고 수정하지 않음.
 
-THREEVIEW_CURRENT · brave/threeview/NOTES: 이미지 생성 = **HOLD**. 본 Spec이 HOLD를 해제하지 않는다.
+**§8 Master 결정:** Concept PNG = REFERENCE only.
+
+THREEVIEW_CURRENT · brave/threeview/NOTES: 이미지 생성 = **HOLD**. 본 Spec이 HOLD를 해제하지 않는다. 삼면도 제작은 별도 Master 지시 후에만.
 
 ---
 
@@ -230,22 +235,39 @@ THREEVIEW_CURRENT · brave/threeview/NOTES: 이미지 생성 = **HOLD**. 본 Spe
 | 기체 | 판정 | 한 줄 |
 |------|------|--------|
 | AXION | **PARTIALLY READY** | LOCKED 텍스트로 프롬프트·체크리스트 가능 · orthographic MISSING으로 최종 형상 고정 불가 |
-| SETH | **PARTIALLY READY** | 동일 · 추가로 DESCRIPTION 리부트 STOP과 FORM LOCK 병존 → Master 정렬 필요 |
+| SETH | **PARTIALLY READY** | 동일 · §8에 따라 TEXT-LOCK 유지 · 리부트 없음 |
 
-READY / NOT READY로 승격·강등하지 않음.
+READY / NOT READY로 승격·강등하지 않음.  
+**§8: 삼면도 없이 P0 Mesh 금지** → Mesh는 Three-view(또는 동등 Reference) 확보 후.
 
 ---
 
-## 8. 삼면도 제작 전 Master가 결정해야 하는 최소 항목
+## 8. Master 결정 (§8) — APPROVED 2026-08-16
 
-1. **AXION 25m / SETH ≈30m 비율을 삼면도에 그대로 고정할지** (LOCKED 유지 권고)
-2. **AXION 기본 비무장 · SETH 맨몸 전사 실루엣**을 삼면도 기본 포즈로 할지
-3. **SETH 손 노출 · 민등**을 필수 검증 항목으로 삼면도 검수에 넣을지
-4. **삼면도 없이 P0 Mesh 허용** vs **삼면도 후 Mesh만 허용**
-5. **SETH 시각 리부트(DESCRIPTION STOP)** 를 삼면도 전에 닫을지 · TEXT-LOCK만으로 진행할지
-6. **Concept PNG** 를 Visual Reference로만 둘지 (권고: REFERENCE only)
+| # | 항목 | Master 결정 |
+|---|------|-------------|
+| 1 | 비율 고정 | **승인** · AXION **25 m** · SETH **약 30 m** · TEXT-LOCK 유지 |
+| 2 | 기본 포즈 | **승인** · Production Reference용 **중립 A/T Pose** · Canon Pose로 취급하지 않음 |
+| 3 | SETH 손 / 민등 | **승인** · 기존 TEXT-LOCK 유지 · Reference 제작 전 검수 |
+| 4 | 삼면도 없이 P0 Mesh | **금지 승인** |
+| 5 | SETH 리부트 vs TEXT-LOCK | **승인** · **TEXT-LOCK 유지** · 리부트하지 않음 |
+| 6 | Concept PNG | **승인** · **REFERENCE only** · Canon 변경 근거로 사용하지 않음 |
 
-위 6항이 정해지기 전에는 삼면도 제작 지시·Mesh 양산을 권하지 않는다.
+### 실행 제약 (승인 시점)
+
+- 삼면도 제작 · Mesh 제작 · Skeleton · Animation → **아직 착수하지 않음**
+- 다음: Production Reference 제작 **범위**를 Master가 별도 결정
+
+### 현재 기준선
+
+```text
+T1 Level Blockout          → IMPLEMENTED / UNVERIFIED
+Production Reference §8    → MASTER APPROVED
+AXION / SETH Three-view    → NOT STARTED
+Mesh                       → BLOCKED (삼면도 선행 필수)
+Skeleton                   → BLOCKED
+Animation                  → BLOCKED
+```
 
 ---
 
@@ -264,9 +286,10 @@ READY / NOT READY로 승격·강등하지 않음.
 
 ## NEXT
 
-1. Master: 본 Spec 검토 · §8 최소 항목 결정  
-2. 승인 시: 필요한 Reference(삼면도 등) 제작 범위만 별도 지시  
-3. Mesh 착수는 위 결정 + (권장) T1 VERIFIED 이후  
-4. Skeleton / Animation은 Mesh 정합 후 (기존 전략 유지)
+1. Master: **Production Reference 제작 범위** 결정 (삼면도 대상·순서·품질)  
+2. 승인된 범위에서만 Three-view / Reference 제작  
+3. Master 검수 후 Mesh 제작 승인 검토  
+4. (병행 가능) UE 가능 시 T1 VERIFIED  
+5. Skeleton / Animation은 Mesh 정합 후 (기존 전략 유지)
 
-**본 문서는 분석·명세만 수행한다. 삼면도·Mesh·Canon 구현 지시가 아니다.**
+**본 문서 갱신은 §8 승인 기록만 수행한다. 삼면도·Mesh·Canon 구현 지시가 아니다.**
