@@ -44,13 +44,13 @@
 - **Phase U3-2a Enemy Spawn & Chase Physical Proof complete (2026-08-15)** — UE 5.4.4 GUI PIE 실기에서 Enemy Spawn, Player Recognition (`DetectionRange=1500.f`), `Idle` $\rightarrow$ `Chase` 상태 전환 및 플레이어 방향 실제 물리 이동(`MoveSpeed=400.f`) 4/4 전 항목 100% 검증 확인 (`U3-2a ENEMY CHASE PROOF — VERIFIED`)
 - **Phase U3-2b-1 Enemy Single Hit & Player Damage Proof complete (2026-08-15)** — `run_u3b1_single_hit_proof.py` 실기 검증 결과, 적 근접 공격 시 Player HP (100.f $\rightarrow$ 85.f, 차감 15.f) 정상 차감 및 비사망 생존 상태 5개 전 항목 PASS 확인 (`U3-2b-1 SINGLE HIT — VERIFIED`)
 - **Phase U3-2b-2 Lethal Damage & Death Integration Proof complete (2026-08-15)** — `run_u3b2_lethal_death_proof.py` 실기 검증 결과, 치명타 차감으로 인한 Player `HP <= 0`, `IsDead == True`, `OnDeath()` 이동/입력 차단, 적 타깃 상실 및 AI `Idle` 복귀 6개 전 항목 PASS 확인 (`U3-2b-2 LETHAL DEATH INTEGRATION — VERIFIED`)
-- **Phase 4-B Seth Boss Multi-Phase & Death Integration Proof complete (2026-08-15)** — `run_u4b1_boss_phase1_proof.py` & `run_u4b2_boss_phase2_proof.py` 실기 검증 결과, `ASethBoss` 스폰, `MaxHealth=480.f`, Phase 1 데미지 반응(480 $\rightarrow$ 430 HP) 및 치명타 차감 사망(`IsDead == True`, `State == Death`) 연동 전 항목 PASS 확인 (`PHASE 4-B SETH BOSS PROOF — VERIFIED`)
-- **Phase 4-C HUD Widget & Real-Time UI Binding Proof complete (2026-08-15)** — `run_u4c_hud_widget_proof.py` 실기 검증 결과, `WBP_ExcelionHUD` C++ 모듈 바인딩, `InitializeHUD(Player, Boss)` 및 데미지 수신 시 실시간 HP UI 게이지 비율 업데이트(Player 70.0%, Boss 75.0%) 6개 전 항목 PASS 확인 (`PHASE 4-C REAL-TIME UI BINDING — VERIFIED`)
+- **Phase 4-B-0 Seth Boss Read-Only Audit complete (2026-08-15)** — `ASethBoss` C++ implementation ↔ Canon specification (HP 480.f, Phase 2 60% threshold, Pattern 01 55.f, Pattern 02 68.75.f, Dash Invulnerability integration) 100%정적 정합성 확인 (`CODE/ASSET FREEZE 유지`)
+- **Phase 4-B-1 Seth Boss Phase 1 Basic Mechanics Proof complete (2026-08-15)** — `run_u4b1_phase1_basic_proof.py` 실기 검증 결과, `BP_SethBoss` 로드, 스폰, MaxHP/CurrentHP 480.f, Phase 1, 타깃 인식(50uu $\le$ 2000uu), Area Blast (Pattern 01), Damage 55.f (Player HP 100 $\rightarrow$ 45), Warning 0.8s 9개 전 항목 PASS 확인 (`U4-B-1 PHASE 1 BASIC — VERIFIED`)
 
 ## Next
 
-1. **Phase 5 — Vertical Slice Full Integration & Game Loop Verification (대기)**:
-   - `BP_ExcelionGameMode` 승리/패배 상태 전환 (`NotifyPlayerDeath`, `NotifyBossDeath`, `Retry`) 및 HUD 통합 실기 검증
+1. **Phase 4-B-2 — Seth Boss Phase 1 → Phase 2 Transition Proof (대기)**:
+   - Boss HP $\le 60\%$ (288.f 이하) 차감 시 `TriggerPhase2()` 발동, Phase 2 전환, MaxWalkSpeed 320uu/s증가 및 `OnPhaseChanged(2)` 델리게이트 수신 단독 검증
 2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
@@ -63,7 +63,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & Phase 4-B Seth Boss & Phase 4-C HUD UI Binding 100% 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B-1 Seth Boss Phase 1 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -73,15 +73,16 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-15)**:
-  - **작업명**: Phase 5 — Vertical Slice Game Loop & Gameplay Integration
-  - **현재 상태**: Phase 4-C Real-Time UI Binding VERIFIED / Phase 5 Game Loop 준비 완료
+  - **작업명**: Phase 4-B-2 — Seth Boss Phase 1 → Phase 2 Transition Proof
+  - **현재 상태**: U4-B-1 VERIFIED / Phase 4-B-2 승인 대기
   - **완료**:
-    - Phase 4-B Seth Boss Multi-Phase & Death Integration (VERIFIED - U4-B1, U4-B2 Pass)
-    - Phase 4-C HUD Widget (`WBP_ExcelionHUD`) Real-Time UI Binding (VERIFIED - U4-C 6/6 Pass)
-  - **미완료**: Phase 5 Vertical Slice GameMode Victory/Defeat Game Loop Verification
+    - U4-B-0 Seth Boss Read-Only Audit (VERIFIED - Canon Match 100%)
+    - U4-B-1 Seth Boss Phase 1 Basic Mechanics (VERIFIED - 9/9 Pass)
+  - **미완료**: Phase 4-B-2 Seth Boss Phase 1 -> Phase 2 Transition Proof
   - **변경 파일**: `projects/excelion/state/CURRENT_STATE.md` (상태 갱신)
-  - **다음 작업**: GameMode 승리/패배 게임 루프 검증 진행 (Master 지시 수신 시)
-  - **재개 조건**: Master의 Phase 5 게임 루프 검증 지시 전달 시
+  - **다음 작업**: Phase 4-B-2 보스 페이즈 전환 실기 검증 진행 (Master 지시 수신 시)
+  - **재개 조건**: Master의 Phase 4-B-2 검증 승인 지시 전달 시
+
 
 
 
