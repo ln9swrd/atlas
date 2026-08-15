@@ -39,13 +39,16 @@
 - **Phase 3-C & 3-D U2 Core Combat Proof 언리얼 5.4 실기 실행 완전 통과 (2026-08-14)** — `run_u2_combat_core_proof.py` 언리얼 5.4 에디터 실기 실행 결과 `Excelion.log`에 `[U2-A PASS]`, `[U2-B PASS]`, `[U2-C PASS]`, `[U2-D PASS]` 전 항목 100% 성공 검증 확인 (`U2 CORE COMBAT PROOF — VERIFIED`)
 - **Phase U2-E — Attack → Feedback Bridge Invocation VERIFIED (2026-08-14)** — `CombatComponent::PerformHitDetection()` 내 타깃 HitConfirm 시점에 `BroadcastHitImpact()` 호출까지 검증 완료 (실제 HitStop/CameraShake의 최종 체감 효과는 미검증으로 분리)
 - **Phase U2-H Physical GUI Input Proof complete (2026-08-15)** — UE 5.4.4 GUI PIE 실기에서 W, S, A, D, Mouse, LMB, SpaceBar 7개 물리 입력 전 항목 100% 정상 작동 확인 (`U2-H PHYSICAL GUI INPUT — VERIFIED`)
+- **Phase U3-0 Enemy Asset Audit complete (2026-08-15)** — `BP_ExcelionEnemy`, `BP_PowerEnemy`, `BP_SpeedEnemy`, `BP_SethBoss` .uasset 디스크 실제 존재 및 C++ 부모 클래스 바인딩 100% 확인 (`U3-1 에셋 생성 생략 확정`)
+- **Phase U3-2a-DIAG Read-Only Audit complete (2026-08-15)** — Headless Commandlet 환경적 제약 규명, C++ `AExcelionEnemy::FindPlayer()` 런타임 코드 결함 없음 확인 (`C++ CODE FREEZE 유지`)
+- **Phase U3-2a Enemy Spawn & Chase Physical Proof complete (2026-08-15)** — UE 5.4.4 GUI PIE 실기에서 Enemy Spawn, Player Recognition (`DetectionRange=1500.f`), `Idle` $\rightarrow$ `Chase` 상태 전환 및 플레이어 방향 실제 물리 이동(`MoveSpeed=400.f`) 4/4 전 항목 100% 검증 확인 (`U3-2a ENEMY CHASE PROOF — VERIFIED`)
+- **Phase U3-2b Enemy Attack & Player Damage/Death Integration Proof complete (2026-08-15)** — `run_u3b_enemy_combat_proof.py` 언리얼 5.4 실기 검증 결과, 적 근접 배치 후 `UHealthComponent` 데미지 적용(100.f $\rightarrow$ 85.f), 치명타 차감으로 인한 플레이어 `OnDeath` 입력/이동 차단 및 적 AI `Idle` 복귀 6개 전 항목 PASS 확인 (`U3-2b COMBAT INTEGRATION — VERIFIED`)
 
 ## Next
 
-1. **Phase 4-A — U3 Enemy / Boss Combat Integration 사전 조사 (Read-Only Audit)**:
-   - U2-F Heat 연동은 DEFERRED (브레스트 캐논 구현 단계 진입 시 연결)
-   - Canon(`Enemy`, `Boss`) 및 기존 C++/Blueprint/Data Asset(`Health`, `Combat`, `Target`, `Damage`, `Death`) Read-Only Audit 진행
-   - U2 Combat 연결점 분석, 중복/충돌/누락 점검 및 구현 단위 제안 준비
+1. **Phase 4-A — U3 Enemy / Boss Combat Integration 완료 검토**:
+   - U3 Mass-Production Enemy (`BP_ExcelionEnemy`) Chase & Combat Integration 전 항목 VERIFIED 승격 완료
+   - 보스(`ASethBoss` / `BP_SethBoss`) Multi-Phase 시스템 검증 또는 ORD-GRUNT 후속 기획 Master 지시 대기
 2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
@@ -58,7 +61,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge Invocation & U2-H Physical Input 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3-2a Enemy Chase & U3-2b Enemy Combat 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -68,17 +71,21 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-15)**:
-  - **작업명**: Phase 4-A — U3 Enemy / Boss Combat Integration Read-Only Audit
-  - **현재 상태**: U2-H VERIFIED / Phase 4-A U3 Read-Only Audit 대기
+  - **작업명**: Phase U3 Mass-Production Enemy Combat Integration
+  - **현재 상태**: U3-2a VERIFIED / U3-2b VERIFIED / Phase U3 Enemy Combat 100% VERIFIED
   - **완료**:
-    - U2-E Attack → Feedback Bridge Invocation (VERIFIED)
-    - U2-F Heat (DESIGN COMPLETE / DEFERRED — 브레스트 캐논 구현 시 연결)
-    - U2-H-B Input Action & Mapping Context Mappings (VERIFIED)
-    - U2-H-C Runtime Character Wiring & Physical GUI Input (VERIFIED - 7/7 Pass)
-  - **미완료**: U3 Enemy / Boss Combat Integration 사전 조사 (Read-Only Audit)
+    - U2-H Physical GUI Input (VERIFIED - 7/7 Pass)
+    - U3-0 Enemy Asset Existence Audit (VERIFIED - 4/4 .uasset Exists)
+    - U3-2a-DIAG Read-Only Audit (VERIFIED - Game Code Clean)
+    - U3-2a Enemy Spawn & Chase Physical Proof (VERIFIED - 4/4 Pass)
+    - U3-2b Enemy Attack & Player Damage/Death Integration Proof (VERIFIED - 6/6 Pass)
+  - **미완료**: 없음 (U3 Mass-Production Enemy Combat Integration 완료)
   - **변경 파일**: `projects/excelion/state/CURRENT_STATE.md` (상태 갱신)
-  - **다음 작업**: Canon 및 C++/BP/DataAsset 대조 분석 (Enemy, Boss, Health, Combat, Target, Damage, Death)
-  - **재개 조건**: Master의 Read-Only Audit 수행 지시 수신 시
+  - **다음 작업**: 보스(`ASethBoss` / `BP_SethBoss`) 검증 또는 후속 단계 개발 지시 대기 (Master 지시 수신 시)
+  - **재개 조건**: Master의 후속 단계 개발 지시 전달 시
+
+
+
 
 
 
