@@ -71,7 +71,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B Seth Boss Overall & P5-0 Audit & P5-1 Victory Flow & P5-2 Defeat Flow & P5-3 Retry Level Travel 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B Seth Boss Overall & P5-0 Audit & P5-1 Victory Flow & P5-2 Defeat Flow & P5-3 Retry Level Travel & P5-4 Full Vertical Slice Integration 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
