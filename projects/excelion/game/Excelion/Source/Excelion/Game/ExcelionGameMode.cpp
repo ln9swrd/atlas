@@ -15,6 +15,25 @@ AExcelionGameMode::AExcelionGameMode()
 void AExcelionGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// ===== DEBUG: PIE Visibility Investigation =====
+	UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] GameMode BeginPlay - DefaultPawnClass: %s"), 
+		DefaultPawnClass ? *DefaultPawnClass->GetName() : TEXT("None"));
+	
+	if (GetWorld())
+	{
+		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (PC)
+		{
+			APawn* PossessedPawn = PC->GetPawn();
+			UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] PlayerController Possessed Pawn - Class: %s, Name: %s, Location: %s"),
+				PossessedPawn ? *PossessedPawn->GetClass()->GetName() : TEXT("None"),
+				PossessedPawn ? *PossessedPawn->GetName() : TEXT("None"),
+				PossessedPawn ? *PossessedPawn->GetActorLocation().ToString() : TEXT("N/A"));
+		}
+	}
+	// ===== END DEBUG =====
+	
 	CurrentGameState = EExcelionGameState::Playing;
 	SetupHUD();
 }

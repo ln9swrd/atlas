@@ -54,6 +54,8 @@ AExcelionCharacter::AExcelionCharacter()
 	FallbackVisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FallbackVisualMesh"));
 	FallbackVisualMesh->SetupAttachment(RootComponent);
 	FallbackVisualMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 1.8f));
+	FallbackVisualMesh->SetVisibility(true, false);
+	FallbackVisualMesh->SetHiddenInGame(false);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultCubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
 	if (DefaultCubeMesh.Succeeded())
@@ -65,6 +67,36 @@ AExcelionCharacter::AExcelionCharacter()
 void AExcelionCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	// ===== DEBUG: PIE Visibility Investigation =====
+	UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] Character Spawned - Name: %s, Location: %s"), *GetName(), *GetActorLocation().ToString());
+	UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] GetMesh Valid: %d, FallbackVisualMesh Valid: %d"), 
+		GetMesh() != nullptr, FallbackVisualMesh != nullptr);
+	
+	if (GetMesh())
+	{
+		bool bHidden = GetMesh()->IsHidden();
+		bool bVisible = GetMesh()->IsVisible();
+		USkeletalMesh* SK = GetMesh()->GetSkeletalMeshAsset();
+		UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] Mesh - SkeletalMesh: %s, Hidden: %d, Visible: %d"), 
+			SK ? *SK->GetName() : TEXT("None"), bHidden, bVisible);
+	}
+	
+	if (FallbackVisualMesh)
+	{
+		bool bHidden = FallbackVisualMesh->IsHidden();
+		bool bVisible = FallbackVisualMesh->IsVisible();
+		UStaticMesh* SM = FallbackVisualMesh->GetStaticMesh();
+		UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] FallbackMesh - StaticMesh: %s, Hidden: %d, Visible: %d"), 
+			SM ? *SM->GetName() : TEXT("None"), bHidden, bVisible);
+		
+		// FIX: Ensure FallbackVisualMesh is visible even if Blueprint set it to Hidden
+		FallbackVisualMesh->SetVisibility(true, false);
+		FallbackVisualMesh->SetHiddenInGame(false);
+		UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] FallbackMesh forced visible - Now: Hidden=%d, Visible=%d"),
+			FallbackVisualMesh->IsHidden(), FallbackVisualMesh->IsVisible());
+	}
+	// ===== END DEBUG =====
 
 	ApplyMechaDataAsset();
 }
