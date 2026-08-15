@@ -297,16 +297,47 @@ void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		if (MoveAction)
+		// Movement: Bind forward/backward movement
+		if (MoveForwardAction)
 		{
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Move);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound MoveAction"));
+			EnhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::MoveForward);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound MoveForwardAction"));
 		}
-		if (LookAction)
+		
+		// Movement: Bind left/right movement
+		if (MoveRightAction)
 		{
-			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound LookAction"));
+			EnhancedInputComponent->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::MoveRight);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound MoveRightAction"));
 		}
+		
+		// Look: Bind X axis (horizontal mouse movement)
+		if (LookXAction)
+		{
+			EnhancedInputComponent->BindAction(LookXAction, ETriggerEvent::Triggered, this, [this](const FInputActionValue& Value)
+			{
+				if (APlayerController* PC = Cast<APlayerController>(Controller))
+				{
+					PC->AddYawInput(Value.Get<float>());
+				}
+			});
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound LookXAction"));
+		}
+		
+		// Look: Bind Y axis (vertical mouse movement)
+		if (LookYAction)
+		{
+			EnhancedInputComponent->BindAction(LookYAction, ETriggerEvent::Triggered, this, [this](const FInputActionValue& Value)
+			{
+				if (APlayerController* PC = Cast<APlayerController>(Controller))
+				{
+					PC->AddPitchInput(Value.Get<float>());
+				}
+			});
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound LookYAction"));
+		}
+		
+		// Combat actions
 		if (AttackAction)
 		{
 			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AExcelionCharacter::Attack);
