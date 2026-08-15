@@ -51,11 +51,13 @@
 - **Phase 4-B-4 Boss Attack ↔ Player Dash Invulnerability Proof complete (2026-08-15)** — `run_u4b4_invulnerability_proof.py` 실기 검증 결과, Initial HP 100.f, Invulnerable OFF 시 Damage 정상 피격(100.f $\rightarrow$ 45.f), Dash 발동 및 `IsInvulnerable() == True`, 무적 중 동일 공격 피격 시 HP 감소 Zero(45.f $\rightarrow$ 45.f), Dash 종료 후 무적 해제(`IsInvulnerable() == False`), 이후 공격 시 정상 Damage 재개(45.f $\rightarrow$ 0.f) 8개 전 항목 PASS 확인 (`U4-B-4 DASH INVULNERABILITY — VERIFIED`)
 - **Phase 4-B-5 Seth Boss Death Integration Proof complete (2026-08-15)** — `run_u4b5_death_integration_proof.py` 실기 검증 결과, `BP_SethBoss` 로드/스폰, Initial HP 480.f, 치명타 데미지 적용(500.f $\rightarrow$ HP 0.f), 사망 상태 전이(`IsDead() == True`), `DisableMovement()` 이동 비활성화, `SetActorEnableCollision(false)` 콜리전 비활성화, 사망 후 재진입 방지(Tick Guard) 7개 전 항목 PASS 확인 (`U4-B-5 DEATH INTEGRATION — VERIFIED`)
 - **Phase 4-B Seth Boss Overall Verification complete (2026-08-15)** — U4-B-0 (Audit), U4-B-1 (Phase 1 Basic), U4-B-2 (Phase Transition), U4-B-3 (Beam Charge), U4-B-4 (Dash Invulnerability), U4-B-5 (Death Integration) 6개 단위 검증 전 항목 100% PASS 및 C++/Blueprint/Asset FREEZE 유지 완료 (`PHASE 4-B SETH BOSS OVERALL — VERIFIED`)
+- **Phase 5-0 Game Loop Read-Only Audit complete (2026-08-15)** — `AExcelionGameMode`, `EExcelionGameState`, `UExcelionHUDWidget`, `BP_ExcelionGameMode`, `WBP_ExcelionHUD` 인프라 100% 정적 정합성 확인 및 중복 개발 배제 확정 (`CODE/ASSET FREEZE 유지`)
+- **Phase 5-1 Victory Flow Proof complete (2026-08-15)** — `run_p5_1_victory_proof.py` 실기 검증 결과, `BP_ExcelionGameMode` 로드, 초기 상태 `Playing`, Boss Lethal Damage (HP 480.f $\rightarrow$ 0.f), `IsDead() == True`, `NotifyBossDeath()` 호출, `Playing` $\rightarrow$ `Victory` 상태 전이, `OnGameStateChanged(Victory)` 델리게이트 수신, 중복 전환 방지(Guard) 8개 전 항목 PASS 확인 (`P5-1 VICTORY FLOW — VERIFIED`)
 
 ## Next
 
-1. **Phase 5 — Vertical Slice Game Loop Integration (대기)**:
-   - Level travel, HUD widget, GameMode state transition (Player/Boss Defeat), Vertical Slice Game Loop 종합 검증 진행
+1. **Phase 5-2 — Defeat Flow Proof (대기)**:
+   - Player HP $\le$ 0.f 사망 시 GameMode `NotifyPlayerDeath()` 호출, `Playing` $\rightarrow$ `Defeat` 상태 전이 및 델리게이트 수신 단독 검증 진행
 2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
@@ -68,7 +70,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B Seth Boss Overall 6개 전 항목 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B Seth Boss Overall & P5-0 Audit & P5-1 Victory Flow 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -78,19 +80,15 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-15)**:
-  - **작업명**: Phase 4-B — Seth Boss Overall Verification (U4-B-5 Complete)
-  - **현재 상태**: Phase 4-B VERIFIED (U4-B-0 ~ U4-B-5 Total 37/37 Pass)
+  - **작업명**: Phase 5-1 — Victory Flow Standalone Proof
+  - **현재 상태**: P5-1 VERIFIED (8/8 Pass)
   - **완료**:
-    - U4-B-0 Seth Boss Read-Only Audit (VERIFIED)
-    - U4-B-1 Seth Boss Phase 1 Basic Mechanics (VERIFIED - 9/9 Pass)
-    - U4-B-2 Seth Boss Phase Transition (VERIFIED - 7/7 Pass)
-    - U4-B-3 Seth Boss Phase 2 Pattern 02 Beam Charge (VERIFIED - 6/6 Pass)
-    - U4-B-4 Boss Attack ↔ Player Dash Invulnerability (VERIFIED - 8/8 Pass)
-    - U4-B-5 Seth Boss Death Integration (VERIFIED - 7/7 Pass)
-  - **미완료**: Phase 5 Vertical Slice Game Loop Integration
+    - P5-0 Game Loop Read-Only Audit (VERIFIED - 100% Match)
+    - P5-1 Victory Flow Standalone Proof (VERIFIED - 8/8 Pass)
+  - **미완료**: Phase 5-2 Defeat Flow Standalone Proof
   - **변경 파일**: `projects/excelion/state/CURRENT_STATE.md` (상태 갱신)
-  - **다음 작업**: Phase 5 Vertical Slice Game Loop 검증 진행 (Master 지시 수신 시)
-  - **재개 조건**: Master의 Phase 5 검증 승인 지시 전달 시
+  - **다음 작업**: Phase 5-2 Defeat Flow 단독 실기 검증 진행 (Master 지시 수신 시)
+  - **재개 조건**: Master의 Phase 5-2 검증 승인 지시 전달 시
 
 
 
