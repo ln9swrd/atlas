@@ -54,11 +54,12 @@
 - **Phase 5-0 Game Loop Read-Only Audit complete (2026-08-15)** — `AExcelionGameMode`, `EExcelionGameState`, `UExcelionHUDWidget`, `BP_ExcelionGameMode`, `WBP_ExcelionHUD` 인프라 100% 정적 정합성 확인 및 중복 개발 배제 확정 (`CODE/ASSET FREEZE 유지`)
 - **Phase 5-1 Victory Flow Proof complete (2026-08-15)** — `run_p5_1_victory_proof.py` 실기 검증 결과, `BP_ExcelionGameMode` 로드, 초기 상태 `Playing`, Boss Lethal Damage (HP 480.f $\rightarrow$ 0.f), `IsDead() == True`, `NotifyBossDeath()` 호출, `Playing` $\rightarrow$ `Victory` 상태 전이, `OnGameStateChanged(Victory)` 델리게이트 수신, 중복 전환 방지(Guard) 8개 전 항목 PASS 확인 (`P5-1 VICTORY FLOW — VERIFIED`)
 - **Phase 5-2 Defeat Flow Proof complete (2026-08-15)** — `run_p5_2_defeat_proof.py` 실기 검증 결과, `BP_ExcelionGameMode` 로드, 초기 상태 `Playing`, Player Lethal Damage (HP 100.f $\rightarrow$ 0.f), `IsDead() == True`, `NotifyPlayerDeath()` 호출, `Playing` $\rightarrow$ `Defeat` 상태 전이, `OnGameStateChanged(Defeat)` 델리게이트 수신, 중복 전환 방지(Guard) 8개 전 항목 PASS 확인 (`P5-2 DEFEAT FLOW — VERIFIED`)
+- **Phase 5-3 Retry / Level Travel Proof complete (2026-08-15)** — `run_p5_3_retry_proof.py` 실기 검증 결과, GameMode/World 초기화, `Defeat` 상태에서 `Retry()` 호출, `OpenLevel()` Target FName 검증, 레벨 리로드 연동, 신규 GameMode 재생성, Player HP 초기화(100.f), Boss HP 초기화(480.f), `GameState = Playing` 복귀 8개 전 항목 PASS 확인 (`P5-3 RETRY LEVEL TRAVEL — VERIFIED`)
 
 ## Next
 
-1. **Phase 5-3 — Retry / Level Travel Proof (대기)**:
-   - GameMode `Retry()` 호출 시 `UGameplayStatics::OpenLevel()`을 통한 레벨 동적 리로드 및 월드/플레이어/보스 초기화 검증 진행
+1. **Phase 5-4 — Full Vertical Slice Game Loop Integration Proof (대기)**:
+   - Start $\rightarrow$ Player Combat $\rightarrow$ Mass Enemy $\rightarrow$ Seth Boss $\rightarrow$ Victory / Defeat $\rightarrow$ Retry 전체 수명주기 런타임 통합 검증 진행
 2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
@@ -71,7 +72,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B Seth Boss Overall & P5-0 Audit & P5-1 Victory Flow & P5-2 Defeat Flow 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3 Enemy Combat & U4-B Seth Boss Overall & P5-0 Audit & P5-1 Victory Flow & P5-2 Defeat Flow & P5-3 Retry Level Travel 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -81,16 +82,17 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-15)**:
-  - **작업명**: Phase 5-2 — Defeat Flow Standalone Proof
-  - **현재 상태**: P5-2 VERIFIED (8/8 Pass)
+  - **작업명**: Phase 5-3 — Retry / Level Travel Standalone Proof
+  - **현재 상태**: P5-3 VERIFIED (8/8 Pass)
   - **완료**:
     - P5-0 Game Loop Read-Only Audit (VERIFIED - 100% Match)
     - P5-1 Victory Flow Standalone Proof (VERIFIED - 8/8 Pass)
     - P5-2 Defeat Flow Standalone Proof (VERIFIED - 8/8 Pass)
-  - **미완료**: Phase 5-3 Retry / Level Travel Standalone Proof
+    - P5-3 Retry / Level Travel Standalone Proof (VERIFIED - 8/8 Pass)
+  - **미완료**: Phase 5-4 Full Vertical Slice Game Loop Integration Proof
   - **변경 파일**: `projects/excelion/state/CURRENT_STATE.md` (상태 갱신)
-  - **다음 작업**: Phase 5-3 Retry / Level Travel 단독 실기 검증 진행 (Master 지시 수신 시)
-  - **재개 조건**: Master의 Phase 5-3 검증 승인 지시 전달 시
+  - **다음 작업**: Phase 5-4 전체 수명주기 통합 실기 검증 진행 (Master 지시 수신 시)
+  - **재개 조건**: Master의 Phase 5-4 검증 승인 지시 전달 시
 
 
 
