@@ -12,6 +12,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "InputModifiers.h"
 #include "Engine/LocalPlayer.h"
 
 AExcelionCharacter::AExcelionCharacter()
@@ -63,87 +64,81 @@ AExcelionCharacter::AExcelionCharacter()
 		FallbackVisualMesh->SetStaticMesh(DefaultCubeMesh.Object);
 	}
 
-	// CRITICAL: Create INPUT ACTIONS AND CONTEXT IN CODE ONLY.
-	// DO NOT load from /Game/Input/IMC_Default - that can conflict and cause wrong mappings.
-	// This ensures we have predictable input setup at runtime.
+	// CRITICAL: Input setup strategy
+	// Option 1: Try to load editor-created IMC asset
+	// Option 2: Fallback to runtime setup with proper key modifiers
+	// NOTE: SetupPlayerInputComponent will handle axis input, this is for mapping context only
 	
+	// Try loading from editor
+	static ConstructorHelpers::FObjectFinder<UInputMappingContext> DefaultIMCAsset(TEXT("/Game/Input/IMC_Default"));
+	if (DefaultIMCAsset.Succeeded())
+	{
+		DefaultMappingContext = DefaultIMCAsset.Object;
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] ✓ Loaded IMC_Default from editor asset"));
+		return;  // Asset has actions configured already
+	}
+	
+	// Fallback: Create runtime mapping context (but keep it simple)
 	DefaultMappingContext = NewObject<UInputMappingContext>(this, TEXT("DefaultMappingContext"));
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created DefaultMappingContext: %s"), DefaultMappingContext ? TEXT("SUCCESS") : TEXT("FAILED"));
+	if (!DefaultMappingContext)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[INIT] ✗ FAILED to create runtime DefaultMappingContext!"));
+		return;
+	}
 	
-	// Movement: Each axis direction gets a separate Axis1D action for proper value handling
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] ✓ Created runtime DefaultMappingContext"));
+
+	// For runtime setup, create lightweight action references
+	// These will be bound in SetupPlayerInputComponent via axis mappings
 	MoveForwardAction = NewObject<UInputAction>(this, TEXT("MoveForwardAction"));
-	MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created MoveForwardAction (Axis1D): %s"), MoveForwardAction ? TEXT("SUCCESS") : TEXT("FAILED"));
-	
+	if (MoveForwardAction)
+	{
+		MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
+		FEnhancedActionKeyMapping& WMapping = DefaultMappingContext->MapKey(MoveForwardAction, EKeys::W);
+		FEnhancedActionKeyMapping& SMapping = DefaultMappingContext->MapKey(MoveForwardAction, EKeys::S);
+		SMapping.Modifiers.Add(UInputModifierNegate::StaticClass());
+	}
+
 	MoveRightAction = NewObject<UInputAction>(this, TEXT("MoveRightAction"));
-	MoveRightAction->ValueType = EInputActionValueType::Axis1D;
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created MoveRightAction (Axis1D): %s"), MoveRightAction ? TEXT("SUCCESS") : TEXT("FAILED"));
-	
-	// Look: Separate X/Y actions for mouse input
+	if (MoveRightAction)
+	{
+		MoveRightAction->ValueType = EInputActionValueType::Axis1D;
+		FEnhancedActionKeyMapping& DMapping = DefaultMappingContext->MapKey(MoveRightAction, EKeys::D);
+		FEnhancedActionKeyMapping& AMapping = DefaultMappingContext->MapKey(MoveRightAction, EKeys::A);
+		AMapping.Modifiers.Add(UInputModifierNegate::StaticClass());
+	}
+
 	LookXAction = NewObject<UInputAction>(this, TEXT("LookXAction"));
-	LookXAction->ValueType = EInputActionValueType::Axis1D;
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created LookXAction (Axis1D): %s"), LookXAction ? TEXT("SUCCESS") : TEXT("FAILED"));
-	
-	LookYAction = NewObject<UInputAction>(this, TEXT("LookYAction"));
-	LookYAction->ValueType = EInputActionValueType::Axis1D;
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created LookYAction (Axis1D): %s"), LookYAction ? TEXT("SUCCESS") : TEXT("FAILED"));
-	
-	// Combat actions
-	AttackAction = NewObject<UInputAction>(this, TEXT("AttackAction"));
-	AttackAction->ValueType = EInputActionValueType::Boolean;
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created AttackAction (Boolean): %s"), AttackAction ? TEXT("SUCCESS") : TEXT("FAILED"));
-	
-	DashAction = NewObject<UInputAction>(this, TEXT("DashAction"));
-	DashAction->ValueType = EInputActionValueType::Boolean;
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created DashAction (Boolean): %s"), DashAction ? TEXT("SUCCESS") : TEXT("FAILED"));
-
-	// Map keys to actions via the input mapping context
-	// Movement: Forward axis (W=+1, S=-1)
-	if (DefaultMappingContext && MoveForwardAction)
+	if (LookXAction)
 	{
-		DefaultMappingContext->MapKey(MoveForwardAction, EKeys::W);
-		DefaultMappingContext->MapKey(MoveForwardAction, EKeys::S);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] MoveForwardAction mapped: W/S"));
-	}
-	
-	// Movement: Right axis (D=+1, A=-1)
-	if (DefaultMappingContext && MoveRightAction)
-	{
-		DefaultMappingContext->MapKey(MoveRightAction, EKeys::D);
-		DefaultMappingContext->MapKey(MoveRightAction, EKeys::A);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] MoveRightAction mapped: D/A"));
-	}
-	
-	// Look: X axis (Mouse movement)
-	if (DefaultMappingContext && LookXAction)
-	{
+		LookXAction->ValueType = EInputActionValueType::Axis1D;
 		DefaultMappingContext->MapKey(LookXAction, EKeys::MouseX);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] LookXAction mapped: MouseX"));
-	}
-	
-	// Look: Y axis (Mouse movement)
-	if (DefaultMappingContext && LookYAction)
-	{
-		DefaultMappingContext->MapKey(LookYAction, EKeys::MouseY);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] LookYAction mapped: MouseY"));
-	}
-	
-	// Combat actions
-	if (DefaultMappingContext && AttackAction)
-	{
-		DefaultMappingContext->MapKey(AttackAction, EKeys::LeftMouseButton);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] AttackAction mapped: LeftMouseButton"));
-	}
-	
-	if (DefaultMappingContext && DashAction)
-	{
-		DefaultMappingContext->MapKey(DashAction, EKeys::LeftShift);
-		UE_LOG(LogTemp, Warning, TEXT("[INIT] DashAction mapped: LeftShift"));
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[EXCELION INIT] Input context created in code - IMC: %s (Total Mappings: %d)"),
-		DefaultMappingContext ? *DefaultMappingContext->GetName() : TEXT("FAILED"),
-		DefaultMappingContext ? DefaultMappingContext->GetMappings().Num() : 0);
+	LookYAction = NewObject<UInputAction>(this, TEXT("LookYAction"));
+	if (LookYAction)
+	{
+		LookYAction->ValueType = EInputActionValueType::Axis1D;
+		FEnhancedActionKeyMapping& YMapping = DefaultMappingContext->MapKey(LookYAction, EKeys::MouseY);
+		YMapping.Modifiers.Add(UInputModifierNegate::StaticClass());
+	}
+
+	AttackAction = NewObject<UInputAction>(this, TEXT("AttackAction"));
+	if (AttackAction)
+	{
+		AttackAction->ValueType = EInputActionValueType::Boolean;
+		DefaultMappingContext->MapKey(AttackAction, EKeys::LeftMouseButton);
+	}
+
+	DashAction = NewObject<UInputAction>(this, TEXT("DashAction"));
+	if (DashAction)
+	{
+		DashAction->ValueType = EInputActionValueType::Boolean;
+		DefaultMappingContext->MapKey(DashAction, EKeys::LeftShift);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] ✓ Runtime input actions created (Mappings: %d)"), 
+		DefaultMappingContext->GetMappings().Num());
 }
 
 void AExcelionCharacter::PostInitializeComponents()
@@ -297,51 +292,59 @@ void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		// Movement: Bind forward/backward movement
-		if (MoveForwardAction)
+		bool bHasActions = MoveForwardAction && MoveRightAction && LookXAction && LookYAction;
+		
+		if (bHasActions)
 		{
+			// Movement: Bind forward/backward movement
 			EnhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::MoveForward);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound MoveForwardAction"));
-		}
-		
-		// Movement: Bind left/right movement
-		if (MoveRightAction)
-		{
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] ✓ Bound MoveForwardAction"));
+			
+			// Movement: Bind left/right movement
 			EnhancedInputComponent->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::MoveRight);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound MoveRightAction"));
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] ✓ Bound MoveRightAction"));
+			
+			// Look: Bind X axis (horizontal mouse movement)
+			EnhancedInputComponent->BindAction(LookXAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::LookX);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] ✓ Bound LookXAction"));
+			
+			// Look: Bind Y axis (vertical mouse movement)
+			EnhancedInputComponent->BindAction(LookYAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::LookY);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] ✓ Bound LookYAction"));
+			
+			// Combat actions
+			if (AttackAction)
+			{
+				EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AExcelionCharacter::Attack);
+				UE_LOG(LogTemp, Warning, TEXT("[INPUT] ✓ Bound AttackAction"));
+			}
+			if (DashAction)
+			{
+				EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AExcelionCharacter::Dash);
+				UE_LOG(LogTemp, Warning, TEXT("[INPUT] ✓ Bound DashAction"));
+			}
 		}
-		
-		// Look: Use the existing Look function (will receive separate X/Y values)
-		if (LookXAction)
+		else
 		{
-			EnhancedInputComponent->BindAction(LookXAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound LookXAction"));
-		}
-		
-		if (LookYAction)
-		{
-			EnhancedInputComponent->BindAction(LookYAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound LookYAction"));
-		}
-		
-		// Combat actions
-		if (AttackAction)
-		{
-			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AExcelionCharacter::Attack);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound AttackAction"));
-		}
-		if (DashAction)
-		{
-			EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AExcelionCharacter::Dash);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound DashAction"));
+			// FALLBACK: If Enhanced Input actions weren't created properly, use basic axis input
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] ! Enhanced actions NULL - using DefaultInput.ini axis bindings"));
+			PlayerInputComponent->BindAxis("MoveForward", this, &AExcelionCharacter::MoveForwardAxis);
+			PlayerInputComponent->BindAxis("MoveRight", this, &AExcelionCharacter::MoveRightAxis);
+			PlayerInputComponent->BindAxis("LookUp", this, &AExcelionCharacter::LookUpAxis);
+			PlayerInputComponent->BindAxis("Turn", this, &AExcelionCharacter::TurnAxis);
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("[INPUT] ERROR: PlayerInputComponent is not EnhancedInputComponent; legacy input path is disabled."));
+		// FALLBACK: Not Enhanced Input - use basic axis bindings
+		UE_LOG(LogTemp, Warning, TEXT("[INPUT] ! Not EnhancedInputComponent - using DefaultInput.ini axis bindings"));
+		PlayerInputComponent->BindAxis("MoveForward", this, &AExcelionCharacter::MoveForwardAxis);
+		PlayerInputComponent->BindAxis("MoveRight", this, &AExcelionCharacter::MoveRightAxis);
+		PlayerInputComponent->BindAxis("LookUp", this, &AExcelionCharacter::LookUpAxis);
+		PlayerInputComponent->BindAxis("Turn", this, &AExcelionCharacter::TurnAxis);
 	}
 	
-	UE_LOG(LogTemp, Error, TEXT("========== [CRITICAL] SetupPlayerInputComponent END =========="));
+	UE_LOG(LogTemp, Warning, TEXT("[INPUT] SetupPlayerInputComponent END"));
 }
 
 void AExcelionCharacter::Move(const FInputActionValue& Value)
@@ -351,9 +354,10 @@ void AExcelionCharacter::Move(const FInputActionValue& Value)
 	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Move() called (legacy - should not happen with Axis1D actions)"));
 }
 
-void AExcelionCharacter::MoveForward(float Value)
+void AExcelionCharacter::MoveForward(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("[MOVE] MoveForward called: Value=%.2f"), Value);
+	const float ForwardValue = Value.Get<float>();
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] MoveForward called: Value=%.2f"), ForwardValue);
 	
 	if (bIsDashing || IsDead())
 	{
@@ -361,17 +365,18 @@ void AExcelionCharacter::MoveForward(float Value)
 		return;
 	}
 	
-	if (Value != 0.f)
+	if (ForwardValue != 0.f)
 	{
 		const FVector ForwardDir = GetActorForwardVector();
-		UE_LOG(LogTemp, Warning, TEXT("[MOVE] AddMovementInput: Forward=%.2f, Direction=%s"), Value, *ForwardDir.ToString());
-		AddMovementInput(ForwardDir, Value);
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] AddMovementInput: Forward=%.2f, Direction=%s"), ForwardValue, *ForwardDir.ToString());
+		AddMovementInput(ForwardDir, ForwardValue);
 	}
 }
 
-void AExcelionCharacter::MoveRight(float Value)
+void AExcelionCharacter::MoveRight(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("[MOVE] MoveRight called: Value=%.2f"), Value);
+	const float RightValue = Value.Get<float>();
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] MoveRight called: Value=%.2f"), RightValue);
 	
 	if (bIsDashing || IsDead())
 	{
@@ -379,11 +384,11 @@ void AExcelionCharacter::MoveRight(float Value)
 		return;
 	}
 	
-	if (Value != 0.f)
+	if (RightValue != 0.f)
 	{
 		const FVector RightDir = GetActorRightVector();
-		UE_LOG(LogTemp, Warning, TEXT("[MOVE] AddMovementInput: Right=%.2f, Direction=%s"), Value, *RightDir.ToString());
-		AddMovementInput(RightDir, Value);
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] AddMovementInput: Right=%.2f, Direction=%s"), RightValue, *RightDir.ToString());
+		AddMovementInput(RightDir, RightValue);
 	}
 }
 
@@ -392,6 +397,61 @@ void AExcelionCharacter::Look(const FInputActionValue& Value)
 	const FVector2D LookAxis = Value.Get<FVector2D>();
 	AddControllerYawInput(LookAxis.X);
 	AddControllerPitchInput(LookAxis.Y);
+}
+
+void AExcelionCharacter::LookX(const FInputActionValue& Value)
+{
+	float X = Value.Get<float>();
+	if (X != 0.f)
+	{
+		AddControllerYawInput(X);
+	}
+}
+
+void AExcelionCharacter::LookY(const FInputActionValue& Value)
+{
+	float Y = Value.Get<float>();
+	if (Y != 0.f)
+	{
+		AddControllerPitchInput(Y);
+	}
+}
+
+// Fallback axis input handlers (for basic DefaultInput.ini axis mappings)
+void AExcelionCharacter::MoveForwardAxis(float Value)
+{
+	if (Value != 0.f && !bIsDashing && !IsDead())
+	{
+		AddMovementInput(GetActorForwardVector(), Value);
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE-AXIS] Forward: %.2f"), Value);
+	}
+}
+
+void AExcelionCharacter::MoveRightAxis(float Value)
+{
+	if (Value != 0.f && !bIsDashing && !IsDead())
+	{
+		AddMovementInput(GetActorRightVector(), Value);
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE-AXIS] Right: %.2f"), Value);
+	}
+}
+
+void AExcelionCharacter::LookUpAxis(float Value)
+{
+	if (Value != 0.f)
+	{
+		AddControllerPitchInput(Value);
+		UE_LOG(LogTemp, Warning, TEXT("[LOOK-AXIS] Up: %.2f"), Value);
+	}
+}
+
+void AExcelionCharacter::TurnAxis(float Value)
+{
+	if (Value != 0.f)
+	{
+		AddControllerYawInput(Value);
+		UE_LOG(LogTemp, Warning, TEXT("[LOOK-AXIS] Turn: %.2f"), Value);
+	}
 }
 
 void AExcelionCharacter::Attack(const FInputActionValue& Value)

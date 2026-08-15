@@ -125,11 +125,19 @@ protected:
 
 	// ----- Input Handlers -----
 	void Move(const FInputActionValue& Value);
-	void MoveForward(float Value);
-	void MoveRight(float Value);
+	void MoveForward(const FInputActionValue& Value);
+	void MoveRight(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void LookX(const FInputActionValue& Value);
+	void LookY(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
 	void Dash(const FInputActionValue& Value);
+
+	// Fallback axis input handlers (for basic DefaultInput.ini bindings)
+	void MoveForwardAxis(float Value);
+	void MoveRightAxis(float Value);
+	void LookUpAxis(float Value);
+	void TurnAxis(float Value);
 
 	void StartDash();
 	void UpdateDash(float DeltaTime);
