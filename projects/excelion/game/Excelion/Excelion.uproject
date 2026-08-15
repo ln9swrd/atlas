@@ -3,6 +3,7 @@
 	"EngineAssociation": "5.4",
 	"Category": "",
 	"Description": "",
+	"IsEnterpriseProject": false,
 	"Modules": [
 		{
 			"Name": "Excelion",

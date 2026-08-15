@@ -62,41 +62,87 @@ AExcelionCharacter::AExcelionCharacter()
 	{
 		FallbackVisualMesh->SetStaticMesh(DefaultCubeMesh.Object);
 	}
+
+	// CRITICAL: Create INPUT ACTIONS AND CONTEXT IN CODE ONLY.
+	// DO NOT load from /Game/Input/IMC_Default - that can conflict and cause wrong mappings.
+	// This ensures we have predictable input setup at runtime.
+	
+	DefaultMappingContext = NewObject<UInputMappingContext>(this, TEXT("DefaultMappingContext"));
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created DefaultMappingContext: %s"), DefaultMappingContext ? TEXT("SUCCESS") : TEXT("FAILED"));
+	
+	MoveAction = NewObject<UInputAction>(this, TEXT("MoveAction"));
+	MoveAction->ValueType = EInputActionValueType::Axis2D;
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created MoveAction (Axis2D): %s"), MoveAction ? TEXT("SUCCESS") : TEXT("FAILED"));
+	
+	LookAction = NewObject<UInputAction>(this, TEXT("LookAction"));
+	LookAction->ValueType = EInputActionValueType::Axis2D;
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created LookAction (Axis2D): %s"), LookAction ? TEXT("SUCCESS") : TEXT("FAILED"));
+	
+	AttackAction = NewObject<UInputAction>(this, TEXT("AttackAction"));
+	AttackAction->ValueType = EInputActionValueType::Boolean;
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created AttackAction (Boolean): %s"), AttackAction ? TEXT("SUCCESS") : TEXT("FAILED"));
+	
+	DashAction = NewObject<UInputAction>(this, TEXT("DashAction"));
+	DashAction->ValueType = EInputActionValueType::Boolean;
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] Created DashAction (Boolean): %s"), DashAction ? TEXT("SUCCESS") : TEXT("FAILED"));
+
+	// Map keys to actions via the input mapping context
+	if (DefaultMappingContext && MoveAction)
+	{
+		// Movement: WASD → MoveAction (Axis2D)
+		// Each key needs to be mapped individually
+		DefaultMappingContext->MapKey(MoveAction, EKeys::W);
+		DefaultMappingContext->MapKey(MoveAction, EKeys::A);
+		DefaultMappingContext->MapKey(MoveAction, EKeys::S);
+		DefaultMappingContext->MapKey(MoveAction, EKeys::D);
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] MoveAction mapped: W/A/S/D - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+	}
+	
+	if (DefaultMappingContext && LookAction)
+	{
+		// Camera: Mouse → LookAction (Axis2D)
+		DefaultMappingContext->MapKey(LookAction, EKeys::MouseX);
+		DefaultMappingContext->MapKey(LookAction, EKeys::MouseY);
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] LookAction mapped: MouseX/MouseY - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+	}
+	
+	if (DefaultMappingContext && AttackAction)
+	{
+		// Attack: LMB → AttackAction
+		DefaultMappingContext->MapKey(AttackAction, EKeys::LeftMouseButton);
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] AttackAction mapped: LeftMouseButton - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+	}
+	
+	if (DefaultMappingContext && DashAction)
+	{
+		// Dash: Shift → DashAction
+		DefaultMappingContext->MapKey(DashAction, EKeys::LeftShift);
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] DashAction mapped: LeftShift - Total mappings in IMC: %d"), DefaultMappingContext->GetMappings().Num());
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[EXCELION INIT] Input context created in code - IMC: %s, Move: %s, Look: %s (Final IMC Mapping Count: %d)"),
+		DefaultMappingContext ? *DefaultMappingContext->GetName() : TEXT("FAILED"),
+		MoveAction ? *MoveAction->GetName() : TEXT("FAILED"),
+		LookAction ? *LookAction->GetName() : TEXT("FAILED"),
+		DefaultMappingContext ? DefaultMappingContext->GetMappings().Num() : 0);
 }
 
 void AExcelionCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	// ===== DEBUG: PIE Visibility Investigation =====
+	UE_LOG(LogTemp, Warning, TEXT("========== [EXCELION CHARACTER] PostInitializeComponents =========="));
 	UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] Character Spawned - Name: %s, Location: %s"), *GetName(), *GetActorLocation().ToString());
 	UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] GetMesh Valid: %d, FallbackVisualMesh Valid: %d"), 
 		GetMesh() != nullptr, FallbackVisualMesh != nullptr);
 	
-	if (GetMesh())
-	{
-		bool bHidden = GetMesh()->IsHidden();
-		bool bVisible = GetMesh()->IsVisible();
-		USkeletalMesh* SK = GetMesh()->GetSkeletalMeshAsset();
-		UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] Mesh - SkeletalMesh: %s, Hidden: %d, Visible: %d"), 
-			SK ? *SK->GetName() : TEXT("None"), bHidden, bVisible);
-	}
-	
 	if (FallbackVisualMesh)
 	{
-		bool bHidden = FallbackVisualMesh->IsHidden();
-		bool bVisible = FallbackVisualMesh->IsVisible();
-		UStaticMesh* SM = FallbackVisualMesh->GetStaticMesh();
-		UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] FallbackMesh - StaticMesh: %s, Hidden: %d, Visible: %d"), 
-			SM ? *SM->GetName() : TEXT("None"), bHidden, bVisible);
-		
-		// FIX: Ensure FallbackVisualMesh is visible even if Blueprint set it to Hidden
 		FallbackVisualMesh->SetVisibility(true, false);
 		FallbackVisualMesh->SetHiddenInGame(false);
-		UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] FallbackMesh forced visible - Now: Hidden=%d, Visible=%d"),
-			FallbackVisualMesh->IsHidden(), FallbackVisualMesh->IsVisible());
+		UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] FallbackMesh visible forced"));
 	}
-	// ===== END DEBUG =====
+	UE_LOG(LogTemp, Warning, TEXT("========== [EXCELION CHARACTER] PostInitializeComponents END =========="));
 
 	ApplyMechaDataAsset();
 }
@@ -135,24 +181,57 @@ void AExcelionCharacter::ApplyMechaDataAsset(UExcelionMechaDataAsset* InMechaDat
 
 void AExcelionCharacter::BeginPlay()
 {
+	UE_LOG(LogTemp, Error, TEXT("========== [CRITICAL] AExcelionCharacter::BeginPlay STARTED =========="));
 	Super::BeginPlay();
 
+	UE_LOG(LogTemp, Warning, TEXT("[INIT] BeginPlay - Name: %s, Controller: %s"), 
+		*GetName(), Controller ? *Controller->GetName() : TEXT("NULL"));
+
+	// ===== Movement Component Verification =====
+	if (UCharacterMovementComponent* MovementComp = GetCharacterMovement())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] CharacterMovement initialized - MaxWalkSpeed=%.1f, MovementMode=%d"), 
+			MovementComp->MaxWalkSpeed, (int32)MovementComp->MovementMode);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[MOVE] ERROR: CharacterMovement component is NULL!"));
+	}
+	
 	if (HealthComponent)
 	{
 		HealthComponent->OnDeath.AddDynamic(this, &AExcelionCharacter::OnDeath);
 	}
 
-	// Add Input Mapping Context
+	// Note: Enhanced Input Mapping Context registration.
+	// We create DefaultMappingContext in code and register it here.
 	if (APlayerController* PC = Cast<APlayerController>(Controller))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] PlayerController found - registering input context"));
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
 		{
 			if (DefaultMappingContext)
 			{
+				// Priority 0 = highest priority (processed first)
 				Subsystem->AddMappingContext(DefaultMappingContext, 0);
+				UE_LOG(LogTemp, Warning, TEXT("[INPUT] DefaultMappingContext registered with priority 0"));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("[INPUT] ERROR: DefaultMappingContext is NULL!"));
 			}
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("[INPUT] ERROR: EnhancedInputLocalPlayerSubsystem not found!"));
+		}
 	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[INIT] ERROR: Controller is NULL or not PlayerController!"));
+	}
+	
+	UE_LOG(LogTemp, Error, TEXT("========== [CRITICAL] AExcelionCharacter::BeginPlay END =========="));
 }
 
 void AExcelionCharacter::Tick(float DeltaTime)
@@ -181,48 +260,118 @@ void AExcelionCharacter::Tick(float DeltaTime)
 
 void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	UE_LOG(LogTemp, Error, TEXT("========== [CRITICAL] SetupPlayerInputComponent CALLED =========="));
+	
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	if (!PlayerInputComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[CRITICAL] ERROR: PlayerInputComponent is NULL!"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[INPUT] SetupPlayerInputComponent called - InputComponent valid"));
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		if (MoveAction)
 		{
-			EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Move);
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Move);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound MoveAction"));
 		}
 		if (LookAction)
 		{
-			EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
+			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound LookAction"));
 		}
 		if (AttackAction)
 		{
-			EnhancedInput->BindAction(AttackAction, ETriggerEvent::Started, this, &AExcelionCharacter::Attack);
+			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AExcelionCharacter::Attack);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound AttackAction"));
 		}
 		if (DashAction)
 		{
-			EnhancedInput->BindAction(DashAction, ETriggerEvent::Started, this, &AExcelionCharacter::Dash);
+			EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AExcelionCharacter::Dash);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound DashAction"));
 		}
 	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[INPUT] ERROR: PlayerInputComponent is not EnhancedInputComponent; legacy input path is disabled."));
+	}
+	
+	UE_LOG(LogTemp, Error, TEXT("========== [CRITICAL] SetupPlayerInputComponent END =========="));
 }
 
 void AExcelionCharacter::Move(const FInputActionValue& Value)
 {
-	if (bIsDashing || IsDead())
+	const FVector2D MovementVector = Value.Get<FVector2D>();
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Move called: Value=%s"), *MovementVector.ToString());
+
+	if (bIsDashing)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] BLOCKED: bIsDashing=true"));
+		return;
+	}
+	if (IsDead())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] BLOCKED: IsDead=true"));
 		return;
 	}
 
-	const FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (Controller)
+	if (MovementVector.IsNearlyZero())
 	{
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] Input is nearly zero, skipping"));
+		return;
+	}
 
-		const FVector ForwardDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		const FVector RightDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	const FVector ForwardDir = GetActorForwardVector();
+	const FVector RightDir = GetActorRightVector();
 
-		AddMovementInput(ForwardDir, MovementVector.Y);
-		AddMovementInput(RightDir, MovementVector.X);
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Adding input: Forward=%.2f (Y), Right=%.2f (X)"),
+		MovementVector.Y, MovementVector.X);
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] Directions - Forward=%s, Right=%s"),
+		*ForwardDir.ToString(), *RightDir.ToString());
+
+	AddMovementInput(ForwardDir, MovementVector.Y);
+	AddMovementInput(RightDir, MovementVector.X);
+
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] AddMovementInput completed"));
+}
+
+void AExcelionCharacter::MoveForward(float Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] MoveForward called: Value=%.2f"), Value);
+	
+	if (bIsDashing || IsDead())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] MoveForward blocked: bIsDashing=%d, IsDead=%d"), bIsDashing, IsDead());
+		return;
+	}
+	
+	if (Value != 0.f)
+	{
+		const FVector ForwardDir = GetActorForwardVector();
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] AddMovementInput: Forward=%.2f, Direction=%s"), Value, *ForwardDir.ToString());
+		AddMovementInput(ForwardDir, Value);
+	}
+}
+
+void AExcelionCharacter::MoveRight(float Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE] MoveRight called: Value=%.2f"), Value);
+	
+	if (bIsDashing || IsDead())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] MoveRight blocked: bIsDashing=%d, IsDead=%d"), bIsDashing, IsDead());
+		return;
+	}
+	
+	if (Value != 0.f)
+	{
+		const FVector RightDir = GetActorRightVector();
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE] AddMovementInput: Right=%.2f, Direction=%s"), Value, *RightDir.ToString());
+		AddMovementInput(RightDir, Value);
 	}
 }
 

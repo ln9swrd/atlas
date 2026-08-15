@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "InputAction.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
 #include "ExcelionCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
-class UInputMappingContext;
-class UInputAction;
 class UHealthComponent;
 class UCombatComponent;
 class USCoreComponent;
@@ -77,21 +78,21 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
 	UStaticMeshComponent* FallbackVisualMesh;
 
-	// ----- Enhanced Input (assets to be created in Editor) -----
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputMappingContext* DefaultMappingContext;
+	// ----- Enhanced Input (references to existing Input assets) -----
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Default Mapping Context"))
+	TObjectPtr<class UInputMappingContext> DefaultMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* MoveAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Move Action"))
+	TObjectPtr<class UInputAction> MoveAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* LookAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Look Action"))
+	TObjectPtr<class UInputAction> LookAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* AttackAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Attack Action"))
+	TObjectPtr<class UInputAction> AttackAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* DashAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (DisplayName = "Dash Action"))
+	TObjectPtr<class UInputAction> DashAction;
 
 	// ----- Dash -----
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
@@ -115,6 +116,8 @@ protected:
 
 	// ----- Input Handlers -----
 	void Move(const FInputActionValue& Value);
+	void MoveForward(float Value);
+	void MoveRight(float Value);
 	void Look(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
 	void Dash(const FInputActionValue& Value);
