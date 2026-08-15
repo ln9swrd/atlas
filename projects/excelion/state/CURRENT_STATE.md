@@ -42,13 +42,14 @@
 - **Phase U3-0 Enemy Asset Audit complete (2026-08-15)** — `BP_ExcelionEnemy`, `BP_PowerEnemy`, `BP_SpeedEnemy`, `BP_SethBoss` .uasset 디스크 실제 존재 및 C++ 부모 클래스 바인딩 100% 확인 (`U3-1 에셋 생성 생략 확정`)
 - **Phase U3-2a-DIAG Read-Only Audit complete (2026-08-15)** — Headless Commandlet 환경적 제약 규명, C++ `AExcelionEnemy::FindPlayer()` 런타임 코드 결함 없음 확인 (`C++ CODE FREEZE 유지`)
 - **Phase U3-2a Enemy Spawn & Chase Physical Proof complete (2026-08-15)** — UE 5.4.4 GUI PIE 실기에서 Enemy Spawn, Player Recognition (`DetectionRange=1500.f`), `Idle` $\rightarrow$ `Chase` 상태 전환 및 플레이어 방향 실제 물리 이동(`MoveSpeed=400.f`) 4/4 전 항목 100% 검증 확인 (`U3-2a ENEMY CHASE PROOF — VERIFIED`)
-- **Phase U3-2b Enemy Attack & Player Damage/Death Integration Proof complete (2026-08-15)** — `run_u3b_enemy_combat_proof.py` 언리얼 5.4 실기 검증 결과, 적 근접 배치 후 `UHealthComponent` 데미지 적용(100.f $\rightarrow$ 85.f), 치명타 차감으로 인한 플레이어 `OnDeath` 입력/이동 차단 및 적 AI `Idle` 복귀 6개 전 항목 PASS 확인 (`U3-2b COMBAT INTEGRATION — VERIFIED`)
+- **Phase U3-2b-1 Enemy Single Hit & Player Damage Proof complete (2026-08-15)** — `run_u3b1_single_hit_proof.py` 실기 검증 결과, 적 근접 공격 시 Player HP (100.f $\rightarrow$ 85.f, 차감 15.f) 정상 차감 및 비사망 생존 상태 5개 전 항목 PASS 확인 (`U3-2b-1 SINGLE HIT — VERIFIED`)
+- **Phase U3-2b-2 Lethal Damage & Death Integration Proof complete (2026-08-15)** — `run_u3b2_lethal_death_proof.py` 실기 검증 결과, 치명타 차감으로 인한 Player `HP <= 0`, `IsDead == True`, `OnDeath()` 이동/입력 차단, 적 타깃 상실 및 AI `Idle` 복귀 6개 전 항목 PASS 확인 (`U3-2b-2 LETHAL DEATH INTEGRATION — VERIFIED`)
 
 ## Next
 
-1. **Phase 4-A — U3 Enemy / Boss Combat Integration 완료 검토**:
-   - U3 Mass-Production Enemy (`BP_ExcelionEnemy`) Chase & Combat Integration 전 항목 VERIFIED 승격 완료
-   - 보스(`ASethBoss` / `BP_SethBoss`) Multi-Phase 시스템 검증 또는 ORD-GRUNT 후속 기획 Master 지시 대기
+1. **Phase 4-B — Boss System (`ASethBoss` / `BP_SethBoss`) Multi-Phase & Pattern Proof**:
+   - `BP_SethBoss` 스폰 및 HP (480.f), 이동속도 (200uu/s $\rightarrow$ 320uu/s), `Phase 1` $\rightarrow$ `Phase 2` (HP 60% 이하) 전환 검증
+   - Pattern 01 (Area Blast 55.f / Warning 0.8s) & Pattern 02 (Beam Charge 68.75.f / Range 1500uu) 발동 및 사망(`OnDeath`) 검증
 2. **ORD-GRUNT** · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
 
 ## Pipeline
@@ -61,7 +62,7 @@
 | 항목 | 상태 |
 |------|------|
 | **M5 Visualization / PNG** | **HOLD / Queued** |
-| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3-2a Enemy Chase & U3-2b Enemy Combat 통과 완료)** |
+| UE 실기 (M6) | **VERIFIED (U1 Player Proof & U2 Combat Core & P0 Runtime Binding & U2-E Bridge & U2-H Physical Input & U3-2a Enemy Chase & U3-2b Enemy Combat 100% 통과 완료)** |
 | ParaModel | HOLD |
 | Meshy/Blender/UE 구현 | HOLD |
 | **ORD-GRUNT 후속 (LOCK / 시각 / 구현)** | **HOLD (DECISION C)** |
@@ -71,18 +72,17 @@
 - **idle**(플랫폼) = 제품 Next와 분리 · ops 대기 의미만
 - 이미지·코드·캐논 본문 변경은 별도 Master 게이트 · SOT_MAP LOCK 준수
 - **Handoff (2026-08-15)**:
-  - **작업명**: Phase U3 Mass-Production Enemy Combat Integration
-  - **현재 상태**: U3-2a VERIFIED / U3-2b VERIFIED / Phase U3 Enemy Combat 100% VERIFIED
+  - **작업명**: Phase 4-B — Boss System (`ASethBoss`) Multi-Phase & Pattern Integration
+  - **현재 상태**: U3 Mass-Production Enemy Combat 100% VERIFIED / Phase 4-B 준비 완료
   - **완료**:
-    - U2-H Physical GUI Input (VERIFIED - 7/7 Pass)
-    - U3-0 Enemy Asset Existence Audit (VERIFIED - 4/4 .uasset Exists)
-    - U3-2a-DIAG Read-Only Audit (VERIFIED - Game Code Clean)
     - U3-2a Enemy Spawn & Chase Physical Proof (VERIFIED - 4/4 Pass)
-    - U3-2b Enemy Attack & Player Damage/Death Integration Proof (VERIFIED - 6/6 Pass)
-  - **미완료**: 없음 (U3 Mass-Production Enemy Combat Integration 완료)
+    - U3-2b-1 Enemy Single Hit & Player Damage (VERIFIED - 5/5 Pass)
+    - U3-2b-2 Lethal Damage, Death Integration & AI Idle Reset (VERIFIED - 6/6 Pass)
+  - **미완료**: Phase 4-B Seth Boss Multi-Phase & Pattern Verification
   - **변경 파일**: `projects/excelion/state/CURRENT_STATE.md` (상태 갱신)
-  - **다음 작업**: 보스(`ASethBoss` / `BP_SethBoss`) 검증 또는 후속 단계 개발 지시 대기 (Master 지시 수신 시)
-  - **재개 조건**: Master의 후속 단계 개발 지시 전달 시
+  - **다음 작업**: Phase 4-B 세스 보스 Multi-Phase 및 패턴 실기 검증 진행 (Master 지시 수신 시)
+  - **재개 조건**: Master의 Phase 4-B 보스 검증 지시 전달 시
+
 
 
 
