@@ -1,6 +1,6 @@
 # CURRENT_STATE — excelion
 
-> Updated: 2026-08-13 · role + ORD-GRUNT HOLD 명시 · SOT_MAP 연결  
+> Updated: 2026-08-17 · Git/Unreal 조사 결과 기록 포인터 추가  
 > **역할 (제품):** Excelion **실제 작업 상태** (Done / Next / HOLD).  
 > 플랫폼 라우팅은 Atlas `state/CURRENT_STATE.md`만 담당. 중복 상세 금지.  
 > **경계 지도:** [`SOT_MAP.md`](SOT_MAP.md)
@@ -57,9 +57,15 @@
 - **Phase 5-3 Retry / Level Travel Proof complete (2026-08-15)** — `run_p5_3_retry_proof.py` 실기 검증 결과, GameMode/World 초기화, `Defeat` 상태에서 `Retry()` 호출, `OpenLevel()` Target FName 검증, 레벨 리로드 연동, 신규 GameMode 재생성, Player HP 초기화(100.f), Boss HP 초기화(480.f), `GameState = Playing` 복귀 8개 전 항목 PASS 확인 (`P5-3 RETRY LEVEL TRAVEL — VERIFIED`)
 - **Phase 5-4 Full Vertical Slice Game Loop Integration Proof complete (2026-08-15)** — `run_p5_4_full_vertical_slice_proof.py` 실기 검증 결과, Scenario A (Victory: Player Spawn $\rightarrow$ Enemy Combat $\rightarrow$ Boss Combat $\rightarrow$ Victory Transition) 및 Scenario B (Defeat: Player Spawn $\rightarrow$ Player Death $\rightarrow$ Defeat Transition $\rightarrow$ Retry Level Reset) 2개 시나리오 독립 수행, 상태 전환 및 Delegate 발화 8개 전 항목 PASS 확인 (`P5-4 FULL VERTICAL SLICE INTEGRATION — VERIFIED 8/8`)
 
+- **Git/Unreal 현재 상태 조사 기록 (2026-08-17)** — `state/GIT_UNREAL_STATE_INVESTIGATION_2026-08-17.md` (문서만 · Asset/코드/Config 변경 없음). BP_ExcelionCharacter0·PlayerController 미확인 유지.
+
 ## Next
 
 **Phase 5 전체 완료 (VERIFIED 8/8)** — ORD-GRUNT · **DECISION C = HOLD** 유지 (후속 자율 착수 금지)
+
+다음 (Master 지시 대기):
+- Master PC Unreal Editor ↔ Git main 대조
+- BP_ExcelionCharacter 실제 Asset 수 / GameMode Default Pawn / PIE Possessed Pawn 확인
 
 ## Pipeline
 
@@ -93,12 +99,4 @@
   - **검증 근거**: `Excelion_2.log` (2026-08-15 12:36) — P5-4-1~8 각 단계 PASS, Final Verdict: VERIFIED
   - **다음 상태**: ORD-GRUNT DECISION C = HOLD (후속 자율 착수 금지, Master 지시 대기)
 
-
-
-
-
-
-
-
-
-
+- **Handoff (2026-08-17)**: Git/Unreal 조사 결과 문서화 완료. 상세 → `GIT_UNREAL_STATE_INVESTIGATION_2026-08-17.md`
