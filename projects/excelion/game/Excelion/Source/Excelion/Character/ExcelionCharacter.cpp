@@ -340,16 +340,13 @@ void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound DashAction"));
 		}
 
-		// Always bind legacy axis — works when IMC is empty or Enhanced Input fails
-		PlayerInputComponent->BindAxis("MoveForward", this, &AExcelionCharacter::MoveForwardAxis);
-		PlayerInputComponent->BindAxis("MoveRight", this, &AExcelionCharacter::MoveRightAxis);
-		PlayerInputComponent->BindAxis("LookUp", this, &AExcelionCharacter::LookUpAxis);
-		PlayerInputComponent->BindAxis("Turn", this, &AExcelionCharacter::TurnAxis);
-		UE_LOG(LogTemp, Warning, TEXT("[INPUT] Legacy axis fallback ALWAYS bound (MoveForward/MoveRight/Turn/LookUp)"));
-
 		if (!bBoundEnhancedInput)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Enhanced move/look not bound — relying on DefaultInput.ini axis mappings"));
+			PlayerInputComponent->BindAxis("MoveForward", this, &AExcelionCharacter::MoveForwardAxis);
+			PlayerInputComponent->BindAxis("MoveRight", this, &AExcelionCharacter::MoveRightAxis);
+			PlayerInputComponent->BindAxis("LookUp", this, &AExcelionCharacter::LookUpAxis);
+			PlayerInputComponent->BindAxis("Turn", this, &AExcelionCharacter::TurnAxis);
 		}
 	}
 	else
