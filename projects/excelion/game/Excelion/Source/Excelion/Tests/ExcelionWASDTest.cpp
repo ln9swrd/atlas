@@ -2,6 +2,8 @@
 // Tests character movement input system at runtime
 
 #include "CoreMinimal.h"
+#include "EngineUtils.h"
+#include "EnhancedInputComponent.h"
 #include "Misc/AutomationTest.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -143,7 +145,7 @@ bool FExcelionWASDTest::RunTest(const FString& Parameters)
     
     // Test 4: Character capabilities check
     UE_LOG(LogTemp, Error, TEXT("[AUTOMATION] ========== TEST 4: CHARACTER CAPABILITIES =========="));
-    UE_LOG(LogTemp, Warning, TEXT("[AUTOMATION] Can Jump: %d"), (int32)Character->GetCharacterMovement()->bCanEverJump);
+    UE_LOG(LogTemp, Warning, TEXT("[AUTOMATION] Can Jump: %d"), (int32)Character->CanJump());
     UE_LOG(LogTemp, Warning, TEXT("[AUTOMATION] Walk Speed: %.0f"), Character->GetCharacterMovement()->MaxWalkSpeed);
     UE_LOG(LogTemp, Warning, TEXT("[AUTOMATION] Gravity: %.0f"), Character->GetCharacterMovement()->GravityScale);
     

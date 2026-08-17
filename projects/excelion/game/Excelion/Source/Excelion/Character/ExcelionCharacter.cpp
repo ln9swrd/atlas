@@ -376,8 +376,13 @@ void AExcelionCharacter::Move(const FInputActionValue& Value)
 
 	if (!MovementVector.IsNearlyZero())
 	{
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		AddMovementInput(GetActorRightVector(), MovementVector.X);
+		const FRotator ControlRot = Controller ? Controller->GetControlRotation() : GetActorRotation();
+		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
+		const FVector ForwardDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
+		const FVector RightDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
+
+		AddMovementInput(ForwardDir, MovementVector.Y);
+		AddMovementInput(RightDir, MovementVector.X);
 	}
 }
 
@@ -399,7 +404,10 @@ void AExcelionCharacter::MoveForward(const FInputActionValue& Value)
 	
 	if (ForwardValue != 0.f)
 	{
-		const FVector ForwardDir = GetActorForwardVector();
+		const FRotator ControlRot = Controller ? Controller->GetControlRotation() : GetActorRotation();
+		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
+		const FVector ForwardDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
+
 		UE_LOG(LogTemp, Error, TEXT("[WASD-FORWARD-APPLY] Adding movement: Value=%.2f, Direction=(%.2f,%.2f,%.2f)"), 
 			ForwardValue, ForwardDir.X, ForwardDir.Y, ForwardDir.Z);
 		AddMovementInput(ForwardDir, ForwardValue);
@@ -424,7 +432,10 @@ void AExcelionCharacter::MoveRight(const FInputActionValue& Value)
 	
 	if (RightValue != 0.f)
 	{
-		const FVector RightDir = GetActorRightVector();
+		const FRotator ControlRot = Controller ? Controller->GetControlRotation() : GetActorRotation();
+		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
+		const FVector RightDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
+
 		UE_LOG(LogTemp, Error, TEXT("[WASD-RIGHT-APPLY] Adding movement: Value=%.2f, Direction=(%.2f,%.2f,%.2f)"), 
 			RightValue, RightDir.X, RightDir.Y, RightDir.Z);
 		AddMovementInput(RightDir, RightValue);
@@ -461,7 +472,11 @@ void AExcelionCharacter::MoveForwardAxis(float Value)
 {
 	if (Value != 0.f && !bIsDashing && !IsDead())
 	{
-		AddMovementInput(GetActorForwardVector(), Value);
+		const FRotator ControlRot = Controller ? Controller->GetControlRotation() : GetActorRotation();
+		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
+		const FVector ForwardDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
+
+		AddMovementInput(ForwardDir, Value);
 		UE_LOG(LogTemp, Warning, TEXT("[MOVE-AXIS] Forward: %.2f"), Value);
 	}
 }
@@ -470,7 +485,11 @@ void AExcelionCharacter::MoveRightAxis(float Value)
 {
 	if (Value != 0.f && !bIsDashing && !IsDead())
 	{
-		AddMovementInput(GetActorRightVector(), Value);
+		const FRotator ControlRot = Controller ? Controller->GetControlRotation() : GetActorRotation();
+		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
+		const FVector RightDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
+
+		AddMovementInput(RightDir, Value);
 		UE_LOG(LogTemp, Warning, TEXT("[MOVE-AXIS] Right: %.2f"), Value);
 	}
 }
