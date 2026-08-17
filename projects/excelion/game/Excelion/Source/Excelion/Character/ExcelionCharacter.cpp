@@ -89,74 +89,30 @@ AExcelionCharacter::AExcelionCharacter()
 			LookAction ? *LookAction->GetName() : TEXT("NULL"),
 			AttackAction ? *AttackAction->GetName() : TEXT("NULL"),
 			DashAction ? *DashAction->GetName() : TEXT("NULL"));
-		if (MoveAction && LookAction)
-		{
-			return;
-		}
+		// NOTE: Do NOT return here - continue to create MoveForwardAction/MoveRightAction
+		// This ensures SetupPlayerInputComponent can prioritize separated 1D actions over Axis2D
 		UE_LOG(LogTemp, Warning, TEXT("[INIT] Editor IMC found but IA_Move/IA_Look missing - falling back to runtime input setup"));
 	}
 	
-	// Fallback: Create runtime mapping context (but keep it simple)
-	DefaultMappingContext = NewObject<UInputMappingContext>(this, TEXT("DefaultMappingContext"));
+	// ===== CRITICAL: Always create separated 1D actions =====
+	// These take priority in SetupPlayerInputComponent, ensuring standard WASD works
+	// (W=forward, S=backward, D=right, A=left) without 45-degree diagonal movement
 	if (!DefaultMappingContext)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[INIT] ✗ FAILED to create runtime DefaultMappingContext!"));
-		return;
+		DefaultMappingContext = NewObject<UInputMappingContext>(this, TEXT("DefaultMappingContext"));
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] ✓ Created runtime DefaultMappingContext"));
-
-	// For runtime setup, create lightweight action references
-	// These will be bound in SetupPlayerInputComponent via axis mappings
-	MoveForwardAction = NewObject<UInputAction>(this, TEXT("MoveForwardAction"));
-	if (MoveForwardAction)
+	// Create separated input actions for standard WASD movement
+	// These will be bound in SetupPlayerInputComponent with higher priority than Axis2D
+	if (!MoveForwardAction)
 	{
-		MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
-		FEnhancedActionKeyMapping& WMapping = DefaultMappingContext->MapKey(MoveForwardAction, EKeys::W);
-		FEnhancedActionKeyMapping& SMapping = DefaultMappingContext->MapKey(MoveForwardAction, EKeys::S);
-		SMapping.Modifiers.Add(NewObject<UInputModifierNegate>());
+		MoveForwardAction = NewObject<UInputAction>(this, TEXT("MoveForwardAction"));
+		MoveRightAction = NewObject<UInputAction>(this, TEXT("MoveRightAction"));
+		LookXAction = NewObject<UInputAction>(this, TEXT("LookXAction"));
+		LookYAction = NewObject<UInputAction>(this, TEXT("LookYAction"));
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] ✓ Created separated 1D input actions (MoveForward, MoveRight, LookX, LookY)"));
+		UE_LOG(LogTemp, Warning, TEXT("[INIT] ✓ SetupPlayerInputComponent will prioritize these for standard WASD without 45° diagonals"));
 	}
-
-	MoveRightAction = NewObject<UInputAction>(this, TEXT("MoveRightAction"));
-	if (MoveRightAction)
-	{
-		MoveRightAction->ValueType = EInputActionValueType::Axis1D;
-		FEnhancedActionKeyMapping& DMapping = DefaultMappingContext->MapKey(MoveRightAction, EKeys::D);
-		FEnhancedActionKeyMapping& AMapping = DefaultMappingContext->MapKey(MoveRightAction, EKeys::A);
-		AMapping.Modifiers.Add(NewObject<UInputModifierNegate>());
-	}
-
-	LookXAction = NewObject<UInputAction>(this, TEXT("LookXAction"));
-	if (LookXAction)
-	{
-		LookXAction->ValueType = EInputActionValueType::Axis1D;
-		DefaultMappingContext->MapKey(LookXAction, EKeys::MouseX);
-	}
-
-	LookYAction = NewObject<UInputAction>(this, TEXT("LookYAction"));
-	if (LookYAction)
-	{
-		LookYAction->ValueType = EInputActionValueType::Axis1D;
-		FEnhancedActionKeyMapping& YMapping = DefaultMappingContext->MapKey(LookYAction, EKeys::MouseY);
-		YMapping.Modifiers.Add(NewObject<UInputModifierNegate>());
-	}
-
-	AttackAction = NewObject<UInputAction>(this, TEXT("AttackAction"));
-	if (AttackAction)
-	{
-		AttackAction->ValueType = EInputActionValueType::Boolean;
-		DefaultMappingContext->MapKey(AttackAction, EKeys::LeftMouseButton);
-	}
-
-	DashAction = NewObject<UInputAction>(this, TEXT("DashAction"));
-	if (DashAction)
-	{
-		DashAction->ValueType = EInputActionValueType::Boolean;
-		DefaultMappingContext->MapKey(DashAction, EKeys::LeftShift);
-	}
-
-	UE_LOG(LogTemp, Warning, TEXT("[INIT] ✓ Runtime input actions created (Mappings: %d)"), 
-		DefaultMappingContext->GetMappings().Num());
 }
 
 void AExcelionCharacter::PostInitializeComponents()
@@ -307,25 +263,27 @@ void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	UE_LOG(LogTemp, Warning, TEXT("[INPUT] SetupPlayerInputComponent called - InputComponent valid"));
 
+	// ===== PRIMARY: Try Enhanced Input with editor assets =====
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		bool bBoundEnhancedInput = false;
 
-		// Primary path: editor assets IA_Move / IA_Look (Axis2D) on BP_ExcelionCharacter CDO
-		if (MoveAction && LookAction)
-		{
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Move);
-			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound IA_Move / IA_Look (Axis2D editor assets)"));
-			bBoundEnhancedInput = true;
-		}
-		else if (MoveForwardAction && MoveRightAction && LookXAction && LookYAction)
+		// Primary path: SEPARATED 1D actions (MoveForward/MoveRight) - most accurate, no 45° angle
+		if (MoveForwardAction && MoveRightAction && LookXAction && LookYAction)
 		{
 			EnhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::MoveForward);
 			EnhancedInputComponent->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::MoveRight);
 			EnhancedInputComponent->BindAction(LookXAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::LookX);
 			EnhancedInputComponent->BindAction(LookYAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::LookY);
-			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound runtime Axis1D move/look actions"));
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound runtime Axis1D move/look actions - OPTIMAL"));
+			bBoundEnhancedInput = true;
+		}
+		else if (MoveAction && LookAction)
+		{
+			// Fallback: Axis2D editor assets IA_Move / IA_Look on BP_ExcelionCharacter CDO
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Move);
+			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AExcelionCharacter::Look);
+			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound IA_Move / IA_Look (Axis2D editor assets) - FALLBACK"));
 			bBoundEnhancedInput = true;
 		}
 
@@ -340,13 +298,17 @@ void AExcelionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Bound DashAction"));
 		}
 
+		// ===== FALLBACK: Always also bind axis mappings from DefaultInput.ini =====
+		// This ensures WASD always works via standard axis bindings
+		UE_LOG(LogTemp, Warning, TEXT("[INPUT] Additionally binding DefaultInput.ini axis mappings as fallback"));
+		PlayerInputComponent->BindAxis("MoveForward", this, &AExcelionCharacter::MoveForwardAxis);
+		PlayerInputComponent->BindAxis("MoveRight", this, &AExcelionCharacter::MoveRightAxis);
+		PlayerInputComponent->BindAxis("LookUp", this, &AExcelionCharacter::LookUpAxis);
+		PlayerInputComponent->BindAxis("Turn", this, &AExcelionCharacter::TurnAxis);
+
 		if (!bBoundEnhancedInput)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[INPUT] Enhanced move/look not bound — relying on DefaultInput.ini axis mappings"));
-			PlayerInputComponent->BindAxis("MoveForward", this, &AExcelionCharacter::MoveForwardAxis);
-			PlayerInputComponent->BindAxis("MoveRight", this, &AExcelionCharacter::MoveRightAxis);
-			PlayerInputComponent->BindAxis("LookUp", this, &AExcelionCharacter::LookUpAxis);
-			PlayerInputComponent->BindAxis("Turn", this, &AExcelionCharacter::TurnAxis);
 		}
 	}
 	else
@@ -415,8 +377,10 @@ void AExcelionCharacter::MoveForward(const FInputActionValue& Value)
 		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
 		const FVector ForwardDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
 
-		UE_LOG(LogTemp, Error, TEXT("[WASD-FORWARD-APPLY] Adding movement: Value=%.2f, Direction=(%.2f,%.2f,%.2f)"), 
+		UE_LOG(LogTemp, Error, TEXT("[WASD-FORWARD-APPLY] W/S Input=%.2f, Direction=(%.2f,%.2f,%.2f)"), 
 			ForwardValue, ForwardDir.X, ForwardDir.Y, ForwardDir.Z);
+		
+		// 정직한 전진/후진 이동 (45도 각도 없음)
 		AddMovementInput(ForwardDir, ForwardValue);
 	}
 }
@@ -443,8 +407,10 @@ void AExcelionCharacter::MoveRight(const FInputActionValue& Value)
 		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
 		const FVector RightDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
 
-		UE_LOG(LogTemp, Error, TEXT("[WASD-RIGHT-APPLY] Adding movement: Value=%.2f, Direction=(%.2f,%.2f,%.2f)"), 
+		UE_LOG(LogTemp, Error, TEXT("[WASD-RIGHT-APPLY] D/A Input=%.2f, Direction=(%.2f,%.2f,%.2f)"), 
 			RightValue, RightDir.X, RightDir.Y, RightDir.Z);
+		
+		// 정직한 좌우 이동 (D=우측, A=좌측)
 		AddMovementInput(RightDir, RightValue);
 	}
 }
@@ -483,8 +449,9 @@ void AExcelionCharacter::MoveForwardAxis(float Value)
 		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
 		const FVector ForwardDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
 
+		// 정직한 전진/후진 이동
 		AddMovementInput(ForwardDir, Value);
-		UE_LOG(LogTemp, Warning, TEXT("[MOVE-AXIS] Forward: %.2f"), Value);
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE-AXIS] Forward/Backward: %.2f"), Value);
 	}
 }
 
@@ -496,8 +463,9 @@ void AExcelionCharacter::MoveRightAxis(float Value)
 		const FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
 		const FVector RightDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
 
+		// 정직한 좌우 이동
 		AddMovementInput(RightDir, Value);
-		UE_LOG(LogTemp, Warning, TEXT("[MOVE-AXIS] Right: %.2f"), Value);
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE-AXIS] Left/Right: %.2f"), Value);
 	}
 }
 
