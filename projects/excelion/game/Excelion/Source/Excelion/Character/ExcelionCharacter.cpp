@@ -366,6 +366,10 @@ void AExcelionCharacter::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
+	// DIAGNOSTIC LOG: Verify actual input values received
+	UE_LOG(LogTemp, Warning, TEXT("[MOVE-PROOF] ValueType=%d X=%.3f Y=%.3f"), 
+		static_cast<int32>(Value.GetValueType()), MovementVector.X, MovementVector.Y);
+
 	if (bIsDashing || IsDead())
 	{
 		return;
@@ -378,8 +382,14 @@ void AExcelionCharacter::Move(const FInputActionValue& Value)
 		const FVector ForwardDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
 		const FVector RightDir = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
 
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE-APPLY] FwdDir=(%.3f,%.3f) RghtDir=(%.3f,%.3f)"), 
+			ForwardDir.X, ForwardDir.Y, RightDir.X, RightDir.Y);
+		
 		AddMovementInput(ForwardDir, MovementVector.Y);
 		AddMovementInput(RightDir, MovementVector.X);
+
+		UE_LOG(LogTemp, Warning, TEXT("[MOVE-INPUT] Fwd=%.3f Rght=%.3f"), 
+			MovementVector.Y, MovementVector.X);
 	}
 }
 
