@@ -6,6 +6,8 @@
 #include "UI/ExcelionHUDWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "UObject/UObjectGlobals.h"
+#include "UObject/ConstructorHelpers.h"
 
 AExcelionGameMode::AExcelionGameMode()
 {
@@ -36,6 +38,39 @@ void AExcelionGameMode::BeginPlay()
 	
 	CurrentGameState = EExcelionGameState::Playing;
 	SetupHUD();
+
+// ------------------------------------------------------------------
+// Minimal Enemy spawn for PIE testing
+// ------------------------------------------------------------------
+// If an enemy Blueprint exists, spawn a single instance at a default
+// location. This keeps the change minimal while allowing combat
+// functionalities to be exercised during runtime tests.
+// ------------------------------------------------------------------
+{
+    // Load the Blueprint class at runtime. The path includes the
+    // generated class suffix (_C) which points to the actual
+    // UClass used by the Blueprint.
+    UClass* EnemyBPClass = LoadClass<AActor>(nullptr, TEXT("/Game/Blueprints/BP_ExcelionEnemy.BP_ExcelionEnemy_C"));
+    if (EnemyBPClass)
+    {
+        FActorSpawnParameters SpawnParams;
+        // Adjust spawn location to avoid collisions with the player.
+        FVector SpawnLocation = FVector(0.f, 0.f, 200.f);
+        FRotator SpawnRotation = FRotator::ZeroRotator;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        AActor* SpawnedEnemy = GetWorld()->SpawnActor<AActor>(EnemyBPClass, SpawnLocation, SpawnRotation, SpawnParams);
+        if (SpawnedEnemy)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] Spawned Enemy: %s at %s"),
+                *SpawnedEnemy->GetName(),
+                *SpawnedEnemy->GetActorLocation().ToString());
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[AXION PIE DEBUG] Failed to load BP_ExcelionEnemy Blueprint class."));
+    }
+}
 }
 
 void AExcelionGameMode::SetupHUD()
