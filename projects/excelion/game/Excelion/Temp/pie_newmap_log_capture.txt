@@ -1,0 +1,8 @@
+=== EMPIRICAL PIE LOADCLASS DIAGNOSTICS START ===
+1. Loading Level: /Game/Maps/NewMap...
+   Level load result: True
+2. Starting PIE Simulation on NewMap...
+   PIE Simulation Started.
+3. PIE find_package('/Game/Blueprints/BP_ExcelionEnemy'): NULL
+4. PIE find_object('/Game/Blueprints/BP_ExcelionEnemy.BP_ExcelionEnemy_C'): NULL
+5. PIE Simulation Ended.

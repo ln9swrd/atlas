@@ -1,0 +1,6 @@
+=== EMPIRICAL PIE INTERNAL LOG CAPTURE START ===
+1. Starting PIE Simulation...
+   PIE Simulation Started Successfully.
+2. PIE find_package Error: find_package() takes exactly 1 argument (2 given)
+3. PIE find_object('/Game/Blueprints/BP_ExcelionEnemy.BP_ExcelionEnemy_C'): NULL
+4. PIE Simulation Ended.
