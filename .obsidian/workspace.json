@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "projects/excelion/prototype/v4/README.md",
+                "file": "projects/excelion/design/mecha/README.md",
                 "mode": "source",
                 "source": false
               },
@@ -190,11 +190,13 @@
   },
   "active": "de4c70f95cb00277",
   "lastOpenFiles": [
+    "state/CURRENT_STATE.md",
+    "projects/excelion/README.md",
+    "projects/excelion/prototype/v4/README.md",
     "projects/excelion/prototype/README.md",
     "projects/excelion/ENVIRONMENT_PLAN.md",
     "projects/excelion/PROJECT_CHARTER.md",
     "projects/excelion/PROJECT_MEMORY.md",
-    "projects/excelion/README.md",
     "README.md",
     "state/TASK_MAP.md",
     "scratch/disable_bloat_services.ps1",
