@@ -2,7 +2,8 @@
 
 > 기록일: 2026-08-19  
 > 위치: `projects/excelion/state/EXCELION_PROTOTYPE_WORKPLAN.md`  
-> 상태: RECORDED
+> 상태: RECORDED  
+> 갱신: 2026-08-19 — Player Mesh 역할 분리 (Manny=임시, AXION=최종 Canon)
 
 ## 목적
 
@@ -57,13 +58,17 @@ READ-ONLY 조사
 
 ## Phase C — Player
 
-### C1. Manny Mesh
+### C1. Player Mesh
 확인:
-- 정확한 Manny Skeletal Mesh
+- 현재 사용 Mesh (Manny 등 임시/placeholder 가능)
 - Skeleton
 - Animation Blueprint
 - CharacterMesh0
 - 기존 Fallback Mesh
+
+역할 분리:
+- Manny / UE Mannequin = 임시 테스트 Mesh (실험·파이프라인용, 최종 아님)
+- AXION = 최종 Player Canon · Mesh 교체 대상 (Three-view APPROVED · P0 Mesh 대기)
 
 ### C2. Movement
 기존 Movement 시스템을 우선 재사용한다.
@@ -129,7 +134,7 @@ AI Stop
 ```
 Player Spawn
 ↓
-Manny 표시
+Player Mesh 표시 (임시 Manny 또는 placeholder 허용)
 ↓
 Move
 ↓
