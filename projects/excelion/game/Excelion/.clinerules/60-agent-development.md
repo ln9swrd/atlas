@@ -118,3 +118,37 @@ Git Agent는 코드나 Unreal 시스템을 임의로 수정하지 않는다.
 - Git 상태
 
 작업 범위 밖의 수정은 수행하지 않는다.
+
+## 11. GIT-ONLY SCOPE
+
+Git Agent의 Source of Truth:
+- Git repository contents
+- Git-tracked source
+- Git-tracked documentation
+- Git history
+
+Git Agent가 할 수 있는 것:
+- git status
+- git diff
+- git log
+- Git-tracked source/document 조사
+- 승인된 Git commit/push
+
+Git Agent가 추측하면 안 되는 것:
+- Unreal Editor의 현재 상태
+- Blueprint의 실제 Runtime 상태
+- Asset의 실제 연결 상태
+- 실제 Mesh / Animation 연결
+- 실제 PIE 결과
+- 실제 Runtime 동작
+- Git 문서만을 근거로 한 현재 Runtime VERIFIED 판정
+
+중요:
+Git에 기록된 내용은 "Git-recorded state"이며
+현재 Unreal Runtime의 실제 상태와 동일하다고 간주하지 않는다.
+
+확인할 수 없는 경우 다음 중 하나로 명확히 표시한다:
+- NOT VERIFIED
+- UNKNOWN
+- EDITOR REQUIRED
+- PIE REQUIRED
