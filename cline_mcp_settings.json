@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_FILE_PATH": "/mnt/d/Atlas/mcp-servers/memory/memory.jsonl"
+      }
+    },
+    "Framelink MCP for Figma": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "figma-developer-mcp",
+        "--figma-api-key=YOUR_FIGMA_API_KEY_HERE",
+        "--stdio"
+      ]
+    },
+    "unrealMCP": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/mnt/d/Atlas/mcp-servers/unreal-mcp",
+        "run",
+        "unreal_mcp_server.py"
+      ]
+    }
+  }
+}

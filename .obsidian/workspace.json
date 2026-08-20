@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "049b5af65e44151a",
+        "id": "a20ea507158d3afd",
         "type": "tabs",
         "children": [
           {
-            "id": "de4c70f95cb00277",
+            "id": "af5e6939a54572aa",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "projects/excelion/design/mecha/README.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "README"
+              "title": "새 탭"
             }
           }
         ]
@@ -188,8 +184,14 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "de4c70f95cb00277",
+  "active": "af5e6939a54572aa",
   "lastOpenFiles": [
+    "cline_mcp_settings.json",
+    "mcp-servers/memory",
+    "vaults/test-vault/test-note.md",
+    "vaults/test-vault",
+    "vaults",
+    "projects/excelion/design/mecha/README.md",
     "state/CURRENT_STATE.md",
     "projects/excelion/README.md",
     "projects/excelion/prototype/v4/README.md",
@@ -207,9 +209,6 @@
     "projects/excelion/game/Excelion/Source/Excelion/Combat/HealthComponent.h",
     "projects/excelion/game/Excelion/Source/Excelion/Combat/HealthComponent.cpp",
     "projects/excelion/game/Excelion/Source/Excelion/Combat/CombatComponent.h",
-    "projects/excelion/game/Excelion/Source/Excelion/Combat/CombatComponent.cpp",
-    "projects/excelion/game/Excelion/Source/Excelion/Combat",
-    "projects/excelion/game/Excelion/Source/Excelion/Character/ExcelionCharacter.h",
     "AGENTS.md"
   ]
 }
