@@ -50,6 +50,26 @@ W A S D
 
 Enhanced Input 과 Legacy Input 이 동시에 작동할 가능성도 조사한다.
 
-8. 실제 런타임 상태 우선
+8. Unreal Editor 검증 도구 우선순위
 
-파일
+**Unreal Editor 가 실행 중인 경우**:
+- Editor 의 실제 상태를 **반드시 우선 검증한다**.
+- 검증 도구의 기본 우선순위:
+  1. **Unreal MCP** (MCP 에서 정보를 확인할 수 있으면 우선 사용)
+  2. **Unreal Editor Python API** (Python Script Plugin 또는 다른 Python 호출 경로)
+  3. **Remote Control API** (API endpoint 접근 가능 여부 확인)
+  4. **UAsset 직접 파싱** (파서 없음 또는 마지막 수단)
+
+- MCP 에서 정보를 확인할 수 없는 경우:
+  - 즉시 UNVERIFIED 로 종료하지 않는다.
+  - 현재 사용 가능한 Unreal Python 또는 Remote Control 경로를 확인하여 동일한 정보를 조회할 수 있는지 조사한다.
+
+- UAsset Parser 는 Editor 기반 검증 방법으로 확인할 수 없는 경우에만 대안으로 검토한다.
+
+**도구 제한**:
+- 도구 존재라는 사실만으로 **사용 가능하다고 가정하지 않는다**.
+- 실제 연결 상태와 제공 기능을 확인한다.
+- 검증 가능한 방법이 있음에도 단순히 "UAsset Parser 가 없다"는 이유만으로 UNVERIFIED 처리하지 않는다.
+
+9. 실제 런타임 상태 우선
+======= SEARCH
