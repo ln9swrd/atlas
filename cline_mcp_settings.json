@@ -27,6 +27,14 @@
         "run",
         "unreal_mcp_server.py"
       ]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/mnt/d/Atlas/projects"
+      ]
     }
   }
 }
