@@ -1,9 +1,10 @@
 {
   "main": {
-    "id": "43d4f9d89e7b6632",
+    "id": "6fe959369d8662f8",
     "type": "split",
     "children": [
       {
+<<<<<<< HEAD
         "id": "a20ea507158d3afd",
         "type": "tabs",
         "children": [
@@ -15,6 +16,23 @@
               "state": {},
               "icon": "lucide-file",
               "title": "새 탭"
+=======
+        "id": "8a8ed7cb51b8ad34",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "77aac968ad16267a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "AGENTS.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "AGENTS"
+>>>>>>> 3bd1f60 (refactor: remove Obsidian plugins and legacy configuration, add scratchpad inspection scripts)
             }
           }
         ]
@@ -23,15 +41,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "257f10bfa241fb2f",
+    "id": "1ae27b3446428099",
     "type": "split",
     "children": [
       {
-        "id": "fae2287aebe44540",
+        "id": "a078b0fed3b7aa4f",
         "type": "tabs",
         "children": [
           {
-            "id": "9b0c18792c3c6d82",
+            "id": "a652d7534684a31d",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -46,7 +64,7 @@
             }
           },
           {
-            "id": "541ce57b77fba14e",
+            "id": "e4d81a8c474aa933",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -63,7 +81,7 @@
             }
           },
           {
-            "id": "da4c81a715b21e70",
+            "id": "0445f6a099b7fb34",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -82,20 +100,19 @@
     "width": 300
   },
   "right": {
-    "id": "701964ab1595f5f0",
+    "id": "6c9d990fb30c0955",
     "type": "split",
     "children": [
       {
-        "id": "19e2ff5b3f7be1c4",
+        "id": "04926fa6b658f6d8",
         "type": "tabs",
         "children": [
           {
-            "id": "41092b739252f52d",
+            "id": "48b8eac7ff59436d",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "projects/excelion/prototype/v4/README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -109,12 +126,11 @@
             }
           },
           {
-            "id": "582a5e60edb9b63a",
+            "id": "33926df090a61a36",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "projects/excelion/prototype/v4/README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -123,7 +139,7 @@
             }
           },
           {
-            "id": "db1dffdf488977b0",
+            "id": "2ce210bc1a6c1f2e",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -138,7 +154,7 @@
             }
           },
           {
-            "id": "9e27635f646698c6",
+            "id": "b92915ec99e9f787",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -152,12 +168,11 @@
             }
           },
           {
-            "id": "c64161f3488cf474",
+            "id": "f330de8a6ad4774d",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "projects/excelion/prototype/v4/README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -184,6 +199,7 @@
       "bases:새 베이스 생성하기": false
     }
   },
+<<<<<<< HEAD
   "active": "af5e6939a54572aa",
   "lastOpenFiles": [
     "cline_mcp_settings.json",
@@ -210,5 +226,10 @@
     "projects/excelion/game/Excelion/Source/Excelion/Combat/HealthComponent.cpp",
     "projects/excelion/game/Excelion/Source/Excelion/Combat/CombatComponent.h",
     "AGENTS.md"
+=======
+  "active": "77aac968ad16267a",
+  "lastOpenFiles": [
+    "README.md"
+>>>>>>> 3bd1f60 (refactor: remove Obsidian plugins and legacy configuration, add scratchpad inspection scripts)
   ]
 }
