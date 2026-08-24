@@ -1,0 +1,1156 @@
+/* ── VaultBridge – Sync Status View ────────────────────────────── */
+
+/* Full-height flex column so the list can scroll independently */
+.sync-status-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    container-type: inline-size;
+}
+
+
+/* Header holds the search input, which must never be re-rendered (it would
+   lose focus mid-typing); the body is what renderView() rebuilds. */
+.ssv-header {
+    flex-shrink: 0;
+}
+
+.ssv-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ── Search filter ──────────────────────────────────────────────── */
+.ssv-search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    flex-shrink: 0;
+}
+
+.ssv-search-icon {
+    display: flex;
+    align-items: center;
+    color: var(--text-faint);
+    flex-shrink: 0;
+}
+
+.ssv-search-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.ssv-search-input {
+    flex: 1;
+    min-width: 0;
+    height: 26px;
+    padding: 0 6px;
+    font-size: 0.82em;
+    background: var(--background-modifier-form-field);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    color: var(--text-normal);
+}
+
+.ssv-search-clear {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    height: 22px;
+    width: 22px;
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.ssv-search.has-query .ssv-search-clear { display: flex; }
+
+.ssv-search-clear:hover { color: var(--text-normal); }
+
+.ssv-search-clear svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ── Info strip ─────────────────────────────────────────────────── */
+.ssv-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--background-secondary);
+    border-bottom: 1px solid var(--background-modifier-border);
+    font-size: 0.75em;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+@container (max-width: 400px) {
+    .ssv-info { gap: 4px; padding: 4px 8px; }
+    .ssv-info-sep { display: none; }
+}
+
+.ssv-info-item {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-weight: 500;
+    color: var(--text-normal);
+}
+
+.ssv-info-sep { color: var(--background-modifier-border); }
+
+.ssv-info-time {
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+/* ── Filter tabs ────────────────────────────────────────────────── */
+.ssv-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-shrink: 0;
+    /* When labels are still shown (container wide enough that the
+       icon-only fallback below hasn't kicked in) six-plus tabs can still
+       overflow before wrapping/hiding text. The scrollbar itself is
+       hidden for a cleaner look, so without this the cut-off edge reads
+       as "broken" rather than "scroll for more" — a soft fade signals
+       there's more to scroll to. */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 14px, black calc(100% - 14px), transparent);
+    mask-image: linear-gradient(to right, transparent, black 14px, black calc(100% - 14px), transparent);
+}
+
+.ssv-tabs::-webkit-scrollbar { display: none; }
+
+.ssv-tab {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    font-size: 0.80em;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    background: transparent;
+    color: var(--text-muted);
+    transition: background 0.12s, color 0.12s;
+    min-height: 28px;
+}
+
+@container (max-width: 400px) {
+    .ssv-tab-label { display: none; }
+    .ssv-tab { padding: 4px 8px; min-width: 32px; justify-content: center; }
+}
+
+.ssv-tab:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+}
+
+.ssv-tab.active {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-color: var(--interactive-accent);
+}
+
+.ssv-tab-count {
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 0.85em;
+    min-width: 18px;
+    text-align: center;
+}
+.is-mobile .ssv-tabs {
+    padding: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+    overflow-x: visible;
+    /* Mobile wraps to a second row instead of scrolling, so the edge fade
+       (meant for the horizontal-scroll case) would just clip the wrapped
+       rows for no reason — turn it off. */
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+.is-mobile .ssv-tab {
+    padding: 6px 14px;
+    font-size: 0.9em;
+    min-height: 36px;
+    border-radius: 10px;
+    flex: 1 0 auto;
+    justify-content: center;
+}
+
+.ssv-tab.active .ssv-tab-count {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.ssv-filter-select { display: none; }
+
+.is-mobile .ssv-filter-select {
+    display: block;
+    width: calc(100% - 20px);
+    min-height: 36px;
+    margin: 10px;
+}
+
+/* ── Action bar ─────────────────────────────────────────────────── */
+.ssv-action-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    flex-shrink: 0;
+    background: var(--background-primary);
+}
+
+.ssv-action-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.ssv-tree-options {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding-left: 4px;
+}
+
+.ssv-tree-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    font-size: 0.80em;
+    cursor: pointer;
+}
+
+.ssv-tree-option input { margin: 0; cursor: pointer; }
+
+@container (max-width: 450px) {
+    .ssv-btn-label { display: none; }
+    .ssv-btn { padding: 5px 8px; min-width: 34px; justify-content: center; }
+    .ssv-select-label { display: none; }
+    .ssv-bar-spacer { display: none; }
+}
+
+/* ── Mobile specific overrides ─────────────────────────────────── */
+
+.is-mobile .ssv-btn {
+    padding: 8px 14px;
+    font-size: 0.9em;
+    min-height: 38px;
+    flex: 1 0 auto;
+    justify-content: center;
+}
+
+.is-mobile .ssv-action-bar {
+    gap: 8px;
+    padding: 10px;
+}
+
+.is-mobile .ssv-action-bar-row { flex-wrap: wrap; gap: 8px; }
+
+.is-mobile .ssv-bar-spacer {
+    display: none;
+}
+
+
+.ssv-bar-spacer { flex: 1; }
+
+.ssv-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 11px;
+    border-radius: 5px;
+    font-size: 0.82em;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    min-height: 30px;
+    transition: opacity 0.12s, background 0.12s;
+}
+
+.ssv-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+}
+
+.ssv-btn:not(:disabled):hover { opacity: 0.82; }
+
+.ssv-btn-refresh {
+    background: var(--background-secondary);
+    border-color: var(--background-modifier-border);
+    color: var(--text-normal);
+}
+
+.ssv-btn-push {
+    background: var(--color-green);
+    color: white;
+}
+
+.ssv-btn-pull {
+    background: var(--color-blue);
+    color: white;
+}
+
+.ssv-btn-delete {
+    background: var(--color-red);
+    color: white;
+}
+
+/* Indeterminate "select all" checkbox row */
+.ssv-select-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.80em;
+    color: var(--text-muted);
+    cursor: pointer;
+    min-height: 30px;
+    padding: 0 4px;
+}
+
+.ssv-select-row input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* ── Scrollable file list ───────────────────────────────────────── */
+.ssv-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ── Tree folders ──────────────────────────────────────────────── */
+.ssv-tree-children {
+    margin-left: 16px;
+    border-left: 1px solid var(--background-modifier-border);
+}
+
+.ssv-tree-folder-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 34px;
+    padding: 6px 12px 6px 5px;
+    border-bottom: 1px solid var(--background-modifier-border-hover);
+    color: var(--text-normal);
+}
+
+.ssv-tree-folder-row:hover { background: var(--background-modifier-hover); }
+
+.ssv-folder-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--font-monospace);
+    font-size: 18px;
+    line-height: 1;
+}
+
+.ssv-folder-checkbox {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.ssv-tree-folder-icon {
+    display: flex;
+    color: var(--text-warning);
+}
+
+.ssv-tree-folder-icon .svg-icon { width: 16px; height: 16px; }
+
+.ssv-tree-folder-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.84em;
+    font-weight: 600;
+}
+
+/* ── Empty / loading states ─────────────────────────────────────── */
+.ssv-empty {
+    padding: 36px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.88em;
+}
+
+/* ── Progress bar ───────────────────────────────────────────────── */
+.ssv-progress {
+    padding: 24px 16px;
+    text-align: center;
+}
+
+.ssv-progress-text {
+    font-size: 0.83em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.ssv-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--background-secondary);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ssv-progress-fill {
+    height: 100%;
+    background: var(--interactive-accent);
+    transition: width 0.2s ease;
+    border-radius: 2px;
+}
+
+/* ── File item ──────────────────────────────────────────────────── */
+.ssv-file {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--background-modifier-border-hover);
+    border-left: 3px solid transparent;
+    transition: background 0.1s;
+}
+
+.ssv-file:hover { background: var(--background-modifier-hover); }
+
+.ssv-file.status-synced    { border-left-color: var(--color-green); }
+.ssv-file.status-modified  { border-left-color: var(--text-warning); }
+.ssv-file.status-unsynced  { border-left-color: var(--color-red); }
+.ssv-file.status-remote    { border-left-color: var(--color-blue); }
+.ssv-file.status-moved     { border-left-color: var(--color-purple); }
+.ssv-file.status-checking  { border-left-color: var(--background-modifier-border); }
+
+.ssv-file-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 30px;
+}
+
+.ssv-file-checkbox {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.ssv-file-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    flex-shrink: 0;
+}
+
+.ssv-icon-synced   { color: var(--color-green); }
+.ssv-icon-modified { color: var(--text-warning); }
+.ssv-icon-unsynced { color: var(--color-red); }
+.ssv-icon-remote   { color: var(--color-blue); }
+.ssv-icon-moved    { color: var(--color-purple); }
+.ssv-icon-checking { color: var(--text-muted); }
+
+.ssv-file-path {
+    flex: 1;
+    font-family: var(--font-monospace);
+    font-size: 0.80em;
+    color: var(--text-normal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Only the path is clickable, so it has to read as a link — the rest of the
+   row keeps its existing behaviour. Declared after .ssv-file-path so the
+   accent colour wins at equal specificity. */
+.ssv-file-path-link {
+    cursor: pointer;
+    color: var(--text-accent);
+}
+
+.ssv-file-path-link:hover {
+    text-decoration: underline;
+}
+
+.ssv-status-badge {
+    font-size: 0.70em;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid currentColor;
+    opacity: 0.85;
+}
+
+.ssv-badge-synced   { color: var(--color-green); }
+.ssv-badge-modified { color: var(--text-warning); }
+.ssv-badge-unsynced { color: var(--color-red); }
+.ssv-badge-remote   { color: var(--color-blue); }
+.ssv-badge-moved    { color: var(--color-purple); }
+.ssv-badge-checking { color: var(--text-muted); }
+
+/* Old path of a pending move, shown struck-through beneath the new one. */
+.ssv-moved-from {
+    margin-left: 25px;
+    font-family: var(--font-monospace);
+    font-size: 0.72em;
+    color: var(--text-faint);
+    text-decoration: line-through;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Collapsed folder-move row ──────────────────────────────────── */
+.ssv-move-group-children {
+    margin-top: 6px;
+    margin-left: 41px; /* aligns under path, same as .ssv-file-actions */
+    border-left: 2px solid var(--background-modifier-border);
+    padding-left: 10px;
+}
+
+.ssv-move-group-child {
+    font-family: var(--font-monospace);
+    font-size: 0.74em;
+    color: var(--text-muted);
+    padding: 2px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Per-file action row ────────────────────────────────────────── */
+.ssv-file-actions {
+    display: flex;
+    gap: 5px;
+    margin-top: 7px;
+    padding-left: 41px; /* aligns under path */
+    flex-wrap: wrap;
+}
+
+.ssv-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    font-size: 0.76em;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid var(--background-modifier-border);
+    background: transparent;
+    color: var(--text-normal);
+    white-space: nowrap;
+    min-height: 26px;
+    transition: background 0.1s, opacity 0.1s;
+}
+
+/* Consistent sizing for all Lucide icons used in the view */
+.ssv-file-icon .svg-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.ssv-btn .svg-icon,
+.ssv-tab .svg-icon,
+.ssv-action-btn .svg-icon {
+    width: 15px;
+    height: 15px;
+}
+
+.ssv-info-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.ssv-info-icon .svg-icon {
+    width: 13px;
+    height: 13px;
+}
+
+.is-mobile .ssv-action-btn {
+    padding: 8px 15px;
+    font-size: 0.85em;
+    min-height: 40px;
+}
+
+
+
+.ssv-action-btn:hover {
+    background: var(--background-modifier-hover);
+}
+
+.ssv-action-btn.push {
+    border-color: var(--color-green);
+    color: var(--color-green);
+}
+
+.ssv-action-btn.pull {
+    border-color: var(--color-blue);
+    color: var(--color-blue);
+}
+
+.ssv-action-btn.danger {
+    border-color: var(--color-red);
+    color: var(--color-red);
+}
+
+.ssv-action-btn.diff {
+    border-color: var(--background-modifier-border);
+    color: var(--text-muted);
+}
+
+/* ── Diff panel ─────────────────────────────────────────────────── */
+.ssv-diff {
+    display: none;
+    margin-top: 6px;
+    padding-left: 41px;
+    container-type: inline-size;
+}
+
+.ssv-diff.visible { display: block; }
+
+/* Diff shown in its own workspace pane (desktop). It carries its own
+   container-type so the split/unified container query below resolves against
+   the pane's width — which is the entire point of moving it out of the
+   sidebar. */
+.sync-diff-view {
+    padding: 10px 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.ssv-diff-pane {
+    container-type: inline-size;
+}
+
+/* Desktop pane: let the diff fill the tab's full height instead of the
+   sidebar's capped max-height (mobile keeps the cap — see below). */
+.sync-diff-view .ssv-diff-pane-path {
+    flex-shrink: 0;
+}
+
+.sync-diff-view .ssv-diff-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.sync-diff-view .ssv-diff-split {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.sync-diff-view .ssv-diff-grid,
+.sync-diff-view .ssv-diff-unified {
+    flex: 1;
+    max-height: none;
+    min-height: 0;
+}
+
+.ssv-diff-pane-path {
+    font-family: var(--font-monospace);
+    font-size: 0.82em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    overflow-wrap: anywhere;
+}
+
+/* ── Side-by-side diff (default for wide panels) ──────────────────── */
+.ssv-diff-split {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 5px;
+    overflow: hidden;
+    background: var(--background-primary);
+}
+
+.ssv-diff-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    font-family: var(--font-monospace);
+    font-size: 0.74em;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.ssv-diff-hd {
+    position: sticky;
+    top: 0;
+    padding: 4px 8px;
+    background: var(--background-secondary);
+    color: var(--text-muted);
+    font-size: 0.9em;
+    font-weight: 600;
+    border-bottom: 1px solid var(--background-modifier-border);
+    z-index: 1;
+}
+
+.ssv-diff-hd:first-child {
+    border-right: 1px solid var(--background-modifier-border);
+}
+
+.ssv-diff-cell {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 1px 6px;
+    min-height: 18px;
+    overflow: hidden;
+}
+
+/* Right column of each row gets a left separator */
+.ssv-diff-cell:nth-child(even) {
+    border-left: 1px solid var(--background-modifier-border);
+}
+
+/* Row separator (every pair of cells) */
+.ssv-diff-cell:nth-child(4n+3),
+.ssv-diff-cell:nth-child(4n+4) {
+    background-color: transparent;
+}
+
+.ssv-diff-cell.removed   { background: rgba(var(--color-red-rgb), 0.12); }
+.ssv-diff-cell.added     { background: rgba(var(--color-green-rgb), 0.12); }
+.ssv-diff-cell.unchanged { background: transparent; }
+.ssv-diff-cell.empty     { background: var(--background-secondary); opacity: 0.6; }
+
+.ssv-diff-ln {
+    color: var(--text-muted);
+    min-width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+    user-select: none;
+    opacity: 0.6;
+    font-size: 0.88em;
+}
+
+.ssv-diff-code {
+    flex: 1;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: var(--text-normal);
+}
+
+/* ── Unified diff (narrow containers / mobile) ─────────────────────── */
+.ssv-diff-unified {
+    display: none;
+    background: var(--background-secondary);
+    border-radius: 5px;
+    padding: 8px 10px;
+    font-family: var(--font-monospace);
+    font-size: 0.74em;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 240px;
+    overflow-y: auto;
+    margin: 0;
+}
+
+.ssv-u-line {
+    display: block;
+    padding: 1px 4px;
+    border-radius: 2px;
+}
+
+.ssv-u-line.removed   { background: rgba(var(--color-red-rgb), 0.18); }
+.ssv-u-line.added     { background: rgba(var(--color-green-rgb), 0.18); }
+.ssv-u-line.unchanged { color: var(--text-muted); }
+
+/* Container query: switch layout based on the diff panel's own width */
+@container (max-width: 440px) {
+    .ssv-diff-split  { display: none; }
+    .ssv-diff-unified { display: block; }
+}
+
+@container (min-width: 441px) {
+    .ssv-diff-split  { display: block; }
+    .ssv-diff-unified { display: none; }
+}
+
+/* ── Mobile adjustments ─────────────────────────────────────────── */
+@container (max-width: 480px) {
+    .ssv-info { padding: 5px 10px; gap: 8px; }
+
+    .ssv-tabs { padding: 6px 8px; gap: 3px; }
+    .ssv-tab  { padding: 4px 8px; font-size: 0.76em; }
+    .ssv-tab-label { display: none; }
+
+    .ssv-action-bar { padding: 6px 8px; gap: 5px; }
+    .ssv-btn { padding: 5px 9px; font-size: 0.76em; }
+    .ssv-btn-label { display: none; }
+
+    .ssv-file { padding: 8px 10px; }
+    .ssv-file-path { font-size: 0.76em; }
+    .ssv-status-badge { display: none; } 
+
+    .ssv-file-actions { padding-left: 0; margin-top: 8px; }
+    .ssv-action-btn { flex: 1 1 auto; text-align: center; min-height: 32px; }
+    .ssv-action-btn .ssv-btn-label { display: none; }
+
+    .ssv-diff { padding-left: 0; }
+}
+
+/* Mobile label overrides — placed after container queries so source order wins */
+.is-mobile .ssv-btn-label,
+.is-mobile .ssv-tab-label {
+    display: inline;
+}
+
+.is-mobile .ssv-action-btn .ssv-btn-label {
+    display: inline;
+}
+
+/* ── Settings connection status badge ──────────────────────────── */
+.gfs-connection-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.gfs-connection-status::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.gfs-connection-status.is-checking {
+    color: var(--text-muted);
+    background: var(--background-secondary);
+}
+
+/* Background intentionally stays the same neutral --background-secondary as
+ * the checking state rather than --background-modifier-success/error: some
+ * themes define those modifier colors identically to --text-success/error,
+ * which would make the label text invisible against its own background. */
+.gfs-connection-status.is-connected {
+    color: var(--text-success);
+    background: var(--background-secondary);
+}
+
+.gfs-connection-status.is-disconnected {
+    color: var(--text-error);
+    background: var(--background-secondary);
+}
+
+/* ── Global status bar connection indicator ────────────────────── */
+.gfs-status-bar-connection {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.gfs-status-bar-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.gfs-status-bar-icon svg {
+    width: 12px;
+    height: 12px;
+}
+
+.gfs-status-bar-connection.is-checking {
+    color: var(--text-muted);
+}
+
+.gfs-status-bar-connection.is-connected {
+    color: var(--text-success);
+}
+
+.gfs-status-bar-connection.is-disconnected {
+    color: var(--text-error);
+}
+
+/* ── Conflict Modal ─────────────────────────────────────────────── */
+.sync-conflict-modal.modal {
+    width: min(1100px, 92vw);
+    height: min(85vh, 800px);
+    display: flex;
+    flex-direction: column;
+}
+
+.sync-conflict-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.conflict-description {
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    font-size: 0.9em;
+    flex-shrink: 0;
+}
+
+.conflict-tabs {
+    display: none;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.conflict-tab {
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--background-modifier-border);
+    background: var(--background-secondary);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85em;
+}
+
+.conflict-tab.is-active {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-color: var(--interactive-accent);
+}
+
+.conflict-content-area {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.conflict-diff-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 600px) {
+    .conflict-diff-container { grid-template-columns: 1fr; }
+
+    .conflict-tabs { display: flex; }
+
+    .conflict-panel { display: none; }
+    .conflict-panel.is-active { display: block; }
+}
+
+.conflict-section h3,
+.conflict-diff-section h3 {
+    margin: 0 0 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.conflict-content,
+.conflict-diff {
+    overflow-y: auto;
+    padding: 10px;
+    background: var(--background-secondary);
+    border-radius: 5px;
+    margin: 0;
+    font-family: var(--font-monospace);
+    font-size: 0.82em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.conflict-diff-section { margin-bottom: 18px; }
+
+.conflict-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--background-modifier-border);
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+    .conflict-buttons { justify-content: stretch; }
+    .conflict-buttons .setting-item-control { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .sync-conflict-modal .conflict-buttons button { width: 100%; margin: 0; }
+}
+
+.conflict-buttons .setting-item {
+    border: none;
+    padding: 0;
+}
+
+.conflict-buttons .setting-item-control {
+    display: flex;
+    gap: 10px;
+}
+
+/* ── Sync Plan Modal ────────────────────────────────────────────── */
+.sync-plan-modal.modal {
+    width: min(640px, 92vw);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.sync-plan-description {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin: -4px 0 12px;
+}
+
+.sync-plan-sections {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.sync-plan-section {
+    margin-bottom: 16px;
+}
+
+.sync-plan-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.sync-plan-section-icon {
+    display: flex;
+    color: var(--text-muted);
+}
+
+.sync-plan-section.is-destructive .sync-plan-section-heading,
+.sync-plan-section.is-destructive .sync-plan-section-icon {
+    color: var(--text-error);
+}
+
+.sync-plan-warning {
+    color: var(--text-error);
+    font-size: 0.85em;
+    margin-bottom: 6px;
+}
+
+.sync-plan-file-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    background: var(--background-secondary);
+    border-radius: 5px;
+}
+
+.sync-plan-section.is-destructive .sync-plan-file-list {
+    border: 1px solid var(--text-error);
+}
+
+.sync-plan-file-item {
+    padding: 4px 10px;
+    font-family: var(--font-monospace);
+    font-size: 0.82em;
+    word-break: break-all;
+    display: flex;
+    flex-direction: column;
+}
+
+.sync-plan-file-moved-from {
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+
+.sync-plan-buttons {
+    padding-top: 12px;
+    border-top: 1px solid var(--background-modifier-border);
+    flex-shrink: 0;
+}
+
+.ssv-whats-new-list {
+    margin: 0 0 12px;
+    padding-left: 20px;
+}
+
+.ssv-whats-new-notable {
+    font-weight: 600;
+}
+
+/* ── Settings "what's new" banner ──────────────────────────────── */
+.gfs-whats-new-banner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+}
+
+.gfs-whats-new-banner-text {
+    flex: 1;
+}
+
+.gfs-whats-new-banner-list {
+    margin: 4px 0 0;
+    padding-left: 20px;
+}
+
+.gfs-whats-new-banner-dismiss {
+    background: none;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1.1em;
+    line-height: 1;
+    padding: 2px 4px;
+}
+
+.gfs-whats-new-banner-dismiss:hover {
+    color: var(--text-normal);
+}
