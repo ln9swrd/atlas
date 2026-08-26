@@ -4,8 +4,7 @@
       {
         "type": "promptString",
         "id": "vaultPath",
-        "description": "Path to Obsidian vault",
-        "defaultValue": "/mnt/d/Atlas/vaults/test-vault"
+        "description": "Path to Obsidian vault"
       }
     ],
     "servers": {
