@@ -9,7 +9,6 @@ Status: **M6 Done**
 |------|------|------------|-------|
 | `atlas_status.sh` | git status | **Yes** | `bash tools/atlas_status.sh` — **PASS** |
 | `atlas_runner.py` | start/next/end… | Partial (`core/`) | conflict removed `8edcc4f` |
-| `atlas_runner_backup.py` | backup | No | — |
 | `atlas_qwen_orchestrator.py` | Ollama loop | Optional | needs Ollama |
 | `README.md` | policy | Yes | — |
 
