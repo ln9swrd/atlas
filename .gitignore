@@ -60,3 +60,12 @@ logs/
 # ParaModel scene (Master-directed)
 !projects/paramodel/
 !projects/paramodel/**/*.blend
+
+# Nested repositories (untracked as submodules)
+mcp-servers/figma-context-mcp/Figma-Context-MCP
+mcp-servers/servers
+projects/Hunyuan3D-2
+projects/Hunyuan3D-2.1
+projects/wafermap-converter
+unreal-5-mcp
+
