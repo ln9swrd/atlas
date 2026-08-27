@@ -12,4 +12,4 @@
 | **Performance** | ★★★★★ (92) | Efficient material slot count, optimized draw calls. |
 
 #### Actionable Improvements
-1. **[Optimization]** Increase wall thickness on overhangs to reduce material waste and printing time.
+1. **[Optimization]** Increase wall thickness on overhangs.
