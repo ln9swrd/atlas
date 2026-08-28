@@ -136,7 +136,7 @@ Vertical Slice 단계에서는 최소(옵션·재도전)만. 스토리 플래그
 ```
 GameMode / GameState
   └─ Level (전투 지역 1)
-       ├─ Player (BRAVE)
+       ├─ Player (AXION)
        ├─ Enemies (ORD-GRUNT …)
        ├─ Boss (Phase Runner)
        ├─ UI (HUD / Result)
