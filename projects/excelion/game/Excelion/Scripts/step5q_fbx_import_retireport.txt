@@ -1,0 +1,75 @@
+### STATUS
+HOLD / SOURCE NOT FOUND
+
+### 기준선
+```
+git status
+On branch main
+Your branch is up to date with 'upstream/main'.
+```
+```
+git log -1
+commit 004d2693e2b419ae2fbd6ba159d00c4af3216de8 (HEAD -> main, upstream/main, upstream/HEAD)
+Author: ln9swrd <ln9swrd@gmail.com>
+Date: Sun Aug 30 01:44:06 2026 +0900
+    feat(assets): add Axion Step4F animations and retarget script
+```
+```
+git diff --stat
+The command's output could not be captured through shell integration. Here is the current terminal's content, which may include the command's output:
+PS D:\Atlas> git diff --stat
+```
+
+### FBX Import 결과
+**필수 파일 존재 여부 확인** – `AXION_AttackSource.fbx`이 현재 워크트리에서 확인되지 않았습니다.
+파일이 없으므로 단계는 **HOLD** 상태로 종료됩니다.
+
+### Source Animation
+해당 파일이 없으므로 **UNVERIFIED**.
+
+### Retarget 결과
+해당 파일이 없으므로 **UNVERIFIED**.
+
+### Bone Mapping
+해당 파일이 없으므로 **UNVERIFIED**.
+
+### Root Motion
+해당 파일이 없으므로 **UNVERIFIED**.
+
+### Mechanical Bone 검증
+해당 파일이 없으므로 **UNVERIFIED**.
+
+### Deformation / Scale
+해당 파일이 없으므로 **UNVERIFIED**.
+
+### Animation Timing
+해당 파일이 없으므로 **UNVERIFIED**.
+
+### Runtime 검증
+해당 파일이 없으므로 **UNVERIFIED**.
+
+### 변경 사항
+없음
+
+### 검증 상태
+* CODE VERIFIED: ✅ (HEAD & branch 확인)
+* EDITOR VERIFIED: ❌ (Unreal Editor 불가)
+* PIE VERIFIED: NOT VERIFIED
+
+### 미확인 사항
+* `AXION_AttackSource.fbx` 파일의 존재 여부
+* 실제 FBX 파일이 프로젝트에 import될 때의 동작
+
+### OUT OF SCOPE
+* FBX 다운로드
+* Asset Import
+* Retarget 실행
+* Montage 생성
+* Slot 생성
+* ABP 수정
+* C++ 수정
+* PIE
+* Git Commit / Push
+
+### 현실성 판단
+**HOLD** – 파일이 없으므로 진행 불가.  Master가 FBX 파일을 확보하면 이후 단계에서 진행할 수 있습니다.
