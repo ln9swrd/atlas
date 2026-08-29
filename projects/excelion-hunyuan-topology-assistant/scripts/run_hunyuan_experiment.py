@@ -23,33 +23,27 @@ def main():
     data_dir = os.path.join(proj_dir, "data")
     ref_dir = os.path.join(data_dir, "reference_images")
     
-    print("[Controlled Experiment] Loading Hunyuan3D-2.1 pipeline...", flush=True)
+    print("[Normal Map Experiment] Loading Hunyuan3D-2.1 pipeline...", flush=True)
     pipeline = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained('tencent/Hunyuan3D-2.1')
     
     experiments = [
         {
-            "id": "experiment_control_0",
-            "name": "Control 0 (Pure Solid Matcap)",
-            "image": os.path.join(ref_dir, "ctrl_0_pure_solid_0_front.png"),
-            "output_obj": os.path.join(data_dir, "experiment_control_0.obj")
+            "id": "experiment_control_n0",
+            "name": "Control N0 (Pure Solid Matcap)",
+            "image": os.path.join(ref_dir, "ctrl_n0_pure_solid_0_front.png"),
+            "output_obj": os.path.join(data_dir, "experiment_control_n0.obj")
         },
         {
-            "id": "experiment_topology_1",
-            "name": "Experimental 1 (Solid + Quad Wireframe)",
-            "image": os.path.join(ref_dir, "exp_1_solid_wireframe_0_front.png"),
-            "output_obj": os.path.join(data_dir, "experiment_topology_1.obj")
-        },
-        {
-            "id": "experiment_topology_2",
-            "name": "Experimental 2 (Solid + Panel Boundary)",
-            "image": os.path.join(ref_dir, "exp_2_solid_panel_boundary_0_front.png"),
-            "output_obj": os.path.join(data_dir, "experiment_topology_2.obj")
+            "id": "experiment_normal_n1",
+            "name": "Experimental N1 (World Normal Map Reference)",
+            "image": os.path.join(ref_dir, "exp_n1_normal_map_0_front.png"),
+            "output_obj": os.path.join(data_dir, "experiment_normal_n1.obj")
         }
     ]
     
     SEED = 42
     print(f"\n==========================================", flush=True)
-    print(f"  STRICT SINGLE-VARIABLE HUNYUAN3D EXPERIMENT")
+    print(f"  NORMAL MAP REFERENCE CUE HUNYUAN3D EXPERIMENT")
     print(f"  Seed: {SEED} | Steps: 50 | Device: CUDA")
     print(f"==========================================\n", flush=True)
     
@@ -91,7 +85,7 @@ def main():
         print(f"  Metrics: Vertices={num_verts}, Faces={num_faces}\n", flush=True)
         
     print("==========================================", flush=True)
-    print("  CONTROLLED EXPERIMENT INFERENCE COMPLETE", flush=True)
+    print("  NORMAL MAP EXPERIMENT INFERENCE COMPLETE")
     print("==========================================", flush=True)
 
 if __name__ == "__main__":

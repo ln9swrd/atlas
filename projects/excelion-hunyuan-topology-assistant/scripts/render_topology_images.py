@@ -56,32 +56,25 @@ def setup_camera(scene, center, size):
     cam_obj.rotation_euler = rot_quat.to_euler()
     return cam_obj
 
-def apply_controlled_style(scene, obj, style_code):
+def apply_normal_experiment_style(scene, obj, style_code):
     shading = scene.display.shading
     shading.type = 'SOLID'
-    shading.light = 'MATCAP'
-    shading.color_type = 'SINGLE'
-    shading.single_color = (0.75, 0.77, 0.8)
     shading.background_type = 'VIEWPORT'
     shading.background_color = (0.1, 0.11, 0.12)
+    shading.show_cavity = False
+    obj.show_wire = False
     
-    if style_code == "ctrl_0_pure_solid":
-        # Control 0: Raw Pure Solid Matcap
-        shading.show_cavity = False
-        obj.show_wire = False
+    if style_code == "ctrl_n0_pure_solid":
+        # Control N0: Pure Solid Matcap
+        shading.light = 'MATCAP'
+        shading.color_type = 'SINGLE'
+        shading.single_color = (0.75, 0.77, 0.8)
 
-    elif style_code == "exp_1_solid_wireframe":
-        # Exp 1: Solid Matcap + Quad Wireframe Only
-        shading.show_cavity = False
-        obj.show_wire = True
-
-    elif style_code == "exp_2_solid_panel_boundary":
-        # Exp 2: Solid Matcap + Panel Boundary Lines Only
-        shading.show_cavity = True
-        shading.cavity_type = 'BOTH'
-        shading.cavity_ridge_factor = 2.0
-        shading.cavity_valley_factor = 2.0
-        obj.show_wire = False
+    elif style_code == "exp_n1_normal_map":
+        # Experimental N1: Pure World Normal Map
+        shading.light = 'MATCAP'
+        shading.studio_light = 'check_normal+y.exr'
+        shading.color_type = 'MATERIAL'
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -90,29 +83,28 @@ def main():
     output_dir = os.path.join(proj_dir, "data", "reference_images")
     os.makedirs(output_dir, exist_ok=True)
     
-    print(f"[Controlled Renderer] Loading mesh from {mesh_path}...")
+    print(f"[Normal Renderer] Loading mesh from {mesh_path}...")
     scene = setup_scene()
     obj = import_mesh(mesh_path)
     center, size = get_bounding_box(obj)
     setup_camera(scene, center, size)
     
     styles = [
-        "ctrl_0_pure_solid",
-        "exp_1_solid_wireframe",
-        "exp_2_solid_panel_boundary"
+        "ctrl_n0_pure_solid",
+        "exp_n1_normal_map"
     ]
     
     rendered_files = []
     for style in styles:
-        apply_controlled_style(scene, obj, style)
+        apply_normal_experiment_style(scene, obj, style)
         filename = f"{style}_0_front.png"
         out_filepath = os.path.join(output_dir, filename)
         scene.render.filepath = out_filepath
         bpy.ops.render.render(write_still=True)
-        print(f"[Controlled Renderer] Rendered: {out_filepath}")
+        print(f"[Normal Renderer] Rendered: {out_filepath}")
         rendered_files.append(out_filepath)
         
-    print(f"[Controlled Renderer] Completed rendering 3 strictly controlled reference images.")
+    print(f"[Normal Renderer] Completed rendering Normal Map experiment reference images.")
 
 if __name__ == "__main__":
     main()
