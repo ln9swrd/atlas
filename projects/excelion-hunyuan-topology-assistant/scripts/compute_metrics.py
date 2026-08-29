@@ -31,7 +31,13 @@ def calculate_metrics(filepath: str):
     # Ensure we are in a clean context
     bpy.ops.wm.read_factory_settings(use_empty=True)
     # Import the OBJ
-    bpy.ops.import_scene.obj(filepath=filepath)
+    if hasattr(bpy.ops.wm, "obj_import"):
+        bpy.ops.wm.obj_import(filepath=filepath)
+    elif hasattr(bpy.ops.import_scene, "obj"):
+        bpy.ops.import_scene.obj(filepath=filepath)
+    else:
+        print("Error: No OBJ import operator found in Blender.")
+        return
     # Assume the imported mesh is the first mesh object
     obj = None
     for o in bpy.context.scene.objects:
@@ -51,8 +57,15 @@ def calculate_metrics(filepath: str):
     quad_pct = 100 * quads / faces if faces else 0
     tri_pct = 100 * tris / faces if faces else 0
     ngon_pct = 100 * ngons / faces if faces else 0
-    non_manifold_edges = sum(1 for e in mesh.edges if e.is_non_manifold)
-    degenerate_faces = sum(1 for p in mesh.polygons if not p.is_valid)
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(mesh)
+    bm.edges.ensure_lookup_table()
+    bm.faces.ensure_lookup_table()
+
+    non_manifold_edges = sum(1 for e in bm.edges if not e.is_manifold)
+    degenerate_faces = sum(1 for f in bm.faces if f.calc_area() <= 1e-7)
+    bm.free()
 
     print("\n--- Metrics for {} ---".format(os.path.basename(filepath)))
     print(f"vertices       : {verts}")
@@ -68,11 +81,17 @@ def calculate_metrics(filepath: str):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3 or sys.argv[1] != "--":
+    if "--" in sys.argv:
+        idx = sys.argv.index("--")
+        if idx + 1 < len(sys.argv):
+            obj_path = sys.argv[idx + 1]
+            if not os.path.exists(obj_path):
+                print(f"File not found: {obj_path}")
+                sys.exit(1)
+            calculate_metrics(obj_path)
+        else:
+            print("Usage: blender --background --python compute_metrics.py -- <path_to_obj>")
+            sys.exit(1)
+    else:
         print("Usage: blender --background --python compute_metrics.py -- <path_to_obj>")
-        sys.exit(1)
-    obj_path = sys.argv[2]
-    if not os.path.exists(obj_path):
-        print(f"File not found: {obj_path}")
-        sys.exit(1)
-    calculate_metrics(obj_path)
+        sys.exit(1)
