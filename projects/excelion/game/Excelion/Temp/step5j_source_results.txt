@@ -1,0 +1,24 @@
+=== STEP 5-J RUNNING MOTION SOURCE INVESTIGATION START ===
+Total AnimSequence Assets Found: 12
+
+--- RUN/JOG/SPRINT Candidate Assets Count: 1 ---
+  - Candidate: AXION_Run (/Game/Characters/Player/Axion_Step4F/AXION_Run)
+
+--- All Available AnimSequences ---
+  - SK_Player_Axion_Anim (/Game/Characters/Player/Axion_Step4F/SK_Player_Axion_Anim)
+  - AXION_Walk (/Game/Characters/Player/Axion_Step4F/AXION_Walk)
+  - AXION_Test_InPlace_Anim (/Game/Characters/Player/Axion_Step4F/AXION_Test_InPlace_Anim)
+  - AXION_Run (/Game/Characters/Player/Axion_Step4F/AXION_Run)
+  - AXION_Retarget_Walk_Proof (/Game/Characters/Player/Axion_Step4F/AXION_Retarget_Walk_Proof)
+  - AXION_Jump (/Game/Characters/Player/Axion_Step4F/AXION_Jump)
+  - AXION_Idle (/Game/Characters/Player/Axion_Step4F/AXION_Idle)
+  - AXION_Dash (/Game/Characters/Player/Axion_Step4F/AXION_Dash)
+  - AXION_Attack1 (/Game/Characters/Player/Axion_Step4F/AXION_Attack1)
+  - AXION_Test_InPlace_Anim (/Game/Characters/Player/Axion/AXION_Test_InPlace_Anim)
+  - Tutorial_Walk_Fwd (/Engine/Tutorial/SubEditors/TutorialAssets/Character/Tutorial_Walk_Fwd)
+  - Tutorial_Idle (/Engine/Tutorial/SubEditors/TutorialAssets/Character/Tutorial_Idle)
+
+==========================================================================
+   STEP 5-J SOURCE INVESTIGATION COMPLETED
+==========================================================================
+

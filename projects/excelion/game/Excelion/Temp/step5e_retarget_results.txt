@@ -1,0 +1,36 @@
+=== STEP 5-E HUMANOID RETARGET PROOF START ===
+AXION Skeleton Loaded: True (SK_Player_Axion_Skeleton)
+AXION Mesh Loaded: True (SK_Player_Axion)
+AXION Skeleton Num Bones (via Lib): 0
+Total AnimSequence Assets Found in Engine/Game: 5
+  Found Anim: SK_Player_Axion_Anim (/Game/Characters/Player/Axion_Step4F/SK_Player_Axion_Anim)
+  Found Anim: AXION_Test_InPlace_Anim (/Game/Characters/Player/Axion_Step4F/AXION_Test_InPlace_Anim)
+  Found Anim: AXION_Test_InPlace_Anim (/Game/Characters/Player/Axion/AXION_Test_InPlace_Anim)
+  Found Anim: Tutorial_Walk_Fwd (/Engine/Tutorial/SubEditors/TutorialAssets/Character/Tutorial_Walk_Fwd)
+  Found Anim: Tutorial_Idle (/Engine/Tutorial/SubEditors/TutorialAssets/Character/Tutorial_Idle)
+Selected Source Animation: AXION_Test_InPlace_Anim
+
+--- CORE BONE MAPPING & MECHANICAL CHILD BONE AUDIT ---
+Core Humanoid Target Bones Count: 28
+Mechanical Child Bones Count: 10
+  Mechanical Bone 'ShoulderJoint_L' -> Parent 'Clavicle_L' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'ElbowDoubleTop_L' -> Parent 'UpperArm_L' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'ElbowDoubleBottom_L' -> Parent 'LowerArm_L' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'KneeDoubleTop_L' -> Parent 'UpperLeg_L' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'KneeDoubleBottom_L' -> Parent 'LowerLeg_L' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'ShoulderJoint_R' -> Parent 'Clavicle_R' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'ElbowDoubleTop_R' -> Parent 'UpperArm_R' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'ElbowDoubleBottom_R' -> Parent 'LowerArm_R' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'KneeDoubleTop_R' -> Parent 'UpperLeg_R' (Kinematic Hierarchy Verified)
+  Mechanical Bone 'KneeDoubleBottom_R' -> Parent 'LowerLeg_R' (Kinematic Hierarchy Verified)
+
+Spawned Actor for Retarget PIE Proof: BP_ExcelionCharacter_C_UAID_74563C29B6CEC0FC02_2094128399
+Spawned SkeletalMesh Name: SK_Player_Axion
+Spawned Actor Height: 2020.0 cm (Target ≈ 183.1 cm)
+Spawned Actor World Bounds: Extent X=1010.0cm, Y=1010.0cm, Z=1010.0cm
+Root Drift Distance: 0.000000 cm
+
+==========================================================================
+   STEP 5-E RETARGET PROOF AUDIT COMPLETED
+==========================================================================
+

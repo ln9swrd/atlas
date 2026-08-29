@@ -1,0 +1,116 @@
+### STATUS
+UNVERIFIED
+
+### 기준선
+Git Status:
+```
+On branch main
+Your branch is up to date with 'upstream/main'.
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+  new file:   projects/excelion-hunyuan-topology-assistant/data/player_axion_mesh.mtl
+  new file:   projects/excelion-hunyuan-topology-assistant/data/player_axion_mesh.obj
+  new file:   projects/excelion-hunyuan-topology-assistant/data/test_dummy_ref.fbx
+  new file:   projects/excelion/assets/models/player/player_axion_mesh.mtl
+  new file:   projects/excelion/assets/models/player/player_axion_mesh.obj
+  new file:   projects/excelion/assets/models/player/player_axion_test.fbx
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion/AXION_Test_InPlace.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion/AXION_Test_InPlace_Anim.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion/SK_Player_Axion.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion/SK_Player_Axion_Skeleton.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/AXION_Test_InPlace_Anim.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/SK_Player_Axion.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/SK_Player_Axion_Anim.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/SK_Player_Axion_Skeleton.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/Tone_01_Primary.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/Tone_02_Secondary.uasset
+  new file:   projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/Tone_03_Accent.uasset
+  new file:   projects/excelion/game/Excelion/Scripts/create_abp_axion.py
+  new file:   projects/excelion/game/Excelion/Scripts/inspect_abp_graph.py
+  new file:   projects/excelion/game/Excelion/Scripts/inspect_bp_components.py
+  new file:   projects/excelion/game/Excelion/Scripts/inspect_factory.py
+  new file:   projects/excelion/game/Excelion/Scripts/populate_abp_graph.py
+  new file:   projects/excelion/game/Excelion/Scripts/run_step5a_pie_proof.py
+  new file:   projects/excelion/game/Excelion/Scripts/run_step5b_pie_proof.py
+  new file:   projects/excelion/game/Excelion/Scripts/step5b_bone_audit.py
+  new file:   projects/excelion/game/Excelion/Scripts/step5b_readonly_audit.py
+  new file:   projects/excelion/game/Excelion/Scripts/test_set_skeletal_mesh.py
+  new file:   projects/excelion/game/Excelion/Scripts/verify_step5a_binding.py
+  new file:   projects/excelion/game/Excelion/Scripts/wire_step5a_axion_mesh.py
+  new file:   projects/excelion/game/Excelion/Scripts/wire_step5a_templates.py
+  new file:   projects/excelion/game/Excelion/Temp/factory_props.txt
+  new file:   projects/excelion/game/Excelion/Temp/inspect_abp_graph_out.txt
+  new file:   projects/excelion/game/Excelion/Temp/inspect_bp_out.txt
+  new file:   projects/excelion/game/Excelion/Temp/populate_abp_out.txt
+  new file:   projects/excelion/game/Excelion/Temp/step5a_binding_results.txt
+  new file:   projects/excelion/game/Excelion/Temp/step5a_pie_proof_results.txt
+  new file:   projects/excelion/game/Excelion/Temp/step5a_verification_results.txt
+  new file:   projects/excelion/game/Excelion/Temp/step5b_audit_results.txt
+  new file:   projects/excelion/game/Excelion/Temp/step5b_bone_results.txt
+  new file:   projects/excelion/game/Excelion/Temp/step5b_creation_results.txt
+  new file:   projects/excelion/game/Excelion/Temp/step5b_pie_proof_results.txt
+```
+Git Log (latest commit):
+```
+commit f4b2b1195a3b607933b81c192ae69a0b55d17145 (HEAD -> main, upstream/main, upstream/HEAD)
+Author: ln9swrd <ln9swrd@gmail.com>
+Date:   Sun Aug 30 00:39:01 2026 +0900
+
+    feat(axion-pilot): wire AXION animation blueprint
+```
+Current Branch: main
+
+### 조사 범위
+프로젝트 내부 `projects/excelion/game/Excelion/Content` 디렉터리에서
+다음 키워드가 포함된 `.uasset` 파일을 검색했습니다:
+`Attack`, `Punch`, `Slash`, `Strike`, `Melee`, `Sword`, `Hit`, `Combat`, `Weapon`, `Action`.
+
+검색 결과 파일 경로(상위 경로 포함):
+```
+D:\Atlas\projects\excelion\game\Excelion\Content\Characters\Player\Axion_Step4F\AXION_Attack1.uasset
+D:\Atlas\projects\excelion\game\Excelion\Content\Input\IA_Attack.uasset
+```
+
+### 발견된 후보
+1. **AXION_Attack1.uasset** – `Characters/Player/Axion_Step4F` 폴더에 위치.
+2. **IA_Attack.uasset** – `Input` 폴더에 위치.
+
+### 후보별 검증
+**AXION_Attack1.uasset**
+- Asset Path: `projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/AXION_Attack1.uasset`
+- Asset Type: 알 수 없음 (파일은 .uasset이지만 내부 구조를 파싱하지 못했음)
+- Skeleton: 불명
+- Sequence Length: 불명
+- Frame Rate: 불명
+- Loop 여부: 불명
+- Root Motion 여부: 불명
+- Anim Curve/Track: 확인 불가
+
+**IA_Attack.uasset**
+- Asset Path: `projects/excelion/game/Excelion/Content/Input/IA_Attack.uasset`
+- Asset Type: Input Action (아마도 액션 매핑 파일, Animation Sequence가 아님)
+
+### AXION Retarget 가능성
+- **AXION_Attack1.uasset**: Source Skeleton이 `SK_Player_Axion_Skeleton`인지 확인이 필요. 현재 확인 불가.
+- **IA_Attack.uasset**: 리타게팅 대상이 아니므로 해당 없음.
+
+### 최종 판정
+`AXION_Attack1.uasset`의 내부를 파악할 수 없으므로 **Attack Animation Source가 존재한다고 확정할 수 없음**.
+따라서 현재 프로젝트/Engine Content에 실제 Attack Animation Source가 존재하는지 여부를 **UNVERIFIED**로 판단.
+
+### 검증 상태
+CODE VERIFIED: YES (Git 정보와 파일 목록은 확인했음)
+EDITOR VERIFIED: NO (애드터에서 확인하지 않음)
+PIE VERIFIED: NOT VERIFIED
+
+### 미확인 사항
+- `AXION_Attack1.uasset` 내부가 `AnimSequence`인지, `AnimMontage`인지 파싱 불가.
+- 해당 자산이 `SK_Player_Axion_Skeleton`과 매핑되는지 확인 필요.
+
+### OUT OF SCOPE
+- 실제 리타게팅 실행
+- 애드터 내에서의 확인
+- PIE 실행
+
+### 현실성 판단
+현재 제공된 정보만으로는 Attack Animation Source가 존재한다고 판단할 수 없으며, 추가 확인이 필요함.
