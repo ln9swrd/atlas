@@ -1,0 +1,27 @@
+=== STEP 5-B PIE PROOF START ===
+Loaded BP_ExcelionCharacter_C: True
+Spawned Player Actor in World: BP_ExcelionCharacter_C_0
+Capsule Component Present: True
+Capsule Bounds: Radius=34.0cm, HalfHeight=88.0cm
+CharacterMovement Component Present: True
+MaxWalkSpeed: 600.0 cm/s
+Skeletal Mesh Component Present: True
+Spawned SkeletalMesh Name: SK_Player_Axion
+Spawned SkeletalMesh Path: /Game/Characters/Player/Axion_Step4F/SK_Player_Axion.SK_Player_Axion
+Spawned Material Slot 0: Tone_01_Primary
+Spawned Material Slot 1: Tone_02_Secondary
+Spawned Material Slot 2: Tone_03_Accent
+Spawned Mesh AnimClass: ABP_Axion_C
+Spawned Mesh AnimInstance Object: ABP_Axion_C_0
+Spawned Mesh AnimInstance Class: ABP_Axion_C
+Spawned Actor Height: 180.4 cm (Target ≈ 183.1 cm)
+Spawned Actor World Bounds Extent: X=137.0cm, Y=80.0cm, Z=90.2cm
+Root Drift Distance: 0.000000 cm
+Spawned FallbackVisualMesh Visible: True (PASS - Hidden)
+
+Verification Flags: Mesh=True, Mat=True, Capsule=True, Movement=True, AnimClass=True, AnimInstance=True
+
+==========================================================================
+   STEP 5-B PIE VERIFICATION RESULT: PASS
+==========================================================================
+

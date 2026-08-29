@@ -1,0 +1,3 @@
+=== INSPECT ABP GRAPH START ===
+Loaded ABP: <Object '/Game/Characters/Player/Axion_Step4F/ABP_Axion.ABP_Axion' (0x0000090D352AD900) Class 'AnimBlueprint'>
+ubg_graphs err: AnimBlueprint: Failed to find property 'ubg_graphs' for attribute 'ubg_graphs' on 'AnimBlueprint'

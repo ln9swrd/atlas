@@ -1,0 +1,10 @@
+=== STEP 5-A VERIFICATION REPORT ===
+BP_ExcelionCharacter_C Class Loaded: True
+CDO Loaded: True
+CDO GetMesh() SkeletalMesh Name: None
+CDO GetMesh() SkeletalMesh Path: None
+Material Slot 0 (Tone_01_Primary): None
+Material Slot 1 (Tone_02_Secondary): None
+Material Slot 2 (Tone_03_Accent): None
+FallbackVisualMesh HiddenInGame: False
+FallbackVisualMesh Visibility: True
