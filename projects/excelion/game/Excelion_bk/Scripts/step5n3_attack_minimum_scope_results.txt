@@ -1,0 +1,73 @@
+### STATUS
+UNVERIFIED
+
+### 기준선
+Git Status:
+```
+On branch main
+Your branch is up to date with 'upstream/main'.
+```
+Git Log (latest commit):
+```
+commit f4b2b1195a3b607933b81c192ae69a0b55d17145 (HEAD -> main, upstream/main, upstream/HEAD)
+Author: ln9swrd <ln9swrd@gmail.com>
+Date:   Sun Aug 30 00:39:01 2026 +0900
+
+    feat(axion-pilot): wire AXION animation blueprint
+```
+git diff --stat
+```
+(No changes in working tree)
+```
+
+### CONFIRMED (source code)
+* `UCombatComponent::TryAttack()` exists and sets `bIsAttacking = true`.
+* `UCombatComponent::IsAttacking()` returns `bIsAttacking`.
+* `UCombatComponent::AttackDuration = 0.4f` and `DamageWindowStart = 0.15f`.
+* Input mapping assets `IA_Attack` referenced in `AExcelionCharacter::Attack()` which calls `CombatComponent->TryAttack()`.
+* `bIsDashing()` and `IsDead()` are exposed as BlueprintPure functions on `AExcelionCharacter`.
+
+### HIGH CONFIDENCE
+* The input flow `IA_Attack` → `AExcelionCharacter::Attack()` → `CombatComponent::TryAttack()` is verified by reading the source files.
+* Attack timing values are hard‑coded in `CombatComponent`.
+* No evidence of any other state flag controlling attack playback was found.
+
+### PROPOSAL
+* **ABP Structure** – An *Attack Slot* (or dedicated Attack State) that plays an Animation Montage/Sequence when the BP variable `bIsAttacking` is true.
+  * The slot should be placed *after* the Locomotion state machine so that locomotion continues during the attack.
+  * If a full‑body attack is required, a separate *Attack State* that overrides locomotion can be used.
+  * For upper‑body attacks, a *Layered Blend Per Bone* or *AnimLayer* that blends the attack on upper‑body bones while preserving the locomotion pose is preferable.
+  * The slot or state must expose an *output pose* that feeds into the final `Blend` node used for rendering.
+* **Animation Asset** – One non‑looping humanoid Animation Sequence/Montage that lasts ~0.4 s (matching `AttackDuration`).  The root motion can be disabled; the animation should contain the clear hit‑moment around 0.15 s so the C++ `DamageWindowStart` aligns with the visual impact.
+
+### C++ 변경 필요성
+REQUIRED / UNVERIFIED – The current C++ logic already sets and clears the `bIsAttacking` flag and tracks timing.  No additional C++ code is required to trigger animation playback, provided the BP exposes the flag and the BP’s event graph or animation graph uses it.  Therefore, **NOT REQUIRED**.
+
+### ABP 변경 필요성
+REQUIRED – To actually play an attack animation the BP must expose a flag that can be read by the AnimGraph (or Event Blueprint) and must have a slot or state that plays the animation.  Hence **REQUIRED**.
+
+### Animation Asset 필요량
+Attack Animation = **1종** (non‑looping, ~0.4 s, humanoid, retargetable to `SK_Player_Axion_Skeleton`).
+
+### Full Body vs Upper Body
+* **Full Body** – Simpler to implement: one state that overrides locomotion and plays the entire body animation.  Requires a clean blend back to locomotion when the state ends.
+* **Upper Body** – More flexible; preserves locomotion during attack and allows mixing other body movements.  Needs a *Layered Blend Per Bone* or *AnimLayer* to isolate the upper‑body bones.
+**Recommendation:** Start with **Upper Body** using a dedicated *Attack Slot* that blends on the upper‑body bones.  If the game design requires the entire body to be immobilized, switch to a full‑body attack state.
+
+### 최종 판정
+MINIMUM IMPLEMENTATION DEFINED – The necessary changes are well‑defined: expose `bIsAttacking` to the BP, add an Attack Slot (or State) in `ABP_Axion`, and supply one 0.4 s attack animation.
+
+### 검증 상태
+* CODE VERIFIED: ✅ (source analysis completed)
+* EDITOR VERIFIED: NOT VERIFIED
+* PIE VERIFIED: NOT VERIFIED
+
+### OUT OF SCOPE
+* Animation Source 수급 (FBX download)
+* FBX Import
+* Retarget
+* Montage 생성
+* ABP 수정 (구체적 노드 추가는 수행할 수 없으나 필요성 제안)
+* C++ 수정
+* PIE
+* Git Commit / Push

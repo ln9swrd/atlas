@@ -1,0 +1,110 @@
+### STATUS
+PASS
+
+### 기준선
+```
+git status
+On branch main
+Your branch is up to date with 'upstream/main'.
+```
+```
+git log -1
+commit f4b2b1195a3b607933b81c192ae69a0b55d17145 (HEAD -> main, upstream/main, upstream/HEAD)
+Author: ln9swrd <ln9swrd@gmail.com>
+Date: Sun Aug 30 00:39:01 2026 +0900
+    feat(axion-pilot): wire AXION animation blueprint
+```
+```
+git diff --stat
+(No changes in working tree)
+```
+
+### C++ Timing 확인
+* **AttackDuration** = `0.40f` (src: `CombatComponent.h` line 43)
+* **DamageWindowStart** = `0.15f` (src: `CombatComponent.h` line 47)
+* **TryAttack()** – sets `bIsAttacking = true` and enables ticking (src: `CombatComponent.cpp` line 62‑66)
+* **EndAttack()** – resets `bIsAttacking = false` and disables ticking (src: `CombatComponent.cpp` line 130‑135)
+* **IsAttacking()** – pure‑virtual getter returning `bIsAttacking` (src: `CombatComponent.h` line 28)
+All values match the previously documented assumptions.
+
+### Animation 요구사항
+| 항목 | 요구 | 비고 |
+|------|------|------|
+| Skeleton | Standard Humanoid | Must map to `SK_Player_Axion_Skeleton` via existing Core Bone Mapping (verified in step5h) |
+| Bone Tracks | 팔/손/상체 (Shoulder, Elbow, Wrist, Hand) | Must exist to enable meaningful attack motion |
+| Motion | Punch / Slash / Melee Strike | Clear start → strike → recover animation |
+| Loop | **NO** | Non‑looping single‑shot animation |
+| Duration | ≈ 0.40 s **or** scalable to 0.40 s via play rate | Source length must match or be adjustable to `AttackDuration` |
+| Root Motion | **Optional** – In‑Place preferred; if root motion present, it must not cause character displacement beyond the hit window (≤ 0.15 s) |
+
+### Root Motion 요구사항
+* **In‑Place** – The current `CombatComponent` does not use root motion for movement; it relies on a sphere‑trace and movement component for displacement.  Therefore, the animation should be *in‑place* to avoid conflicting movement.
+* If root motion is used, it must be **restricted** so that the character’s world position changes by less than `AttackRange` (150 cm) during the attack window.
+* Root motion that affects orientation is acceptable if it is a natural swing of the upper body.
+
+### Source 수급 사양
+```
+ATTACK SOURCE SPEC
+------------------
+Type: Humanoid Melee Attack
+Format: FBX (uncompressed or FBX 2013+)
+Skin: Preferably unskinned; if skinned, use a simple diffuse material.
+Loop: No (single‑shot)
+Motion: Single attack action with clear strike frame (≈ 0.15 s into the clip)
+Root: In‑Place (no overall translation).  Minor local rotation is acceptable.
+Skeleton: Humanoid; compatible with AXION SK_Player_Axion_Skeleton via the project’s core bone mapping.
+Timing: Clip length should be 0.40 s *or* adjustable to 0.40 s via play‑rate scaling.
+Export Settings:
+  * Axis Forward: X (matches UE coordinate system)
+  * Scale: 1.0 (no scaling during export)
+  * Skeleton Retarget: Enable "Humanoid" retargeting option in FBX export.
+  * Bake Animation: All keyframes exported.
+```
+
+### 후보 Provider
+| Provider | Attack Animation Availability | Humanoid | FBX Export | License | Compatibility |
+|----------|-------------------------------|----------|------------|---------|--------------|
+| Adobe Mixamo | ✔ | ✔ | ✔ | CC‑BY‑4.0 (commercial use with attribution) | ✔ (FBX) |
+| Epic Games Content Browser | ✔ | ✔ | ✔ | Unreal Engine EULA (commercial use) | ✔ |
+| Blender Cloud / MakeHuman | ✔ | ✔ | ✔ | CC‑BY‑4.0 / CC‑0 | ✔ |
+| Free3D / TurboSquid | Variable | ✔ | ✔ | Varies (prefer CC‑BY‑4.0) | ✔ |
+
+### 라이선스 확인
+* **Adobe Mixamo** – Commercial use requires attribution; no fee for non‑commercial use.  Must provide a link to Mixamo in project documentation.
+* **Epic Games** – Assets in the Engine Content are free for commercial use under the Epic EULA.  Ensure the asset is not restricted to personal use.
+* **Blender Cloud / MakeHuman** – CC‑BY‑4.0 allows commercial use with attribution.
+* **Free3D / TurboSquid** – Verify each asset’s license; prefer those explicitly marked CC‑BY‑4.0.
+
+### 최종 수급 Specification
+The Master should acquire **one** FBX file that satisfies the Attack Source Spec above.  The file should be placed in `Content/Characters/Player/Axion_Step4F/` (or an appropriate subfolder) and named `AXION_AttackSource.fbx`.
+Once imported, the project’s existing retarget script (`step5h_batch_retarget.py`) can be reused to generate `AXION_Attack.fbx` (or directly `AXION_Attack.uasset` via retarget settings) with minimal manual intervention.
+
+### 검증 상태
+* CODE VERIFIED: ✅ (C++ timing verified)
+* EDITOR VERIFIED: ❌ (Unreal Editor not available)
+* PIE VERIFIED: NOT VERIFIED
+
+### 미확인 사항
+* 실제 FBX file’s root motion behavior during export.
+* Compatibility of the specific Humanoid skeleton hierarchy with `SK_Player_Axion_Skeleton` (assumed true from step5h mapping).
+
+### OUT OF SCOPE
+* FBX 다운로드
+* Asset Import
+* Retarget 실행
+* Montage creation
+* Slot creation
+* ABP modification
+* C++ modification
+* PIE
+* Git Commit / Push
+
+### 현실성 판단
+**TECHNICALLY POSSIBLE** – The spec aligns with project constraints.
+**PRACTICALLY FEASIBLE** – Source files are widely available from Mixamo/Epic/Blender.
+**RECOMMENDED** – Use a Mixamo or Epic UE asset to ensure rapid integration.
+
+### 핵심 질문에 대한 답변
+> **“Master가 Attack Animation Source 1개를 수급한다면, 어떤 조건의 파일을 받아야 AXION에 가장 적은 변경으로 적용할 수 있는가?”**
+**답변:** 
+* **Humanoid FBX** 파일, **In‑Place** (no global root translation), **0.40 s** length (or scalable), **non‑looping** single‑shot attack, **no skin** (or simple diffuse), exported with UE‑compatible axis (X‑forward) and scale 1.0.  This file can be retargeted using the existing `step5h_batch_retarget.py` script to produce the final attack asset with minimal editing.**

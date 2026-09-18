@@ -1,0 +1,15 @@
+=== STEP 5-B CREATION START ===
+Loaded Skeleton: True
+Loaded Anim Sequence: True
+Creating new AnimBlueprint at /Game/Characters/Player/Axion_Step4F/ABP_Axion...
+Created AnimBlueprint: True
+ABP Target Skeleton: SK_Player_Axion_Skeleton
+Compiled ABP_Axion successfully.
+save_loaded_asset(abp) result: True
+Loaded BP_ExcelionCharacter: True
+Loaded ABP_Axion_C Generated Class: True
+Character Mesh Component: True
+AnimationMode set error: type object 'AnimationMode' has no attribute 'ANIM_BLUEPRINT'
+Set AnimClass = ABP_Axion_C
+Executed set_anim_instance_class(abp_generated_class)
+Saved BP_ExcelionCharacter result: True

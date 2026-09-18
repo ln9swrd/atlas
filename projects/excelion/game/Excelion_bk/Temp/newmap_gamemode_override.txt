@@ -1,0 +1,5 @@
+=== INSPECT NEWMAP GAMEMODE OVERRIDE START ===
+1. Open Level '/Game/Maps/NewMap': True
+2. World: NewMap
+   WorldSettings Object: WorldSettings
+   GameMode Override (default_game_mode): BP_ExcelionGameMode_C

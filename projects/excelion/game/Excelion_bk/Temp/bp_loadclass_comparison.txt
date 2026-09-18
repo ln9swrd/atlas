@@ -1,0 +1,9 @@
+=== EMPIRICAL BLUEPRINT LOADCLASS COMPARISON START ===
+Asset Name             | Package in Memory  | Object in Memory   | load_class() Result  | Class Name
+----------------------------------------------------------------------------------------------------
+BP_ExcelionEnemy       | NO                 | NO                 | SUCCESS              | BP_ExcelionEnemy_C
+BP_ExcelionCharacter   | NO                 | NO                 | SUCCESS              | BP_ExcelionCharacter_C
+BP_DummyTarget         | NO                 | NO                 | SUCCESS              | BP_DummyTarget_C
+BP_SethBoss            | NO                 | NO                 | SUCCESS              | BP_SethBoss_C
+BP_PowerEnemy          | NO                 | NO                 | SUCCESS              | BP_PowerEnemy_C
+BP_SpeedEnemy          | NO                 | NO                 | SUCCESS              | BP_SpeedEnemy_C

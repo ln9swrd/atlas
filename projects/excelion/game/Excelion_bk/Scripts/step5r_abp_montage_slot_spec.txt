@@ -1,0 +1,99 @@
+### STATUS
+UNVERIFIED
+
+### 기준선
+```
+git status
+On branch main
+Your branch is ahead of 'upstream/main' by 1 commit.
+  (use "git push" to publish your local commits)
+nothing to commit, working tree clean
+```
+```
+git log -1
+commit e83552b10be9ebe9955b69da59b1ba446639796c (HEAD -> main)
+Author: ln9swrd <ln9swrd@gmail.com>
+Date: Sun Aug 30 01:48:15 2026 +0900
+    docs: add FBX import status report for Axion step 5 (hold)
+```
+```
+git diff --stat
+The command's output could not be captured through shell integration. Here is the current terminal's content, which may include the command's output:
+PS D:\Atlas> git diff --stat
+```
+
+### C++ Attack 호출 구조
+* **Input Action** (`IA_Attack`) → `AExcelionCharacter::Attack()` → `UCombatComponent::TryAttack()` → `bIsAttacking = true` → Tick → `AttackTimer` → `DamageWindowStart` → `PerformHitDetection()` → `AttackDuration` → `EndAttack()` (resets flag)
+  * All references verified in `CombatComponent.cpp` and `ExcelionCharacter.cpp`.
+
+### 현재 ABP 구조 (확인 필요)
+* **AnimGraph** – Locomotion State Machine present; Slot, Layered Blend Per Bone, Montage, Cached Pose not inspected due to lack of Unreal Editor.
+* **Event Graph** – No evidence of `bIsAttacking` or `IsAttacking()` integration; requires visual inspection.
+
+### 기존 Slot / Montage 존재 여부
+* No concrete evidence of an existing Slot or Montage dedicated to attack.  The placeholder `AXION_Attack1` was created from `Tutorial_Walk_Fwd` but no Slot reference was found.
+
+### 후보 구조 비교
+#### 후보 A — Full Body Montage
+```
+Locomotion State Machine → Attack Montage (full body) → Transition back to Locomotion
+```
+* **Pros**: Simplest state transition; no need for layered blending.
+* **Cons**: Requires a dedicated Attack State; may affect locomotion if not properly timed.
+
+#### 후보 B — Upper Body Montage via Slot
+```
+Locomotion State Machine
+   ↓
+Upper Body Slot (Layered Blend Per Bone)
+   ↓
+Attack Montage (upper body only)
+```
+* **Pros**: Locomotion continues; minimal impact on full body pose.
+* **Cons**: Requires proper Slot and Layered Blend setup; more complex to maintain.
+
+### Attack Timing 연결
+* **AttackDuration (0.40 s)** should match Montage length.  If Montage is longer, play rate can be adjusted.  If shorter, the `AttackDuration` may be extended or idle padding added.
+* **DamageWindowStart (0.15 s)** should align with an Animation Notify or a keyframe marking the impact.  The Montage should expose a Notify at this timestamp.
+
+### `bIsAttacking` 사용 방식
+* **Method A (State Switch)** – Use `bIsAttacking` as a boolean to drive a transition from Locomotion → Attack State.  This requires adding a new state in the AnimGraph and a transition rule based on the variable.
+* **Method B (Layered Blend)** – Keep Locomotion active and blend the Attack Montage into the upper body via a Slot.  `bIsAttacking` controls the visibility of the Slot.
+* **Recommendation** – Method B minimizes state changes and is less likely to disrupt locomotion flow, especially if the game design emphasizes continuous movement during attack.
+
+### 최소 변경안 확정
+**CONFIRMED** – The minimal, most conservative approach is to
+1. **Add an Upper Body Slot** named `AttackSlot` in the AnimGraph, attached to the **Layered Blend Per Bone** node that targets the **Chest** (or **Spine_01**) bone.
+2. **Create an Attack Montage** (single‑shot, 0.40 s) that plays the imported Attack Animation.  The Montage should have an **Anim Notify** at 0.15 s for damage application.
+3. **Expose a boolean variable** `bIsAttacking` in the ABP.  When `IsAttacking()` returns true, the `AttackSlot` is activated; otherwise it is muted.
+4. **No additional states** are required; the Locomotion state machine remains unchanged.
+
+This structure requires only the addition of a Slot, a Montage, and a Notify.  All other logic (C++ `bIsAttacking`, timers, damage window) remains untouched.
+
+### 검증 상태
+* CODE VERIFIED: ✅ (C++ call chain verified)
+* EDITOR VERIFIED: ❌ (ABP contents not inspected)
+* PIE VERIFIED: NOT VERIFIED
+
+### 미확인 사항
+* Whether the current ABP already contains a Slot or Layered Blend node.
+* Exact names of existing variables in the ABP (e.g., `bIsAttacking`).
+* Proper placement of the Slot relative to the existing animation layers.
+
+### OUT OF SCOPE
+* FBX Download / Import
+* Retarget Execution
+* Montage Generation (only specification)
+* Slot Creation (actual editor work)
+* ABP Modification (visual editor work)
+* C++ / Blueprint Modification
+* PIE Execution
+* Git Commit / Push
+
+### 현실성 판단
+**TECHNICALLY POSSIBLE** – All components (Slot, Montage, Notify) exist in UE5.4.
+**PRACTICALLY FEASIBLE** – Minimal editor effort; only a few nodes to add.
+**RECOMMENDED** – Method B (Upper Body Slot) is the most lightweight and preserves locomotion flow.
+
+### 결론
+**MINIMUM STRUCTURE CONFIRMED** – The minimal ABP/Montage/Slot configuration that allows the existing C++ combat logic to drive an Attack Animation with 0.40 s duration and a 0.15 s damage window, using an upper‑body Slot and a dedicated Montage with an Anim Notify.

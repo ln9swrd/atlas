@@ -1,0 +1,11 @@
+=== INSPECT MESH DETAILS START ===
+SKM_Manny_Simple Loaded: True (SkeletalMesh)
+SKM_Manny_Simple Skeleton: None
+SK_Player_Axion Loaded: True (SkeletalMesh)
+SK_Player_Axion Skeleton: SK_Player_Axion_Skeleton (/Game/Characters/Player/Axion_Step4F/SK_Player_Axion_Skeleton.SK_Player_Axion_Skeleton)
+ABP_Axion Loaded: True (AnimBlueprint)
+ABP_Axion_C Class Loaded: True
+BP_ExcelionCharacter CDO Mesh Asset: SKM_Manny_Simple
+BP_ExcelionCharacter CDO AnimClass: None
+BP_ExcelionCharacter CDO Mesh Loc: (0.0, 0.0, -90.0)
+BP_ExcelionCharacter CDO Mesh Rot: (Pitch=-90.0, Yaw=0.0, Roll=0.0)

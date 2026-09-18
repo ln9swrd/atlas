@@ -1,0 +1,178 @@
+[gd_resource type="Resource" script_class="GameSettings" format=3 uid="uid://ddojjbgdriogb"]
+[ext_resource type="Script" path="res://fancytd/scripts/reward/reward_data.gd" id="5_reward_data"]
+
+[ext_resource type="Script" uid="uid://drpdq4rrbd1n5" path="res://fancytd/scripts/settings/game_settings.gd" id="1_game_settings"]
+[ext_resource type="Script" uid="uid://cfrfcssuxnxj4" path="res://fancytd/scripts/tower/tower_data.gd" id="2_tower_data"]
+[ext_resource type="Script" uid="uid://cmym7oeh3x1vr" path="res://fancytd/scripts/enemy/enemy_data.gd" id="3_enemy_data"]
+[ext_resource type="Script" uid="uid://cvmw30l5unrl2" path="res://fancytd/scripts/wave/wave_data.gd" id="4_wave_data"]
+
+[sub_resource type="Resource" id="Resource_enemy_data"]
+script = ExtResource("3_enemy_data")
+id = "basic"
+name = "Basic"
+max_hp = 70.0
+speed = 120.0
+reward = 10
+
+[sub_resource type="Resource" id="Resource_fast_enemy_data"]
+script = ExtResource("3_enemy_data")
+id = "fast"
+name = "Fast"
+max_hp = 42.0
+speed = 210.0
+reward = 14
+
+[sub_resource type="Resource" id="Resource_heavy_enemy_data"]
+script = ExtResource("3_enemy_data")
+id = "heavy"
+name = "Heavy"
+max_hp = 180.0
+speed = 75.0
+reward = 24
+armor = 8.0
+movement_type = "heavy"
+
+[sub_resource type="Resource" id="Resource_boss_enemy_data"]
+script = ExtResource("3_enemy_data")
+id = "boss"
+name = "Boss"
+max_hp = 520.0
+speed = 55.0
+reward = 100
+armor = 12.0
+is_boss = true
+
+[sub_resource type="Resource" id="Resource_tower_data"]
+script = ExtResource("2_tower_data")
+id = "fire"
+name = "Fire"
+cost = 50
+damage = 42.0
+range = 400.0
+attack_interval = 0.75
+behavior = "fire"
+
+[sub_resource type="Resource" id="Resource_ice_tower_data"]
+script = ExtResource("2_tower_data")
+id = "ice"
+name = "Ice"
+cost = 60
+damage = 13.0
+range = 360.0
+attack_interval = 0.6
+behavior = "ice"
+slow_factor = 0.55
+slow_duration = 2.0
+
+[sub_resource type="Resource" id="Resource_lightning_tower_data"]
+script = ExtResource("2_tower_data")
+id = "lightning"
+name = "Lightning"
+cost = 80
+damage = 22.0
+range = 380.0
+attack_interval = 0.8
+behavior = "lightning"
+chain_range = 150.0
+chain_damage_ratio = 0.55
+
+[sub_resource type="Resource" id="Resource_wave_data"]
+script = ExtResource("4_wave_data")
+wave_number = 1
+entries = Array[Dictionary]([{
+"enemy_id": "basic",
+"spawn_count": 8,
+"spawn_interval": 0.45
+}])
+
+[sub_resource type="Resource" id="Resource_wave_2"]
+script = ExtResource("4_wave_data")
+wave_number = 2
+entries = Array[Dictionary]([{
+"enemy_id": "basic",
+"spawn_count": 6,
+"spawn_interval": 0.4
+}, {
+"enemy_id": "fast",
+"spawn_count": 5,
+"spawn_interval": 0.3
+}])
+
+[sub_resource type="Resource" id="Resource_wave_3"]
+script = ExtResource("4_wave_data")
+wave_number = 3
+entries = Array[Dictionary]([{
+"enemy_id": "fast",
+"spawn_count": 7,
+"spawn_interval": 0.28
+}, {
+"enemy_id": "heavy",
+"spawn_count": 4,
+"spawn_interval": 0.75
+}])
+
+[sub_resource type="Resource" id="Resource_wave_4"]
+script = ExtResource("4_wave_data")
+wave_number = 4
+entries = Array[Dictionary]([{
+"enemy_id": "heavy",
+"spawn_count": 5,
+"spawn_interval": 0.65
+}, {
+"enemy_id": "basic",
+"spawn_count": 5,
+"spawn_interval": 0.35
+}, {
+"enemy_id": "boss",
+"spawn_count": 1,
+"spawn_interval": 1.0
+}])
+
+[sub_resource type="Resource" id="Resource_reward_fire_damage"]
+script = ExtResource("5_reward_data")
+id = "fire_damage"
+title = "Fire: Overheat"
+description = "+12 Fire damage"
+reward_type = "tower_damage"
+target_id = "fire"
+value = 12.0
+
+[sub_resource type="Resource" id="Resource_reward_ice_slow"]
+script = ExtResource("5_reward_data")
+id = "ice_slow"
+title = "Ice: Deep Freeze"
+description = "Stronger Ice slow"
+reward_type = "ice_slow"
+value = 0.12
+
+[sub_resource type="Resource" id="Resource_reward_lightning_unlock"]
+script = ExtResource("5_reward_data")
+id = "lightning_unlock"
+title = "Unlock Lightning"
+description = "Add Lightning to your build"
+reward_type = "unlock_tower"
+target_id = "lightning"
+
+[sub_resource type="Resource" id="Resource_reward_lightning_chain"]
+script = ExtResource("5_reward_data")
+id = "lightning_chain"
+title = "Lightning: Surge"
+description = "+0.2 chain damage ratio"
+reward_type = "lightning_chain"
+value = 0.2
+
+[sub_resource type="Resource" id="Resource_reward_ice_damage"]
+script = ExtResource("5_reward_data")
+id = "ice_damage"
+title = "Ice: Shatter"
+description = "+10 Ice damage"
+reward_type = "tower_damage"
+target_id = "ice"
+value = 10.0
+
+[resource]
+script = ExtResource("1_game_settings")
+towers = Array[ExtResource("2_tower_data") ]([SubResource("Resource_tower_data"), SubResource("Resource_ice_tower_data"), SubResource("Resource_lightning_tower_data")])
+enemies = Array[ExtResource("3_enemy_data") ]([SubResource("Resource_enemy_data"), SubResource("Resource_fast_enemy_data"), SubResource("Resource_heavy_enemy_data"), SubResource("Resource_boss_enemy_data")])
+waves = Array[ExtResource("4_wave_data") ]([SubResource("Resource_wave_data"), SubResource("Resource_wave_2"), SubResource("Resource_wave_3"), SubResource("Resource_wave_4")])
+rewards = Array[ExtResource("5_reward_data") ]([SubResource("Resource_reward_fire_damage"), SubResource("Resource_reward_ice_slow"), SubResource("Resource_reward_lightning_unlock"), SubResource("Resource_reward_lightning_chain"), SubResource("Resource_reward_ice_damage")])

@@ -1,0 +1,38 @@
+=== STEP 5-I ABP_AXION LOCOMOTION STATE MACHINE WIRING START ===
+Loaded ABP_Axion: True (/Game/Characters/Player/Axion_Step4F/ABP_Axion)
+Loaded AXION_Idle: True
+Loaded AXION_Walk: True
+Loaded AXION_Run: True
+Loaded AXION_Jump: True
+
+--- ABP MEMBER VARIABLES CONFIGURATION ---
+  ✓ Configured Variable: 'Speed' in ABP_Axion Scope
+  ✓ Configured Variable: 'bIsInAir' in ABP_Axion Scope
+  ✓ Configured Variable: 'bIsDashing' in ABP_Axion Scope
+  ✓ Configured Variable: 'bIsAttacking' in ABP_Axion Scope
+  ✓ Configured Variable: 'bIsDead' in ABP_Axion Scope
+
+--- ABP COMPILE CHECK ---
+Compiled ABP_Axion successfully. Errors = 0
+Saved ABP_Axion asset: True
+
+--- PIE RUNTIME LOCOMOTION PROOF ---
+Spawned Actor: BP_ExcelionCharacter_C_UAID_74563C29B6CEC1FC02_1436329575
+Mesh AnimClass: ABP_Axion_C
+Mesh AnimInstance Object: ABP_Axion_C_0
+Mesh AnimInstance Class: ABP_Axion_C
+✓ AnimInstance evaluated active Locomotion Graph successfully.
+PIE Root Drift Distance: 0.000000 cm
+
+--- VISUAL MOTION DISTINCTION ASSESSMENT ---
+  [AXION_Idle] Source: Tutorial_Idle -> Visual Distinction: Standby Pose (PASS)
+  [AXION_Walk] Source: Tutorial_Walk_Fwd -> Visual Distinction: Walk Locomotion (PASS)
+  [AXION_Run] Source: Tutorial_Walk_Fwd -> Asset & Binding: PASS | Visual Motion Quality: NOT VERIFIED (Same Walk Source)
+  [AXION_Jump] Source: Tutorial_Walk_Fwd -> Asset & Binding: PASS | Visual Motion Quality: NOT VERIFIED (Same Walk Source)
+  [AXION_Attack1] Source: Tutorial_Walk_Fwd -> Asset & Binding: PASS | Visual Motion Quality: NOT VERIFIED (Same Walk Source)
+  [AXION_Dash] Source: Tutorial_Walk_Fwd -> Asset & Binding: PASS | Visual Motion Quality: NOT VERIFIED (Same Walk Source)
+
+==========================================================================
+   STEP 5-I LOCOMOTION STATE MACHINE RESULT: PASS
+==========================================================================
+

@@ -1,0 +1,6 @@
+=== EMPIRICAL C++ PIE LOG TRACE START ===
+1. Loading Level /Game/Maps/NewMap...
+   Level Loaded.
+2. Triggering PIE Session...
+   PIE Simulation Triggered.
+3. PIE Simulation Ended.

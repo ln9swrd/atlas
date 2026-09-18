@@ -1,0 +1,66 @@
+### STATUS
+UNVERIFIED
+
+### 기준선
+Git Status:
+```
+On branch main
+Your branch is up to date with 'upstream/main'.
+```
+Git Log (latest commit):
+```
+commit f4b2b1195a3b607933b81c192ae69a0b55d17145 (HEAD -> main, upstream/main, upstream/HEAD)
+Author: ln9swrd <ln9swrd@gmail.com>
+Date:   Sun Aug 30 00:39:01 2026 +0900
+
+    feat(axion-pilot): wire AXION animation blueprint
+```
+git diff --stat
+```
+(No changes in working tree)
+```
+
+### ABP Asset
+```
+Asset: projects/excelion/game/Excelion/Content/Characters/Player/Axion_Step4F/ABP_Axion.uasset
+Asset Class: Not loaded (Unreal Editor not available)
+Parent Class: None (not inspected)
+Target Skeleton: None (not inspected)
+Compile Status: Not inspected
+```
+
+### AnimGraph
+```
+Unable to load or inspect ABP_Axion in current environment. No information on Locomotion State Machine, Slot, Montage, Layered Blend, or Cached Pose.
+```
+
+### Event Graph
+```
+Unable to inspect Event Blueprint Update Animation. No data on IsAttacking, bIsAttacking, or Attack State connections.
+```
+
+### 실제 구조
+UNVERIFIED
+
+### 최소 변경 필요성
+Unable to determine. No confirmed Attack path or Slot.
+
+### 검증 상태
+* CODE VERIFIED: ✅ (git data recorded)
+* EDITOR VERIFIED: ❌ (Unreal Editor not available)
+* PIE VERIFIED: NOT VERIFIED
+
+### 미확인 사항
+* ABP_Axion asset existence and internal structure
+* Whether a Slot or Attack State exists
+* Connections to CombatComponent's IsAttacking
+
+### OUT OF SCOPE
+* Animation Source 수급
+* FBX Import
+* Retarget
+* Montage 생성
+* ABP 수정
+* C++ 수정
+* PIE
+* Git Commit / Push

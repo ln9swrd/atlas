@@ -1,0 +1,8 @@
+=== EMPIRICAL PIE RUNTIME TRACE START ===
+1. Load Level /Game/Maps/NewMap: True
+2. Triggering PIE Session...
+   PIE Simulation Triggered.
+3. World found: NewMap
+   Total Actors in World: 80
+   Enemy Actors found: 0
+4. PIE Simulation Ended.

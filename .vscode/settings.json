@@ -1,0 +1,25 @@
+{
+    "atlas.model": "qwen3:8b",
+    "atlas.provider": "ollama",
+    "files.associations": {
+        "*.usf": "hlsl",
+        "*.ush": "hlsl"
+    },
+    "workbench.editorAssociations": {},
+    "python.analysis.exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+        "**/.*",
+        "archive",
+        "obsidian"
+    ],
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true
+    },
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

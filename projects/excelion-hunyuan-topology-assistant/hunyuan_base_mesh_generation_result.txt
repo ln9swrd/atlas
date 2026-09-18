@@ -1,0 +1,90 @@
+STATUS: HOLD
+
+OBJECTIVE: Verify Hunyuan3D inference capability and generate a Base Mesh from an AXION image.
+
+GIT BASELINE
+--------------
+Branch: main
+Last commit: e83552b1 (HEAD -> main, upstream/main, upstream/HEAD) docs: add FBX import status report for Axion step 5 (hold)
+
+PYTHON ENVIRONMENT
+-------------------
+Python: 3.8.10
+Executable: C:\Users\ln9swrd\AppData\Local\Programs\Python\Python38\python.exe
+
+HUNYUAN3D VERSION
+------------------
+Hunyuan3D-2.1 (source code present in d:\Atlas\projects\Hunyuan3D-2.1)
+
+MODEL / CHECKPOINT
+-------------------
+Attempted to load 'tencent/Hunyuan3D-2.1' checkpoint.
+No local weights found; the model requires downloading from HuggingFace.
+
+GPU
+----
+No GPU detected; only CPU available.
+
+INPUT IMAGE
+-----------
+No AXION image present in the current project directory.
+
+INPUT PATH
+----------
+N/A
+
+EXECUTION METHOD
+----------------
+Attempted to import hy3dshape and instantiate Hunyuan3DDiTFlowMatchingPipeline, but local model weights were missing.
+
+EXECUTION RESULT
+----------------
+FAILURE: Unable to execute inference due to missing external model resources.
+
+OUTPUT MESH
+-----------
+None generated.
+
+OUTPUT PATH
+-----------
+None
+
+FILE SIZE
+---------
+N/A
+
+VERTEX COUNT
+------------
+N/A
+
+FACE COUNT
+----------
+N/A
+
+BOUNDING BOX
+------------
+N/A
+
+MESH LOAD RESULT
+----------------
+N/A
+
+GENERATION EVIDENCE
+-------------------
+No mesh file generated.
+
+VERIFICATION STATUS
+--------------------
+HOLD – external model resource not available locally.
+
+FINAL JUDGMENT
+--------------
+Hunyuan3D를 이용한 AXION Base Mesh 실제 생성은 HOLD이다.
+
+UNVERIFIED ITEMS
+-----------------
+None
+
+OUT OF SCOPE
+------------
+None

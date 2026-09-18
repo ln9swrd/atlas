@@ -1,0 +1,20 @@
+=== BP_EXCELION_ENEMY MESH & RUNTIME VISUAL AUDIT ===
+1. BP Asset Loaded: True
+   Asset Class: Blueprint
+2. Generated Class Loaded: True
+   Editor World Available: True
+   Actor Spawned: True
+   Actor Name: BP_ExcelionEnemy_C_UAID_74563C29B6CE3EF902_1099047351
+   Actor Location: <Struct 'Vector' (0x000002AFC9EA0880) {x: 0.000000, y: 0.000000, z: 200.000000}>
+   Actor Scale: <Struct 'Vector' (0x000002AFC9EA0880) {x: 1.000000, y: 1.000000, z: 1.000000}>
+   Actor bHidden: False
+   Actor Component Count: 6
+   - Instance Component: CollisionCylinder (Class: CapsuleComponent)
+   - Instance Component: Arrow (Class: ArrowComponent)
+   - Instance Component: CharMoveComp (Class: CharacterMovementComponent)
+   - Instance Component: CharacterMesh0 (Class: SkeletalMeshComponent)
+     Instance SkeletalMesh: NONE (Unassigned!)
+     IsVisible(): True
+   - Instance Component: HealthComponent (Class: HealthComponent)
+   - Instance Component: CombatComponent (Class: CombatComponent)
+   Actor Destroyed after inspection: SUCCESS

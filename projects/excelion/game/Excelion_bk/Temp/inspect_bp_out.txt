@@ -1,0 +1,9 @@
+=== BP INSP START ===
+Loaded BP: True
+Class: <Object '/Game/Blueprints/BP_ExcelionCharacter.BP_ExcelionCharacter_C' (0x00000AE4A72AD900) Class 'BlueprintGeneratedClass'>
+CDO: <Object '/Game/Blueprints/BP_ExcelionCharacter.Default__BP_ExcelionCharacter_C' (0x00000AE4B5937800) Class 'BP_ExcelionCharacter_C'>
+  cdo.mesh = <Object '/Game/Blueprints/BP_ExcelionCharacter.Default__BP_ExcelionCharacter_C:CharacterMesh0' (0x00000AE4B5B96400) Class 'SkeletalMeshComponent'> (SkeletalMeshComponent)
+    SkeletalMeshAsset: None
+  cdo.CharacterMesh0 Exception: ExcelionCharacter: Failed to find property 'CharacterMesh0' for attribute 'CharacterMesh0' on 'BP_ExcelionCharacter_C'
+  cdo.FallbackVisualMesh = <Object '/Game/Blueprints/BP_ExcelionCharacter.Default__BP_ExcelionCharacter_C:FallbackVisualMesh' (0x00000AE4A557B800) Class 'StaticMeshComponent'> (StaticMeshComponent)
+  cdo.fallback_visual_mesh = <Object '/Game/Blueprints/BP_ExcelionCharacter.Default__BP_ExcelionCharacter_C:FallbackVisualMesh' (0x00000AE4A557B800) Class 'StaticMeshComponent'> (StaticMeshComponent)

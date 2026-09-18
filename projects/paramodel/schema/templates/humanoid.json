@@ -1,0 +1,14 @@
+{
+  "id": "humanoid",
+  "name": "Humanoid",
+  "status": "active",
+  "description": "Biped mecha / humanoid frame. Authored slots and bones are ~2m reference proportions.",
+  "size": {
+    "primary": "height",
+    "reference_value": 2.0,
+    "unit": "m"
+  },
+  "rig": "SuperRobotRig",
+  "slots_def": "base-body-slots.json",
+  "notes": "sf = mecha.size.value / 2.0. Example: 25m → sf 12.5."
+}

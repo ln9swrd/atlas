@@ -1,0 +1,12 @@
+=== WIRE SKM_MANNY_SIMPLE TO BP_EXCELION_CHARACTER START ===
+Loaded Blueprint asset /Game/Blueprints/BP_ExcelionCharacter successfully.
+Loaded SkeletalMesh: SKM_Manny_Simple (/Game/Characters/SKM_Manny_Simple.SKM_Manny_Simple)
+Loaded CDO: Default__BP_ExcelionCharacter_C
+Cleared override_materials array to use Manny default materials
+Set relative location (0,0,-90) and rotation (0,-90,0)
+Updated mesh component CharacterMesh0 with SKM_Manny_Simple
+Set FallbackVisualMesh Visibility=False, HiddenInGame=True
+save_loaded_asset(bp) result: True
+[READBACK] CDO SkeletalMesh Name: SKM_Manny_Simple
+[READBACK] CDO SkeletalMesh Path: /Game/Characters/SKM_Manny_Simple.SKM_Manny_Simple
+[READBACK] FallbackVisualMesh Visible: False, HiddenInGame: True

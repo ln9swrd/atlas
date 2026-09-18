@@ -1,0 +1,9 @@
+{
+  "id": "nemesis_redirect_basic",
+  "label": "Redirect Basic",
+  "timeline": [
+    { "t": 0, "action": "spawn", "type": "normal", "speed": 540, "telegraph": 0.5, "duration": 0.4 },
+    { "t": 700, "action": "redirect", "count": 2, "gap": 220, "speed": 560, "telegraph": 0.35 },
+    { "t": 1800, "action": "delay", "ms": 300 }
+  ]
+}

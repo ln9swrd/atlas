@@ -1,0 +1,18 @@
+=== EMPIRICAL DIAGNOSTICS: Editor Python vs PIE LoadClass ===
+1. BP Asset Loaded: True
+   Asset Class: Blueprint
+2. load_class(None, '/Game/Blueprints/BP_ExcelionEnemy.BP_ExcelionEnemy_C'): True
+   Class Name: BP_ExcelionEnemy_C
+   Class Outer Package: /Game/Blueprints/BP_ExcelionEnemy
+   Super Class Check Error: 'BlueprintGeneratedClass' object has no attribute 'get_super_class'
+   Abstract Check Error: 'BlueprintGeneratedClass' object has no attribute 'has_any_class_flags'
+3. find_package Error: find_package() takes exactly 1 argument (2 given)
+4. Asset Registry entry for '/Game/Blueprints/BP_ExcelionEnemy': True
+4. Asset Registry Error: 'AssetData' object has no attribute 'asset_class_name'
+5. Other Blueprints Comparison:
+   - /Game/Blueprints/BP_ExcelionCharacter.BP_ExcelionCharacter_C: LOADED
+   - /Game/Blueprints/BP_ExcelionGameMode.BP_ExcelionGameMode_C: LOADED
+   - /Game/Blueprints/BP_SethBoss.BP_SethBoss_C: LOADED
+   - /Game/Blueprints/BP_DummyTarget.BP_DummyTarget_C: LOADED
+6. Editor World Available: True
+   Spawn Actor Test in Editor World: SUCCESS (True)

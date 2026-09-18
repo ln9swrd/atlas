@@ -1,0 +1,233 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8x0y1z2a3b4c"]
+
+[ext_resource type="Script" path="res://fancytd/scripts/ui/admin_settings_panel.gd" id="1_admin_script"]
+
+[node name="AdminSettingsPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(340, 580)
+offset_left = 780.0
+offset_top = 20.0
+offset_right = 1130.0
+offset_bottom = 610.0
+script = ExtResource("1_admin_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Admin Settings (AS-05)"
+
+[node name="Fields" type="VBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="GameHeader" type="Label" parent="Margin/VBox/Fields"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "[ Game ]"
+
+[node name="InitialGold" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/InitialGold"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Initial Gold (int >= 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/InitialGold"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="InitialLife" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/InitialLife"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Initial Life (int > 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/InitialLife"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="TowerHeader" type="Label" parent="Margin/VBox/Fields"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "[ Tower ]"
+
+[node name="TowerCost" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/TowerCost"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Tower Cost (int >= 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/TowerCost"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="TowerDamage" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/TowerDamage"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Tower Damage (float >= 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/TowerDamage"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="TowerRange" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/TowerRange"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Tower Range (float > 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/TowerRange"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="AttackInterval" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/AttackInterval"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Attack Interval (float > 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/AttackInterval"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="EnemyHeader" type="Label" parent="Margin/VBox/Fields"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "[ Enemy ]"
+
+[node name="EnemyMaxHp" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/EnemyMaxHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Max HP (float > 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/EnemyMaxHp"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="EnemySpeed" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/EnemySpeed"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Enemy Speed (float > 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/EnemySpeed"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="EnemyReward" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/EnemyReward"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Enemy Reward (int >= 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/EnemyReward"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="WaveHeader" type="Label" parent="Margin/VBox/Fields"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "[ Wave ]"
+
+[node name="WaveSpawnCount" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/WaveSpawnCount"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Spawn Count (int > 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/WaveSpawnCount"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="WaveSpawnInterval" type="HBoxContainer" parent="Margin/VBox/Fields"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Fields/WaveSpawnInterval"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Spawn Interval (float > 0):"
+
+[node name="Input" type="LineEdit" parent="Margin/VBox/Fields/WaveSpawnInterval"]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+caret_blink = true
+
+[node name="ApplyButton" type="Button" parent="Margin/VBox"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Apply Settings"
+
+[node name="StatusLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "Status: Ready"

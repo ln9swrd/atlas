@@ -1,0 +1,21 @@
+Excelion Cline Rules
+Cline 프로젝트 Rules 디렉터리.
+
+구조
+.clinerules/
+├── 00-core.md          # 최우선 원칙, 변경 금지, 보고, 완료 정의, Master 우선
+├── 10-unreal.md        # Unreal 계층 조사, Input Debugging, Runtime 우선
+├── 20-debug.md         # 디버깅 원칙, 문제 재현 우선
+├── 30-verification.md  # PASS 정의, 테스트 검증, 기존 PASS 처리
+├── 40-git.md           # Git 원칙
+├── 50-debug-workflow.md # Debug Workflow (PHASE 1~11)
+└── README.md
+적용 방법
+Cline 워크스페이스에서 이 디렉터리를 Rules로 사용한다. (또는 각 파일을 Cline Custom Instructions / Project Rules에 로드)
+
+핵심 요약
+추측 금지. 증거 기반.
+기존 PASS보다 Master 실제 관찰 우선.
+최소 변경. 승인 후 수정.
+실제 실행 + 사용자 행동 결과로만 PASS.
+COMPLETE = 실제 검증까지 완료된 경우만.

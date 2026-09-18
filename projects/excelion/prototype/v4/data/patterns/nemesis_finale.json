@@ -1,0 +1,14 @@
+{
+  "id": "nemesis_finale",
+  "label": "FINALE",
+  "timeline": [
+    { "t": 0, "action": "telegraph", "duration": 220, "visual": "flash_red", "audio": "warning_beep" },
+    { "t": 220, "action": "feint", "paint": 280, "cancel": 200, "telegraph": 160, "speed": 620 },
+    { "t": 900, "action": "redirect_chain", "count": 4, "gap": 140, "speed": 700 },
+    { "t": 1800, "action": "telegraph", "duration": 180, "visual": "flash_red", "audio": "warning_beep" },
+    { "t": 2000, "action": "burst", "count": 5, "gap": 140, "speed": 720, "telegraph": 0.26 },
+    { "t": 2900, "action": "feint_cancel", "window": 110, "speed": 680 },
+    { "t": 3400, "action": "redirect_chain", "count": 3, "gap": 120, "speed": 740 },
+    { "t": 4200, "action": "delay", "ms": 250 }
+  ]
+}

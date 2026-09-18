@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "jacqueslucke.blender-development",
+    "timgjones.hlsltools",
+    "slevesque.shader",
+    "nilssoderman.ue-python",
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    "charliermarsh.ruff"
+  ]
+}

@@ -1,0 +1,8 @@
+=== WIRE MAP GAMEMODE & PAWN START ===
+BP_ExcelionGameMode_C: True
+BP_ExcelionCharacter_C: True
+[FIX] Set BP_ExcelionGameMode DefaultPawnClass -> BP_ExcelionCharacter_C
+[FIX] Set BP_ExcelionCharacter AutoPossessPlayer -> Player0
+[FIX] Loaded Level /Game/Maps/NewMap: True
+[FIX] Set WorldSettings default_game_mode -> BP_ExcelionGameMode_C
+[FIX] Saved level /Game/Maps/NewMap: True

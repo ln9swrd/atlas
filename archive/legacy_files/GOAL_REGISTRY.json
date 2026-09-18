@@ -1,0 +1,8 @@
+[
+  {
+    "goal": "Visual Perception Module Integration",
+    "priority": 5,
+    "dependencies": ["Exelion Task 003", "AI-Human Collaboration Framework"],
+    "estimated_effort": "3-6 months"
+  }
+]

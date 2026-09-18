@@ -1,0 +1,68 @@
+{
+  "platform_version": "1.0",
+  "schema_version": "1.0",
+  "mode": "idle",
+  "active_project": "Exelion",
+  "active_agents": [
+    "Marie",
+    "Antigravity",
+    "Copilot",
+    "Sera"
+  ],
+  "current_phase": "Asset Production",
+<<<<<<< HEAD
+  "last_started": "2026-07-20T18:37:52",
+  "last_finished": "2026-07-24T05:50:11",
+=======
+  "last_started": "2026-07-21T10:25:56",
+  "last_finished": "2026-07-21T11:45:45",
+>>>>>>> 882c19a (docs: Sprint-001 작업 완료 반영 및 상태 정리)
+  "last_review": "PASS",
+  "active_goal": "EX-GOAL-001",
+  "current_goal_status": "Completed",
+  "last_goal_sync": "2026-07-21T10:25:56",
+  "task_states": [
+    {
+      "id": "EX-BRAVE-001",
+      "description": "Brave 기본 프레임 제작 (Dummy Frame, 관절 구조, 공용 조인트)",
+      "status": "DONE",
+      "priority": 1,
+      "estimate": 180,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-21T11:45:45"
+    },
+    {
+      "id": "EX-BRAVE-002",
+      "description": "Brave 기본 프레임 UV 매핑 및 Export",
+      "status": "DONE",
+      "priority": 2,
+      "estimate": null,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-21T11:45:45"
+    },
+    {
+      "id": "EX-BRAVE-003",
+      "description": "Brave 외장 장갑 1개 제작",
+      "status": "DONE",
+      "priority": 3,
+      "estimate": null,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-21T11:45:45"
+    },
+    {
+      "id": "EX-BRAVE-004",
+      "description": "Unreal 임포트 및 셋업",
+      "status": "DONE",
+      "priority": 4,
+      "estimate": null,
+      "environment": "DEV_HOME",
+      "depends_on": [],
+      "updated_at": "2026-07-21T11:45:45"
+    }
+  ],
+  "current_task": null,
+  "current_sprint": "Sprint-001"
+}

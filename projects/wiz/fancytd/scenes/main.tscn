@@ -1,0 +1,130 @@
+[gd_scene format=3 uid="uid://dwsrdlncug7p7"]
+
+[ext_resource type="Script" uid="uid://c08iif0rb6j3f" path="res://fancytd/scripts/enemy/enemy_spawner.gd" id="1_enemy_spawner"]
+[ext_resource type="PackedScene" path="res://fancytd/scenes/tower/tower.tscn" id="2_18gfs"]
+[ext_resource type="Script" uid="uid://cfrfcssuxnxj4" path="res://fancytd/scripts/tower/tower_data.gd" id="3_tower_data"]
+[ext_resource type="Script" uid="uid://cmym7oeh3x1vr" path="res://fancytd/scripts/enemy/enemy_data.gd" id="4_enemy_data"]
+[ext_resource type="Script" uid="uid://cvmw30l5unrl2" path="res://fancytd/scripts/wave/wave_data.gd" id="5_wave_data"]
+[ext_resource type="Script" uid="uid://ds0diikjtii3o" path="res://fancytd/scripts/ui/buy_tower_button.gd" id="6_buy_tower_button"]
+[ext_resource type="Resource" path="res://fancytd/data/game_settings.tres" id="7_game_settings"]
+[ext_resource type="PackedScene" uid="uid://b8x0y102a3b4c" path="res://fancytd/scenes/ui/admin_settings_panel.tscn" id="8_admin_panel"]
+
+[sub_resource type="Resource" id="Resource_wave_data"]
+script = ExtResource("5_wave_data")
+wave_number = 1
+entries = Array[Dictionary]([{
+"enemy_id": "default",
+"spawn_count": 30,
+"spawn_interval": 0.25
+}])
+
+[sub_resource type="Resource" id="Resource_enemy_data"]
+script = ExtResource("4_enemy_data")
+id = "default"
+max_hp = 20.0
+reward = 10
+
+[sub_resource type="Resource" id="Resource_tower_data"]
+script = ExtResource("3_tower_data")
+cost = 50
+damage = 20.0
+range = 400.0
+attack_interval = 0.5
+
+[node name="Main" type="Node2D" unique_id=884534104]
+script = ExtResource("1_enemy_spawner")
+settings = ExtResource("7_game_settings")
+wave_data = SubResource("Resource_wave_data")
+enemy_data_by_id = Dictionary[String, ExtResource("4_enemy_data")]({
+"default": SubResource("Resource_enemy_data")
+})
+purchase_tower_data = SubResource("Resource_tower_data")
+
+[node name="Map" type="Marker2D" parent="." unique_id=192066132]
+
+[node name="Ground" type="Polygon2D" parent="Map" unique_id=1800119293]
+z_index = -1
+color = Color(0.12, 0.16, 0.14, 1)
+polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)
+
+[node name="Path" type="Line2D" parent="Map" unique_id=2125104105]
+points = PackedVector2Array(96, 120, 360, 120, 360, 360, 840, 360, 840, 528, 1056, 528)
+width = 72.0
+default_color = Color(0.48, 0.38, 0.24, 1)
+
+[node name="Spawn" type="Marker2D" parent="Map" unique_id=92627914]
+position = Vector2(96, 120)
+
+[node name="Goal" type="Marker2D" parent="Map" unique_id=485655261]
+position = Vector2(1056, 528)
+
+[node name="Tower" parent="Map" unique_id=1744599782 instance=ExtResource("2_18gfs")]
+position = Vector2(411, 304)
+data = SubResource("Resource_tower_data")
+enemies_container = NodePath("../../Enemies")
+
+[node name="Enemies" type="Marker2D" parent="." unique_id=1635520376]
+
+[node name="Towers" type="Marker2D" parent="." unique_id=304135114]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=159089217]
+
+[node name="GoldLabel" type="Label" parent="UI" unique_id=469149279]
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 220.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(1, 0.86, 0.28, 1)
+theme_override_font_sizes/font_size = 24
+text = "Gold: 100"
+
+[node name="LifeLabel" type="Label" parent="UI" unique_id=1238310517]
+offset_left = 24.0
+offset_top = 60.0
+offset_right = 220.0
+offset_bottom = 92.0
+theme_override_colors/font_color = Color(0.98, 0.34, 0.34, 1)
+theme_override_font_sizes/font_size = 24
+text = "Life: 20"
+
+[node name="GameOverLabel" type="Label" parent="UI" unique_id=503143538]
+visible = false
+offset_left = 430.0
+offset_top = 270.0
+offset_right = 760.0
+offset_bottom = 330.0
+theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 42
+text = "GAME OVER"
+
+[node name="VictoryLabel" type="Label" parent="UI" unique_id=1849201948]
+visible = false
+offset_left = 460.0
+offset_top = 270.0
+offset_right = 730.0
+offset_bottom = 330.0
+theme_override_colors/font_color = Color(0.35, 1, 0.45, 1)
+theme_override_font_sizes/font_size = 42
+text = "VICTORY!"
+
+[node name="BuyTowerButton" type="Button" parent="UI" unique_id=1932669342]
+z_index = 10
+offset_left = 24.0
+offset_top = 108.0
+offset_right = 220.0
+offset_bottom = 148.0
+text = "Buy Tower (50)"
+script = ExtResource("6_buy_tower_button")
+
+[node name="PurchaseStatusLabel" type="Label" parent="UI" unique_id=1004804175]
+offset_left = 24.0
+offset_top = 156.0
+offset_right = 420.0
+offset_bottom = 184.0
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+text = "Purchase status: ready"
+
+[node name="AdminSettingsPanel" parent="UI" unique_id=1969939519 instance=ExtResource("8_admin_panel")]
+offset_left = 790.0
+offset_bottom = 600.0
+settings = ExtResource("7_game_settings")

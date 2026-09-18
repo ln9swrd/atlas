@@ -1,0 +1,14 @@
+=== EMPIRICAL C++ CLASS & SUPERCLASS VERIFICATION START ===
+1. load_class(None, '/Script/Excelion.ExcelionEnemy'): True
+   Name: ExcelionEnemy
+   Outer: /Script/Excelion
+   unreal.ExcelionEnemy attribute exists: True (<class 'ExcelionEnemy'>)
+2. load_class(None, '/Game/Blueprints/BP_ExcelionEnemy.BP_ExcelionEnemy_C'): True
+   Name: BP_ExcelionEnemy_C
+   Outer: /Game/Blueprints/BP_ExcelionEnemy
+   issubclass(bp_enemy_cls, cpp_enemy_cls): N/A
+3. Comparison with Other C++ / BP Class Pairs:
+   - C++: /Script/Excelion.ExcelionCharacter (LOADED)
+   - BP:  /Game/Blueprints/BP_ExcelionCharacter.BP_ExcelionCharacter_C (LOADED)
+   - C++: /Script/Excelion.ExcelionGameMode (LOADED)
+   - BP:  /Game/Blueprints/BP_ExcelionGameMode.BP_ExcelionGameMode_C (LOADED)

@@ -1,0 +1,19 @@
+=== BONE HIERARCHY AUDIT START ===
+Anim Track Count: 93
+Root Track Name: SuperRobotRig
+First 15 bone tracks in animation:
+  Track[0]: SuperRobotRig
+  Track[1]: Root
+  Track[2]: Pelvis
+  Track[3]: Spine
+  Track[4]: Spine_01
+  Track[5]: Chest
+  Track[6]: Neck
+  Track[7]: Head
+  Track[8]: wing
+  Track[9]: wing_01_L
+  Track[10]: wing_02_L
+  Track[11]: wing_03_L
+  Track[12]: wing_03_02_L
+  Track[13]: wing_03_01_L
+  Track[14]: wing_02_03_L

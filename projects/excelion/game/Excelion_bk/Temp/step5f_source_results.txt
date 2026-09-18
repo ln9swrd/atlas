@@ -1,0 +1,30 @@
+=== STEP 5-F SOURCE ANIMATION INVESTIGATION START ===
+Total AnimSequence Assets Discovered in UE Project/Engine: 5
+
+--- Category: Engine (Count: 2) ---
+  - Tutorial_Walk_Fwd (/Engine/Tutorial/SubEditors/TutorialAssets/Character/Tutorial_Walk_Fwd)
+  - Tutorial_Idle (/Engine/Tutorial/SubEditors/TutorialAssets/Character/Tutorial_Idle)
+
+--- Category: Characters (Count: 3) ---
+  - SK_Player_Axion_Anim (/Game/Characters/Player/Axion_Step4F/SK_Player_Axion_Anim)
+  - AXION_Test_InPlace_Anim (/Game/Characters/Player/Axion_Step4F/AXION_Test_InPlace_Anim)
+  - AXION_Test_InPlace_Anim (/Game/Characters/Player/Axion/AXION_Test_InPlace_Anim)
+
+--- Category: ThirdPerson (Count: 0) ---
+
+--- Category: Other (Count: 0) ---
+
+--- Skeleton Assets Count: 8 ---
+  - Skeleton: SkeletalCube_Skeleton (/Engine/EngineMeshes/SkeletalCube_Skeleton)
+  - Skeleton: SK_Chain_Template (/ControlRigModules/Modules/Meshes/SK_Chain_Template)
+  - Skeleton: SK_Biped_Template (/ControlRigModules/Modules/Meshes/SK_Biped_Template)
+  - Skeleton: SK_Root_Template (/ControlRig/Modules/Meshes/SK_Root_Template)
+  - Skeleton: DefaultSkeletalMesh_Skeleton (/Engine/EditorMeshes/SkeletalMesh/DefaultSkeletalMesh_Skeleton)
+  - Skeleton: SK_Player_Axion_Skeleton (/Game/Characters/Player/Axion_Step4F/SK_Player_Axion_Skeleton)
+  - Skeleton: SK_Player_Axion_Skeleton (/Game/Characters/Player/Axion/SK_Player_Axion_Skeleton)
+  - Skeleton: TutorialTPP_Skeleton (/Engine/Tutorial/SubEditors/TutorialAssets/Character/TutorialTPP_Skeleton)
+
+==========================================================================
+   STEP 5-F SOURCE ANIMATION INVESTIGATION COMPLETED
+==========================================================================
+

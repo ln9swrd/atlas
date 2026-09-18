@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://fancytd/scripts/enemy/enemy.gd" id="1_enemy"]
+
+[node name="Enemy" type="Node2D"]
+script = ExtResource("1_enemy")
+max_hp = 200.0
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-16, 0, -8, -14, 8, -14, 16, 0, 8, 14, -8, 14)
+color = Color(0.82, 0.16, 0.14, 1)

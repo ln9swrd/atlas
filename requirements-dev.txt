@@ -1,0 +1,2 @@
+pytest>=8.0
+# Additional development/test dependencies can be added here

@@ -1,0 +1,14 @@
+{
+  "bosses": [
+    { "file": "boss_brave.json", "key": "1", "label": "1 MONTU" },
+    { "file": "boss_mass.json", "key": "2", "label": "2 SETH" },
+    { "file": "boss/nemesis.json", "key": "3", "label": "3 NEMESIS (DSL)", "usePatterns": true }
+  ],
+  "timing": {
+    "perfect": 0.05,
+    "good": 0.12,
+    "dashInvuln": 0.3,
+    "dashDuration": 0.28,
+    "dashCooldown": 0.85
+  }
+}

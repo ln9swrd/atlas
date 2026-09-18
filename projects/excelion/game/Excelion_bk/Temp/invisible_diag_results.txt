@@ -1,0 +1,23 @@
+=== INVISIBLE PLAYER DIAGNOSTIC START ===
+Spawned Actor: BP_ExcelionCharacter_C_0
+Mesh Asset Name: SK_Player_Axion
+Mesh Asset Path: /Game/Characters/Player/Axion_Step4F/SK_Player_Axion.SK_Player_Axion
+Mesh Component Visible: True
+Mesh Component HiddenInGame: False
+Mesh Relative Location: (0.0, 0.0, -90.0)
+Mesh Relative Rotation: (Pitch=0.0, Yaw=-90.0, Roll=0.0)
+Mesh Relative Scale: (1.0, 1.0, 1.0)
+Mesh Num Materials: 3
+  Material Slot 0: Tone_01_Primary
+  Material Slot 1: Tone_02_Secondary
+  Material Slot 2: Tone_03_Accent
+SpringArm TargetArmLength: 400.0
+SpringArm SocketOffset: (0.0, 0.0, 0.0)
+SpringArm TargetOffset: (0.0, 0.0, 0.0)
+Camera FieldOfView: 90.0
+Camera RelativeLocation: (0.0, 0.0, 0.0)
+StaticMeshComp 'FallbackVisualMesh': Mesh=Cube, Visible=False, HiddenInGame=True
+CDO DefaultMappingContext: <Object '/Game/Input/IMC_Default.IMC_Default' (0x0000078265B4F120) Class 'InputMappingContext'>
+CDO MoveAction: <Object '/Game/Input/IA_Move.IA_Move' (0x0000078265E757C0) Class 'InputAction'>
+CDO MoveForwardAction: None
+CDO AutoPossessPlayer: <AutoReceiveInput.DISABLED: 0>

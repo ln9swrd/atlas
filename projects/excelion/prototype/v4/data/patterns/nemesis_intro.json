@@ -1,0 +1,9 @@
+{
+  "id": "nemesis_intro",
+  "label": "Observe",
+  "timeline": [
+    { "t": 0, "action": "spawn", "type": "normal", "speed": 520, "duration": 0.42, "telegraph": 0.7 },
+    { "t": 1200, "action": "burst", "count": 3, "gap": 280, "speed": 540, "telegraph": 0.55, "duration": 0.4 },
+    { "t": 2800, "action": "delay", "ms": 400 }
+  ]
+}

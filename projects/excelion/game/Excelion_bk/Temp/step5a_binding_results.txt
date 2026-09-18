@@ -1,0 +1,17 @@
+=== STEP 5-A BINDING START ===
+Loaded Blueprint asset successfully.
+SK_Player_Axion Loaded: True
+Tone_01_Primary Loaded: True
+Tone_02_Secondary Loaded: True
+Tone_03_Accent Loaded: True
+Loaded fresh CDO: Default__BP_ExcelionCharacter_C
+Updated mesh component CharacterMesh0 with SK_Player_Axion
+Assigned Materials to Slots 0, 1, 2 via set_material
+Assigned override_materials array [Tone1, Tone2, Tone3]
+Set FallbackVisualMesh Visibility=False, HiddenInGame=True
+save_loaded_asset(bp) result: True
+[READBACK] CDO SkeletalMesh: SK_Player_Axion
+[READBACK] Slot 0: Tone_01_Primary
+[READBACK] Slot 1: Tone_02_Secondary
+[READBACK] Slot 2: Tone_03_Accent
+[READBACK] FallbackVisualMesh Visible: False, HiddenInGame: True

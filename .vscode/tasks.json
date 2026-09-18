@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Atlas: Run Pre-flight Checks (Rule Engine)",
+      "type": "shell",
+      "command": "python core/rules/rule_engine.py",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Atlas: Update Recommended Tasks (Priority Engine)",
+      "type": "shell",
+      "command": "python core/execution/priority_engine.py",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Atlas: Generate Quality Scorecard (Review Engine)",
+      "type": "shell",
+      "command": "python core/review/review_engine.py",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Open Blender File",
+      "type": "shell",
+      "command": "if (Get-Command blender -ErrorAction SilentlyContinue) { blender \"${file}\" } elseif (Get-Command blender-4.0 -ErrorAction SilentlyContinue) { blender-4.0 \"${file}\" } elseif (Get-Command blender-3.6 -ErrorAction SilentlyContinue) { blender-3.6 \"${file}\" } else { Write-Error 'Blender executable not found'; exit 1 }",
+      "options": {
+        "shell": {
+          "executable": "powershell.exe"
+        }
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "target_mode": "digital_screen_only",
+  "hardware_camera_enabled": false,
+  "supported_image_formats": [".png", ".jpg", ".jpeg", ".svg", ".webp"],
+  "ollama_vision_endpoint": "http://127.0.0.1:11434/api/generate",
+  "vision_models": {
+    "default": "qwen2-vl:7b",
+    "fallback": "llava:latest"
+  },
+  "capture_settings": {
+    "max_resolution": "1920x1080",
+    "auto_compress": true
+  }
+}

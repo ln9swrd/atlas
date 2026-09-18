@@ -1,0 +1,7 @@
+=== LEVEL GAMEMODE & POSSESSION FIX START ===
+BP_ExcelionGameMode_C Loaded: True
+BP_ExcelionCharacter_C Loaded: True
+[FIX] Set BP_ExcelionGameMode DefaultPawnClass -> BP_ExcelionCharacter
+[FIX] Set BP_ExcelionCharacter AutoPossessPlayer -> Player0
+Current World DefaultGameMode: None
+[FIX] Set WorldSettings DefaultGameMode -> BP_ExcelionGameMode_C

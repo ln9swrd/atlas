@@ -1,0 +1,7 @@
+=== VERIFY MANNY MESH PROOF START ===
+[PASS] Spawned actor: BP_ExcelionCharacter_C_0
+[CHECK] SkeletalMesh: SKM_Manny_Simple
+[PASS] SkeletalMesh is correctly SKM_Manny_Simple
+[CHECK] FallbackVisualMesh Visible: False, HiddenInGame: True
+[PASS] FallbackVisualMesh is hidden (no cube rendering)
+=== VERIFY MANNY MESH PROOF END ===

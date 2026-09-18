@@ -1,0 +1,9 @@
+=== STEP 5-B READ-ONLY AUDIT START ===
+Existing ABP_Axion Asset Exists: False
+SK_Player_Axion_Skeleton Loaded: True (SK_Player_Axion_Skeleton)
+SK_Player_Axion Mesh Loaded: True
+AXION_Test_InPlace_Anim Loaded: True (AXION_Test_InPlace_Anim)
+Anim Sequence Length: 1.9667s
+Anim Connected Skeleton: SK_Player_Axion_Skeleton
+Target Frame Rate: <Struct 'FrameRate' (0x0000098B94421C00) {numerator: 60000, denominator: 1}>
+Anim Track Count: N/A

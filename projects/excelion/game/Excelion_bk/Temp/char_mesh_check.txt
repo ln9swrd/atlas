@@ -1,0 +1,3 @@
+=== CHECK BP_EXCELION_CHARACTER MESH START ===
+BP_ExcelionCharacter Loaded: True
+BP_ExcelionCharacter_C Class Loaded: True
