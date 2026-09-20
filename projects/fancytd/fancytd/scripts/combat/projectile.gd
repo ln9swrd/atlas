@@ -34,6 +34,24 @@ func set_effect(effect_id: String, next_slow_factor: float, next_slow_duration: 
 	enemies_container = next_enemies_container
 	run_state = next_run_state
 
+	var visual: Polygon2D = get_node_or_null("Visual") as Polygon2D
+	if visual != null:
+		match attacker_id:
+			"fire":
+				visual.color = Color(1.0, 0.45, 0.15)
+			"ice":
+				visual.color = Color(0.25, 0.85, 1.0)
+			"lightning":
+				visual.color = Color(1.0, 0.95, 0.25)
+			_:
+				visual.color = Color(0.96, 0.78, 0.2)
+
+	if is_instance_valid(target):
+		var mult := SynergyResolver.damage_multiplier(run_state, attacker_id, target)
+		if mult > 1.0:
+			scale = Vector2(1.6, 1.6)
+			modulate = Color(1.4, 1.4, 1.4, 1.0)
+
 
 func _physics_process(delta: float) -> void:
 	if has_hit:
