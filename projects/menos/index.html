@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MENOS // Tactical Defense PoC</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">MENOS / FIELD TEST 01</p>
+        <h1>Hold the line. Move the giant.</h1>
+      </div>
+      <div class="run-state"><span class="status-dot"></span><span id="runStatus">READY</span></div>
+    </header>
+
+    <section class="hud" aria-label="Battlefield status">
+      <div class="stat"><span>BASE HP</span><strong id="baseHp">100</strong></div>
+      <div class="stat"><span>GOLD</span><strong id="gold">180</strong></div>
+      <div class="stat"><span>WAVE</span><strong id="waveNumber">1 / 4</strong></div>
+      <div class="stat wide"><span>INCOMING</span><strong id="nextWaveInfo">NORMAL · BOTH LANES</strong></div>
+      <button class="button primary" id="startWave">START WAVE 1</button>
+      <button class="button ghost" id="restart">RESTART</button>
+    </section>
+
+    <section class="layout">
+      <div class="battlefield-panel">
+        <div class="panel-heading"><div><span class="kicker">LIVE SIMULATION</span><h2>Northbridge Sector</h2></div><span class="hint">Click a slot, then choose a tower</span></div>
+        <canvas id="battlefield" width="960" height="560" aria-label="MENOS battlefield"></canvas>
+        <div class="legend"><span><i class="legend-dot normal"></i>Normal</span><span><i class="legend-dot rusher"></i>Rusher</span><span><i class="legend-dot heavy"></i>Heavy</span><span><i class="legend-dot giant"></i>Giant</span><span><i class="legend-dot robot"></i>Robot</span></div>
+      </div>
+
+      <aside class="side-panel">
+        <section class="control-block">
+          <div class="panel-heading compact"><div><span class="kicker">BUILD</span><h2>Tower grid</h2></div><span id="selectedSlot">NO SLOT</span></div>
+          <p class="muted">Six positions cover both approaches. Tower fire is automatic.</p>
+          <div class="tower-buttons">
+            <button class="tower-card" data-tower="tower_cannon"><span class="tower-icon cannon-icon"></span><span><b>CANNON</b><small>Heavy punch · 55g</small></span></button>
+            <button class="tower-card" data-tower="tower_gatling"><span class="tower-icon gatling-icon"></span><span><b>GATLING</b><small>Rapid fire · 35g</small></span></button>
+          </div>
+        </section>
+
+        <section class="control-block robot-block">
+          <div class="panel-heading compact"><div><span class="kicker">MOBILE ASSET</span><h2>Atlas-01</h2></div><span class="robot-tag" id="robotStatus">DOCKED</span></div>
+          <div class="robot-readout"><div class="robot-health"><span>HP</span><strong id="robotHp">220 / 220</strong></div><div class="commands"><span>MOVE COMMANDS</span><strong id="moveCommands">5</strong></div></div>
+          <button class="button robot-launch" id="launchRobot">LAUNCH ATLAS-01</button>
+          <p class="muted">After launch, click a clear lane marker to reposition. Atlas-01 attacks and uses abilities automatically.</p>
+        </section>
+
+        <section class="control-block feed-block"><div class="panel-heading compact"><div><span class="kicker">FIELD NOTES</span><h2>Decision feed</h2></div></div><div id="eventFeed" class="event-feed"><p>Build a tower, then start the first wave.</p></div></section>
+      </aside>
+    </section>
+    <footer><span>POC RULE: position is power</span><span id="timer">00:00</span></footer>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
