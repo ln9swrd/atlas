@@ -112,6 +112,34 @@ MENOS는 소규모 상업용 싱글플레이 PC/Steam 전략형 Tower Defense다
 
 로봇의 위험성은 유지하되, 플레이어가 역전할 여지를 남긴다.
 
+### 5.3.1 Robot 교전 규칙 (Master Decision)
+
+상태: `MASTER DECISION` / `NOT IMPLEMENTED`
+
+#### CONFIRMED DESIGN
+
+- Giant가 Robot과 직접 교전한다.
+- Robot은 파괴될 수 있다.
+- 파괴 후 재출격이 가능하다.
+
+#### MASTER DECISION
+
+- D-001: Giant Only
+  - Normal / Rusher / Heavy의 Robot 직접 공격은 현재 범위에서 제외한다.
+- D-002: Giant Robot 공격 거리 = 120
+  - 단위는 현재 프로젝트 좌표계 기준이다.
+- D-003: Giant Robot 공격 주기 = 2초
+- D-004: Giant Robot 피해량 = 20
+  - Giant의 Base 공격용 `base_damage`와 별도로 Robot 피해량을 관리할 수 있는 구조로 유지한다.
+- D-005: Robot HP <= 0
+  - -> Robot inactive / 파괴 상태
+  - -> Base 방어 지속
+  - -> 재출격 가능
+  - -> 재출격 시 최대 HP로 복구
+
+> 120 / 2초 / 20은 Master가 승인한 초기 설계값이며, 현재 구현 여부와는 별개다.
+> 현재 구현 상태는 `Implementation Status: NOT IMPLEMENTED`이다.
+
 ### 5.4 성장과 기술
 
 상태: `CONFIRMED`

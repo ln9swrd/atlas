@@ -66,7 +66,24 @@ func spawn_enemies() -> void:
 		var entry = spawn_queue.pop_front()
 		var lane: String = entry.lanes[enemies.size() % entry.lanes.size()]
 		var data: Dictionary = DATA.ENEMIES[entry.type]
-		enemies.append({"type": entry.type, "lane": lane, "position": LANES[lane], "hp": data.hp, "max_hp": data.hp, "flash": 0.0})
+		enemies.append({"type": entry.type, "lane": lane, "position": LANES[lane], "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0})
+
+func damage_robot(amount: float) -> void:
+	if not robot.active: return
+	robot.hp = max(0.0, robot.hp - amount)
+	if robot.hp <= 0.0:
+		robot.hp = 0.0; robot.active = false; log_event("ATLAS-01 destroyed. Base defense remains active.")
+
+func update_giant_robot_attack(delta: float, enemy: Dictionary) -> void:
+	if enemy.type != "giant" or not robot.active or robot.hp <= 0.0: return
+	var data: Dictionary = DATA.ENEMIES[enemy.type]
+	enemy.robot_attack_timer -= delta
+	if enemy.position.distance_to(robot.position) > data.robot_range: return
+	if enemy.robot_attack_timer > 0.0: return
+	damage_robot(data.robot_damage)
+	enemy.robot_attack_timer = data.robot_cooldown
+	if robot.active:
+		log_event("GIANT hit ATLAS-01 for %d damage." % int(data.robot_damage))
 
 func move_enemies(delta: float) -> void:
 	for enemy in enemies:
@@ -76,6 +93,8 @@ func move_enemies(delta: float) -> void:
 		var progress: float = clampf(enemy.position.x / BASE.x, 0.0, 1.0)
 		enemy.position.x += data.speed * delta
 		enemy.position.y = lerp(start.y, BASE.y, progress)
+		if enemy.type == "giant":
+			update_giant_robot_attack(delta, enemy)
 		if enemy.position.x >= BASE.x - 25.0:
 			base_hp -= data.base_damage; enemy.hp = 0.0
 			log_event("%s breached the base (-%d HP)." % [data.name, data.base_damage])
@@ -166,6 +185,7 @@ func build_tower(type: String) -> void:
 
 func launch_robot() -> void:
 	if robot.active or run_state != RunState.READY: return
+	robot.hp = DATA.ROBOT.hp
 	robot.active = true; robot.position = ROBOT_SPOTS.CENTER; robot.spot = "CENTER"; log_event("ATLAS-01 launched at CENTER. Choose a crisis zone.")
 
 func move_robot(id: String) -> void:
