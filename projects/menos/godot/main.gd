@@ -134,6 +134,7 @@ func check_wave_clear() -> void:
 	if not spawn_queue.is_empty() or enemies.any(func(enemy): return enemy.hp > 0.0): return
 	wave_running = false; wave_clear = true
 	if wave < DATA.WAVES.size():
+		run_state = RunState.READY
 		log_event("Wave clear. Next: %s" % DATA.WAVES[wave].label); wave += 1
 	else:
 		run_state = RunState.VICTORY
