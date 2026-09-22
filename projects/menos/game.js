@@ -352,6 +352,7 @@ window.__MENOS_TEST__ = {
   moveRobot,
   update,
   state,
+  getState: () => state,
   draw
 };
 
