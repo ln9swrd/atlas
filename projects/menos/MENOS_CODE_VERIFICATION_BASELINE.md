@@ -444,22 +444,23 @@ start_wave(): false
 check_wave_clear(): true
 ```
 
-실제 읽기 또는 조건문 사용은 확인되지 않았다. 따라서 현재 `wave_clear`는 다음 상태다.
+현재 코드에서 `wave_clear`는 정상적인 Wave 종료를 기록하는 상태 플래그로 사용된다. 다만 실제 Wave 진행 제어는 `run_state`와 `wave_running` 조건이 담당하며, `wave_clear` 자체는 일반적인 상태 전이 제어를 막는 근본 원인은 아니다.
 
-- 상태 기록값으로 대입됨
-- 다음 Wave 시작 시 초기화됨
-- 게임 상태 제어에 사용되지 않음
-- UI 표시에도 사용되지 않음
+즉 현재 코드 기준으로 `wave_clear`는 다음 상태다.
 
-즉 현재는 읽히지 않는 상태값이다. 일반 Wave 진행을 막는 원인도 `wave_clear`가 아니다.
+- 정상 Wave 종료를 기록하는 값
+- `run_state`와 함께 상태 전이의 결과를 나타냄
+- 다음 Wave 시작 시 새 cycle에서 다시 `false`로 리셋됨
+- 게임 진행 제어의 직접적인 gate는 아니며, `run_state`과 `wave_running`이 이를 담당함
 
-## 8. 상태 전이 결함 요약
+## 8. 상태 전이 요약 (현재 코드 기준)
 
-### 결함 1: 일반 Wave Clear 후 READY 복귀 누락
+### 과거 결함 1: 일반 Wave Clear 후 READY 복귀 누락
 
-상태: `CONFIRMED / HOLD`
+상태: `HISTORICAL / FIXED`
 
 ```text
+기존 서술:
 RUNNING
     -> Wave Clear
     -> wave_running = false
@@ -470,27 +471,41 @@ RUNNING
     -> 다음 Wave 시작 차단
 ```
 
-직접 원인은 일반 Wave Clear 이후 `run_state`가 READY로 복귀하지 않는 것이다.
-
-### 결함 2: DEFEAT 우선순위와 동일 프레임 후속 처리
-
-상태: `CONFIRMED / HOLD`
+현재 코드에서는 위 경로가 수정되었다. 정상 Wave Clear는 다음처럼 동작한다.
 
 ```text
+RUNNING
+    -> Wave Clear
+    -> wave_running = false
+    -> wave_clear = true
+    -> run_state = READY
+    -> wave += 1
+    -> 다음 Wave 시작 허용
+```
+
+### 과거 결함 2: DEFEAT 우선순위와 동일 프레임 후속 처리
+
+상태: `HISTORICAL / FIXED`
+
+```text
+기존 서술:
 move_enemies()
     -> DEFEAT 설정
     -> move_enemies() return
     -> update_towers()
     -> update_robot()
     -> check_wave_clear()
+    -> VICTORY overwrite 가능
 ```
 
-최종 Wave에서 조건이 맞으면 다음 덮어쓰기 경로가 존재한다.
+현재 코드에서는 `check_wave_clear()`에 다음 guard가 추가되어 위 경로를 차단한다.
 
 ```text
-DEFEAT
-    -> VICTORY
+if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or not wave_running:
+    return
 ```
+
+즉, Base Reach → DEFEAT 상태가 이미 결정되면 최종 Wave의 `VICTORY` 덮어쓰기가 수행되지 않는다.
 
 ## 9. 검증 요약표
 
@@ -507,9 +522,9 @@ DEFEAT
 | Robot Area | `CONFIRMED / ACCEPT` |
 | Robot General/Pierce | `CONFIRMED / ACCEPT` |
 | Robot State Guard | `CONFIRMED` / 사망 경로 `UNVERIFIED` |
-| Normal Wave Transition | `CONFIRMED / HOLD` |
-| DEFEAT Same-frame Flow | `CONFIRMED / HOLD` |
-| DEFEAT -> VICTORY Path | `CONFIRMED / HOLD` |
+| Normal Wave Transition | `CONFIRMED / FIXED` |
+| DEFEAT Same-frame Flow | `CONFIRMED / FIXED` |
+| DEFEAT -> VICTORY Path | `CONFIRMED / BLOCKED_BY_GUARD` |
 | `wave_clear` Role | `CONFIRMED / ACCEPT` |
 
 ## 10. 작업 제한과 미수행 항목

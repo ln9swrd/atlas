@@ -131,6 +131,7 @@ func update_robot(delta: float) -> void:
 		damage_enemy(target, DATA.ROBOT.damage, "robot"); robot.attack = DATA.ROBOT.cooldown
 
 func check_wave_clear() -> void:
+	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or not wave_running: return
 	if not spawn_queue.is_empty() or enemies.any(func(enemy): return enemy.hp > 0.0): return
 	wave_running = false; wave_clear = true
 	if wave < DATA.WAVES.size():
