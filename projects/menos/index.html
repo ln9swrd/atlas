@@ -5,6 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MENOS // Tactical Defense PoC</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .battlefield-panel { position: relative; }
+    .ability-modal {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(9, 16, 21, 0.88);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .ability-modal-card {
+      background: #11191f;
+      border: 1px solid var(--orange);
+      padding: 24px;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+    .ability-modal-header h2 {
+      font-size: 24px;
+      margin: 4px 0 6px;
+      color: var(--ink);
+    }
+    .ability-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .ability-card {
+      background: #18252d;
+      border: 1px solid var(--line);
+      padding: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .ability-card:hover {
+      border-color: var(--cyan);
+      background: #1f323d;
+      transform: translateY(-2px);
+    }
+    .ability-card b {
+      font-size: 16px;
+      color: var(--cyan);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .ability-card p {
+      font-size: 12px;
+      color: var(--ink);
+      margin: 0 0 12px;
+      line-height: 1.4;
+    }
+    .ability-card .meta {
+      font: 10px 'Space Mono', monospace;
+      color: var(--orange);
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+  </style>
 </head>
 <body>
   <main class="app-shell">
@@ -29,6 +96,16 @@
       <div class="battlefield-panel">
         <div class="panel-heading"><div><span class="kicker">LIVE SIMULATION</span><h2>Northbridge Sector</h2></div><span class="hint">Click a slot, then choose a tower</span></div>
         <canvas id="battlefield" width="960" height="560" aria-label="MENOS battlefield"></canvas>
+        <div id="abilityModal" class="ability-modal" style="display: none;">
+          <div class="ability-modal-card">
+            <div class="ability-modal-header">
+              <span class="kicker">SYSTEM UPGRADE</span>
+              <h2>UNLOCK ATLAS-01 ABILITY</h2>
+              <p class="muted">Select 1 ability to unlock for the remainder of this run.</p>
+            </div>
+            <div id="abilityOptions" class="ability-options"></div>
+          </div>
+        </div>
         <div class="legend"><span><i class="legend-dot normal"></i>Normal</span><span><i class="legend-dot rusher"></i>Rusher</span><span><i class="legend-dot heavy"></i>Heavy</span><span><i class="legend-dot giant"></i>Giant</span><span><i class="legend-dot robot"></i>Robot</span></div>
       </div>
 

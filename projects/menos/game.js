@@ -7,7 +7,23 @@ const ui = {
   nextWave: document.querySelector('#nextWaveInfo'), startWave: document.querySelector('#startWave'), restart: document.querySelector('#restart'),
   selectedSlot: document.querySelector('#selectedSlot'), robotStatus: document.querySelector('#robotStatus'), robotHp: document.querySelector('#robotHp'),
   moveCommands: document.querySelector('#moveCommands'), launchRobot: document.querySelector('#launchRobot'), eventFeed: document.querySelector('#eventFeed'),
-  runStatus: document.querySelector('#runStatus'), timer: document.querySelector('#timer')
+  runStatus: document.querySelector('#runStatus'), timer: document.querySelector('#timer'),
+  abilityModal: document.querySelector('#abilityModal'), abilityOptions: document.querySelector('#abilityOptions')
+};
+
+const ABILITY_DEFINITIONS = {
+  ability_area: {
+    id: 'ability_area',
+    name: 'AREA ATTACK',
+    desc: 'Triggers an AoE shockwave dealing 28 DMG when 3+ enemies gather near Atlas-01.',
+    meta: 'CD: 6s · Radius: 72px · 3+ Targets'
+  },
+  ability_heavy_pierce: {
+    id: 'ability_heavy_pierce',
+    name: 'HEAVY PIERCE',
+    desc: 'Fires a high-velocity piercing beam dealing 105 DMG to Heavy and Giant enemies.',
+    meta: 'CD: 7s · Targets: Heavy & Giant'
+  }
 };
 
 let state;
@@ -39,8 +55,10 @@ function resetGame() {
   state = {
     baseHp: 100, gold: 180, currentWave: 1, waveRunning: false, waveComplete: false, elapsed: 0,
     enemies: [], towers: [], selectedSlot: null, spawnQueue: [], spawnTimer: 0, waveClock: 0, effects: [], feed: [],
-    robot: { active: false, x: MAP.robotSpots[1].x, y: MAP.robotSpots[1].y, hp: ROBOT.hp, commands: ROBOT.maxMoves, targetSpot: 'CENTER', attackTimer: 0, areaTimer: 0, pierceTimer: 0 }
+    robot: { active: false, x: MAP.robotSpots[1].x, y: MAP.robotSpots[1].y, hp: ROBOT.hp, commands: ROBOT.maxMoves, targetSpot: 'CENTER', attackTimer: 0, areaTimer: 0, pierceTimer: 0, unlockedAbilities: [] },
+    pendingAbilityChoice: false
   };
+  hideAbilityModal();
   addFeed('Build a tower, then start the first wave.');
   updateUi();
 }
@@ -58,13 +76,19 @@ function updateUi() {
   ui.gold.textContent = state.gold;
   ui.wave.textContent = `${state.currentWave} / ${WAVES.length}`;
   ui.nextWave.textContent = next.label;
-  ui.startWave.textContent = state.waveRunning ? `WAVE ${state.currentWave} IN PROGRESS` : state.waveComplete ? (state.currentWave === WAVES.length ? 'ALL WAVES CLEAR' : `START WAVE ${state.currentWave + 1}`) : `START WAVE ${state.currentWave}`;
-  ui.startWave.disabled = state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length;
+  ui.startWave.textContent = state.waveRunning
+    ? `WAVE ${state.currentWave} IN PROGRESS`
+    : state.pendingAbilityChoice
+    ? 'SELECT ABILITY UPGRADE'
+    : state.waveComplete
+    ? (state.currentWave === WAVES.length ? 'ALL WAVES CLEAR' : `START WAVE ${state.currentWave + 1}`)
+    : `START WAVE ${state.currentWave}`;
+  ui.startWave.disabled = state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice;
   ui.robotStatus.textContent = state.robot.active ? `DEPLOYED · ${state.robot.targetSpot}` : 'DOCKED';
   ui.robotHp.textContent = `${Math.max(0, Math.ceil(state.robot.hp))} / ${ROBOT.hp}`;
   ui.moveCommands.textContent = state.robot.commands;
   ui.selectedSlot.textContent = state.selectedSlot ? `${state.selectedSlot.id} · SELECTED` : 'NO SLOT';
-  ui.runStatus.textContent = state.baseHp <= 0 ? 'BREACHED' : state.waveRunning ? 'LIVE' : state.waveComplete ? 'WAVE CLEAR' : 'READY';
+  ui.runStatus.textContent = state.baseHp <= 0 ? 'BREACHED' : state.waveRunning ? 'LIVE' : state.pendingAbilityChoice ? 'UPGRADE PENDING' : state.waveComplete ? 'WAVE CLEAR' : 'READY';
   ui.timer.textContent = formatTime(state.elapsed);
 }
 
@@ -75,7 +99,7 @@ function formatTime(seconds) {
 }
 
 function startWave() {
-  if (state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length) return;
+  if (state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice) return;
   const wave = EXPERIMENT.active ? buildExperimentWave() : WAVES[state.currentWave - 1];
   state.spawnQueue = wave.spawns.flatMap(spawn => Array.from({ length: spawn.count }, (_, index) => ({ ...spawn, delay: index * spawn.interval })));
   state.waveClock = 0;
@@ -181,7 +205,11 @@ function updateRobot(dt) {
   robot.pierceTimer -= dt;
   const target = nearestEnemy(robot.x, robot.y, ROBOT.range);
   const heavyTarget = nearestEnemy(robot.x, robot.y, ROBOT.range + 20, 'heavy');
-  if (robot.areaTimer <= 0) {
+
+  const isAreaUnlocked = robot.unlockedAbilities && robot.unlockedAbilities.includes('ability_area');
+  const isPierceUnlocked = robot.unlockedAbilities && robot.unlockedAbilities.includes('ability_heavy_pierce');
+
+  if (isAreaUnlocked && robot.areaTimer <= 0) {
     const nearby = state.enemies.filter(enemy => enemy.hp > 0 && Math.hypot(enemy.x - robot.x, enemy.y - robot.y) <= ROBOT.abilities.ability_area.radius);
     if (nearby.length >= ROBOT.abilities.ability_area.threshold) {
       nearby.forEach(enemy => damageEnemy(enemy, ROBOT.abilities.ability_area.damage, 'area'));
@@ -190,7 +218,7 @@ function updateRobot(dt) {
       addFeed('Atlas-01 used AREA ATTACK.', 'good');
     }
   }
-  if (robot.pierceTimer <= 0 && heavyTarget) {
+  if (isPierceUnlocked && robot.pierceTimer <= 0 && heavyTarget) {
     damageEnemy(heavyTarget, ROBOT.abilities.ability_heavy_pierce.damage, 'pierce');
     robot.pierceTimer = ROBOT.abilities.ability_heavy_pierce.cooldown;
     state.effects.push({ type: 'pierce', x: heavyTarget.x, y: heavyTarget.y, life: .35, maxLife: .35 });
@@ -207,13 +235,65 @@ function updateEffects(dt) {
   state.enemies.forEach(enemy => { enemy.flash = Math.max(0, enemy.flash - dt); });
 }
 
+function openAbilityChoice() {
+  const unlocked = state.robot.unlockedAbilities || [];
+  const lockedIds = Object.keys(ABILITY_DEFINITIONS).filter(id => !unlocked.includes(id));
+  if (lockedIds.length === 0) {
+    state.pendingAbilityChoice = false;
+    hideAbilityModal();
+    return;
+  }
+  const candidateIds = lockedIds.slice(0, 2);
+  state.pendingAbilityChoice = true;
+  renderAbilityModal(candidateIds);
+}
+
+function renderAbilityModal(candidateIds) {
+  if (!ui.abilityModal || !ui.abilityOptions) return;
+  ui.abilityOptions.innerHTML = candidateIds.map(id => {
+    const def = ABILITY_DEFINITIONS[id];
+    return `<button class="ability-card" data-ability="${id}">
+      <div>
+        <b>${def.name}</b>
+        <p>${def.desc}</p>
+      </div>
+      <div class="meta">${def.meta}</div>
+    </button>`;
+  }).join('');
+
+  ui.abilityOptions.querySelectorAll('.ability-card').forEach(btn => {
+    btn.addEventListener('click', () => selectAbility(btn.dataset.ability));
+  });
+
+  ui.abilityModal.style.display = 'flex';
+}
+
+function selectAbility(abilityId) {
+  if (!state.robot.unlockedAbilities) state.robot.unlockedAbilities = [];
+  if (!state.robot.unlockedAbilities.includes(abilityId)) {
+    state.robot.unlockedAbilities.push(abilityId);
+    const def = ABILITY_DEFINITIONS[abilityId];
+    addFeed(`Atlas-01 unlocked ${def ? def.name : abilityId}.`, 'good');
+  }
+  state.pendingAbilityChoice = false;
+  hideAbilityModal();
+  updateUi();
+}
+
+function hideAbilityModal() {
+  if (ui.abilityModal) {
+    ui.abilityModal.style.display = 'none';
+  }
+}
+
 function finishWaveIfReady() {
   if (!state.waveRunning || state.spawnQueue.length || state.enemies.some(enemy => enemy.hp > 0)) return;
   state.waveRunning = false;
   state.waveComplete = true;
   if (state.currentWave < WAVES.length) {
-    addFeed(`Wave ${state.currentWave} clear. Read the next threat before committing Atlas-01.`, 'good');
+    addFeed(`Wave ${state.currentWave} clear. Choose an ability upgrade for Atlas-01.`, 'good');
     state.currentWave += 1;
+    openAbilityChoice();
   } else {
     addFeed('All four waves clear. Restart to repeat a position experiment.', 'good');
   }
@@ -374,6 +454,8 @@ window.__MENOS_TEST__ = {
   update,
   state,
   getState: () => state,
+  openAbilityChoice,
+  selectAbility,
   draw
 };
 
