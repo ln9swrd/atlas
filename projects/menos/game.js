@@ -329,7 +329,7 @@ canvas.addEventListener('click', event => {
 });
 document.querySelectorAll('.tower-card').forEach(button => button.addEventListener('click', () => buildTower(button.dataset.tower)));
 ui.startWave.addEventListener('click', startWave);
-ui.launchRobot.addEventListener('click', () => { if (!state.robot.active) { state.robot.active = true; state.robot.targetSpot = 'CENTER'; addFeed('Atlas-01 launched at CENTER. Choose its first crisis zone.', 'good'); updateUi(); } });
+ui.launchRobot.addEventListener('click', () => { if (!state.robot.active) { state.robot.hp = ROBOT.hp; state.robot.active = true; state.robot.targetSpot = 'CENTER'; addFeed('Atlas-01 launched at CENTER. Choose its first crisis zone.', 'good'); updateUi(); } });
 ui.restart.addEventListener('click', resetGame);
 
 function frame(now) { const dt = Math.min(.05, (now - lastFrame) / 1000); lastFrame = now; update(dt); draw(); requestAnimationFrame(frame); }
