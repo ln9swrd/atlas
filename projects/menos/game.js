@@ -13,6 +13,28 @@ const ui = {
 let state;
 let lastFrame = performance.now();
 
+const EXPERIMENT = {
+  active: false,
+  disableTowers: true,
+  enemyType: 'enemy_heavy',
+  lane: 'left',
+  spawnCount: 5,
+  spawnInterval: 1.2
+};
+
+function buildExperimentWave() {
+  return {
+    number: 1,
+    label: 'HEAVY TEST',
+    spawns: [{
+      type: EXPERIMENT.enemyType,
+      count: EXPERIMENT.spawnCount,
+      interval: EXPERIMENT.spawnInterval,
+      lanes: [EXPERIMENT.lane]
+    }]
+  };
+}
+
 function resetGame() {
   state = {
     baseHp: 100, gold: 180, currentWave: 1, waveRunning: false, waveComplete: false, elapsed: 0,
@@ -54,13 +76,13 @@ function formatTime(seconds) {
 
 function startWave() {
   if (state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length) return;
-  const wave = WAVES[state.currentWave - 1];
+  const wave = EXPERIMENT.active ? buildExperimentWave() : WAVES[state.currentWave - 1];
   state.spawnQueue = wave.spawns.flatMap(spawn => Array.from({ length: spawn.count }, (_, index) => ({ ...spawn, delay: index * spawn.interval })));
   state.waveClock = 0;
   state.spawnTimer = 0;
   state.waveRunning = true;
   state.waveComplete = false;
-  addFeed(`Wave ${state.currentWave} started: ${wave.label.toLowerCase()}.`, 'good');
+  addFeed(`${EXPERIMENT.active ? 'Experiment wave' : `Wave ${state.currentWave}`} started: ${wave.label.toLowerCase()}.`, 'good');
   updateUi();
 }
 
@@ -119,6 +141,7 @@ function nearestEnemy(x, y, range, preference = null) {
 }
 
 function updateTowers(dt) {
+  if (EXPERIMENT.active && EXPERIMENT.disableTowers) return;
   for (const tower of state.towers) {
     tower.cooldown -= dt;
     if (tower.cooldown > 0) continue;
@@ -289,4 +312,47 @@ ui.launchRobot.addEventListener('click', () => { if (!state.robot.active) { stat
 ui.restart.addEventListener('click', resetGame);
 
 function frame(now) { const dt = Math.min(.05, (now - lastFrame) / 1000); lastFrame = now; update(dt); draw(); requestAnimationFrame(frame); }
+
+function enableMinimalDiscriminatingExperiment() {
+  EXPERIMENT.active = true;
+  EXPERIMENT.disableTowers = true;
+  EXPERIMENT.enemyType = 'enemy_heavy';
+  EXPERIMENT.lane = 'left';
+  EXPERIMENT.spawnCount = 5;
+  EXPERIMENT.spawnInterval = 1.2;
+  state.towers = [];
+  state.robot.active = true;
+  state.robot.targetSpot = 'CENTER';
+  state.robot.x = MAP.robotSpots[1].x;
+  state.robot.y = MAP.robotSpots[1].y;
+  state.robot.commands = ROBOT.maxMoves;
+  state.waveRunning = false;
+  state.waveComplete = false;
+  state.currentWave = 1;
+  updateUi();
+}
+
+function configureRobotPosition(positionId) {
+  const spot = MAP.robotSpots.find(item => item.id === positionId);
+  if (!spot) return null;
+  state.robot.x = spot.x;
+  state.robot.y = spot.y;
+  state.robot.targetSpot = spot.id;
+  state.robot.active = true;
+  updateUi();
+  return { x: spot.x, y: spot.y, id: spot.id };
+}
+
+window.__MENOS_TEST__ = {
+  EXPERIMENT,
+  enableMinimalDiscriminatingExperiment,
+  configureRobotPosition,
+  resetGame,
+  startWave,
+  moveRobot,
+  update,
+  state,
+  draw
+};
+
 resetGame(); requestAnimationFrame(frame);
