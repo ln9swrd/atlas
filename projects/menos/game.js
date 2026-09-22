@@ -70,13 +70,12 @@ function addFeed(message, type = '') {
 }
 
 function updateUi() {
-  const wave = WAVES[state.currentWave - 1];
-  const next = WAVES[state.currentWave] || wave;
+  const wave = WAVES[state.currentWave - 1] || WAVES[0];
   const isVictory = state.waveComplete && state.currentWave === WAVES.length;
   ui.baseHp.textContent = Math.max(0, Math.ceil(state.baseHp));
   ui.gold.textContent = state.gold;
   ui.wave.textContent = `${state.currentWave} / ${WAVES.length}`;
-  ui.nextWave.textContent = next.label;
+  ui.nextWave.textContent = `WAVE ${wave.number}: ${wave.label}`;
   ui.startWave.textContent = state.waveRunning
     ? `WAVE ${state.currentWave} IN PROGRESS`
     : state.pendingAbilityChoice
