@@ -72,6 +72,7 @@ function addFeed(message, type = '') {
 function updateUi() {
   const wave = WAVES[state.currentWave - 1];
   const next = WAVES[state.currentWave] || wave;
+  const isVictory = state.waveComplete && state.currentWave === WAVES.length;
   ui.baseHp.textContent = Math.max(0, Math.ceil(state.baseHp));
   ui.gold.textContent = state.gold;
   ui.wave.textContent = `${state.currentWave} / ${WAVES.length}`;
@@ -81,14 +82,14 @@ function updateUi() {
     : state.pendingAbilityChoice
     ? 'SELECT ABILITY UPGRADE'
     : state.waveComplete
-    ? (state.currentWave === WAVES.length ? 'ALL WAVES CLEAR' : `START WAVE ${state.currentWave + 1}`)
+    ? (isVictory ? 'ALL WAVES CLEAR' : `START WAVE ${state.currentWave + 1}`)
     : `START WAVE ${state.currentWave}`;
-  ui.startWave.disabled = state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice;
+  ui.startWave.disabled = state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice || isVictory;
   ui.robotStatus.textContent = state.robot.active ? `DEPLOYED · ${state.robot.targetSpot}` : 'DOCKED';
   ui.robotHp.textContent = `${Math.max(0, Math.ceil(state.robot.hp))} / ${ROBOT.hp}`;
   ui.moveCommands.textContent = state.robot.commands;
   ui.selectedSlot.textContent = state.selectedSlot ? `${state.selectedSlot.id} · SELECTED` : 'NO SLOT';
-  ui.runStatus.textContent = state.baseHp <= 0 ? 'BREACHED' : state.waveRunning ? 'LIVE' : state.pendingAbilityChoice ? 'UPGRADE PENDING' : state.waveComplete ? 'WAVE CLEAR' : 'READY';
+  ui.runStatus.textContent = state.baseHp <= 0 ? 'BREACHED' : state.waveRunning ? 'LIVE' : state.pendingAbilityChoice ? 'UPGRADE PENDING' : isVictory ? 'VICTORY' : state.waveComplete ? 'WAVE CLEAR' : 'READY';
   ui.timer.textContent = formatTime(state.elapsed);
 }
 
@@ -99,7 +100,8 @@ function formatTime(seconds) {
 }
 
 function startWave() {
-  if (state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice) return;
+  const isVictory = state.waveComplete && state.currentWave === WAVES.length;
+  if (state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice || isVictory) return;
   const wave = EXPERIMENT.active ? buildExperimentWave() : WAVES[state.currentWave - 1];
   state.spawnQueue = wave.spawns.flatMap(spawn => Array.from({ length: spawn.count }, (_, index) => ({ ...spawn, delay: index * spawn.interval })));
   state.waveClock = 0;
@@ -141,13 +143,24 @@ function updateGiantRobotAttack(dt, enemy) {
   enemy.robotAttackTimer = data.robotCooldown;
 }
 
+function updateRusherSprint(enemy) {
+  if (enemy.type !== 'enemy_rusher') return 1;
+  if (!enemy.sprintLogged && enemy.x >= 180) {
+    enemy.sprinting = true;
+    enemy.sprintLogged = true;
+    addFeed('Rusher initiated SPRINT BURST.', 'alert');
+  }
+  return enemy.sprinting ? 1.4 : 1;
+}
+
 function moveEnemies(dt) {
   for (const enemy of state.enemies) {
     const data = ENEMIES[enemy.type];
     if (enemy.hp <= 0) continue;
+    const speedMult = updateRusherSprint(enemy);
     const targetY = MAP.base.y;
     const direction = enemy.lane === 'left' ? 1 : 1;
-    enemy.x += data.speed * dt * direction;
+    enemy.x += data.speed * speedMult * dt * direction;
     const progress = Math.min(1, enemy.x / 480);
     enemy.y = MAP.lanes[enemy.lane].y + (targetY - MAP.lanes[enemy.lane].y) * progress;
     if (enemy.type === 'enemy_giant') updateGiantRobotAttack(dt, enemy);
