@@ -7,7 +7,7 @@ export const ENEMIES = {
   enemy_normal: { id: 'enemy_normal', name: 'Normal', hp: 42, speed: 25, armor: 0, baseDamage: 8, reward: 12, radius: 10, color: '#f0b35a' },
   enemy_rusher: { id: 'enemy_rusher', name: 'Rusher', hp: 27, speed: 55, armor: 0, baseDamage: 6, reward: 10, radius: 8, color: '#ef7068' },
   enemy_heavy: { id: 'enemy_heavy', name: 'Heavy', hp: 125, speed: 14, armor: 8, baseDamage: 18, reward: 28, radius: 15, color: '#a98ce6' },
-  enemy_giant: { id: 'enemy_giant', name: 'Giant', hp: 620, speed: 7, armor: 18, baseDamage: 45, reward: 90, radius: 28, color: '#f04f6b' }
+  enemy_giant: { id: 'enemy_giant', name: 'Giant', hp: 620, speed: 7, armor: 18, baseDamage: 45, reward: 90, radius: 28, color: '#f04f6b', robotDamage: 20, robotRange: 120, robotCooldown: 2 }
 };
 
 export const ROBOT = {

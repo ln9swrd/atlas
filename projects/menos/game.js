@@ -93,8 +93,28 @@ function spawnDueEnemies(dt) {
     const entry = state.spawnQueue.shift();
     const lane = entry.lanes[(state.enemies.length + state.spawnQueue.length) % entry.lanes.length];
     const data = ENEMIES[entry.type];
-    state.enemies.push({ type: entry.type, lane, x: 0, y: MAP.lanes[lane].y, hp: data.hp, maxHp: data.hp, flash: 0, id: `${entry.type}-${state.elapsed}-${Math.random()}` });
+    state.enemies.push({ type: entry.type, lane, x: 0, y: MAP.lanes[lane].y, hp: data.hp, maxHp: data.hp, flash: 0, robotAttackTimer: 0, id: `${entry.type}-${state.elapsed}-${Math.random()}` });
   }
+}
+
+function damageRobot(amount) {
+  if (!state.robot.active) return;
+  state.robot.hp = Math.max(0, state.robot.hp - amount);
+  if (state.robot.hp <= 0) {
+    state.robot.hp = 0;
+    state.robot.active = false;
+    addFeed('Atlas-01 destroyed. Base defense remains active.', 'alert');
+  }
+}
+
+function updateGiantRobotAttack(dt, enemy) {
+  if (enemy.type !== 'enemy_giant' || !state.robot.active || state.robot.hp <= 0) return;
+  const data = ENEMIES[enemy.type];
+  enemy.robotAttackTimer -= dt;
+  if (Math.hypot(enemy.x - state.robot.x, enemy.y - state.robot.y) > data.robotRange) return;
+  if (enemy.robotAttackTimer > 0) return;
+  damageRobot(data.robotDamage);
+  enemy.robotAttackTimer = data.robotCooldown;
 }
 
 function moveEnemies(dt) {
@@ -106,6 +126,7 @@ function moveEnemies(dt) {
     enemy.x += data.speed * dt * direction;
     const progress = Math.min(1, enemy.x / 480);
     enemy.y = MAP.lanes[enemy.lane].y + (targetY - MAP.lanes[enemy.lane].y) * progress;
+    if (enemy.type === 'enemy_giant') updateGiantRobotAttack(dt, enemy);
     if (enemy.x >= 465) {
       state.baseHp -= data.baseDamage;
       enemy.hp = 0;
