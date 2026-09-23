@@ -184,9 +184,12 @@ func build_tower(type: String) -> void:
 	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": SLOTS[selected_slot], "data": data, "cooldown": 0.0}); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""
 
 func launch_robot() -> void:
-	if robot.active or run_state != RunState.READY: return
+	if not can_launch_robot(): return
 	robot.hp = DATA.ROBOT.hp
-	robot.active = true; robot.position = ROBOT_SPOTS.CENTER; robot.spot = "CENTER"; log_event("ATLAS-01 launched at CENTER. Choose a crisis zone.")
+	robot.active = true; log_event("ATLAS-01 launched at %s. Choose a crisis zone." % robot.spot)
+
+func can_launch_robot() -> bool:
+	return not robot.active and run_state in [RunState.READY, RunState.RUNNING]
 
 func move_robot(id: String) -> void:
 	if not robot.active or robot.commands <= 0 or robot.spot == id: return
@@ -220,7 +223,7 @@ func draw_ui() -> void:
 	elif run_state == RunState.VICTORY: status_text = "VICTORY"
 	elif run_state == RunState.DEFEAT: status_text = "DEFEAT"
 	draw_string(ThemeDB.fallback_font, Vector2(920, 585), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if run_state == RunState.VICTORY else Color("ef7068") if run_state == RunState.DEFEAT else Color("d7fff7"))
-	button(Rect2(920, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(920, 175, 145, 42), "RESTART", false); button(Rect2(920, 250, 145, 42), "LAUNCH ROBOT", robot.active or run_state != RunState.READY); button(Rect2(920, 305, 145, 42), "BUILD CANNON  55", run_state != RunState.READY); button(Rect2(920, 360, 145, 42), "BUILD GATLING 35", run_state != RunState.READY)
+	button(Rect2(920, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(920, 175, 145, 42), "RESTART", false); button(Rect2(920, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(920, 305, 145, 42), "BUILD CANNON  55", run_state != RunState.READY); button(Rect2(920, 360, 145, 42), "BUILD GATLING 35", run_state != RunState.READY)
 	draw_string(ThemeDB.fallback_font, Vector2(920, 535), "ATLAS-01  %s" % ("DEPLOYED / " + robot.spot if robot.active else "DOCKED"), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce")); draw_string(ThemeDB.fallback_font, Vector2(920, 557), "HP %03d   MOVES %d" % [max(0, ceil(robot.hp)), robot.commands], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
 	draw_string(ThemeDB.fallback_font, Vector2(30, 665), "CLICK SLOTS TO SELECT  /  CLICK LEFT CENTER RIGHT TO MOVE  /  R TO RESTART", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6a858a"))
 	for index in range(feed.size()): draw_string(ThemeDB.fallback_font, Vector2(30, 590 - index * 20), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 820, 12, Color("a9c5c7"))

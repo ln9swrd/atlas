@@ -46,3 +46,13 @@ STATUS: Browser position experiment complete; Godot PIE position comparison PASS
 
 - Add production art, audio, extra maps, enemies, towers, robots, or meta systems.
 - Report PIE as verified without direct runtime inspection.
+
+## Handoff — Wave-time Robot redeploy
+
+- Status: Implemented; CODE load check passed; requested PIE scenario remains unverified.
+- `godot/main.gd`: Robot launch is permitted in READY or RUNNING while inactive. Redeploy restores max HP and preserves the last position and move count; it does not alter the current Wave state.
+- Validation: Godot 4.7.2 headless editor load exited `0`; it reported certificate-store and user editor-settings access errors. `git diff --check` passed.
+- Generated editor metadata: `.godot/editor/filesystem_cache10` and `.godot/editor/filesystem_update4` were touched during the headless editor scan; they are not implementation changes.
+- Related commit: none.
+- Next: Master run Wave 4, capture the destroyed Robot with the enabled launch button, launch it, then capture `DEPLOYED`, full Robot HP, and Wave still in progress. Do not mark PIE verified until directly observed.
+- Resume condition: obtain those PIE screenshots from Master; do not change movement, balance, cost, or UI design in this verification.
