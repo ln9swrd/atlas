@@ -3,7 +3,7 @@
 ## Status
 
 Godot PoC implementation is ready for direct PIE playtest. Browser fallback exists.
-The Browser position experiment is documented: LEFT/CENTER/RIGHT produced no measurable difference under its fixed setup. Godot position outcomes and player-perceived strategy remain unverified in direct play.
+The Browser position experiment found no measurable difference under its fixed setup. In the Godot 4.7.2 PIE comparison, LEFT/CENTER/RIGHT all reached Wave 4 Victory, with different Base HP, Robot HP, Gold, and remaining move counts. LEFT's route and move timing are unknown, so position itself is not confirmed as the cause. Player reasoning, strategic understanding, fun, and balance remain unverified.
 Victory and defeat end states are explicit; a completed run only restarts.
 
 ## Changed
@@ -19,26 +19,28 @@ Victory and defeat end states are explicit; a completed run only restarts.
 - BUILD: Godot project loads successfully; no export build was requested for this PoC.
 - EDITOR: PASS; project opened with the installed Godot 4.7.2 editor.
 - Robot/Giant interaction: CODE PRESENT in Browser and Godot; direct runtime behavior remains unverified.
-- PIE: UNVERIFIED; the recorded Godot checks were headless/editor checks, not a direct interactive playtest.
+- PIE: VERIFIED / PASS for the direct Robot-position comparison only; this does not verify the entire project.
+- Strategic understanding: UNVERIFIED; player choice reasons were not captured.
+- Fun/balance: UNVERIFIED.
 
 ## Next
 
-Perform a direct Godot PIE smoke test with the same tower and wave setup for LEFT, CENTER, and RIGHT. Capture end states and outcomes, and note whether the position choice is understandable in play. Do not infer fun or balance from this single test.
+Keep the result bounded to the completed Godot PIE comparison. Do not infer position causality, strategic understanding, fun, or balance; any further player study requires a separate task.
 
 # CURRENT_STATE — menos
 
-ACTIVE_TARGET: MENOS direct Godot PIE validation following the completed Browser position experiment
+ACTIVE_TARGET: menos
 ACTIVE_MODE: copilot
 ACTIVE_BRANCH: main
-STATUS: Browser position experiment complete; direct Godot PIE and player-perceived strategy remain unverified
+STATUS: Browser position experiment complete; Godot PIE position comparison PASS; position causality and player-perceived strategy remain unverified
 
 ## Next one thing
 
-1. Run the direct Godot PIE smoke test for LEFT, CENTER, and RIGHT under the same setup; record outcomes and player reasoning.
+1. No implementation follow-up from this comparison; keep conclusions limited to the recorded Runtime observations.
 
 ## Blockers
 
-- Direct interactive Godot PIE results are not yet recorded.
+- LEFT move route/timing and player choice reasons were not recorded.
 
 ## Do not
 

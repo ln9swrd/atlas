@@ -83,7 +83,7 @@ MENOS는 소규모 상업용 싱글플레이 PC/Steam 전략형 Tower Defense다
 | 항목 | 설계 목표 | 현재 확인된 PoC 범위 |
 | --- | --- | --- |
 | Robot 출격 | 적 압박을 보고 출격 시점 판단 | Browser/Godot PoC에서 출격 가능. 최적 시점이나 선택의 체감은 미검증 |
-| Robot 위치 | 전투 중 지휘 판단 | 위치별 Lane coverage와 일부 조건의 Base 피해 차이가 Runtime에서 확인됨 |
+| Robot 위치 | 전투 중 지휘 판단 | Browser 고정 조건에서는 차이가 없었고 Godot PIE에서는 결과 차이가 관찰됨. LEFT 이동 경로·시점이 확인되지 않아 위치 자체의 인과성은 미확정 |
 | Robot 이동 | 이동 시간·위험을 포함할지 결정 필요 | 위치가 즉시 바뀌며 명령 횟수만 제한됨 |
 | Robot 피해·파괴 | Giant 교전, 파괴 후 재출격 | Browser와 Godot 코드에 Giant의 Robot 공격, Robot 파괴 상태, 재출격 시 HP 초기화가 구현됨. 직접 PIE 동작은 미검증 |
 | 성장 | 침공 사이에 다음 전투 해결책 선택 | Browser PoC에는 Wave Clear 후 능력 선택이 있음. 상업용 성장 구조로 확정된 것은 아님 |
@@ -283,7 +283,7 @@ NEXT WAVE
 
 ## 9. 핵심 재미 검증 기준
 
-상태: 위치의 구조적 전투 영향은 `CONFIRMED`; 재미와 일반성은 `UNVERIFIED`
+상태: Godot PIE에서 위치별 결과 차이 관찰은 `CONFIRMED`; 위치 자체의 인과성, 전략적 이해도, 재미와 밸런스는 `UNVERIFIED`
 
 가장 중요한 미검증 질문은 다음과 같다.
 
@@ -720,26 +720,33 @@ W3: Rusher + Heavy
 W4: 혼합 + Giant
 ```
 
-### 18.9.1 다음 설계 검증과 판정 기준
+### 18.9.1 Godot PIE 위치 비교 결과 및 판정 경계
 
-상태: `PROPOSAL` / 플레이 검증 전
+상태: Runtime 관찰 `CONFIRMED`; 위치 자체의 인과성 및 플레이어 이해도 `UNVERIFIED`
 
-현재 핵심 설계 공백은 위치 차이가 존재하는지 여부가 아니라, 플레이어가 그 차이를 예측하고 의도적으로 선택하는지 여부다. 다음 검증은 동일한 방어시설과 Wave 조건에서 Robot 위치와 명령 사용 시점을 비교한다. Browser 실험에서 기록된 위치별 결과와 Godot 결과는 서로 다른 실행 기반이므로 한 표본으로 합산하지 않는다.
+Godot 4.7.2 PIE에서 동일한 Tower 배치(L1/R1 Cannon, L2/R2 Gatling)로 LEFT, CENTER, RIGHT를 실행했다. 세 실행 모두 Wave 4까지 진행해 `VICTORY`가 표시됐다.
 
-실행별로 다음을 기록한다.
+| 위치 | Base HP | Robot HP | Gold | 남은 이동 명령 | 관찰된 Feed |
+| --- | ---: | ---: | ---: | ---: | --- |
+| LEFT | 55 | 220 | 826 | 3 | Giant가 Base에 45 피해를 줌; Giant 처치 기록 없음 |
+| CENTER | 100 | 180 | 916 | 5 | Giant가 Robot에 20 피해를 두 번 줌; Giant 처치 |
+| RIGHT | 82 | 140 | 888 | 4 | Giant 공격 및 Giant 처치 기록 |
 
-- 엔진/PoC 버전, 맵과 적 구성, 방어시설 배치
-- Robot 위치와 각 이동 명령의 시점
-- 최종 Base HP, Robot HP, 승패 및 적의 Base 도달 수
-- 플레이어가 선택 이유와 결과를 이해했는지에 대한 짧은 회고
+이 비교에서 CENTER는 이동하지 않았고, RIGHT는 이동 명령 1회, LEFT는 2회가 소모된 상태였다. LEFT의 정확한 이동 경로와 이동 시점은 확인되지 않았다. RIGHT의 Base HP 감소량은 18이지만, 캡처된 Feed만으로 Base 도달 적 수를 확인할 수 없다.
 
-판정은 다음처럼 제한한다.
+**CONFIRMED**
 
-- `TECHNICAL`: 동일 조건에서 위치 또는 이동 시점에 따른 결과 차이가 재현됨
-- `STRATEGIC`: 플레이어가 위협에 근거해 선택하고, 선택과 결과의 연결을 설명할 수 있음
-- `FUN / BALANCE`: 반복 플레이와 여러 플레이어 관찰이 필요하며, 단일 Runtime 실험으로 확정하지 않음
+- 직접 PIE에서 세 위치 모두 Wave 4까지 Victory했다.
+- 위치별 Base HP, Robot HP, Gold, 남은 이동 명령 차이가 관찰됐다.
+- 같은 Tower 배치와 Wave 구성이 사용됐다.
 
-한 위치가 항상 최선인지, 이동 명령 5회가 적정한지, 위치 변경을 웨이브 중 허용할지는 위 증거가 모이기 전까지 미결정으로 둔다. 이 검증은 이동 로직 구현, 밸런스 수정, 콘텐츠 확장의 승인이 아니다.
+**UNVERIFIED**
+
+- 위치 자체가 결과 차이의 직접 원인인지. LEFT의 이동 경로와 시점이 확인되지 않았다.
+- 플레이어가 각 위치를 선택한 이유와 결과를 전략적으로 이해했는지. 선택 이유는 기록되지 않았다.
+- 위치 시스템의 재미와 밸런스.
+
+Browser 실험에서는 해당 고정 조건에서 세 위치의 측정 결과 차이가 없었다. Browser와 Godot는 별도 실행 환경의 관찰로 유지하며 하나의 결과로 합산하지 않는다. 이번 PIE 비교는 이동 시스템 변경이나 밸런스 변경의 근거로 사용하지 않는다.
 
 현재 Godot PoC는 두 방향 진입, Cannon/Gatling, Normal/Rusher/Heavy/Giant, Robot 1기, 4개 Wave를 갖는다. 초기 PoC에서는 Robot 2대, Tower 업그레이드, 다수 맵을 구현하지 않는다.
 
