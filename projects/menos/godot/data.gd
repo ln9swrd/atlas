@@ -9,7 +9,7 @@ const ENEMIES = {
     "normal": {"name": "NORMAL", "hp": 42.0, "speed": 25.0, "armor": 0.0, "base_damage": 8.0, "reward": 12, "radius": 10.0, "color": Color("f0b35a")},
     "rusher": {"name": "RUSHER", "hp": 27.0, "speed": 55.0, "armor": 0.0, "base_damage": 6.0, "reward": 10, "radius": 8.0, "color": Color("ef7068")},
     "heavy": {"name": "HEAVY", "hp": 125.0, "speed": 14.0, "armor": 8.0, "base_damage": 18.0, "reward": 28, "radius": 15.0, "color": Color("a98ce6")},
-    "giant": {"name": "GIANT", "hp": 620.0, "speed": 7.0, "armor": 18.0, "base_damage": 45.0, "reward": 90, "radius": 28.0, "color": Color("f04f6b"), "robot_damage": 20.0, "robot_range": 120.0, "robot_cooldown": 2.0}
+    "giant": {"name": "GIANT", "hp": 1600.0, "speed": 7.0, "armor": 18.0, "base_damage": 45.0, "reward": 90, "radius": 28.0, "color": Color("f04f6b"), "robot_damage": 20.0, "robot_range": 120.0, "robot_cooldown": 2.0}
 }
 
 const ROBOT = {"id": "robot_main", "name": "ATLAS-01", "hp": 220.0, "speed": 125.0, "damage": 28.0, "cooldown": 0.65, "range": 110.0, "max_moves": 5,
