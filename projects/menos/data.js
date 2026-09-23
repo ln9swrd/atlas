@@ -1,6 +1,6 @@
 export const TOWERS = {
-  tower_cannon: { id: 'tower_cannon', name: 'Cannon', cost: 55, damage: 42, cooldown: 1.35, range: 155, target: 'heavy' },
-  tower_gatling: { id: 'tower_gatling', name: 'Gatling', cost: 35, damage: 9, cooldown: 0.23, range: 145, target: 'normal' }
+  tower_cannon: { id: 'tower_cannon', name: 'Cannon', cost: 55, damage: 42, cooldown: 1.35, range: 155, target: 'heavy', level2: { upgradeCost: 75, damage: 60, cooldown: 1.15, range: 165 } },
+  tower_gatling: { id: 'tower_gatling', name: 'Gatling', cost: 35, damage: 9, cooldown: 0.23, range: 145, target: 'normal', level2: { upgradeCost: 50, damage: 13, cooldown: 0.20, range: 155 } }
 };
 
 export const ENEMIES = {

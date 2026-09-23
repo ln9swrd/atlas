@@ -87,7 +87,14 @@ function updateUi() {
   ui.robotStatus.textContent = state.robot.active ? `DEPLOYED · ${state.robot.targetSpot}` : 'DOCKED';
   ui.robotHp.textContent = `${Math.max(0, Math.ceil(state.robot.hp))} / ${ROBOT.hp}`;
   ui.moveCommands.textContent = state.robot.commands;
-  ui.selectedSlot.textContent = state.selectedSlot ? `${state.selectedSlot.id} · SELECTED` : 'NO SLOT';
+  const selTower = state.selectedSlot ? state.towers.find(t => t.id === state.selectedSlot.id) : null;
+  if (selTower) {
+    const l2 = selTower.data.level2;
+    const costText = selTower.level === 2 ? 'MAX LVL 2' : (l2 ? `UPGRADE: ${l2.upgradeCost}g` : '');
+    ui.selectedSlot.textContent = `${selTower.id} · ${selTower.data.name} LVL ${selTower.level || 1} (${costText})`;
+  } else {
+    ui.selectedSlot.textContent = state.selectedSlot ? `${state.selectedSlot.id} · SELECTED` : 'NO SLOT';
+  }
   ui.runStatus.textContent = state.baseHp <= 0 ? 'BREACHED' : state.waveRunning ? 'LIVE' : state.pendingAbilityChoice ? 'UPGRADE PENDING' : isVictory ? 'VICTORY' : state.waveComplete ? 'WAVE CLEAR' : 'READY';
   ui.timer.textContent = formatTime(state.elapsed);
 }
@@ -377,8 +384,17 @@ function drawBase() {
 }
 
 function drawTower(tower) {
-  ctx.save(); ctx.translate(tower.x, tower.y); ctx.fillStyle = tower.type === 'tower_cannon' ? '#f0a35a' : '#7ed6ce'; ctx.strokeStyle = '#0b1519'; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#0b1519'; ctx.fillRect(-4, -4, 8, 8); ctx.restore();
+  ctx.save(); ctx.translate(tower.x, tower.y);
+  ctx.fillStyle = tower.type === 'tower_cannon' ? '#f0a35a' : '#7ed6ce';
+  ctx.strokeStyle = tower.level === 2 ? '#ffffff' : '#0b1519';
+  ctx.lineWidth = tower.level === 2 ? 4 : 3;
+  ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  if (tower.level === 2) {
+    ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2); ctx.stroke();
+  }
+  ctx.fillStyle = '#0b1519'; ctx.fillRect(-4, -4, 8, 8);
+  ctx.restore();
 }
 
 function drawEnemy(enemy) {
@@ -391,6 +407,14 @@ function drawEnemy(enemy) {
 function drawRobot() {
   const robot = state.robot; if (!robot.active) return;
   ctx.save(); ctx.translate(robot.x, robot.y);
+  const target = nearestEnemy(robot.x, robot.y, ROBOT.range) || nearestEnemy(robot.x, robot.y, ROBOT.range + 20, 'heavy');
+  if (target) {
+    ctx.strokeStyle = 'rgba(239, 112, 104, 0.55)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.arc(0, 0, 26, 0, Math.PI * 2); ctx.stroke();
+    ctx.setLineDash([]);
+  }
   ctx.fillStyle = robot.flash > 0 ? '#ffffff' : '#7ed6ce';
   ctx.strokeStyle = robot.flash > 0 ? '#ef7068' : '#d7fff7';
   ctx.lineWidth = robot.flash > 0 ? 4 : 2;
@@ -409,11 +433,35 @@ function drawEffects() {
 
 function canvasPosition(event) { const rect = canvas.getBoundingClientRect(); return { x: (event.clientX - rect.left) * canvas.width / rect.width, y: (event.clientY - rect.top) * canvas.height / rect.height }; }
 function selectSlot(slot) { state.selectedSlot = slot; updateUi(); }
+function upgradeTower(tower) {
+  if (state.waveRunning) { addFeed('Cannot upgrade towers during wave.', 'alert'); return; }
+  if (!tower || tower.level >= 2) { addFeed('Tower is already at MAX LVL 2.', 'alert'); return; }
+  const l2Data = TOWERS[tower.type]?.level2;
+  if (!l2Data) return;
+  if (state.gold < l2Data.upgradeCost) { addFeed(`Need ${l2Data.upgradeCost} gold to upgrade ${tower.data.name} to LVL 2.`, 'alert'); return; }
+  state.gold -= l2Data.upgradeCost;
+  tower.level = 2;
+  tower.data = { ...tower.data, damage: l2Data.damage, cooldown: l2Data.cooldown, range: l2Data.range, level: 2 };
+  addFeed(`${tower.data.name} at ${tower.id} upgraded to LVL 2 (-${l2Data.upgradeCost}g).`, 'good');
+  state.selectedSlot = null;
+  updateUi();
+}
 function buildTower(id) {
-  if (!state.selectedSlot) { addFeed('Select an empty tower slot first.', 'alert'); return; }
-  if (state.towers.some(tower => tower.id === state.selectedSlot.id)) return;
+  if (!state.selectedSlot) { addFeed('Select a tower slot first.', 'alert'); return; }
+  if (state.waveRunning) { addFeed('Cannot modify towers while wave is in progress.', 'alert'); return; }
+  const existingTower = state.towers.find(tower => tower.id === state.selectedSlot.id);
+  if (existingTower) {
+    if (existingTower.level === 1 && existingTower.type === id) {
+      upgradeTower(existingTower);
+    } else if (existingTower.level >= 2) {
+      addFeed(`${existingTower.data.name} at ${existingTower.id} is already MAX LVL 2.`, 'alert');
+    } else {
+      addFeed(`Slot ${existingTower.id} has ${existingTower.data.name} LVL 1. Select matching type to upgrade.`, 'alert');
+    }
+    return;
+  }
   const data = TOWERS[id]; if (state.gold < data.cost) { addFeed(`Need ${data.cost} gold for ${data.name}.`, 'alert'); return; }
-  state.gold -= data.cost; state.towers.push({ ...state.selectedSlot, type: id, data, cooldown: 0 }); addFeed(`${data.name} deployed at ${state.selectedSlot.id}.`, 'good'); state.selectedSlot = null; updateUi();
+  state.gold -= data.cost; state.towers.push({ ...state.selectedSlot, type: id, data: { ...data }, level: 1, cooldown: 0 }); addFeed(`${data.name} LVL 1 deployed at ${state.selectedSlot.id}.`, 'good'); state.selectedSlot = null; updateUi();
 }
 function moveRobot(position) {
   const robot = state.robot; if (!robot.active || robot.commands <= 0) return;
@@ -424,7 +472,7 @@ function moveRobot(position) {
 canvas.addEventListener('click', event => {
   const point = canvasPosition(event);
   const slot = MAP.slots.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 24);
-  if (slot && !state.towers.some(tower => tower.id === slot.id)) { selectSlot(slot); return; }
+  if (slot) { selectSlot(slot); return; }
   const spot = MAP.robotSpots.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 48);
   if (spot) moveRobot(spot);
 });
@@ -472,6 +520,8 @@ window.__MENOS_TEST__ = {
   resetGame,
   startWave,
   moveRobot,
+  buildTower,
+  upgradeTower,
   update,
   state,
   getState: () => state,
