@@ -30,7 +30,7 @@ func _ready() -> void:
 func reset_game() -> void:
 	base_hp = 100.0; gold = 180; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""
-	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS.CENTER, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0}
+	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS.CENTER, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
 	feed.clear(); log_event("Build towers, launch ATLAS-01, then start Wave 1.")
 
 func log_event(text: String) -> void:
@@ -45,6 +45,8 @@ func _process(delta: float) -> void:
 		update_towers(delta)
 		update_robot(delta)
 		check_wave_clear()
+	if robot.get("active", false):
+		robot["flash"] = max(0.0, float(robot.get("flash", 0.0)) - delta)
 	for effect in effects:
 		effect.life -= delta
 	effects = effects.filter(func(item): return item.life > 0.0)
@@ -71,6 +73,8 @@ func spawn_enemies() -> void:
 func damage_robot(amount: float) -> void:
 	if not robot.active: return
 	robot.hp = max(0.0, robot.hp - amount)
+	robot["flash"] = 0.12
+	effects.append({"position": robot.position, "type": "giantHit", "life": 0.28})
 	if robot.hp <= 0.0:
 		robot.hp = 0.0; robot.active = false; log_event("ATLAS-01 destroyed. Base defense remains active.")
 
@@ -211,7 +215,13 @@ func _draw() -> void:
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
 		var data: Dictionary = DATA.ENEMIES[enemy.type]; draw_circle(enemy.position, data.radius, Color.WHITE if enemy.flash > 0.0 else data.color); draw_rect(Rect2(enemy.position - Vector2(data.radius, data.radius + 8), Vector2(data.radius * 2, 4)), Color("263238")); draw_rect(Rect2(enemy.position - Vector2(data.radius, data.radius + 8), Vector2(data.radius * 2 * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("92d28b"))
-	if robot.active: draw_circle(robot.position, 22, Color("7ed6ce")); draw_arc(robot.position, 28, 0, TAU, 6, Color("d7fff7"), 2)
+	for effect in effects:
+		if effect.get("type", "") == "giantHit":
+			draw_arc(effect.position, 35.0, 0, TAU, 16, Color("ef7068"), 3.0)
+	if robot.active:
+		var is_flashing: bool = float(robot.get("flash", 0.0)) > 0.0
+		draw_circle(robot.position, 22, Color.WHITE if is_flashing else Color("7ed6ce"))
+		draw_arc(robot.position, 28, 0, TAU, 6, Color("ef7068") if is_flashing else Color("d7fff7"), 3 if is_flashing else 2)
 	draw_ui()
 
 func draw_ui() -> void:

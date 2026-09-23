@@ -71,17 +71,17 @@ function addFeed(message, type = '') {
 
 function updateUi() {
   const wave = WAVES[state.currentWave - 1] || WAVES[0];
-  const isVictory = state.waveComplete && state.currentWave === WAVES.length;
+  const isVictory = state.waveComplete && state.currentWave > WAVES.length;
   ui.baseHp.textContent = Math.max(0, Math.ceil(state.baseHp));
   ui.gold.textContent = state.gold;
-  ui.wave.textContent = `${state.currentWave} / ${WAVES.length}`;
+  ui.wave.textContent = `${Math.min(WAVES.length, state.currentWave)} / ${WAVES.length}`;
   ui.nextWave.textContent = `WAVE ${wave.number}: ${wave.label}`;
   ui.startWave.textContent = state.waveRunning
     ? `WAVE ${state.currentWave} IN PROGRESS`
     : state.pendingAbilityChoice
     ? 'SELECT ABILITY UPGRADE'
     : state.waveComplete
-    ? (isVictory ? 'ALL WAVES CLEAR' : `START WAVE ${state.currentWave + 1}`)
+    ? (isVictory ? 'ALL WAVES CLEAR' : `START WAVE ${state.currentWave}`)
     : `START WAVE ${state.currentWave}`;
   ui.startWave.disabled = state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice || isVictory;
   ui.robotStatus.textContent = state.robot.active ? `DEPLOYED · ${state.robot.targetSpot}` : 'DOCKED';
@@ -99,7 +99,7 @@ function formatTime(seconds) {
 }
 
 function startWave() {
-  const isVictory = state.waveComplete && state.currentWave === WAVES.length;
+  const isVictory = state.waveComplete && state.currentWave > WAVES.length;
   if (state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice || isVictory) return;
   const wave = EXPERIMENT.active ? buildExperimentWave() : WAVES[state.currentWave - 1];
   state.spawnQueue = wave.spawns.flatMap(spawn => Array.from({ length: spawn.count }, (_, index) => ({ ...spawn, delay: index * spawn.interval })));
@@ -125,6 +125,8 @@ function spawnDueEnemies(dt) {
 function damageRobot(amount) {
   if (!state.robot.active) return;
   state.robot.hp = Math.max(0, state.robot.hp - amount);
+  state.robot.flash = 0.12;
+  state.effects.push({ type: 'giantHit', x: state.robot.x, y: state.robot.y, life: .28, maxLife: .28 });
   if (state.robot.hp <= 0) {
     state.robot.hp = 0;
     state.robot.active = false;
@@ -139,6 +141,7 @@ function updateGiantRobotAttack(dt, enemy) {
   if (Math.hypot(enemy.x - state.robot.x, enemy.y - state.robot.y) > data.robotRange) return;
   if (enemy.robotAttackTimer > 0) return;
   damageRobot(data.robotDamage);
+  addFeed(`Giant hit Atlas-01 (-${data.robotDamage} HP).`, 'alert');
   enemy.robotAttackTimer = data.robotCooldown;
 }
 
@@ -245,6 +248,7 @@ function updateEffects(dt) {
   state.effects.forEach(effect => { effect.life -= dt; });
   state.effects = state.effects.filter(effect => effect.life > 0);
   state.enemies.forEach(enemy => { enemy.flash = Math.max(0, enemy.flash - dt); });
+  if (state.robot) state.robot.flash = Math.max(0, (state.robot.flash || 0) - dt);
 }
 
 function openAbilityChoice() {
@@ -307,6 +311,7 @@ function finishWaveIfReady() {
     state.currentWave += 1;
     openAbilityChoice();
   } else {
+    state.currentWave += 1;
     addFeed('All four waves clear. Restart to repeat a position experiment.', 'good');
   }
   updateUi();
@@ -385,7 +390,10 @@ function drawEnemy(enemy) {
 
 function drawRobot() {
   const robot = state.robot; if (!robot.active) return;
-  ctx.save(); ctx.translate(robot.x, robot.y); ctx.fillStyle = '#7ed6ce'; ctx.strokeStyle = '#d7fff7'; ctx.lineWidth = 2;
+  ctx.save(); ctx.translate(robot.x, robot.y);
+  ctx.fillStyle = robot.flash > 0 ? '#ffffff' : '#7ed6ce';
+  ctx.strokeStyle = robot.flash > 0 ? '#ef7068' : '#d7fff7';
+  ctx.lineWidth = robot.flash > 0 ? 4 : 2;
   ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(20, -10); ctx.lineTo(16, 18); ctx.lineTo(-16, 18); ctx.lineTo(-20, -10); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#102126'; ctx.fillRect(-8, -5, 16, 9); ctx.fillStyle = '#ef7068'; ctx.fillRect(-robot.range, -robot.range - 12, robot.range * 2, 4); ctx.fillStyle = '#92d28b'; ctx.fillRect(-robot.range, -robot.range - 12, robot.range * 2 * Math.max(0, robot.hp / ROBOT.hp), 4); ctx.restore();
 }
 
@@ -393,6 +401,7 @@ function drawEffects() {
   state.effects.forEach(effect => {
     const alpha = effect.life / effect.maxLife; ctx.save(); ctx.globalAlpha = alpha;
     if (effect.type === 'areaBurst') { ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(effect.x, effect.y, 80 - alpha * 20, 0, Math.PI * 2); ctx.stroke(); }
+    else if (effect.type === 'giantHit') { ctx.strokeStyle = '#ef7068'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(effect.x, effect.y, 35 - alpha * 12, 0, Math.PI * 2); ctx.stroke(); }
     else { ctx.strokeStyle = effect.type === 'pierce' ? '#aa8de5' : '#ffffff'; ctx.lineWidth = effect.type === 'pierce' ? 5 : 2; ctx.beginPath(); ctx.moveTo(effect.x - 16, effect.y); ctx.lineTo(effect.x + 16, effect.y); ctx.stroke(); }
     ctx.restore();
   });
