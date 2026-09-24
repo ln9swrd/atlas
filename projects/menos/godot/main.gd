@@ -1,6 +1,16 @@
 extends Node2D
 
 const DATA = preload("res://data.gd")
+const SFX_STREAMS := {
+	"ui_click": preload("res://sound/sfx_ui_click_1.mp3"),
+	"ui_confirm": preload("res://sound/Menu Choice.mp3"),
+	"ui_cancel": preload("res://sound/Decline.wav"),
+	"ui_error": preload("res://sound/Error or failed.mp3"),
+	"tower_select": preload("res://sound/beep.mp3"),
+	"tower_build": preload("res://sound/buzz_0.ogg"),
+	"enemy_spawn": preload("res://sound/172206__fins__teleport.wav"),
+	"wave_start": preload("res://sound/g_get_ready.wav")
+}
 const BASE := Vector2(450, 600)
 const LANES := {"left": Vector2(270, 70), "right": Vector2(630, 70)}
 const ROBOT_SPOTS := {"LEFT": Vector2(320, 360), "CENTER": Vector2(450, 470), "RIGHT": Vector2(580, 360)}
@@ -28,6 +38,14 @@ var effects: Array = []
 func _ready() -> void:
 	reset_game()
 	queue_redraw()
+
+func play_sfx(id: String) -> void:
+	if not SFX_STREAMS.has(id): return
+	var player := AudioStreamPlayer.new()
+	player.stream = SFX_STREAMS[id]
+	player.finished.connect(player.queue_free)
+	add_child(player)
+	player.play()
 
 func reset_game() -> void:
 	base_hp = 100.0; gold = 180; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
@@ -63,6 +81,7 @@ func start_wave() -> void:
 			spawn_queue.append({"type": group[0], "delay": offset + index * group[2], "lanes": group[3]})
 		offset += group[1] * group[2] + 0.3
 	spawn_clock = 0.0; wave_running = true; run_state = RunState.RUNNING; wave_clear = false
+	play_sfx("wave_start")
 	log_event("WAVE %d STARTED: %s" % [wave, DATA.WAVES[wave - 1].label])
 
 func spawn_enemies() -> void:
@@ -71,6 +90,7 @@ func spawn_enemies() -> void:
 		var lane: String = entry.lanes[enemies.size() % entry.lanes.size()]
 		var data: Dictionary = DATA.ENEMIES[entry.type]
 		enemies.append({"type": entry.type, "lane": lane, "position": LANES[lane], "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0})
+		play_sfx("enemy_spawn")
 
 func damage_robot(amount: float) -> void:
 	if not robot.active: return
@@ -179,41 +199,44 @@ func check_wave_clear() -> void:
 		log_event("VICTORY. ALL FOUR WAVES CLEAR. Press RESTART to repeat.")
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_R: reset_game()
+	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_R:
+		play_sfx("ui_click")
+		reset_game()
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: handle_click(event.position)
 
 func handle_click(point: Vector2) -> void:
 	if Rect2(920, 120, 145, 42).has_point(point): start_wave(); return
-	if Rect2(920, 175, 145, 42).has_point(point): reset_game(); return
+	if Rect2(920, 175, 145, 42).has_point(point): play_sfx("ui_click"); reset_game(); return
 	if Rect2(920, 250, 145, 42).has_point(point): launch_robot(); return
 	if Rect2(920, 305, 145, 42).has_point(point): build_tower("cannon"); return
 	if Rect2(920, 360, 145, 42).has_point(point): build_tower("gatling"); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
-			selected_tower = tower.id; selected_slot = tower.id; robot_selected = false; queue_redraw(); return
+			selected_tower = tower.id; selected_slot = tower.id; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
 	if robot.active and point.distance_to(robot.position) < 28.0:
-		robot_selected = true; selected_tower = ""; selected_slot = ""; queue_redraw(); return
+		robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_click"); queue_redraw(); return
 	for id in SLOTS:
-		if point.distance_to(SLOTS[id]) < 24.0 and not towers.any(func(tower): return tower.id == id): selected_slot = id; selected_tower = ""; robot_selected = false; queue_redraw(); return
+		if point.distance_to(SLOTS[id]) < 24.0 and not towers.any(func(tower): return tower.id == id): selected_slot = id; selected_tower = ""; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
 	for id in ROBOT_SPOTS:
 		if point.distance_to(ROBOT_SPOTS[id]) < 55.0:
 			if robot_selected: move_robot(id)
 			return
+	if not selected_slot.is_empty() or not selected_tower.is_empty() or robot_selected: play_sfx("ui_cancel")
 	selected_slot = ""; selected_tower = ""; robot_selected = false; queue_redraw()
 
 func build_tower(type: String) -> void:
 	if run_state not in [RunState.READY, RunState.RUNNING]: return
-	if selected_slot.is_empty(): log_event("Select an empty tower slot first."); return
-	if towers.any(func(tower): return tower.id == selected_slot): return
-	if not DATA.TOWERS.has(type): return
+	if selected_slot.is_empty(): play_sfx("ui_error"); log_event("Select an empty tower slot first."); return
+	if towers.any(func(tower): return tower.id == selected_slot): play_sfx("ui_error"); return
+	if not DATA.TOWERS.has(type): play_sfx("ui_error"); return
 	var data: Dictionary = DATA.TOWERS[type]
-	if gold < data.cost: log_event("Need %d gold for %s." % [data.cost, data.name]); return
-	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": SLOTS[selected_slot], "data": data, "cooldown": 0.0}); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""; selected_tower = ""; robot_selected = false
+	if gold < data.cost: play_sfx("ui_error"); log_event("Need %d gold for %s." % [data.cost, data.name]); return
+	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": SLOTS[selected_slot], "data": data, "cooldown": 0.0}); play_sfx("tower_build"); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""; selected_tower = ""; robot_selected = false
 
 func launch_robot() -> void:
 	if not can_launch_robot(): return
 	robot.hp = DATA.ROBOT.hp
-	robot.active = true; robot_selected = true; selected_tower = ""; selected_slot = ""; log_event("ATLAS-01 launched at %s. Choose a crisis zone." % robot.spot)
+	robot.active = true; robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_confirm"); log_event("ATLAS-01 launched at %s. Choose a crisis zone." % robot.spot)
 
 func can_launch_robot() -> bool:
 	return not robot.active and run_state in [RunState.READY, RunState.RUNNING]
