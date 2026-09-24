@@ -16,7 +16,7 @@ const MAP_ART = {
   base: new Image()
 };
 MAP_ART.battlefield.src = './images/map/map.png';
-MAP_ART.base.src = './images/map/a7.png';
+MAP_ART.base.src = './images/facility_base.png';
 
 const SFX_FILES = {
   uiClick: new URL('./sound/sfx_ui_click_1.mp3', import.meta.url).href,
