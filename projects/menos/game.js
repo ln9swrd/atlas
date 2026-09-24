@@ -128,7 +128,7 @@ function spawnDueEnemies(dt) {
     const entry = state.spawnQueue.shift();
     const lane = entry.lanes[(state.enemies.length + state.spawnQueue.length) % entry.lanes.length];
     const data = ENEMIES[entry.type];
-    state.enemies.push({ type: entry.type, lane, x: 0, y: MAP.lanes[lane].y, hp: data.hp, maxHp: data.hp, flash: 0, robotAttackTimer: 0, id: `${entry.type}-${state.elapsed}-${Math.random()}` });
+    state.enemies.push({ type: entry.type, lane, x: MAP.lanes[lane].x, y: MAP.lanes[lane].y, hp: data.hp, maxHp: data.hp, flash: 0, robotAttackTimer: 0, id: `${entry.type}-${state.elapsed}-${Math.random()}` });
   }
 }
 
@@ -158,7 +158,7 @@ function updateGiantRobotAttack(dt, enemy) {
 
 function updateRusherSprint(enemy) {
   if (enemy.type !== 'enemy_rusher') return 1;
-  if (!enemy.sprintLogged && enemy.x >= 180) {
+  if (!enemy.sprintLogged && enemy.y >= 180) {
     enemy.sprinting = true;
     enemy.sprintLogged = true;
     addFeed('Rusher initiated SPRINT BURST.', 'alert');
@@ -171,13 +171,12 @@ function moveEnemies(dt) {
     const data = ENEMIES[enemy.type];
     if (enemy.hp <= 0) continue;
     const speedMult = updateRusherSprint(enemy);
-    const targetY = MAP.base.y;
-    const direction = enemy.lane === 'left' ? 1 : 1;
-    enemy.x += data.speed * speedMult * dt * direction;
-    const progress = Math.min(1, enemy.x / 480);
-    enemy.y = MAP.lanes[enemy.lane].y + (targetY - MAP.lanes[enemy.lane].y) * progress;
+    const start = MAP.lanes[enemy.lane];
+    enemy.y += data.speed * speedMult * dt;
+    const progress = Math.min(1, (enemy.y - start.y) / (MAP.base.y - start.y));
+    enemy.x = start.x + (MAP.base.x - start.x) * progress;
     if (enemy.type === 'enemy_giant') updateGiantRobotAttack(dt, enemy);
-    if (enemy.x >= 465) {
+    if (enemy.y >= MAP.base.y - 25) {
       state.baseHp -= data.baseDamage;
       enemy.hp = 0;
       addFeed(`${data.name} hit the base for ${data.baseDamage}.`, 'alert');
@@ -374,24 +373,31 @@ function draw() {
 
 function drawBackground() {
   ctx.fillStyle = '#0a1519'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = 'rgba(126,214,206,.055)'; ctx.lineWidth = 1;
-  for (let x = 0; x < canvas.width; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
-  for (let y = 0; y < canvas.height; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
-  ctx.fillStyle = '#6c8790'; ctx.font = '11px Space Mono'; ctx.fillText('NORTH APPROACH', 22, 157); ctx.fillText('SOUTH APPROACH', 22, 440);
+  ctx.fillStyle = '#10242a'; ctx.fillRect(0, 0, canvas.width, 176);
+  ctx.fillStyle = '#16343a'; ctx.fillRect(0, 176, canvas.width, 112);
+  ctx.fillStyle = '#1b3b3f'; ctx.fillRect(0, 288, canvas.width, 272);
+  ctx.strokeStyle = 'rgba(126,214,206,.12)'; ctx.lineWidth = 1;
+  for (let x = 0; x < canvas.width; x += 48) { ctx.beginPath(); ctx.moveTo(x, 288); ctx.lineTo(x + 92, 560); ctx.stroke(); }
+  for (let y = 320; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+  ctx.fillStyle = '#31535b'; ctx.fillRect(0, 172, canvas.width, 4); ctx.fillRect(0, 284, canvas.width, 4);
+  ctx.fillStyle = '#6c8790'; ctx.font = '11px Space Mono'; ctx.fillText('NORTH APPROACH // GATE 01', 22, 122); ctx.fillText('SOUTH APPROACH // GATE 02', 22, 463);
+  ctx.fillStyle = '#7ed6ce'; ctx.font = '10px Space Mono'; ctx.fillText('NORTHBRIDGE DEFENSE GRID // 3/4 FIELD VIEW', 88, 80);
 }
 
 function drawLanes() {
   for (const lane of Object.values(MAP.lanes)) {
-    ctx.strokeStyle = '#263c43'; ctx.lineWidth = 30; ctx.beginPath(); ctx.moveTo(0, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke();
-    ctx.strokeStyle = '#416068'; ctx.lineWidth = 1; ctx.setLineDash([7, 10]); ctx.beginPath(); ctx.moveTo(0, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = '#263c43'; ctx.lineWidth = 42; ctx.beginPath(); ctx.moveTo(0, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke();
+    ctx.strokeStyle = '#527079'; ctx.lineWidth = 2; ctx.setLineDash([12, 14]); ctx.beginPath(); ctx.moveTo(0, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke(); ctx.setLineDash([]);
   }
-  MAP.robotSpots.forEach(spot => { ctx.fillStyle = 'rgba(126,214,206,.04)'; ctx.beginPath(); ctx.arc(spot.x, spot.y, 62, 0, Math.PI * 2); ctx.fill(); });
+  MAP.robotSpots.forEach(spot => { ctx.fillStyle = 'rgba(126,214,206,.05)'; ctx.strokeStyle = 'rgba(126,214,206,.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(spot.x, spot.y, 58, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
+  ctx.fillStyle = '#ef7068'; ctx.fillRect(40, MAP.lanes.left.y - 12, 12, 24); ctx.fillRect(40, MAP.lanes.right.y - 12, 12, 24);
 }
 
 function drawSlots() {
   MAP.slots.forEach(slot => {
     const tower = state.towers.find(item => item.id === slot.id);
     if (tower) return;
+    ctx.fillStyle = 'rgba(10, 21, 25, .72)'; ctx.beginPath(); ctx.ellipse(slot.x, slot.y + 9, 26, 9, 0, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = state.selectedSlot?.id === slot.id ? '#f0a35a' : '#6a858a'; ctx.lineWidth = 2; ctx.setLineDash([3, 4]);
     ctx.beginPath(); ctx.arc(slot.x, slot.y, 18, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
     ctx.fillStyle = '#6a858a'; ctx.font = '10px Space Mono'; ctx.textAlign = 'center'; ctx.fillText(slot.id, slot.x, slot.y + 4); ctx.textAlign = 'left';
@@ -401,7 +407,7 @@ function drawSlots() {
 
 function drawBase() {
   ctx.save(); ctx.translate(MAP.base.x, MAP.base.y); ctx.fillStyle = '#182f35'; ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.rect(-34, -34, 68, 68); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#7ed6ce'; ctx.fillRect(-9, -9, 18, 18); ctx.restore();
+  ctx.beginPath(); ctx.rect(-38, -38, 76, 76); ctx.fill(); ctx.stroke(); ctx.strokeStyle = 'rgba(126,214,206,.35)'; ctx.lineWidth = 8; ctx.strokeRect(-52, -52, 104, 104); ctx.fillStyle = '#7ed6ce'; ctx.fillRect(-10, -10, 20, 20); ctx.restore();
   ctx.fillStyle = '#7ed6ce'; ctx.font = '11px Space Mono'; ctx.textAlign = 'center'; ctx.fillText('BASE', MAP.base.x, MAP.base.y + 55); ctx.textAlign = 'left';
 }
 

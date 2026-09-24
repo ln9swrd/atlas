@@ -1,10 +1,10 @@
 extends Node2D
 
 const DATA = preload("res://data.gd")
-const BASE := Vector2(790, 330)
-const LANES := {"left": Vector2(70, 180), "right": Vector2(70, 480)}
-const ROBOT_SPOTS := {"LEFT": Vector2(360, 245), "CENTER": Vector2(555, 330), "RIGHT": Vector2(360, 415)}
-const SLOTS := {"L1": Vector2(250, 110), "L2": Vector2(430, 190), "L3": Vector2(650, 235), "R1": Vector2(250, 550), "R2": Vector2(430, 470), "R3": Vector2(650, 425)}
+const BASE := Vector2(450, 600)
+const LANES := {"left": Vector2(270, 70), "right": Vector2(630, 70)}
+const ROBOT_SPOTS := {"LEFT": Vector2(320, 360), "CENTER": Vector2(450, 470), "RIGHT": Vector2(580, 360)}
+const SLOTS := {"L1": Vector2(130, 150), "L2": Vector2(285, 250), "L3": Vector2(390, 360), "R1": Vector2(770, 150), "R2": Vector2(615, 250), "R3": Vector2(510, 360)}
 enum RunState { READY, RUNNING, VICTORY, DEFEAT }
 
 var base_hp := 100.0
@@ -96,12 +96,12 @@ func move_enemies(delta: float) -> void:
 		if enemy.hp <= 0.0: continue
 		var data: Dictionary = DATA.ENEMIES[enemy.type]
 		var start: Vector2 = LANES[enemy.lane]
-		var progress: float = clampf(enemy.position.x / BASE.x, 0.0, 1.0)
-		enemy.position.x += data.speed * delta
-		enemy.position.y = lerp(start.y, BASE.y, progress)
+		enemy.position.y += data.speed * delta
+		var progress: float = clampf((enemy.position.y - start.y) / (BASE.y - start.y), 0.0, 1.0)
+		enemy.position.x = lerp(start.x, BASE.x, progress)
 		if enemy.type == "giant":
 			update_giant_robot_attack(delta, enemy)
-		if enemy.position.x >= BASE.x - 25.0:
+		if enemy.position.y >= BASE.y - 25.0:
 			base_hp -= data.base_damage; enemy.hp = 0.0
 			log_event("%s breached the base (-%d HP)." % [data.name, data.base_damage])
 			if base_hp <= 0.0:
@@ -224,14 +224,22 @@ func move_robot(id: String) -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 1100, 700), Color("091419"))
-	for x in range(0, 900, 32): draw_line(Vector2(x, 0), Vector2(x, 700), Color("13282d"), 1)
-	for y in range(0, 700, 32): draw_line(Vector2(0, y), Vector2(900, y), Color("13282d"), 1)
-	draw_string(ThemeDB.fallback_font, Vector2(30, 35), "MENOS // TACTICAL DEFENSE PoC", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("d7fff7"))
-	for lane in LANES.values(): draw_line(lane, BASE, Color("263c43"), 32); draw_line(lane, BASE, Color("527079"), 1)
-	draw_circle(BASE, 38, Color("18353a")); draw_arc(BASE, 38, 0, TAU, 32, Color("7ed6ce"), 2); draw_string(ThemeDB.fallback_font, BASE + Vector2(-22, 58), "BASE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
+	draw_rect(Rect2(0, 0, 900, 176), Color("10242a")); draw_rect(Rect2(0, 176, 900, 112), Color("16343a")); draw_rect(Rect2(0, 288, 900, 330), Color("1b3b3f"))
+	for x in range(0, 900, 48): draw_line(Vector2(x, 288), Vector2(x + 92, 618), Color("31535b", 0.45), 1)
+	for y in range(320, 620, 40): draw_line(Vector2(0, y), Vector2(900, y), Color("31535b", 0.35), 1)
+	draw_rect(Rect2(0, 172, 900, 4), Color("31535b")); draw_rect(Rect2(0, 284, 900, 4), Color("31535b"))
+	draw_string(ThemeDB.fallback_font, Vector2(30, 35), "MENOS // NORTHBRIDGE SECTOR", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("d7fff7"))
+	draw_rect(Rect2(38, 58, 820, 560), Color("31535b"), false, 2)
+	draw_string(ThemeDB.fallback_font, Vector2(55, 125), "NORTH APPROACH // GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6c8790")); draw_string(ThemeDB.fallback_font, Vector2(55, 585), "SOUTH APPROACH // GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6c8790"))
+	draw_string(ThemeDB.fallback_font, Vector2(88, 80), "NORTHBRIDGE DEFENSE GRID // 3/4 FIELD VIEW", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
+	for lane in LANES.values(): draw_line(lane, BASE, Color("263c43"), 44); draw_dashed_line(lane, BASE, Color("527079"), 2, 12)
+	draw_rect(Rect2(LANES.left - Vector2(6, 14), Vector2(12, 28)), Color("ef7068")); draw_rect(Rect2(LANES.right - Vector2(6, 14), Vector2(12, 28)), Color("ef7068"))
+	draw_circle(BASE, 42, Color("18353a")); draw_arc(BASE, 42, 0, TAU, 32, Color("7ed6ce"), 2); draw_arc(BASE, 56, 0, TAU, 32, Color("31535b"), 8); draw_string(ThemeDB.fallback_font, BASE + Vector2(-22, 64), "BASE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
 	for id in SLOTS:
 		var occupied := towers.any(func(tower): return tower.id == id)
-		if not occupied: draw_arc(SLOTS[id], 18, 0, TAU, 20, Color("f0a35a") if selected_slot == id else Color("6a858a"), 2)
+		if not occupied:
+			draw_set_transform(SLOTS[id] + Vector2(0, 9), 0.0, Vector2(26, 9)); draw_circle(Vector2.ZERO, 1.0, Color("0a1519", 0.72)); draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+			draw_arc(SLOTS[id], 18, 0, TAU, 20, Color("f0a35a") if selected_slot == id else Color("6a858a"), 2)
 		else:
 			draw_circle(SLOTS[id], 15, Color("f0a35a") if towers.filter(func(tower): return tower.id == id)[0].type == "cannon" else Color("7ed6ce"))
 			if selected_tower == id: draw_arc(SLOTS[id], 24, 0, TAU, 24, Color("d7fff7"), 2)

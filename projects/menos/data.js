@@ -26,11 +26,11 @@ export const WAVES = [
 ];
 
 export const MAP = {
-  base: { x: 480, y: 280 },
-  lanes: { left: { x: 0, y: 175 }, right: { x: 0, y: 385 } },
+  base: { x: 480, y: 500 },
+  lanes: { left: { x: 270, y: 70 }, right: { x: 690, y: 70 } },
   slots: [
-    { id: 'L1', x: 210, y: 105, lane: 'left' }, { id: 'L2', x: 350, y: 190, lane: 'left' }, { id: 'L3', x: 300, y: 300, lane: 'left' },
-    { id: 'R1', x: 210, y: 455, lane: 'right' }, { id: 'R2', x: 350, y: 370, lane: 'right' }, { id: 'R3', x: 620, y: 390, lane: 'right' }
+    { id: 'L1', x: 145, y: 145, lane: 'left' }, { id: 'L2', x: 300, y: 245, lane: 'left' }, { id: 'L3', x: 405, y: 350, lane: 'left' },
+    { id: 'R1', x: 815, y: 145, lane: 'right' }, { id: 'R2', x: 660, y: 245, lane: 'right' }, { id: 'R3', x: 555, y: 350, lane: 'right' }
   ],
-  robotSpots: [{ id: 'LEFT', x: 280, y: 215 }, { id: 'CENTER', x: 400, y: 280 }, { id: 'RIGHT', x: 280, y: 345 }]
+  robotSpots: [{ id: 'LEFT', x: 350, y: 310 }, { id: 'CENTER', x: 480, y: 390 }, { id: 'RIGHT', x: 610, y: 310 }]
 };
