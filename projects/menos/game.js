@@ -386,11 +386,11 @@ function drawBackground() {
 
 function drawLanes() {
   for (const lane of Object.values(MAP.lanes)) {
-    ctx.strokeStyle = '#263c43'; ctx.lineWidth = 42; ctx.beginPath(); ctx.moveTo(0, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke();
-    ctx.strokeStyle = '#527079'; ctx.lineWidth = 2; ctx.setLineDash([12, 14]); ctx.beginPath(); ctx.moveTo(0, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = '#263c43'; ctx.lineWidth = 42; ctx.beginPath(); ctx.moveTo(lane.x, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke();
+    ctx.strokeStyle = '#527079'; ctx.lineWidth = 2; ctx.setLineDash([12, 14]); ctx.beginPath(); ctx.moveTo(lane.x, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke(); ctx.setLineDash([]);
   }
   MAP.robotSpots.forEach(spot => { ctx.fillStyle = 'rgba(126,214,206,.05)'; ctx.strokeStyle = 'rgba(126,214,206,.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(spot.x, spot.y, 58, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
-  ctx.fillStyle = '#ef7068'; ctx.fillRect(40, MAP.lanes.left.y - 12, 12, 24); ctx.fillRect(40, MAP.lanes.right.y - 12, 12, 24);
+  ctx.fillStyle = '#ef7068'; ctx.fillRect(MAP.lanes.left.x - 12, MAP.lanes.left.y - 6, 24, 12); ctx.fillRect(MAP.lanes.right.x - 12, MAP.lanes.right.y - 6, 24, 12);
 }
 
 function drawSlots() {
