@@ -123,3 +123,11 @@ STATUS: Phases 1-3 implemented in Browser and Godot; only syntax checks run for 
 - Changed: `godot/sound/` copies and local `.gitignore` allow-list for WAV/MP3 files ignored by the repository root; updated `sound/ATTRIBUTION.md` with the mirror layout.
 - Verification: All eight Godot copies have SHA-256 hashes matching their canonical originals. Godot CLI is unavailable on PATH, so preload/import/runtime playback remains unverified.
 - Next: Reopen the Godot project and confirm the preload error is gone, then check playback in PIE.
+
+## Handoff — Godot graphics connection (2026-09-24)
+
+- Status: Connected the supplied image-sheet art to the Godot battlefield renderer.
+- Changed: `godot/main.gd`, `godot/assets/menos/environment/tile_dark_floor.tres`, and derived per-object transparent PNGs under `godot/assets/menos/sprites/`. The original sheets under `images/` remain unchanged.
+- Mapping: terrain tile, research facility Base, empty/selected tower slots, cannon and gatling towers, Normal/Rusher/Heavy/Giant enemies, ATLAS-01 Robot, tower impact effect, and Victory/Defeat HUD badges.
+- Verification: `git diff --check` passed; Godot CLI/editor was unavailable for import, load, or PIE verification.
+- Next: Open the Godot project and visually verify imported assets, sprite scale, edge masking, tile repetition, and all object states in PIE.

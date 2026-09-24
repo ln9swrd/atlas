@@ -1,6 +1,28 @@
 extends Node2D
 
 const DATA = preload("res://data.gd")
+const VISUALS := {
+	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
+	"facility_base": preload("res://assets/menos/sprites/facility_base.png"),
+	"impact_blast": preload("res://assets/menos/sprites/impact_blast.png"),
+	"status_victory": preload("res://assets/menos/sprites/status_victory.png"),
+	"status_defeat": preload("res://assets/menos/sprites/status_defeat.png"),
+	"slot_empty": preload("res://assets/menos/sprites/tower_slot_empty.png"),
+	"slot_selected": preload("res://assets/menos/sprites/tower_slot_selected.png"),
+	"tower_cannon": preload("res://assets/menos/sprites/tower_cannon.png"),
+	"tower_gatling": preload("res://assets/menos/sprites/tower_gatling.png"),
+	"enemy_normal": preload("res://assets/menos/sprites/enemy_normal.png"),
+	"enemy_rusher": preload("res://assets/menos/sprites/enemy_rusher.png"),
+	"enemy_heavy": preload("res://assets/menos/sprites/enemy_heavy.png"),
+	"enemy_giant": preload("res://assets/menos/sprites/enemy_giant.png"),
+	"robot": preload("res://assets/menos/sprites/robot_atlas01.png")
+}
+const ENEMY_SPRITE_SIZES := {
+	"normal": Vector2(34, 46),
+	"rusher": Vector2(38, 48),
+	"heavy": Vector2(56, 60),
+	"giant": Vector2(104, 142)
+}
 const SFX_STREAMS := {
 	"ui_click": preload("res://sound/sfx_ui_click_1.mp3"),
 	"ui_confirm": preload("res://sound/Menu Choice.mp3"),
@@ -36,6 +58,7 @@ var robot_selected := false
 var effects: Array = []
 
 func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	reset_game()
 	queue_redraw()
 
@@ -245,9 +268,12 @@ func move_robot(id: String) -> void:
 	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING] or not ROBOT_SPOTS.has(id) or robot.spot == id: return
 	robot.spot = id; robot.position = ROBOT_SPOTS[id]; log_event("ATLAS-01 moved to %s." % id)
 
+func draw_sprite(texture: Texture2D, center: Vector2, size: Vector2) -> void:
+	draw_texture_rect(texture, Rect2(center - size * 0.5, size), false)
+
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 1100, 700), Color("091419"))
-	draw_rect(Rect2(0, 0, 900, 176), Color("10242a")); draw_rect(Rect2(0, 176, 900, 112), Color("16343a")); draw_rect(Rect2(0, 288, 900, 330), Color("1b3b3f"))
+	draw_rect(Rect2(0, 0, 900, 176), Color("10242a")); draw_rect(Rect2(0, 176, 900, 112), Color("16343a")); draw_texture_rect(VISUALS["floor_tile"], Rect2(0, 288, 900, 330), true)
 	for x in range(0, 900, 48): draw_line(Vector2(x, 288), Vector2(x + 92, 618), Color("31535b", 0.45), 1)
 	for y in range(320, 620, 40): draw_line(Vector2(0, y), Vector2(900, y), Color("31535b", 0.35), 1)
 	draw_rect(Rect2(0, 172, 900, 4), Color("31535b")); draw_rect(Rect2(0, 284, 900, 4), Color("31535b"))
@@ -257,28 +283,39 @@ func _draw() -> void:
 	draw_string(ThemeDB.fallback_font, Vector2(88, 80), "NORTHBRIDGE DEFENSE GRID // 3/4 FIELD VIEW", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
 	for lane in LANES.values(): draw_line(lane, BASE, Color("263c43"), 44); draw_dashed_line(lane, BASE, Color("527079"), 2, 12)
 	draw_rect(Rect2(LANES.left - Vector2(6, 14), Vector2(12, 28)), Color("ef7068")); draw_rect(Rect2(LANES.right - Vector2(6, 14), Vector2(12, 28)), Color("ef7068"))
-	draw_circle(BASE, 42, Color("18353a")); draw_arc(BASE, 42, 0, TAU, 32, Color("7ed6ce"), 2); draw_arc(BASE, 56, 0, TAU, 32, Color("31535b"), 8); draw_string(ThemeDB.fallback_font, BASE + Vector2(-22, 64), "BASE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
+	draw_arc(BASE, 62, 0, TAU, 32, Color("31535b"), 8); draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92)); draw_string(ThemeDB.fallback_font, BASE + Vector2(-22, 64), "BASE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
 	for id in SLOTS:
-		var occupied := towers.any(func(tower): return tower.id == id)
+		var placed_tower: Dictionary = towers.filter(func(tower): return tower.id == id).front() if towers.any(func(tower): return tower.id == id) else {}
+		var occupied := not placed_tower.is_empty()
 		if not occupied:
-			draw_set_transform(SLOTS[id] + Vector2(0, 9), 0.0, Vector2(26, 9)); draw_circle(Vector2.ZERO, 1.0, Color("0a1519", 0.72)); draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-			draw_arc(SLOTS[id], 18, 0, TAU, 20, Color("f0a35a") if selected_slot == id else Color("6a858a"), 2)
+			var slot_visual: Texture2D = VISUALS["slot_selected"] if selected_slot == id else VISUALS["slot_empty"]
+			draw_sprite(slot_visual, SLOTS[id], Vector2(76, 76))
+			if selected_slot == id: draw_arc(SLOTS[id], 39, 0, TAU, 24, Color("f0a35a"), 2)
 		else:
-			draw_circle(SLOTS[id], 15, Color("f0a35a") if towers.filter(func(tower): return tower.id == id)[0].type == "cannon" else Color("7ed6ce"))
-			if selected_tower == id: draw_arc(SLOTS[id], 24, 0, TAU, 24, Color("d7fff7"), 2)
-		draw_string(ThemeDB.fallback_font, SLOTS[id] + Vector2(-10, 4), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
+			var tower_key := "tower_cannon" if placed_tower.type == "cannon" else "tower_gatling"
+			draw_sprite(VISUALS[tower_key], SLOTS[id], Vector2(94, 86))
+			if selected_tower == id: draw_arc(SLOTS[id], 51, 0, TAU, 24, Color("d7fff7"), 2)
+		draw_string(ThemeDB.fallback_font, SLOTS[id] + Vector2(-10, 54), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
 	for id in ROBOT_SPOTS: draw_string(ThemeDB.fallback_font, ROBOT_SPOTS[id] + Vector2(-24, 58), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
-		var data: Dictionary = DATA.ENEMIES[enemy.type]; draw_circle(enemy.position, data.radius, Color.WHITE if enemy.flash > 0.0 else data.color); draw_rect(Rect2(enemy.position - Vector2(data.radius, data.radius + 8), Vector2(data.radius * 2, 4)), Color("263238")); draw_rect(Rect2(enemy.position - Vector2(data.radius, data.radius + 8), Vector2(data.radius * 2 * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("92d28b"))
+		var data: Dictionary = DATA.ENEMIES[enemy.type]
+		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES[enemy.type]
+		if enemy.flash > 0.0: draw_circle(enemy.position, data.radius + 3, Color.WHITE)
+		draw_sprite(VISUALS["enemy_" + enemy.type], enemy.position, enemy_size)
+		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 7)
+		draw_rect(Rect2(hp_position, Vector2(enemy_size.x, 4)), Color("263238")); draw_rect(Rect2(hp_position, Vector2(enemy_size.x * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("92d28b"))
 	for effect in effects:
 		if effect.get("type", "") == "giantHit":
 			draw_arc(effect.position, 35.0, 0, TAU, 16, Color("ef7068"), 3.0)
+		elif effect.get("type", "") in ["cannon", "gatling"]:
+			draw_sprite(VISUALS["impact_blast"], effect.position, Vector2(36, 36))
 	if robot.active:
 		var is_flashing: bool = float(robot.get("flash", 0.0)) > 0.0
-		draw_circle(robot.position, 22, Color.WHITE if is_flashing else Color("7ed6ce"))
-		draw_arc(robot.position, 28, 0, TAU, 6, Color("ef7068") if is_flashing else Color("d7fff7"), 3 if is_flashing else 2)
-		if robot_selected: draw_arc(robot.position, 35, 0, TAU, 24, Color("f0a35a"), 2)
+		if is_flashing: draw_circle(robot.position, 34, Color("ef7068", 0.35))
+		draw_sprite(VISUALS["robot"], robot.position, Vector2(62, 112))
+		draw_arc(robot.position, 58, 0, TAU, 24, Color("ef7068") if is_flashing else Color("d7fff7"), 3 if is_flashing else 2)
+		if robot_selected: draw_arc(robot.position, 66, 0, TAU, 24, Color("f0a35a"), 2)
 	draw_ui()
 
 func draw_ui() -> void:
@@ -289,6 +326,8 @@ func draw_ui() -> void:
 	if run_state == RunState.RUNNING: status_text = "WAVE %d IN PROGRESS" % wave
 	elif run_state == RunState.VICTORY: status_text = "VICTORY"
 	elif run_state == RunState.DEFEAT: status_text = "DEFEAT"
+	if run_state == RunState.VICTORY: draw_sprite(VISUALS["status_victory"], Vector2(1047, 585), Vector2(48, 48))
+	elif run_state == RunState.DEFEAT: draw_sprite(VISUALS["status_defeat"], Vector2(1047, 585), Vector2(48, 48))
 	draw_string(ThemeDB.fallback_font, Vector2(920, 585), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if run_state == RunState.VICTORY else Color("ef7068") if run_state == RunState.DEFEAT else Color("d7fff7"))
 	button(Rect2(920, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(920, 175, 145, 42), "RESTART", false); button(Rect2(920, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(920, 305, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(920, 360, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
 	var robot_status := "DOCKED"
