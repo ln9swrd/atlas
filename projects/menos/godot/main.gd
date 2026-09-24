@@ -329,6 +329,14 @@ func move_robot(id: String) -> void:
 func draw_sprite(texture: Texture2D, center: Vector2, size: Vector2) -> void:
 	draw_texture_rect(texture, Rect2(center - size * 0.5, size), false)
 
+func draw_animated_sprite(texture: Texture2D, center: Vector2, size: Vector2, frame: int, total_frames: int) -> void:
+	var tex_size := texture.get_size()
+	var frame_w := tex_size.x / float(max(1, total_frames))
+	var frame_h := tex_size.y
+	var src_rect := Rect2((frame % total_frames) * frame_w, 0, frame_w, frame_h)
+	var dest_rect := Rect2(center - size * 0.5, size)
+	draw_texture_rect_region(texture, dest_rect, src_rect)
+
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 1100, 700), Color("091419"))
 	draw_rect(Rect2(0, 0, 900, 176), Color("10242a")); draw_rect(Rect2(0, 176, 900, 112), Color("16343a")); draw_texture_rect(VISUALS["floor_tile"], Rect2(0, 288, 900, 330), true)
@@ -371,7 +379,8 @@ func _draw() -> void:
 	if robot.active:
 		var is_flashing: bool = float(robot.get("flash", 0.0)) > 0.0
 		if is_flashing: draw_circle(robot.position, 34, Color("ef7068", 0.35))
-		draw_sprite(VISUALS["robot"], robot.position, Vector2(62, 112))
+		var robot_frame: int = int(elapsed * 10.0) % 15
+		draw_animated_sprite(VISUALS["robot"], robot.position, Vector2(62, 112), robot_frame, 15)
 		draw_arc(robot.position, 58, 0, TAU, 24, Color("ef7068") if is_flashing else Color("d7fff7"), 3 if is_flashing else 2)
 		if robot_selected: draw_arc(robot.position, 66, 0, TAU, 24, Color("f0a35a"), 2)
 	draw_ui()
