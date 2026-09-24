@@ -2,6 +2,23 @@ import { TOWERS, ENEMIES, ROBOT, WAVES, MAP } from './data.js';
 
 const canvas = document.querySelector('#battlefield');
 const ctx = canvas.getContext('2d');
+const SFX_FILES = {
+  uiClick: new URL('./sound/sfx_ui_click_1.mp3', import.meta.url).href,
+  uiConfirm: new URL('./sound/Menu%20Choice.mp3', import.meta.url).href,
+  uiCancel: new URL('./sound/Decline.wav', import.meta.url).href,
+  uiError: new URL('./sound/Error%20or%20failed.mp3', import.meta.url).href,
+  towerSelect: new URL('./sound/beep.mp3', import.meta.url).href,
+  towerBuild: new URL('./sound/buzz_0.ogg', import.meta.url).href,
+  enemySpawn: new URL('./sound/172206__fins__teleport.wav', import.meta.url).href,
+  waveStart: new URL('./sound/g_get_ready.wav', import.meta.url).href
+};
+
+function playSfx(id) {
+  if (typeof Audio === 'undefined' || !SFX_FILES[id]) return;
+  const player = new Audio(SFX_FILES[id]);
+  player.play().catch(() => {});
+}
+
 const ui = {
   baseHp: document.querySelector('#baseHp'), gold: document.querySelector('#gold'), wave: document.querySelector('#waveNumber'),
   nextWave: document.querySelector('#nextWaveInfo'), startWave: document.querySelector('#startWave'), restart: document.querySelector('#restart'),
@@ -117,6 +134,7 @@ function startWave() {
   state.spawnTimer = 0;
   state.waveRunning = true;
   state.waveComplete = false;
+  playSfx('waveStart');
   addFeed(`${EXPERIMENT.active ? 'Experiment wave' : `Wave ${state.currentWave}`} started: ${wave.label.toLowerCase()}.`, 'good');
   updateUi();
 }
@@ -129,6 +147,7 @@ function spawnDueEnemies(dt) {
     const lane = entry.lanes[(state.enemies.length + state.spawnQueue.length) % entry.lanes.length];
     const data = ENEMIES[entry.type];
     state.enemies.push({ type: entry.type, lane, x: MAP.lanes[lane].x, y: MAP.lanes[lane].y, hp: data.hp, maxHp: data.hp, flash: 0, robotAttackTimer: 0, id: `${entry.type}-${state.elapsed}-${Math.random()}` });
+    playSfx('enemySpawn');
   }
 }
 
@@ -317,6 +336,7 @@ function selectAbility(abilityId) {
     const def = ABILITY_DEFINITIONS[abilityId];
     addFeed(`Atlas-01 unlocked ${def ? def.name : abilityId}.`, 'good');
   }
+  playSfx('uiConfirm');
   const autoStartNextWave = state.waveComplete && state.currentWave <= WAVES.length && state.baseHp > 0;
   state.pendingAbilityChoice = false;
   hideAbilityModal();
@@ -468,13 +488,14 @@ function drawEffects() {
 }
 
 function canvasPosition(event) { const rect = canvas.getBoundingClientRect(); return { x: (event.clientX - rect.left) * canvas.width / rect.width, y: (event.clientY - rect.top) * canvas.height / rect.height }; }
-function selectSlot(slot) { state.selectedEntity = null; state.selectedSlot = slot; updateUi(); }
+function selectSlot(slot) { state.selectedEntity = null; state.selectedSlot = slot; playSfx('towerSelect'); updateUi(); }
 function selectTower(tower) {
   state.selectedEntity = { kind: 'tower', id: tower.id };
   state.selectedSlot = MAP.slots.find(slot => slot.id === tower.id) || null;
+  playSfx('towerSelect');
   updateUi();
 }
-function selectRobot() { state.selectedEntity = { kind: 'robot' }; state.selectedSlot = null; updateUi(); }
+function selectRobot() { state.selectedEntity = { kind: 'robot' }; state.selectedSlot = null; playSfx('uiClick'); updateUi(); }
 function upgradeTower(tower) {
   if (state.waveRunning) { addFeed('Cannot upgrade towers during wave.', 'alert'); return; }
   if (!tower || tower.level >= 2) { addFeed('Tower is already at MAX LVL 2.', 'alert'); return; }
@@ -491,21 +512,23 @@ function upgradeTower(tower) {
 }
 function buildTower(id) {
   if (state.baseHp <= 0 || state.currentWave > WAVES.length) return;
-  if (!state.selectedSlot) { addFeed('Select a tower slot first.', 'alert'); return; }
+  if (!state.selectedSlot) { playSfx('uiError'); addFeed('Select a tower slot first.', 'alert'); return; }
   const existingTower = state.towers.find(tower => tower.id === state.selectedSlot.id);
   if (existingTower) {
     if (existingTower.level === 1 && existingTower.type === id) {
       upgradeTower(existingTower);
     } else if (existingTower.level >= 2) {
+      playSfx('uiError');
       addFeed(`${existingTower.data.name} at ${existingTower.id} is already MAX LVL 2.`, 'alert');
     } else {
+      playSfx('uiError');
       addFeed(`Slot ${existingTower.id} has ${existingTower.data.name} LVL 1. Select matching type to upgrade.`, 'alert');
     }
     return;
   }
   const data = TOWERS[id]; if (!data) return;
-  if (state.gold < data.cost) { addFeed(`Need ${data.cost} gold for ${data.name}.`, 'alert'); return; }
-  state.gold -= data.cost; state.towers.push({ ...state.selectedSlot, type: id, data: { ...data }, level: 1, cooldown: 0 }); addFeed(`${data.name} LVL 1 deployed at ${state.selectedSlot.id}.`, 'good'); state.selectedSlot = null; state.selectedEntity = null; updateUi();
+  if (state.gold < data.cost) { playSfx('uiError'); addFeed(`Need ${data.cost} gold for ${data.name}.`, 'alert'); return; }
+  state.gold -= data.cost; state.towers.push({ ...state.selectedSlot, type: id, data: { ...data }, level: 1, cooldown: 0 }); playSfx('towerBuild'); addFeed(`${data.name} LVL 1 deployed at ${state.selectedSlot.id}.`, 'good'); state.selectedSlot = null; state.selectedEntity = null; updateUi();
 }
 function moveRobot(position) {
   const robot = state.robot; if (!robot.active || state.baseHp <= 0 || state.currentWave > WAVES.length) return;
@@ -522,12 +545,13 @@ canvas.addEventListener('click', event => {
   if (slot) { selectSlot(slot); return; }
   const spot = MAP.robotSpots.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 48);
   if (spot) { if (state.selectedEntity?.kind === 'robot') moveRobot(spot); return; }
+  if (state.selectedEntity || state.selectedSlot) playSfx('uiCancel');
   state.selectedEntity = null; state.selectedSlot = null; updateUi();
 });
 document.querySelectorAll('.tower-card').forEach(button => button.addEventListener('click', () => buildTower(button.dataset.tower)));
 ui.startWave.addEventListener('click', startWave);
-ui.launchRobot.addEventListener('click', () => { if (!state.robot.active && state.baseHp > 0 && state.currentWave <= WAVES.length) { state.robot.hp = ROBOT.hp; state.robot.active = true; state.selectedEntity = { kind: 'robot' }; addFeed(`Atlas-01 launched at ${state.robot.targetSpot}. Choose its first crisis zone.`, 'good'); updateUi(); } });
-ui.restart.addEventListener('click', resetGame);
+ui.launchRobot.addEventListener('click', () => { if (!state.robot.active && state.baseHp > 0 && state.currentWave <= WAVES.length) { state.robot.hp = ROBOT.hp; state.robot.active = true; state.selectedEntity = { kind: 'robot' }; playSfx('uiConfirm'); addFeed(`Atlas-01 launched at ${state.robot.targetSpot}. Choose its first crisis zone.`, 'good'); updateUi(); } });
+ui.restart.addEventListener('click', () => { playSfx('uiClick'); resetGame(); });
 
 function frame(now) { const dt = Math.min(.05, (now - lastFrame) / 1000); lastFrame = now; update(dt); draw(); requestAnimationFrame(frame); }
 
