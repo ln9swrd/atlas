@@ -54,7 +54,7 @@ function buildExperimentWave() {
 function resetGame() {
   state = {
     baseHp: 100, gold: 180, currentWave: 1, waveRunning: false, waveComplete: false, elapsed: 0,
-    enemies: [], towers: [], selectedSlot: null, spawnQueue: [], spawnTimer: 0, waveClock: 0, effects: [], feed: [],
+    enemies: [], towers: [], selectedSlot: null, selectedEntity: null, spawnQueue: [], spawnTimer: 0, waveClock: 0, effects: [], feed: [],
     robot: { active: false, x: MAP.robotSpots[1].x, y: MAP.robotSpots[1].y, hp: ROBOT.hp, commands: ROBOT.maxMoves, targetSpot: 'CENTER', attackTimer: 0, areaTimer: 0, pierceTimer: 0, unlockedAbilities: [] },
     pendingAbilityChoice: false
   };
@@ -84,9 +84,12 @@ function updateUi() {
     ? (isVictory ? 'ALL WAVES CLEAR' : `START WAVE ${state.currentWave}`)
     : `START WAVE ${state.currentWave}`;
   ui.startWave.disabled = state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice || isVictory;
-  ui.robotStatus.textContent = state.robot.active ? `DEPLOYED · ${state.robot.targetSpot}` : 'DOCKED';
+  ui.launchRobot.disabled = state.robot.active || state.baseHp <= 0 || state.currentWave > WAVES.length;
+  ui.robotStatus.textContent = state.selectedEntity?.kind === 'robot'
+    ? `SELECTED · DEPLOYED · ${state.robot.targetSpot}`
+    : state.robot.active ? `DEPLOYED · ${state.robot.targetSpot}` : 'DOCKED';
   ui.robotHp.textContent = `${Math.max(0, Math.ceil(state.robot.hp))} / ${ROBOT.hp}`;
-  ui.moveCommands.textContent = state.robot.commands;
+  ui.moveCommands.textContent = '∞';
   const selTower = state.selectedSlot ? state.towers.find(t => t.id === state.selectedSlot.id) : null;
   if (selTower) {
     const l2 = selTower.data.level2;
@@ -137,6 +140,7 @@ function damageRobot(amount) {
   if (state.robot.hp <= 0) {
     state.robot.hp = 0;
     state.robot.active = false;
+    if (state.selectedEntity?.kind === 'robot') state.selectedEntity = null;
     addFeed('Atlas-01 destroyed. Base defense remains active.', 'alert');
   }
 }
@@ -207,6 +211,22 @@ function nearestEnemy(x, y, range, preference = null) {
   return candidates.sort((a, b) => b.x - a.x)[0];
 }
 
+function getRobotTarget() {
+  const candidates = state.enemies.filter(enemy =>
+    enemy.hp > 0 && Math.hypot(enemy.x - state.robot.x, enemy.y - state.robot.y) <= ROBOT.range
+  );
+  return candidates.sort((a, b) => b.x - a.x)[0] || null;
+}
+
+function getRobotHeavyTarget() {
+  const eligible = state.enemies.filter(enemy =>
+    enemy.hp > 0
+    && (enemy.type === 'enemy_heavy' || enemy.type === 'enemy_giant')
+    && Math.hypot(enemy.x - state.robot.x, enemy.y - state.robot.y) <= ROBOT.range + 20
+  );
+  return eligible.sort((a, b) => b.x - a.x)[0] || null;
+}
+
 function updateTowers(dt) {
   if (EXPERIMENT.active && EXPERIMENT.disableTowers) return;
   for (const tower of state.towers) {
@@ -225,8 +245,8 @@ function updateRobot(dt) {
   robot.attackTimer -= dt;
   robot.areaTimer -= dt;
   robot.pierceTimer -= dt;
-  const target = nearestEnemy(robot.x, robot.y, ROBOT.range);
-  const heavyTarget = nearestEnemy(robot.x, robot.y, ROBOT.range + 20, 'heavy');
+  const target = getRobotTarget();
+  const heavyTarget = getRobotHeavyTarget();
 
   const isAreaUnlocked = robot.unlockedAbilities && robot.unlockedAbilities.includes('ability_area');
   const isPierceUnlocked = robot.unlockedAbilities && robot.unlockedAbilities.includes('ability_heavy_pierce');
@@ -298,9 +318,11 @@ function selectAbility(abilityId) {
     const def = ABILITY_DEFINITIONS[abilityId];
     addFeed(`Atlas-01 unlocked ${def ? def.name : abilityId}.`, 'good');
   }
+  const autoStartNextWave = state.waveComplete && state.currentWave <= WAVES.length && state.baseHp > 0;
   state.pendingAbilityChoice = false;
   hideAbilityModal();
   updateUi();
+  if (autoStartNextWave) startWave();
 }
 
 function hideAbilityModal() {
@@ -385,6 +407,10 @@ function drawBase() {
 
 function drawTower(tower) {
   ctx.save(); ctx.translate(tower.x, tower.y);
+  if (state.selectedEntity?.kind === 'tower' && state.selectedEntity.id === tower.id) {
+    ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, 24, 0, Math.PI * 2); ctx.stroke();
+  }
   ctx.fillStyle = tower.type === 'tower_cannon' ? '#f0a35a' : '#7ed6ce';
   ctx.strokeStyle = tower.level === 2 ? '#ffffff' : '#0b1519';
   ctx.lineWidth = tower.level === 2 ? 4 : 3;
@@ -407,6 +433,10 @@ function drawEnemy(enemy) {
 function drawRobot() {
   const robot = state.robot; if (!robot.active) return;
   ctx.save(); ctx.translate(robot.x, robot.y);
+  if (state.selectedEntity?.kind === 'robot') {
+    ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, 32, 0, Math.PI * 2); ctx.stroke();
+  }
   const target = nearestEnemy(robot.x, robot.y, ROBOT.range) || nearestEnemy(robot.x, robot.y, ROBOT.range + 20, 'heavy');
   if (target) {
     ctx.strokeStyle = 'rgba(239, 112, 104, 0.55)';
@@ -432,7 +462,13 @@ function drawEffects() {
 }
 
 function canvasPosition(event) { const rect = canvas.getBoundingClientRect(); return { x: (event.clientX - rect.left) * canvas.width / rect.width, y: (event.clientY - rect.top) * canvas.height / rect.height }; }
-function selectSlot(slot) { state.selectedSlot = slot; updateUi(); }
+function selectSlot(slot) { state.selectedEntity = null; state.selectedSlot = slot; updateUi(); }
+function selectTower(tower) {
+  state.selectedEntity = { kind: 'tower', id: tower.id };
+  state.selectedSlot = MAP.slots.find(slot => slot.id === tower.id) || null;
+  updateUi();
+}
+function selectRobot() { state.selectedEntity = { kind: 'robot' }; state.selectedSlot = null; updateUi(); }
 function upgradeTower(tower) {
   if (state.waveRunning) { addFeed('Cannot upgrade towers during wave.', 'alert'); return; }
   if (!tower || tower.level >= 2) { addFeed('Tower is already at MAX LVL 2.', 'alert'); return; }
@@ -443,12 +479,13 @@ function upgradeTower(tower) {
   tower.level = 2;
   tower.data = { ...tower.data, damage: l2Data.damage, cooldown: l2Data.cooldown, range: l2Data.range, level: 2 };
   addFeed(`${tower.data.name} at ${tower.id} upgraded to LVL 2 (-${l2Data.upgradeCost}g).`, 'good');
+  state.selectedEntity = null;
   state.selectedSlot = null;
   updateUi();
 }
 function buildTower(id) {
+  if (state.baseHp <= 0 || state.currentWave > WAVES.length) return;
   if (!state.selectedSlot) { addFeed('Select a tower slot first.', 'alert'); return; }
-  if (state.waveRunning) { addFeed('Cannot modify towers while wave is in progress.', 'alert'); return; }
   const existingTower = state.towers.find(tower => tower.id === state.selectedSlot.id);
   if (existingTower) {
     if (existingTower.level === 1 && existingTower.type === id) {
@@ -460,25 +497,30 @@ function buildTower(id) {
     }
     return;
   }
-  const data = TOWERS[id]; if (state.gold < data.cost) { addFeed(`Need ${data.cost} gold for ${data.name}.`, 'alert'); return; }
-  state.gold -= data.cost; state.towers.push({ ...state.selectedSlot, type: id, data: { ...data }, level: 1, cooldown: 0 }); addFeed(`${data.name} LVL 1 deployed at ${state.selectedSlot.id}.`, 'good'); state.selectedSlot = null; updateUi();
+  const data = TOWERS[id]; if (!data) return;
+  if (state.gold < data.cost) { addFeed(`Need ${data.cost} gold for ${data.name}.`, 'alert'); return; }
+  state.gold -= data.cost; state.towers.push({ ...state.selectedSlot, type: id, data: { ...data }, level: 1, cooldown: 0 }); addFeed(`${data.name} LVL 1 deployed at ${state.selectedSlot.id}.`, 'good'); state.selectedSlot = null; state.selectedEntity = null; updateUi();
 }
 function moveRobot(position) {
-  const robot = state.robot; if (!robot.active || robot.commands <= 0) return;
+  const robot = state.robot; if (!robot.active || state.baseHp <= 0 || state.currentWave > WAVES.length) return;
   const spot = MAP.robotSpots.find(item => item.id === position.id); if (!spot || robot.targetSpot === spot.id) return;
-  robot.targetSpot = spot.id; robot.x = spot.x; robot.y = spot.y; robot.commands -= 1; addFeed(`Atlas-01 repositioned to ${spot.id}. ${robot.commands} commands remain.`); updateUi();
+  robot.targetSpot = spot.id; robot.x = spot.x; robot.y = spot.y; addFeed(`Atlas-01 repositioned to ${spot.id}.`); updateUi();
 }
 
 canvas.addEventListener('click', event => {
   const point = canvasPosition(event);
+  const tower = state.towers.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 21);
+  if (tower) { selectTower(tower); return; }
+  if (state.robot.active && Math.hypot(state.robot.x - point.x, state.robot.y - point.y) < 25) { selectRobot(); return; }
   const slot = MAP.slots.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 24);
   if (slot) { selectSlot(slot); return; }
   const spot = MAP.robotSpots.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 48);
-  if (spot) moveRobot(spot);
+  if (spot) { if (state.selectedEntity?.kind === 'robot') moveRobot(spot); return; }
+  state.selectedEntity = null; state.selectedSlot = null; updateUi();
 });
 document.querySelectorAll('.tower-card').forEach(button => button.addEventListener('click', () => buildTower(button.dataset.tower)));
 ui.startWave.addEventListener('click', startWave);
-ui.launchRobot.addEventListener('click', () => { if (!state.robot.active) { state.robot.hp = ROBOT.hp; state.robot.active = true; state.robot.targetSpot = 'CENTER'; addFeed('Atlas-01 launched at CENTER. Choose its first crisis zone.', 'good'); updateUi(); } });
+ui.launchRobot.addEventListener('click', () => { if (!state.robot.active && state.baseHp > 0 && state.currentWave <= WAVES.length) { state.robot.hp = ROBOT.hp; state.robot.active = true; state.selectedEntity = { kind: 'robot' }; addFeed(`Atlas-01 launched at ${state.robot.targetSpot}. Choose its first crisis zone.`, 'good'); updateUi(); } });
 ui.restart.addEventListener('click', resetGame);
 
 function frame(now) { const dt = Math.min(.05, (now - lastFrame) / 1000); lastFrame = now; update(dt); draw(); requestAnimationFrame(frame); }

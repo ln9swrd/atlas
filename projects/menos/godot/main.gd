@@ -21,6 +21,8 @@ var towers: Array = []
 var robot := {}
 var feed: Array[String] = []
 var selected_slot := ""
+var selected_tower := ""
+var robot_selected := false
 var effects: Array = []
 
 func _ready() -> void:
@@ -29,7 +31,7 @@ func _ready() -> void:
 
 func reset_game() -> void:
 	base_hp = 100.0; gold = 180; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
-	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""
+	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""; selected_tower = ""; robot_selected = false
 	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS.CENTER, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
 	feed.clear(); log_event("Build towers, launch ATLAS-01, then start Wave 1.")
 
@@ -76,7 +78,7 @@ func damage_robot(amount: float) -> void:
 	robot["flash"] = 0.12
 	effects.append({"position": robot.position, "type": "giantHit", "life": 0.28})
 	if robot.hp <= 0.0:
-		robot.hp = 0.0; robot.active = false; log_event("ATLAS-01 destroyed. Base defense remains active.")
+		robot.hp = 0.0; robot.active = false; robot_selected = false; log_event("ATLAS-01 destroyed. Base defense remains active.")
 
 func update_giant_robot_attack(delta: float, enemy: Dictionary) -> void:
 	if enemy.type != "giant" or not robot.active or robot.hp <= 0.0: return
@@ -128,6 +130,18 @@ func find_target(position: Vector2, range_value: float, preference: String = "")
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
 
+func get_robot_target() -> Dictionary:
+	var candidates: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= DATA.ROBOT.range)
+	if candidates.is_empty(): return {}
+	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
+	return candidates[0]
+
+func get_robot_heavy_target() -> Dictionary:
+	var candidates: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.type in ["heavy", "giant"] and enemy.position.distance_to(robot.position) <= DATA.ROBOT.range + 20.0)
+	if candidates.is_empty(): return {}
+	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
+	return candidates[0]
+
 func update_towers(delta: float) -> void:
 	for tower in towers:
 		tower.cooldown -= delta
@@ -139,8 +153,8 @@ func update_towers(delta: float) -> void:
 func update_robot(delta: float) -> void:
 	if not robot.active or robot.hp <= 0.0: return
 	robot.attack -= delta; robot.area -= delta; robot.pierce -= delta
-	var target: Dictionary = find_target(robot.position, DATA.ROBOT.range)
-	var heavy: Dictionary = find_target(robot.position, DATA.ROBOT.range + 20.0, "heavy")
+	var target: Dictionary = get_robot_target()
+	var heavy: Dictionary = get_robot_heavy_target()
 	if robot.area <= 0.0:
 		var nearby: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= DATA.ROBOT.ability_area.radius)
 		if nearby.size() >= DATA.ROBOT.ability_area.threshold:
@@ -159,7 +173,7 @@ func check_wave_clear() -> void:
 	wave_running = false; wave_clear = true
 	if wave < DATA.WAVES.size():
 		run_state = RunState.READY
-		log_event("Wave clear. Next: %s" % DATA.WAVES[wave].label); wave += 1
+		log_event("Wave clear. Next: %s" % DATA.WAVES[wave].label); wave += 1; start_wave()
 	else:
 		run_state = RunState.VICTORY
 		log_event("VICTORY. ALL FOUR WAVES CLEAR. Press RESTART to repeat.")
@@ -174,30 +188,39 @@ func handle_click(point: Vector2) -> void:
 	if Rect2(920, 250, 145, 42).has_point(point): launch_robot(); return
 	if Rect2(920, 305, 145, 42).has_point(point): build_tower("cannon"); return
 	if Rect2(920, 360, 145, 42).has_point(point): build_tower("gatling"); return
+	for tower in towers:
+		if point.distance_to(tower.position) < 24.0:
+			selected_tower = tower.id; selected_slot = tower.id; robot_selected = false; queue_redraw(); return
+	if robot.active and point.distance_to(robot.position) < 28.0:
+		robot_selected = true; selected_tower = ""; selected_slot = ""; queue_redraw(); return
 	for id in SLOTS:
-		if point.distance_to(SLOTS[id]) < 24.0 and not towers.any(func(tower): return tower.id == id): selected_slot = id; return
+		if point.distance_to(SLOTS[id]) < 24.0 and not towers.any(func(tower): return tower.id == id): selected_slot = id; selected_tower = ""; robot_selected = false; queue_redraw(); return
 	for id in ROBOT_SPOTS:
-		if point.distance_to(ROBOT_SPOTS[id]) < 55.0: move_robot(id); return
+		if point.distance_to(ROBOT_SPOTS[id]) < 55.0:
+			if robot_selected: move_robot(id)
+			return
+	selected_slot = ""; selected_tower = ""; robot_selected = false; queue_redraw()
 
 func build_tower(type: String) -> void:
-	if run_state != RunState.READY: return
+	if run_state not in [RunState.READY, RunState.RUNNING]: return
 	if selected_slot.is_empty(): log_event("Select an empty tower slot first."); return
 	if towers.any(func(tower): return tower.id == selected_slot): return
+	if not DATA.TOWERS.has(type): return
 	var data: Dictionary = DATA.TOWERS[type]
 	if gold < data.cost: log_event("Need %d gold for %s." % [data.cost, data.name]); return
-	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": SLOTS[selected_slot], "data": data, "cooldown": 0.0}); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""
+	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": SLOTS[selected_slot], "data": data, "cooldown": 0.0}); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""; selected_tower = ""; robot_selected = false
 
 func launch_robot() -> void:
 	if not can_launch_robot(): return
 	robot.hp = DATA.ROBOT.hp
-	robot.active = true; log_event("ATLAS-01 launched at %s. Choose a crisis zone." % robot.spot)
+	robot.active = true; robot_selected = true; selected_tower = ""; selected_slot = ""; log_event("ATLAS-01 launched at %s. Choose a crisis zone." % robot.spot)
 
 func can_launch_robot() -> bool:
 	return not robot.active and run_state in [RunState.READY, RunState.RUNNING]
 
 func move_robot(id: String) -> void:
-	if not robot.active or robot.commands <= 0 or robot.spot == id: return
-	robot.spot = id; robot.position = ROBOT_SPOTS[id]; robot.commands -= 1; log_event("ATLAS-01 moved to %s. %d commands remain." % [id, robot.commands])
+	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING] or not ROBOT_SPOTS.has(id) or robot.spot == id: return
+	robot.spot = id; robot.position = ROBOT_SPOTS[id]; log_event("ATLAS-01 moved to %s." % id)
 
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 1100, 700), Color("091419"))
@@ -209,7 +232,9 @@ func _draw() -> void:
 	for id in SLOTS:
 		var occupied := towers.any(func(tower): return tower.id == id)
 		if not occupied: draw_arc(SLOTS[id], 18, 0, TAU, 20, Color("f0a35a") if selected_slot == id else Color("6a858a"), 2)
-		else: draw_circle(SLOTS[id], 15, Color("f0a35a") if towers.filter(func(tower): return tower.id == id)[0].type == "cannon" else Color("7ed6ce"))
+		else:
+			draw_circle(SLOTS[id], 15, Color("f0a35a") if towers.filter(func(tower): return tower.id == id)[0].type == "cannon" else Color("7ed6ce"))
+			if selected_tower == id: draw_arc(SLOTS[id], 24, 0, TAU, 24, Color("d7fff7"), 2)
 		draw_string(ThemeDB.fallback_font, SLOTS[id] + Vector2(-10, 4), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
 	for id in ROBOT_SPOTS: draw_string(ThemeDB.fallback_font, ROBOT_SPOTS[id] + Vector2(-24, 58), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
 	for enemy in enemies:
@@ -222,6 +247,7 @@ func _draw() -> void:
 		var is_flashing: bool = float(robot.get("flash", 0.0)) > 0.0
 		draw_circle(robot.position, 22, Color.WHITE if is_flashing else Color("7ed6ce"))
 		draw_arc(robot.position, 28, 0, TAU, 6, Color("ef7068") if is_flashing else Color("d7fff7"), 3 if is_flashing else 2)
+		if robot_selected: draw_arc(robot.position, 35, 0, TAU, 24, Color("f0a35a"), 2)
 	draw_ui()
 
 func draw_ui() -> void:
@@ -233,9 +259,13 @@ func draw_ui() -> void:
 	elif run_state == RunState.VICTORY: status_text = "VICTORY"
 	elif run_state == RunState.DEFEAT: status_text = "DEFEAT"
 	draw_string(ThemeDB.fallback_font, Vector2(920, 585), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if run_state == RunState.VICTORY else Color("ef7068") if run_state == RunState.DEFEAT else Color("d7fff7"))
-	button(Rect2(920, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(920, 175, 145, 42), "RESTART", false); button(Rect2(920, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(920, 305, 145, 42), "BUILD CANNON  55", run_state != RunState.READY); button(Rect2(920, 360, 145, 42), "BUILD GATLING 35", run_state != RunState.READY)
-	draw_string(ThemeDB.fallback_font, Vector2(920, 535), "ATLAS-01  %s" % ("DEPLOYED / " + robot.spot if robot.active else "DOCKED"), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce")); draw_string(ThemeDB.fallback_font, Vector2(920, 557), "HP %03d   MOVES %d" % [max(0, ceil(robot.hp)), robot.commands], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
-	draw_string(ThemeDB.fallback_font, Vector2(30, 665), "CLICK SLOTS TO SELECT  /  CLICK LEFT CENTER RIGHT TO MOVE  /  R TO RESTART", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6a858a"))
+	button(Rect2(920, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(920, 175, 145, 42), "RESTART", false); button(Rect2(920, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(920, 305, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(920, 360, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
+	var robot_status := "DOCKED"
+	if robot.active: robot_status = "DEPLOYED / " + robot.spot
+	if robot_selected: robot_status += " / SELECTED"
+	draw_string(ThemeDB.fallback_font, Vector2(920, 535), "ATLAS-01  " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
+	draw_string(ThemeDB.fallback_font, Vector2(920, 557), "HP %03d   MOVES ∞" % max(0, ceil(robot.hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
+	draw_string(ThemeDB.fallback_font, Vector2(30, 665), "CLICK TOWER / ROBOT TO SELECT  /  SELECT ROBOT, THEN CLICK DESTINATION  /  R TO RESTART", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6a858a"))
 	for index in range(feed.size()): draw_string(ThemeDB.fallback_font, Vector2(30, 590 - index * 20), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 820, 12, Color("a9c5c7"))
 
 func button(rect: Rect2, label: String, disabled: bool) -> void:
