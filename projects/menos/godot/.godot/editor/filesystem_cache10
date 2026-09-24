@@ -1,7 +1,7 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790234929
+::res://::1790237333
 data.gd::GDScript::5537870080328675552::1790234929::0::1::::MenosData<>RefCounted<><>0<>0<><>::
-main.gd::GDScript::3826669508318333139::1790236902::0::1::::<>Node2D<><>0<>0<><>::
+main.gd::GDScript::3826669508318333139::1790237115::0::1::::<>Node2D<><>0<>0<><>::
 main.tscn::PackedScene::-1::1790223990::0::1::::<><><>0<>0<><>::res://main.gd
 ::res://assets/::1790233455
 ::res://assets/menos/::1790236202
@@ -9,7 +9,7 @@ main.tscn::PackedScene::-1::1790223990::0::1::::<><><>0<>0<><>::res://main.gd
 test_terrain_sheet.png::CompressedTexture2D::7377908154946531028::1790229678::1790233813::1::::<><><>0<>0<>f6990f13f98e8e377b1b10870aab804c<>res://.godot/imported/test_terrain_sheet.png-c14b8c9699a62aca901cd9ef2e7a72ff.ctex::
 tile_bask_floor.tres::AtlasTexture::-1::1790233772::0::1::::<><><>0<>0<><>::res://assets/menos/environment/test_terrain_sheet.png
 tile_dark_floor.tres::AtlasTexture::-1::1790236361::0::1::::<><><>0<>0<><>::
-::res://assets/menos/sprites/::1790236887
+::res://assets/menos/sprites/::1790237008
 enemy_giant.png::CompressedTexture2D::5505316835131760880::1790236671::1790237008::1::::<><><>0<>0<>c63023f85f8d2500d55cc22586b5048f<>res://.godot/imported/enemy_giant.png-b1d48bdb89477e456f7b972a6ceb6201.ctex::
 enemy_heavy.png::CompressedTexture2D::2011764950105006847::1790236203::1790237008::1::::<><><>0<>0<>242f69a4ec031e857376e6812836ba7d<>res://.godot/imported/enemy_heavy.png-b70067edca5ad5014d99891e1178dac6.ctex::
 enemy_normal.png::CompressedTexture2D::3044556667636060619::1790236202::1790237008::1::::<><><>0<>0<>a64e9a05affd65691a69c17e1297dd52<>res://.godot/imported/enemy_normal.png-ce866949c8f08c4d7c40230f4bd536a2.ctex::
