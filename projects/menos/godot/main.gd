@@ -15,7 +15,10 @@ const VISUALS := {
 	"enemy_rusher": preload("res://assets/menos/sprites/enemy_rusher.png"),
 	"enemy_heavy": preload("res://assets/menos/sprites/enemy_heavy.png"),
 	"enemy_giant": preload("res://assets/menos/sprites/enemy_giant.png"),
-	"robot": preload("res://assets/menos/sprites/robot_atlas01.png")
+	"robot": preload("res://assets/menos/sprites/robot_atlas01.png"),
+	"bullet_defender": preload("res://assets/menos/sprites/bullet_defender.png"),
+	"bullet_threat": preload("res://assets/menos/sprites/bullet_threat.png"),
+	"impact_explosion": preload("res://assets/menos/sprites/impact_explosion.png")
 }
 const ENEMY_SPRITE_SIZES := {
 	"normal": Vector2(34, 46),
@@ -101,8 +104,11 @@ func _process(delta: float) -> void:
 	if robot.get("active", false):
 		robot["flash"] = max(0.0, float(robot.get("flash", 0.0)) - delta)
 	for effect in effects:
-		effect.life -= delta
-	effects = effects.filter(func(item): return item.life > 0.0)
+		if effect.has("progress"):
+			effect["progress"] = float(effect["progress"]) + delta * float(effect.get("speed", 4.0))
+		else:
+			effect["life"] = float(effect["life"]) - delta
+	effects = effects.filter(func(item): return float(item.get("progress", 0.0)) < 1.0 and float(item.get("life", 1.0)) > 0.0)
 	queue_redraw()
 
 func start_wave() -> void:
@@ -123,7 +129,6 @@ func spawn_enemies() -> void:
 		var lane: String = entry.lanes[enemies.size() % entry.lanes.size()]
 		var data: Dictionary = DATA.ENEMIES[entry.type]
 		enemies.append({"type": entry.type, "lane": lane, "position": LANES[lane], "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0})
-		play_sfx("enemy_spawn")
 
 func damage_robot(amount: float) -> void:
 	if not robot.active: return
@@ -139,6 +144,7 @@ func update_giant_robot_attack(delta: float, enemy: Dictionary) -> void:
 	enemy.robot_attack_timer -= delta
 	if enemy.position.distance_to(robot.position) > data.robot_range: return
 	if enemy.robot_attack_timer > 0.0: return
+	effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0})
 	damage_robot(data.robot_damage)
 	enemy.robot_attack_timer = data.robot_cooldown
 	if robot.active:
@@ -166,7 +172,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 	if enemy == null or enemy.hp <= 0.0: return
 	var data: Dictionary = DATA.ENEMIES[enemy.type]
 	enemy.hp -= max(1.0, amount - data.armor); enemy.flash = 0.12
-	effects.append({"position": enemy.position, "type": source, "life": 0.25})
+	effects.append({"position": enemy.position, "type": "impact_explosion", "life": 0.35, "max_life": 0.35})
 	if enemy.hp <= 0.0:
 		gold += data.reward
 		if enemy.type == "giant": log_event("GIANT NEUTRALIZED. ATLAS-01 changed the outcome.")
@@ -201,6 +207,7 @@ func update_towers(delta: float) -> void:
 		if tower.cooldown > 0.0: continue
 		var target: Dictionary = find_target(tower.position, tower.data.range, tower.data.preference)
 		if target.is_empty(): continue
+		effects.append({"type": "proj_defender", "start": tower.position, "target": target.position, "progress": 0.0, "speed": 5.0})
 		damage_enemy(target, tower.data.damage, tower.type); tower.cooldown = tower.data.cooldown
 
 func update_robot(delta: float) -> void:
@@ -219,6 +226,7 @@ func update_robot(delta: float) -> void:
 		damage_enemy(heavy, DATA.ROBOT.ability_pierce.damage, "pierce"); robot.pierce = DATA.ROBOT.ability_pierce.cooldown
 		log_event("ATLAS-01 used HEAVY PIERCE on %s." % DATA.ENEMIES[heavy.type].name)
 	elif robot.attack <= 0.0 and not target.is_empty():
+		effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "progress": 0.0, "speed": 5.5})
 		damage_enemy(target, DATA.ROBOT.damage, "robot"); robot.attack = DATA.ROBOT.cooldown
 
 func available_robot_growths() -> Array[String]:
@@ -372,10 +380,27 @@ func _draw() -> void:
 		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 7)
 		draw_rect(Rect2(hp_position, Vector2(enemy_size.x, 4)), Color("263238")); draw_rect(Rect2(hp_position, Vector2(enemy_size.x * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("92d28b"))
 	for effect in effects:
-		if effect.get("type", "") == "giantHit":
+		var etype: String = str(effect.get("type", ""))
+		if etype == "giantHit":
 			draw_arc(effect.position, 35.0, 0, TAU, 16, Color("ef7068"), 3.0)
-		elif effect.get("type", "") in ["cannon", "gatling"]:
-			draw_sprite(VISUALS["impact_blast"], effect.position, Vector2(36, 36))
+		elif etype == "impact_explosion" or etype in ["cannon", "gatling", "robot", "area", "pierce"]:
+			var life_progress: float = 1.0 - clampf(float(effect.get("life", 0.0)) / max(0.01, float(effect.get("max_life", 0.35))), 0.0, 1.0)
+			var frame_idx: int = int(life_progress * 8.0) % 8
+			draw_animated_sprite(VISUALS["impact_explosion"], effect.position, Vector2(54, 54), frame_idx, 8)
+		elif etype == "proj_defender":
+			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
+			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
+			var end_p: Vector2 = effect.get("target", Vector2.ZERO)
+			var current_p: Vector2 = start_p.lerp(end_p, progress)
+			var p_frame: int = int(elapsed * 18.0) % 8
+			draw_animated_sprite(VISUALS["bullet_defender"], current_p, Vector2(38, 48), p_frame, 8)
+		elif etype == "proj_threat":
+			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
+			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
+			var end_p: Vector2 = effect.get("target", Vector2.ZERO)
+			var current_p: Vector2 = start_p.lerp(end_p, progress)
+			var p_frame: int = int(elapsed * 16.0) % 5
+			draw_animated_sprite(VISUALS["bullet_threat"], current_p, Vector2(44, 54), p_frame, 5)
 	if robot.active:
 		var is_flashing: bool = float(robot.get("flash", 0.0)) > 0.0
 		if is_flashing: draw_circle(robot.position, 34, Color("ef7068", 0.35))

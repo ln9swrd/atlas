@@ -2,6 +2,22 @@ import { TOWERS, ENEMIES, ROBOT, WAVES, MAP } from './data.js';
 
 const canvas = document.querySelector('#battlefield');
 const ctx = canvas.getContext('2d');
+const SPRITES = {
+  bulletDefender: new Image(),
+  bulletThreat: new Image(),
+  impactExplosion: new Image()
+};
+SPRITES.bulletDefender.src = './images/bullet_defender.png';
+SPRITES.bulletThreat.src = './images/bullet_threat.png';
+SPRITES.impactExplosion.src = './images/impact_explosion.png';
+
+const MAP_ART = {
+  battlefield: new Image(),
+  base: new Image()
+};
+MAP_ART.battlefield.src = './images/map/map.png';
+MAP_ART.base.src = './images/map/a7.png';
+
 const SFX_FILES = {
   uiClick: new URL('./sound/sfx_ui_click_1.mp3', import.meta.url).href,
   uiConfirm: new URL('./sound/Menu%20Choice.mp3', import.meta.url).href,
@@ -13,9 +29,19 @@ const SFX_FILES = {
   waveStart: new URL('./sound/g_get_ready.wav', import.meta.url).href
 };
 
+const SFX_COOLDOWNS = {
+  waveStart: 900
+};
+const LAST_SFX_TIMES = {};
+
 function playSfx(id) {
   if (typeof Audio === 'undefined' || !SFX_FILES[id]) return;
+  const now = performance.now();
+  const cooldown = SFX_COOLDOWNS[id] || 0;
+  if (cooldown && (LAST_SFX_TIMES[id] || 0) + cooldown > now) return;
+  LAST_SFX_TIMES[id] = now;
   const player = new Audio(SFX_FILES[id]);
+  player.volume = id === 'waveStart' ? 0.9 : 0.7;
   player.play().catch(() => {});
 }
 
@@ -147,7 +173,6 @@ function spawnDueEnemies(dt) {
     const lane = entry.lanes[(state.enemies.length + state.spawnQueue.length) % entry.lanes.length];
     const data = ENEMIES[entry.type];
     state.enemies.push({ type: entry.type, lane, x: MAP.lanes[lane].x, y: MAP.lanes[lane].y, hp: data.hp, maxHp: data.hp, flash: 0, robotAttackTimer: 0, id: `${entry.type}-${state.elapsed}-${Math.random()}` });
-    playSfx('enemySpawn');
   }
 }
 
@@ -221,7 +246,7 @@ function damageEnemy(enemy, amount, source) {
     state.gold += ENEMIES[enemy.type].reward;
     if (enemy.type === 'enemy_giant') addFeed('GIANT neutralized. Atlas-01 changed the outcome.', 'good');
   }
-  state.effects.push({ type: source, x: enemy.x, y: enemy.y, life: .28, maxLife: .28 });
+  state.effects.push({ type: 'impact_explosion', x: enemy.x, y: enemy.y, life: 0.35, maxLife: 0.35 });
 }
 
 function nearestEnemy(x, y, range, preference = null) {
@@ -261,6 +286,7 @@ function updateTowers(dt) {
     if (tower.cooldown > 0) continue;
     const target = nearestEnemy(tower.x, tower.y, tower.data.range, tower.data.target);
     if (!target) continue;
+    state.effects.push({ type: 'proj_defender', startX: tower.x, startY: tower.y, targetX: target.x, targetY: target.y, progress: 0, speed: 5.0 });
     damageEnemy(target, tower.data.damage, tower.type === 'tower_cannon' ? 'cannon' : 'gatling');
     tower.cooldown = tower.data.cooldown;
   }
@@ -293,14 +319,21 @@ function updateRobot(dt) {
     state.effects.push({ type: 'pierce', x: heavyTarget.x, y: heavyTarget.y, life: .35, maxLife: .35 });
     addFeed(`Atlas-01 used HEAVY PIERCE on ${ENEMIES[heavyTarget.type].name}.`, 'good');
   } else if (robot.attackTimer <= 0 && target) {
+    state.effects.push({ type: 'proj_defender', startX: robot.x, startY: robot.y, targetX: target.x, targetY: target.y, progress: 0, speed: 5.5 });
     damageEnemy(target, ROBOT.damage, 'robot');
     robot.attackTimer = ROBOT.cooldown;
   }
 }
 
 function updateEffects(dt) {
-  state.effects.forEach(effect => { effect.life -= dt; });
-  state.effects = state.effects.filter(effect => effect.life > 0);
+  state.effects.forEach(effect => {
+    if (effect.progress !== undefined) {
+      effect.progress += dt * (effect.speed || 4);
+    } else {
+      effect.life -= dt;
+    }
+  });
+  state.effects = state.effects.filter(effect => (effect.progress === undefined || effect.progress < 1) && (effect.life === undefined || effect.life > 0));
   state.enemies.forEach(enemy => { enemy.flash = Math.max(0, enemy.flash - dt); });
   if (state.robot) state.robot.flash = Math.max(0, (state.robot.flash || 0) - dt);
 }
@@ -402,16 +435,23 @@ function draw() {
 }
 
 function drawBackground() {
-  ctx.fillStyle = '#0a1519'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#10242a'; ctx.fillRect(0, 0, canvas.width, 176);
-  ctx.fillStyle = '#16343a'; ctx.fillRect(0, 176, canvas.width, 112);
-  ctx.fillStyle = '#1b3b3f'; ctx.fillRect(0, 288, canvas.width, 272);
-  ctx.strokeStyle = 'rgba(126,214,206,.12)'; ctx.lineWidth = 1;
-  for (let x = 0; x < canvas.width; x += 48) { ctx.beginPath(); ctx.moveTo(x, 288); ctx.lineTo(x + 92, 560); ctx.stroke(); }
-  for (let y = 320; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
-  ctx.fillStyle = '#31535b'; ctx.fillRect(0, 172, canvas.width, 4); ctx.fillRect(0, 284, canvas.width, 4);
-  ctx.fillStyle = '#6c8790'; ctx.font = '11px Space Mono'; ctx.fillText('NORTH APPROACH // GATE 01', 22, 122); ctx.fillText('SOUTH APPROACH // GATE 02', 22, 463);
-  ctx.fillStyle = '#7ed6ce'; ctx.font = '10px Space Mono'; ctx.fillText('NORTHBRIDGE DEFENSE GRID // 3/4 FIELD VIEW', 88, 80);
+  if (MAP_ART.battlefield.complete && MAP_ART.battlefield.naturalWidth) {
+    ctx.save();
+    ctx.globalAlpha = 0.9;
+    ctx.drawImage(MAP_ART.battlefield, 0, 0, canvas.width, canvas.height);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = '#0a1519'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#10242a'; ctx.fillRect(0, 0, canvas.width, 176);
+    ctx.fillStyle = '#16343a'; ctx.fillRect(0, 176, canvas.width, 112);
+    ctx.fillStyle = '#1b3b3f'; ctx.fillRect(0, 288, canvas.width, 272);
+    ctx.strokeStyle = 'rgba(126,214,206,.12)'; ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 48) { ctx.beginPath(); ctx.moveTo(x, 288); ctx.lineTo(x + 92, 560); ctx.stroke(); }
+    for (let y = 320; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+    ctx.fillStyle = '#31535b'; ctx.fillRect(0, 172, canvas.width, 4); ctx.fillRect(0, 284, canvas.width, 4);
+    ctx.fillStyle = '#6c8790'; ctx.font = '11px Space Mono'; ctx.fillText('NORTH APPROACH // GATE 01', 22, 122); ctx.fillText('SOUTH APPROACH // GATE 02', 22, 463);
+    ctx.fillStyle = '#7ed6ce'; ctx.font = '10px Space Mono'; ctx.fillText('NORTHBRIDGE DEFENSE GRID // 3/4 FIELD VIEW', 88, 80);
+  }
 }
 
 function drawLanes() {
@@ -436,8 +476,15 @@ function drawSlots() {
 }
 
 function drawBase() {
-  ctx.save(); ctx.translate(MAP.base.x, MAP.base.y); ctx.fillStyle = '#182f35'; ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.rect(-38, -38, 76, 76); ctx.fill(); ctx.stroke(); ctx.strokeStyle = 'rgba(126,214,206,.35)'; ctx.lineWidth = 8; ctx.strokeRect(-52, -52, 104, 104); ctx.fillStyle = '#7ed6ce'; ctx.fillRect(-10, -10, 20, 20); ctx.restore();
+  if (MAP_ART.base.complete && MAP_ART.base.naturalWidth) {
+    ctx.save();
+    ctx.translate(MAP.base.x, MAP.base.y);
+    ctx.drawImage(MAP_ART.base, -92, -92, 184, 184);
+    ctx.restore();
+  } else {
+    ctx.save(); ctx.translate(MAP.base.x, MAP.base.y); ctx.fillStyle = '#182f35'; ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.rect(-38, -38, 76, 76); ctx.fill(); ctx.stroke(); ctx.strokeStyle = 'rgba(126,214,206,.35)'; ctx.lineWidth = 8; ctx.strokeRect(-52, -52, 104, 104); ctx.fillStyle = '#7ed6ce'; ctx.fillRect(-10, -10, 20, 20); ctx.restore();
+  }
   ctx.fillStyle = '#7ed6ce'; ctx.font = '11px Space Mono'; ctx.textAlign = 'center'; ctx.fillText('BASE', MAP.base.x, MAP.base.y + 55); ctx.textAlign = 'left';
 }
 
@@ -488,11 +535,41 @@ function drawRobot() {
 }
 
 function drawEffects() {
+  const now = performance.now() / 1000;
   state.effects.forEach(effect => {
-    const alpha = effect.life / effect.maxLife; ctx.save(); ctx.globalAlpha = alpha;
-    if (effect.type === 'areaBurst') { ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(effect.x, effect.y, 80 - alpha * 20, 0, Math.PI * 2); ctx.stroke(); }
-    else if (effect.type === 'giantHit') { ctx.strokeStyle = '#ef7068'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(effect.x, effect.y, 35 - alpha * 12, 0, Math.PI * 2); ctx.stroke(); }
-    else { ctx.strokeStyle = effect.type === 'pierce' ? '#aa8de5' : '#ffffff'; ctx.lineWidth = effect.type === 'pierce' ? 5 : 2; ctx.beginPath(); ctx.moveTo(effect.x - 16, effect.y); ctx.lineTo(effect.x + 16, effect.y); ctx.stroke(); }
+    ctx.save();
+    if (effect.type === 'areaBurst') {
+      const alpha = effect.life / effect.maxLife; ctx.globalAlpha = alpha;
+      ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(effect.x, effect.y, 80 - alpha * 20, 0, Math.PI * 2); ctx.stroke();
+    } else if (effect.type === 'giantHit') {
+      const alpha = effect.life / effect.maxLife; ctx.globalAlpha = alpha;
+      ctx.strokeStyle = '#ef7068'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(effect.x, effect.y, 35 - alpha * 12, 0, Math.PI * 2); ctx.stroke();
+    } else if (effect.type === 'impact_explosion' || ['cannon', 'gatling', 'robot', 'area', 'pierce'].includes(effect.type)) {
+      const progress = 1 - Math.max(0, Math.min(1, effect.life / (effect.maxLife || 0.35)));
+      const frameIdx = Math.floor(progress * 8) % 8;
+      if (SPRITES.impactExplosion.complete && SPRITES.impactExplosion.naturalWidth) {
+        ctx.drawImage(SPRITES.impactExplosion, frameIdx * 156, 0, 156, 180, effect.x - 27, effect.y - 27, 54, 54);
+      }
+    } else if (effect.type === 'proj_defender') {
+      const p = Math.max(0, Math.min(1, effect.progress));
+      const curX = effect.startX + (effect.targetX - effect.startX) * p;
+      const curY = effect.startY + (effect.targetY - effect.startY) * p;
+      const frameIdx = Math.floor(now * 18) % 8;
+      if (SPRITES.bulletDefender.complete && SPRITES.bulletDefender.naturalWidth) {
+        ctx.drawImage(SPRITES.bulletDefender, frameIdx * 151, 0, 151, 323, curX - 19, curY - 24, 38, 48);
+      }
+    } else if (effect.type === 'proj_threat') {
+      const p = Math.max(0, Math.min(1, effect.progress));
+      const curX = effect.startX + (effect.targetX - effect.startX) * p;
+      const curY = effect.startY + (effect.targetY - effect.startY) * p;
+      const frameIdx = Math.floor(now * 16) % 5;
+      if (SPRITES.bulletThreat.complete && SPRITES.bulletThreat.naturalWidth) {
+        ctx.drawImage(SPRITES.bulletThreat, frameIdx * 307, 0, 307, 341, curX - 22, curY - 27, 44, 54);
+      }
+    } else {
+      const alpha = effect.life / (effect.maxLife || 0.28); ctx.globalAlpha = alpha;
+      ctx.strokeStyle = effect.type === 'pierce' ? '#aa8de5' : '#ffffff'; ctx.lineWidth = effect.type === 'pierce' ? 5 : 2; ctx.beginPath(); ctx.moveTo(effect.x - 16, effect.y); ctx.lineTo(effect.x + 16, effect.y); ctx.stroke();
+    }
     ctx.restore();
   });
 }
