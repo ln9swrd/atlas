@@ -96,7 +96,7 @@ function updateUi() {
   ui.startWave.textContent = state.waveRunning
     ? `WAVE ${state.currentWave} IN PROGRESS`
     : state.pendingAbilityChoice
-    ? 'SELECT ABILITY UPGRADE'
+    ? 'SELECT ROBOT ABILITY'
     : state.waveComplete
     ? (isVictory ? 'ALL WAVES CLEAR' : `START WAVE ${state.currentWave}`)
     : `START WAVE ${state.currentWave}`;
@@ -115,7 +115,7 @@ function updateUi() {
   } else {
     ui.selectedSlot.textContent = state.selectedSlot ? `${state.selectedSlot.id} · SELECTED` : 'NO SLOT';
   }
-  ui.runStatus.textContent = state.baseHp <= 0 ? 'BREACHED' : state.waveRunning ? 'LIVE' : state.pendingAbilityChoice ? 'UPGRADE PENDING' : isVictory ? 'VICTORY' : state.waveComplete ? 'WAVE CLEAR' : 'READY';
+  ui.runStatus.textContent = state.baseHp <= 0 ? 'BREACHED' : state.waveRunning ? 'LIVE' : state.pendingAbilityChoice ? 'GROWTH PENDING' : isVictory ? 'VICTORY' : state.waveComplete ? 'WAVE CLEAR' : 'READY';
   ui.timer.textContent = formatTime(state.elapsed);
 }
 
@@ -199,6 +199,15 @@ function moveEnemies(dt) {
       state.baseHp -= data.baseDamage;
       enemy.hp = 0;
       addFeed(`${data.name} hit the base for ${data.baseDamage}.`, 'alert');
+      if (state.baseHp <= 0) {
+        state.baseHp = 0;
+        state.waveRunning = false;
+        state.spawnQueue = [];
+        state.pendingAbilityChoice = false;
+        hideAbilityModal();
+        addFeed('DEFEAT. The base was destroyed. Press RESTART to try again.', 'alert');
+        return;
+      }
     }
   }
 }
@@ -302,11 +311,12 @@ function openAbilityChoice() {
   if (lockedIds.length === 0) {
     state.pendingAbilityChoice = false;
     hideAbilityModal();
-    return;
+    return false;
   }
   const candidateIds = lockedIds.slice(0, 2);
   state.pendingAbilityChoice = true;
   renderAbilityModal(candidateIds);
+  return true;
 }
 
 function renderAbilityModal(candidateIds) {
@@ -355,9 +365,9 @@ function finishWaveIfReady() {
   state.waveRunning = false;
   state.waveComplete = true;
   if (state.currentWave < WAVES.length) {
-    addFeed(`Wave ${state.currentWave} clear. Choose an ability upgrade for Atlas-01.`, 'good');
+    addFeed(`Wave ${state.currentWave} clear. Choose an ability to unlock for Atlas-01.`, 'good');
     state.currentWave += 1;
-    openAbilityChoice();
+    if (!openAbilityChoice()) startWave();
   } else {
     state.currentWave += 1;
     addFeed('All four waves clear. Restart to repeat a position experiment.', 'good');

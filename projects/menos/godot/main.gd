@@ -37,7 +37,15 @@ const BASE := Vector2(450, 600)
 const LANES := {"left": Vector2(270, 70), "right": Vector2(630, 70)}
 const ROBOT_SPOTS := {"LEFT": Vector2(320, 360), "CENTER": Vector2(450, 470), "RIGHT": Vector2(580, 360)}
 const SLOTS := {"L1": Vector2(130, 150), "L2": Vector2(285, 250), "L3": Vector2(390, 360), "R1": Vector2(770, 150), "R2": Vector2(615, 250), "R3": Vector2(510, 360)}
-enum RunState { READY, RUNNING, VICTORY, DEFEAT }
+const ROBOT_GROWTH_OPTIONS := {
+	"ability_area": {"name": "AREA ATTACK", "description": "Hits 3 or more nearby enemies."},
+	"ability_heavy_pierce": {"name": "HEAVY PIERCE", "description": "Targets Heavy and Giant enemies."}
+}
+const GROWTH_OPTION_RECTS := {
+	"ability_area": Rect2(180, 320, 300, 78),
+	"ability_heavy_pierce": Rect2(500, 320, 300, 78)
+}
+enum RunState { READY, RUNNING, GROWTH, VICTORY, DEFEAT }
 
 var base_hp := 100.0
 var gold := 180
@@ -51,12 +59,11 @@ var spawn_queue: Array = []
 var enemies: Array = []
 var towers: Array = []
 var robot := {}
+var robot_progression := {}
 var feed: Array[String] = []
 var selected_slot := ""
 var selected_tower := ""
 var robot_selected := false
-var unlocked_abilities: Array[String] = []
-var pending_ability_choice := false
 var effects: Array = []
 
 func _ready() -> void:
@@ -75,8 +82,8 @@ func play_sfx(id: String) -> void:
 func reset_game() -> void:
 	base_hp = 100.0; gold = 180; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""; selected_tower = ""; robot_selected = false
-	unlocked_abilities.clear(); pending_ability_choice = false
 	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS.CENTER, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
+	robot_progression = {"unlocked_abilities": []}
 	feed.clear(); log_event("Build towers, launch ATLAS-01, then start Wave 1.")
 
 func log_event(text: String) -> void:
@@ -99,7 +106,6 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func start_wave() -> void:
-	if pending_ability_choice: return
 	if run_state != RunState.READY or wave_running or base_hp <= 0.0 or wave > DATA.WAVES.size(): return
 	spawn_queue.clear()
 	var offset := 0.0
@@ -202,30 +208,47 @@ func update_robot(delta: float) -> void:
 	robot.attack -= delta; robot.area -= delta; robot.pierce -= delta
 	var target: Dictionary = get_robot_target()
 	var heavy: Dictionary = get_robot_heavy_target()
-	if "ability_area" in unlocked_abilities and robot.area <= 0.0:
+	var unlocked_abilities: Array = robot_progression.get("unlocked_abilities", [])
+	if unlocked_abilities.has("ability_area") and robot.area <= 0.0:
 		var nearby: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= DATA.ROBOT.ability_area.radius)
 		if nearby.size() >= DATA.ROBOT.ability_area.threshold:
 			for enemy in nearby: damage_enemy(enemy, DATA.ROBOT.ability_area.damage, "area")
 			effects.append({"position": robot.position, "type": "area", "life": 0.45}); robot.area = DATA.ROBOT.ability_area.cooldown
 			log_event("ATLAS-01 used AREA ATTACK.")
-	if "ability_heavy_pierce" in unlocked_abilities and robot.pierce <= 0.0 and not heavy.is_empty():
+	if unlocked_abilities.has("ability_heavy_pierce") and robot.pierce <= 0.0 and not heavy.is_empty():
 		damage_enemy(heavy, DATA.ROBOT.ability_pierce.damage, "pierce"); robot.pierce = DATA.ROBOT.ability_pierce.cooldown
 		log_event("ATLAS-01 used HEAVY PIERCE on %s." % DATA.ENEMIES[heavy.type].name)
 	elif robot.attack <= 0.0 and not target.is_empty():
 		damage_enemy(target, DATA.ROBOT.damage, "robot"); robot.attack = DATA.ROBOT.cooldown
+
+func available_robot_growths() -> Array[String]:
+	var available: Array[String] = []
+	var unlocked_abilities: Array = robot_progression.get("unlocked_abilities", [])
+	for ability_key in ROBOT_GROWTH_OPTIONS:
+		var ability_id := str(ability_key)
+		if not unlocked_abilities.has(ability_id): available.append(ability_id)
+	return available
+
+func choose_robot_growth(ability_id: String) -> void:
+	if run_state != RunState.GROWTH or not available_robot_growths().has(ability_id): return
+	robot_progression["unlocked_abilities"].append(ability_id)
+	play_sfx("ui_confirm")
+	log_event("ATLAS-01 unlocked %s." % ROBOT_GROWTH_OPTIONS[ability_id]["name"])
+	run_state = RunState.READY
+	start_wave()
 
 func check_wave_clear() -> void:
 	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or not wave_running: return
 	if not spawn_queue.is_empty() or enemies.any(func(enemy): return enemy.hp > 0.0): return
 	wave_running = false; wave_clear = true
 	if wave < DATA.WAVES.size():
-		run_state = RunState.READY
-		wave += 1
-		if unlocked_abilities.size() < 2:
-			pending_ability_choice = true
-			log_event("Wave clear. Choose an ATLAS-01 ability before the next Wave.")
-		else:
+		log_event("Wave %d clear." % wave); wave += 1
+		if available_robot_growths().is_empty():
+			run_state = RunState.READY
 			start_wave()
+		else:
+			run_state = RunState.GROWTH
+			log_event("Choose one Robot ability before Wave %d." % wave)
 	else:
 		run_state = RunState.VICTORY
 		log_event("VICTORY. ALL FOUR WAVES CLEAR. Press RESTART to repeat.")
@@ -237,13 +260,14 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: handle_click(event.position)
 
 func handle_click(point: Vector2) -> void:
-	if pending_ability_choice:
-		var first_ability := "ability_heavy_pierce" if "ability_area" in unlocked_abilities else "ability_area"
-		if Rect2(920, 120, 145, 42).has_point(point): select_ability(first_ability); return
-		if Rect2(920, 175, 145, 42).has_point(point): select_ability("ability_area" if first_ability == "ability_heavy_pierce" else "ability_heavy_pierce"); return
+	if Rect2(920, 175, 145, 42).has_point(point): play_sfx("ui_click"); reset_game(); return
+	if run_state == RunState.GROWTH:
+		for ability_id in available_robot_growths():
+			if GROWTH_OPTION_RECTS[ability_id].has_point(point):
+				choose_robot_growth(ability_id)
+				return
 		return
 	if Rect2(920, 120, 145, 42).has_point(point): start_wave(); return
-	if Rect2(920, 175, 145, 42).has_point(point): play_sfx("ui_click"); reset_game(); return
 	if Rect2(920, 250, 145, 42).has_point(point): launch_robot(); return
 	if Rect2(920, 305, 145, 42).has_point(point): build_tower("cannon"); return
 	if Rect2(920, 360, 145, 42).has_point(point): build_tower("gatling"); return
@@ -289,15 +313,6 @@ func upgrade_tower(type: String) -> void:
 	towers[index] = tower
 	play_sfx("ui_confirm"); log_event("%s upgraded to LVL 2." % tower.data.name)
 	selected_slot = ""; selected_tower = ""; robot_selected = false; queue_redraw()
-
-func select_ability(id: String) -> void:
-	if id not in ["ability_area", "ability_heavy_pierce"]: return
-	if id in unlocked_abilities: return
-	unlocked_abilities.append(id)
-	pending_ability_choice = false
-	play_sfx("ui_confirm")
-	log_event("ATLAS-01 unlocked %s." % ("AREA ATTACK" if id == "ability_area" else "HEAVY PIERCE"))
-	queue_redraw()
 
 func launch_robot() -> void:
 	if not can_launch_robot(): return
@@ -367,23 +382,31 @@ func draw_ui() -> void:
 	var next_label: String = DATA.WAVES[min(wave - 1, 3)].label; draw_string(ThemeDB.fallback_font, Vector2(920, 470), "NEXT THREAT", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("6a858a")); draw_string(ThemeDB.fallback_font, Vector2(920, 491), next_label, HORIZONTAL_ALIGNMENT_LEFT, 165, 11, Color("a9c5c7"))
 	var status_text := "READY"
 	if run_state == RunState.RUNNING: status_text = "WAVE %d IN PROGRESS" % wave
+	elif run_state == RunState.GROWTH: status_text = "SELECT ROBOT ABILITY"
 	elif run_state == RunState.VICTORY: status_text = "VICTORY"
 	elif run_state == RunState.DEFEAT: status_text = "DEFEAT"
 	if run_state == RunState.VICTORY: draw_sprite(VISUALS["status_victory"], Vector2(1047, 585), Vector2(48, 48))
 	elif run_state == RunState.DEFEAT: draw_sprite(VISUALS["status_defeat"], Vector2(1047, 585), Vector2(48, 48))
 	draw_string(ThemeDB.fallback_font, Vector2(920, 585), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if run_state == RunState.VICTORY else Color("ef7068") if run_state == RunState.DEFEAT else Color("d7fff7"))
-	var first_ability_label := "HEAVY PIERCE" if "ability_area" in unlocked_abilities else "AREA ATTACK"
-	var second_ability_label := "AREA ATTACK" if first_ability_label == "HEAVY PIERCE" else "HEAVY PIERCE"
-	button(Rect2(920, 120, 145, 42), first_ability_label if pending_ability_choice else "START WAVE %d" % wave, pending_ability_choice == false and run_state != RunState.READY or pending_ability_choice and first_ability_label == "HEAVY PIERCE" and "ability_heavy_pierce" in unlocked_abilities); button(Rect2(920, 175, 145, 42), second_ability_label if pending_ability_choice else "RESTART", false); button(Rect2(920, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(920, 305, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(920, 360, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
+	button(Rect2(920, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(920, 175, 145, 42), "RESTART", false); button(Rect2(920, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(920, 305, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(920, 360, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
 	var robot_status := "DOCKED"
 	if robot.active: robot_status = "DEPLOYED / " + robot.spot
 	if robot_selected: robot_status += " / SELECTED"
 	draw_string(ThemeDB.fallback_font, Vector2(920, 535), "ATLAS-01  " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
 	draw_string(ThemeDB.fallback_font, Vector2(920, 557), "HP %03d   MOVES ∞" % max(0, ceil(robot.hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
-	if pending_ability_choice:
-		draw_string(ThemeDB.fallback_font, Vector2(920, 220), "CHOOSE ATLAS-01 ABILITY", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("f0a35a"))
 	draw_string(ThemeDB.fallback_font, Vector2(30, 665), "CLICK TOWER / ROBOT TO SELECT  /  SELECT ROBOT, THEN CLICK DESTINATION  /  R TO RESTART", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6a858a"))
 	for index in range(feed.size()): draw_string(ThemeDB.fallback_font, Vector2(30, 590 - index * 20), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 820, 12, Color("a9c5c7"))
+	if run_state == RunState.GROWTH: draw_robot_growth_choice()
+
+func draw_robot_growth_choice() -> void:
+	draw_rect(Rect2(145, 250, 690, 185), Color("101f25"))
+	draw_rect(Rect2(145, 250, 690, 185), Color("7ed6ce"), false, 2)
+	draw_string(ThemeDB.fallback_font, Vector2(185, 285), "WAVE CLEAR  /  SELECT ONE ROBOT ABILITY", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("d7fff7"))
+	for ability_id in available_robot_growths():
+		var option: Dictionary = ROBOT_GROWTH_OPTIONS[ability_id]
+		var rect: Rect2 = GROWTH_OPTION_RECTS[ability_id]
+		button(rect, "UNLOCK " + option["name"], false)
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(10, 55), option["description"], HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 20, 11, Color("a9c5c7"))
 
 func button(rect: Rect2, label: String, disabled: bool) -> void:
 	draw_rect(rect, Color("263c43") if disabled else Color("1d4a4e")); draw_rect(rect, Color("527079"), false, 1); draw_string(ThemeDB.fallback_font, rect.position + Vector2(10, 26), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6a858a") if disabled else Color("d7fff7"))
