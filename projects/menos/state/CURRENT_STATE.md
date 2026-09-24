@@ -27,6 +27,51 @@ Victory and defeat end states are explicit; a completed run only restarts.
 
 Keep the result bounded to the completed Godot PIE comparison. Do not infer position causality, strategic understanding, fun, or balance; any further player study requires a separate task.
 
+## Handoff - First supplied TileMap battlefield (2026-09-25)
+
+- Status: Implemented the first playable 28x18 Godot TileMap layout using only supplied map assets. Existing combat, spawn, player, and UI logic were preserved.
+- Asset investigation: `images/map` sheets are 1536x1024, consistent with a 12x8 grid of 128x128 cells. `ground.png`, `road.png`, and `map boundary.png` were staged byte-identically under `godot/assets/menos/maps/`; individual cell semantics are not verified from the sheets.
+- Map structure: `Ground` fills 28x18; `Road` forms two entry routes converging toward the existing Base; the Boundary TileMapLayer is retained but has no cells until directional Boundary semantics are verified. `main.tscn` contains three TileMapLayer nodes using `northbridge_tileset.tres`.
+- Verification: Pylance/VS Code diagnostics report no errors for `main.gd`, `main.tscn`, or `northbridge_tileset.tres`; `git diff --check` passed; SHA-256 source/staged asset comparisons passed. Godot executable was not found, so EDITOR import, BUILD, and PIE movement/collision/spawn verification remain UNVERIFIED.
+- Scope limits: No new graphics, external downloads, combat changes, camera redesign, UI changes, or additional maps were added. Collision metadata and semantic obstacle cells remain `UNVERIFIED / MISSING ASSET` until the tile sheet is opened in Godot and inspected.
+- Next: Open the Godot project and perform the required PIE checks for map load, tile placement, Player Start, walkable area, obstacle/boundary behavior, enemy spawn, and multi-enemy readability before expanding the TileSet.
+
+## Handoff - Tile meaning correction (2026-09-25)
+
+- Status: Corrected the incorrect repeated Ground cell without changing the 28x18 map, Road layout, Base, Tower positions, Player Start, Enemy Spawn, or combat logic.
+- Tile findings: Ground cell `(0,0)` is a dark transition/object-like tile; Ground `(1,2)` is the selected stable floor candidate. Road `(0,0)` remains unchanged because the current Road appearance is reported as correct. Facility, Combat Object, and Decoration sheets were not placed because their cells are object/decoration candidates rather than verified repeatable floor tiles.
+- Boundary decision: removed the unverified repeated `map boundary` cell from the Boundary layer. The existing code-drawn map outline remains; directional Boundary cells need editor inspection before use.
+- Changed: `godot/assets/menos/maps/northbridge_tileset.tres` and `godot/main.gd` only for this correction.
+- Verification: Godot/Pylance diagnostics report no errors; `git diff --check` passed; map constants and Road placement were confirmed unchanged. Godot Editor/PIE remains UNVERIFIED because no Godot executable is available in this environment.
+
+## Handoff - Road-side Ground replacement (2026-09-25)
+
+- Status: Rechecked the Ground atlas using labeled cell previews and 28x18 repeated previews. Replaced the prior `(1,2)` selection with Ground cell `(10,4)`, which showed the least visible repeat seam among the verified candidates and no large repeated object or directional motif.
+- Preserved: Road atlas cell `(0,0)`, Road placement, 28x18 dimensions, Base, Towers, Player Start, Enemy Spawn, camera/UI, and combat logic.
+- Changed for this pass: `godot/assets/menos/maps/northbridge_tileset.tres` only. The existing `main.gd` Boundary-cell removal is pre-existing from the preceding correction and was preserved.
+- Verification: TileSet diagnostics report no errors; `git diff --check` passed; final atlas coordinates are Ground `(10,4)` and Road `(0,0)`. Actual Godot Editor/PIE screen verification remains UNVERIFIED because Godot is unavailable in this environment.
+
+## Handoff - Logical Tile size correction (2026-09-25)
+
+- Status: Confirmed the project TileSet logical size is `32x32` from `northbridge_tileset.tres`. The prior Ground source used a `128x128` texture region as one logical Tile, causing the Ground image to render four times larger than the project grid.
+- Changed: `northbridge_tileset.tres` now references the existing Ground region `(10,4)` as an `AtlasTexture` sub-region `Rect2(1280, 512, 128, 128)` and divides that region into `32x32` atlas tiles. The existing `main.gd` `Vector2i.ZERO` cell lookup remains valid, so no map layout code changed.
+- Preserved: `main.tscn`, 28x18 logical map, Road source/layout, Base, Towers, Spawn positions, Player Start, camera/UI, and combat logic. Existing Road/Boundary atlas additions and scene UID/editor changes were not reverted.
+- Verification: TileSet diagnostics report no errors; `git diff --check` passed; Ground source is `32x32`, project `tile_size` is `32x32`, and the map constants/Road placement remain unchanged. Godot Editor/PIE remains UNVERIFIED because no Godot executable is available.
+
+## Handoff - Road composition asset (2026-09-25)
+
+- Status: Rejected the Road `(0,0)` atlas region after direct review. `road.png` is an art sheet containing larger isometric road compositions, not a simple 128px logical-tile sheet.
+- Changed: `main.tscn` now references the supplied `road.png` composition region `Rect2(1186, 125, 331, 232)` as `RoadComposition` (`Sprite2D`, position `Vector2(450, 320)`). The existing Road TileMap node remains in the scene but is hidden to avoid rendering the rejected/misaligned atlas tiles twice.
+- Preserved: Ground TileSet, logical `32x32` TileSet size, 28x18 map generation, Road gameplay coordinates, Base, Towers, Spawn positions, Player Start, camera/UI, and combat logic.
+- Verification: `main.tscn` and `northbridge_tileset.tres` diagnostics report no errors; `git diff --check` passed. Godot Editor/PIE visual alignment remains UNVERIFIED because no Godot executable is available.
+
+## Handoff - Road composition converted to TileMap (2026-09-25)
+
+- Status: Replaced the RoadComposition `Sprite2D` with a `TileMapLayer` using the supplied Road composition atlas.
+- TileMap setup: `road.png` region `Rect2(1184, 96, 352, 256)` is registered as 32x32 atlas tiles (11x8 cells); `main.gd` fills those cells through source 3 at the existing composition position. The rejected Road `(0,0)` TileMap remains hidden and its gameplay-side code is preserved.
+- Preserved: Ground, 28x18 map generation, Base, Towers, Spawn positions, Player Start, camera/UI, and combat logic. No source image was modified.
+- Verification: `main.gd`, `main.tscn`, and `northbridge_tileset.tres` diagnostics report no errors; `git diff --check` passed. Godot Editor/PIE remains UNVERIFIED because no Godot executable is available.
+
 # CURRENT_STATE — menos
 
 ACTIVE_TARGET: menos

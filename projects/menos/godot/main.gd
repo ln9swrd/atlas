@@ -62,6 +62,7 @@ const MAP_TILES := Vector2i(28, 18)
 const MAP_TILE_SOURCE_GROUND := 0
 const MAP_TILE_SOURCE_ROAD := 1
 const MAP_TILE_SOURCE_BOUNDARY := 2
+const MAP_TILE_SOURCE_ROAD_COMPOSITION := 3
 enum RunState { READY, RUNNING, GROWTH, VICTORY, DEFEAT }
 
 var base_hp := 100.0
@@ -92,9 +93,11 @@ func _ready() -> void:
 func build_first_battle_map() -> void:
 	var ground: TileMapLayer = $Ground
 	var road: TileMapLayer = $Road
+	var road_composition: TileMapLayer = $RoadComposition
 	var boundary: TileMapLayer = $Boundary
 	ground.clear()
 	road.clear()
+	road_composition.clear()
 	boundary.clear()
 	for y in range(MAP_TILES.y):
 		for x in range(MAP_TILES.x):
@@ -104,12 +107,9 @@ func build_first_battle_map() -> void:
 		var right_x := int(lerpf(19.0, 14.0, float(y) / float(MAP_TILES.y - 1)))
 		road.set_cell(Vector2i(left_x, y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 		road.set_cell(Vector2i(right_x, y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
-	for x in range(MAP_TILES.x):
-		boundary.set_cell(Vector2i(x, 0), MAP_TILE_SOURCE_BOUNDARY, Vector2i.ZERO)
-		boundary.set_cell(Vector2i(x, MAP_TILES.y - 1), MAP_TILE_SOURCE_BOUNDARY, Vector2i.ZERO)
-	for y in range(1, MAP_TILES.y - 1):
-		boundary.set_cell(Vector2i(0, y), MAP_TILE_SOURCE_BOUNDARY, Vector2i.ZERO)
-		boundary.set_cell(Vector2i(MAP_TILES.x - 1, y), MAP_TILE_SOURCE_BOUNDARY, Vector2i.ZERO)
+	for y in range(8):
+		for x in range(11):
+			road_composition.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_ROAD_COMPOSITION, Vector2i(x, y))
 
 func play_sfx(id: String) -> void:
 	if not SFX_STREAMS.has(id): return
