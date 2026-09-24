@@ -1,5 +1,10 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790224825
-data.gd::GDScript::5537870080328675552::1790223990::0::1::::MenosData<>RefCounted<><>0<>0<><>::
-main.gd::GDScript::3826669508318333139::1790223990::0::1::::<>Node2D<><>0<>0<><>::
+::res://::1790233415
+data.gd::GDScript::5537870080328675552::1790233415::0::1::::MenosData<>RefCounted<><>0<>0<><>::
+main.gd::GDScript::3826669508318333139::1790227069::0::1::::<>Node2D<><>0<>0<><>::
 main.tscn::PackedScene::-1::1790223990::0::1::::<><><>0<>0<><>::res://main.gd
+::res://assets/::1790233455
+::res://assets/menos/::1790233455
+::res://assets/menos/environment/::1790233772
+test_terrain_sheet.png::CompressedTexture2D::7377908154946531028::1790229678::1790233813::1::::<><><>0<>0<>f6990f13f98e8e377b1b10870aab804c<>res://.godot/imported/test_terrain_sheet.png-c14b8c9699a62aca901cd9ef2e7a72ff.ctex::
+tile_bask_floor.tres::AtlasTexture::-1::1790233772::0::1::::<><><>0<>0<><>::res://assets/menos/environment/test_terrain_sheet.png
