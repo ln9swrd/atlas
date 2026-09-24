@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MENOS // Tactical Defense PoC</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .battlefield-panel { position: relative; }
+    .ability-modal {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(9, 16, 21, 0.88);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .ability-modal-card {
+      background: #11191f;
+      border: 1px solid var(--orange);
+      padding: 24px;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+    .ability-modal-header h2 {
+      font-size: 24px;
+      margin: 4px 0 6px;
+      color: var(--ink);
+    }
+    .ability-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .ability-card {
+      background: #18252d;
+      border: 1px solid var(--line);
+      padding: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .ability-card:hover {
+      border-color: var(--cyan);
+      background: #1f323d;
+      transform: translateY(-2px);
+    }
+    .ability-card b {
+      font-size: 16px;
+      color: var(--cyan);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .ability-card p {
+      font-size: 12px;
+      color: var(--ink);
+      margin: 0 0 12px;
+      line-height: 1.4;
+    }
+    .ability-card .meta {
+      font: 10px 'Space Mono', monospace;
+      color: var(--orange);
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">MENOS / FIELD TEST 01</p>
+        <h1>Hold the line. Move the giant.</h1>
+      </div>
+      <div class="run-state"><span class="status-dot"></span><span id="runStatus">READY</span></div>
+    </header>
+
+    <section class="hud" aria-label="Battlefield status">
+      <div class="stat"><span>BASE HP</span><strong id="baseHp">100</strong></div>
+      <div class="stat"><span>GOLD</span><strong id="gold">180</strong></div>
+      <div class="stat"><span>WAVE</span><strong id="waveNumber">1 / 4</strong></div>
+      <div class="stat wide"><span>INCOMING</span><strong id="nextWaveInfo">NORMAL · BOTH LANES</strong></div>
+      <button class="button primary" id="startWave">START WAVE 1</button>
+      <button class="button ghost" id="restart">RESTART</button>
+    </section>
+
+    <section class="layout">
+      <div class="battlefield-panel">
+        <div class="panel-heading"><div><span class="kicker">LIVE SIMULATION</span><h2>Northbridge Sector</h2></div><span class="hint">Click a slot, then choose a tower</span></div>
+        <canvas id="battlefield" width="960" height="560" aria-label="MENOS battlefield"></canvas>
+        <div id="abilityModal" class="ability-modal" style="display: none;">
+          <div class="ability-modal-card">
+            <div class="ability-modal-header">
+              <span class="kicker">SYSTEM UPGRADE</span>
+              <h2>UNLOCK ATLAS-01 ABILITY</h2>
+              <p class="muted">Select 1 ability to unlock for the remainder of this run.</p>
+            </div>
+            <div id="abilityOptions" class="ability-options"></div>
+          </div>
+        </div>
+        <div class="legend"><span><i class="legend-dot normal"></i>Normal</span><span><i class="legend-dot rusher"></i>Rusher</span><span><i class="legend-dot heavy"></i>Heavy</span><span><i class="legend-dot giant"></i>Giant</span><span><i class="legend-dot robot"></i>Robot</span></div>
+      </div>
+
+      <aside class="side-panel">
+        <section class="control-block">
+          <div class="panel-heading compact"><div><span class="kicker">BUILD</span><h2>Tower grid</h2></div><span id="selectedSlot">NO SLOT</span></div>
+          <p class="muted">Six positions cover both approaches. Tower fire is automatic.</p>
+          <div class="tower-buttons">
+            <button class="tower-card" data-tower="tower_cannon"><span class="tower-icon cannon-icon"></span><span><b>CANNON (55g)</b><small>Anti-Heavy/Giant · 42 DMG · 1.35s CD</small></span></button>
+            <button class="tower-card" data-tower="tower_gatling"><span class="tower-icon gatling-icon"></span><span><b>GATLING (35g)</b><small>Anti-Normal/Rusher · 9 DMG · 0.23s CD</small></span></button>
+          </div>
+        </section>
+
+        <section class="control-block robot-block">
+          <div class="panel-heading compact"><div><span class="kicker">MOBILE ASSET</span><h2>Atlas-01</h2></div><span class="robot-tag" id="robotStatus">DOCKED</span></div>
+          <div class="robot-readout"><div class="robot-health"><span>HP</span><strong id="robotHp">220 / 220</strong></div><div class="commands"><span>MOVEMENT</span><strong id="moveCommands">∞</strong></div></div>
+          <button class="button robot-launch" id="launchRobot">LAUNCH ATLAS-01</button>
+          <p class="muted">After launch, click a lane marker: <b>LEFT</b> (North lane focus), <b>CENTER</b> (Dual lane coverage), or <b>RIGHT</b> (South lane focus).</p>
+        </section>
+
+        <section class="control-block feed-block"><div class="panel-heading compact"><div><span class="kicker">FIELD NOTES</span><h2>Decision feed</h2></div></div><div id="eventFeed" class="event-feed"><p>Build a tower, then start the first wave.</p></div></section>
+      </aside>
+    </section>
+    <footer><span>POC RULE: position is power</span><span id="timer">00:00</span></footer>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>

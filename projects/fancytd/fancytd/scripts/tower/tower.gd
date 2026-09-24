@@ -8,12 +8,62 @@ const PROJECTILE_SCENE = preload("res://fancytd/scenes/combat/projectile.tscn")
 @export var enemies_container: Node
 
 @onready var attack_timer: Timer = $AttackTimer
+@onready var visual: Polygon2D = get_node_or_null("Visual") as Polygon2D
 
 
 func _ready() -> void:
 	attack_triggered.connect(_on_attack_triggered)
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	start_attack_timer()
+
+	var run_state: RunState = get_tree().current_scene.get_node_or_null("RunState") as RunState if get_tree() != null and get_tree().current_scene != null else null
+	if run_state != null and not run_state.build_changed.is_connected(update_visual):
+		run_state.build_changed.connect(update_visual)
+
+	update_visual()
+
+
+func update_visual() -> void:
+	if visual == null or data == null:
+		return
+
+	var base_color: Color
+	match data.id:
+		"fire":
+			base_color = Color(0.95, 0.35, 0.15)
+		"ice":
+			base_color = Color(0.2, 0.75, 0.95)
+		"lightning":
+			base_color = Color(0.95, 0.85, 0.2)
+		_:
+			base_color = Color(0.16, 0.48, 0.82)
+
+	visual.color = base_color
+
+	var run_state: RunState = get_tree().current_scene.get_node_or_null("RunState") as RunState if get_tree() != null and get_tree().current_scene != null else null
+	if run_state == null:
+		return
+
+	var bonus_dmg := run_state.get_tower_damage_bonus(data.id)
+	if bonus_dmg > 0.0:
+		visual.color = base_color.lightened(0.25)
+		scale = Vector2(1.15, 1.15)
+	else:
+		scale = Vector2(1.0, 1.0)
+
+	var active_synergies := SynergyResolver.active_synergies(run_state)
+	var has_synergy := false
+	if data.id == "fire" and active_synergies.has(SynergyResolver.THERMAL_SHOCK):
+		has_synergy = true
+	elif data.id == "lightning" and active_synergies.has(SynergyResolver.CONDUCTIVE):
+		has_synergy = true
+	elif data.id == "ice" and not active_synergies.is_empty():
+		has_synergy = true
+
+	if has_synergy:
+		modulate = Color(1.3, 1.3, 1.3, 1.0)
+	else:
+		modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 
 func start_attack_timer() -> void:
