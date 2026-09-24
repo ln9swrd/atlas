@@ -32,11 +32,11 @@ Keep the result bounded to the completed Godot PIE comparison. Do not infer posi
 ACTIVE_TARGET: menos
 ACTIVE_MODE: copilot
 ACTIVE_BRANCH: main
-STATUS: Phases 1-3 implemented in Browser and Godot; only syntax checks run for current development; direct PIE remains unverified
+STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot; Browser-only Upgrade/Ability progression remains unmatched in Godot; current full-loop Godot PIE is unverified
 
 ## Next one thing
 
-1. Phase 4-6 roles and Wave 1-4 structures are already present; then proceed only with backlog items that do not introduce unapproved canon. Wave 5-10 drafts, Robot growth values, target priority, and Godot Upgrade parity remain decision gates.
+1. Reconcile Browser/Godot rules first, then perform one direct Godot PIE smoke test. Do not add Wave 5-10, Robot growth, new enemies/towers, or meta systems before that baseline is fixed. Current decision gates: Giant HP, Ability progression, and Tower Upgrade parity.
 
 ## Blockers
 
