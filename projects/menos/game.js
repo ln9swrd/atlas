@@ -2,6 +2,35 @@ import { TOWERS, ENEMIES, ROBOT, WAVES, MAP } from './data.js';
 
 const canvas = document.querySelector('#battlefield');
 const ctx = canvas.getContext('2d');
+const ENEMY_SPRITES = {
+  normalAnim: new Image(),
+  rusherAnim: new Image(),
+  heavyAnim: new Image(),
+  giantAnim: new Image()
+};
+ENEMY_SPRITES.normalAnim.src = './images/enemy_normal_anim.png';
+ENEMY_SPRITES.rusherAnim.src = './images/enemy_rusher_anim.png';
+ENEMY_SPRITES.heavyAnim.src = './images/enemy_heavy_anim.png';
+ENEMY_SPRITES.giantAnim.src = './images/enemy_giant_anim.png';
+
+const TOWER_SPRITES = {
+  cannonAnim: new Image(),
+  gatlingAnim: new Image()
+};
+TOWER_SPRITES.cannonAnim.src = './images/tower_cannon_anim.png';
+TOWER_SPRITES.gatlingAnim.src = './images/tower_gatling_anim.png';
+
+const ROBOT_SPRITES = {
+  idle: new Image(),
+  attack: new Image(),
+  move: new Image(),
+  skill: new Image()
+};
+ROBOT_SPRITES.idle.src = './images/atlas_idle.png';
+ROBOT_SPRITES.attack.src = './images/atlas_attack.png';
+ROBOT_SPRITES.move.src = './images/atlas_move.png';
+ROBOT_SPRITES.skill.src = './images/atlas_skill.png';
+
 const SPRITES = {
   bulletDefender: new Image(),
   bulletThreat: new Image(),
@@ -295,6 +324,20 @@ function updateTowers(dt) {
 function updateRobot(dt) {
   const robot = state.robot;
   if (!robot.active || robot.hp <= 0) return;
+  if (robot.targetX !== undefined && robot.targetY !== undefined) {
+    const dx = robot.targetX - robot.x;
+    const dy = robot.targetY - robot.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist > 2) {
+      robot.x += (dx / dist) * 320 * dt;
+      robot.y += (dy / dist) * 320 * dt;
+      robot.isMoving = true;
+    } else {
+      robot.x = robot.targetX;
+      robot.y = robot.targetY;
+      robot.isMoving = false;
+    }
+  }
   robot.attackTimer -= dt;
   robot.areaTimer -= dt;
   robot.pierceTimer -= dt;
@@ -494,27 +537,62 @@ function drawTower(tower) {
     ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(0, 0, 24, 0, Math.PI * 2); ctx.stroke();
   }
-  ctx.fillStyle = tower.type === 'tower_cannon' ? '#f0a35a' : '#7ed6ce';
-  ctx.strokeStyle = tower.level === 2 ? '#ffffff' : '#0b1519';
-  ctx.lineWidth = tower.level === 2 ? 4 : 3;
-  ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  const spr = tower.type === 'tower_cannon' ? TOWER_SPRITES.cannonAnim : TOWER_SPRITES.gatlingAnim;
+  const maxCd = tower.data?.cooldown || 0.6;
+  const isFiring = tower.cooldown > (maxCd - 0.25);
+  let frameIdx = 0;
+  if (isFiring) {
+    const fireProgress = 1 - Math.max(0, Math.min(1, (tower.cooldown - (maxCd - 0.25)) / 0.25));
+    frameIdx = Math.floor(fireProgress * 4) % 4;
+  }
+  if (spr.complete && spr.naturalWidth) {
+    ctx.drawImage(spr, frameIdx * 60, 0, 60, 90, -30, -45, 60, 90);
+  } else {
+    ctx.fillStyle = tower.type === 'tower_cannon' ? '#f0a35a' : '#7ed6ce';
+    ctx.strokeStyle = tower.level === 2 ? '#ffffff' : '#0b1519';
+    ctx.lineWidth = tower.level === 2 ? 4 : 3;
+    ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  }
   if (tower.level === 2) {
     ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2); ctx.stroke();
   }
-  ctx.fillStyle = '#0b1519'; ctx.fillRect(-4, -4, 8, 8);
   ctx.restore();
 }
 
+const ENEMY_SPRITE_SIZES = {
+  enemy_normal: { w: 38, h: 52, cellW: 60, cellH: 70 },
+  enemy_rusher: { w: 42, h: 54, cellW: 60, cellH: 70 },
+  enemy_heavy: { w: 54, h: 63, cellW: 60, cellH: 70 },
+  enemy_giant: { w: 60, h: 70, cellW: 60, cellH: 70 }
+};
+
 function drawEnemy(enemy) {
-  const data = ENEMIES[enemy.type]; ctx.save(); ctx.translate(enemy.x, enemy.y); ctx.fillStyle = enemy.flash > 0 ? '#ffffff' : data.color; ctx.strokeStyle = '#0b1519'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.arc(0, 0, data.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-  if (enemy.type === 'enemy_giant') { ctx.strokeStyle = '#f6c1c6'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, data.radius - 6, 0, Math.PI * 2); ctx.stroke(); }
-  ctx.fillStyle = '#11191f'; ctx.fillRect(-data.radius, -data.radius - 8, data.radius * 2, 3); ctx.fillStyle = '#92d28b'; ctx.fillRect(-data.radius, -data.radius - 8, data.radius * 2 * Math.max(0, enemy.hp / enemy.maxHp), 3); ctx.restore();
+  const data = ENEMIES[enemy.type]; ctx.save(); ctx.translate(enemy.x, enemy.y);
+  const now = performance.now() / 1000;
+  if (enemy.flash > 0) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(0, 0, data.radius + 3, 0, Math.PI * 2); ctx.fill(); }
+  
+  const info = ENEMY_SPRITE_SIZES[enemy.type] || { w: 38, h: 52, cellW: 60, cellH: 70 };
+  const sprKey = enemy.type === 'enemy_rusher' ? 'rusherAnim' : (enemy.type === 'enemy_heavy' ? 'heavyAnim' : (enemy.type === 'enemy_giant' ? 'giantAnim' : 'normalAnim'));
+  const spr = ENEMY_SPRITES[sprKey];
+  const fps = enemy.type === 'enemy_rusher' ? 14 : (enemy.type === 'enemy_giant' ? 6 : 10);
+  const offsetSeed = (enemy.x + enemy.y) * 0.05;
+  const frameIdx = Math.floor((now + offsetSeed) * fps) % 8;
+  
+  if (spr.complete && spr.naturalWidth) {
+    ctx.drawImage(spr, frameIdx * info.cellW, 0, info.cellW, info.cellH, -info.w / 2, -info.h / 2, info.w, info.h);
+  } else {
+    ctx.fillStyle = enemy.flash > 0 ? '#ffffff' : data.color; ctx.strokeStyle = '#0b1519'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, data.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  }
+  ctx.fillStyle = '#11191f'; ctx.fillRect(-info.w / 2, -info.h / 2 - 8, info.w, 3);
+  ctx.fillStyle = '#92d28b'; ctx.fillRect(-info.w / 2, -info.h / 2 - 8, info.w * Math.max(0, enemy.hp / enemy.maxHp), 3);
+  ctx.restore();
 }
 
 function drawRobot() {
   const robot = state.robot; if (!robot.active) return;
+  const now = performance.now() / 1000;
   ctx.save(); ctx.translate(robot.x, robot.y);
   if (state.selectedEntity?.kind === 'robot') {
     ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 2;
@@ -528,10 +606,25 @@ function drawRobot() {
     ctx.beginPath(); ctx.arc(0, 0, 26, 0, Math.PI * 2); ctx.stroke();
     ctx.setLineDash([]);
   }
-  ctx.fillStyle = robot.flash > 0 ? '#ffffff' : '#7ed6ce';
-  ctx.strokeStyle = robot.flash > 0 ? '#ef7068' : '#d7fff7';
-  ctx.lineWidth = robot.flash > 0 ? 4 : 2;
-  ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(20, -10); ctx.lineTo(16, 18); ctx.lineTo(-16, 18); ctx.lineTo(-20, -10); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#102126'; ctx.fillRect(-8, -5, 16, 9); ctx.fillStyle = '#ef7068'; ctx.fillRect(-robot.range, -robot.range - 12, robot.range * 2, 4); ctx.fillStyle = '#92d28b'; ctx.fillRect(-robot.range, -robot.range - 12, robot.range * 2 * Math.max(0, robot.hp / ROBOT.hp), 4); ctx.restore();
+  let spr = ROBOT_SPRITES.idle;
+  let totalFrames = 6;
+  let fps = 8;
+  if (robot.attackTimer > 0.35) { spr = ROBOT_SPRITES.attack; totalFrames = 7; fps = 14; }
+  else if (robot.areaTimer > 5.0 || robot.pierceTimer > 6.0) { spr = ROBOT_SPRITES.skill; totalFrames = 5; fps = 10; }
+  else if (robot.isMoving) { spr = ROBOT_SPRITES.move; totalFrames = 5; fps = 12; }
+  
+  const frameIdx = Math.floor(now * fps) % totalFrames;
+  if (spr.complete && spr.naturalWidth) {
+    ctx.drawImage(spr, frameIdx * 200, 0, 200, 240, -32, -57, 64, 114);
+  } else {
+    ctx.fillStyle = robot.flash > 0 ? '#ffffff' : '#7ed6ce';
+    ctx.strokeStyle = robot.flash > 0 ? '#ef7068' : '#d7fff7';
+    ctx.lineWidth = robot.flash > 0 ? 4 : 2;
+    ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(20, -10); ctx.lineTo(16, 18); ctx.lineTo(-16, 18); ctx.lineTo(-20, -10); ctx.closePath(); ctx.fill(); ctx.stroke();
+  }
+  ctx.fillStyle = '#ef7068'; ctx.fillRect(-ROBOT.range, -ROBOT.range - 12, ROBOT.range * 2, 4);
+  ctx.fillStyle = '#92d28b'; ctx.fillRect(-ROBOT.range, -ROBOT.range - 12, ROBOT.range * 2 * Math.max(0, robot.hp / ROBOT.hp), 4);
+  ctx.restore();
 }
 
 function drawEffects() {
@@ -554,17 +647,27 @@ function drawEffects() {
       const p = Math.max(0, Math.min(1, effect.progress));
       const curX = effect.startX + (effect.targetX - effect.startX) * p;
       const curY = effect.startY + (effect.targetY - effect.startY) * p;
+      const angle = Math.atan2(effect.targetY - effect.startY, effect.targetX - effect.startX) + Math.PI / 2;
       const frameIdx = Math.floor(now * 18) % 8;
       if (SPRITES.bulletDefender.complete && SPRITES.bulletDefender.naturalWidth) {
-        ctx.drawImage(SPRITES.bulletDefender, frameIdx * 151, 0, 151, 323, curX - 19, curY - 24, 38, 48);
+        ctx.save();
+        ctx.translate(curX, curY);
+        ctx.rotate(angle);
+        ctx.drawImage(SPRITES.bulletDefender, frameIdx * 160, 0, 160, 160, -18, -22, 36, 44);
+        ctx.restore();
       }
     } else if (effect.type === 'proj_threat') {
       const p = Math.max(0, Math.min(1, effect.progress));
       const curX = effect.startX + (effect.targetX - effect.startX) * p;
       const curY = effect.startY + (effect.targetY - effect.startY) * p;
-      const frameIdx = Math.floor(now * 16) % 5;
+      const angle = Math.atan2(effect.targetY - effect.startY, effect.targetX - effect.startX) + Math.PI / 2;
+      const frameIdx = Math.floor(now * 16) % 6;
       if (SPRITES.bulletThreat.complete && SPRITES.bulletThreat.naturalWidth) {
-        ctx.drawImage(SPRITES.bulletThreat, frameIdx * 307, 0, 307, 341, curX - 22, curY - 27, 44, 54);
+        ctx.save();
+        ctx.translate(curX, curY);
+        ctx.rotate(angle);
+        ctx.drawImage(SPRITES.bulletThreat, frameIdx * 160, 0, 160, 160, -20, -24, 40, 48);
+        ctx.restore();
       }
     } else {
       const alpha = effect.life / (effect.maxLife || 0.28); ctx.globalAlpha = alpha;

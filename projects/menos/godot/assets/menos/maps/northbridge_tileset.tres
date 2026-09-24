@@ -1,0 +1,26 @@
+[gd_resource type="TileSet" load_steps=7 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/menos/maps/ground.png" id="1_ground"]
+[ext_resource type="Texture2D" path="res://assets/menos/maps/road.png" id="2_road"]
+[ext_resource type="Texture2D" path="res://assets/menos/maps/map boundary.png" id="3_boundary"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ground"]
+texture = ExtResource("1_ground")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_road"]
+texture = ExtResource("2_road")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_boundary"]
+texture = ExtResource("3_boundary")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+
+[resource]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_ground")
+sources/1 = SubResource("TileSetAtlasSource_road")
+sources/2 = SubResource("TileSetAtlasSource_boundary")

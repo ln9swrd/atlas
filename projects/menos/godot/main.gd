@@ -16,15 +16,25 @@ const VISUALS := {
 	"enemy_heavy": preload("res://assets/menos/sprites/enemy_heavy.png"),
 	"enemy_giant": preload("res://assets/menos/sprites/enemy_giant.png"),
 	"robot": preload("res://assets/menos/sprites/robot_atlas01.png"),
+	"atlas_idle": preload("res://assets/menos/sprites/atlas_idle.png"),
+	"atlas_attack": preload("res://assets/menos/sprites/atlas_attack.png"),
+	"atlas_move": preload("res://assets/menos/sprites/atlas_move.png"),
+	"atlas_skill": preload("res://assets/menos/sprites/atlas_skill.png"),
 	"bullet_defender": preload("res://assets/menos/sprites/bullet_defender.png"),
 	"bullet_threat": preload("res://assets/menos/sprites/bullet_threat.png"),
-	"impact_explosion": preload("res://assets/menos/sprites/impact_explosion.png")
+	"impact_explosion": preload("res://assets/menos/sprites/impact_explosion.png"),
+	"tower_cannon_anim": preload("res://assets/menos/sprites/tower_cannon_anim.png"),
+	"tower_gatling_anim": preload("res://assets/menos/sprites/tower_gatling_anim.png"),
+	"enemy_normal_anim": preload("res://assets/menos/sprites/enemy_normal_anim.png"),
+	"enemy_rusher_anim": preload("res://assets/menos/sprites/enemy_rusher_anim.png"),
+	"enemy_heavy_anim": preload("res://assets/menos/sprites/enemy_heavy_anim.png"),
+	"enemy_giant_anim": preload("res://assets/menos/sprites/enemy_giant_anim.png")
 }
 const ENEMY_SPRITE_SIZES := {
-	"normal": Vector2(34, 46),
-	"rusher": Vector2(38, 48),
-	"heavy": Vector2(56, 60),
-	"giant": Vector2(104, 142)
+	"normal": Vector2(38, 52),
+	"rusher": Vector2(42, 54),
+	"heavy": Vector2(64, 72),
+	"giant": Vector2(112, 150)
 }
 const SFX_STREAMS := {
 	"ui_click": preload("res://sound/sfx_ui_click_1.mp3"),
@@ -48,6 +58,10 @@ const GROWTH_OPTION_RECTS := {
 	"ability_area": Rect2(180, 320, 300, 78),
 	"ability_heavy_pierce": Rect2(500, 320, 300, 78)
 }
+const MAP_TILES := Vector2i(28, 18)
+const MAP_TILE_SOURCE_GROUND := 0
+const MAP_TILE_SOURCE_ROAD := 1
+const MAP_TILE_SOURCE_BOUNDARY := 2
 enum RunState { READY, RUNNING, GROWTH, VICTORY, DEFEAT }
 
 var base_hp := 100.0
@@ -71,8 +85,31 @@ var effects: Array = []
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	build_first_battle_map()
 	reset_game()
 	queue_redraw()
+
+func build_first_battle_map() -> void:
+	var ground: TileMapLayer = $Ground
+	var road: TileMapLayer = $Road
+	var boundary: TileMapLayer = $Boundary
+	ground.clear()
+	road.clear()
+	boundary.clear()
+	for y in range(MAP_TILES.y):
+		for x in range(MAP_TILES.x):
+			ground.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_GROUND, Vector2i.ZERO)
+	for y in range(1, MAP_TILES.y - 1):
+		var left_x := int(lerpf(8.0, 14.0, float(y) / float(MAP_TILES.y - 1)))
+		var right_x := int(lerpf(19.0, 14.0, float(y) / float(MAP_TILES.y - 1)))
+		road.set_cell(Vector2i(left_x, y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
+		road.set_cell(Vector2i(right_x, y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
+	for x in range(MAP_TILES.x):
+		boundary.set_cell(Vector2i(x, 0), MAP_TILE_SOURCE_BOUNDARY, Vector2i.ZERO)
+		boundary.set_cell(Vector2i(x, MAP_TILES.y - 1), MAP_TILE_SOURCE_BOUNDARY, Vector2i.ZERO)
+	for y in range(1, MAP_TILES.y - 1):
+		boundary.set_cell(Vector2i(0, y), MAP_TILE_SOURCE_BOUNDARY, Vector2i.ZERO)
+		boundary.set_cell(Vector2i(MAP_TILES.x - 1, y), MAP_TILE_SOURCE_BOUNDARY, Vector2i.ZERO)
 
 func play_sfx(id: String) -> void:
 	if not SFX_STREAMS.has(id): return
@@ -332,7 +369,7 @@ func can_launch_robot() -> bool:
 
 func move_robot(id: String) -> void:
 	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING] or not ROBOT_SPOTS.has(id) or robot.spot == id: return
-	robot.spot = id; robot.position = ROBOT_SPOTS[id]; log_event("ATLAS-01 moved to %s." % id)
+	robot.spot = id; robot["target_pos"] = ROBOT_SPOTS[id]; log_event("ATLAS-01 moved to %s." % id)
 
 func draw_sprite(texture: Texture2D, center: Vector2, size: Vector2) -> void:
 	draw_texture_rect(texture, Rect2(center - size * 0.5, size), false)
@@ -345,12 +382,18 @@ func draw_animated_sprite(texture: Texture2D, center: Vector2, size: Vector2, fr
 	var dest_rect := Rect2(center - size * 0.5, size)
 	draw_texture_rect_region(texture, dest_rect, src_rect)
 
+func draw_rotated_animated_sprite(texture: Texture2D, center: Vector2, size: Vector2, angle: float, frame: int, total_frames: int) -> void:
+	var tex_size := texture.get_size()
+	var frame_w := tex_size.x / float(max(1, total_frames))
+	var frame_h := tex_size.y
+	var src_rect := Rect2((frame % total_frames) * frame_w, 0, frame_w, frame_h)
+	draw_set_transform(center, angle, Vector2.ONE)
+	var dest_rect := Rect2(-size * 0.5, size)
+	draw_texture_rect_region(texture, dest_rect, src_rect)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
 func _draw() -> void:
-	draw_rect(Rect2(0, 0, 1100, 700), Color("091419"))
-	draw_rect(Rect2(0, 0, 900, 176), Color("10242a")); draw_rect(Rect2(0, 176, 900, 112), Color("16343a")); draw_texture_rect(VISUALS["floor_tile"], Rect2(0, 288, 900, 330), true)
-	for x in range(0, 900, 48): draw_line(Vector2(x, 288), Vector2(x + 92, 618), Color("31535b", 0.45), 1)
-	for y in range(320, 620, 40): draw_line(Vector2(0, y), Vector2(900, y), Color("31535b", 0.35), 1)
-	draw_rect(Rect2(0, 172, 900, 4), Color("31535b")); draw_rect(Rect2(0, 284, 900, 4), Color("31535b"))
+	draw_rect(Rect2(900, 0, 200, 700), Color("101f25"))
 	draw_string(ThemeDB.fallback_font, Vector2(30, 35), "MENOS // NORTHBRIDGE SECTOR", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("d7fff7"))
 	draw_rect(Rect2(38, 58, 820, 560), Color("31535b"), false, 2)
 	draw_string(ThemeDB.fallback_font, Vector2(55, 125), "NORTH APPROACH // GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6c8790")); draw_string(ThemeDB.fallback_font, Vector2(55, 585), "SOUTH APPROACH // GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6c8790"))
@@ -366,8 +409,15 @@ func _draw() -> void:
 			draw_sprite(slot_visual, SLOTS[id], Vector2(76, 76))
 			if selected_slot == id: draw_arc(SLOTS[id], 39, 0, TAU, 24, Color("f0a35a"), 2)
 		else:
-			var tower_key := "tower_cannon" if placed_tower.type == "cannon" else "tower_gatling"
-			draw_sprite(VISUALS[tower_key], SLOTS[id], Vector2(94, 86))
+			var anim_key := "tower_cannon_anim" if placed_tower.type == "cannon" else "tower_gatling_anim"
+			var cd_left: float = float(placed_tower.get("cooldown", 0.0))
+			var max_cd: float = float(placed_tower.get("data", {}).get("cooldown", 0.6))
+			var is_firing: bool = cd_left > (max_cd - 0.25)
+			var frame_idx := 0
+			if is_firing:
+				var fire_progress: float = 1.0 - clampf((cd_left - (max_cd - 0.25)) / 0.25, 0.0, 1.0)
+				frame_idx = int(fire_progress * 4.0) % 4
+			draw_animated_sprite(VISUALS[anim_key], SLOTS[id], Vector2(60, 90), frame_idx, 4)
 			if selected_tower == id: draw_arc(SLOTS[id], 51, 0, TAU, 24, Color("d7fff7"), 2)
 		draw_string(ThemeDB.fallback_font, SLOTS[id] + Vector2(-10, 54), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
 	for id in ROBOT_SPOTS: draw_string(ThemeDB.fallback_font, ROBOT_SPOTS[id] + Vector2(-24, 58), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
@@ -376,7 +426,10 @@ func _draw() -> void:
 		var data: Dictionary = DATA.ENEMIES[enemy.type]
 		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES[enemy.type]
 		if enemy.flash > 0.0: draw_circle(enemy.position, data.radius + 3, Color.WHITE)
-		draw_sprite(VISUALS["enemy_" + enemy.type], enemy.position, enemy_size)
+		var anim_key: String = "enemy_" + enemy.type + "_anim"
+		var fps: float = 14.0 if enemy.type == "rusher" else (6.0 if enemy.type == "giant" else 10.0)
+		var e_frame: int = int((elapsed + float(enemy.position.x)) * fps) % 8
+		draw_animated_sprite(VISUALS[anim_key], enemy.position, enemy_size, e_frame, 8)
 		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 7)
 		draw_rect(Rect2(hp_position, Vector2(enemy_size.x, 4)), Color("263238")); draw_rect(Rect2(hp_position, Vector2(enemy_size.x * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("92d28b"))
 	for effect in effects:
@@ -392,20 +445,37 @@ func _draw() -> void:
 			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
 			var end_p: Vector2 = effect.get("target", Vector2.ZERO)
 			var current_p: Vector2 = start_p.lerp(end_p, progress)
+			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
 			var p_frame: int = int(elapsed * 18.0) % 8
-			draw_animated_sprite(VISUALS["bullet_defender"], current_p, Vector2(38, 48), p_frame, 8)
+			draw_rotated_animated_sprite(VISUALS["bullet_defender"], current_p, Vector2(36, 44), angle, p_frame, 8)
 		elif etype == "proj_threat":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
 			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
 			var end_p: Vector2 = effect.get("target", Vector2.ZERO)
 			var current_p: Vector2 = start_p.lerp(end_p, progress)
-			var p_frame: int = int(elapsed * 16.0) % 5
-			draw_animated_sprite(VISUALS["bullet_threat"], current_p, Vector2(44, 54), p_frame, 5)
+			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
+			var p_frame: int = int(elapsed * 16.0) % 6
+			draw_rotated_animated_sprite(VISUALS["bullet_threat"], current_p, Vector2(40, 48), angle, p_frame, 6)
 	if robot.active:
 		var is_flashing: bool = float(robot.get("flash", 0.0)) > 0.0
 		if is_flashing: draw_circle(robot.position, 34, Color("ef7068", 0.35))
-		var robot_frame: int = int(elapsed * 10.0) % 15
-		draw_animated_sprite(VISUALS["robot"], robot.position, Vector2(62, 112), robot_frame, 15)
+		var anim_key := "atlas_idle"
+		var total_f := 6
+		var fps := 8.0
+		if float(robot.get("attack", 0.0)) > 0.3:
+			anim_key = "atlas_attack"
+			total_f = 7
+			fps = 14.0
+		elif float(robot.get("area", 0.0)) > 5.0 or float(robot.get("pierce", 0.0)) > 6.0:
+			anim_key = "atlas_skill"
+			total_f = 5
+			fps = 10.0
+		elif bool(robot.get("is_moving", false)):
+			anim_key = "atlas_move"
+			total_f = 5
+			fps = 12.0
+		var r_frame: int = int(elapsed * fps) % total_f
+		draw_animated_sprite(VISUALS[anim_key], robot.position, Vector2(64, 114), r_frame, total_f)
 		draw_arc(robot.position, 58, 0, TAU, 24, Color("ef7068") if is_flashing else Color("d7fff7"), 3 if is_flashing else 2)
 		if robot_selected: draw_arc(robot.position, 66, 0, TAU, 24, Color("f0a35a"), 2)
 	draw_ui()
