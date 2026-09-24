@@ -1,10 +1,19 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790233415
-data.gd::GDScript::5537870080328675552::1790233415::0::1::::MenosData<>RefCounted<><>0<>0<><>::
-main.gd::GDScript::3826669508318333139::1790227069::0::1::::<>Node2D<><>0<>0<><>::
+::res://::1790234915
+data.gd::GDScript::5537870080328675552::1790233876::0::1::::MenosData<>RefCounted<><>0<>0<><>::
+main.gd::GDScript::3826669508318333139::1790234526::0::1::::<>Node2D<><>0<>0<><>::
 main.tscn::PackedScene::-1::1790223990::0::1::::<><><>0<>0<><>::res://main.gd
 ::res://assets/::1790233455
 ::res://assets/menos/::1790233455
-::res://assets/menos/environment/::1790233772
+::res://assets/menos/environment/::1790233813
 test_terrain_sheet.png::CompressedTexture2D::7377908154946531028::1790229678::1790233813::1::::<><><>0<>0<>f6990f13f98e8e377b1b10870aab804c<>res://.godot/imported/test_terrain_sheet.png-c14b8c9699a62aca901cd9ef2e7a72ff.ctex::
 tile_bask_floor.tres::AtlasTexture::-1::1790233772::0::1::::<><><>0<>0<><>::res://assets/menos/environment/test_terrain_sheet.png
+::res://sound/::1790234862
+172206__fins__teleport.wav::AudioStreamWAV::7596718315350053701::1790233119::1790234845::1::::<><><>0<>0<>020f5fdbf53486636ce18435ed45cc93<>res://.godot/imported/172206__fins__teleport.wav-e01042181fdfb106ed91d3364c795269.sample::
+beep.mp3::AudioStreamMP3::8624348643340184827::1790232884::1790234845::1::::<><><>0<>0<>b575b721016ffd29142769e5aff44f26<>res://.godot/imported/beep.mp3-a9f1d7d78cd92a6c9d8784abb700e144.mp3str::
+buzz_0.ogg::AudioStreamOggVorbis::827848581671990774::1790232884::1790234845::1::::<><><>0<>0<>bad8260bf0e9e5da8eb808f4c0c59606<>res://.godot/imported/buzz_0.ogg-37262a59d9a30ef1f455d86de8c7a9aa.oggvorbisstr::
+Decline.wav::AudioStreamWAV::6175316518212097085::1790232883::1790234845::1::::<><><>0<>0<>7f6c81a73a6d1c96d17599ad0d293526<>res://.godot/imported/Decline.wav-73fb42fbc8c9f29aa50acb48bd80c23c.sample::
+Error or failed.mp3::AudioStreamMP3::6280782423523351320::1790232883::1790234845::1::::<><><>0<>0<>3f21aa65618609c9d080d415ddfcf875<>res://.godot/imported/Error or failed.mp3-7242271758f4b908c4954440411fad17.mp3str::
+g_get_ready.wav::AudioStreamWAV::5644589480532241744::1790232892::1790234845::1::::<><><>0<>0<>f747df307d5a63ee6f83f1535a7ee758<>res://.godot/imported/g_get_ready.wav-85c1cfa68cde54ce3b1ddc68a39b16f2.sample::
+Menu Choice.mp3::AudioStreamMP3::7345108534736750487::1790232882::1790234845::1::::<><><>0<>0<>a72c022fdcc03f17b428d7bf0f44fcce<>res://.godot/imported/Menu Choice.mp3-e5897ebae8702b072c2687312074ebd9.mp3str::
+sfx_ui_click_1.mp3::AudioStreamMP3::2135319093388637477::1790232797::1790234845::1::::<><><>0<>0<>c1866fee222a2a0a8a2b5017f855fed6<>res://.godot/imported/sfx_ui_click_1.mp3-d266c5250a885cfcdf341d1659dd8849.mp3str::

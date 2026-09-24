@@ -1,6 +1,6 @@
 # MENOS SFX attribution
 
-Downloaded 2026-09-24. Original files are kept unchanged. All assets are candidate SFX for the MENOS Browser and Godot builds.
+Downloaded 2026-09-24. The files in this folder are the unchanged originals used by the Browser build. Byte-identical copies are kept in `godot/sound/` because Godot resolves `res://` from the `godot/` project root.
 
 | ID | File | Creator | License | Attribution | Source |
 |---|---|---|---|---|---|

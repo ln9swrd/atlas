@@ -116,3 +116,10 @@ STATUS: Phases 1-3 implemented in Browser and Godot; only syntax checks run for 
 - No combat, economy, Wave, UI layout, Bus/Mixer, or balance rules changed. Audio uses the existing Godot default bus; Browser uses native `Audio` playback.
 - Verification: Static diff inspection only. CODE syntax, Browser playback, Godot import/playback, build, editor, and PIE are unverified.
 - Next: Smoke test sound playback in Browser and Godot PIE; check that ViRiX credit appears in any distributed build.
+
+## Handoff — Godot SFX path fix (2026-09-24)
+
+- Status: Added byte-identical copies of the eight licensed SFX under `godot/sound/` to match Godot's `res://sound/` resource paths; canonical Browser copies remain in `sound/`.
+- Changed: `godot/sound/` copies and local `.gitignore` allow-list for WAV/MP3 files ignored by the repository root; updated `sound/ATTRIBUTION.md` with the mirror layout.
+- Verification: All eight Godot copies have SHA-256 hashes matching their canonical originals. Godot CLI is unavailable on PATH, so preload/import/runtime playback remains unverified.
+- Next: Reopen the Godot project and confirm the preload error is gone, then check playback in PIE.
