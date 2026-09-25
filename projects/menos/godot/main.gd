@@ -390,7 +390,11 @@ func handle_click(point: Vector2) -> void:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
 	if robot.active and point.distance_to(robot.position) < 28.0:
-		robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_click"); queue_redraw(); return
+		if robot_selected:
+			robot_selected = false; play_sfx("ui_cancel")
+		else:
+			robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_click")
+		queue_redraw(); return
 	if robot_selected and Rect2(38, 58, 820, 560).has_point(point):
 		move_robot_to_position(point); return
 	for id in SLOTS:

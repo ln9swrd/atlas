@@ -783,7 +783,16 @@ canvas.addEventListener('click', event => {
   const point = canvasPosition(event);
   const tower = state.towers.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 21);
   if (tower) { selectTower(tower); return; }
-  if (state.robot.active && Math.hypot(state.robot.x - point.x, state.robot.y - point.y) < 25) { selectRobot(); return; }
+  if (state.robot.active && Math.hypot(state.robot.x - point.x, state.robot.y - point.y) < 25) {
+    if (state.selectedEntity?.kind === 'robot') {
+      state.selectedEntity = null;
+      playSfx('uiCancel');
+      updateUi();
+    } else {
+      selectRobot();
+    }
+    return;
+  }
   if (state.selectedEntity?.kind === 'robot') { moveRobotToPoint(point); return; }
   const slot = MAP.slots.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 24);
   if (slot) { selectSlot(slot); return; }
