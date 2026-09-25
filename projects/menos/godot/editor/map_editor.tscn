@@ -1,0 +1,155 @@
+[gd_scene load_steps=3 format=3 uid="uid://map_editor_shell_01"]
+
+[ext_resource type="Script" path="res://editor/map_editor.gd" id="1_editor"]
+[ext_resource type="Script" path="res://editor/editor_canvas.gd" id="2_canvas"]
+
+[node name="MapEditor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_editor")
+
+[node name="MainLayout" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Toolbox" type="PanelContainer" parent="MainLayout"]
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/Toolbox"]
+layout_mode = 2
+
+[node name="LblTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = " TOOLBOX"
+
+[node name="LblCurrentTool" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "Active Tool: [SELECT]"
+
+[node name="HSeparator1" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+
+[node name="LblLayerTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "Target Layer:"
+
+[node name="OptionLayer" type="OptionButton" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+
+[node name="BtnSelect" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "Mode: Select"
+
+[node name="BtnErase" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "Mode: Erase Tile"
+
+[node name="HSeparator3" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+
+[node name="LblPaletteTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "TILE PALETTE"
+
+[node name="BtnTileGround" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[Tile] Ground Basic"
+
+[node name="BtnTileConcrete" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[Tile] Concrete Module"
+
+[node name="BtnTileGrass" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[Tile] Grass Cluster"
+
+[node name="BtnTileRoad" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[Tile] Road Segment"
+
+[node name="CanvasContainer" type="Control" parent="MainLayout"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CanvasRoot" type="Node2D" parent="MainLayout/CanvasContainer"]
+script = ExtResource("2_canvas")
+
+[node name="Inspector" type="PanelContainer" parent="MainLayout"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/Inspector"]
+layout_mode = 2
+
+[node name="LblTitle" type="Label" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = " INSPECTOR"
+
+[node name="HSeparator" type="HSeparator" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+
+[node name="LblSelectedID" type="Label" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = "ID: None"
+
+[node name="LblSelectedType" type="Label" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = "Type: -"
+
+[node name="LblPosition" type="Label" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = "Position: -"
+
+[node name="LblTileCoords" type="Label" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = "Tile: -"
+
+[node name="BottomBar" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBox" type="HBoxContainer" parent="BottomBar"]
+layout_mode = 2
+
+[node name="LblStatus" type="Label" parent="BottomBar/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Status: Ready"
+
+[node name="BtnLoad" type="Button" parent="BottomBar/HBox"]
+layout_mode = 2
+text = "Load JSON"
+
+[node name="BtnSave" type="Button" parent="BottomBar/HBox"]
+layout_mode = 2
+text = "Save JSON"
+
+[connection signal="item_selected" from="MainLayout/Toolbox/VBox/OptionLayer" to="." method="_on_option_layer_item_selected"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnSelect" to="." method="_on_btn_select_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnErase" to="." method="_on_btn_erase_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGround" to="." method="_on_btn_tile_ground_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileConcrete" to="." method="_on_btn_tile_concrete_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGrass" to="." method="_on_btn_tile_grass_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileRoad" to="." method="_on_btn_tile_road_pressed"]
+[connection signal="pressed" from="BottomBar/HBox/BtnLoad" to="." method="_on_btn_load_pressed"]
+[connection signal="pressed" from="BottomBar/HBox/BtnSave" to="." method="_on_btn_save_pressed"]
