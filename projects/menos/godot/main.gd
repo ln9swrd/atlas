@@ -46,10 +46,10 @@ const SFX_STREAMS := {
 	"enemy_spawn": preload("res://sound/172206__fins__teleport.wav"),
 	"wave_start": preload("res://sound/g_get_ready.wav")
 }
-const BASE := Vector2(820, 346)
-const LANES := {"left": Vector2(70, 218), "right": Vector2(70, 474)}
-const ROBOT_SPOTS := {"LEFT": Vector2(420, 218), "CENTER": Vector2(600, 346), "RIGHT": Vector2(420, 474)}
-const SLOTS := {"L1": Vector2(190, 154), "L2": Vector2(360, 186), "L3": Vector2(540, 218), "R1": Vector2(190, 538), "R2": Vector2(360, 506), "R3": Vector2(540, 474)}
+const BASE := Vector2(820, 122)
+const LANES := {"left": Vector2(70, 474), "right": Vector2(70, 282)}
+const ROBOT_SPOTS := {"LEFT": Vector2(380, 410), "CENTER": Vector2(560, 250), "RIGHT": Vector2(380, 290)}
+const SLOTS := {"L1": Vector2(180, 450), "L2": Vector2(350, 360), "L3": Vector2(520, 270), "R1": Vector2(180, 245), "R2": Vector2(350, 205), "R3": Vector2(520, 165)}
 const ROBOT_GROWTH_OPTIONS := {
 	"ability_area": {"name": "AREA ATTACK", "description": "Hits 3 or more nearby enemies."},
 	"ability_heavy_pierce": {"name": "HEAVY PIERCE", "description": "Targets Heavy and Giant enemies."}
@@ -114,10 +114,10 @@ func build_first_battle_map() -> void:
 			var mod_y := y % 4
 			ground.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_A7_MODULE, Vector2i(40 + mod_x, 16 + mod_y))
 	for x in range(1, MAP_TILES.x - 1):
-		var top_y := int(lerpf(5.0, 9.0, float(x) / float(MAP_TILES.x - 1)))
-		var bottom_y := int(lerpf(13.0, 9.0, float(x) / float(MAP_TILES.x - 1)))
-		road.set_cell(Vector2i(x, top_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
-		road.set_cell(Vector2i(x, bottom_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
+		var lower_y := int(lerpf(14.0, 2.0, float(x) / float(MAP_TILES.x - 1)))
+		var upper_y := int(lerpf(8.0, 2.0, float(x) / float(MAP_TILES.x - 1)))
+		road.set_cell(Vector2i(x, lower_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
+		road.set_cell(Vector2i(x, upper_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 	for y in range(9):
 		for x in range(11):
 			road_composition.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_ROAD_COMPOSITION, Vector2i(x, y))
@@ -488,12 +488,12 @@ func _draw() -> void:
 
 	# Tactical 32x32 Grid Overlay over 28x18 battlefield (896x576)
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("102b31", 0.55))
-	draw_rect(Rect2(MAP_ORIGIN, Vector2(160, 576)), Color("ef7068", 0.08))
-	draw_rect(Rect2(MAP_ORIGIN + Vector2(160, 0), Vector2(576, 576)), Color("7ed6ce", 0.07))
-	draw_rect(Rect2(MAP_ORIGIN + Vector2(736, 0), Vector2(160, 576)), Color("f0a35a", 0.08))
+	draw_rect(Rect2(MAP_ORIGIN, Vector2(256, 576)), Color("ef7068", 0.08))
+	draw_rect(Rect2(MAP_ORIGIN + Vector2(256, 0), Vector2(448, 576)), Color("7ed6ce", 0.07))
+	draw_rect(Rect2(MAP_ORIGIN + Vector2(704, 0), Vector2(192, 576)), Color("f0a35a", 0.08))
 	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 24), "ENEMY APPROACH", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068", 0.85))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(176, 24), "ENGAGEMENT ZONE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce", 0.85))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(752, 24), "BASE DEFENSE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("f0a35a", 0.85))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(272, 24), "ENGAGEMENT ZONE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce", 0.85))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(720, 24), "BASE DEFENSE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("f0a35a", 0.85))
 	var grid_color := Color("7ed6ce", 0.28)
 	for gx in range(MAP_TILES.x + 1):
 		var x_pos := MAP_ORIGIN.x + float(gx * 32)
@@ -504,8 +504,8 @@ func _draw() -> void:
 
 	# Tactical Field Boundary
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "WEST GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, MAP_PIXEL_SIZE.y - 16), "WEST GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "SOUTHWEST GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, MAP_PIXEL_SIZE.y - 16), "NORTHWEST GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
 
 	# Strategic Lanes & Waypoint Trails
 	for lane in LANES.values():
