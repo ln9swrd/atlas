@@ -340,7 +340,7 @@ function moveRobotAutomatically() {
   const chaseTarget = getRobotChaseTarget();
   if (chaseTarget) {
     const distance = Math.hypot(chaseTarget.x - state.robot.x, chaseTarget.y - state.robot.y);
-    if (distance > ROBOT.range * 0.8) {
+    if (distance > 32) {
       state.robot.targetSpot = 'CHASE';
       state.robot.targetX = chaseTarget.x;
       state.robot.targetY = chaseTarget.y;

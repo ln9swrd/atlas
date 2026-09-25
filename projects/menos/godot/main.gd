@@ -121,13 +121,6 @@ func build_first_battle_map() -> void:
 		var upper_y := int(lerpf(9.0, 2.0, float(x) / float(MAP_TILES.x - 1)))
 		if x >= int(lower_start): road.set_cell(Vector2i(x, lower_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 		road.set_cell(Vector2i(x, upper_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
-	for y in range(9):
-		for x in range(11):
-			road_composition.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_ROAD_COMPOSITION, Vector2i(x, y))
-	for anchor in VEGETATION_ANCHORS:
-		for y in range(6):
-			for x in range(6):
-				vegetation.set_cell(anchor + Vector2i(x, y), MAP_TILE_SOURCE_GRASS, Vector2i(x, y))
 
 func play_sfx(id: String) -> void:
 	if not SFX_STREAMS.has(id): return
@@ -285,7 +278,7 @@ func move_robot_automatically(delta: float) -> void:
 	var chase_target: Dictionary = get_robot_chase_target()
 	if not chase_target.is_empty():
 		var target_distance: float = robot.position.distance_to(chase_target.position)
-		var engagement_distance: float = DATA.ROBOT.range * 0.8
+		var engagement_distance := 32.0
 		if target_distance > engagement_distance:
 			var chase_step: float = minf(DATA.ROBOT.speed * delta, target_distance - engagement_distance)
 			robot.erase("target_pos")
