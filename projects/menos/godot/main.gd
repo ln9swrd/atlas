@@ -261,6 +261,12 @@ func get_robot_heavy_target() -> Dictionary:
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
 
+func get_robot_chase_target() -> Dictionary:
+	var candidates: Array = enemies.filter(func(enemy): return enemy.hp > 0.0)
+	if candidates.is_empty(): return {}
+	candidates.sort_custom(func(a, b): return a.position.distance_to(robot.position) < b.position.distance_to(robot.position))
+	return candidates[0]
+
 func get_robot_auto_spot() -> String:
 	var lane_progress := {"left": -1.0, "right": -1.0}
 	for enemy in enemies:
@@ -276,6 +282,17 @@ func get_robot_auto_spot() -> String:
 
 func move_robot_automatically(delta: float) -> void:
 	if not wave_running: return
+	var chase_target: Dictionary = get_robot_chase_target()
+	if not chase_target.is_empty():
+		var target_distance: float = robot.position.distance_to(chase_target.position)
+		var engagement_distance: float = DATA.ROBOT.range * 0.8
+		if target_distance > engagement_distance:
+			var chase_step: float = minf(DATA.ROBOT.speed * delta, target_distance - engagement_distance)
+			robot.erase("target_pos")
+			robot.position += robot.position.direction_to(chase_target.position) * chase_step
+			return
+		robot.erase("target_pos")
+		return
 	if robot.has("target_pos"):
 		var manual_target: Vector2 = robot.target_pos
 		var manual_distance: float = robot.position.distance_to(manual_target)

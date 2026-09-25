@@ -315,6 +315,12 @@ function getRobotHeavyTarget() {
   return eligible.sort((a, b) => b.x - a.x)[0] || null;
 }
 
+function getRobotChaseTarget() {
+  return state.enemies
+    .filter(enemy => enemy.hp > 0)
+    .sort((a, b) => Math.hypot(a.x - state.robot.x, a.y - state.robot.y) - Math.hypot(b.x - state.robot.x, b.y - state.robot.y))[0] || null;
+}
+
 function getRobotAutoSpot() {
   const living = state.enemies.filter(enemy => enemy.hp > 0);
   if (!living.length) return null;
@@ -331,7 +337,19 @@ function getRobotAutoSpot() {
 }
 
 function moveRobotAutomatically() {
-  if (state.robot.manualPosition) return;
+  const chaseTarget = getRobotChaseTarget();
+  if (chaseTarget) {
+    const distance = Math.hypot(chaseTarget.x - state.robot.x, chaseTarget.y - state.robot.y);
+    if (distance > ROBOT.range * 0.8) {
+      state.robot.targetSpot = 'CHASE';
+      state.robot.targetX = chaseTarget.x;
+      state.robot.targetY = chaseTarget.y;
+    } else {
+      state.robot.targetX = undefined;
+      state.robot.targetY = undefined;
+    }
+    return;
+  }
   if (state.robot.targetX !== undefined && state.robot.targetY !== undefined) return;
   const spotId = getRobotAutoSpot();
   if (!spotId) return;

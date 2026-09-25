@@ -12,7 +12,7 @@ const ENEMIES = {
 	"giant": {"name": "GIANT", "hp": 620.0, "speed": 7.0, "armor": 18.0, "base_damage": 45.0, "reward": 90, "radius": 28.0, "color": Color("f04f6b"), "robot_damage": 20.0, "robot_range": 120.0, "robot_cooldown": 2.0}
 }
 
-const ROBOT = {"id": "robot_main", "name": "ATLAS-01", "hp": 220.0, "speed": 125.0, "damage": 28.0, "cooldown": 0.65, "range": 110.0, "max_moves": 5,
+const ROBOT = {"id": "robot_main", "name": "ATLAS-01", "hp": 220.0, "speed": 125.0, "damage": 28.0, "cooldown": 0.65, "range": 180.0, "max_moves": 5,
 	"ability_area": {"damage": 28.0, "radius": 72.0, "cooldown": 6.0, "threshold": 3},
 	"ability_pierce": {"damage": 105.0, "cooldown": 7.0}}
 

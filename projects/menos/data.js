@@ -11,7 +11,7 @@ export const ENEMIES = {
 };
 
 export const ROBOT = {
-  id: 'robot_main', hp: 220, speed: 125, damage: 28, cooldown: 0.65, range: 110, maxMoves: 5,
+  id: 'robot_main', hp: 220, speed: 125, damage: 28, cooldown: 0.65, range: 180, maxMoves: 5,
   abilities: {
     ability_area: { id: 'ability_area', damage: 28, radius: 72, cooldown: 6, threshold: 3 },
     ability_heavy_pierce: { id: 'ability_heavy_pierce', damage: 105, cooldown: 7, targets: ['enemy_heavy', 'enemy_giant'] }
