@@ -46,10 +46,10 @@ const SFX_STREAMS := {
 	"enemy_spawn": preload("res://sound/172206__fins__teleport.wav"),
 	"wave_start": preload("res://sound/g_get_ready.wav")
 }
-const BASE := Vector2(1080, 122)
-const LANES := {"left": Vector2(70, 346), "right": Vector2(288, 794)}
-const ROBOT_SPOTS := {"LEFT": Vector2(480, 300), "CENTER": Vector2(720, 250), "RIGHT": Vector2(480, 540)}
-const SLOTS := {"L1": Vector2(220, 310), "L2": Vector2(450, 270), "L3": Vector2(720, 210), "R1": Vector2(300, 650), "R2": Vector2(520, 500), "R3": Vector2(760, 340)}
+var BASE := Vector2(1080, 122)
+var LANES := {"left": Vector2(70, 346), "right": Vector2(288, 794)}
+var ROBOT_SPOTS := {"LEFT": Vector2(480, 300), "CENTER": Vector2(720, 250), "RIGHT": Vector2(480, 540)}
+var SLOTS := {"L1": Vector2(220, 310), "L2": Vector2(450, 270), "L3": Vector2(720, 210), "R1": Vector2(300, 650), "R2": Vector2(520, 500), "R3": Vector2(760, 340)}
 const ROBOT_GROWTH_OPTIONS := {
 	"ability_area": {"name": "AREA ATTACK", "description": "Hits 3 or more nearby enemies."},
 	"ability_heavy_pierce": {"name": "HEAVY PIERCE", "description": "Targets Heavy and Giant enemies."}
@@ -58,9 +58,9 @@ const GROWTH_OPTION_RECTS := {
 	"ability_area": Rect2(180, 320, 300, 78),
 	"ability_heavy_pierce": Rect2(500, 320, 300, 78)
 }
-const MAP_TILES := Vector2i(36, 24)
-const MAP_ORIGIN := Vector2(0, 58)
-const MAP_PIXEL_SIZE := Vector2(1152, 768)
+var MAP_TILES := Vector2i(36, 24)
+var MAP_ORIGIN := Vector2(0, 58)
+var MAP_PIXEL_SIZE := Vector2(1152, 768)
 const SIDEBAR_X := 1172.0
 const MAP_TILE_SOURCE_GROUND := 0
 const MAP_TILE_SOURCE_ROAD := 1
@@ -94,9 +94,22 @@ var effects: Array = []
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	load_external_map_data()
 	build_first_battle_map()
 	reset_game()
 	queue_redraw()
+
+func load_external_map_data() -> void:
+	var loaded_map := MapLoader.load_map_data("res://map_data/northbridge_sector_01.json")
+	if loaded_map.is_empty():
+		return
+	if loaded_map.has("base"): BASE = loaded_map["base"]
+	if loaded_map.has("lanes"): LANES = loaded_map["lanes"]
+	if loaded_map.has("robot_spots"): ROBOT_SPOTS = loaded_map["robot_spots"]
+	if loaded_map.has("slots"): SLOTS = loaded_map["slots"]
+	if loaded_map.has("map_tiles"): MAP_TILES = loaded_map["map_tiles"]
+	if loaded_map.has("map_origin"): MAP_ORIGIN = loaded_map["map_origin"]
+	if loaded_map.has("map_pixel_size"): MAP_PIXEL_SIZE = loaded_map["map_pixel_size"]
 
 func build_first_battle_map() -> void:
 	var ground: TileMapLayer = $Ground
