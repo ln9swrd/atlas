@@ -363,9 +363,10 @@ function updateRobot(dt) {
     const dx = robot.targetX - robot.x;
     const dy = robot.targetY - robot.y;
     const dist = Math.hypot(dx, dy);
-    if (dist > 2) {
-      robot.x += (dx / dist) * 320 * dt;
-      robot.y += (dy / dist) * 320 * dt;
+    const step = ROBOT.speed * dt;
+    if (dist > step) {
+      robot.x += (dx / dist) * step;
+      robot.y += (dy / dist) * step;
       robot.isMoving = true;
     } else {
       robot.x = robot.targetX;
