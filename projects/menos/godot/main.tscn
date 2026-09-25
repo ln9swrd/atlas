@@ -17,7 +17,6 @@ position = Vector2(0, 58)
 tile_set = ExtResource("2_tileset")
 
 [node name="Road" type="TileMapLayer" parent="." unique_id=1242762384]
-visible = false
 z_index = -9
 position = Vector2(0, 58)
 tile_set = ExtResource("2_tileset")

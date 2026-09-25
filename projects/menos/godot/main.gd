@@ -94,15 +94,17 @@ var effects: Array = []
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	load_external_map_data()
-	build_first_battle_map()
+	var loaded_map := MapLoader.load_map_data("res://map_data/northbridge_sector_01.json")
+	if not loaded_map.is_empty():
+		apply_map_spatial_data(loaded_map)
+		if not build_map_from_data(loaded_map):
+			build_first_battle_map()
+	else:
+		build_first_battle_map()
 	reset_game()
 	queue_redraw()
 
-func load_external_map_data() -> void:
-	var loaded_map := MapLoader.load_map_data("res://map_data/northbridge_sector_01.json")
-	if loaded_map.is_empty():
-		return
+func apply_map_spatial_data(loaded_map: Dictionary) -> void:
 	if loaded_map.has("base"): BASE = loaded_map["base"]
 	if loaded_map.has("lanes"): LANES = loaded_map["lanes"]
 	if loaded_map.has("robot_spots"): ROBOT_SPOTS = loaded_map["robot_spots"]
@@ -110,6 +112,63 @@ func load_external_map_data() -> void:
 	if loaded_map.has("map_tiles"): MAP_TILES = loaded_map["map_tiles"]
 	if loaded_map.has("map_origin"): MAP_ORIGIN = loaded_map["map_origin"]
 	if loaded_map.has("map_pixel_size"): MAP_PIXEL_SIZE = loaded_map["map_pixel_size"]
+
+func build_map_from_data(map_data: Dictionary) -> bool:
+	if not map_data.has("tiles") or map_data["tiles"].is_empty():
+		return false
+
+	var layers_dict: Dictionary = map_data["tiles"]
+	var has_any_tile := false
+	for layer_name in layers_dict:
+		if not layers_dict[layer_name].is_empty():
+			has_any_tile = true
+			break
+
+	if not has_any_tile:
+		return false
+
+	var ground: TileMapLayer = $Ground
+	var vegetation: TileMapLayer = $Vegetation
+	var road: TileMapLayer = $Road
+	var road_composition: TileMapLayer = $RoadComposition
+	var boundary: TileMapLayer = $Boundary
+
+	ground.clear()
+	vegetation.clear()
+	road.clear()
+	road_composition.clear()
+	boundary.clear()
+
+	var layer_nodes := {
+		"Ground": ground,
+		"Vegetation": vegetation,
+		"Road": road,
+		"RoadComposition": road_composition,
+		"Boundary": boundary
+	}
+
+	for layer_name in layers_dict:
+		if not layer_nodes.has(layer_name):
+			continue
+		var layer_node: TileMapLayer = layer_nodes[layer_name]
+		var tiles_info: Dictionary = layers_dict[layer_name]
+
+		for key in tiles_info:
+			var parts := str(key).split(",")
+			if parts.size() < 2:
+				continue
+			var cx := parts[0].to_int()
+			var cy := parts[1].to_int()
+			var val: Array = tiles_info[key]
+			if val.size() < 3:
+				continue
+			var source_id := int(val[0])
+			var atlas_x := int(val[1])
+			var atlas_y := int(val[2])
+
+			layer_node.set_cell(Vector2i(cx, cy), source_id, Vector2i(atlas_x, atlas_y))
+
+	return true
 
 func build_first_battle_map() -> void:
 	var ground: TileMapLayer = $Ground

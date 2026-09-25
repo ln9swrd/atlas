@@ -1,8 +1,8 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790299976
-data.gd::GDScript::5537870080328675552::1790251375::0::1::::MenosData<>RefCounted<><>0<>0<><>::
-main.gd::GDScript::3826669508318333139::1790299947::0::1::::<>Node2D<><>0<>0<><>::
-main.tscn::PackedScene::6409794179911717756::1790277457::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
+::res://::1790342023
+data.gd::GDScript::5537870080328675552::1790302983::0::1::::MenosData<>RefCounted<><>0<>0<><>::
+main.gd::GDScript::3826669508318333139::1790341807::0::1::::<>Node2D<><>0<>0<><>::
+main.tscn::PackedScene::6409794179911717756::1790302279::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
 ::res://assets/::1790251375
 ::res://assets/menos/::1790274467
 ::res://assets/menos/environment/::1790251375
@@ -47,6 +47,14 @@ tower_gatling_anim.png::CompressedTexture2D::1251966726177335727::1790259875::17
 tower_slot_available.png::CompressedTexture2D::8325176799815910921::1790251375::1790251375::1::::<><><>0<>0<>0b60b128345fde1a7c8d347233158070<>res://.godot/imported/tower_slot_available.png-62b4e514834f144dcf0d960efb0dc7be.ctex::
 tower_slot_empty.png::CompressedTexture2D::4713943064399739930::1790251375::1790251375::1::::<><><>0<>0<>207f8cde5879838f678b060f1d5eaef1<>res://.godot/imported/tower_slot_empty.png-5424ed95c460d3d456f2d3da15179f94.ctex::
 tower_slot_selected.png::CompressedTexture2D::221656078746077824::1790251375::1790251375::1::::<><><>0<>0<>6db4588c112d396fbc796df754ddad32<>res://.godot/imported/tower_slot_selected.png-5b8b5d8cf2bd58e3a0afc4753f268472.ctex::
+::res://editor/::1790341335
+editor_canvas.gd::GDScript::8515960973698181157::1790341541::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
+map_editor.gd::GDScript::612161265932897584::1790341552::0::1::::MapEditorMain<>Control<><>0<>0<><>::
+map_editor.tscn::PackedScene::-1::1790341565::0::1::::<><><>0<>0<><>::res://editor/map_editor.gd<>res://editor/editor_canvas.gd
+::res://map_data/::1790340588
+northbridge_sector_01.json::JSON::-1::1790340588::0::1::::<><><>0<>0<><>::
+::res://scripts/::1790340699
+map_loader.gd::GDScript::6280192720105538762::1790341525::0::1::::MapLoader<>RefCounted<><>0<>0<><>::
 ::res://sound/::1790251375
 172206__fins__teleport.wav::AudioStreamWAV::7596718315350053701::1790251375::1790251375::1::::<><><>0<>0<>770d7d8015366fdc934b0265ec935690<>res://.godot/imported/172206__fins__teleport.wav-e01042181fdfb106ed91d3364c795269.sample::
 beep.mp3::AudioStreamMP3::8624348643340184827::1790251375::1790251375::1::::<><><>0<>0<>476fb1364822cefe9dbbb76d274857ae<>res://.godot/imported/beep.mp3-a9f1d7d78cd92a6c9d8784abb700e144.mp3str::

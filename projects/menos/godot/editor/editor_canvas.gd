@@ -47,32 +47,34 @@ func set_selected_tile(source_id: int, atlas_coords: Vector2i) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index in [MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_RIGHT]:
-			if event.pressed:
+		var mb_event := event as InputEventMouseButton
+		if mb_event.button_index in [MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_RIGHT]:
+			if mb_event.pressed:
 				is_panning = true
-				pan_start_pos = event.position
+				pan_start_pos = mb_event.position
 			else:
 				is_panning = false
-		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+		elif mb_event.button_index == MOUSE_BUTTON_WHEEL_UP and mb_event.pressed:
 			camera_zoom = minf(3.0, camera_zoom + 0.1)
 			queue_redraw()
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+		elif mb_event.button_index == MOUSE_BUTTON_WHEEL_DOWN and mb_event.pressed:
 			camera_zoom = maxf(0.4, camera_zoom - 0.1)
 			queue_redraw()
-		elif event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
+		elif mb_event.button_index == MOUSE_BUTTON_LEFT:
+			if mb_event.pressed:
 				is_painting_drag = true
-				var world_pos := (event.position - camera_offset) / camera_zoom
+				var world_pos: Vector2 = (mb_event.position - camera_offset) / camera_zoom
 				handle_canvas_click(world_pos)
 			else:
 				is_painting_drag = false
 
 	elif event is InputEventMouseMotion:
+		var mm_event := event as InputEventMouseMotion
 		if is_panning:
-			camera_offset += event.relative
+			camera_offset += mm_event.relative
 			queue_redraw()
 		elif is_painting_drag and edit_mode in ["PAINT", "ERASE"]:
-			var world_pos := (event.position - camera_offset) / camera_zoom
+			var world_pos: Vector2 = (mm_event.position - camera_offset) / camera_zoom
 			handle_canvas_click(world_pos)
 
 func handle_canvas_click(world_pos: Vector2) -> void:

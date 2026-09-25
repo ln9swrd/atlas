@@ -110,9 +110,9 @@ func _on_btn_tile_road_pressed() -> void:
 	update_tool_label("PAINT: Road Segment")
 
 func _on_option_layer_item_selected(index: int) -> void:
-	var layers := ["Ground", "Vegetation", "RoadComposition"]
+	var layers: Array[String] = ["Ground", "Vegetation", "RoadComposition"]
 	if index >= 0 and index < layers.size():
-		var selected_layer := layers[index]
+		var selected_layer: String = layers[index]
 		if canvas: canvas.set_active_layer(selected_layer)
 		update_status("Active Layer: " + selected_layer)
 

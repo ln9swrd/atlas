@@ -1,11 +1,11 @@
 [gd_resource type="TileSet" format=3 uid="uid://o1vv0mxnjaq6"]
 
-[ext_resource type="Texture2D" path="res://assets/menos/maps/road3.png" id="2_road"]
+[ext_resource type="Texture2D" uid="uid://crnoy4hhjdr5y" path="res://assets/menos/maps/ground.png" id="1_ground"]
+[ext_resource type="Texture2D" uid="uid://dqvle15alh37p" path="res://assets/menos/maps/road3.png" id="2_road"]
 [ext_resource type="Texture2D" uid="uid://k036v5x63blv" path="res://assets/menos/maps/map boundary.png" id="3_boundary"]
-[ext_resource type="Texture2D" path="res://assets/menos/maps/forest.png" id="4_forest"]
-[ext_resource type="Texture2D" path="res://assets/menos/maps/ground_basic_32.svg" id="5_ground_basic"]
-[ext_resource type="Texture2D" path="res://assets/menos/maps/a7.png" id="6_a7"]
-[ext_resource type="Texture2D" path="res://assets/menos/maps/ground.png" id="1_ground"]
+[ext_resource type="Texture2D" uid="uid://dbuk3tc6ieukd" path="res://assets/menos/maps/forest.png" id="4_forest"]
+[ext_resource type="Texture2D" uid="uid://xe5lqckk1bkw" path="res://assets/menos/maps/ground_basic_32.svg" id="5_ground_basic"]
+[ext_resource type="Texture2D" uid="uid://b1bwlkrgxys25" path="res://assets/menos/maps/a7.png" id="6_a7"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ground"]
 texture = ExtResource("5_ground_basic")
@@ -111,6 +111,20 @@ texture_region_size = Vector2i(128, 128)
 9:7/0 = 0
 10:7/0 = 0
 11:7/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_boundary"]
+texture = ExtResource("3_boundary")
+texture_region_size = Vector2i(128, 128)
+0:2/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+1:2/0 = 0
+3:1/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+4:1/0 = 0
+2:1/0 = 0
+2:2/0 = 0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_road_composition"]
 atlas = ExtResource("2_road")
@@ -218,20 +232,6 @@ texture_region_size = Vector2i(32, 32)
 8:8/0 = 0
 9:8/0 = 0
 10:8/0 = 0
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_boundary"]
-texture = ExtResource("3_boundary")
-texture_region_size = Vector2i(128, 128)
-0:2/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-1:2/0 = 0
-3:1/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-4:1/0 = 0
-2:1/0 = 0
-2:2/0 = 0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_grass"]
 atlas = ExtResource("4_forest")
