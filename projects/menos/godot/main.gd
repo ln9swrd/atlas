@@ -276,7 +276,6 @@ func get_robot_auto_spot() -> String:
 
 func move_robot_automatically(delta: float) -> void:
 	if not wave_running: return
-	if robot.get("manual_position", false): return
 	if robot.has("target_pos"):
 		var manual_target: Vector2 = robot.target_pos
 		var manual_distance: float = robot.position.distance_to(manual_target)
@@ -287,6 +286,7 @@ func move_robot_automatically(delta: float) -> void:
 		else:
 			robot.position += robot.position.direction_to(manual_target) * manual_step
 		return
+	if robot.get("manual_position", false): return
 	var auto_spot := get_robot_auto_spot()
 	if auto_spot.is_empty(): return
 	if robot.spot != auto_spot:
