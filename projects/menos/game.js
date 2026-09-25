@@ -331,6 +331,7 @@ function getRobotAutoSpot() {
 }
 
 function moveRobotAutomatically() {
+  if (state.robot.targetX !== undefined && state.robot.targetY !== undefined) return;
   const spotId = getRobotAutoSpot();
   if (!spotId) return;
   const spot = MAP.robotSpots.find(item => item.id === spotId);
@@ -369,6 +370,8 @@ function updateRobot(dt) {
     } else {
       robot.x = robot.targetX;
       robot.y = robot.targetY;
+      robot.targetX = undefined;
+      robot.targetY = undefined;
       robot.isMoving = false;
     }
   }
@@ -759,12 +762,29 @@ function moveRobot(position) {
   const spot = MAP.robotSpots.find(item => item.id === position.id); if (!spot || robot.targetSpot === spot.id) return;
   robot.targetSpot = spot.id; robot.targetX = spot.x; robot.targetY = spot.y; addFeed(`Atlas-01 repositioned to ${spot.id}.`); updateUi();
 }
+function moveRobotToPoint(point) {
+  const robot = state.robot;
+  if (!robot.active || state.baseHp <= 0 || state.currentWave > WAVES.length) return;
+  robot.targetSpot = 'CUSTOM';
+  robot.targetX = Math.max(32, Math.min(canvas.width - 32, point.x));
+  robot.targetY = Math.max(72, Math.min(canvas.height - 32, point.y));
+  if (!state.waveRunning) {
+    robot.x = robot.targetX;
+    robot.y = robot.targetY;
+    robot.targetX = undefined;
+    robot.targetY = undefined;
+    robot.isMoving = false;
+  }
+  addFeed('Atlas-01 moving to the selected map position.');
+  updateUi();
+}
 
 canvas.addEventListener('click', event => {
   const point = canvasPosition(event);
   const tower = state.towers.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 21);
   if (tower) { selectTower(tower); return; }
   if (state.robot.active && Math.hypot(state.robot.x - point.x, state.robot.y - point.y) < 25) { selectRobot(); return; }
+  if (state.selectedEntity?.kind === 'robot') { moveRobotToPoint(point); return; }
   const slot = MAP.slots.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 24);
   if (slot) { selectSlot(slot); return; }
   const spot = MAP.robotSpots.find(item => Math.hypot(item.x - point.x, item.y - point.y) < 48);

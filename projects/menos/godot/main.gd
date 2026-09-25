@@ -271,6 +271,16 @@ func get_robot_auto_spot() -> String:
 
 func move_robot_automatically(delta: float) -> void:
 	if not wave_running: return
+	if robot.has("target_pos"):
+		var manual_target: Vector2 = robot.target_pos
+		var manual_distance: float = robot.position.distance_to(manual_target)
+		var manual_step: float = DATA.ROBOT.speed * delta
+		if manual_distance <= manual_step:
+			robot.position = manual_target
+			robot.erase("target_pos")
+		else:
+			robot.position += robot.position.direction_to(manual_target) * manual_step
+		return
 	var auto_spot := get_robot_auto_spot()
 	if auto_spot.is_empty(): return
 	if robot.spot != auto_spot:
@@ -279,13 +289,23 @@ func move_robot_automatically(delta: float) -> void:
 		log_event("ATLAS-01 moving to %s." % auto_spot)
 	if not robot.has("target_pos"): return
 	var target_pos: Vector2 = robot.target_pos
-	var distance := robot.position.distance_to(target_pos)
+	var distance: float = robot.position.distance_to(target_pos)
 	var step := DATA.ROBOT.speed * delta
 	if distance <= step:
 		robot.position = target_pos
 		robot.erase("target_pos")
 	else:
 		robot.position += robot.position.direction_to(target_pos) * step
+
+func move_robot_to_position(point: Vector2) -> void:
+	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING]: return
+	var target := Vector2(clampf(point.x, 70.0, 830.0), clampf(point.y, 90.0, 580.0))
+	robot.spot = "CUSTOM"
+	if wave_running:
+		robot["target_pos"] = target
+	else:
+		robot.position = target
+	log_event("ATLAS-01 moving to the selected map position.")
 
 func update_towers(delta: float) -> void:
 	for tower in towers:
@@ -371,6 +391,8 @@ func handle_click(point: Vector2) -> void:
 			selected_tower = tower.id; selected_slot = tower.id; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
 	if robot.active and point.distance_to(robot.position) < 28.0:
 		robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_click"); queue_redraw(); return
+	if robot_selected and Rect2(38, 58, 820, 560).has_point(point):
+		move_robot_to_position(point); return
 	for id in SLOTS:
 		if point.distance_to(SLOTS[id]) < 24.0 and not towers.any(func(tower): return tower.id == id): selected_slot = id; selected_tower = ""; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
 	for id in ROBOT_SPOTS:
