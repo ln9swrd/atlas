@@ -47,7 +47,7 @@ const SFX_STREAMS := {
 	"wave_start": preload("res://sound/g_get_ready.wav")
 }
 const BASE := Vector2(820, 122)
-const LANES := {"left": Vector2(70, 474), "right": Vector2(70, 282)}
+const LANES := {"left": Vector2(166, 474), "right": Vector2(70, 282)}
 const ROBOT_SPOTS := {"LEFT": Vector2(380, 410), "CENTER": Vector2(560, 250), "RIGHT": Vector2(380, 290)}
 const SLOTS := {"L1": Vector2(180, 450), "L2": Vector2(350, 360), "L3": Vector2(520, 270), "R1": Vector2(180, 245), "R2": Vector2(350, 205), "R3": Vector2(520, 165)}
 const ROBOT_GROWTH_OPTIONS := {
@@ -114,9 +114,12 @@ func build_first_battle_map() -> void:
 			var mod_y := y % 4
 			ground.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_A7_MODULE, Vector2i(40 + mod_x, 16 + mod_y))
 	for x in range(1, MAP_TILES.x - 1):
-		var lower_y := int(lerpf(14.0, 2.0, float(x) / float(MAP_TILES.x - 1)))
+		var lower_start := 4.0
+		var lower_span := float(MAP_TILES.x - 1) - lower_start
+		var lower_progress := clampf((float(x) - lower_start) / lower_span, 0.0, 1.0)
+		var lower_y := int(lerpf(14.0, 2.0, lower_progress))
 		var upper_y := int(lerpf(8.0, 2.0, float(x) / float(MAP_TILES.x - 1)))
-		road.set_cell(Vector2i(x, lower_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
+		if x >= int(lower_start): road.set_cell(Vector2i(x, lower_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 		road.set_cell(Vector2i(x, upper_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 	for y in range(9):
 		for x in range(11):
