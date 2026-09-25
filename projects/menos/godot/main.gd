@@ -464,20 +464,55 @@ func draw_rotated_animated_sprite(texture: Texture2D, center: Vector2, size: Vec
 	draw_texture_rect_region(texture, dest_rect, src_rect)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
+func draw_oval(center: Vector2, rx: float, ry: float, color: Color) -> void:
+	var points := PackedVector2Array()
+	var segs := 24
+	for i in range(segs):
+		var a := (float(i) / float(segs)) * TAU
+		points.append(center + Vector2(cos(a) * rx, sin(a) * ry))
+	draw_polygon(points, PackedColorArray([color]))
+
 func _draw() -> void:
+	# Tactical Grid Background & Field Control Sidebar
 	draw_rect(Rect2(900, 0, 200, 700), Color("101f25"))
-	draw_string(ThemeDB.fallback_font, Vector2(30, 35), "MENOS // NORTHBRIDGE SECTOR", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("d7fff7"))
-	draw_rect(Rect2(38, 58, 820, 560), Color("31535b"), false, 2)
-	draw_string(ThemeDB.fallback_font, Vector2(55, 125), "NORTH APPROACH // GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6c8790")); draw_string(ThemeDB.fallback_font, Vector2(55, 585), "SOUTH APPROACH // GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6c8790"))
-	draw_string(ThemeDB.fallback_font, Vector2(88, 80), "NORTHBRIDGE DEFENSE GRID // 3/4 FIELD VIEW", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
-	for lane in LANES.values(): draw_line(lane, BASE, Color("263c43"), 44); draw_dashed_line(lane, BASE, Color("527079"), 2, 12)
-	draw_rect(Rect2(LANES.left - Vector2(6, 14), Vector2(12, 28)), Color("ef7068")); draw_rect(Rect2(LANES.right - Vector2(6, 14), Vector2(12, 28)), Color("ef7068"))
-	draw_arc(BASE, 62, 0, TAU, 32, Color("31535b"), 8); draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92)); draw_string(ThemeDB.fallback_font, BASE + Vector2(-22, 64), "BASE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
+	draw_string(ThemeDB.fallback_font, Vector2(30, 32), "MENOS // STRATEGIC BATTLE GRID", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, Vector2(30, 50), "NORTHBRIDGE SECTOR // 28x18 TACTICAL FIELD", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
+
+	# Tactical 32x32 Grid Overlay over 28x18 battlefield (896x576)
+	var grid_color := Color("2a4852", 0.3)
+	for gx in range(MAP_TILES.x + 1):
+		var x_pos := float(gx * 32)
+		draw_line(Vector2(x_pos, 58), Vector2(x_pos, 576), grid_color, 1.0)
+	for gy in range(2, MAP_TILES.y + 1):
+		var y_pos := float(gy * 32)
+		draw_line(Vector2(0, y_pos), Vector2(896, y_pos), grid_color, 1.0)
+
+	# Tactical Field Boundary
+	draw_rect(Rect2(0, 58, 896, 518), Color("31535b"), false, 2)
+	draw_string(ThemeDB.fallback_font, Vector2(15, 75), "NORTH APPROACH // GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("6c8790"))
+	draw_string(ThemeDB.fallback_font, Vector2(15, 570), "SOUTH APPROACH // GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("6c8790"))
+
+	# Strategic Lanes & Waypoint Trails
+	for lane in LANES.values():
+		draw_line(lane, BASE, Color("1e343b", 0.8), 36)
+		draw_dashed_line(lane, BASE, Color("456b75"), 2.0, 10.0)
+	draw_rect(Rect2(LANES.left - Vector2(8, 16), Vector2(16, 32)), Color("ef7068"))
+	draw_rect(Rect2(LANES.right - Vector2(8, 16), Vector2(16, 32)), Color("ef7068"))
+
+	# Base Facility (Strategic HQ Node)
+	draw_oval(BASE + Vector2(0, 18), 44.0, 14.0, Color(0, 0, 0, 0.45))
+	draw_arc(BASE, 62, 0, TAU, 32, Color("31535b"), 6)
+	draw_arc(BASE, 56, 0, TAU, 32, Color("7ed6ce", 0.8), 2)
+	draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92))
+	draw_string(ThemeDB.fallback_font, BASE + Vector2(-24, 64), "BASE HQ", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
+
+	# Tower Slots & Placed Towers (Strategic Node Bases)
 	for id in SLOTS:
-		var placed_tower: Dictionary = towers.filter(func(tower): return tower.id == id).front() if towers.any(func(tower): return tower.id == id) else {}
+		var placed_tower: Dictionary = towers.filter(func(t): return t.id == id).front() if towers.any(func(t): return t.id == id) else {}
 		var occupied := not placed_tower.is_empty()
 		if not occupied:
 			var slot_visual: Texture2D = VISUALS["slot_selected"] if selected_slot == id else VISUALS["slot_empty"]
+			draw_oval(SLOTS[id] + Vector2(0, 14), 28.0, 10.0, Color(0, 0, 0, 0.3))
 			draw_sprite(slot_visual, SLOTS[id], Vector2(76, 76))
 			if selected_slot == id: draw_arc(SLOTS[id], 39, 0, TAU, 24, Color("f0a35a"), 2)
 		else:
@@ -489,21 +524,42 @@ func _draw() -> void:
 			if is_firing:
 				var fire_progress: float = 1.0 - clampf((cd_left - (max_cd - 0.25)) / 0.25, 0.0, 1.0)
 				frame_idx = int(fire_progress * 4.0) % 4
+			draw_oval(SLOTS[id] + Vector2(0, 22), 26.0, 10.0, Color(0, 0, 0, 0.4))
+			draw_arc(SLOTS[id] + Vector2(0, 22), 28, 0, TAU, 24, Color("7ed6ce" if placed_tower.type == "cannon" else "f0a35a"), 2)
 			draw_animated_sprite(VISUALS[anim_key], SLOTS[id], Vector2(60, 90), frame_idx, 4)
 			if selected_tower == id: draw_arc(SLOTS[id], 51, 0, TAU, 24, Color("d7fff7"), 2)
 		draw_string(ThemeDB.fallback_font, SLOTS[id] + Vector2(-10, 54), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
-	for id in ROBOT_SPOTS: draw_string(ThemeDB.fallback_font, ROBOT_SPOTS[id] + Vector2(-24, 58), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
+
+	# Robot Movement Spots
+	for id in ROBOT_SPOTS:
+		var is_current: bool = robot.active and robot.spot == id
+		draw_arc(ROBOT_SPOTS[id], 24, 0, TAU, 16, Color("7ed6ce", 0.4) if not is_current else Color("f0a35a"), 1)
+		draw_string(ThemeDB.fallback_font, ROBOT_SPOTS[id] + Vector2(-24, 42), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
+
+	# Enemy Units (High Contrast Strategic Visibility)
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
 		var data: Dictionary = DATA.ENEMIES[enemy.type]
 		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES[enemy.type]
-		if enemy.flash > 0.0: draw_circle(enemy.position, data.radius + 3, Color.WHITE)
+		
+		# Strategic Base Indicator under Enemy
+		var shadow_pos: Vector2 = enemy.position + Vector2(0, enemy_size.y * 0.35)
+		draw_oval(shadow_pos, enemy_size.x * 0.45, 8.0, Color(0, 0, 0, 0.4))
+		draw_arc(shadow_pos, enemy_size.x * 0.45, 0, TAU, 16, Color("ef7068", 0.85), 2.0)
+		
+		if enemy.flash > 0.0: draw_circle(enemy.position, data.radius + 4, Color.WHITE)
 		var anim_key: String = "enemy_" + enemy.type + "_anim"
 		var fps: float = 14.0 if enemy.type == "rusher" else (6.0 if enemy.type == "giant" else 10.0)
 		var e_frame: int = int((elapsed + float(enemy.position.x)) * fps) % 8
 		draw_animated_sprite(VISUALS[anim_key], enemy.position, enemy_size, e_frame, 8)
-		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 7)
-		draw_rect(Rect2(hp_position, Vector2(enemy_size.x, 4)), Color("263238")); draw_rect(Rect2(hp_position, Vector2(enemy_size.x * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("92d28b"))
+		
+		# Strategic HP Bar
+		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 9)
+		draw_rect(Rect2(hp_position - Vector2(1, 1), Vector2(enemy_size.x + 2, 6)), Color("101f25"))
+		draw_rect(Rect2(hp_position, Vector2(enemy_size.x, 4)), Color("3a1c1a"))
+		draw_rect(Rect2(hp_position, Vector2(enemy_size.x * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("ef7068"))
+
+	# Effects
 	for effect in effects:
 		var etype: String = str(effect.get("type", ""))
 		if etype == "giantHit":
@@ -528,8 +584,20 @@ func _draw() -> void:
 			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
 			var p_frame: int = int(elapsed * 16.0) % 6
 			draw_rotated_animated_sprite(VISUALS["bullet_threat"], current_p, Vector2(40, 48), angle, p_frame, 6)
+
+	# Player Unit ATLAS-01 Robot (Heroic Strategic Unit Base & Visibility)
 	if robot.active:
 		var is_flashing: bool = float(robot.get("flash", 0.0)) > 0.0
+		
+		# Strategic Base Indicator under Player Robot
+		var r_base_pos: Vector2 = robot.position + Vector2(0, 42)
+		draw_oval(r_base_pos, 36.0, 10.0, Color(0, 0, 0, 0.45))
+		draw_arc(r_base_pos, 36.0, 0, TAU, 24, Color("ef7068") if is_flashing else Color("7ed6ce"), 3.0 if is_flashing else 2.0)
+		if robot_selected:
+			draw_arc(r_base_pos, 44.0, 0, TAU, 24, Color("f0a35a"), 2.0)
+			draw_line(r_base_pos - Vector2(50, 0), r_base_pos + Vector2(50, 0), Color("f0a35a", 0.5), 1.0)
+			draw_line(r_base_pos - Vector2(0, 15), r_base_pos + Vector2(0, 15), Color("f0a35a", 0.5), 1.0)
+		
 		if is_flashing: draw_circle(robot.position, 34, Color("ef7068", 0.35))
 		var anim_key := "atlas_idle"
 		var total_f := 6
@@ -548,9 +616,16 @@ func _draw() -> void:
 			fps = 12.0
 		var r_frame: int = int(elapsed * fps) % total_f
 		draw_animated_sprite(VISUALS[anim_key], robot.position, Vector2(64, 114), r_frame, total_f)
-		draw_arc(robot.position, 58, 0, TAU, 24, Color("ef7068") if is_flashing else Color("d7fff7"), 3 if is_flashing else 2)
-		if robot_selected: draw_arc(robot.position, 66, 0, TAU, 24, Color("f0a35a"), 2)
+		
+		# Player Robot Unit HP Bar
+		var r_hp_pos: Vector2 = robot.position + Vector2(-32, -66)
+		draw_rect(Rect2(r_hp_pos - Vector2(1, 1), Vector2(66, 6)), Color("101f25"))
+		draw_rect(Rect2(r_hp_pos, Vector2(64, 4)), Color("1c3e38"))
+		draw_rect(Rect2(r_hp_pos, Vector2(64 * max(0.0, robot.hp / DATA.ROBOT.hp), 4)), Color("7ed6ce"))
+
 	draw_ui()
+
+
 
 func draw_ui() -> void:
 	draw_rect(Rect2(900, 0, 200, 700), Color("101f25")); draw_string(ThemeDB.fallback_font, Vector2(920, 42), "FIELD CONTROL", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
