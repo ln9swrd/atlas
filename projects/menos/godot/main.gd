@@ -58,9 +58,10 @@ const GROWTH_OPTION_RECTS := {
 	"ability_area": Rect2(180, 320, 300, 78),
 	"ability_heavy_pierce": Rect2(500, 320, 300, 78)
 }
-const MAP_TILES := Vector2i(28, 18)
+const MAP_TILES := Vector2i(36, 24)
 const MAP_ORIGIN := Vector2(0, 58)
-const MAP_PIXEL_SIZE := Vector2(896, 576)
+const MAP_PIXEL_SIZE := Vector2(1152, 768)
+const SIDEBAR_X := 1172.0
 const MAP_TILE_SOURCE_GROUND := 0
 const MAP_TILE_SOURCE_ROAD := 1
 const MAP_TILE_SOURCE_BOUNDARY := 2
@@ -315,7 +316,7 @@ func move_robot_automatically(delta: float) -> void:
 
 func move_robot_to_position(point: Vector2) -> void:
 	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING]: return
-	var target := Vector2(clampf(point.x, 70.0, 830.0), clampf(point.y, 90.0, 580.0))
+	var target := Vector2(clampf(point.x, MAP_ORIGIN.x + 32.0, MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - 32.0), clampf(point.y, MAP_ORIGIN.y + 32.0, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y - 32.0))
 	robot["manual_position"] = true
 	robot.spot = "CUSTOM"
 	if wave_running:
@@ -392,17 +393,17 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: handle_click(event.position)
 
 func handle_click(point: Vector2) -> void:
-	if Rect2(920, 175, 145, 42).has_point(point): play_sfx("ui_click"); reset_game(); return
+	if Rect2(SIDEBAR_X + 20.0, 175, 145, 42).has_point(point): play_sfx("ui_click"); reset_game(); return
 	if run_state == RunState.GROWTH:
 		for ability_id in available_robot_growths():
 			if GROWTH_OPTION_RECTS[ability_id].has_point(point):
 				choose_robot_growth(ability_id)
 				return
 		return
-	if Rect2(920, 120, 145, 42).has_point(point): start_wave(); return
-	if Rect2(920, 250, 145, 42).has_point(point): launch_robot(); return
-	if Rect2(920, 305, 145, 42).has_point(point): build_tower("cannon"); return
-	if Rect2(920, 360, 145, 42).has_point(point): build_tower("gatling"); return
+	if Rect2(SIDEBAR_X + 20.0, 120, 145, 42).has_point(point): start_wave(); return
+	if Rect2(SIDEBAR_X + 20.0, 250, 145, 42).has_point(point): launch_robot(); return
+	if Rect2(SIDEBAR_X + 20.0, 305, 145, 42).has_point(point): build_tower("cannon"); return
+	if Rect2(SIDEBAR_X + 20.0, 360, 145, 42).has_point(point): build_tower("gatling"); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -412,7 +413,7 @@ func handle_click(point: Vector2) -> void:
 		else:
 			robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_click")
 		queue_redraw(); return
-	if robot_selected and Rect2(38, 58, 820, 560).has_point(point):
+	if robot_selected and Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE).has_point(point):
 		move_robot_to_position(point); return
 	for id in SLOTS:
 		if point.distance_to(SLOTS[id]) < 24.0 and not towers.any(func(tower): return tower.id == id): selected_slot = id; selected_tower = ""; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -495,18 +496,18 @@ func draw_oval(center: Vector2, rx: float, ry: float, color: Color) -> void:
 
 func _draw() -> void:
 	# Tactical Grid Background & Field Control Sidebar
-	draw_rect(Rect2(900, 0, 200, 700), Color("101f25"))
+	draw_rect(Rect2(SIDEBAR_X, 0, 208, 860), Color("101f25"))
 	draw_string(ThemeDB.fallback_font, Vector2(30, 32), "MENOS // STRATEGIC BATTLE GRID", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
-	draw_string(ThemeDB.fallback_font, Vector2(30, 50), "NORTHBRIDGE SECTOR // 28x18 TACTICAL FIELD", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
+	draw_string(ThemeDB.fallback_font, Vector2(30, 50), "NORTHBRIDGE SECTOR // 36x24 TACTICAL FIELD", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
 
-	# Tactical 32x32 Grid Overlay over 28x18 battlefield (896x576)
+	# Tactical 32x32 Grid Overlay over 36x24 battlefield (1152x768)
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("102b31", 0.55))
-	draw_rect(Rect2(MAP_ORIGIN, Vector2(256, 576)), Color("ef7068", 0.08))
-	draw_rect(Rect2(MAP_ORIGIN + Vector2(256, 0), Vector2(448, 576)), Color("7ed6ce", 0.07))
-	draw_rect(Rect2(MAP_ORIGIN + Vector2(704, 0), Vector2(192, 576)), Color("f0a35a", 0.08))
+	draw_rect(Rect2(MAP_ORIGIN, Vector2(320, MAP_PIXEL_SIZE.y)), Color("ef7068", 0.08))
+	draw_rect(Rect2(MAP_ORIGIN + Vector2(320, 0), Vector2(576, MAP_PIXEL_SIZE.y)), Color("7ed6ce", 0.07))
+	draw_rect(Rect2(MAP_ORIGIN + Vector2(896, 0), Vector2(256, MAP_PIXEL_SIZE.y)), Color("f0a35a", 0.08))
 	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 24), "ENEMY APPROACH", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068", 0.85))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(272, 24), "ENGAGEMENT ZONE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce", 0.85))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(720, 24), "BASE DEFENSE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("f0a35a", 0.85))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(336, 24), "ENGAGEMENT ZONE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce", 0.85))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(912, 24), "BASE DEFENSE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("f0a35a", 0.85))
 	var grid_color := Color("7ed6ce", 0.28)
 	for gx in range(MAP_TILES.x + 1):
 		var x_pos := MAP_ORIGIN.x + float(gx * 32)
@@ -661,25 +662,25 @@ func _draw() -> void:
 
 
 func draw_ui() -> void:
-	draw_rect(Rect2(900, 0, 200, 700), Color("101f25")); draw_string(ThemeDB.fallback_font, Vector2(920, 42), "FIELD CONTROL", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
-	draw_string(ThemeDB.fallback_font, Vector2(920, 78), "BASE HP  %03d" % max(0, ceil(base_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if base_hp > 30 else Color("ef7068")); draw_string(ThemeDB.fallback_font, Vector2(920, 101), "GOLD     %03d" % gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f0b35a")); draw_string(ThemeDB.fallback_font, Vector2(920, 124), "WAVE     %d / 4" % wave, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("d7fff7"))
-	var next_label: String = DATA.WAVES[min(wave - 1, 3)].label; draw_string(ThemeDB.fallback_font, Vector2(920, 470), "NEXT THREAT", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("6a858a")); draw_string(ThemeDB.fallback_font, Vector2(920, 491), next_label, HORIZONTAL_ALIGNMENT_LEFT, 165, 11, Color("a9c5c7"))
+	draw_rect(Rect2(SIDEBAR_X, 0, 208, 860), Color("101f25")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 42), "FIELD CONTROL", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 78), "BASE HP  %03d" % max(0, ceil(base_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if base_hp > 30 else Color("ef7068")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 101), "GOLD     %03d" % gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f0b35a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 124), "WAVE     %d / 4" % wave, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("d7fff7"))
+	var next_label: String = DATA.WAVES[min(wave - 1, 3)].label; draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 470), "NEXT THREAT", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("6a858a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 491), next_label, HORIZONTAL_ALIGNMENT_LEFT, 165, 11, Color("a9c5c7"))
 	var status_text := "READY"
 	if run_state == RunState.RUNNING: status_text = "WAVE %d IN PROGRESS" % wave
 	elif run_state == RunState.GROWTH: status_text = "SELECT ROBOT ABILITY"
 	elif run_state == RunState.VICTORY: status_text = "VICTORY"
 	elif run_state == RunState.DEFEAT: status_text = "DEFEAT"
-	if run_state == RunState.VICTORY: draw_sprite(VISUALS["status_victory"], Vector2(1047, 585), Vector2(48, 48))
-	elif run_state == RunState.DEFEAT: draw_sprite(VISUALS["status_defeat"], Vector2(1047, 585), Vector2(48, 48))
-	draw_string(ThemeDB.fallback_font, Vector2(920, 585), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if run_state == RunState.VICTORY else Color("ef7068") if run_state == RunState.DEFEAT else Color("d7fff7"))
-	button(Rect2(920, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(920, 175, 145, 42), "RESTART", false); button(Rect2(920, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(920, 305, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(920, 360, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
+	if run_state == RunState.VICTORY: draw_sprite(VISUALS["status_victory"], Vector2(SIDEBAR_X + 127.0, 585), Vector2(48, 48))
+	elif run_state == RunState.DEFEAT: draw_sprite(VISUALS["status_defeat"], Vector2(SIDEBAR_X + 127.0, 585), Vector2(48, 48))
+	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 585), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if run_state == RunState.VICTORY else Color("ef7068") if run_state == RunState.DEFEAT else Color("d7fff7"))
+	button(Rect2(SIDEBAR_X + 20.0, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(SIDEBAR_X + 20.0, 175, 145, 42), "RESTART", false); button(Rect2(SIDEBAR_X + 20.0, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(SIDEBAR_X + 20.0, 305, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(SIDEBAR_X + 20.0, 360, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
 	var robot_status := "DOCKED"
 	if robot.active: robot_status = "DEPLOYED / " + robot.spot
 	if robot_selected: robot_status += " / SELECTED"
-	draw_string(ThemeDB.fallback_font, Vector2(920, 535), "ATLAS-01  " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
-	draw_string(ThemeDB.fallback_font, Vector2(920, 557), "HP %03d   MOVES ∞" % max(0, ceil(robot.hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
-	draw_string(ThemeDB.fallback_font, Vector2(30, 665), "CLICK TOWER / ROBOT TO SELECT  /  SELECT ROBOT, THEN CLICK DESTINATION  /  R TO RESTART", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6a858a"))
-	for index in range(feed.size()): draw_string(ThemeDB.fallback_font, Vector2(30, 590 - index * 20), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 820, 12, Color("a9c5c7"))
+	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 535), "ATLAS-01  " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
+	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 557), "HP %03d   MOVES ∞" % max(0, ceil(robot.hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
+	draw_string(ThemeDB.fallback_font, Vector2(30, 850), "CLICK TOWER / ROBOT TO SELECT  /  SELECT ROBOT, THEN CLICK DESTINATION  /  R TO RESTART", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("6a858a"))
+	for index in range(feed.size()): draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 650 + index * 20), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 165, 11, Color("a9c5c7"))
 	if run_state == RunState.GROWTH: draw_robot_growth_choice()
 
 func draw_robot_growth_choice() -> void:
