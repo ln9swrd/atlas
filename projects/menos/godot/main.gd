@@ -135,7 +135,7 @@ func play_sfx(id: String) -> void:
 func reset_game() -> void:
 	base_hp = 100.0; gold = 180; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""; selected_tower = ""; robot_selected = false
-	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS.CENTER, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
+	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS.CENTER, "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
 	robot_progression = {"unlocked_abilities": []}
 	feed.clear(); log_event("Build towers, launch ATLAS-01, then start Wave 1.")
 
@@ -271,6 +271,7 @@ func get_robot_auto_spot() -> String:
 
 func move_robot_automatically(delta: float) -> void:
 	if not wave_running: return
+	if robot.get("manual_position", false): return
 	if robot.has("target_pos"):
 		var manual_target: Vector2 = robot.target_pos
 		var manual_distance: float = robot.position.distance_to(manual_target)
@@ -300,6 +301,7 @@ func move_robot_automatically(delta: float) -> void:
 func move_robot_to_position(point: Vector2) -> void:
 	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING]: return
 	var target := Vector2(clampf(point.x, 70.0, 830.0), clampf(point.y, 90.0, 580.0))
+	robot["manual_position"] = true
 	robot.spot = "CUSTOM"
 	if wave_running:
 		robot["target_pos"] = target
@@ -445,7 +447,7 @@ func can_launch_robot() -> bool:
 
 func move_robot(id: String) -> void:
 	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING] or not ROBOT_SPOTS.has(id) or robot.spot == id: return
-	robot.spot = id; robot["target_pos"] = ROBOT_SPOTS[id]; log_event("ATLAS-01 moved to %s." % id)
+	robot["manual_position"] = true; robot.spot = id; robot["target_pos"] = ROBOT_SPOTS[id]; log_event("ATLAS-01 moved to %s." % id)
 
 func draw_sprite(texture: Texture2D, center: Vector2, size: Vector2) -> void:
 	draw_texture_rect(texture, Rect2(center - size * 0.5, size), false)

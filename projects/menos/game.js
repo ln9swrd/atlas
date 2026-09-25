@@ -127,7 +127,7 @@ function resetGame() {
   state = {
     baseHp: 100, gold: 180, currentWave: 1, waveRunning: false, waveComplete: false, elapsed: 0,
     enemies: [], towers: [], selectedSlot: null, selectedEntity: null, spawnQueue: [], spawnTimer: 0, waveClock: 0, effects: [], feed: [],
-    robot: { active: false, x: MAP.robotSpots[1].x, y: MAP.robotSpots[1].y, hp: ROBOT.hp, commands: ROBOT.maxMoves, targetSpot: 'CENTER', attackTimer: 0, areaTimer: 0, pierceTimer: 0, unlockedAbilities: [] },
+    robot: { active: false, x: MAP.robotSpots[1].x, y: MAP.robotSpots[1].y, hp: ROBOT.hp, commands: ROBOT.maxMoves, targetSpot: 'CENTER', manualPosition: false, attackTimer: 0, areaTimer: 0, pierceTimer: 0, unlockedAbilities: [] },
     pendingAbilityChoice: false
   };
   hideAbilityModal();
@@ -331,6 +331,7 @@ function getRobotAutoSpot() {
 }
 
 function moveRobotAutomatically() {
+  if (state.robot.manualPosition) return;
   if (state.robot.targetX !== undefined && state.robot.targetY !== undefined) return;
   const spotId = getRobotAutoSpot();
   if (!spotId) return;
@@ -761,11 +762,13 @@ function buildTower(id) {
 function moveRobot(position) {
   const robot = state.robot; if (!robot.active || state.baseHp <= 0 || state.currentWave > WAVES.length) return;
   const spot = MAP.robotSpots.find(item => item.id === position.id); if (!spot || robot.targetSpot === spot.id) return;
+  robot.manualPosition = true;
   robot.targetSpot = spot.id; robot.targetX = spot.x; robot.targetY = spot.y; addFeed(`Atlas-01 repositioned to ${spot.id}.`); updateUi();
 }
 function moveRobotToPoint(point) {
   const robot = state.robot;
   if (!robot.active || state.baseHp <= 0 || state.currentWave > WAVES.length) return;
+  robot.manualPosition = true;
   robot.targetSpot = 'CUSTOM';
   robot.targetX = Math.max(32, Math.min(canvas.width - 32, point.x));
   robot.targetY = Math.max(72, Math.min(canvas.height - 32, point.y));
