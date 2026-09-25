@@ -278,7 +278,7 @@ func move_robot_automatically(delta: float) -> void:
 	var chase_target: Dictionary = get_robot_chase_target()
 	if not chase_target.is_empty():
 		var target_distance: float = robot.position.distance_to(chase_target.position)
-		var engagement_distance := 32.0
+		var engagement_distance: float = DATA.ROBOT.range
 		if target_distance > engagement_distance:
 			var chase_step: float = minf(DATA.ROBOT.speed * delta, target_distance - engagement_distance)
 			robot.erase("target_pos")
