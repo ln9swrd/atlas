@@ -527,54 +527,74 @@ function drawBackground() {
     ctx.fillStyle = '#10242a'; ctx.fillRect(0, 0, canvas.width, 176);
     ctx.fillStyle = '#16343a'; ctx.fillRect(0, 176, canvas.width, 112);
     ctx.fillStyle = '#1b3b3f'; ctx.fillRect(0, 288, canvas.width, 272);
-    ctx.strokeStyle = 'rgba(126,214,206,.12)'; ctx.lineWidth = 1;
-    for (let x = 0; x < canvas.width; x += 48) { ctx.beginPath(); ctx.moveTo(x, 288); ctx.lineTo(x + 92, 560); ctx.stroke(); }
-    for (let y = 320; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
-    ctx.fillStyle = '#31535b'; ctx.fillRect(0, 172, canvas.width, 4); ctx.fillRect(0, 284, canvas.width, 4);
-    ctx.fillStyle = '#6c8790'; ctx.font = '11px Space Mono'; ctx.fillText('NORTH APPROACH // GATE 01', 22, 122); ctx.fillText('SOUTH APPROACH // GATE 02', 22, 463);
-    ctx.fillStyle = '#7ed6ce'; ctx.font = '10px Space Mono'; ctx.fillText('NORTHBRIDGE DEFENSE GRID // 3/4 FIELD VIEW', 88, 80);
   }
+
+  // Tactical 32x32 Grid Overlay over 28x18 battlefield (896x576)
+  ctx.save();
+  ctx.strokeStyle = 'rgba(126, 214, 206, 0.35)';
+  ctx.lineWidth = 1.5;
+  for (let x = 0; x <= 896; x += 32) {
+    ctx.beginPath(); ctx.moveTo(x, 58); ctx.lineTo(x, 576); ctx.stroke();
+  }
+  for (let y = 64; y <= 576; y += 32) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(896, y); ctx.stroke();
+  }
+  ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2;
+  ctx.strokeRect(0, 58, 896, 518);
+  ctx.fillStyle = '#ef7068'; ctx.font = '10px Space Mono';
+  ctx.fillText('NORTH APPROACH // GATE 01', 15, 75);
+  ctx.fillText('SOUTH APPROACH // GATE 02', 15, 570);
+  ctx.fillStyle = '#7ed6ce'; ctx.font = '10px Space Mono';
+  ctx.fillText('NORTHBRIDGE SECTOR // 28x18 TACTICAL FIELD', 15, 48);
+  ctx.restore();
 }
 
 function drawLanes() {
   for (const lane of Object.values(MAP.lanes)) {
-    ctx.strokeStyle = '#263c43'; ctx.lineWidth = 42; ctx.beginPath(); ctx.moveTo(lane.x, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke();
-    ctx.strokeStyle = '#527079'; ctx.lineWidth = 2; ctx.setLineDash([12, 14]); ctx.beginPath(); ctx.moveTo(lane.x, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = '#1e343b'; ctx.lineWidth = 36; ctx.beginPath(); ctx.moveTo(lane.x, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke();
+    ctx.strokeStyle = 'rgba(126, 214, 206, 0.6)'; ctx.lineWidth = 2; ctx.setLineDash([10, 10]); ctx.beginPath(); ctx.moveTo(lane.x, lane.y); ctx.lineTo(MAP.base.x, MAP.base.y); ctx.stroke(); ctx.setLineDash([]);
   }
-  MAP.robotSpots.forEach(spot => { ctx.fillStyle = 'rgba(126,214,206,.05)'; ctx.strokeStyle = 'rgba(126,214,206,.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(spot.x, spot.y, 58, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
-  ctx.fillStyle = '#ef7068'; ctx.fillRect(MAP.lanes.left.x - 12, MAP.lanes.left.y - 6, 24, 12); ctx.fillRect(MAP.lanes.right.x - 12, MAP.lanes.right.y - 6, 24, 12);
+  MAP.robotSpots.forEach(spot => { ctx.fillStyle = 'rgba(126,214,206,.05)'; ctx.strokeStyle = 'rgba(126,214,206,.5)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(spot.x, spot.y, 28, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
+  ctx.fillStyle = '#ef7068'; ctx.fillRect(MAP.lanes.left.x - 8, MAP.lanes.left.y - 16, 16, 32); ctx.fillRect(MAP.lanes.right.x - 8, MAP.lanes.right.y - 16, 16, 32);
 }
 
 function drawSlots() {
   MAP.slots.forEach(slot => {
     const tower = state.towers.find(item => item.id === slot.id);
     if (tower) return;
-    ctx.fillStyle = 'rgba(10, 21, 25, .72)'; ctx.beginPath(); ctx.ellipse(slot.x, slot.y + 9, 26, 9, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = state.selectedSlot?.id === slot.id ? '#f0a35a' : '#6a858a'; ctx.lineWidth = 2; ctx.setLineDash([3, 4]);
-    ctx.beginPath(); ctx.arc(slot.x, slot.y, 18, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = '#6a858a'; ctx.font = '10px Space Mono'; ctx.textAlign = 'center'; ctx.fillText(slot.id, slot.x, slot.y + 4); ctx.textAlign = 'left';
+    const feetY = slot.y + 26;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)'; ctx.beginPath(); ctx.ellipse(slot.x, feetY, 30, 10, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = state.selectedSlot?.id === slot.id ? '#f0a35a' : '#6a858a'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(slot.x, feetY, 32, 10, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#6a858a'; ctx.font = '10px Space Mono'; ctx.textAlign = 'center'; ctx.fillText(slot.id, slot.x, slot.y + 54); ctx.textAlign = 'left';
   });
-  MAP.robotSpots.forEach(spot => { ctx.fillStyle = '#7ed6ce'; ctx.font = '10px Space Mono'; ctx.textAlign = 'center'; ctx.fillText(spot.id, spot.x, spot.y + 55); ctx.textAlign = 'left'; });
+  MAP.robotSpots.forEach(spot => { ctx.fillStyle = '#7ed6ce'; ctx.font = '10px Space Mono'; ctx.textAlign = 'center'; ctx.fillText(spot.id, spot.x, spot.y + 42); ctx.textAlign = 'left'; });
 }
 
 function drawBase() {
+  const baseFeetY = MAP.base.y + 30;
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; ctx.beginPath(); ctx.ellipse(MAP.base.x, baseFeetY, 54, 16, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(MAP.base.x, baseFeetY, 56, 16, 0, 0, Math.PI * 2); ctx.stroke();
   if (MAP_ART.base.complete && MAP_ART.base.naturalWidth) {
     ctx.save();
     ctx.translate(MAP.base.x, MAP.base.y);
-    ctx.drawImage(MAP_ART.base, -92, -92, 184, 184);
+    ctx.drawImage(MAP_ART.base, -56, -46, 112, 92);
     ctx.restore();
   } else {
     ctx.save(); ctx.translate(MAP.base.x, MAP.base.y); ctx.fillStyle = '#182f35'; ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.rect(-38, -38, 76, 76); ctx.fill(); ctx.stroke(); ctx.strokeStyle = 'rgba(126,214,206,.35)'; ctx.lineWidth = 8; ctx.strokeRect(-52, -52, 104, 104); ctx.fillStyle = '#7ed6ce'; ctx.fillRect(-10, -10, 20, 20); ctx.restore();
   }
-  ctx.fillStyle = '#7ed6ce'; ctx.font = '11px Space Mono'; ctx.textAlign = 'center'; ctx.fillText('BASE', MAP.base.x, MAP.base.y + 55); ctx.textAlign = 'left';
+  ctx.fillStyle = '#7ed6ce'; ctx.font = '12px Space Mono'; ctx.textAlign = 'center'; ctx.fillText('BASE HQ', MAP.base.x, MAP.base.y + 64); ctx.textAlign = 'left';
 }
 
 function drawTower(tower) {
   ctx.save(); ctx.translate(tower.x, tower.y);
+  const feetY = 26;
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.45)'; ctx.beginPath(); ctx.ellipse(0, feetY, 28, 10, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = tower.type === 'tower_cannon' ? '#7ed6ce' : '#f0a35a'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(0, feetY, 30, 10, 0, 0, Math.PI * 2); ctx.stroke();
   if (state.selectedEntity?.kind === 'tower' && state.selectedEntity.id === tower.id) {
-    ctx.strokeStyle = '#7ed6ce'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(0, 0, 24, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = '#d7fff7'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(0, feetY, 38, 12, 0, 0, Math.PI * 2); ctx.stroke();
   }
   const spr = tower.type === 'tower_cannon' ? TOWER_SPRITES.cannonAnim : TOWER_SPRITES.gatlingAnim;
   const maxCd = tower.data?.cooldown || 0.6;
@@ -609,23 +629,30 @@ const ENEMY_SPRITE_SIZES = {
 function drawEnemy(enemy) {
   const data = ENEMIES[enemy.type]; ctx.save(); ctx.translate(enemy.x, enemy.y);
   const now = performance.now() / 1000;
-  if (enemy.flash > 0) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(0, 0, data.radius + 3, 0, Math.PI * 2); ctx.fill(); }
-  
   const info = ENEMY_SPRITE_SIZES[enemy.type] || { w: 38, h: 52, cellW: 60, cellH: 70 };
+
+  // Strategic Base Indicator at Enemy Feet (drawn BEFORE sprite so feet sit inside base ring)
+  const feetY = info.h * 0.48;
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; ctx.beginPath(); ctx.ellipse(0, feetY, info.w * 0.55, 9, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(239, 112, 104, 0.9)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(0, feetY, info.w * 0.55, 9, 0, 0, Math.PI * 2); ctx.stroke();
+
+  if (enemy.flash > 0) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(0, 0, data.radius + 4, 0, Math.PI * 2); ctx.fill(); }
+
   const sprKey = enemy.type === 'enemy_rusher' ? 'rusherAnim' : (enemy.type === 'enemy_heavy' ? 'heavyAnim' : (enemy.type === 'enemy_giant' ? 'giantAnim' : 'normalAnim'));
   const spr = ENEMY_SPRITES[sprKey];
   const fps = enemy.type === 'enemy_rusher' ? 14 : (enemy.type === 'enemy_giant' ? 6 : 10);
   const offsetSeed = (enemy.x + enemy.y) * 0.05;
   const frameIdx = Math.floor((now + offsetSeed) * fps) % 8;
-  
+
   if (spr.complete && spr.naturalWidth) {
     ctx.drawImage(spr, frameIdx * info.cellW, 0, info.cellW, info.cellH, -info.w / 2, -info.h / 2, info.w, info.h);
   } else {
     ctx.fillStyle = enemy.flash > 0 ? '#ffffff' : data.color; ctx.strokeStyle = '#0b1519'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(0, 0, data.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
   }
-  ctx.fillStyle = '#11191f'; ctx.fillRect(-info.w / 2, -info.h / 2 - 8, info.w, 3);
-  ctx.fillStyle = '#92d28b'; ctx.fillRect(-info.w / 2, -info.h / 2 - 8, info.w * Math.max(0, enemy.hp / enemy.maxHp), 3);
+  ctx.fillStyle = '#101f25'; ctx.fillRect(-info.w / 2 - 1, -info.h / 2 - 10, info.w + 2, 6);
+  ctx.fillStyle = '#3a1c1a'; ctx.fillRect(-info.w / 2, -info.h / 2 - 9, info.w, 4);
+  ctx.fillStyle = '#ef7068'; ctx.fillRect(-info.w / 2, -info.h / 2 - 9, info.w * Math.max(0, enemy.hp / enemy.maxHp), 4);
   ctx.restore();
 }
 
@@ -633,25 +660,28 @@ function drawRobot() {
   const robot = state.robot; if (!robot.active) return;
   const now = performance.now() / 1000;
   ctx.save(); ctx.translate(robot.x, robot.y);
+
+  // Strategic Base Indicator at Player Robot Feet (positioned at y=+52 at feet)
+  const isFlashing = robot.flash > 0;
+  const feetY = 52;
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; ctx.beginPath(); ctx.ellipse(0, feetY, 42, 12, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = isFlashing ? '#ef7068' : '#7ed6ce'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(0, feetY, 42, 12, 0, 0, Math.PI * 2); ctx.stroke();
+
   if (state.selectedEntity?.kind === 'robot') {
-    ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(0, 0, 32, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = '#f0a35a'; ctx.lineWidth = 2.0; ctx.beginPath(); ctx.ellipse(0, feetY, 52, 14, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(240, 163, 90, 0.6)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(-60, feetY); ctx.lineTo(60, feetY); ctx.moveTo(0, feetY - 18); ctx.lineTo(0, feetY + 18); ctx.stroke();
   }
-  const target = nearestEnemy(robot.x, robot.y, ROBOT.range) || nearestEnemy(robot.x, robot.y, ROBOT.range + 20, 'heavy');
-  if (target) {
-    ctx.strokeStyle = 'rgba(239, 112, 104, 0.55)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath(); ctx.arc(0, 0, 26, 0, Math.PI * 2); ctx.stroke();
-    ctx.setLineDash([]);
-  }
+
+  if (isFlashing) { ctx.fillStyle = 'rgba(239, 112, 104, 0.35)'; ctx.beginPath(); ctx.arc(0, 0, 34, 0, Math.PI * 2); ctx.fill(); }
+
   let spr = ROBOT_SPRITES.idle;
   let totalFrames = 6;
   let fps = 8;
   if (robot.attackTimer > 0.35) { spr = ROBOT_SPRITES.attack; totalFrames = 7; fps = 14; }
   else if (robot.areaTimer > 5.0 || robot.pierceTimer > 6.0) { spr = ROBOT_SPRITES.skill; totalFrames = 5; fps = 10; }
   else if (robot.isMoving) { spr = ROBOT_SPRITES.move; totalFrames = 5; fps = 12; }
-  
+
   const frameIdx = Math.floor(now * fps) % totalFrames;
   if (spr.complete && spr.naturalWidth) {
     ctx.drawImage(spr, frameIdx * 200, 0, 200, 240, -32, -57, 64, 114);
@@ -661,10 +691,12 @@ function drawRobot() {
     ctx.lineWidth = robot.flash > 0 ? 4 : 2;
     ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(20, -10); ctx.lineTo(16, 18); ctx.lineTo(-16, 18); ctx.lineTo(-20, -10); ctx.closePath(); ctx.fill(); ctx.stroke();
   }
-  ctx.fillStyle = '#ef7068'; ctx.fillRect(-ROBOT.range, -ROBOT.range - 12, ROBOT.range * 2, 4);
-  ctx.fillStyle = '#92d28b'; ctx.fillRect(-ROBOT.range, -ROBOT.range - 12, ROBOT.range * 2 * Math.max(0, robot.hp / ROBOT.hp), 4);
+  ctx.fillStyle = '#101f25'; ctx.fillRect(-33, -67, 66, 6);
+  ctx.fillStyle = '#1c3e38'; ctx.fillRect(-32, -66, 64, 4);
+  ctx.fillStyle = '#7ed6ce'; ctx.fillRect(-32, -66, 64 * Math.max(0, robot.hp / ROBOT.hp), 4);
   ctx.restore();
 }
+
 
 function drawEffects() {
   const now = performance.now() / 1000;
