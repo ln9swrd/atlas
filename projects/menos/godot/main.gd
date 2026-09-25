@@ -59,6 +59,8 @@ const GROWTH_OPTION_RECTS := {
 	"ability_heavy_pierce": Rect2(500, 320, 300, 78)
 }
 const MAP_TILES := Vector2i(28, 18)
+const MAP_ORIGIN := Vector2(0, 58)
+const MAP_PIXEL_SIZE := Vector2(896, 576)
 const MAP_TILE_SOURCE_GROUND := 0
 const MAP_TILE_SOURCE_ROAD := 1
 const MAP_TILE_SOURCE_BOUNDARY := 2
@@ -485,18 +487,25 @@ func _draw() -> void:
 	draw_string(ThemeDB.fallback_font, Vector2(30, 50), "NORTHBRIDGE SECTOR // 28x18 TACTICAL FIELD", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
 
 	# Tactical 32x32 Grid Overlay over 28x18 battlefield (896x576)
-	var grid_color := Color("7ed6ce", 0.35)
+	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("102b31", 0.55))
+	draw_rect(Rect2(MAP_ORIGIN, Vector2(896, 160)), Color("ef7068", 0.08))
+	draw_rect(Rect2(MAP_ORIGIN + Vector2(0, 160), Vector2(896, 256)), Color("7ed6ce", 0.07))
+	draw_rect(Rect2(MAP_ORIGIN + Vector2(0, 416), Vector2(896, 160)), Color("f0a35a", 0.08))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 24), "ENEMY APPROACH", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068", 0.85))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 184), "ENGAGEMENT ZONE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce", 0.85))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 440), "BASE DEFENSE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("f0a35a", 0.85))
+	var grid_color := Color("7ed6ce", 0.28)
 	for gx in range(MAP_TILES.x + 1):
-		var x_pos := float(gx * 32)
-		draw_line(Vector2(x_pos, 58), Vector2(x_pos, 576), grid_color, 1.5)
-	for gy in range(2, MAP_TILES.y + 1):
-		var y_pos := float(gy * 32)
-		draw_line(Vector2(0, y_pos), Vector2(896, y_pos), grid_color, 1.5)
+		var x_pos := MAP_ORIGIN.x + float(gx * 32)
+		draw_line(Vector2(x_pos, MAP_ORIGIN.y), Vector2(x_pos, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y), grid_color, 1.0)
+	for gy in range(MAP_TILES.y + 1):
+		var y_pos := MAP_ORIGIN.y + float(gy * 32)
+		draw_line(Vector2(MAP_ORIGIN.x, y_pos), Vector2(MAP_ORIGIN.x + MAP_PIXEL_SIZE.x, y_pos), grid_color, 1.0)
 
 	# Tactical Field Boundary
-	draw_rect(Rect2(0, 58, 896, 518), Color("7ed6ce"), false, 2)
-	draw_string(ThemeDB.fallback_font, Vector2(15, 75), "NORTH APPROACH // GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
-	draw_string(ThemeDB.fallback_font, Vector2(15, 570), "SOUTH APPROACH // GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
+	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "NORTH GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, MAP_PIXEL_SIZE.y - 16), "SOUTH GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
 
 	# Strategic Lanes & Waypoint Trails
 	for lane in LANES.values():
@@ -564,6 +573,7 @@ func _draw() -> void:
 		
 		# Strategic HP Bar
 		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 9)
+		draw_string(ThemeDB.fallback_font, hp_position + Vector2(0, -5), data.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("ffd6d1"))
 		draw_rect(Rect2(hp_position - Vector2(1, 1), Vector2(enemy_size.x + 2, 6)), Color("101f25"))
 		draw_rect(Rect2(hp_position, Vector2(enemy_size.x, 4)), Color("3a1c1a"))
 		draw_rect(Rect2(hp_position, Vector2(enemy_size.x * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("ef7068"))
