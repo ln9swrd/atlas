@@ -46,10 +46,10 @@ const SFX_STREAMS := {
 	"enemy_spawn": preload("res://sound/172206__fins__teleport.wav"),
 	"wave_start": preload("res://sound/g_get_ready.wav")
 }
-const BASE := Vector2(820, 122)
-const LANES := {"left": Vector2(70, 346), "right": Vector2(240, 602)}
-const ROBOT_SPOTS := {"LEFT": Vector2(380, 300), "CENTER": Vector2(560, 250), "RIGHT": Vector2(380, 430)}
-const SLOTS := {"L1": Vector2(180, 310), "L2": Vector2(350, 270), "L3": Vector2(540, 210), "R1": Vector2(250, 520), "R2": Vector2(410, 420), "R3": Vector2(570, 315)}
+const BASE := Vector2(1080, 122)
+const LANES := {"left": Vector2(70, 346), "right": Vector2(288, 794)}
+const ROBOT_SPOTS := {"LEFT": Vector2(480, 300), "CENTER": Vector2(720, 250), "RIGHT": Vector2(480, 540)}
+const SLOTS := {"L1": Vector2(220, 310), "L2": Vector2(450, 270), "L3": Vector2(720, 210), "R1": Vector2(300, 650), "R2": Vector2(520, 500), "R3": Vector2(760, 340)}
 const ROBOT_GROWTH_OPTIONS := {
 	"ability_area": {"name": "AREA ATTACK", "description": "Hits 3 or more nearby enemies."},
 	"ability_heavy_pierce": {"name": "HEAVY PIERCE", "description": "Targets Heavy and Giant enemies."}
@@ -115,10 +115,10 @@ func build_first_battle_map() -> void:
 			var mod_y := y % 4
 			ground.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_A7_MODULE, Vector2i(40 + mod_x, 16 + mod_y))
 	for x in range(1, MAP_TILES.x - 1):
-		var lower_start := 7.0
+		var lower_start := 9.0
 		var lower_span := float(MAP_TILES.x - 1) - lower_start
 		var lower_progress := clampf((float(x) - lower_start) / lower_span, 0.0, 1.0)
-		var lower_y := int(lerpf(17.0, 2.0, lower_progress))
+		var lower_y := int(lerpf(23.0, 2.0, lower_progress))
 		var upper_y := int(lerpf(9.0, 2.0, float(x) / float(MAP_TILES.x - 1)))
 		if x >= int(lower_start): road.set_cell(Vector2i(x, lower_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 		road.set_cell(Vector2i(x, upper_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
