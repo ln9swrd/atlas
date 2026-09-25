@@ -24,7 +24,8 @@ tile_set = ExtResource("2_tileset")
 
 [node name="RoadComposition" type="TileMapLayer" parent="." unique_id=1986543721]
 z_index = -9
-position = Vector2(274, 250)
+position = Vector2(562, 250)
+rotation = 1.570796
 tile_set = ExtResource("2_tileset")
 
 [node name="Boundary" type="TileMapLayer" parent="." unique_id=786790725]

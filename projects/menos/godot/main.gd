@@ -46,10 +46,10 @@ const SFX_STREAMS := {
 	"enemy_spawn": preload("res://sound/172206__fins__teleport.wav"),
 	"wave_start": preload("res://sound/g_get_ready.wav")
 }
-const BASE := Vector2(450, 600)
-const LANES := {"left": Vector2(270, 70), "right": Vector2(630, 70)}
-const ROBOT_SPOTS := {"LEFT": Vector2(320, 360), "CENTER": Vector2(450, 470), "RIGHT": Vector2(580, 360)}
-const SLOTS := {"L1": Vector2(130, 150), "L2": Vector2(285, 250), "L3": Vector2(390, 360), "R1": Vector2(770, 150), "R2": Vector2(615, 250), "R3": Vector2(510, 360)}
+const BASE := Vector2(820, 346)
+const LANES := {"left": Vector2(70, 218), "right": Vector2(70, 474)}
+const ROBOT_SPOTS := {"LEFT": Vector2(420, 218), "CENTER": Vector2(600, 346), "RIGHT": Vector2(420, 474)}
+const SLOTS := {"L1": Vector2(190, 154), "L2": Vector2(360, 186), "L3": Vector2(540, 218), "R1": Vector2(190, 538), "R2": Vector2(360, 506), "R3": Vector2(540, 474)}
 const ROBOT_GROWTH_OPTIONS := {
 	"ability_area": {"name": "AREA ATTACK", "description": "Hits 3 or more nearby enemies."},
 	"ability_heavy_pierce": {"name": "HEAVY PIERCE", "description": "Targets Heavy and Giant enemies."}
@@ -113,11 +113,11 @@ func build_first_battle_map() -> void:
 			var mod_x := x % 4
 			var mod_y := y % 4
 			ground.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_A7_MODULE, Vector2i(40 + mod_x, 16 + mod_y))
-	for y in range(1, MAP_TILES.y - 1):
-		var left_x := int(lerpf(8.0, 14.0, float(y) / float(MAP_TILES.y - 1)))
-		var right_x := int(lerpf(19.0, 14.0, float(y) / float(MAP_TILES.y - 1)))
-		road.set_cell(Vector2i(left_x, y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
-		road.set_cell(Vector2i(right_x, y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
+	for x in range(1, MAP_TILES.x - 1):
+		var top_y := int(lerpf(5.0, 9.0, float(x) / float(MAP_TILES.x - 1)))
+		var bottom_y := int(lerpf(13.0, 9.0, float(x) / float(MAP_TILES.x - 1)))
+		road.set_cell(Vector2i(x, top_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
+		road.set_cell(Vector2i(x, bottom_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 	for y in range(9):
 		for x in range(11):
 			road_composition.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_ROAD_COMPOSITION, Vector2i(x, y))
@@ -212,12 +212,12 @@ func move_enemies(delta: float) -> void:
 		if enemy.hp <= 0.0: continue
 		var data: Dictionary = DATA.ENEMIES[enemy.type]
 		var start: Vector2 = LANES[enemy.lane]
-		enemy.position.y += data.speed * delta
-		var progress: float = clampf((enemy.position.y - start.y) / (BASE.y - start.y), 0.0, 1.0)
-		enemy.position.x = lerp(start.x, BASE.x, progress)
+		enemy.position.x += data.speed * delta
+		var progress: float = clampf((enemy.position.x - start.x) / (BASE.x - start.x), 0.0, 1.0)
+		enemy.position.y = lerp(start.y, BASE.y, progress)
 		if enemy.type == "giant":
 			update_giant_robot_attack(delta, enemy)
-		if enemy.position.y >= BASE.y - 25.0:
+		if enemy.position.x >= BASE.x - 25.0:
 			base_hp -= data.base_damage; enemy.hp = 0.0
 			log_event("%s breached the base (-%d HP)." % [data.name, data.base_damage])
 			if base_hp <= 0.0:
@@ -264,7 +264,7 @@ func get_robot_auto_spot() -> String:
 		if enemy.hp <= 0.0: continue
 		var lane: String = enemy.lane
 		var start: Vector2 = LANES[lane]
-		var progress := clampf((enemy.position.y - start.y) / (BASE.y - start.y), 0.0, 1.0)
+		var progress := clampf((enemy.position.x - start.x) / (BASE.x - start.x), 0.0, 1.0)
 		lane_progress[lane] = maxf(float(lane_progress[lane]), progress)
 	if lane_progress.left < 0.0 and lane_progress.right < 0.0: return ""
 	if lane_progress.left >= 0.0 and lane_progress.right >= 0.0 and absf(lane_progress.left - lane_progress.right) < 0.12:
@@ -488,12 +488,12 @@ func _draw() -> void:
 
 	# Tactical 32x32 Grid Overlay over 28x18 battlefield (896x576)
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("102b31", 0.55))
-	draw_rect(Rect2(MAP_ORIGIN, Vector2(896, 160)), Color("ef7068", 0.08))
-	draw_rect(Rect2(MAP_ORIGIN + Vector2(0, 160), Vector2(896, 256)), Color("7ed6ce", 0.07))
-	draw_rect(Rect2(MAP_ORIGIN + Vector2(0, 416), Vector2(896, 160)), Color("f0a35a", 0.08))
+	draw_rect(Rect2(MAP_ORIGIN, Vector2(160, 576)), Color("ef7068", 0.08))
+	draw_rect(Rect2(MAP_ORIGIN + Vector2(160, 0), Vector2(576, 576)), Color("7ed6ce", 0.07))
+	draw_rect(Rect2(MAP_ORIGIN + Vector2(736, 0), Vector2(160, 576)), Color("f0a35a", 0.08))
 	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 24), "ENEMY APPROACH", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068", 0.85))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 184), "ENGAGEMENT ZONE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce", 0.85))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 440), "BASE DEFENSE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("f0a35a", 0.85))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(176, 24), "ENGAGEMENT ZONE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce", 0.85))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(752, 24), "BASE DEFENSE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("f0a35a", 0.85))
 	var grid_color := Color("7ed6ce", 0.28)
 	for gx in range(MAP_TILES.x + 1):
 		var x_pos := MAP_ORIGIN.x + float(gx * 32)
@@ -504,8 +504,8 @@ func _draw() -> void:
 
 	# Tactical Field Boundary
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "NORTH GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, MAP_PIXEL_SIZE.y - 16), "SOUTH GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "WEST GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
+	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, MAP_PIXEL_SIZE.y - 16), "WEST GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
 
 	# Strategic Lanes & Waypoint Trails
 	for lane in LANES.values():
