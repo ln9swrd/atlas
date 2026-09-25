@@ -183,6 +183,13 @@ function formatTime(seconds) {
 function startWave() {
   const isVictory = state.waveComplete && state.currentWave > WAVES.length;
   if (state.waveRunning || state.baseHp <= 0 || state.currentWave > WAVES.length || state.pendingAbilityChoice || isVictory) return;
+  if (!state.robot.active) {
+    state.robot.hp = ROBOT.hp;
+    state.robot.active = true;
+    state.robot.targetX = undefined;
+    state.robot.targetY = undefined;
+    addFeed(`Atlas-01 deployed at ${state.robot.targetSpot}.`, 'good');
+  }
   const wave = EXPERIMENT.active ? buildExperimentWave() : WAVES[state.currentWave - 1];
   state.spawnQueue = wave.spawns.flatMap(spawn => Array.from({ length: spawn.count }, (_, index) => ({ ...spawn, delay: index * spawn.interval })));
   state.waveClock = 0;
@@ -308,6 +315,32 @@ function getRobotHeavyTarget() {
   return eligible.sort((a, b) => b.x - a.x)[0] || null;
 }
 
+function getRobotAutoSpot() {
+  const living = state.enemies.filter(enemy => enemy.hp > 0);
+  if (!living.length) return null;
+  const laneProgress = { left: -1, right: -1 };
+  for (const enemy of living) {
+    const lane = MAP.lanes[enemy.lane];
+    const progress = Math.min(1, Math.max(0, (enemy.y - lane.y) / (MAP.base.y - lane.y)));
+    laneProgress[enemy.lane] = Math.max(laneProgress[enemy.lane], progress);
+  }
+  const left = laneProgress.left;
+  const right = laneProgress.right;
+  if (left >= 0 && right >= 0 && Math.abs(left - right) < 0.12) return 'CENTER';
+  return left > right ? 'LEFT' : 'RIGHT';
+}
+
+function moveRobotAutomatically() {
+  const spotId = getRobotAutoSpot();
+  if (!spotId) return;
+  const spot = MAP.robotSpots.find(item => item.id === spotId);
+  if (!spot || state.robot.targetSpot === spot.id) return;
+  state.robot.targetSpot = spot.id;
+  state.robot.targetX = spot.x;
+  state.robot.targetY = spot.y;
+  addFeed(`Atlas-01 moving to ${spot.id}.`, 'good');
+}
+
 function updateTowers(dt) {
   if (EXPERIMENT.active && EXPERIMENT.disableTowers) return;
   for (const tower of state.towers) {
@@ -324,6 +357,7 @@ function updateTowers(dt) {
 function updateRobot(dt) {
   const robot = state.robot;
   if (!robot.active || robot.hp <= 0) return;
+  if (state.waveRunning) moveRobotAutomatically();
   if (robot.targetX !== undefined && robot.targetY !== undefined) {
     const dx = robot.targetX - robot.x;
     const dy = robot.targetY - robot.y;
@@ -723,7 +757,7 @@ function buildTower(id) {
 function moveRobot(position) {
   const robot = state.robot; if (!robot.active || state.baseHp <= 0 || state.currentWave > WAVES.length) return;
   const spot = MAP.robotSpots.find(item => item.id === position.id); if (!spot || robot.targetSpot === spot.id) return;
-  robot.targetSpot = spot.id; robot.x = spot.x; robot.y = spot.y; addFeed(`Atlas-01 repositioned to ${spot.id}.`); updateUi();
+  robot.targetSpot = spot.id; robot.targetX = spot.x; robot.targetY = spot.y; addFeed(`Atlas-01 repositioned to ${spot.id}.`); updateUi();
 }
 
 canvas.addEventListener('click', event => {

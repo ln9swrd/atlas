@@ -63,6 +63,11 @@ const MAP_TILE_SOURCE_GROUND := 0
 const MAP_TILE_SOURCE_ROAD := 1
 const MAP_TILE_SOURCE_BOUNDARY := 2
 const MAP_TILE_SOURCE_ROAD_COMPOSITION := 3
+const MAP_TILE_SOURCE_GRASS := 4
+const MAP_TILE_SOURCE_A7_MODULE := 5
+const MAP_TILE_SOURCE_GROUND_DARK := 6
+const MAP_TILE_SOURCE_A7_CONCRETE := 7
+const VEGETATION_ANCHORS := [Vector2i(1, 7), Vector2i(21, 7), Vector2i(1, 13), Vector2i(21, 13)]
 enum RunState { READY, RUNNING, GROWTH, VICTORY, DEFEAT }
 
 var base_hp := 100.0
@@ -92,24 +97,32 @@ func _ready() -> void:
 
 func build_first_battle_map() -> void:
 	var ground: TileMapLayer = $Ground
+	var vegetation: TileMapLayer = $Vegetation
 	var road: TileMapLayer = $Road
 	var road_composition: TileMapLayer = $RoadComposition
 	var boundary: TileMapLayer = $Boundary
 	ground.clear()
+	vegetation.clear()
 	road.clear()
 	road_composition.clear()
 	boundary.clear()
 	for y in range(MAP_TILES.y):
 		for x in range(MAP_TILES.x):
-			ground.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_GROUND, Vector2i.ZERO)
+			var mod_x := x % 4
+			var mod_y := y % 4
+			ground.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_A7_MODULE, Vector2i(40 + mod_x, 16 + mod_y))
 	for y in range(1, MAP_TILES.y - 1):
 		var left_x := int(lerpf(8.0, 14.0, float(y) / float(MAP_TILES.y - 1)))
 		var right_x := int(lerpf(19.0, 14.0, float(y) / float(MAP_TILES.y - 1)))
 		road.set_cell(Vector2i(left_x, y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 		road.set_cell(Vector2i(right_x, y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
-	for y in range(8):
+	for y in range(9):
 		for x in range(11):
 			road_composition.set_cell(Vector2i(x, y), MAP_TILE_SOURCE_ROAD_COMPOSITION, Vector2i(x, y))
+	for anchor in VEGETATION_ANCHORS:
+		for y in range(6):
+			for x in range(6):
+				vegetation.set_cell(anchor + Vector2i(x, y), MAP_TILE_SOURCE_GRASS, Vector2i(x, y))
 
 func play_sfx(id: String) -> void:
 	if not SFX_STREAMS.has(id): return
@@ -150,6 +163,11 @@ func _process(delta: float) -> void:
 
 func start_wave() -> void:
 	if run_state != RunState.READY or wave_running or base_hp <= 0.0 or wave > DATA.WAVES.size(): return
+	if not robot.active:
+		robot.hp = DATA.ROBOT.hp
+		robot.active = true
+		robot_selected = false
+		log_event("ATLAS-01 deployed at %s." % robot.spot)
 	spawn_queue.clear()
 	var offset := 0.0
 	for group in DATA.WAVES[wave - 1].groups:
@@ -238,6 +256,37 @@ func get_robot_heavy_target() -> Dictionary:
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
 
+func get_robot_auto_spot() -> String:
+	var lane_progress := {"left": -1.0, "right": -1.0}
+	for enemy in enemies:
+		if enemy.hp <= 0.0: continue
+		var lane: String = enemy.lane
+		var start: Vector2 = LANES[lane]
+		var progress := clampf((enemy.position.y - start.y) / (BASE.y - start.y), 0.0, 1.0)
+		lane_progress[lane] = maxf(float(lane_progress[lane]), progress)
+	if lane_progress.left < 0.0 and lane_progress.right < 0.0: return ""
+	if lane_progress.left >= 0.0 and lane_progress.right >= 0.0 and absf(lane_progress.left - lane_progress.right) < 0.12:
+		return "CENTER"
+	return "LEFT" if lane_progress.left > lane_progress.right else "RIGHT"
+
+func move_robot_automatically(delta: float) -> void:
+	if not wave_running: return
+	var auto_spot := get_robot_auto_spot()
+	if auto_spot.is_empty(): return
+	if robot.spot != auto_spot:
+		robot.spot = auto_spot
+		robot["target_pos"] = ROBOT_SPOTS[auto_spot]
+		log_event("ATLAS-01 moving to %s." % auto_spot)
+	if not robot.has("target_pos"): return
+	var target_pos: Vector2 = robot.target_pos
+	var distance := robot.position.distance_to(target_pos)
+	var step := DATA.ROBOT.speed * delta
+	if distance <= step:
+		robot.position = target_pos
+		robot.erase("target_pos")
+	else:
+		robot.position += robot.position.direction_to(target_pos) * step
+
 func update_towers(delta: float) -> void:
 	for tower in towers:
 		tower.cooldown -= delta
@@ -249,6 +298,7 @@ func update_towers(delta: float) -> void:
 
 func update_robot(delta: float) -> void:
 	if not robot.active or robot.hp <= 0.0: return
+	move_robot_automatically(delta)
 	robot.attack -= delta; robot.area -= delta; robot.pierce -= delta
 	var target: Dictionary = get_robot_target()
 	var heavy: Dictionary = get_robot_heavy_target()

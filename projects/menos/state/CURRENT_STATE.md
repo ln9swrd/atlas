@@ -72,6 +72,28 @@ Keep the result bounded to the completed Godot PIE comparison. Do not infer posi
 - Preserved: Ground, 28x18 map generation, Base, Towers, Spawn positions, Player Start, camera/UI, and combat logic. No source image was modified.
 - Verification: `main.gd`, `main.tscn`, and `northbridge_tileset.tres` diagnostics report no errors; `git diff --check` passed. Godot Editor/PIE remains UNVERIFIED because no Godot executable is available.
 
+## Handoff - Forest grass TileMap decoration (2026-09-25)
+
+- Status: Added the supplied grass-like decoration using the existing `images/map/forest.png` source; no new image was generated. The matching isolated green object is referenced from region `Rect2(416, 128, 192, 192)` and divided into `32x32` TileSet cells.
+- Map placement: Added `Vegetation` TileMapLayer with four 6x6 clusters anchored at `(1,7)`, `(21,7)`, `(1,13)`, and `(21,13)`. The central Road/Base/Tower combat space is left open.
+- Preserved: Ground, Road/RoadComposition, 28x18 map, Base, Towers, Player Start, Enemy Spawn, camera/UI, and combat logic.
+- Verification: `main.gd`, `main.tscn`, and `northbridge_tileset.tres` diagnostics report no errors; `git diff --check` passed; the staged forest copy is byte-identical to `images/map/forest.png`. Godot Editor/PIE remains UNVERIFIED because no Godot executable is available.
+
+## Handoff - Basic 32px Ground texture (2026-09-25)
+
+- Status: Created the requested single `32x32` seamless outdoor grass Ground texture at `godot/assets/menos/maps/ground_basic_32.svg`.
+- Design: Uniform green meadow base with restrained dirt specks and short grass marks; no large objects, directional edges, borders, text, grid, or sheet layout. Decorative marks stay away from the tile boundary.
+- Integration: `northbridge_tileset.tres` Ground source now references this direct 32x32 texture. The previous `ground.png` 128px module reference was removed from the Ground source; the original image remains unchanged.
+- Preserved: 28x18 map, Road/RoadComposition, Base, Towers, Player Start, Enemy Spawn, camera/UI, and combat logic.
+- Verification: SVG and TileSet diagnostics report no errors; dimensions and `32x32` region settings were confirmed; `git diff --check` passed. Godot Editor/PIE remains UNVERIFIED because no Godot executable is available.
+
+## Handoff - Road3 TileMap asset (2026-09-25)
+
+- Status: Applied the supplied transparent `road3.png` to the RoadComposition TileMap source.
+- Mapping: Road3 composition region `Rect2(1184, 96, 352, 288)` is registered as `32x32` tiles and populated as an `11x9` TileMap composition. The previous `road.png` composition source is no longer used for RoadComposition.
+- Preserved: 28x18 logical map, Road gameplay lane coordinates, Ground, Base, Towers, Player Start, Enemy Spawn, camera/UI, and combat logic.
+- Verification: `main.gd` and `northbridge_tileset.tres` diagnostics report no errors; `git diff --check` passed; the staged road3 copy is byte-identical to `images/map/road3.png`. Godot Editor/PIE remains UNVERIFIED because no Godot executable is available.
+
 # CURRENT_STATE — menos
 
 ACTIVE_TARGET: menos

@@ -1,15 +1,14 @@
 [gd_resource type="TileSet" format=3 uid="uid://o1vv0mxnjaq6"]
 
-[ext_resource type="Texture2D" uid="uid://crnoy4hhjdr5y" path="res://assets/menos/maps/ground.png" id="1_ground"]
-[ext_resource type="Texture2D" uid="uid://dyv3yjurncg06" path="res://assets/menos/maps/road.png" id="2_road"]
+[ext_resource type="Texture2D" path="res://assets/menos/maps/road3.png" id="2_road"]
 [ext_resource type="Texture2D" uid="uid://k036v5x63blv" path="res://assets/menos/maps/map boundary.png" id="3_boundary"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ground_region"]
-atlas = ExtResource("1_ground")
-region = Rect2(1280, 512, 128, 128)
+[ext_resource type="Texture2D" path="res://assets/menos/maps/forest.png" id="4_forest"]
+[ext_resource type="Texture2D" path="res://assets/menos/maps/ground_basic_32.svg" id="5_ground_basic"]
+[ext_resource type="Texture2D" path="res://assets/menos/maps/a7.png" id="6_a7"]
+[ext_resource type="Texture2D" path="res://assets/menos/maps/ground.png" id="1_ground"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ground"]
-texture = SubResource("AtlasTexture_ground_region")
+texture = ExtResource("5_ground_basic")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
@@ -115,7 +114,7 @@ texture_region_size = Vector2i(128, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_road_composition"]
 atlas = ExtResource("2_road")
-region = Rect2(1184, 96, 352, 256)
+region = Rect2(1184, 96, 352, 288)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_road_composition"]
 texture = SubResource("AtlasTexture_road_composition")
@@ -208,6 +207,17 @@ texture_region_size = Vector2i(32, 32)
 8:7/0 = 0
 9:7/0 = 0
 10:7/0 = 0
+0:8/0 = 0
+1:8/0 = 0
+2:8/0 = 0
+3:8/0 = 0
+4:8/0 = 0
+5:8/0 = 0
+6:8/0 = 0
+7:8/0 = 0
+8:8/0 = 0
+9:8/0 = 0
+10:8/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_boundary"]
 texture = ExtResource("3_boundary")
@@ -223,9 +233,117 @@ texture_region_size = Vector2i(128, 128)
 2:1/0 = 0
 2:2/0 = 0
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_grass"]
+atlas = ExtResource("4_forest")
+region = Rect2(416, 128, 192, 192)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_grass"]
+texture = SubResource("AtlasTexture_grass")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a7_module"]
+texture = ExtResource("6_a7")
+texture_region_size = Vector2i(32, 32)
+40:16/0 = 0
+41:16/0 = 0
+42:16/0 = 0
+43:16/0 = 0
+40:17/0 = 0
+41:17/0 = 0
+42:17/0 = 0
+43:17/0 = 0
+40:18/0 = 0
+41:18/0 = 0
+42:18/0 = 0
+43:18/0 = 0
+40:19/0 = 0
+41:19/0 = 0
+42:19/0 = 0
+43:19/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ground_dark"]
+texture = ExtResource("1_ground")
+texture_region_size = Vector2i(32, 32)
+0:16/0 = 0
+1:16/0 = 0
+2:16/0 = 0
+3:16/0 = 0
+0:17/0 = 0
+1:17/0 = 0
+2:17/0 = 0
+3:17/0 = 0
+0:18/0 = 0
+1:18/0 = 0
+2:18/0 = 0
+3:18/0 = 0
+0:19/0 = 0
+1:19/0 = 0
+2:19/0 = 0
+3:19/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a7_concrete"]
+texture = ExtResource("6_a7")
+texture_region_size = Vector2i(32, 32)
+32:4/0 = 0
+33:4/0 = 0
+34:4/0 = 0
+35:4/0 = 0
+32:5/0 = 0
+33:5/0 = 0
+34:5/0 = 0
+35:5/0 = 0
+32:6/0 = 0
+33:6/0 = 0
+34:6/0 = 0
+35:6/0 = 0
+32:7/0 = 0
+33:7/0 = 0
+34:7/0 = 0
+35:7/0 = 0
+
 [resource]
 tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_ground")
 sources/1 = SubResource("TileSetAtlasSource_road")
 sources/2 = SubResource("TileSetAtlasSource_boundary")
 sources/3 = SubResource("TileSetAtlasSource_road_composition")
+sources/4 = SubResource("TileSetAtlasSource_grass")
+sources/5 = SubResource("TileSetAtlasSource_a7_module")
+sources/6 = SubResource("TileSetAtlasSource_ground_dark")
+sources/7 = SubResource("TileSetAtlasSource_a7_concrete")

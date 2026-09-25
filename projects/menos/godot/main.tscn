@@ -10,6 +10,10 @@ script = ExtResource("1")
 z_index = -10
 tile_set = ExtResource("2_tileset")
 
+[node name="Vegetation" type="TileMapLayer" parent="." unique_id=1986543722]
+z_index = -7
+tile_set = ExtResource("2_tileset")
+
 [node name="Road" type="TileMapLayer" parent="." unique_id=1242762384]
 visible = false
 z_index = -9
