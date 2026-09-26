@@ -2,8 +2,8 @@
   "campaign_id": "main_campaign",
   "name": "MENOS Operation",
   "stages": [
-    "stage_01",
-    "stage_02",
+	"stage_01",
+	"stage_02",
     "stage_03"
   ]
 }

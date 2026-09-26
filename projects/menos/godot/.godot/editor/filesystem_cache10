@@ -1,22 +1,22 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790409450
+::res://::1790421013
 data.gd::GDScript::5537870080328675552::1790302983::0::1::::MenosData<>RefCounted<><>0<>0<><>::
-main.gd::GDScript::3826669508318333139::1790391527::0::1::::<>Node2D<><>0<>0<><>::
-main.tscn::PackedScene::6409794179911717756::1790343374::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
+main.gd::GDScript::3826669508318333139::1790411445::0::1::::<>Node2D<><>0<>0<><>::
+main.tscn::PackedScene::6409794179911717756::1790410256::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
 ::res://assets/::1790251375
 ::res://assets/menos/::1790274467
 ::res://assets/menos/environment/::1790251375
 test_terrain_sheet.png::CompressedTexture2D::7377908154946531028::1790251375::1790251375::1::::<><><>0<>0<>f6b280ffb9f6b474d038d4e3b42ad01e<>res://.godot/imported/test_terrain_sheet.png-c14b8c9699a62aca901cd9ef2e7a72ff.ctex::
 tile_bask_floor.tres::AtlasTexture::-1::1790251375::0::1::::<><><>0<>0<><>::res://assets/menos/environment/test_terrain_sheet.png
 tile_dark_floor.tres::AtlasTexture::-1::1790251375::0::1::::<><><>0<>0<><>::res://assets/menos/environment/test_terrain_sheet.png
-::res://assets/menos/maps/::1790388556
+::res://assets/menos/maps/::1790410256
 a7.png::CompressedTexture2D::4214750965409308716::1790251376::1790299717::1::::<><><>0<>0<>5f0f7b3454015cdda6827a9cef37925f<>res://.godot/imported/a7.png-2098404f0b9928097bf4389ea5897fd2.ctex::
 forest.png::CompressedTexture2D::7271396624408163879::1790272560::1790277484::1::::<><><>0<>0<>632b427208992c22b6acb3309bbe0bf4<>res://.godot/imported/forest.png-171143161b01072368f691b912939ff7.ctex::
 ground4.png::CompressedTexture2D::2454201290405000494::1790387677::1790388556::1::::<><><>0<>0<>bd3e96bed755c51243fb4506d2245f82<>res://.godot/imported/ground4.png-f219fa4a2d03dcef348a3cd0376d4740.ctex::
 ground.png::CompressedTexture2D::5993783051308976416::1790272451::1790274568::1::::<><><>0<>0<>f5a92f3085c9446487d21f9c041c1ce6<>res://.godot/imported/ground.png-6a1ead9ba4b2e09759f90d97b2a463cc.ctex::
 ground_basic_32.svg::CompressedTexture2D::1624442912138883870::1790278305::1790278378::1::::<><><>0<>0<>a802c495a2eeff7633ff502f8899c3c1<>res://.godot/imported/ground_basic_32.svg-a85e55b09a2ee0bb2769d3b2fbab8df7.ctex::
 map boundary.png::CompressedTexture2D::755254466062359743::1790273879::1790274568::1::::<><><>0<>0<>581150f22aff74af7163071a336f6d26<>res://.godot/imported/map boundary.png-99916eacee4cb8249c3008634144394c.ctex::
-northbridge_tileset.tres::TileSet::1037631523742254135::1790388483::0::1::::<><><>0<>0<><>::uid://crnoy4hhjdr5y::::res://assets/menos/maps/ground.png<>uid://dqvle15alh37p::::res://assets/menos/maps/road3.png<>uid://k036v5x63blv::::res://assets/menos/maps/map boundary.png<>uid://dbuk3tc6ieukd::::res://assets/menos/maps/forest.png<>uid://xe5lqckk1bkw::::res://assets/menos/maps/ground_basic_32.svg<>uid://b1bwlkrgxys25::::res://assets/menos/maps/a7.png<>res://assets/menos/maps/ground4.png
+northbridge_tileset.tres::TileSet::1037631523742254135::1790410256::0::1::::<><><>0<>0<><>::uid://crnoy4hhjdr5y::::res://assets/menos/maps/ground.png<>uid://dqvle15alh37p::::res://assets/menos/maps/road3.png<>uid://k036v5x63blv::::res://assets/menos/maps/map boundary.png<>uid://dbuk3tc6ieukd::::res://assets/menos/maps/forest.png<>uid://xe5lqckk1bkw::::res://assets/menos/maps/ground_basic_32.svg<>uid://b1bwlkrgxys25::::res://assets/menos/maps/a7.png<>uid://ba73lphisd33o::::res://assets/menos/maps/ground4.png
 road2.png::CompressedTexture2D::1400819897129809030::1790278933::1790279238::1::::<><><>0<>0<>9516afa86d28536fa6eeb7e89cbd2b79<>res://.godot/imported/road2.png-23966a4445f51a2f3a0ee0499f9d1118.ctex::
 road3.png::CompressedTexture2D::8326311924185371815::1790279119::1790279238::1::::<><><>0<>0<>ee644ed9a21244c3f45cab5d0e6a0c49<>res://.godot/imported/road3.png-d2931a5d11bbea8120fdbf9d38ca245a.ctex::
 road.png::CompressedTexture2D::8888889670474614793::1790272893::1790274568::1::::<><><>0<>0<>ab460dd8648d92714cb3f7edcc5e04d8<>res://.godot/imported/road.png-a12f3e71831a7d56f91c43fa3b7a3192.ctex::
@@ -49,19 +49,24 @@ tower_slot_available.png::CompressedTexture2D::8325176799815910921::1790251375::
 tower_slot_empty.png::CompressedTexture2D::4713943064399739930::1790251375::1790251375::1::::<><><>0<>0<>207f8cde5879838f678b060f1d5eaef1<>res://.godot/imported/tower_slot_empty.png-5424ed95c460d3d456f2d3da15179f94.ctex::
 tower_slot_selected.png::CompressedTexture2D::221656078746077824::1790251375::1790251375::1::::<><><>0<>0<>6db4588c112d396fbc796df754ddad32<>res://.godot/imported/tower_slot_selected.png-5b8b5d8cf2bd58e3a0afc4753f268472.ctex::
 ::res://content/::1790391253
-::res://content/campaign/::1790391253
-main_campaign.json::JSON::-1::1790391253::0::1::::<><><>0<>0<><>::
-::res://content/maps/::1790391243
-map_01.json::JSON::-1::1790391243::0::1::::<><><>0<>0<><>::
-::res://content/stages/::1790391247
+::res://content/campaign/::1790420733
+main_campaign.json::JSON::-1::1790420733::0::1::::<><><>0<>0<><>::
+::res://content/maps/::1790418064
+map_01.json::JSON::-1::1790410298::0::1::::<><><>0<>0<><>::
+map_01_src.json::JSON::-1::1790410256::0::1::::<><><>0<>0<><>::
+map_02.json::JSON::-1::1790418064::0::1::::<><><>0<>0<><>::
+map_03.json::JSON::-1::1790418064::0::1::::<><><>0<>0<><>::
+::res://content/stages/::1790411465
 stage_01.json::JSON::-1::1790391539::0::1::::<><><>0<>0<><>::
-::res://editor/::1790391391
+stage_02.json::JSON::-1::1790418064::0::1::::<><><>0<>0<><>::
+stage_03.json::JSON::-1::1790418064::0::1::::<><><>0<>0<><>::
+::res://editor/::1790410298
 atlas_palette.gd::GDScript::2899618078452621397::1790392323::0::1::::AtlasPalette<>Control<><>0<>0<><>::
 editor_canvas.gd::GDScript::8515960973698181157::1790392935::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
 map_editor.gd::GDScript::612161265932897584::1790390052::0::1::::MapEditorMain<>Control<><>0<>0<><>::
-map_editor.tscn::PackedScene::-1::1790390062::0::1::::<><><>0<>0<><>::res://editor/map_editor.gd<>res://editor/editor_canvas.gd<>res://editor/atlas_palette.gd
-::res://map_data/::1790342281
-northbridge_sector_01.json::JSON::-1::1790342281::0::1::::<><><>0<>0<><>::
+map_editor.tscn::PackedScene::56458622543686955::1790410298::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>uid://bhkujy0mt22xt::::res://editor/atlas_palette.gd
+::res://map_data/::1790409919
+northbridge_sector_01.json::JSON::-1::1790409919::0::1::::<><><>0<>0<><>::
 ::res://scripts/::1790391578
 map_loader.gd::GDScript::6280192720105538762::1790391835::0::1::::MapLoader<>RefCounted<><>0<>0<><>::
 stage_loader.gd::GDScript::58160843585444806::1790391830::0::1::::StageLoader<>RefCounted<><>0<>0<><>::
@@ -75,3 +80,6 @@ Error or failed.mp3::AudioStreamMP3::6280782423523351320::1790251375::1790251375
 g_get_ready.wav::AudioStreamWAV::5644589480532241744::1790251375::1790251375::1::::<><><>0<>0<>75affcd20400a1f78149e68539e99f2e<>res://.godot/imported/g_get_ready.wav-85c1cfa68cde54ce3b1ddc68a39b16f2.sample::
 Menu Choice.mp3::AudioStreamMP3::7345108534736750487::1790251375::1790251375::1::::<><><>0<>0<>8deb5580026b8702251e843e3fdd2bae<>res://.godot/imported/Menu Choice.mp3-e5897ebae8702b072c2687312074ebd9.mp3str::
 sfx_ui_click_1.mp3::AudioStreamMP3::2135319093388637477::1790251375::1790251375::1::::<><><>0<>0<>28934a5e272b3ec123fc3c7764cb7cc5<>res://.godot/imported/sfx_ui_click_1.mp3-d266c5250a885cfcdf341d1659dd8849.mp3str::
+::res://ui/::1790416264
+title_screen.gd::GDScript::113677957320442582::1790416426::0::1::::<>Control<><>0<>0<><>::
+title_screen.tscn::PackedScene::-1::1790416426::0::1::::<><><>0<>0<><>::res://ui/title_screen.gd

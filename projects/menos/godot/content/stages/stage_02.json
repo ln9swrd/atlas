@@ -2,7 +2,7 @@
   "stage_id": "stage_02",
   "order": 2,
   "name": "Northbridge Sector 02",
-  "map_file": "res://content/maps/map_01.json",
+  "map_file": "res://content/maps/map_02.json",
   "balance": {
     "initial_gold": 180,
     "base_hp": 100

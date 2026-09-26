@@ -230,3 +230,18 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Input: Native Button `pressed` signals handle mouse/UI activation; Enter and keypad Enter start the campaign. Quit calls `get_tree().quit()`.
 - Verification: Godot 4.7.2 headless editor load exited `0`; `git diff --check` passed. Editor visual inspection, runtime, and PIE were not verified.
 - Next: Open the Godot project, run F5, verify the title screen layout, Start Campaign scene transition, Enter shortcut, and Quit button. F6 should still run `main.tscn` directly.
+
+## Handoff — Independent campaign stage maps (2026-09-26)
+
+- Status: Stage 2 and Stage 3 now reference separate map JSON files. Each is an independent copy of the Stage 1 layout with its own map ID and display name; unique terrain design remains future work.
+- Changed: Added `godot/content/maps/map_02.json` and `map_03.json`; updated only the `map_file` references in `stage_02.json` and `stage_03.json`. `map_01.json` and Stage 1 configuration are unchanged.
+- Verification: JSON syntax, shared-layout content, stage-to-map references, and `git diff --check` passed; Godot 4.7.2 headless editor load exited `0`. Runtime/PIE remains unverified.
+- Next: Design and verify distinct Stage 2/3 layouts before treating them as unique battlefields.
+
+## Handoff — Map editor JSON file dialogs (2026-09-26)
+
+- Status: Load JSON and Save JSON buttons now open separate Godot filesystem dialogs filtered to JSON files.
+- Changed: `godot/editor/map_editor.gd` and `godot/editor/map_editor.tscn`; opening a selected path loads it, saving a selected path updates the active path and saves the current canvas data. Dialog cancellation has no connected action.
+- Path behavior: Both dialogs default to the directory and filename derived from the active map path; `res://` and `user://` paths are globalized for filesystem browsing.
+- Verification: `git diff --check` passed; dialog modes, filters, signals, and path setup were inspected. Godot headless parsing was skipped because the pre-existing `.godot` editor files are already modified and should not be disturbed; runtime/PIE remains unverified.
+- Next: In Godot Editor, open an existing JSON map and save to a new JSON file to verify both file dialogs end to end.

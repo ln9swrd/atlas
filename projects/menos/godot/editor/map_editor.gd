@@ -7,6 +7,8 @@ extends Control
 @onready var lbl_position: Label = $MainLayout/Inspector/VBox/LblPosition
 @onready var lbl_tile_coords: Label = $MainLayout/Inspector/VBox/LblTileCoords
 @onready var lbl_status: Label = $BottomBar/HBox/LblStatus
+@onready var open_map_dialog: FileDialog = $OpenMapDialog
+@onready var save_map_dialog: FileDialog = $SaveMapDialog
 @onready var lbl_current_tool: Label = $MainLayout/Toolbox/VBox/LblCurrentTool
 @onready var lbl_selected_tile: Label = $MainLayout/Toolbox/VBox/LblSelectedTile
 @onready var option_layer: OptionButton = $MainLayout/Toolbox/VBox/OptionLayer
@@ -62,6 +64,13 @@ func save_map() -> void:
 		update_status("SAVED map successfully to: " + current_map_path)
 	else:
 		update_status("FAILED to save map to: " + current_map_path)
+
+func set_dialog_path(dialog: FileDialog) -> void:
+	var global_map_path := current_map_path
+	if global_map_path.begins_with("res://") or global_map_path.begins_with("user://"):
+		global_map_path = ProjectSettings.globalize_path(global_map_path)
+	dialog.current_dir = global_map_path.get_base_dir()
+	dialog.current_file = global_map_path.get_file()
 
 func update_status(text: String) -> void:
 	if lbl_status:
@@ -168,7 +177,16 @@ func _on_option_layer_item_selected(index: int) -> void:
 		update_status("Active Layer: " + selected_layer)
 
 func _on_btn_load_pressed() -> void:
-	load_map(current_map_path)
+	set_dialog_path(open_map_dialog)
+	open_map_dialog.popup_centered(Vector2i(900, 640))
 
 func _on_btn_save_pressed() -> void:
+	set_dialog_path(save_map_dialog)
+	save_map_dialog.popup_centered(Vector2i(900, 640))
+
+func _on_open_map_file_selected(path: String) -> void:
+	load_map(path)
+
+func _on_save_map_file_selected(path: String) -> void:
+	current_map_path = path
 	save_map()

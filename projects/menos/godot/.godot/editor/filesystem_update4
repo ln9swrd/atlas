@@ -1,7 +1,2 @@
 res://map_data/northbridge_sector_01.json
-res://content/maps/map_01.json
-res://main.tscn
-res://assets/menos/maps/northbridge_tileset.tres
-res://content/maps/map_01_src.json
-res://editor/map_editor.tscn
-res://main.gd
+res://editor/map_editor.gd
