@@ -188,6 +188,24 @@ text = "Position: -"
 layout_mode = 2
 text = "Tile: -"
 
+[node name="HSeparatorCatalog" type="HSeparator" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+
+[node name="LblAssetCatalog" type="Label" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = " ASSET CATALOG"
+
+[node name="AssetList" type="ItemList" parent="MainLayout/Inspector/VBox"]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LblAssetDetails" type="Label" parent="MainLayout/Inspector/VBox"]
+custom_minimum_size = Vector2(0, 132)
+layout_mode = 2
+text = "Select a catalog asset to place it."
+autowrap_mode = 2
+
 [node name="BottomBar" type="PanelContainer" parent="." unique_id=1815266710]
 layout_mode = 1
 anchors_preset = 12
@@ -233,6 +251,8 @@ access = 2
 filters = PackedStringArray("*.json ; JSON Maps")
 
 [connection signal="item_selected" from="MainLayout/Toolbox/VBox/OptionLayer" to="." method="_on_option_layer_item_selected"]
+[connection signal="item_selected" from="MainLayout/Inspector/VBox/AssetList" to="." method="_on_asset_list_item_selected"]
+[connection signal="item_clicked" from="MainLayout/Inspector/VBox/AssetList" to="." method="_on_asset_list_item_clicked"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnSelect" to="." method="_on_btn_select_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnErase" to="." method="_on_btn_erase_pressed"]
 [connection signal="value_changed" from="MainLayout/Toolbox/VBox/AtlasPicker/SpinX" to="." method="_on_spin_atlas_x_value_changed"]

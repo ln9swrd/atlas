@@ -26,6 +26,7 @@ var active_atlas_y := 0
 var catalog_entries: Array[Dictionary] = []
 
 func _ready() -> void:
+	asset_catalog_window.close_requested.connect(load_asset_catalog)
 	if canvas:
 		canvas.object_selected.connect(_on_object_selected)
 		canvas.map_data_changed.connect(_on_map_data_changed)
@@ -212,6 +213,9 @@ func _on_asset_list_item_selected(index: int) -> void:
 	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint[0]), str(footprint[1])]
 	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
 	update_selected_tile_label("Click canvas to place selected catalog asset")
+
+func _on_asset_list_item_clicked(index: int, _at_position: Vector2, _mouse_button_index: int) -> void:
+	_on_asset_list_item_selected(index)
 
 func _on_btn_load_pressed() -> void:
 	set_dialog_path(open_map_dialog)

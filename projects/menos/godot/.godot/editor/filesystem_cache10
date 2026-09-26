@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790428001
+::res://::1790431429
 data.gd::GDScript::5537870080328675552::1790302983::0::1::::MenosData<>RefCounted<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790411445::0::1::::<>Node2D<><>0<>0<><>::
 main.tscn::PackedScene::6409794179911717756::1790410256::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
@@ -52,7 +52,7 @@ tower_slot_selected.png::CompressedTexture2D::221656078746077824::1790251375::17
 ::res://content/campaign/::1790420733
 main_campaign.json::JSON::-1::1790420733::0::1::::<><><>0<>0<><>::
 ::res://content/editor/::1790423534
-asset_catalog.json::JSON::-1::1790423534::0::1::::<><><>0<>0<><>::
+asset_catalog.json::JSON::-1::1790428104::0::1::::<><><>0<>0<><>::
 ::res://content/maps/::1790418064
 map_01.json::JSON::-1::1790410298::0::1::::<><><>0<>0<><>::
 map_01_src.json::JSON::-1::1790410256::0::1::::<><><>0<>0<><>::
@@ -67,9 +67,9 @@ asset_catalog_editor.gd::GDScript::199735142467977770::1790423699::0::1::::<>Win
 asset_catalog_editor.tscn::PackedScene::-1::1790423282::0::1::::<><><>0<>0<><>::res://editor/asset_catalog_editor.gd
 asset_region_view.gd::GDScript::7416892912445805548::1790423534::0::1::::<>Control<><>0<>0<><>::
 atlas_palette.gd::GDScript::2899618078452621397::1790392323::0::1::::AtlasPalette<>Control<><>0<>0<><>::
-editor_canvas.gd::GDScript::8515960973698181157::1790392935::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
-map_editor.gd::GDScript::612161265932897584::1790423213::0::1::::MapEditorMain<>Control<><>0<>0<><>::
-map_editor.tscn::PackedScene::56458622543686955::1790423202::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>uid://bhkujy0mt22xt::::res://editor/atlas_palette.gd<>res://editor/asset_catalog_editor.tscn
+editor_canvas.gd::GDScript::8515960973698181157::1790428602::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
+map_editor.gd::GDScript::612161265932897584::1790428786::0::1::::MapEditorMain<>Control<><>0<>0<><>::
+map_editor.tscn::PackedScene::56458622543686955::1790428786::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>uid://bhkujy0mt22xt::::res://editor/atlas_palette.gd<>res://editor/asset_catalog_editor.tscn
 ::res://images/::1790426035
 atlas_attack.png::CompressedTexture2D::857607076531683691::1790261184::1790426035::1::::<><><>0<>0<>d7564810a4da1d116c3d2fa1407b943b<>res://.godot/imported/atlas_attack.png-d752b0a4d5f6037fc30da2f1608fd106.ctex::
 atlas_idle.png::CompressedTexture2D::564740216338375605::1790261184::1790426035::1::::<><><>0<>0<>1cfb2c377f46deeb5f9d3d10b1c068cd<>res://.godot/imported/atlas_idle.png-9c6a8bbb64a16c144e148049fc3ab045.ctex::
@@ -179,7 +179,7 @@ a8.png::CompressedTexture2D::4703023999282690026::1790251376::1790426035::1::::<
 ::res://map_data/::1790421271
 northbridge_sector_01.json::JSON::-1::1790421271::0::1::::<><><>0<>0<><>::
 ::res://scripts/::1790391578
-map_loader.gd::GDScript::6280192720105538762::1790391835::0::1::::MapLoader<>RefCounted<><>0<>0<><>::
+map_loader.gd::GDScript::6280192720105538762::1790428495::0::1::::MapLoader<>RefCounted<><>0<>0<><>::
 stage_loader.gd::GDScript::58160843585444806::1790391830::0::1::::StageLoader<>RefCounted<><>0<>0<><>::
 stage_manager.gd::GDScript::5752393329900857257::1790391471::0::1::::StageManager<>RefCounted<><>0<>0<><>::
 ::res://sound/::1790251375

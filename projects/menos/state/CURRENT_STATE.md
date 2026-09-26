@@ -253,3 +253,11 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Catalog schema: `schema_version` plus `assets[]` records with stable `asset_id`, `kind`, `group`, `display_name`, project `source_path`, `source_rect_px`; Objects also carry `footprint_tiles`. Tile and Object group options follow the requested lists.
 - Verification: Static source/scene/schema inspection and `git diff --check`; Godot was not launched to avoid changing the pre-existing dirty `.godot` editor metadata. Runtime/PIE remains unverified.
 - Next: Open the Map Editor, register a Tile and Object from project images, save/reopen the catalog, and verify region pixel coordinates and editing actions. Catalog data is not yet connected to map placement.
+
+## Handoff — Map editor catalog placement (2026-09-26)
+
+- Status: Map Editor now reads the saved asset catalog into an Inspector list. Selecting a catalog Tile paints its stable `asset_id` on the active layer; catalog Objects are placed as separate records with pixel position and tile footprint. Canvas rendering resolves each ID through the current catalog source path and pixel rectangle.
+- Persistence: Existing atlas tile arrays remain supported. MapLoader preserves `tiles` and now round-trips optional `objects[]`; legacy maps without objects load as empty lists.
+- Changed in this pass: `godot/editor/map_editor.gd`, `map_editor.tscn`, `editor_canvas.gd`, and `scripts/map_loader.gd`. The Map Editor reloads its catalog when the catalog window closes.
+- Verification: Static source/scene/data-path review and `git diff --check`; Godot parser, Editor, and PIE were not run because `.godot` metadata is already dirty. Image-resource import/render and save-reload behavior remain runtime-unverified.
+- Next: Open Map Editor, select the saved catalog Tile, place/save/reload it, then repeat with an Object entry and verify its footprint and rendering.
