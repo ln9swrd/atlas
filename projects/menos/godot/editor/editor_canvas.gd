@@ -411,3 +411,17 @@ func draw_tile_cell(dest_pos: Vector2, source_id: int, atlas_coords: Vector2i, _
 	# Fallback colored rect if texture region is unavailable
 	var col := Color("3a7d44") if source_id == 0 else (Color("5a6275") if source_id == 3 else Color("2b9e66"))
 	draw_rect(rect, col)
+
+func draw_catalog_tile(dest_pos: Vector2, asset_id: String) -> void:
+	var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
+	var texture := get_catalog_texture(asset_id)
+	if asset.is_empty() or texture == null:
+		draw_rect(Rect2(dest_pos, Vector2(32, 32)), Color("693d52"))
+		return
+	draw_texture_rect_region(texture, Rect2(dest_pos, Vector2(32, 32)), catalog_source_rect(asset))
+
+func catalog_source_rect(asset: Dictionary) -> Rect2:
+	var values: Array = asset.get("source_rect_px", [0, 0, 32, 32])
+	if values.size() < 4:
+		return Rect2(0, 0, 32, 32)
+	return Rect2(float(values[0]), float(values[1]), float(values[2]), float(values[3]))
