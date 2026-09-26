@@ -13,6 +13,9 @@ var edit_mode := "SELECT" # SELECT, PAINT, ERASE
 var active_layer := "Ground" # Ground, Vegetation, RoadComposition
 var selected_tile_source_id := 0
 var selected_tile_atlas_coords := Vector2i.ZERO
+var selected_catalog_asset: Dictionary = {}
+var catalog_assets_by_id: Dictionary = {}
+var catalog_texture_cache: Dictionary = {}
 
 var camera_zoom := 1.0
 var camera_offset := Vector2.ZERO
@@ -39,11 +42,40 @@ func set_active_layer(layer_name: String) -> void:
 	queue_redraw()
 
 func set_selected_tile(source_id: int, atlas_coords: Vector2i) -> void:
+	selected_catalog_asset.clear()
 	selected_tile_source_id = source_id
 	selected_tile_atlas_coords = atlas_coords
 	edit_mode = "PAINT"
 	select_object({})
 	queue_redraw()
+
+func set_catalog_assets(entries: Array[Dictionary]) -> void:
+	catalog_assets_by_id.clear()
+	catalog_texture_cache.clear()
+	for entry in entries:
+		var asset_id := str(entry.get("asset_id", ""))
+		if not asset_id.is_empty():
+			catalog_assets_by_id[asset_id] = entry.duplicate(true)
+	queue_redraw()
+
+func set_catalog_asset(entry: Dictionary) -> void:
+	selected_catalog_asset = entry.duplicate(true)
+	edit_mode = "PAINT"
+	select_object({})
+	queue_redraw()
+
+func get_catalog_texture(asset_id: String) -> Texture2D:
+	var entry: Dictionary = catalog_assets_by_id.get(asset_id, {})
+	if entry.is_empty():
+		return null
+	var source_path := str(entry.get("source_path", ""))
+	if catalog_texture_cache.has(source_path):
+		return catalog_texture_cache[source_path]
+	var loaded := ResourceLoader.load(source_path)
+	if loaded is Texture2D:
+		catalog_texture_cache[source_path] = loaded
+		return loaded
+	return null
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -124,6 +156,13 @@ func paint_tile_at(world_pos: Vector2) -> void:
 	if cell.x < 0 or cell.x >= map_tiles.x or cell.y < 0 or cell.y >= map_tiles.y:
 		return
 
+	if not selected_catalog_asset.is_empty():
+		if str(selected_catalog_asset.get("kind", "tile")) == "object":
+			place_catalog_object(cell)
+		else:
+			paint_catalog_tile(cell)
+		return
+
 	if not map_data.has("tiles"):
 		map_data["tiles"] = {}
 	if not map_data["tiles"].has(active_layer):
@@ -137,7 +176,40 @@ func paint_tile_at(world_pos: Vector2) -> void:
 		map_data_changed.emit()
 		queue_redraw()
 
+func paint_catalog_tile(cell: Vector2i) -> void:
+	if not map_data.has("tiles"):
+		map_data["tiles"] = {}
+	if not map_data["tiles"].has(active_layer):
+		map_data["tiles"][active_layer] = {}
+	var key := "%d,%d" % [cell.x, cell.y]
+	var tile_info := {"asset_id": str(selected_catalog_asset.get("asset_id", ""))}
+	if map_data["tiles"][active_layer].get(key) != tile_info:
+		map_data["tiles"][active_layer][key] = tile_info
+		map_data_changed.emit()
+		queue_redraw()
+
+func place_catalog_object(cell: Vector2i) -> void:
+	var footprint: Array = selected_catalog_asset.get("footprint_tiles", [1, 1])
+	var width := maxi(1, int(footprint[0]))
+	var height := maxi(1, int(footprint[1]))
+	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	if cell.x + width > map_tiles.x or cell.y + height > map_tiles.y:
+		return
+	if not map_data.has("objects"):
+		map_data["objects"] = []
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var position := origin + Vector2(cell.x * 32, cell.y * 32)
+	map_data["objects"].append({
+		"asset_id": str(selected_catalog_asset.get("asset_id", "")),
+		"position": [position.x, position.y],
+		"footprint_tiles": [width, height]
+	})
+	map_data_changed.emit()
+	queue_redraw()
+
 func erase_tile_at(world_pos: Vector2) -> void:
+	if erase_catalog_object_at(world_pos):
+		return
 	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
 	var cell := get_cell_coords(world_pos)
 
@@ -153,7 +225,41 @@ func erase_tile_at(world_pos: Vector2) -> void:
 		map_data_changed.emit()
 		queue_redraw()
 
+func erase_catalog_object_at(world_pos: Vector2) -> bool:
+	var objects: Array = map_data.get("objects", [])
+	for index in range(objects.size() - 1, -1, -1):
+		var object_data: Dictionary = objects[index]
+		var position := object_position(object_data)
+		var footprint: Array = object_data.get("footprint_tiles", [1, 1])
+		var object_rect := Rect2(position, Vector2(int(footprint[0]), int(footprint[1])) * 32.0)
+		if object_rect.has_point(world_pos):
+			objects.remove_at(index)
+			map_data["objects"] = objects
+			map_data_changed.emit()
+			queue_redraw()
+			return true
+	return false
+
+func object_position(object_data: Dictionary) -> Vector2:
+	var raw_position: Variant = object_data.get("position", [0.0, 0.0])
+	if raw_position is Vector2:
+		return raw_position
+	if raw_position is Array and raw_position.size() >= 2:
+		return Vector2(float(raw_position[0]), float(raw_position[1]))
+	return Vector2.ZERO
+
 func pick_object_at(point: Vector2) -> void:
+	var objects: Array = map_data.get("objects", [])
+	for object_index in range(objects.size() - 1, -1, -1):
+		var object_data: Dictionary = objects[object_index]
+		var asset_id := str(object_data.get("asset_id", ""))
+		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
+		var footprint: Array = object_data.get("footprint_tiles", asset.get("footprint_tiles", [1, 1]))
+		var object_rect := Rect2(object_position(object_data), Vector2(int(footprint[0]), int(footprint[1])) * 32.0)
+		if object_rect.has_point(point):
+			select_object({"type": "Catalog Object", "id": asset_id, "position": object_position(object_data), "object_index": object_index})
+			return
+
 	# Check Goal
 	if map_data.has("base"):
 		var base_pos: Vector2 = map_data["base"]
@@ -216,15 +322,29 @@ func _draw() -> void:
 					continue
 				var cx := parts[0].to_int()
 				var cy := parts[1].to_int()
-				var tile_val: Array = layer_tiles[key]
-				if tile_val.size() < 3:
+				var dest_pos := origin + Vector2(cx * 32, cy * 32)
+				var tile_val: Variant = layer_tiles[key]
+				if tile_val is Dictionary:
+					draw_catalog_tile(dest_pos, str(tile_val.get("asset_id", "")))
+					continue
+				if not tile_val is Array or tile_val.size() < 3:
 					continue
 				var source_id := int(tile_val[0])
 				var atlas_x := int(tile_val[1])
 				var atlas_y := int(tile_val[2])
-
-				var dest_pos := origin + Vector2(cx * 32, cy * 32)
 				draw_tile_cell(dest_pos, source_id, Vector2i(atlas_x, atlas_y), layer_name)
+
+	for object_data in map_data.get("objects", []):
+		if not object_data is Dictionary:
+			continue
+		var asset_id := str(object_data.get("asset_id", ""))
+		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
+		var texture := get_catalog_texture(asset_id)
+		if asset.is_empty() or texture == null:
+			continue
+		var footprint: Array = object_data.get("footprint_tiles", asset.get("footprint_tiles", [1, 1]))
+		var destination := Rect2(object_position(object_data), Vector2(int(footprint[0]), int(footprint[1])) * 32.0)
+		draw_texture_rect_region(texture, destination, catalog_source_rect(asset))
 
 	# Grid Lines (32x32)
 	var grid_color := Color("7ed6ce", 0.25)

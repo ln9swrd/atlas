@@ -6,6 +6,8 @@ extends Control
 @onready var lbl_selected_type: Label = $MainLayout/Inspector/VBox/LblSelectedType
 @onready var lbl_position: Label = $MainLayout/Inspector/VBox/LblPosition
 @onready var lbl_tile_coords: Label = $MainLayout/Inspector/VBox/LblTileCoords
+@onready var asset_list: ItemList = $MainLayout/Inspector/VBox/AssetList
+@onready var lbl_asset_details: Label = $MainLayout/Inspector/VBox/LblAssetDetails
 @onready var lbl_status: Label = $BottomBar/HBox/LblStatus
 @onready var open_map_dialog: FileDialog = $OpenMapDialog
 @onready var save_map_dialog: FileDialog = $SaveMapDialog
@@ -21,6 +23,7 @@ var current_map_path := "res://map_data/northbridge_sector_01.json"
 var current_map_data := {}
 var active_atlas_x := 0
 var active_atlas_y := 0
+var catalog_entries: Array[Dictionary] = []
 
 func _ready() -> void:
 	if canvas:
@@ -31,7 +34,28 @@ func _ready() -> void:
 		atlas_palette.tile_selected.connect(_on_atlas_palette_tile_selected)
 
 	setup_layer_options()
+	load_asset_catalog()
 	load_map(current_map_path)
+
+func load_asset_catalog() -> void:
+	var file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
+	if file == null:
+		update_status("Could not open asset catalog")
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary or not parsed.get("assets", []) is Array:
+		update_status("Invalid asset catalog JSON")
+		return
+	catalog_entries.clear()
+	asset_list.clear()
+	for value in parsed.get("assets", []):
+		if value is Dictionary:
+			var entry: Dictionary = value.duplicate(true)
+			catalog_entries.append(entry)
+			asset_list.add_item("%s · %s / %s" % [entry.get("display_name", entry.get("asset_id", "?")), entry.get("kind", "?"), entry.get("group", "?")])
+	if canvas:
+		canvas.set_catalog_assets(catalog_entries)
+	lbl_asset_details.text = "Select a catalog asset to place it."
 
 func setup_layer_options() -> void:
 	if option_layer:
@@ -176,6 +200,18 @@ func _on_option_layer_item_selected(index: int) -> void:
 		var selected_layer: String = layers[index]
 		if canvas: canvas.set_active_layer(selected_layer)
 		update_status("Active Layer: " + selected_layer)
+
+func _on_asset_list_item_selected(index: int) -> void:
+	if index < 0 or index >= catalog_entries.size():
+		return
+	var entry: Dictionary = catalog_entries[index]
+	if canvas:
+		canvas.set_catalog_asset(entry)
+	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
+	var footprint: Array = entry.get("footprint_tiles", [1, 1])
+	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint[0]), str(footprint[1])]
+	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
+	update_selected_tile_label("Click canvas to place selected catalog asset")
 
 func _on_btn_load_pressed() -> void:
 	set_dialog_path(open_map_dialog)

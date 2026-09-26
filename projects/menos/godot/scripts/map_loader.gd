@@ -67,6 +67,7 @@ static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 		parsed["tiles"] = raw_data["tiles"]
 	else:
 		parsed["tiles"] = {}
+	parsed["objects"] = raw_data.get("objects", [])
 
 	return parsed
 
@@ -91,7 +92,8 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 		"spawns": {},
 		"robot_spots": {},
 		"tower_slots": {},
-		"tiles": map_data.get("tiles", {})
+		"tiles": map_data.get("tiles", {}),
+		"objects": map_data.get("objects", [])
 	}
 
 	if map_data.has("lanes"):
