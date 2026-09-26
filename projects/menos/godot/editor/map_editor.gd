@@ -8,15 +8,24 @@ extends Control
 @onready var lbl_tile_coords: Label = $MainLayout/Inspector/VBox/LblTileCoords
 @onready var lbl_status: Label = $BottomBar/HBox/LblStatus
 @onready var lbl_current_tool: Label = $MainLayout/Toolbox/VBox/LblCurrentTool
+@onready var lbl_selected_tile: Label = $MainLayout/Toolbox/VBox/LblSelectedTile
 @onready var option_layer: OptionButton = $MainLayout/Toolbox/VBox/OptionLayer
+@onready var spin_atlas_x: SpinBox = $MainLayout/Toolbox/VBox/AtlasPicker/SpinX
+@onready var spin_atlas_y: SpinBox = $MainLayout/Toolbox/VBox/AtlasPicker/SpinY
+@onready var atlas_palette: AtlasPalette = $MainLayout/Toolbox/VBox/PaletteContainer/AtlasPaletteView
 
 var current_map_path := "res://map_data/northbridge_sector_01.json"
 var current_map_data := {}
+var active_atlas_x := 0
+var active_atlas_y := 0
 
 func _ready() -> void:
 	if canvas:
 		canvas.object_selected.connect(_on_object_selected)
 		canvas.map_data_changed.connect(_on_map_data_changed)
+
+	if atlas_palette:
+		atlas_palette.tile_selected.connect(_on_atlas_palette_tile_selected)
 
 	setup_layer_options()
 	load_map(current_map_path)
@@ -85,37 +94,71 @@ func update_tool_label(name: String) -> void:
 	if lbl_current_tool:
 		lbl_current_tool.text = "Active Tool: [" + name + "]"
 
+func update_selected_tile_label(tile_desc: String) -> void:
+	if lbl_selected_tile:
+		lbl_selected_tile.text = "Selected: " + tile_desc
+
+func select_ground4_tile(x: int, y: int) -> void:
+	active_atlas_x = clamp(x, 0, 47)
+	active_atlas_y = clamp(y, 0, 31)
+
+	if spin_atlas_x and spin_atlas_x.value != active_atlas_x:
+		spin_atlas_x.value = active_atlas_x
+	if spin_atlas_y and spin_atlas_y.value != active_atlas_y:
+		spin_atlas_y.value = active_atlas_y
+	if atlas_palette:
+		atlas_palette.set_selected_cell(active_atlas_x, active_atlas_y)
+
+	if canvas:
+		canvas.set_selected_tile(8, Vector2i(active_atlas_x, active_atlas_y))
+
+	var desc := "Ground4 (%d, %d)" % [active_atlas_x, active_atlas_y]
+	update_tool_label("PAINT: " + desc)
+	update_selected_tile_label(desc)
+
+func _on_atlas_palette_tile_selected(x: int, y: int) -> void:
+	select_ground4_tile(x, y)
+
 func _on_btn_select_pressed() -> void:
 	if canvas: canvas.set_edit_mode("SELECT")
 	update_tool_label("SELECT")
+	update_selected_tile_label("None (Select Mode)")
 
 func _on_btn_erase_pressed() -> void:
 	if canvas: canvas.set_edit_mode("ERASE")
 	update_tool_label("ERASE TILE")
+	update_selected_tile_label("Erase Tool")
 
 func _on_btn_tile_ground_pressed() -> void:
 	if canvas: canvas.set_selected_tile(0, Vector2i(0, 0))
 	update_tool_label("PAINT: Ground Basic")
+	update_selected_tile_label("Ground Basic (0,0)")
 
-func _on_btn_tile_ground4_pressed() -> void:
-	if canvas: canvas.set_selected_tile(8, Vector2i(0, 0))
-	update_tool_label("PAINT: Ground4 Tile (0,0)")
+func _on_spin_atlas_x_value_changed(value: float) -> void:
+	select_ground4_tile(int(value), active_atlas_y)
 
-func _on_btn_tile_ground4_alt_pressed() -> void:
-	if canvas: canvas.set_selected_tile(8, Vector2i(1, 0))
-	update_tool_label("PAINT: Ground4 Tile (1,0)")
+func _on_spin_atlas_y_value_changed(value: float) -> void:
+	select_ground4_tile(active_atlas_x, int(value))
+
+func _on_btn_tile_g4_preset0_pressed() -> void: select_ground4_tile(0, 0)
+func _on_btn_tile_g4_preset1_pressed() -> void: select_ground4_tile(1, 0)
+func _on_btn_tile_g4_preset2_pressed() -> void: select_ground4_tile(2, 0)
+func _on_btn_tile_g4_preset3_pressed() -> void: select_ground4_tile(3, 0)
 
 func _on_btn_tile_concrete_pressed() -> void:
 	if canvas: canvas.set_selected_tile(5, Vector2i(40, 16))
 	update_tool_label("PAINT: Concrete Module")
+	update_selected_tile_label("Concrete Module")
 
 func _on_btn_tile_grass_pressed() -> void:
 	if canvas: canvas.set_selected_tile(4, Vector2i(0, 0))
 	update_tool_label("PAINT: Vegetation Cluster")
+	update_selected_tile_label("Vegetation Cluster")
 
 func _on_btn_tile_road_pressed() -> void:
 	if canvas: canvas.set_selected_tile(3, Vector2i(0, 0))
 	update_tool_label("PAINT: Road Segment")
+	update_selected_tile_label("Road Segment")
 
 func _on_option_layer_item_selected(index: int) -> void:
 	var layers: Array[String] = ["Ground", "Vegetation", "RoadComposition"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://map_editor_shell_01"]
+[gd_scene load_steps=4 format=3 uid="uid://map_editor_shell_01"]
 
 [ext_resource type="Script" path="res://editor/map_editor.gd" id="1_editor"]
 [ext_resource type="Script" path="res://editor/editor_canvas.gd" id="2_canvas"]
+[ext_resource type="Script" path="res://editor/atlas_palette.gd" id="3_palette"]
 
 [node name="MapEditor" type="Control"]
 layout_mode = 3
@@ -22,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Toolbox" type="PanelContainer" parent="MainLayout"]
-custom_minimum_size = Vector2(210, 0)
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="MainLayout/Toolbox"]
@@ -35,6 +36,10 @@ text = " TOOLBOX"
 [node name="LblCurrentTool" type="Label" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 text = "Active Tool: [SELECT]"
+
+[node name="LblSelectedTile" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "Selected: None"
 
 [node name="HSeparator1" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
@@ -62,19 +67,58 @@ layout_mode = 2
 
 [node name="LblPaletteTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "TILE PALETTE"
+text = "GROUND4 ATLAS PALETTE (48x32)"
+
+[node name="PaletteContainer" type="PanelContainer" parent="MainLayout/Toolbox/VBox"]
+custom_minimum_size = Vector2(216, 144)
+layout_mode = 2
+
+[node name="AtlasPaletteView" type="Control" parent="MainLayout/Toolbox/VBox/PaletteContainer"]
+custom_minimum_size = Vector2(216, 144)
+layout_mode = 2
+script = ExtResource("3_palette")
+
+[node name="AtlasPicker" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+
+[node name="LblX" type="Label" parent="MainLayout/Toolbox/VBox/AtlasPicker"]
+layout_mode = 2
+text = "Atlas X:"
+
+[node name="SpinX" type="SpinBox" parent="MainLayout/Toolbox/VBox/AtlasPicker"]
+layout_mode = 2
+max_value = 47.0
+
+[node name="LblY" type="Label" parent="MainLayout/Toolbox/VBox/AtlasPicker"]
+layout_mode = 2
+text = "Y:"
+
+[node name="SpinY" type="SpinBox" parent="MainLayout/Toolbox/VBox/AtlasPicker"]
+layout_mode = 2
+max_value = 31.0
+
+[node name="BtnTileG4Preset0" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[G4] Meadow (0,0)"
+
+[node name="BtnTileG4Preset1" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[G4] Path (1,0)"
+
+[node name="BtnTileG4Preset2" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[G4] Rock (2,0)"
+
+[node name="BtnTileG4Preset3" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[G4] Water/Alt (3,0)"
+
+[node name="HSeparator5" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
 
 [node name="BtnTileGround" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "[Tile] Ground Basic"
-
-[node name="BtnTileGround4" type="Button" parent="MainLayout/Toolbox/VBox"]
-layout_mode = 2
-text = "[Tile] Ground4 (0,0)"
-
-[node name="BtnTileGround4Alt" type="Button" parent="MainLayout/Toolbox/VBox"]
-layout_mode = 2
-text = "[Tile] Ground4 (1,0)"
+text = "[Tile] Basic Meadow"
 
 [node name="BtnTileConcrete" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
@@ -82,7 +126,7 @@ text = "[Tile] Concrete Module"
 
 [node name="BtnTileGrass" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "[Tile] Grass Cluster"
+text = "[Tile] Vegetation Cluster"
 
 [node name="BtnTileRoad" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
@@ -97,9 +141,11 @@ text = "CONTROLS GUIDE"
 
 [node name="LblGuideContent" type="Label" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "LMB: Place / Select
-LMB Drag: Paint
-MMB/RMB: Pan Canvas
+text = "ATLAS: Click tile to select
+CANVAS:
+LMB: Paint / Select
+LMB Drag: Continuous Paint
+MMB/RMB Drag: Pan
 Wheel: Zoom
 Save: [Save JSON] Button"
 
@@ -170,9 +216,13 @@ text = "Save JSON"
 [connection signal="item_selected" from="MainLayout/Toolbox/VBox/OptionLayer" to="." method="_on_option_layer_item_selected"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnSelect" to="." method="_on_btn_select_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnErase" to="." method="_on_btn_erase_pressed"]
+[connection signal="value_changed" from="MainLayout/Toolbox/VBox/AtlasPicker/SpinX" to="." method="_on_spin_atlas_x_value_changed"]
+[connection signal="value_changed" from="MainLayout/Toolbox/VBox/AtlasPicker/SpinY" to="." method="_on_spin_atlas_y_value_changed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset0" to="." method="_on_btn_tile_g4_preset0_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset1" to="." method="_on_btn_tile_g4_preset1_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset2" to="." method="_on_btn_tile_g4_preset2_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset3" to="." method="_on_btn_tile_g4_preset3_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGround" to="." method="_on_btn_tile_ground_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGround4" to="." method="_on_btn_tile_ground4_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGround4Alt" to="." method="_on_btn_tile_ground4_alt_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileConcrete" to="." method="_on_btn_tile_concrete_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGrass" to="." method="_on_btn_tile_grass_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileRoad" to="." method="_on_btn_tile_road_pressed"]
