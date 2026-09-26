@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dbuk3tc6ieukd" path="res://assets/menos/maps/forest.png" id="4_forest"]
 [ext_resource type="Texture2D" uid="uid://xe5lqckk1bkw" path="res://assets/menos/maps/ground_basic_32.svg" id="5_ground_basic"]
 [ext_resource type="Texture2D" uid="uid://b1bwlkrgxys25" path="res://assets/menos/maps/a7.png" id="6_a7"]
-[ext_resource type="Texture2D" path="res://assets/menos/maps/ground4.png" id="7_ground4"]
+[ext_resource type="Texture2D" uid="uid://ba73lphisd33o" path="res://assets/menos/maps/ground4.png" id="7_ground4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ground"]
 texture = ExtResource("5_ground_basic")

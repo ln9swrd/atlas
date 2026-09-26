@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://map_editor_shell_01"]
+[gd_scene format=3 uid="uid://2l4oimhmj60"]
 
-[ext_resource type="Script" path="res://editor/map_editor.gd" id="1_editor"]
-[ext_resource type="Script" path="res://editor/editor_canvas.gd" id="2_canvas"]
-[ext_resource type="Script" path="res://editor/atlas_palette.gd" id="3_palette"]
+[ext_resource type="Script" uid="uid://iysha3xdnm5m" path="res://editor/map_editor.gd" id="1_editor"]
+[ext_resource type="Script" uid="uid://dtlgvr18i2nld" path="res://editor/editor_canvas.gd" id="2_canvas"]
+[ext_resource type="Script" uid="uid://bhkujy0mt22xt" path="res://editor/atlas_palette.gd" id="3_palette"]
 
-[node name="MapEditor" type="Control"]
+[node name="MapEditor" type="Control" unique_id=1139210866]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_editor")
 
-[node name="MainLayout" type="HBoxContainer" parent="."]
+[node name="MainLayout" type="HBoxContainer" parent="." unique_id=762659856]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,124 +22,124 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Toolbox" type="PanelContainer" parent="MainLayout"]
+[node name="Toolbox" type="PanelContainer" parent="MainLayout" unique_id=1038340238]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="MainLayout/Toolbox"]
+[node name="VBox" type="VBoxContainer" parent="MainLayout/Toolbox" unique_id=1701830802]
 layout_mode = 2
 
-[node name="LblTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+[node name="LblTitle" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1839842246]
 layout_mode = 2
 text = " TOOLBOX"
 
-[node name="LblCurrentTool" type="Label" parent="MainLayout/Toolbox/VBox"]
+[node name="LblCurrentTool" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=644312210]
 layout_mode = 2
 text = "Active Tool: [SELECT]"
 
-[node name="LblSelectedTile" type="Label" parent="MainLayout/Toolbox/VBox"]
+[node name="LblSelectedTile" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1665062485]
 layout_mode = 2
 text = "Selected: None"
 
-[node name="HSeparator1" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+[node name="HSeparator1" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=304884929]
 layout_mode = 2
 
-[node name="LblLayerTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+[node name="LblLayerTitle" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=159502842]
 layout_mode = 2
 text = "Target Layer:"
 
-[node name="OptionLayer" type="OptionButton" parent="MainLayout/Toolbox/VBox"]
+[node name="OptionLayer" type="OptionButton" parent="MainLayout/Toolbox/VBox" unique_id=1430649679]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+[node name="HSeparator2" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=605387695]
 layout_mode = 2
 
-[node name="BtnSelect" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnSelect" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=92476011]
 layout_mode = 2
 text = "Mode: Select"
 
-[node name="BtnErase" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnErase" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1688282520]
 layout_mode = 2
 text = "Mode: Erase Tile"
 
-[node name="HSeparator3" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+[node name="HSeparator3" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=1928436321]
 layout_mode = 2
 
-[node name="LblPaletteTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+[node name="LblPaletteTitle" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1790036470]
 layout_mode = 2
 text = "GROUND4 ATLAS PALETTE (48x32)"
 
-[node name="PaletteContainer" type="PanelContainer" parent="MainLayout/Toolbox/VBox"]
+[node name="PaletteContainer" type="PanelContainer" parent="MainLayout/Toolbox/VBox" unique_id=1420122572]
 custom_minimum_size = Vector2(216, 144)
 layout_mode = 2
 
-[node name="AtlasPaletteView" type="Control" parent="MainLayout/Toolbox/VBox/PaletteContainer"]
+[node name="AtlasPaletteView" type="Control" parent="MainLayout/Toolbox/VBox/PaletteContainer" unique_id=125640546]
 custom_minimum_size = Vector2(216, 144)
 layout_mode = 2
 script = ExtResource("3_palette")
 
-[node name="AtlasPicker" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
+[node name="AtlasPicker" type="HBoxContainer" parent="MainLayout/Toolbox/VBox" unique_id=1780303663]
 layout_mode = 2
 
-[node name="LblX" type="Label" parent="MainLayout/Toolbox/VBox/AtlasPicker"]
+[node name="LblX" type="Label" parent="MainLayout/Toolbox/VBox/AtlasPicker" unique_id=825656437]
 layout_mode = 2
 text = "Atlas X:"
 
-[node name="SpinX" type="SpinBox" parent="MainLayout/Toolbox/VBox/AtlasPicker"]
+[node name="SpinX" type="SpinBox" parent="MainLayout/Toolbox/VBox/AtlasPicker" unique_id=1837466115]
 layout_mode = 2
 max_value = 47.0
 
-[node name="LblY" type="Label" parent="MainLayout/Toolbox/VBox/AtlasPicker"]
+[node name="LblY" type="Label" parent="MainLayout/Toolbox/VBox/AtlasPicker" unique_id=1475211611]
 layout_mode = 2
 text = "Y:"
 
-[node name="SpinY" type="SpinBox" parent="MainLayout/Toolbox/VBox/AtlasPicker"]
+[node name="SpinY" type="SpinBox" parent="MainLayout/Toolbox/VBox/AtlasPicker" unique_id=495088272]
 layout_mode = 2
 max_value = 31.0
 
-[node name="BtnTileG4Preset0" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnTileG4Preset0" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1695177323]
 layout_mode = 2
 text = "[G4] Meadow (0,0)"
 
-[node name="BtnTileG4Preset1" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnTileG4Preset1" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=2133237211]
 layout_mode = 2
 text = "[G4] Path (1,0)"
 
-[node name="BtnTileG4Preset2" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnTileG4Preset2" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1748306777]
 layout_mode = 2
 text = "[G4] Rock (2,0)"
 
-[node name="BtnTileG4Preset3" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnTileG4Preset3" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1383863515]
 layout_mode = 2
 text = "[G4] Water/Alt (3,0)"
 
-[node name="HSeparator5" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+[node name="HSeparator5" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=1020992700]
 layout_mode = 2
 
-[node name="BtnTileGround" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnTileGround" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=445228246]
 layout_mode = 2
 text = "[Tile] Basic Meadow"
 
-[node name="BtnTileConcrete" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnTileConcrete" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1025841249]
 layout_mode = 2
 text = "[Tile] Concrete Module"
 
-[node name="BtnTileGrass" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnTileGrass" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=2022576003]
 layout_mode = 2
 text = "[Tile] Vegetation Cluster"
 
-[node name="BtnTileRoad" type="Button" parent="MainLayout/Toolbox/VBox"]
+[node name="BtnTileRoad" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1282810782]
 layout_mode = 2
 text = "[Tile] Road Segment"
 
-[node name="HSeparator4" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+[node name="HSeparator4" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=228900261]
 layout_mode = 2
 
-[node name="LblGuideTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+[node name="LblGuideTitle" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1558563586]
 layout_mode = 2
 text = "CONTROLS GUIDE"
 
-[node name="LblGuideContent" type="Label" parent="MainLayout/Toolbox/VBox"]
+[node name="LblGuideContent" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=455790128]
 layout_mode = 2
 text = "ATLAS: Click tile to select
 CANVAS:
@@ -149,45 +149,45 @@ MMB/RMB Drag: Pan
 Wheel: Zoom
 Save: [Save JSON] Button"
 
-[node name="CanvasContainer" type="Control" parent="MainLayout"]
+[node name="CanvasContainer" type="Control" parent="MainLayout" unique_id=1780933295]
 clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CanvasRoot" type="Node2D" parent="MainLayout/CanvasContainer"]
+[node name="CanvasRoot" type="Node2D" parent="MainLayout/CanvasContainer" unique_id=1675596003]
 script = ExtResource("2_canvas")
 
-[node name="Inspector" type="PanelContainer" parent="MainLayout"]
+[node name="Inspector" type="PanelContainer" parent="MainLayout" unique_id=1856458715]
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="MainLayout/Inspector"]
+[node name="VBox" type="VBoxContainer" parent="MainLayout/Inspector" unique_id=2011114957]
 layout_mode = 2
 
-[node name="LblTitle" type="Label" parent="MainLayout/Inspector/VBox"]
+[node name="LblTitle" type="Label" parent="MainLayout/Inspector/VBox" unique_id=1930421330]
 layout_mode = 2
 text = " INSPECTOR"
 
-[node name="HSeparator" type="HSeparator" parent="MainLayout/Inspector/VBox"]
+[node name="HSeparator" type="HSeparator" parent="MainLayout/Inspector/VBox" unique_id=1937577341]
 layout_mode = 2
 
-[node name="LblSelectedID" type="Label" parent="MainLayout/Inspector/VBox"]
+[node name="LblSelectedID" type="Label" parent="MainLayout/Inspector/VBox" unique_id=1112535480]
 layout_mode = 2
 text = "ID: None"
 
-[node name="LblSelectedType" type="Label" parent="MainLayout/Inspector/VBox"]
+[node name="LblSelectedType" type="Label" parent="MainLayout/Inspector/VBox" unique_id=1262776783]
 layout_mode = 2
 text = "Type: -"
 
-[node name="LblPosition" type="Label" parent="MainLayout/Inspector/VBox"]
+[node name="LblPosition" type="Label" parent="MainLayout/Inspector/VBox" unique_id=359931232]
 layout_mode = 2
 text = "Position: -"
 
-[node name="LblTileCoords" type="Label" parent="MainLayout/Inspector/VBox"]
+[node name="LblTileCoords" type="Label" parent="MainLayout/Inspector/VBox" unique_id=934902042]
 layout_mode = 2
 text = "Tile: -"
 
-[node name="BottomBar" type="PanelContainer" parent="."]
+[node name="BottomBar" type="PanelContainer" parent="." unique_id=1815266710]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -197,19 +197,19 @@ offset_top = -40.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="HBox" type="HBoxContainer" parent="BottomBar"]
+[node name="HBox" type="HBoxContainer" parent="BottomBar" unique_id=156948169]
 layout_mode = 2
 
-[node name="LblStatus" type="Label" parent="BottomBar/HBox"]
+[node name="LblStatus" type="Label" parent="BottomBar/HBox" unique_id=741087693]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Status: Ready"
 
-[node name="BtnLoad" type="Button" parent="BottomBar/HBox"]
+[node name="BtnLoad" type="Button" parent="BottomBar/HBox" unique_id=1029332109]
 layout_mode = 2
 text = "Load JSON"
 
-[node name="BtnSave" type="Button" parent="BottomBar/HBox"]
+[node name="BtnSave" type="Button" parent="BottomBar/HBox" unique_id=241038104]
 layout_mode = 2
 text = "Save JSON"
 

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "map_id": "map_01",
+  "name": "Northbridge Sector 01 Layout",
+  "map_size": [36, 24],
+  "tile_size": [32, 32],
+  "map_origin": [0, 58],
+  "map_pixel_size": [1152, 768],
+  "goal": {
+	"id": "base_hq",
+	"position": [1080, 122]
+  },
+  "spawns": {
+	"left": [70, 346],
+	"right": [288, 794]
+  },
+  "robot_spots": {
+	"LEFT": [480, 300],
+	"CENTER": [720, 250],
+	"RIGHT": [480, 540]
+  },
+  "tower_slots": {
+	"L1": [220, 310],
+	"L2": [450, 270],
+	"L3": [720, 210],
+	"R1": [300, 650],
+	"R2": [520, 500],
+	"R3": [760, 340]
+  }
+}
