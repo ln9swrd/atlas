@@ -26,7 +26,7 @@ static func load_stage_data(stage_id_or_path: String) -> Dictionary:
 	file.close()
 
 	var json := JSON.new()
-	var parse_result := json.parse(json_text)
+	var parse_result: Error = json.parse(json_text)
 	if parse_result != OK:
 		push_error("StageLoader: JSON parse error '%s' at line %d in %s" % [json.get_error_message(), json.get_error_line(), file_path])
 		return {}

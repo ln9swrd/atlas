@@ -15,7 +15,7 @@ static func load_map_data(file_path: String) -> Dictionary:
 	file.close()
 
 	var json := JSON.new()
-	var parse_result := json.parse(json_text)
+	var parse_result: Error = json.parse(json_text)
 	if parse_result != OK:
 		push_error("MapLoader: JSON parse error '%s' at line %d" % [json.get_error_message(), json.get_error_line()])
 		return {}
