@@ -118,4 +118,3 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 	file.store_string(json_string)
 	file.close()
 	return true
-

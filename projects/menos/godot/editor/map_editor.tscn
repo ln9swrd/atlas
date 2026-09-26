@@ -68,6 +68,14 @@ text = "TILE PALETTE"
 layout_mode = 2
 text = "[Tile] Ground Basic"
 
+[node name="BtnTileGround4" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[Tile] Ground4 (0,0)"
+
+[node name="BtnTileGround4Alt" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "[Tile] Ground4 (1,0)"
+
 [node name="BtnTileConcrete" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 text = "[Tile] Concrete Module"
@@ -79,6 +87,21 @@ text = "[Tile] Grass Cluster"
 [node name="BtnTileRoad" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 text = "[Tile] Road Segment"
+
+[node name="HSeparator4" type="HSeparator" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+
+[node name="LblGuideTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "CONTROLS GUIDE"
+
+[node name="LblGuideContent" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "LMB: Place / Select
+LMB Drag: Paint
+MMB/RMB: Pan Canvas
+Wheel: Zoom
+Save: [Save JSON] Button"
 
 [node name="CanvasContainer" type="Control" parent="MainLayout"]
 clip_contents = true
@@ -148,6 +171,8 @@ text = "Save JSON"
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnSelect" to="." method="_on_btn_select_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnErase" to="." method="_on_btn_erase_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGround" to="." method="_on_btn_tile_ground_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGround4" to="." method="_on_btn_tile_ground4_pressed"]
+[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGround4Alt" to="." method="_on_btn_tile_ground4_alt_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileConcrete" to="." method="_on_btn_tile_concrete_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGrass" to="." method="_on_btn_tile_grass_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileRoad" to="." method="_on_btn_tile_road_pressed"]

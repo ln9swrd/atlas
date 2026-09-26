@@ -97,6 +97,14 @@ func _on_btn_tile_ground_pressed() -> void:
 	if canvas: canvas.set_selected_tile(0, Vector2i(0, 0))
 	update_tool_label("PAINT: Ground Basic")
 
+func _on_btn_tile_ground4_pressed() -> void:
+	if canvas: canvas.set_selected_tile(8, Vector2i(0, 0))
+	update_tool_label("PAINT: Ground4 Tile (0,0)")
+
+func _on_btn_tile_ground4_alt_pressed() -> void:
+	if canvas: canvas.set_selected_tile(8, Vector2i(1, 0))
+	update_tool_label("PAINT: Ground4 Tile (1,0)")
+
 func _on_btn_tile_concrete_pressed() -> void:
 	if canvas: canvas.set_selected_tile(5, Vector2i(40, 16))
 	update_tool_label("PAINT: Concrete Module")

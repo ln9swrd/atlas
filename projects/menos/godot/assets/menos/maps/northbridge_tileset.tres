@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dbuk3tc6ieukd" path="res://assets/menos/maps/forest.png" id="4_forest"]
 [ext_resource type="Texture2D" uid="uid://xe5lqckk1bkw" path="res://assets/menos/maps/ground_basic_32.svg" id="5_ground_basic"]
 [ext_resource type="Texture2D" uid="uid://b1bwlkrgxys25" path="res://assets/menos/maps/a7.png" id="6_a7"]
+[ext_resource type="Texture2D" path="res://assets/menos/maps/ground4.png" id="7_ground4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ground"]
 texture = ExtResource("5_ground_basic")
@@ -337,6 +338,42 @@ texture_region_size = Vector2i(32, 32)
 34:7/0 = 0
 35:7/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ground4"]
+texture = ExtResource("7_ground4")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+
 [resource]
 tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_ground")
@@ -347,3 +384,4 @@ sources/4 = SubResource("TileSetAtlasSource_grass")
 sources/5 = SubResource("TileSetAtlasSource_a7_module")
 sources/6 = SubResource("TileSetAtlasSource_ground_dark")
 sources/7 = SubResource("TileSetAtlasSource_a7_concrete")
+sources/8 = SubResource("TileSetAtlasSource_ground4")
