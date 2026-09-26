@@ -1,4 +1,18 @@
 {
-	"schema_version": 1,
-	"assets": []
+	"assets": [
+		{
+			"asset_id": "asset.tile.a_7",
+			"display_name": "A 7",
+			"group": "Boundary",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1035,
+				77,
+				258,
+				151
+			]
+		}
+	],
+	"schema_version": 1
 }
