@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790424707
+::res://::1790425041
 data.gd::GDScript::5537870080328675552::1790302983::0::1::::MenosData<>RefCounted<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790411445::0::1::::<>Node2D<><>0<>0<><>::
 main.tscn::PackedScene::6409794179911717756::1790410256::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
@@ -70,6 +70,112 @@ atlas_palette.gd::GDScript::2899618078452621397::1790392323::0::1::::AtlasPalett
 editor_canvas.gd::GDScript::8515960973698181157::1790392935::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
 map_editor.gd::GDScript::612161265932897584::1790423213::0::1::::MapEditorMain<>Control<><>0<>0<><>::
 map_editor.tscn::PackedScene::56458622543686955::1790423202::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>uid://bhkujy0mt22xt::::res://editor/atlas_palette.gd<>res://editor/asset_catalog_editor.tscn
+::res://images/::1790258216
+atlas_attack.png::CompressedTexture2D::857607076531683691::1790261184::1790426035::1::::<><><>0<>0<>d7564810a4da1d116c3d2fa1407b943b<>res://.godot/imported/atlas_attack.png-d752b0a4d5f6037fc30da2f1608fd106.ctex::
+atlas_idle.png::CompressedTexture2D::564740216338375605::1790261184::1790426035::1::::<><><>0<>0<>1cfb2c377f46deeb5f9d3d10b1c068cd<>res://.godot/imported/atlas_idle.png-9c6a8bbb64a16c144e148049fc3ab045.ctex::
+atlas_move.png::CompressedTexture2D::2479122354862730442::1790261184::1790426035::1::::<><><>0<>0<>b4516928cf3c014f1c78d16237903f0f<>res://.godot/imported/atlas_move.png-ff9ad02907bd304825e154e86764bcc7.ctex::
+atlas_skill.png::CompressedTexture2D::4849482367527447557::1790261184::1790426035::1::::<><><>0<>0<>014615251170878b613b67d9b7c19b55<>res://.godot/imported/atlas_skill.png-e1bf29617d968e9f430499fe144f12f2.ctex::
+bullet_defender.png::CompressedTexture2D::1792292875001817094::1790259082::1790426035::1::::<><><>0<>0<>3264bbf183e973c943b59677234b0792<>res://.godot/imported/bullet_defender.png-c6ea4a0fd22285c88ddfcd17d28d491e.ctex::
+bullet_threat.png::CompressedTexture2D::5183960567083244622::1790259082::1790426035::1::::<><><>0<>0<>03050aeb9d49a1db6634f0928077af59<>res://.godot/imported/bullet_threat.png-9e084f0679e10e3cf32ac2aa0299b119.ctex::
+enemy_giant_anim.png::CompressedTexture2D::5998841371551074324::1790260617::1790426035::1::::<><><>0<>0<>f38322d8235f1bab1b33a95327f77b4f<>res://.godot/imported/enemy_giant_anim.png-d904ccabb588107a03dc14c32b0078ef.ctex::
+enemy_heavy_anim.png::CompressedTexture2D::774712985223589478::1790260617::1790426035::1::::<><><>0<>0<>8447c3020877fa4663a2f03cbdb7ccce<>res://.godot/imported/enemy_heavy_anim.png-73a80c5737dbb8a406a221f54684fd10.ctex::
+enemy_normal_anim.png::CompressedTexture2D::3414744957794362142::1790260617::1790426035::1::::<><><>0<>0<>313a1ced15af1a4bf4d71555e47052f5<>res://.godot/imported/enemy_normal_anim.png-b6f85203679ac9d92ffff3f11c594ca5.ctex::
+enemy_rusher_anim.png::CompressedTexture2D::8090648133845464497::1790260617::1790426035::1::::<><><>0<>0<>1eccac25bdba4e512f0aa9ea525ad8c8<>res://.godot/imported/enemy_rusher_anim.png-6a6d6408e139b726cc3272d1ce58cd34.ctex::
+facility_base.png::CompressedTexture2D::458227363786950944::1790255287::1790426035::1::::<><><>0<>0<>ecbc0d042f4912ac175903f389b898f9<>res://.godot/imported/facility_base.png-5e8390bcd0fdd0a25ad5db266f8fb8e6.ctex::
+impact_explosion.png::CompressedTexture2D::7155184752949139812::1790259875::1790426035::1::::<><><>0<>0<>fce7aaef964212b711977bcf02c3e67a<>res://.godot/imported/impact_explosion.png-fb457fc2035570620535844211fdd1d9.ctex::
+tower_cannon_anim.png::CompressedTexture2D::8879670591382398049::1790259875::1790426035::1::::<><><>0<>0<>e2a7ed720a150fa6028ad906e50ae9eb<>res://.godot/imported/tower_cannon_anim.png-efc475dbc81e1de460ed2562df9eaa58.ctex::
+tower_gatling_anim.png::CompressedTexture2D::1204124613717370849::1790259875::1790426035::1::::<><><>0<>0<>d4cedb84911b1e04e8bf6fc1abad2188<>res://.godot/imported/tower_gatling_anim.png-34b5fae1c0f5c982c8debb329b558035.ctex::
+::res://images/active/::1790252816
+ChatGPT Image 2026년 9월 24일 오후 08_41_45.png::CompressedTexture2D::5028033926267591142::1790252816::1790426036::1::::<><><>0<>0<>22cfd5066f450a99674a6d755417f4ec<>res://.godot/imported/ChatGPT Image 2026년 9월 24일 오후 08_41_45.png-be0d1e3e103e520138efb812cb9489f7.ctex::
+::res://images/animation/::1790256986
+a2.png::CompressedTexture2D::7445193694133957385::1790251376::1790426036::1::::<><><>0<>0<>44ddd89d29106ec53a23ac63dce88e8c<>res://.godot/imported/a2.png-9f7ec09fd13fb75e285f41cb5a799463.ctex::
+bullet.png::CompressedTexture2D::4753464644823425636::1790256832::1790426036::1::::<><><>0<>0<>f69df95011218d00fb94ba9044eed7c4<>res://.godot/imported/bullet.png-9bdac0442bd57acefa53fd3bc285ea24.ctex::
+bullet_transparent.png::CompressedTexture2D::4914655625940089199::1790257856::1790426036::1::::<><><>0<>0<>186adbd992cc9cdec633abc0ef41034d<>res://.godot/imported/bullet_transparent.png-4845eda6989fad5bcf4d6f2ea71c1c62.ctex::
+dt bullet.png::CompressedTexture2D::5123829177525196037::1790253371::1790426036::1::::<><><>0<>0<>db2c8cdf2e489168d2df06a039d258c8<>res://.godot/imported/dt bullet.png-cd34e032cccbb92ec335a6692cc334f1.ctex::
+td bullet.png::CompressedTexture2D::8534917061924992078::1790253510::1790426036::1::::<><><>0<>0<>539dcf57ba1cd7e81a4e17375d92136b<>res://.godot/imported/td bullet.png-e27425e82ae9416f0dff1100b20814cd.ctex::
+::res://images/archive/::1790257568
+a1.png::CompressedTexture2D::2977218417617884063::1790252816::1790426035::1::::<><><>0<>0<>0185b36e0066186409573babf2d1dfb4<>res://.godot/imported/a1.png-d17721d44a9f764c614ed2743265f958.ctex::
+a2.png::CompressedTexture2D::5597262190805251433::1790252816::1790426035::1::::<><><>0<>0<>1f030c844c353f73f9d63dc50b78471e<>res://.godot/imported/a2.png-28bf0b910e23d381b6d7e70fdab8b632.ctex::
+a3.png::CompressedTexture2D::7684697031268773419::1790252816::1790426035::1::::<><><>0<>0<>eace3dc6faac668588653b978eea5964<>res://.godot/imported/a3.png-d07f38d7806a582e85a13f033672ab03.ctex::
+a4.png::CompressedTexture2D::8308467077067089979::1790251376::1790426035::1::::<><><>0<>0<>4af026ab5ea383ea919a98614485e7fa<>res://.godot/imported/a4.png-139b6164a94abfe9a90d7740e6d78343.ctex::
+a5.png::CompressedTexture2D::4524191216743221664::1790252816::1790426035::1::::<><><>0<>0<>f0554edb81754020a08287b4f61a207d<>res://.godot/imported/a5.png-06394ff2e420e735a2d6b6a328923a85.ctex::
+a6.png::CompressedTexture2D::2663770659573054801::1790251376::1790426036::1::::<><><>0<>0<>9a4dd1c9481afbcae32967a73f6df858<>res://.godot/imported/a6.png-5a9b416b325fe186fed68a4e2e311a1c.ctex::
+a7.png::CompressedTexture2D::9036939429180432443::1790252816::1790426036::1::::<><><>0<>0<>943df2c0372da8e43034cc38cde2ab3e<>res://.godot/imported/a7.png-f7047d2b3863ee315d31bd9948bdf1f2.ctex::
+a8.png::CompressedTexture2D::3388151931348858841::1790252816::1790426036::1::::<><><>0<>0<>4419b8ef4913b0b47777b3008161229a<>res://.godot/imported/a8.png-512ef0c71a1b8ebba82d2624afd13b05.ctex::
+Gemini_Generated_Image_8nl2kl8nl2kl8nl2.png::CompressedTexture2D::932940086255663242::1790254358::1790426036::1::::<><><>0<>0<>ad899915fb9483b8f25aa886dd2cd4fd<>res://.godot/imported/Gemini_Generated_Image_8nl2kl8nl2kl8nl2.png-907ddc4d5fd815c2bdf0edeb1e1d0b30.ctex::
+Gemini_Generated_Image_20b30p20b30p20b3.png::CompressedTexture2D::6949368571590825952::1790254358::1790426036::1::::<><><>0<>0<>4f1f7b33066533c89f209419c59d7b7c<>res://.godot/imported/Gemini_Generated_Image_20b30p20b30p20b3.png-0ceba9f812fa647aa9a76be8f3b603ff.ctex::
+Gemini_Generated_Image_d7bq68d7bq68d7bq.png::CompressedTexture2D::6965824358418135185::1790254358::1790426036::1::::<><><>0<>0<>caf2e55033a7235294bb2aca599925a2<>res://.godot/imported/Gemini_Generated_Image_d7bq68d7bq68d7bq.png-14334b104b8b5c90608ccf51c06fc44a.ctex::
+Gemini_Generated_Image_hsg47whsg47whsg4.png::CompressedTexture2D::3632501969836003240::1790254358::1790426036::1::::<><><>0<>0<>691f2bcd5bad3446e816452553d483a7<>res://.godot/imported/Gemini_Generated_Image_hsg47whsg47whsg4.png-f6f0c5a3ef3db4b033614c8e1ba91eb2.ctex::
+Gemini_Generated_Image_k37qc9k37qc9k37q.png::CompressedTexture2D::7767423764887993804::1790254358::1790426036::1::::<><><>0<>0<>bc15aa2e75ef2e6ccea98c459ef3e54c<>res://.godot/imported/Gemini_Generated_Image_k37qc9k37qc9k37q.png-a0214f6c93a23406407fccf1c7d63985.ctex::
+Gemini_Generated_Image_ku5v85ku5v85ku5v.png::CompressedTexture2D::1734309502659474776::1790254358::1790426036::1::::<><><>0<>0<>b75e7eeaac34c549eae18c7fc5194e65<>res://.godot/imported/Gemini_Generated_Image_ku5v85ku5v85ku5v.png-3ea3e8df85fa2f402aa52f7f3704cff5.ctex::
+Gemini_Generated_Image_md0ow9md0ow9md0o.png::CompressedTexture2D::6505962353704808239::1790254358::1790426036::1::::<><><>0<>0<>c13cc3b2036350a60adae575b60c2709<>res://.godot/imported/Gemini_Generated_Image_md0ow9md0ow9md0o.png-bff433d568c1849d66a97c4f63f8812d.ctex::
+Gemini_Generated_Image_tcqt6ptcqt6ptcqt.png::CompressedTexture2D::8939912599164931645::1790254358::1790426036::1::::<><><>0<>0<>5737fb8b5a5673646d2e09cb15ba1168<>res://.godot/imported/Gemini_Generated_Image_tcqt6ptcqt6ptcqt.png-f796175bb3c0dded879baa4561249965.ctex::
+Gemini_Generated_Image_vtkyk6vtkyk6vtky.png::CompressedTexture2D::211448631183057112::1790254358::1790426036::1::::<><><>0<>0<>c95334c71ead0f5646934c155ae0aaf6<>res://.godot/imported/Gemini_Generated_Image_vtkyk6vtkyk6vtky.png-c04dcbb71a6991c61286227ff93f4334.ctex::
+tower.png::CompressedTexture2D::10850649174468080::1790257102::1790426036::1::::<><><>0<>0<>533fcdb25053518b0d1742123dc62a7f<>res://.godot/imported/tower.png-5ec2f01092e4f313fda1694493830ce4.ctex::
+::res://images/archive/bk/::1790253066
+1.png::CompressedTexture2D::1061448055853420080::1790251375::1790426036::1::::<><><>0<>0<>766a19cee0d501cf7db1b4ebcda19310<>res://.godot/imported/1.png-1bcc61fb6b38dc526d3548f47825c2b5.ctex::
+2.png::CompressedTexture2D::1258126575826871426::1790251375::1790426036::1::::<><><>0<>0<>8be2f50ecdd3466b23fcc5d571db9c98<>res://.godot/imported/2.png-f67970b164860957d7af21c5a3f1f031.ctex::
+3.png::CompressedTexture2D::1491955969380459861::1790251375::1790426035::1::::<><><>0<>0<>8dd519ab00f76059ca90af964c9043e9<>res://.godot/imported/3.png-2d1742df16fece0008d8d9ce593ec712.ctex::
+4.png::CompressedTexture2D::7876010072298083281::1790251375::1790426036::1::::<><><>0<>0<>e48b3f9b74f43d0248e1a359b440453e<>res://.godot/imported/4.png-d3b2c96b1ef8baf8175aa8329394947c.ctex::
+5.png::CompressedTexture2D::5170228088038106812::1790251375::1790426035::1::::<><><>0<>0<>bb9347954e82f178d1177a9cb2b6e790<>res://.godot/imported/5.png-17eccb1008efa4143b0d2c00012e1313.ctex::
+6.png::CompressedTexture2D::2500841287691123136::1790251375::1790426035::1::::<><><>0<>0<>37c52c751bd50448950828e3f19882ef<>res://.godot/imported/6.png-f771d1cacc950cbda300fcdcc9fe0f38.ctex::
+7.png::CompressedTexture2D::5093057481065821019::1790251375::1790426035::1::::<><><>0<>0<>4b7e557fd9f5071a22c3ad125318d170<>res://.godot/imported/7.png-f93e7a9cf0c26e04f18d5869ee2ed243.ctex::
+8.png::CompressedTexture2D::5464348818256467502::1790251375::1790426035::1::::<><><>0<>0<>fb6535a1a8f6e7565ef7e64edff0b20f<>res://.godot/imported/8.png-2f38fbbfac0382a76a28e28721c41fed.ctex::
+ChatGPT Image 2026년 9월 24일 오후 07_15_55.png::CompressedTexture2D::7642160339849342631::1790252816::1790426035::1::::<><><>0<>0<>cf68e34098c9ffa8ab7eaeb7035d709f<>res://.godot/imported/ChatGPT Image 2026년 9월 24일 오후 07_15_55.png-6293d07043b0de4aeca7d68e901e9850.ctex::
+::res://images/atlas/::1790256395
+a3.png::CompressedTexture2D::6367970809126578384::1790251376::1790426036::1::::<><><>0<>0<>c8ea188e1172385234f40de1efdb2add<>res://.godot/imported/a3.png-a538dc16b3a28dca7d66b8104f3bf62c.ctex::
+atlas tb.png::CompressedTexture2D::5907535893029962101::1790256316::1790426036::1::::<><><>0<>0<>73c71e26d6c77abbfbb131a22896f64a<>res://.godot/imported/atlas tb.png-4ef844e759003c5cb67d17aa349c93e7.ctex::
+atlas.png::CompressedTexture2D::3839755023012799069::1790255959::1790426036::1::::<><><>0<>0<>59dbf74be34d5a686bc3cd201b6695e8<>res://.godot/imported/atlas.png-0b1fea1914977a56cc8327630eed5975.ctex::
+ChatGPT Image 2026년 9월 24일 오후 08_41_45.png::CompressedTexture2D::8821872406491868919::1790251376::1790426036::1::::<><><>0<>0<>32a682168e9e746e776f4055a781f149<>res://.godot/imported/ChatGPT Image 2026년 9월 24일 오후 08_41_45.png-f36248fe99624fe6a5eaf9d4cab20ed9.ctex::
+::res://images/enemy/::1790258127
+a1.png::CompressedTexture2D::5976720415306619051::1790251376::1790426036::1::::<><><>0<>0<>4783187ebe5a9c69d32b597fbeb88a10<>res://.godot/imported/a1.png-9ac1f430999aeee6321247f4ca5d5656.ctex::
+enermy.png::CompressedTexture2D::3246535326684019746::1790258065::1790426036::1::::<><><>0<>0<>27147de77054ff8830ad8c9129d9beb4<>res://.godot/imported/enermy.png-f2f9ebe691d76d7e655fcf1da7535100.ctex::
+::res://images/map/::1790385316
+::res://images/map/object/::1790385280
+::res://images/map/object/combat/::1790384993
+combat object.png::CompressedTexture2D::3527126960545923124::1790273649::1790426036::1::::<><><>0<>0<>ac6c246fabcbb95e5ef796443d9a3c07<>res://.godot/imported/combat object.png-5811afe358e83578532973f0ca32352b.ctex::
+::res://images/map/object/industrial/::1790385280
+industrial object.png::CompressedTexture2D::1950181804372156326::1790273554::1790426035::1::::<><><>0<>0<>3c08ee27ac516727e27f0deb86f6f8d1<>res://.godot/imported/industrial object.png-b7d88e56c0cc491eb71008b8166fd845.ctex::
+::res://images/map/object/terrain/::1790385071
+terrain object.png::CompressedTexture2D::3567799109969081679::1790273441::1790426035::1::::<><><>0<>0<>3a6fe25a28946b3f1aea79b926dcbcb7<>res://.godot/imported/terrain object.png-04b4f1df8224577fee9f0cbd5b25b65f.ctex::
+::res://images/map/tile/::1790385289
+::res://images/map/tile/boundary/::1790385199
+map boundary.png::CompressedTexture2D::7555199581993194421::1790273879::1790426035::1::::<><><>0<>0<>aa29b6e40c9746dbcfb21ad71f1a6c44<>res://.godot/imported/map boundary.png-b4abe252a00b013c2d21aeb40779aa8b.ctex::
+::res://images/map/tile/bridge/::1790384939
+bridge.png::CompressedTexture2D::9057150592160353291::1790273342::1790426035::1::::<><><>0<>0<>5c38b2cf7736506f1cf9ebae60f24365<>res://.godot/imported/bridge.png-d4e7a43b296801bd72ecf0e8c9444781.ctex::
+::res://images/map/tile/city/::1790384952
+city.png::CompressedTexture2D::3432970441809899531::1790273245::1790426035::1::::<><><>0<>0<>28efe040ee5288927feebb935ebe5580<>res://.godot/imported/city.png-6a8b28159b7806bb86ab3ddbf668af99.ctex::
+::res://images/map/tile/decoraton/::1790385013
+decoration.png::CompressedTexture2D::5944750291988925144::1790273766::1790426035::1::::<><><>0<>0<>a944465833d4cf277f2d5959cd669f2a<>res://.godot/imported/decoration.png-db09070f7b81bae5f5b4b0faef338689.ctex::
+::res://images/map/tile/etc/::1790385167
+map.png::CompressedTexture2D::3449835620615662914::1790251376::1790426035::1::::<><><>0<>0<>e2c2bb6e335e49e9f1aca2f842ac38b4<>res://.godot/imported/map.png-10e17471e8738887b31a79ce46cd9be0.ctex::
+::res://images/map/tile/facility/::1790385316
+a7.png::CompressedTexture2D::2791935694722260924::1790251376::1790426035::1::::<><><>0<>0<>509e7aaea5e8eabd3dc451444cb74d94<>res://.godot/imported/a7.png-4923f4292d3f653c1ac70db978a1b3b7.ctex::
+facility.png::CompressedTexture2D::3024505133503364375::1790272994::1790426035::1::::<><><>0<>0<>46787d71b61df075c1f51f085077e8c0<>res://.godot/imported/facility.png-9cf899f063dbd3b4843b963b004f51f2.ctex::
+facility_base.png::CompressedTexture2D::2711728752310893646::1790255287::1790426034::1::::<><><>0<>0<>1c968602bfbafa5a213ff77b005f6150<>res://.godot/imported/facility_base.png-316e03bdb8076a98840aae4ad9675cd9.ctex::
+::res://images/map/tile/forest/::1790385252
+forest.png::CompressedTexture2D::4634064331180673053::1790272560::1790426035::1::::<><><>0<>0<>bf55e1a50145d2e03ca1a5d8da674df2<>res://.godot/imported/forest.png-61f2bd52cfcaab974c89eb7d1a5d5a39.ctex::
+::res://images/map/tile/ground/::1790387693
+ground1.png::CompressedTexture2D::7049024877844058863::1790384845::1790426035::1::::<><><>0<>0<>ed5dd808d64b62fceb995446450a005e<>res://.godot/imported/ground1.png-f8edd9e795579879b75d199bc1a1ee01.ctex::
+ground2.png::CompressedTexture2D::6947147385225329163::1790386272::1790426035::1::::<><><>0<>0<>291cca97fb955d13cdaa1ea2b7e757bf<>res://.godot/imported/ground2.png-78ce0868a8fef334f09ab62e0a1a6933.ctex::
+ground3.png::CompressedTexture2D::668493477130403146::1790387327::1790426035::1::::<><><>0<>0<>ac2a4013a6e70a6cd4fb37aa13a7737d<>res://.godot/imported/ground3.png-dba18777ae2081b94f3f59a2e5054239.ctex::
+ground4.png::CompressedTexture2D::7921902160155027727::1790387677::1790426035::1::::<><><>0<>0<>e830c62ca9b9adeff8573a89b4cdc59e<>res://.godot/imported/ground4.png-f1db8ab9ed1258d50f26e56f8277fce7.ctex::
+ground.png::CompressedTexture2D::7157717590312667969::1790272451::1790426035::1::::<><><>0<>0<>694dd1fc0b4bc70d0c43ad4eef7bdaa4<>res://.godot/imported/ground.png-fb4697a0b69f3565a29f7458b92decb6.ctex::
+::res://images/map/tile/military/::1790385162
+military.png::CompressedTexture2D::5323657635437882721::1790273130::1790426035::1::::<><><>0<>0<>9c36633a047d03f0163f00f48c5dabfd<>res://.godot/imported/military.png-60b072685170ffed791e7a99ed4829ea.ctex::
+::res://images/map/tile/river/::1790385167
+river.png::CompressedTexture2D::8993405385013822096::1790272664::1790426035::1::::<><><>0<>0<>a5867af49dd4d8d3d7a57a2ec62152d7<>res://.godot/imported/river.png-f6864e5e023ba57930fc6a066cf4510d.ctex::
+::res://images/map/tile/road/::1790385109
+road3.png::CompressedTexture2D::345550544601552801::1790279119::1790426035::1::::<><><>0<>0<>20c8e60757f7386f3c9baa0539931fae<>res://.godot/imported/road3.png-bada8460dca23e61410da6f37f1c0316.ctex::
+road.png::CompressedTexture2D::5102508821058058884::1790272893::1790426035::1::::<><><>0<>0<>976d29bc5be0af7031c9b3b3ee0fb161<>res://.godot/imported/road.png-ce90de5644c3472440e6ac8f7fda4b73.ctex::
+::res://images/map/tile/sea/::1790385090
+sea.png::CompressedTexture2D::589938817350767617::1790272789::1790426035::1::::<><><>0<>0<>516092f2ad27a4dc97f5fc2b1b69f2f8<>res://.godot/imported/sea.png-0b0465faa80d3b18fd9967cb0678387d.ctex::
+::res://images/tower/::1790257617
+a4.png::CompressedTexture2D::5312617619045621601::1790252816::1790426035::1::::<><><>0<>0<>cb94caf96ca1782efd29c963e407567d<>res://.godot/imported/a4.png-5b47d3a84f3ea424e2868716383ed460.ctex::
+a6.png::CompressedTexture2D::1137773934269970446::1790252816::1790426035::1::::<><><>0<>0<>2c4eba5869004741f1507469d41226ca<>res://.godot/imported/a6.png-483fb058ed5f94bbf8d282a78fa49b0e.ctex::
+tower.png::CompressedTexture2D::723506748070863213::1790257586::1790426035::1::::<><><>0<>0<>2b8c737a769aed2bcd786659091d09d8<>res://.godot/imported/tower.png-19d78631e85f8159b51ff5841fa6b1b9.ctex::
+::res://images/ui/::1790252707
+a8.png::CompressedTexture2D::4703023999282690026::1790251376::1790426035::1::::<><><>0<>0<>c8bc6ede00707483ccf28caf7e3e43fb<>res://.godot/imported/a8.png-399692b160229280dda19b18d2f7b7da.ctex::
 ::res://map_data/::1790421271
 northbridge_sector_01.json::JSON::-1::1790421271::0::1::::<><><>0<>0<><>::
 ::res://scripts/::1790391578
