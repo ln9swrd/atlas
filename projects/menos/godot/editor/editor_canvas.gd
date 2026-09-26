@@ -45,37 +45,63 @@ func set_selected_tile(source_id: int, atlas_coords: Vector2i) -> void:
 	select_object({})
 	queue_redraw()
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb_event := event as InputEventMouseButton
+		var local_position := viewport_to_canvas_position(mb_event.position)
+		var inside_canvas := pointer_is_inside_canvas(local_position)
+
 		if mb_event.button_index in [MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_RIGHT]:
-			if mb_event.pressed:
+			if mb_event.pressed and inside_canvas:
 				is_panning = true
-				pan_start_pos = mb_event.position
-			else:
+				pan_start_pos = local_position
+				get_viewport().set_input_as_handled()
+			elif not mb_event.pressed and is_panning:
 				is_panning = false
+				get_viewport().set_input_as_handled()
+		elif mb_event.button_index == MOUSE_BUTTON_LEFT:
+			if not mb_event.pressed:
+				if is_painting_drag:
+					is_painting_drag = false
+					get_viewport().set_input_as_handled()
+				return
+			if not inside_canvas:
+				return
+			is_painting_drag = true
+			var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
+			handle_canvas_click(world_pos)
+			get_viewport().set_input_as_handled()
+		elif not inside_canvas:
+			return
 		elif mb_event.button_index == MOUSE_BUTTON_WHEEL_UP and mb_event.pressed:
 			camera_zoom = minf(3.0, camera_zoom + 0.1)
 			queue_redraw()
+			get_viewport().set_input_as_handled()
 		elif mb_event.button_index == MOUSE_BUTTON_WHEEL_DOWN and mb_event.pressed:
 			camera_zoom = maxf(0.4, camera_zoom - 0.1)
 			queue_redraw()
-		elif mb_event.button_index == MOUSE_BUTTON_LEFT:
-			if mb_event.pressed:
-				is_painting_drag = true
-				var world_pos: Vector2 = (mb_event.position - camera_offset) / camera_zoom
-				handle_canvas_click(world_pos)
-			else:
-				is_painting_drag = false
+			get_viewport().set_input_as_handled()
 
 	elif event is InputEventMouseMotion:
 		var mm_event := event as InputEventMouseMotion
+		var local_position := viewport_to_canvas_position(mm_event.position)
 		if is_panning:
-			camera_offset += mm_event.relative
+			camera_offset += local_position - pan_start_pos
+			pan_start_pos = local_position
 			queue_redraw()
+			get_viewport().set_input_as_handled()
 		elif is_painting_drag and edit_mode in ["PAINT", "ERASE"]:
-			var world_pos: Vector2 = (mm_event.position - camera_offset) / camera_zoom
-			handle_canvas_click(world_pos)
+			if pointer_is_inside_canvas(local_position):
+				var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
+				handle_canvas_click(world_pos)
+			get_viewport().set_input_as_handled()
+
+func viewport_to_canvas_position(viewport_position: Vector2) -> Vector2:
+	return get_global_transform_with_canvas().affine_inverse() * viewport_position
+
+func pointer_is_inside_canvas(local_position: Vector2) -> bool:
+	var canvas_container := get_parent() as Control
+	return canvas_container != null and Rect2(Vector2.ZERO, canvas_container.size).has_point(local_position)
 
 func handle_canvas_click(world_pos: Vector2) -> void:
 	if edit_mode == "SELECT":

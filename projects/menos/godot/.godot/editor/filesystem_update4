@@ -5,3 +5,5 @@ res://main.tscn
 res://assets/menos/maps/northbridge_tileset.tres
 res://scripts/map_loader.gd
 res://main.gd
+res://scripts/stage_loader.gd
+res://editor/atlas_palette.gd

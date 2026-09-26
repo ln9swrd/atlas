@@ -215,3 +215,10 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Browser now stops the Wave and closes pending growth selection when Base HP reaches zero, ending that run in Defeat.
 - No stat growth, new abilities, save data, or balance changes were added. No PIE/runtime test was run.
 - Next: if Godot CLI becomes available, run GDScript `--check-only`; then Master may verify the Wave 1–4 growth flow in PIE. No further systems are in scope.
+
+## Handoff — Map editor click input routing (2026-09-26)
+
+- Status: Updated the canvas input path so mouse actions are read before Control GUI filtering and only handled inside the canvas viewport.
+- Changed: `godot/editor/editor_canvas.gd` converts viewport coordinates into canvas-local coordinates for click, drag, zoom, and pan; `godot/editor/atlas_palette.gd` uses integer `clampi()` for atlas cell selection to avoid Variant inference warnings.
+- Verification: `git diff --check` passed. Godot Editor/PIE interaction remains unverified because the Godot executable is not on PATH and Computer Use could not connect to its native pipe.
+- Next: Open `editor/map_editor.tscn` and verify tile selection, canvas paint/select, zoom, and pan.

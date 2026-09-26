@@ -26,8 +26,8 @@ func _gui_input(event: InputEvent) -> void:
 		if mb_event.button_index == MOUSE_BUTTON_LEFT and mb_event.pressed:
 			var cell_w := size.x / float(COLS)
 			var cell_h := size.y / float(ROWS)
-			var col := clamp(int(mb_event.position.x / cell_w), 0, COLS - 1)
-			var row := clamp(int(mb_event.position.y / cell_h), 0, ROWS - 1)
+			var col := clampi(int(mb_event.position.x / cell_w), 0, COLS - 1)
+			var row := clampi(int(mb_event.position.y / cell_h), 0, ROWS - 1)
 
 			set_selected_cell(col, row)
 			tile_selected.emit(col, row)
