@@ -62,6 +62,7 @@ var MAP_TILES := Vector2i(36, 24)
 var MAP_ORIGIN := Vector2(0, 58)
 var MAP_PIXEL_SIZE := Vector2(1152, 768)
 const SIDEBAR_X := 1172.0
+const CAMPAIGN_STAGE_COUNT := 3
 const MAP_TILE_SOURCE_GROUND := 0
 const MAP_TILE_SOURCE_ROAD := 1
 const MAP_TILE_SOURCE_BOUNDARY := 2
@@ -94,16 +95,29 @@ var effects: Array = []
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	StageManager.load_stage("stage_01")
-	var loaded_map := MapLoader.load_map_data(StageManager.get_map_file())
-	if not loaded_map.is_empty():
-		apply_map_spatial_data(loaded_map)
-		if not build_map_from_data(loaded_map):
-			build_first_battle_map()
-	else:
+	StageManager.reset_session()
+	if not load_stage_map("stage_01"):
 		build_first_battle_map()
 	reset_game()
 	queue_redraw()
+
+func load_stage_map(stage_id: String) -> bool:
+	if StageManager.load_stage(stage_id).is_empty():
+		return false
+	var loaded_map := MapLoader.load_map_data(StageManager.get_map_file())
+	if loaded_map.is_empty():
+		return false
+	apply_map_spatial_data(loaded_map)
+	if not build_map_from_data(loaded_map):
+		build_first_battle_map()
+	return true
+
+func restart_campaign() -> void:
+	StageManager.reset_session()
+	if not load_stage_map("stage_01"):
+		push_error("Could not reload campaign Stage 1.")
+		return
+	reset_game()
 
 func apply_map_spatial_data(loaded_map: Dictionary) -> void:
 	if loaded_map.has("base"): BASE = loaded_map["base"]
@@ -458,27 +472,37 @@ func check_wave_clear() -> void:
 			run_state = RunState.GROWTH
 			log_event("Choose one Robot ability before Wave %d." % wave)
 	else:
-		run_state = RunState.VICTORY
-		log_event("VICTORY. ALL FOUR WAVES CLEAR. Press RESTART to repeat.")
+		var next_stage_id := str(StageManager.get_current_stage().get("next_stage_id", ""))
+		if not next_stage_id.is_empty():
+			if not load_stage_map(next_stage_id):
+				push_error("Could not load next campaign Stage '%s'." % next_stage_id)
+				run_state = RunState.DEFEAT
+				log_event("STAGE LOAD FAILED. Press RESTART to retry the campaign.")
+				return
+			reset_game()
+			log_event("STAGE %d READY. Build defenses before Wave 1." % StageManager.get_current_stage().get("order", 1))
+		else:
+			run_state = RunState.VICTORY
+			log_event("CAMPAIGN VICTORY. ALL STAGES CLEAR. Press RESTART to repeat.")
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_R:
 		play_sfx("ui_click")
-		reset_game()
+		restart_campaign()
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: handle_click(event.position)
 
 func handle_click(point: Vector2) -> void:
-	if Rect2(SIDEBAR_X + 20.0, 175, 145, 42).has_point(point): play_sfx("ui_click"); reset_game(); return
+	if Rect2(SIDEBAR_X + 20.0, 220, 145, 42).has_point(point): play_sfx("ui_click"); restart_campaign(); return
 	if run_state == RunState.GROWTH:
 		for ability_id in available_robot_growths():
 			if GROWTH_OPTION_RECTS[ability_id].has_point(point):
 				choose_robot_growth(ability_id)
 				return
 		return
-	if Rect2(SIDEBAR_X + 20.0, 120, 145, 42).has_point(point): start_wave(); return
-	if Rect2(SIDEBAR_X + 20.0, 250, 145, 42).has_point(point): launch_robot(); return
-	if Rect2(SIDEBAR_X + 20.0, 305, 145, 42).has_point(point): build_tower("cannon"); return
-	if Rect2(SIDEBAR_X + 20.0, 360, 145, 42).has_point(point): build_tower("gatling"); return
+	if Rect2(SIDEBAR_X + 20.0, 172, 145, 42).has_point(point): start_wave(); return
+	if Rect2(SIDEBAR_X + 20.0, 275, 145, 42).has_point(point): launch_robot(); return
+	if Rect2(SIDEBAR_X + 20.0, 330, 145, 42).has_point(point): build_tower("cannon"); return
+	if Rect2(SIDEBAR_X + 20.0, 385, 145, 42).has_point(point): build_tower("gatling"); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -738,8 +762,10 @@ func _draw() -> void:
 
 func draw_ui() -> void:
 	draw_rect(Rect2(SIDEBAR_X, 0, 208, 860), Color("101f25")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 42), "FIELD CONTROL", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
-	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 78), "BASE HP  %03d" % max(0, ceil(base_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if base_hp > 30 else Color("ef7068")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 101), "GOLD     %03d" % gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f0b35a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 124), "WAVE     %d / 4" % wave, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("d7fff7"))
-	var next_label: String = DATA.WAVES[min(wave - 1, 3)].label; draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 470), "NEXT THREAT", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("6a858a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 491), next_label, HORIZONTAL_ALIGNMENT_LEFT, 165, 11, Color("a9c5c7"))
+	var stage_data := StageManager.get_current_stage()
+	var waves_data := StageManager.get_waves()
+	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 78), "BASE HP  %03d" % max(0, ceil(base_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if base_hp > 30 else Color("ef7068")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 101), "GOLD     %03d" % gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f0b35a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 124), "STAGE    %d / %d" % [int(stage_data.get("order", 1)), CAMPAIGN_STAGE_COUNT], HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d7fff7")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 146), "WAVE     %d / %d" % [wave, waves_data.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d7fff7"))
+	var next_label := "CAMPAIGN CLEAR" if waves_data.is_empty() else str(waves_data[mini(wave - 1, waves_data.size() - 1)].get("label", "UNKNOWN")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 470), "NEXT THREAT", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("6a858a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 491), next_label, HORIZONTAL_ALIGNMENT_LEFT, 165, 11, Color("a9c5c7"))
 	var status_text := "READY"
 	if run_state == RunState.RUNNING: status_text = "WAVE %d IN PROGRESS" % wave
 	elif run_state == RunState.GROWTH: status_text = "SELECT ROBOT ABILITY"
@@ -748,7 +774,7 @@ func draw_ui() -> void:
 	if run_state == RunState.VICTORY: draw_sprite(VISUALS["status_victory"], Vector2(SIDEBAR_X + 127.0, 585), Vector2(48, 48))
 	elif run_state == RunState.DEFEAT: draw_sprite(VISUALS["status_defeat"], Vector2(SIDEBAR_X + 127.0, 585), Vector2(48, 48))
 	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 585), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if run_state == RunState.VICTORY else Color("ef7068") if run_state == RunState.DEFEAT else Color("d7fff7"))
-	button(Rect2(SIDEBAR_X + 20.0, 120, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(SIDEBAR_X + 20.0, 175, 145, 42), "RESTART", false); button(Rect2(SIDEBAR_X + 20.0, 250, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(SIDEBAR_X + 20.0, 305, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(SIDEBAR_X + 20.0, 360, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
+	button(Rect2(SIDEBAR_X + 20.0, 172, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(SIDEBAR_X + 20.0, 220, 145, 42), "RESTART", false); button(Rect2(SIDEBAR_X + 20.0, 275, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(SIDEBAR_X + 20.0, 330, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(SIDEBAR_X + 20.0, 385, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
 	var robot_status := "DOCKED"
 	if robot.active: robot_status = "DEPLOYED / " + robot.spot
 	if robot_selected: robot_status += " / SELECTED"

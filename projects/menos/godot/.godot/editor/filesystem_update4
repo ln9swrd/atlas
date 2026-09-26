@@ -4,3 +4,4 @@ res://main.tscn
 res://assets/menos/maps/northbridge_tileset.tres
 res://content/maps/map_01_src.json
 res://editor/map_editor.tscn
+res://main.gd
