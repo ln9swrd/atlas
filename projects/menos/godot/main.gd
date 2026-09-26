@@ -94,7 +94,8 @@ var effects: Array = []
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	var loaded_map := MapLoader.load_map_data("res://map_data/northbridge_sector_01.json")
+	StageManager.load_stage("stage_01")
+	var loaded_map := MapLoader.load_map_data(StageManager.get_map_file())
 	if not loaded_map.is_empty():
 		apply_map_spatial_data(loaded_map)
 		if not build_map_from_data(loaded_map):
