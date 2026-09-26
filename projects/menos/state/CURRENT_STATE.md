@@ -222,3 +222,11 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/editor_canvas.gd` converts viewport coordinates into canvas-local coordinates for click, drag, zoom, and pan; `godot/editor/atlas_palette.gd` uses integer `clampi()` for atlas cell selection to avoid Variant inference warnings.
 - Verification: `git diff --check` passed. Godot Editor/PIE interaction remains unverified because the Godot executable is not on PATH and Computer Use could not connect to its native pipe.
 - Next: Open `editor/map_editor.tscn` and verify tile selection, canvas paint/select, zoom, and pan.
+
+## Handoff — Godot campaign title screen (2026-09-26)
+
+- Status: Added a native Godot campaign title screen with three-stage briefing, Start Campaign, and Quit buttons. The project now launches into this screen; the existing `main.tscn` remains directly runnable with F6.
+- Changed: `godot/ui/title_screen.tscn`, `godot/ui/title_screen.gd`, and `godot/project.godot`; no game scene or gameplay script changes.
+- Input: Native Button `pressed` signals handle mouse/UI activation; Enter and keypad Enter start the campaign. Quit calls `get_tree().quit()`.
+- Verification: Godot 4.7.2 headless editor load exited `0`; `git diff --check` passed. Editor visual inspection, runtime, and PIE were not verified.
+- Next: Open the Godot project, run F5, verify the title screen layout, Start Campaign scene transition, Enter shortcut, and Quit button. F6 should still run `main.tscn` directly.
