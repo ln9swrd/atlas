@@ -205,7 +205,7 @@ func play_sfx(id: String) -> void:
 	player.play()
 
 func reset_game() -> void:
-	base_hp = 100.0; gold = 180; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
+	base_hp = StageManager.get_base_hp(); gold = StageManager.get_initial_gold(); wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""; selected_tower = ""; robot_selected = false
 	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS.CENTER, "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
 	robot_progression = {"unlocked_abilities": []}
@@ -234,7 +234,8 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func start_wave() -> void:
-	if run_state != RunState.READY or wave_running or base_hp <= 0.0 or wave > DATA.WAVES.size(): return
+	var waves_data := StageManager.get_waves()
+	if run_state != RunState.READY or wave_running or base_hp <= 0.0 or wave > waves_data.size(): return
 	if not robot.active:
 		robot.hp = DATA.ROBOT.hp
 		robot.active = true
@@ -242,13 +243,13 @@ func start_wave() -> void:
 		log_event("ATLAS-01 deployed at %s." % robot.spot)
 	spawn_queue.clear()
 	var offset := 0.0
-	for group in DATA.WAVES[wave - 1].groups:
+	for group in waves_data[wave - 1]["groups"]:
 		for index in range(group[1]):
 			spawn_queue.append({"type": group[0], "delay": offset + index * group[2], "lanes": group[3]})
 		offset += group[1] * group[2] + 0.3
 	spawn_clock = 0.0; wave_running = true; run_state = RunState.RUNNING; wave_clear = false
 	play_sfx("wave_start")
-	log_event("WAVE %d STARTED: %s" % [wave, DATA.WAVES[wave - 1].label])
+	log_event("WAVE %d STARTED: %s" % [wave, waves_data[wave - 1]["label"]])
 
 func spawn_enemies() -> void:
 	while not spawn_queue.is_empty() and spawn_queue[0].delay <= spawn_clock:
@@ -447,7 +448,8 @@ func check_wave_clear() -> void:
 	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or not wave_running: return
 	if not spawn_queue.is_empty() or enemies.any(func(enemy): return enemy.hp > 0.0): return
 	wave_running = false; wave_clear = true
-	if wave < DATA.WAVES.size():
+	var waves_count := StageManager.get_waves().size()
+	if wave < waves_count:
 		log_event("Wave %d clear." % wave); wave += 1
 		if available_robot_growths().is_empty():
 			run_state = RunState.READY
