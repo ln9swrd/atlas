@@ -7,6 +7,8 @@ extends Control
 @onready var lbl_position: Label = $MainLayout/Inspector/VBox/LblPosition
 @onready var lbl_tile_coords: Label = $MainLayout/Inspector/VBox/LblTileCoords
 @onready var asset_list: ItemList = $MainLayout/Inspector/VBox/AssetList
+@onready var asset_preview: TextureRect = $MainLayout/Inspector/VBox/AssetPreview
+@onready var lbl_asset_preview_status: Label = $MainLayout/Inspector/VBox/LblAssetPreviewStatus
 @onready var lbl_asset_details: Label = $MainLayout/Inspector/VBox/LblAssetDetails
 @onready var lbl_status: Label = $BottomBar/HBox/LblStatus
 @onready var open_map_dialog: FileDialog = $OpenMapDialog
@@ -24,6 +26,7 @@ var current_map_data := {}
 var active_atlas_x := 0
 var active_atlas_y := 0
 var catalog_entries: Array[Dictionary] = []
+var preview_texture_cache: Dictionary = {}
 
 func _ready() -> void:
 	asset_catalog_window.close_requested.connect(load_asset_catalog)
@@ -49,6 +52,9 @@ func load_asset_catalog() -> void:
 		return
 	catalog_entries.clear()
 	asset_list.clear()
+	asset_preview.texture = null
+	lbl_asset_preview_status.text = "Select an asset to preview its source region."
+	preview_texture_cache.clear()
 	for value in parsed.get("assets", []):
 		if value is Dictionary:
 			var entry: Dictionary = value.duplicate(true)
@@ -208,11 +214,38 @@ func _on_asset_list_item_selected(index: int) -> void:
 	var entry: Dictionary = catalog_entries[index]
 	if canvas:
 		canvas.set_catalog_asset(entry)
+	set_asset_preview(entry)
 	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
 	var footprint: Array = entry.get("footprint_tiles", [1, 1])
 	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint[0]), str(footprint[1])]
 	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
 	update_selected_tile_label("Click canvas to place selected catalog asset")
+
+func set_asset_preview(entry: Dictionary) -> void:
+	asset_preview.texture = null
+	var source_path := str(entry.get("source_path", ""))
+	var source_texture: Texture2D = preview_texture_cache.get(source_path)
+	if source_texture == null and not source_path.is_empty():
+		var loaded: Resource = ResourceLoader.load(source_path)
+		if loaded is Texture2D:
+			source_texture = loaded
+			preview_texture_cache[source_path] = source_texture
+	if source_texture == null:
+		lbl_asset_preview_status.text = "Preview unavailable: could not load source image."
+		return
+	var rect_values: Array = entry.get("source_rect_px", [])
+	if rect_values.size() < 4:
+		lbl_asset_preview_status.text = "Preview unavailable: source pixel rectangle is missing."
+		return
+	var rect := Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+	if rect.position.x < 0.0 or rect.position.y < 0.0 or rect.size.x <= 0.0 or rect.size.y <= 0.0 or rect.end.x > source_texture.get_width() or rect.end.y > source_texture.get_height():
+		lbl_asset_preview_status.text = "Preview unavailable: source rectangle exceeds image bounds."
+		return
+	var cropped_preview := AtlasTexture.new()
+	cropped_preview.atlas = source_texture
+	cropped_preview.region = rect
+	asset_preview.texture = cropped_preview
+	lbl_asset_preview_status.text = "Source region: %d × %d px · original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
 
 func _on_asset_list_item_clicked(index: int, _at_position: Vector2, _mouse_button_index: int) -> void:
 	_on_asset_list_item_selected(index)

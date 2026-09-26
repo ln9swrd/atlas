@@ -200,6 +200,19 @@ custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="AssetPreview" type="TextureRect" parent="MainLayout/Inspector/VBox"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LblAssetPreviewStatus" type="Label" parent="MainLayout/Inspector/VBox"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+text = "Select an asset to preview its source region."
+autowrap_mode = 2
+
 [node name="LblAssetDetails" type="Label" parent="MainLayout/Inspector/VBox"]
 custom_minimum_size = Vector2(0, 132)
 layout_mode = 2

@@ -261,3 +261,11 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed in this pass: `godot/editor/map_editor.gd`, `map_editor.tscn`, `editor_canvas.gd`, and `scripts/map_loader.gd`. The Map Editor reloads its catalog when the catalog window closes.
 - Verification: Static source/scene/data-path review and `git diff --check`; Godot parser, Editor, and PIE were not run because `.godot` metadata is already dirty. Image-resource import/render and save-reload behavior remain runtime-unverified.
 - Next: Open Map Editor, select the saved catalog Tile, place/save/reload it, then repeat with an Object entry and verify its footprint and rendering.
+
+## Handoff — Map editor catalog source preview (2026-09-26)
+
+- Status: Selecting a catalog entry now previews only its `source_rect_px` crop in the Inspector, beside the entry details.
+- Rendering: `AtlasTexture` references the loaded `Texture2D`; the Inspector `TextureRect` uses aspect-preserving centered fit within a fixed preview area. The original source coordinates and catalog data remain unchanged.
+- Failure handling: Missing images, malformed rectangles, and out-of-bounds rectangles clear the preview and show a status message.
+- Changed: `godot/editor/map_editor.gd` and `map_editor.tscn` only.
+- Verification: Static path/rectangle/layout inspection and `git diff --check`; Godot was not run. Preview appearance remains runtime-unverified.
