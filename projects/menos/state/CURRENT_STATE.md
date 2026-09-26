@@ -245,3 +245,11 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Path behavior: Both dialogs default to the directory and filename derived from the active map path; `res://` and `user://` paths are globalized for filesystem browsing.
 - Verification: `git diff --check` passed; dialog modes, filters, signals, and path setup were inspected. Godot headless parsing was skipped because the pre-existing `.godot` editor files are already modified and should not be disturbed; runtime/PIE remains unverified.
 - Next: In Godot Editor, open an existing JSON map and save to a new JSON file to verify both file dialogs end to end.
+
+## Handoff — Asset catalog authoring window (2026-09-26)
+
+- Status: Added a separate native Godot asset-catalog window launched from Map Editor; it does not switch scenes or modify map placement/palette.
+- Changed: `godot/editor/asset_catalog_editor.tscn`, `asset_catalog_editor.gd`, `asset_region_view.gd`, `map_editor.gd`, `map_editor.tscn`, and initial `godot/content/editor/asset_catalog.json`.
+- Catalog schema: `schema_version` plus `assets[]` records with stable `asset_id`, `kind`, `group`, `display_name`, project `source_path`, `source_rect_px`; Objects also carry `footprint_tiles`. Tile and Object group options follow the requested lists.
+- Verification: Static source/scene/schema inspection and `git diff --check`; Godot was not launched to avoid changing the pre-existing dirty `.godot` editor metadata. Runtime/PIE remains unverified.
+- Next: Open the Map Editor, register a Tile and Object from project images, save/reopen the catalog, and verify region pixel coordinates and editing actions. Catalog data is not yet connected to map placement.

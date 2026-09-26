@@ -15,6 +15,7 @@ extends Control
 @onready var spin_atlas_x: SpinBox = $MainLayout/Toolbox/VBox/AtlasPicker/SpinX
 @onready var spin_atlas_y: SpinBox = $MainLayout/Toolbox/VBox/AtlasPicker/SpinY
 @onready var atlas_palette: AtlasPalette = $MainLayout/Toolbox/VBox/PaletteContainer/AtlasPaletteView
+@onready var asset_catalog_window: Window = $AssetCatalogWindow
 
 var current_map_path := "res://map_data/northbridge_sector_01.json"
 var current_map_data := {}
@@ -190,3 +191,6 @@ func _on_open_map_file_selected(path: String) -> void:
 func _on_save_map_file_selected(path: String) -> void:
 	current_map_path = path
 	save_map()
+
+func _on_btn_asset_catalog_pressed() -> void:
+	asset_catalog_window.popup_centered(Vector2i(1280, 820))

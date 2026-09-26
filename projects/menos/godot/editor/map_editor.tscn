@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://iysha3xdnm5m" path="res://editor/map_editor.gd" id="1_editor"]
 [ext_resource type="Script" uid="uid://dtlgvr18i2nld" path="res://editor/editor_canvas.gd" id="2_canvas"]
 [ext_resource type="Script" uid="uid://bhkujy0mt22xt" path="res://editor/atlas_palette.gd" id="3_palette"]
+[ext_resource type="PackedScene" path="res://editor/asset_catalog_editor.tscn" id="4_asset_catalog"]
 
 [node name="MapEditor" type="Control" unique_id=1139210866]
 layout_mode = 3
@@ -213,6 +214,12 @@ text = "Load JSON"
 layout_mode = 2
 text = "Save JSON"
 
+[node name="BtnAssetCatalog" type="Button" parent="BottomBar/HBox"]
+layout_mode = 2
+text = "Asset Catalog"
+
+[node name="AssetCatalogWindow" parent="." instance=ExtResource("4_asset_catalog")]
+
 [node name="OpenMapDialog" type="FileDialog" parent="."]
 title = "Open Map JSON"
 file_mode = 0
@@ -240,5 +247,6 @@ filters = PackedStringArray("*.json ; JSON Maps")
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileRoad" to="." method="_on_btn_tile_road_pressed"]
 [connection signal="pressed" from="BottomBar/HBox/BtnLoad" to="." method="_on_btn_load_pressed"]
 [connection signal="pressed" from="BottomBar/HBox/BtnSave" to="." method="_on_btn_save_pressed"]
+[connection signal="pressed" from="BottomBar/HBox/BtnAssetCatalog" to="." method="_on_btn_asset_catalog_pressed"]
 [connection signal="file_selected" from="OpenMapDialog" to="." method="_on_open_map_file_selected"]
 [connection signal="file_selected" from="SaveMapDialog" to="." method="_on_save_map_file_selected"]
