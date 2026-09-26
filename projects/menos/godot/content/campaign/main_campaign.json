@@ -1,0 +1,18 @@
+{
+  "campaign_id": "main_campaign",
+  "name": "MENOS Operation",
+  "stages": [
+    "stage_01",
+    "stage_02",
+    "stage_03",
+    "stage_04",
+    "stage_05",
+    "stage_06",
+    "stage_07",
+    "stage_08",
+    "stage_09",
+    "stage_10",
+    "stage_11",
+    "stage_12"
+  ]
+}

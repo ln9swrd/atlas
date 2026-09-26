@@ -1,0 +1,42 @@
+{
+  "stage_id": "stage_01",
+  "order": 1,
+  "name": "Northbridge Sector 01",
+  "map_file": "res://content/maps/map_01.json",
+  "balance": {
+    "initial_gold": 180,
+    "base_hp": 100.0
+  },
+  "waves": [
+    {
+      "label": "NORMAL / BOTH LANES",
+      "groups": [
+        ["normal", 10, 0.75, ["left", "right"]]
+      ]
+    },
+    {
+      "label": "RUSHER / NORTH PRESSURE",
+      "groups": [
+        ["normal", 6, 0.8, ["right"]],
+        ["rusher", 8, 0.5, ["left"]]
+      ]
+    },
+    {
+      "label": "HEAVY / SOUTH PRESSURE",
+      "groups": [
+        ["rusher", 7, 0.45, ["right"]],
+        ["heavy", 5, 1.1, ["left"]]
+      ]
+    },
+    {
+      "label": "ALL TYPES / GIANT / BOTH LANES",
+      "groups": [
+        ["normal", 8, 0.6, ["left", "right"]],
+        ["rusher", 8, 0.42, ["left", "right"]],
+        ["heavy", 6, 0.9, ["left", "right"]],
+        ["giant", 1, 1.0, ["right"]]
+      ]
+    }
+  ],
+  "next_stage_id": "stage_02"
+}
