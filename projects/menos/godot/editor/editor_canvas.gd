@@ -330,6 +330,9 @@ func _input(event: InputEvent) -> void:
 				var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
 				handle_canvas_click(world_pos)
 			get_viewport().set_input_as_handled()
+		elif edit_mode == "PAINT" and not selected_catalog_asset.is_empty():
+			queue_redraw()
+			get_viewport().set_input_as_handled()
 
 func _has_text_input_focus() -> bool:
 	var focus_owner := get_viewport().gui_get_focus_owner()
@@ -807,7 +810,7 @@ func place_catalog_object(cell: Vector2i) -> void:
 	select_object({
 		"type": "Catalog Object",
 		"id": str(selected_catalog_asset.get("asset_id", "")),
-		"position": position,
+		"position": object_pixel_pos,
 		"object_index": map_data["objects"].size() - 1,
 		"footprint": [width, height]
 	})
@@ -1487,6 +1490,21 @@ func _draw() -> void:
 			draw_string(ThemeDB.fallback_font, pos + Vector2(-24, 34), "SPOT: " + str(key), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
 
 	_draw_gameplay_elements()
+
+	# Render Catalog Placement Preview
+	if edit_mode == "PAINT" and not selected_catalog_asset.is_empty() and pointer_is_inside_canvas(last_pointer_local):
+		var preview_world := (last_pointer_local - camera_offset) / camera_zoom
+		var preview_cell := get_cell_coords(preview_world)
+		var preview_origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+		var preview_position := preview_origin + Vector2(preview_cell) * 32.0
+		var preview_footprint := catalog_asset_footprint(selected_catalog_asset)
+		var preview_rect := Rect2(preview_position, Vector2(preview_footprint) * 32.0)
+		var preview_texture := get_catalog_texture(str(selected_catalog_asset.get("asset_id", "")))
+		if preview_texture != null:
+			draw_texture_rect_region(preview_texture, preview_rect, catalog_source_rect(selected_catalog_asset), Color(1.0, 1.0, 1.0, 0.55))
+		else:
+			draw_rect(preview_rect, Color(0.4, 0.25, 0.32, 0.55), true)
+		draw_rect(preview_rect, Color("7ed6ce"), false, 2.0 / camera_zoom)
 
 	# Render Selected Object Highlight
 	if not selected_object.is_empty() and selected_object.has("position"):
