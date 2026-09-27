@@ -8,6 +8,7 @@ const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 var entries: Array[Dictionary] = []
 var source_path := ""
 var source_texture: Texture2D
+var preview_source_cache: Dictionary = {}
 var selected_index := -1
 var source_dialog: FileDialog
 var asset_list: ItemList
@@ -83,6 +84,8 @@ func _build_interface() -> void:
 	asset_list = ItemList.new()
 	asset_list.custom_minimum_size.y = 170
 	asset_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	asset_list.icon_mode = ItemList.ICON_MODE_LEFT
+	asset_list.fixed_icon_size = Vector2i(48, 48)
 	asset_list.item_selected.connect(_on_asset_selected)
 	details.add_child(asset_list)
 	var form := GridContainer.new()
@@ -323,9 +326,36 @@ func _clear_form() -> void:
 func _refresh_list() -> void:
 	asset_list.clear()
 	for entry in entries:
-		asset_list.add_item("%s  ·  %s / %s" % [entry.get("asset_id", "?"), entry.get("kind", "?"), entry.get("display_name", "?")])
+		var kind_text := str(entry.get("kind", "tile")).capitalize()
+		var group_text := str(entry.get("group", "?"))
+		var display_text := "%s\n%s · %s" % [entry.get("display_name", "?"), kind_text, group_text]
+		asset_list.add_item(display_text, _entry_preview_icon(entry))
 	if selected_index >= 0 and selected_index < entries.size():
 		asset_list.select(selected_index)
+
+func _entry_preview_icon(entry: Dictionary) -> Texture2D:
+	var rect_values: Variant = entry.get("source_rect_px", [])
+	if not rect_values is Array or rect_values.size() != 4:
+		return null
+	var source_path_value := str(entry.get("source_path", ""))
+	if source_path_value.is_empty():
+		return null
+	var texture: Texture2D = preview_source_cache.get(source_path_value) as Texture2D
+	if texture == null:
+		var loaded: Resource = ResourceLoader.load(source_path_value)
+		if not loaded is Texture2D:
+			return null
+		texture = loaded
+		preview_source_cache[source_path_value] = texture
+	var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+	if rect.size.x <= 0 or rect.size.y <= 0 or rect.position.x < 0 or rect.position.y < 0:
+		return null
+	if rect.end.x > texture.get_width() or rect.end.y > texture.get_height():
+		return null
+	var preview := AtlasTexture.new()
+	preview.atlas = texture
+	preview.region = Rect2(rect.position, rect.size)
+	return preview
 
 func _load_catalog() -> void:
 	if not FileAccess.file_exists(CATALOG_PATH):

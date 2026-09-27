@@ -269,3 +269,25 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Failure handling: Missing images, malformed rectangles, and out-of-bounds rectangles clear the preview and show a status message.
 - Changed: `godot/editor/map_editor.gd` and `map_editor.tscn` only.
 - Verification: Static path/rectangle/layout inspection and `git diff --check`; Godot was not run. Preview appearance remains runtime-unverified.
+
+## Handoff — Map editor eraser brush size (2026-09-27)
+
+- Status: Added a square tile eraser brush size control, default 1×1 and limited to 1–10 tiles.
+- Behavior: The clicked tile is the brush center; the bounded square area erases only tiles on the active layer. Size 1 retains the prior single-cell behavior. Existing object deletion is unchanged.
+- Changed: `godot/editor/map_editor.gd`, `map_editor.tscn`, and `editor_canvas.gd`.
+- Verification: Static code/scene review and `git diff --check`; Godot was not run and runtime behavior remains unverified.
+
+## Handoff — Map editor Ctrl+Z history (2026-09-27)
+
+- Status: Added bounded Ctrl+Z history for legacy/catalog tile edits and catalog object placement/removal. Each mouse edit stroke, including a drag, is one undo step; unchanged clicks create no history. History retains up to 100 deep snapshots and clears when a map is loaded.
+- Input: Ctrl+Z is handled by the canvas only when a `LineEdit`/`TextEdit` does not own focus, leaving text-input undo untouched. Undo restores a deep copy, redraws, and emits `map_data_changed` so the editor marks the map dirty.
+- Changed: `godot/editor/editor_canvas.gd`, `map_editor.tscn` help text, and this state handoff.
+- Verification: Source/diff review and `git diff --check`; Godot and tests were not run.
+
+## Handoff — Asset catalog list and entry editing (2026-09-27)
+
+- Status: Catalog entries now appear in the authoring list with a cropped source-region thumbnail and display name, kind, and group.
+- Existing behavior confirmed by static inspection: selecting a row fills the editable ID/name/kind/group/rect/footprint fields and loads its source image/region; Add, Update Selected, Remove Selected, and Save Catalog handlers were already present.
+- Failure handling: Missing source textures or invalid/out-of-bounds rectangles omit the thumbnail while retaining the text row. Source textures are cached by path for list refreshes.
+- Changed: `godot/editor/asset_catalog_editor.gd` and this handoff only. Existing catalog JSON and unrelated dirty files were preserved.
+- Verification: Static code and catalog JSON inspection plus `git diff --check`; Godot was not run, so visual/runtime behavior remains unverified.

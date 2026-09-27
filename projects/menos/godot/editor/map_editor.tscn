@@ -63,6 +63,21 @@ text = "Mode: Select"
 layout_mode = 2
 text = "Mode: Erase Tile"
 
+[node name="EraserSize" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+
+[node name="LblEraserSize" type="Label" parent="MainLayout/Toolbox/VBox/EraserSize"]
+layout_mode = 2
+text = "Brush tiles:"
+
+[node name="SpinEraserSize" type="SpinBox" parent="MainLayout/Toolbox/VBox/EraserSize"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 10.0
+step = 1.0
+value = 1.0
+
 [node name="HSeparator3" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=1928436321]
 layout_mode = 2
 
@@ -148,6 +163,7 @@ LMB: Paint / Select
 LMB Drag: Continuous Paint
 MMB/RMB Drag: Pan
 Wheel: Zoom
+Ctrl+Z: Undo last edit
 Save: [Save JSON] Button"
 
 [node name="CanvasContainer" type="Control" parent="MainLayout" unique_id=1780933295]
@@ -270,6 +286,7 @@ filters = PackedStringArray("*.json ; JSON Maps")
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnErase" to="." method="_on_btn_erase_pressed"]
 [connection signal="value_changed" from="MainLayout/Toolbox/VBox/AtlasPicker/SpinX" to="." method="_on_spin_atlas_x_value_changed"]
 [connection signal="value_changed" from="MainLayout/Toolbox/VBox/AtlasPicker/SpinY" to="." method="_on_spin_atlas_y_value_changed"]
+[connection signal="value_changed" from="MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize" to="." method="_on_eraser_size_value_changed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset0" to="." method="_on_btn_tile_g4_preset0_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset1" to="." method="_on_btn_tile_g4_preset1_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset2" to="." method="_on_btn_tile_g4_preset2_pressed"]

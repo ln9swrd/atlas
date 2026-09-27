@@ -5,6 +5,7 @@ signal object_selected(info: Dictionary)
 signal map_data_changed()
 
 const TILESET: TileSet = preload("res://assets/menos/maps/northbridge_tileset.tres")
+const MAX_UNDO_HISTORY := 100
 
 var map_data: Dictionary = {}
 var selected_object: Dictionary = {}
@@ -16,18 +17,27 @@ var selected_tile_atlas_coords := Vector2i.ZERO
 var selected_catalog_asset: Dictionary = {}
 var catalog_assets_by_id: Dictionary = {}
 var catalog_texture_cache: Dictionary = {}
+var eraser_size := 1
 
 var camera_zoom := 1.0
 var camera_offset := Vector2.ZERO
 var is_panning := false
 var is_painting_drag := false
 var pan_start_pos := Vector2.ZERO
+var undo_history: Array[Dictionary] = []
+var edit_stroke_snapshot: Dictionary = {}
+var edit_stroke_active := false
+var edit_stroke_changed := false
 
 func _ready() -> void:
 	queue_redraw()
 
 func set_map_data(data: Dictionary) -> void:
 	map_data = data.duplicate(true)
+	undo_history.clear()
+	edit_stroke_snapshot.clear()
+	edit_stroke_active = false
+	edit_stroke_changed = false
 	if not map_data.has("tiles"):
 		map_data["tiles"] = {}
 	queue_redraw()
@@ -40,6 +50,9 @@ func set_edit_mode(mode: String) -> void:
 func set_active_layer(layer_name: String) -> void:
 	active_layer = layer_name
 	queue_redraw()
+
+func set_eraser_size(size_in_tiles: int) -> void:
+	eraser_size = clampi(size_in_tiles, 1, 10)
 
 func set_selected_tile(source_id: int, atlas_coords: Vector2i) -> void:
 	selected_catalog_asset.clear()
@@ -78,6 +91,20 @@ func get_catalog_texture(asset_id: String) -> Texture2D:
 	return null
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.pressed and not key_event.echo and key_event.ctrl_pressed and not key_event.shift_pressed and key_event.keycode == KEY_Z:
+			if _has_text_input_focus():
+				return
+			if edit_stroke_active:
+				_finish_edit_stroke()
+			if not undo_history.is_empty():
+				_undo_last_edit()
+				get_viewport().set_input_as_handled()
+				if is_painting_drag and edit_mode in ["PAINT", "ERASE"]:
+					_begin_edit_stroke()
+			return
+
 	if event is InputEventMouseButton:
 		var mb_event := event as InputEventMouseButton
 		var local_position := viewport_to_canvas_position(mb_event.position)
@@ -94,12 +121,15 @@ func _input(event: InputEvent) -> void:
 		elif mb_event.button_index == MOUSE_BUTTON_LEFT:
 			if not mb_event.pressed:
 				if is_painting_drag:
+					_finish_edit_stroke()
 					is_painting_drag = false
 					get_viewport().set_input_as_handled()
 				return
 			if not inside_canvas:
 				return
 			is_painting_drag = true
+			if edit_mode in ["PAINT", "ERASE"]:
+				_begin_edit_stroke()
 			var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
 			handle_canvas_click(world_pos)
 			get_viewport().set_input_as_handled()
@@ -127,6 +157,37 @@ func _input(event: InputEvent) -> void:
 				var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
 				handle_canvas_click(world_pos)
 			get_viewport().set_input_as_handled()
+
+func _has_text_input_focus() -> bool:
+	var focus_owner := get_viewport().gui_get_focus_owner()
+	return focus_owner is LineEdit or focus_owner is TextEdit
+
+func _begin_edit_stroke() -> void:
+	edit_stroke_snapshot = map_data.duplicate(true)
+	edit_stroke_active = true
+	edit_stroke_changed = false
+
+func _finish_edit_stroke() -> void:
+	if edit_stroke_active and edit_stroke_changed:
+		undo_history.append(edit_stroke_snapshot)
+		if undo_history.size() > MAX_UNDO_HISTORY:
+			undo_history.pop_front()
+	edit_stroke_snapshot = {}
+	edit_stroke_active = false
+	edit_stroke_changed = false
+
+func _mark_map_data_changed() -> void:
+	if edit_stroke_active:
+		edit_stroke_changed = true
+	map_data_changed.emit()
+	queue_redraw()
+
+func _undo_last_edit() -> void:
+	map_data = undo_history.pop_back().duplicate(true)
+	selected_object.clear()
+	object_selected.emit({})
+	map_data_changed.emit()
+	queue_redraw()
 
 func viewport_to_canvas_position(viewport_position: Vector2) -> Vector2:
 	return get_global_transform_with_canvas().affine_inverse() * viewport_position
@@ -173,8 +234,7 @@ func paint_tile_at(world_pos: Vector2) -> void:
 
 	if map_data["tiles"][active_layer].get(key) != tile_info:
 		map_data["tiles"][active_layer][key] = tile_info
-		map_data_changed.emit()
-		queue_redraw()
+		_mark_map_data_changed()
 
 func paint_catalog_tile(cell: Vector2i) -> void:
 	if not map_data.has("tiles"):
@@ -185,8 +245,7 @@ func paint_catalog_tile(cell: Vector2i) -> void:
 	var tile_info := {"asset_id": str(selected_catalog_asset.get("asset_id", ""))}
 	if map_data["tiles"][active_layer].get(key) != tile_info:
 		map_data["tiles"][active_layer][key] = tile_info
-		map_data_changed.emit()
-		queue_redraw()
+		_mark_map_data_changed()
 
 func place_catalog_object(cell: Vector2i) -> void:
 	var footprint: Array = selected_catalog_asset.get("footprint_tiles", [1, 1])
@@ -204,8 +263,7 @@ func place_catalog_object(cell: Vector2i) -> void:
 		"position": [position.x, position.y],
 		"footprint_tiles": [width, height]
 	})
-	map_data_changed.emit()
-	queue_redraw()
+	_mark_map_data_changed()
 
 func erase_tile_at(world_pos: Vector2) -> void:
 	if erase_catalog_object_at(world_pos):
@@ -219,11 +277,20 @@ func erase_tile_at(world_pos: Vector2) -> void:
 	if not map_data.has("tiles") or not map_data["tiles"].has(active_layer):
 		return
 
-	var key := "%d,%d" % [cell.x, cell.y]
-	if map_data["tiles"][active_layer].has(key):
-		map_data["tiles"][active_layer].erase(key)
-		map_data_changed.emit()
-		queue_redraw()
+	var half_size := int(floor(float(eraser_size) / 2.0))
+	var start_cell := cell - Vector2i(half_size, half_size)
+	var changed := false
+	for offset_y in range(eraser_size):
+		for offset_x in range(eraser_size):
+			var target_cell := start_cell + Vector2i(offset_x, offset_y)
+			if target_cell.x < 0 or target_cell.x >= map_tiles.x or target_cell.y < 0 or target_cell.y >= map_tiles.y:
+				continue
+			var key := "%d,%d" % [target_cell.x, target_cell.y]
+			if map_data["tiles"][active_layer].has(key):
+				map_data["tiles"][active_layer].erase(key)
+				changed = true
+	if changed:
+		_mark_map_data_changed()
 
 func erase_catalog_object_at(world_pos: Vector2) -> bool:
 	var objects: Array = map_data.get("objects", [])
@@ -235,8 +302,7 @@ func erase_catalog_object_at(world_pos: Vector2) -> bool:
 		if object_rect.has_point(world_pos):
 			objects.remove_at(index)
 			map_data["objects"] = objects
-			map_data_changed.emit()
-			queue_redraw()
+			_mark_map_data_changed()
 			return true
 	return false
 

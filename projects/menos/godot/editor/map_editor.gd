@@ -18,6 +18,7 @@ extends Control
 @onready var option_layer: OptionButton = $MainLayout/Toolbox/VBox/OptionLayer
 @onready var spin_atlas_x: SpinBox = $MainLayout/Toolbox/VBox/AtlasPicker/SpinX
 @onready var spin_atlas_y: SpinBox = $MainLayout/Toolbox/VBox/AtlasPicker/SpinY
+@onready var spin_eraser_size: SpinBox = $MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize
 @onready var atlas_palette: AtlasPalette = $MainLayout/Toolbox/VBox/PaletteContainer/AtlasPaletteView
 @onready var asset_catalog_window: Window = $AssetCatalogWindow
 
@@ -33,6 +34,7 @@ func _ready() -> void:
 	if canvas:
 		canvas.object_selected.connect(_on_object_selected)
 		canvas.map_data_changed.connect(_on_map_data_changed)
+		canvas.set_eraser_size(int(spin_eraser_size.value))
 
 	if atlas_palette:
 		atlas_palette.tile_selected.connect(_on_atlas_palette_tile_selected)
@@ -180,6 +182,10 @@ func _on_spin_atlas_x_value_changed(value: float) -> void:
 
 func _on_spin_atlas_y_value_changed(value: float) -> void:
 	select_ground4_tile(active_atlas_x, int(value))
+
+func _on_eraser_size_value_changed(value: float) -> void:
+	if canvas:
+		canvas.set_eraser_size(int(value))
 
 func _on_btn_tile_g4_preset0_pressed() -> void: select_ground4_tile(0, 0)
 func _on_btn_tile_g4_preset1_pressed() -> void: select_ground4_tile(1, 0)
