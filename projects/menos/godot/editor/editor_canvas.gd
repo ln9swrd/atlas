@@ -683,20 +683,20 @@ func erase_tile_at(world_pos: Vector2) -> void:
 	for layer_name in tiles.keys():
 		var layer_tiles: Dictionary = tiles[layer_name]
 		var layer_changed := false
-	for offset_y in range(eraser_size):
-		for offset_x in range(eraser_size):
-			var target_cell := start_cell + Vector2i(offset_x, offset_y)
-			if target_cell.x < 0 or target_cell.x >= map_tiles.x or target_cell.y < 0 or target_cell.y >= map_tiles.y:
-				continue
-			var target_key := "%d,%d" % [target_cell.x, target_cell.y]
-			if not layer_tiles.has(target_key):
-				continue
-			var tile_info: Variant = layer_tiles[target_key]
-			if tile_info is Dictionary and tile_info.has("asset_id"):
-				layer_changed = _remove_catalog_tile_at(layer_tiles, target_cell) or layer_changed
-			else:
-				layer_tiles.erase(target_key)
-				layer_changed = true
+		for offset_y in range(eraser_size):
+			for offset_x in range(eraser_size):
+				var target_cell := start_cell + Vector2i(offset_x, offset_y)
+				if target_cell.x < 0 or target_cell.x >= map_tiles.x or target_cell.y < 0 or target_cell.y >= map_tiles.y:
+					continue
+				var target_key := "%d,%d" % [target_cell.x, target_cell.y]
+				if not layer_tiles.has(target_key):
+					continue
+				var tile_info: Variant = layer_tiles[target_key]
+				if tile_info is Dictionary and tile_info.has("asset_id"):
+					layer_changed = _remove_catalog_tile_at(layer_tiles, target_cell) or layer_changed
+				else:
+					layer_tiles.erase(target_key)
+					layer_changed = true
 		changed = layer_changed or changed
 	if changed:
 		map_data["tiles"] = tiles
