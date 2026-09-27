@@ -12,6 +12,7 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var spin_placement_width: SpinBox = $MainLayout/Inspector/VBox/PlacementSizeRow/SpinPlacementWidth
 @onready var spin_placement_height: SpinBox = $MainLayout/Inspector/VBox/PlacementSizeRow/SpinPlacementHeight
 @onready var btn_resize_placement: Button = $MainLayout/Inspector/VBox/BtnResizePlacement
+@onready var btn_delete_placement: Button = $MainLayout/Inspector/VBox/BtnDeletePlacement
 @onready var asset_rows: VBoxContainer = $MainLayout/Inspector/VBox/AssetScroll/AssetRows
 @onready var btn_open_asset_catalog: Button = $MainLayout/Inspector/VBox/BtnOpenAssetCatalog
 @onready var btn_place_catalog_asset: Button = $MainLayout/Inspector/VBox/BtnPlaceCatalogAsset
@@ -47,10 +48,12 @@ func _ready() -> void:
 		canvas.placement_resize_failed.connect(update_status)
 		canvas.set_eraser_size(int(spin_eraser_size.value))
 	btn_resize_placement.pressed.connect(_on_resize_placement_pressed)
+	btn_delete_placement.pressed.connect(_on_delete_placement_pressed)
 	btn_open_asset_catalog.pressed.connect(_on_open_asset_catalog_pressed)
 	lbl_placement_size.hide()
 	spin_placement_width.get_parent().hide()
 	btn_resize_placement.hide()
+	btn_delete_placement.hide()
 
 	if atlas_palette:
 		atlas_palette.tile_selected.connect(_on_atlas_palette_tile_selected)
@@ -253,6 +256,8 @@ func _on_object_selected(info: Dictionary) -> void:
 	spin_placement_width.get_parent().visible = can_resize
 	btn_resize_placement.visible = can_resize
 	btn_resize_placement.disabled = not can_resize
+	btn_delete_placement.visible = can_resize
+	btn_delete_placement.disabled = not can_resize
 	if info.is_empty():
 		lbl_selected_id.text = "ID: None"
 		lbl_selected_type.text = "Type: -"
@@ -282,6 +287,12 @@ func _on_resize_placement_pressed() -> void:
 		update_status("Placed asset resized to %d × %d cells." % [width_tiles, height_tiles])
 	else:
 		update_status("Resize failed: target bounds are outside the map or overlap another tile.")
+
+func _on_delete_placement_pressed() -> void:
+	if canvas.delete_selected_catalog_placement():
+		update_status("Selected asset placement deleted.")
+	else:
+		update_status("Delete failed: select a placed catalog asset first.")
 
 func _on_map_data_changed() -> void:
 	if canvas:

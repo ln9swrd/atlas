@@ -13,6 +13,7 @@ var entries: Array[Dictionary] = []
 var source_path := ""
 var source_texture: Texture2D
 var preview_source_cache: Dictionary = {}
+var source_thumbnail_cache: Dictionary = {}
 var selected_index := -1
 var editing_asset_index := -1
 var source_dialog: FileDialog
@@ -222,6 +223,9 @@ func _build_interface() -> void:
 	source_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	source_dialog.access = FileDialog.ACCESS_RESOURCES
 	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Project Images"])
+	source_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
+	source_dialog.add_theme_constant_override("thumbnail_size", 112)
+	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_source_thumbnail"))
 	source_dialog.current_dir = "res://"
 	source_dialog.file_selected.connect(_on_source_file_selected)
 	add_child(source_dialog)
@@ -253,7 +257,18 @@ func _add_button(parent: HBoxContainer, label_text: String, callback: Callable) 
 	parent.add_child(button)
 
 func _open_source_dialog() -> void:
+	source_thumbnail_cache.clear()
+	source_dialog.invalidate()
 	source_dialog.popup_centered(Vector2i(1000, 700))
+
+func _get_source_thumbnail(path: String) -> Texture2D:
+	var cached: Texture2D = source_thumbnail_cache.get(path) as Texture2D
+	if cached != null:
+		return cached
+	var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(path)
+	if loaded != null:
+		source_thumbnail_cache[path] = loaded
+	return loaded
 
 func _toggle_window_mode() -> void:
 	if mode == Window.MODE_MAXIMIZED:

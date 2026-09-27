@@ -356,3 +356,17 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/map_editor.gd`, `godot/editor/map_editor.tscn`, `godot/editor/asset_catalog_editor.gd`, and this handoff.
 - Verification: VS Code diagnostics report no errors in the three scene/script files; `git diff --check` passed. Godot CLI was unavailable, so popup behavior remains unverified interactively.
 - Next: In Godot, open with and without a selected asset; verify the correct authoring state and maximized window behavior.
+
+## Handoff — Image thumbnails in source picker (2026-09-27)
+
+- Status: The project-image FileDialog uses thumbnail-grid mode with a texture callback and larger thumbnails. Asset Data Authoring also shows a compact source preview beside the selected image path; the preview clears on failed loads or form reset.
+- Changed: `godot/editor/asset_catalog_editor.gd` and this handoff.
+- Verification: VS Code diagnostics report no errors; Godot 4.7.2 headless Map Editor scene load and `git diff --check` passed. File-dialog thumbnail rendering was not visually inspected.
+- Next: Open Choose Project Image in Godot and verify image thumbnails appear in the dialog and the selected image appears beside its path and in the region view.
+
+## Handoff — Delete selected placement (2026-09-27)
+
+- Status: Inspector `Delete Placement` removes the selected catalog tile placement or object placement as one undoable map edit. Resized per-map asset defaults remain independent and continue to determine later placements of the same asset.
+- Changed: `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, `godot/editor/map_editor.tscn`, and this handoff.
+- Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot was not rerun because `.godot/editor/filesystem_update4` is already untracked.
+- Next: In Select mode, select and delete one catalog tile and one object; verify Ctrl+Z restores them, then resize an asset, place it again, and save/reopen the map.

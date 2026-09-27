@@ -240,6 +240,11 @@ layout_mode = 2
 text = "Apply Size"
 disabled = true
 
+[node name="BtnDeletePlacement" type="Button" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = "Delete Placement"
+disabled = true
+
 [node name="HSeparatorCatalog" type="HSeparator" parent="MainLayout/Inspector/VBox"]
 layout_mode = 2
 

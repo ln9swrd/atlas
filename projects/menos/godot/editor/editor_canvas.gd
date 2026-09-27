@@ -510,6 +510,48 @@ func _set_asset_footprint_default(asset_id: String, footprint: Vector2i) -> void
 	defaults[asset_id] = [footprint.x, footprint.y]
 	map_data["asset_footprint_defaults"] = defaults
 
+func delete_selected_catalog_placement() -> bool:
+	var selection_type := str(selected_object.get("type", ""))
+	if selection_type == "Catalog Object":
+		var objects: Array = map_data.get("objects", [])
+		var object_index := int(selected_object.get("object_index", -1))
+		if object_index < 0 or object_index >= objects.size():
+			return false
+		_begin_edit_stroke()
+		objects.remove_at(object_index)
+		map_data["objects"] = objects
+	elif selection_type == "Catalog Tile":
+		var layer_name := str(selected_object.get("layer", active_layer))
+		var anchor_value: Variant = selected_object.get("cell", Vector2i.ZERO)
+		if not anchor_value is Vector2i or not map_data.has("tiles") or not map_data["tiles"].has(layer_name):
+			return false
+		var anchor: Vector2i = anchor_value
+		var asset_id := str(selected_object.get("id", ""))
+		var layer_tiles: Dictionary = map_data["tiles"][layer_name]
+		var placement_keys: Array[String] = []
+		for key in layer_tiles.keys():
+			var coordinates := str(key).split(",")
+			if coordinates.size() < 2:
+				continue
+			var cell := Vector2i(coordinates[0].to_int(), coordinates[1].to_int())
+			var tile_info: Variant = layer_tiles[key]
+			if tile_info is Dictionary and str(tile_info.get("asset_id", "")) == asset_id and _catalog_tile_anchor(tile_info, cell) == anchor:
+				placement_keys.append(str(key))
+		if placement_keys.is_empty():
+			return false
+		_begin_edit_stroke()
+		for key in placement_keys:
+			layer_tiles.erase(key)
+		var tiles: Dictionary = map_data["tiles"]
+		tiles[layer_name] = layer_tiles
+		map_data["tiles"] = tiles
+	else:
+		return false
+	_mark_map_data_changed()
+	_finish_edit_stroke()
+	select_object({})
+	return true
+
 func erase_tile_at(world_pos: Vector2) -> void:
 	if erase_catalog_object_at(world_pos):
 		return
