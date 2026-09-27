@@ -750,12 +750,6 @@ func _draw() -> void:
 	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "WEST MID GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
 	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(176, MAP_PIXEL_SIZE.y - 16), "SOUTH QUARTER GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
 
-	# Map-defined enemy spawn paths
-	for lane in LANES.values():
-		draw_line(lane, BASE, Color("1e343b", 0.8), 36)
-		draw_dashed_line(lane, BASE, Color("7ed6ce", 0.6), 2.0, 10.0)
-		draw_rect(Rect2(lane - Vector2(8, 16), Vector2(16, 32)), Color("ef7068"))
-
 	# Base Facility (Strategic HQ Node)
 	var base_feet := BASE + Vector2(0, 30)
 	draw_oval(base_feet, 54.0, 16.0, Color(0, 0, 0, 0.5))
