@@ -29,6 +29,23 @@
 				134.0,
 				81.0
 			]
+		},
+		{
+			"asset_id": "asset.tile.ground_2",
+			"display_name": "Ground 2",
+			"footprint_tiles": [
+				2,
+				3
+			],
+			"group": "Boundary",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/ground/ground3.png",
+			"source_rect_px": [
+				14,
+				10,
+				61,
+				67
+			]
 		}
 	],
 	"schema_version": 1

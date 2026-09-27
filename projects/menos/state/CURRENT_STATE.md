@@ -384,3 +384,18 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, and this handoff.
 - Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot runtime was not run because project editor metadata was already untracked.
 - Next: In Godot, try Ground 1 over an occupied cell and adjacent to it; verify overlap preserves the old placement, adjacent placement succeeds, and erasing remains available.
+
+## Handoff — Stable source-region drag selection (2026-09-27)
+
+- Status: Region selection is clamped to the image, finalizes even when the left button is released outside the preview control, and displays live selected pixel dimensions. The live and committed regions share the same source-pixel conversion.
+- Changed: `godot/editor/asset_region_view.gd` and this handoff.
+- Verification: VS Code diagnostics report no errors; Godot 4.7.2 headless Map Editor scene load and `git diff --check` passed. Interactive drag directions and outside-release behavior were not manually exercised.
+- Next: In Asset Data Authoring, verify forward/reverse drag, image-edge clamping, zoom/pan selection, and release outside the preview.
+
+## Handoff — Alpha-trimmed crops and tile overlays (2026-09-27)
+
+- Status: Committed source-region drags trim transparent padding to the bounds of nonzero-alpha pixels. Catalog Tile crops with transparency are placed as ordered map object overlays so transparent pixels reveal existing layers; repeated drag samples at the same asset/layer/cell are deduplicated. Opaque tile assets retain occupied-cell rejection.
+- Placement overlays carry their layer and remain selectable, resizable, deletable, and map-saveable through the existing objects data path.
+- Changed: `godot/editor/asset_region_view.gd`, `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, and this handoff.
+- Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot runtime was not run because `.godot/editor/filesystem_update4` is modified.
+- Next: In Godot, trim a transparent sprite crop, drag it across existing ground, verify the underlying ground shows through, and test overlay selection, resize, erase, undo, and save/reload.

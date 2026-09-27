@@ -93,7 +93,11 @@ func _draw() -> void:
 		var brush_rect := _brush_rect_at(_last_pointer, image_rect)
 		draw_rect(brush_rect, Color(0.95, 0.3, 0.3, 0.25), true)
 		draw_rect(brush_rect, Color("ff6b6b"), false, 1.0)
-	draw_string(ThemeDB.fallback_font, Vector2(10, size.y - 10), "Zoom %.0f%% · wheel zoom · middle/right drag pan%s" % [_zoom * 100.0, " · left drag erases alpha" if _editing_pixels else " · left drag selects region"], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("c2cbd4"))
+	var drag_status := ""
+	if _dragging_region:
+		var preview_region := _region_for_drag(_drag_start, _drag_end)
+		drag_status = " · Selection %d × %d px" % [preview_region.size.x, preview_region.size.y]
+	draw_string(ThemeDB.fallback_font, Vector2(10, size.y - 10), "Zoom %.0f%% · wheel zoom · middle/right drag pan%s%s" % [_zoom * 100.0, " · left drag erases alpha" if _editing_pixels else " · left drag selects region", drag_status], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("c2cbd4"))
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -127,7 +131,7 @@ func _gui_input(event: InputEvent) -> void:
 					accept_event()
 				elif _dragging_region:
 					_dragging_region = false
-					_drag_end = mouse_event.position
+					_drag_end = _clamp_to_image(mouse_event.position)
 					_commit_region_drag()
 					accept_event()
 				queue_redraw()
@@ -143,9 +147,22 @@ func _gui_input(event: InputEvent) -> void:
 			_erase_at(motion.position)
 			accept_event()
 		elif _dragging_region:
-			_drag_end = motion.position
+			_drag_end = _clamp_to_image(motion.position)
 			accept_event()
 		queue_redraw()
+
+func _input(event: InputEvent) -> void:
+	if not _dragging_region or not event is InputEventMouseButton:
+		return
+	var mouse_event := event as InputEventMouseButton
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT or mouse_event.pressed:
+		return
+	var local_position := get_global_transform_with_canvas().affine_inverse() * mouse_event.position
+	_drag_end = _clamp_to_image(local_position)
+	_dragging_region = false
+	_commit_region_drag()
+	queue_redraw()
+	get_viewport().set_input_as_handled()
 
 func _zoom_at(view_position: Vector2, factor: float) -> void:
 	if texture == null:
@@ -161,17 +178,52 @@ func _zoom_at(view_position: Vector2, factor: float) -> void:
 	queue_redraw()
 
 func _commit_region_drag() -> void:
-	var image_rect := _get_image_rect()
-	var drag_rect := Rect2(_drag_start, _drag_end - _drag_start).abs().intersection(image_rect)
-	if drag_rect.size.x <= 0.0 or drag_rect.size.y <= 0.0 or texture == null:
-		return
-	var pixel_size := Vector2(texture.get_size())
-	var top_left := ((drag_rect.position - image_rect.position) / image_rect.size * pixel_size).floor()
-	var bottom_right := ((drag_rect.end - image_rect.position) / image_rect.size * pixel_size).ceil()
-	var rect := Rect2i(Vector2i(top_left), Vector2i(bottom_right - top_left))
+	var rect := _trim_region_to_visible_pixels(_region_for_drag(_drag_start, _drag_end))
 	if rect.size.x > 0 and rect.size.y > 0:
 		selected_region = rect
 		region_changed.emit(rect)
+
+func _clamp_to_image(view_position: Vector2) -> Vector2:
+	var image_rect := _get_image_rect()
+	return Vector2(
+		clampf(view_position.x, image_rect.position.x, image_rect.end.x),
+		clampf(view_position.y, image_rect.position.y, image_rect.end.y)
+	)
+
+func _region_for_drag(start: Vector2, finish: Vector2) -> Rect2i:
+	if texture == null:
+		return Rect2i()
+	var image_rect := _get_image_rect()
+	var drag_rect := Rect2(start, finish - start).abs().intersection(image_rect)
+	if drag_rect.size.x <= 0.0 or drag_rect.size.y <= 0.0:
+		return Rect2i()
+	var pixel_size := Vector2(texture.get_size())
+	var top_left := ((drag_rect.position - image_rect.position) / image_rect.size * pixel_size).floor()
+	var bottom_right := ((drag_rect.end - image_rect.position) / image_rect.size * pixel_size).ceil()
+	return Rect2i(Vector2i(top_left), Vector2i(bottom_right - top_left))
+
+func _trim_region_to_visible_pixels(region: Rect2i) -> Rect2i:
+	if texture == null or region.size.x <= 0 or region.size.y <= 0:
+		return Rect2i()
+	var image := texture.get_image()
+	if image == null or image.is_empty() or image.detect_alpha() == Image.ALPHA_NONE:
+		return region
+	var region_end := region.end.clamp(Vector2i.ZERO, Vector2i(image.get_width(), image.get_height()))
+	var region_start := region.position.clamp(Vector2i.ZERO, Vector2i(image.get_width(), image.get_height()))
+	var min_x := region_end.x
+	var min_y := region_end.y
+	var max_x := region_start.x - 1
+	var max_y := region_start.y - 1
+	for y in range(region_start.y, region_end.y):
+		for x in range(region_start.x, region_end.x):
+			if image.get_pixel(x, y).a > 0.0:
+				min_x = mini(min_x, x)
+				min_y = mini(min_y, y)
+				max_x = maxi(max_x, x)
+				max_y = maxi(max_y, y)
+	if max_x < min_x or max_y < min_y:
+		return Rect2i()
+	return Rect2i(min_x, min_y, max_x - min_x + 1, max_y - min_y + 1)
 
 func _brush_rect_at(view_position: Vector2, image_rect: Rect2) -> Rect2:
 	var image_size := Vector2(texture.get_size())

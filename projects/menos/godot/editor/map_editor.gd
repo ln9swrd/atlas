@@ -252,7 +252,7 @@ func update_status(text: String) -> void:
 
 func _on_object_selected(info: Dictionary) -> void:
 	var placement_type := str(info.get("type", ""))
-	var can_resize := placement_type in ["Catalog Object", "Catalog Tile"]
+	var can_resize := placement_type in ["Catalog Object", "Catalog Tile", "Catalog Tile Overlay"]
 	lbl_placement_size.visible = can_resize
 	spin_placement_width.get_parent().visible = can_resize
 	btn_resize_placement.visible = can_resize

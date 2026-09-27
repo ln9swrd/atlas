@@ -23,6 +23,7 @@ var eraser_preview_visible := false
 var selected_catalog_asset: Dictionary = {}
 var catalog_assets_by_id: Dictionary = {}
 var catalog_texture_cache: Dictionary = {}
+var catalog_alpha_cache: Dictionary = {}
 var eraser_size := 1
 
 var camera_zoom := 1.0
@@ -76,6 +77,7 @@ func set_selected_tile(source_id: int, atlas_coords: Vector2i) -> void:
 func set_catalog_assets(entries: Array[Dictionary]) -> void:
 	catalog_assets_by_id.clear()
 	catalog_texture_cache.clear()
+	catalog_alpha_cache.clear()
 	for entry in entries:
 		var asset_id := str(entry.get("asset_id", ""))
 		if not asset_id.is_empty():
@@ -100,6 +102,25 @@ func get_catalog_texture(asset_id: String) -> Texture2D:
 		catalog_texture_cache[source_path] = loaded
 		return loaded
 	return null
+
+func _catalog_asset_has_transparency(asset: Dictionary) -> bool:
+	var asset_id := str(asset.get("asset_id", ""))
+	var rect := catalog_source_rect(asset)
+	var cache_key := "%s:%s:%s" % [asset_id, str(rect.position), str(rect.size)]
+	if catalog_alpha_cache.has(cache_key):
+		return bool(catalog_alpha_cache[cache_key])
+	var texture := get_catalog_texture(asset_id)
+	if texture == null:
+		catalog_alpha_cache[cache_key] = false
+		return false
+	var image := texture.get_image()
+	if image == null or image.is_empty():
+		catalog_alpha_cache[cache_key] = false
+		return false
+	var image_rect := Rect2i(Vector2i(rect.position), Vector2i(rect.size)).intersection(Rect2i(0, 0, image.get_width(), image.get_height()))
+	var has_transparency := image_rect.size.x > 0 and image_rect.size.y > 0 and image.get_region(image_rect).detect_alpha() != Image.ALPHA_NONE
+	catalog_alpha_cache[cache_key] = has_transparency
+	return has_transparency
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
@@ -255,7 +276,7 @@ func _eraser_preview_rect() -> Rect2:
 
 func _selected_catalog_placement_rect() -> Rect2:
 	var selection_type := str(selected_object.get("type", ""))
-	if selection_type not in ["Catalog Tile", "Catalog Object"]:
+	if selection_type not in ["Catalog Tile", "Catalog Object", "Catalog Tile Overlay"]:
 		return Rect2()
 	var footprint_values: Variant = selected_object.get("footprint", [1, 1])
 	if not footprint_values is Array or footprint_values.size() < 2:
@@ -303,6 +324,8 @@ func paint_tile_at(world_pos: Vector2) -> void:
 	if not selected_catalog_asset.is_empty():
 		if str(selected_catalog_asset.get("kind", "tile")) == "object":
 			place_catalog_object(cell)
+		elif _catalog_asset_has_transparency(selected_catalog_asset):
+			place_catalog_tile_overlay(cell)
 		else:
 			paint_catalog_tile(cell)
 		return
@@ -364,6 +387,46 @@ func _select_catalog_tile(asset_id: String, anchor: Vector2i, footprint: Vector2
 		"position": origin + Vector2(anchor) * 32.0,
 		"layer": active_layer,
 		"cell": anchor,
+		"footprint": [footprint.x, footprint.y]
+	})
+
+func place_catalog_tile_overlay(cell: Vector2i) -> void:
+	var footprint := catalog_asset_footprint(selected_catalog_asset)
+	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	if cell.x + footprint.x > map_tiles.x or cell.y + footprint.y > map_tiles.y:
+		return
+	if not map_data.has("objects"):
+		map_data["objects"] = []
+	var asset_id := str(selected_catalog_asset.get("asset_id", ""))
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var position := origin + Vector2(cell) * 32.0
+	var objects: Array = map_data["objects"]
+	for index in range(objects.size()):
+		var object_data: Dictionary = objects[index]
+		if str(object_data.get("asset_id", "")) == asset_id and str(object_data.get("placement_layer", "")) == active_layer and object_position(object_data) == position:
+			select_object({
+				"type": "Catalog Tile Overlay",
+				"id": asset_id,
+				"position": position,
+				"object_index": index,
+				"layer": active_layer,
+				"footprint": [footprint.x, footprint.y]
+			})
+			return
+	objects.append({
+		"asset_id": asset_id,
+		"position": [position.x, position.y],
+		"footprint_tiles": [footprint.x, footprint.y],
+		"placement_layer": active_layer
+	})
+	map_data["objects"] = objects
+	_mark_map_data_changed()
+	select_object({
+		"type": "Catalog Tile Overlay",
+		"id": asset_id,
+		"position": position,
+		"object_index": objects.size() - 1,
+		"layer": active_layer,
 		"footprint": [footprint.x, footprint.y]
 	})
 
@@ -472,7 +535,7 @@ func resize_selected_catalog_placement(width_tiles: int, height_tiles: int) -> b
 	var asset_id := str(selected_object.get("id", ""))
 	if asset_id.is_empty():
 		return false
-	if selection_type == "Catalog Object":
+	if selection_type in ["Catalog Object", "Catalog Tile Overlay"]:
 		var objects: Array = map_data.get("objects", [])
 		var object_index := int(selected_object.get("object_index", -1))
 		if object_index < 0 or object_index >= objects.size():
@@ -547,7 +610,7 @@ func _set_asset_footprint_default(asset_id: String, footprint: Vector2i) -> void
 
 func delete_selected_catalog_placement() -> bool:
 	var selection_type := str(selected_object.get("type", ""))
-	if selection_type == "Catalog Object":
+	if selection_type in ["Catalog Object", "Catalog Tile Overlay"]:
 		var objects: Array = map_data.get("objects", [])
 		var object_index := int(selected_object.get("object_index", -1))
 		if object_index < 0 or object_index >= objects.size():
@@ -645,7 +708,8 @@ func pick_object_at(point: Vector2) -> void:
 		var footprint := catalog_asset_footprint(asset, object_data)
 		var object_rect := Rect2(object_position(object_data), Vector2(footprint) * 32.0)
 		if object_rect.has_point(point):
-			select_object({"type": "Catalog Object", "id": asset_id, "position": object_position(object_data), "object_index": object_index, "footprint": [footprint.x, footprint.y]})
+			var placement_type := "Catalog Tile Overlay" if object_data.has("placement_layer") else "Catalog Object"
+			select_object({"type": placement_type, "id": asset_id, "position": object_position(object_data), "object_index": object_index, "layer": str(object_data.get("placement_layer", "")), "footprint": [footprint.x, footprint.y]})
 			return
 	if _pick_catalog_tile_at(point):
 		return
