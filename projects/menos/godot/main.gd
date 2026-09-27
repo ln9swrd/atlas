@@ -784,13 +784,6 @@ func _draw() -> void:
 		draw_animated_sprite(VISUALS[anim_key], tower_pos, Vector2(60, 90), frame_idx, 4)
 		if selected_tower == tower.id: draw_arc(tower_feet, 38.0, 0, TAU, 24, Color("d7fff7"), 2.0)
 
-	# Robot Movement Spots
-	for id in ROBOT_SPOTS:
-		var spot_pos: Vector2 = ROBOT_SPOTS[id]
-		var is_current: bool = robot.active and robot.spot == id
-		draw_arc(spot_pos, 28, 0, TAU, 16, Color("7ed6ce", 0.5) if not is_current else Color("f0a35a"), 2.0 if is_current else 1.0)
-		draw_string(ThemeDB.fallback_font, spot_pos + Vector2(-24, 42), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
-
 	# Enemy Units (High Contrast Strategic Visibility)
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
