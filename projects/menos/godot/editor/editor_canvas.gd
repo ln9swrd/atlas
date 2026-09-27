@@ -237,15 +237,92 @@ func paint_tile_at(world_pos: Vector2) -> void:
 		_mark_map_data_changed()
 
 func paint_catalog_tile(cell: Vector2i) -> void:
+	var footprint_values: Array = selected_catalog_asset.get("footprint_tiles", [1, 1])
+	if footprint_values.size() < 2:
+		footprint_values = [1, 1]
+	var footprint := Vector2i(maxi(1, int(footprint_values[0])), maxi(1, int(footprint_values[1])))
+	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	if cell.x + footprint.x > map_tiles.x or cell.y + footprint.y > map_tiles.y:
+		return
 	if not map_data.has("tiles"):
 		map_data["tiles"] = {}
 	if not map_data["tiles"].has(active_layer):
 		map_data["tiles"][active_layer] = {}
-	var key := "%d,%d" % [cell.x, cell.y]
-	var tile_info := {"asset_id": str(selected_catalog_asset.get("asset_id", ""))}
-	if map_data["tiles"][active_layer].get(key) != tile_info:
-		map_data["tiles"][active_layer][key] = tile_info
+	var layer_tiles: Dictionary = map_data["tiles"][active_layer]
+	var asset_id := str(selected_catalog_asset.get("asset_id", ""))
+	if footprint == Vector2i.ONE and layer_tiles.get("%d,%d" % [cell.x, cell.y]) == {"asset_id": asset_id}:
+		return
+	var changed := false
+	for offset_y in range(footprint.y):
+		for offset_x in range(footprint.x):
+			changed = _remove_catalog_tile_at(layer_tiles, cell + Vector2i(offset_x, offset_y)) or changed
+	for offset_y in range(footprint.y):
+		for offset_x in range(footprint.x):
+			var occupied_cell := cell + Vector2i(offset_x, offset_y)
+			var tile_info := {"asset_id": asset_id}
+			if footprint != Vector2i.ONE:
+				tile_info["anchor"] = [cell.x, cell.y]
+				tile_info["footprint_tiles"] = [footprint.x, footprint.y]
+			layer_tiles["%d,%d" % [occupied_cell.x, occupied_cell.y]] = tile_info
+			changed = true
+	if changed:
 		_mark_map_data_changed()
+
+func _catalog_tile_anchor(tile_info: Dictionary, cell: Vector2i) -> Vector2i:
+	var anchor_values: Variant = tile_info.get("anchor", [])
+	if anchor_values is Array and anchor_values.size() >= 2:
+		return Vector2i(int(anchor_values[0]), int(anchor_values[1]))
+	return cell
+
+func _catalog_tile_footprint(tile_info: Dictionary) -> Vector2i:
+	var values: Variant = tile_info.get("footprint_tiles", [])
+	if not values is Array or values.size() < 2:
+		var asset_id := str(tile_info.get("asset_id", ""))
+		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
+		values = asset.get("footprint_tiles", [1, 1])
+	if not values is Array or values.size() < 2:
+		return Vector2i.ONE
+	return Vector2i(maxi(1, int(values[0])), maxi(1, int(values[1])))
+
+func _tile_placement_contains(tile_info: Dictionary, tile_cell: Vector2i, target_cell: Vector2i) -> bool:
+	var anchor := _catalog_tile_anchor(tile_info, tile_cell)
+	var footprint := _catalog_tile_footprint(tile_info)
+	return target_cell.x >= anchor.x and target_cell.y >= anchor.y and target_cell.x < anchor.x + footprint.x and target_cell.y < anchor.y + footprint.y
+
+func _remove_catalog_tile_at(layer_tiles: Dictionary, target_cell: Vector2i) -> bool:
+	var target_key := "%d,%d" % [target_cell.x, target_cell.y]
+	var matched_anchor := Vector2i.ZERO
+	var found_catalog_placement := false
+	for key in layer_tiles.keys():
+		var parts := str(key).split(",")
+		if parts.size() < 2:
+			continue
+		var tile_cell := Vector2i(parts[0].to_int(), parts[1].to_int())
+		var tile_info: Variant = layer_tiles[key]
+		if tile_info is Dictionary and tile_info.has("asset_id") and _tile_placement_contains(tile_info, tile_cell, target_cell):
+			matched_anchor = _catalog_tile_anchor(tile_info, tile_cell)
+			found_catalog_placement = true
+			break
+	if not found_catalog_placement:
+		if layer_tiles.has(target_key):
+			layer_tiles.erase(target_key)
+			return true
+		return false
+	var anchor_key := "%d,%d" % [matched_anchor.x, matched_anchor.y]
+	var anchor_value: Variant = layer_tiles.get(anchor_key)
+	if not anchor_value is Dictionary or not anchor_value.has("anchor"):
+		if layer_tiles.has(anchor_key):
+			layer_tiles.erase(anchor_key)
+			return true
+		return false
+	var keys_to_remove: Array = []
+	for key in layer_tiles.keys():
+		var value: Variant = layer_tiles[key]
+		if value is Dictionary and value.get("anchor", []) == [matched_anchor.x, matched_anchor.y]:
+			keys_to_remove.append(key)
+	for key in keys_to_remove:
+		layer_tiles.erase(key)
+	return not keys_to_remove.is_empty()
 
 func place_catalog_object(cell: Vector2i) -> void:
 	var footprint: Array = selected_catalog_asset.get("footprint_tiles", [1, 1])
@@ -279,16 +356,14 @@ func erase_tile_at(world_pos: Vector2) -> void:
 
 	var half_size := int(floor(float(eraser_size) / 2.0))
 	var start_cell := cell - Vector2i(half_size, half_size)
+	var layer_tiles: Dictionary = map_data["tiles"][active_layer]
 	var changed := false
 	for offset_y in range(eraser_size):
 		for offset_x in range(eraser_size):
 			var target_cell := start_cell + Vector2i(offset_x, offset_y)
 			if target_cell.x < 0 or target_cell.x >= map_tiles.x or target_cell.y < 0 or target_cell.y >= map_tiles.y:
 				continue
-			var key := "%d,%d" % [target_cell.x, target_cell.y]
-			if map_data["tiles"][active_layer].has(key):
-				map_data["tiles"][active_layer].erase(key)
-				changed = true
+			changed = _remove_catalog_tile_at(layer_tiles, target_cell) or changed
 	if changed:
 		_mark_map_data_changed()
 
@@ -391,7 +466,11 @@ func _draw() -> void:
 				var dest_pos := origin + Vector2(cx * 32, cy * 32)
 				var tile_val: Variant = layer_tiles[key]
 				if tile_val is Dictionary:
-					draw_catalog_tile(dest_pos, str(tile_val.get("asset_id", "")))
+					var cell := Vector2i(cx, cy)
+					var anchor := _catalog_tile_anchor(tile_val, cell)
+					if anchor != cell:
+						continue
+					draw_catalog_tile(dest_pos, str(tile_val.get("asset_id", "")), _catalog_tile_footprint(tile_val))
 					continue
 				if not tile_val is Array or tile_val.size() < 3:
 					continue
@@ -478,13 +557,13 @@ func draw_tile_cell(dest_pos: Vector2, source_id: int, atlas_coords: Vector2i, _
 	var col := Color("3a7d44") if source_id == 0 else (Color("5a6275") if source_id == 3 else Color("2b9e66"))
 	draw_rect(rect, col)
 
-func draw_catalog_tile(dest_pos: Vector2, asset_id: String) -> void:
+func draw_catalog_tile(dest_pos: Vector2, asset_id: String, footprint: Vector2i = Vector2i.ONE) -> void:
 	var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
 	var texture := get_catalog_texture(asset_id)
 	if asset.is_empty() or texture == null:
-		draw_rect(Rect2(dest_pos, Vector2(32, 32)), Color("693d52"))
+		draw_rect(Rect2(dest_pos, Vector2(footprint.x * 32, footprint.y * 32)), Color("693d52"))
 		return
-	draw_texture_rect_region(texture, Rect2(dest_pos, Vector2(32, 32)), catalog_source_rect(asset))
+	draw_texture_rect_region(texture, Rect2(dest_pos, Vector2(footprint.x * 32, footprint.y * 32)), catalog_source_rect(asset))
 
 func catalog_source_rect(asset: Dictionary) -> Rect2:
 	var values: Array = asset.get("source_rect_px", [0, 0, 32, 32])

@@ -299,3 +299,11 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Refresh: Saving emits the selected asset ID to Map Editor for catalog/list/preview refresh; closing the authoring window also reloads the catalog and retains the selected asset when it still exists.
 - Changed: `godot/editor/map_editor.gd`, `map_editor.tscn`, `asset_catalog_editor.gd`, and this handoff only. No map, catalog JSON, image, or generated metadata was changed.
 - Verification: Static signal/path/selection review, catalog JSON parse, and `git diff --check`; Godot was not run, so runtime UI behavior remains unverified.
+
+## Handoff — Tile footprint and catalog region editing (2026-09-27)
+
+- Status: Asset catalog entries now edit/save an explicit `footprint_tiles` map-cell width and height for both Tile and Object; default remains 1×1 and is never inferred from source pixel dimensions. Dragging an existing source preview updates its selected pixel rectangle; Update Selected and Save Catalog persist that new rectangle.
+- Map behavior: Catalog Tile placement records all footprint cells with a shared anchor and footprint. The canvas renders the source crop across the full tile-cell area and erasing any occupied cell removes the complete placement. Legacy catalog Tile records derive missing footprint from their catalog entry; legacy atlas-array tiles keep their existing single-cell path. Object placement behavior is unchanged.
+- Persistence: MapLoader already round-trips arbitrary tile dictionaries, so no loader change was needed.
+- Changed: `godot/editor/asset_catalog_editor.gd`, `editor_canvas.gd`, and this handoff only. Existing catalog/map JSON, images, and unrelated working-tree changes were preserved.
+- Verification: Static code/schema-path review, catalog JSON parse, and `git diff --check`; Godot runtime/editor verification was not run.
