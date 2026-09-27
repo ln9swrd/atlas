@@ -652,45 +652,56 @@ func delete_selected_catalog_placement() -> bool:
 	return true
 
 func erase_tile_at(world_pos: Vector2) -> void:
-	if erase_catalog_object_at(world_pos):
-		return
 	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
 	var cell := get_cell_coords(world_pos)
 
 	if cell.x < 0 or cell.x >= map_tiles.x or cell.y < 0 or cell.y >= map_tiles.y:
 		return
 
-	if not map_data.has("tiles") or not map_data["tiles"].has(active_layer):
-		return
-
 	var half_size := int(floor(float(eraser_size) / 2.0))
 	var start_cell := cell - Vector2i(half_size, half_size)
-	var layer_tiles: Dictionary = map_data["tiles"][active_layer]
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var erase_rect := Rect2(origin + Vector2(start_cell) * 32.0, Vector2.ONE * float(eraser_size * 32))
 	var changed := false
+	var objects: Array = map_data.get("objects", [])
+	for index in range(objects.size() - 1, -1, -1):
+		var object_data: Dictionary = objects[index]
+		var asset_id := str(object_data.get("asset_id", ""))
+		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
+		var footprint := catalog_asset_footprint(asset, object_data)
+		var object_rect := Rect2(object_position(object_data), Vector2(footprint) * 32.0)
+		if erase_rect.intersects(object_rect):
+			objects.remove_at(index)
+			changed = true
+	if changed:
+		map_data["objects"] = objects
+	if not map_data.has("tiles"):
+		if changed:
+			_mark_map_data_changed()
+		return
+	var tiles: Dictionary = map_data["tiles"]
+	for layer_name in tiles.keys():
+		var layer_tiles: Dictionary = tiles[layer_name]
+		var layer_changed := false
 	for offset_y in range(eraser_size):
 		for offset_x in range(eraser_size):
 			var target_cell := start_cell + Vector2i(offset_x, offset_y)
 			if target_cell.x < 0 or target_cell.x >= map_tiles.x or target_cell.y < 0 or target_cell.y >= map_tiles.y:
 				continue
-			changed = _remove_catalog_tile_at(layer_tiles, target_cell) or changed
+			var target_key := "%d,%d" % [target_cell.x, target_cell.y]
+			if not layer_tiles.has(target_key):
+				continue
+			var tile_info: Variant = layer_tiles[target_key]
+			if tile_info is Dictionary and tile_info.has("asset_id"):
+				layer_changed = _remove_catalog_tile_at(layer_tiles, target_cell) or layer_changed
+			else:
+				layer_tiles.erase(target_key)
+				layer_changed = true
+		changed = layer_changed or changed
+	if changed:
+		map_data["tiles"] = tiles
 	if changed:
 		_mark_map_data_changed()
-
-func erase_catalog_object_at(world_pos: Vector2) -> bool:
-	var objects: Array = map_data.get("objects", [])
-	for index in range(objects.size() - 1, -1, -1):
-		var object_data: Dictionary = objects[index]
-		var position := object_position(object_data)
-		var asset_id := str(object_data.get("asset_id", ""))
-		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
-		var footprint := catalog_asset_footprint(asset, object_data)
-		var object_rect := Rect2(position, Vector2(footprint) * 32.0)
-		if object_rect.has_point(world_pos):
-			objects.remove_at(index)
-			map_data["objects"] = objects
-			_mark_map_data_changed()
-			return true
-	return false
 
 func object_position(object_data: Dictionary) -> Vector2:
 	var raw_position: Variant = object_data.get("position", [0.0, 0.0])
