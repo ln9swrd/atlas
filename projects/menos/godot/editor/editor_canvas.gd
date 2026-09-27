@@ -339,7 +339,8 @@ func paint_tile_at(world_pos: Vector2) -> void:
 	var tile_info := [selected_tile_source_id, selected_tile_atlas_coords.x, selected_tile_atlas_coords.y]
 	var layer_tiles: Dictionary = map_data["tiles"][active_layer]
 	if layer_tiles.has(key):
-		if layer_tiles[key] == tile_info:
+		var existing_tile: Variant = layer_tiles[key]
+		if existing_tile is Array and existing_tile == tile_info:
 			return
 		placement_rejected.emit("Placement blocked: target cell is occupied. Erase it first or choose an empty cell.")
 		return
