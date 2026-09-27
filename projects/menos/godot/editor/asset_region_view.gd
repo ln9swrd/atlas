@@ -29,7 +29,7 @@ func set_source_texture(value: Texture2D) -> void:
 
 func begin_image_edit(source_crop: Image, brush_size_px: int = 12) -> void:
 	_edit_image = source_crop.duplicate()
-	if not _edit_image.has_alpha():
+	if _edit_image.detect_alpha() == Image.ALPHA_NONE:
 		_edit_image.convert(Image.FORMAT_RGBA8)
 	_edit_texture = ImageTexture.create_from_image(_edit_image)
 	texture = _edit_texture

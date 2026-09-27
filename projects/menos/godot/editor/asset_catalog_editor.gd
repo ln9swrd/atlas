@@ -291,7 +291,7 @@ func _save_edited_image() -> void:
 	if editing_asset_index < 0 or editing_asset_index >= entries.size():
 		status_label.text = "Double-click a registered asset thumbnail before saving an image edit."
 		return
-	var edited_image := region_view.get_edited_image()
+	var edited_image: Image = region_view.get_edited_image()
 	if edited_image == null or edited_image.is_empty():
 		status_label.text = "No editable image is available."
 		return
