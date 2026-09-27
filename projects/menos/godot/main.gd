@@ -429,7 +429,7 @@ func move_enemies(delta: float) -> void:
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
 		var data: Dictionary = DATA.ENEMIES[enemy.type]
-		var start: Vector2 = LANES[enemy.lane]
+		var start: Vector2 = enemy.get("start_position", LANES[enemy.lane])
 		enemy.position.x += data.speed * delta
 		var progress: float = clampf((enemy.position.x - start.x) / (BASE.x - start.x), 0.0, 1.0)
 		enemy.position.y = lerp(start.y, BASE.y, progress)
@@ -745,22 +745,6 @@ func _draw() -> void:
 	draw_string(ThemeDB.fallback_font, Vector2(30, 32), "MENOS // STRATEGIC BATTLE GRID", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
 	draw_string(ThemeDB.fallback_font, Vector2(30, 50), "NORTHBRIDGE SECTOR // 36x24 TACTICAL FIELD", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
 
-	# Tactical 32x32 Grid Overlay over 36x24 battlefield (1152x768)
-	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("102b31", 0.55))
-	draw_rect(Rect2(MAP_ORIGIN, Vector2(320, MAP_PIXEL_SIZE.y)), Color("ef7068", 0.08))
-	draw_rect(Rect2(MAP_ORIGIN + Vector2(320, 0), Vector2(576, MAP_PIXEL_SIZE.y)), Color("7ed6ce", 0.07))
-	draw_rect(Rect2(MAP_ORIGIN + Vector2(896, 0), Vector2(256, MAP_PIXEL_SIZE.y)), Color("f0a35a", 0.08))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 24), "ENEMY APPROACH", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068", 0.85))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(336, 24), "ENGAGEMENT ZONE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce", 0.85))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(912, 24), "BASE DEFENSE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("f0a35a", 0.85))
-	var grid_color := Color("7ed6ce", 0.28)
-	for gx in range(MAP_TILES.x + 1):
-		var x_pos := MAP_ORIGIN.x + float(gx * 32)
-		draw_line(Vector2(x_pos, MAP_ORIGIN.y), Vector2(x_pos, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y), grid_color, 1.0)
-	for gy in range(MAP_TILES.y + 1):
-		var y_pos := MAP_ORIGIN.y + float(gy * 32)
-		draw_line(Vector2(MAP_ORIGIN.x, y_pos), Vector2(MAP_ORIGIN.x + MAP_PIXEL_SIZE.x, y_pos), grid_color, 1.0)
-
 	# Tactical Field Boundary
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
 	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "WEST MID GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
@@ -779,10 +763,7 @@ func _draw() -> void:
 	draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92))
 	draw_string(ThemeDB.fallback_font, BASE + Vector2(-24, 64), "BASE HQ", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
 
-	# Map-defined tower placement areas and placed towers
-	for area in TOWER_PLACEMENT_AREAS:
-		draw_rect(area, Color("f0a35a", 0.08), true)
-		draw_rect(area, Color("f0a35a", 0.7), false, 2.0)
+	# Placed towers
 	if not selected_slot.is_empty() and towers.all(func(tower): return tower.id != selected_slot):
 		draw_oval(selected_slot_position + Vector2(0, 26), 30.0, 10.0, Color(0, 0, 0, 0.35))
 		draw_arc(selected_slot_position + Vector2(0, 26), 32.0, 0, TAU, 24, Color("f0a35a"), 2.0)

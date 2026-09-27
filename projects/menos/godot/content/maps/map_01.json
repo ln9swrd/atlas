@@ -89,6 +89,90 @@
 		64.0
 	  ],
 	  "type": "movement_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.62733107",
+	  "name": "Spawn Area",
+	  "position": [
+		0.0,
+		474.0
+	  ],
+	  "size": [
+		32.0,
+		32.0
+	  ],
+	  "type": "spawn_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.67303398",
+	  "name": "Spawn Area",
+	  "position": [
+		64.0,
+		794.0
+	  ],
+	  "size": [
+		32.0,
+		32.0
+	  ],
+	  "type": "spawn_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.69371723",
+	  "name": "Spawn Area",
+	  "position": [
+		0.0,
+		602.0
+	  ],
+	  "size": [
+		32.0,
+		32.0
+	  ],
+	  "type": "spawn_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.70172359",
+	  "name": "Spawn Area",
+	  "position": [
+		128.0,
+		602.0
+	  ],
+	  "size": [
+		32.0,
+		32.0
+	  ],
+	  "type": "spawn_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.71289877",
+	  "name": "Spawn Area",
+	  "position": [
+		160.0,
+		698.0
+	  ],
+	  "size": [
+		32.0,
+		32.0
+	  ],
+	  "type": "spawn_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.72073921",
+	  "name": "Spawn Area",
+	  "position": [
+		96.0,
+		474.0
+	  ],
+	  "size": [
+		32.0,
+		32.0
+	  ],
+	  "type": "spawn_area"
 	}
   ],
   "gameplay_points": [
