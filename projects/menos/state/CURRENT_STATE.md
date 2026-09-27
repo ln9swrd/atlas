@@ -399,3 +399,10 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/asset_region_view.gd`, `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, and this handoff.
 - Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot runtime was not run because `.godot/editor/filesystem_update4` is modified.
 - Next: In Godot, trim a transparent sprite crop, drag it across existing ground, verify the underlying ground shows through, and test overlay selection, resize, erase, undo, and save/reload.
+
+## Handoff — Guard mixed tile value comparison (2026-09-27)
+
+- Status: Atlas painting now compares an existing cell with the selected atlas tuple only when the existing value is an Array. Catalog tile Dictionaries are treated as occupied cells and rejected without triggering a mixed-type equality error.
+- Changed: `godot/editor/editor_canvas.gd` and this handoff.
+- Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot runtime was not run because `.godot` metadata is modified.
+- Next: In Godot, paint Ground 1 over both an existing catalog tile and the same atlas tile; verify the former is rejected cleanly and the latter remains a no-op.
