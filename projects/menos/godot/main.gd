@@ -50,6 +50,7 @@ const SFX_STREAMS := {
 }
 var BASE := Vector2.ZERO
 var LANES: Dictionary = {}
+var SPAWN_AREAS: Dictionary = {}
 var ROBOT_SPOTS: Dictionary = {}
 var TOWER_PLACEMENT_AREAS: Array[Rect2] = []
 var SLOTS: Dictionary = {}
@@ -126,6 +127,7 @@ func restart_campaign() -> void:
 func apply_map_spatial_data(loaded_map: Dictionary) -> void:
 	BASE = Vector2.ZERO
 	LANES.clear()
+	SPAWN_AREAS.clear()
 	ROBOT_SPOTS.clear()
 	TOWER_PLACEMENT_AREAS.clear()
 	SLOTS.clear()
@@ -152,7 +154,9 @@ func apply_map_spatial_data(loaded_map: Dictionary) -> void:
 			var rect := Rect2(float(area_position[0]), float(area_position[1]), float(area_size[0]), float(area_size[1]))
 			var area_type := str(area_data.get("type", ""))
 			if area_type == "spawn_area":
-				LANES["spawn_%d" % spawn_index] = rect.get_center()
+				var lane_id := "spawn_%d" % spawn_index
+				SPAWN_AREAS[lane_id] = rect
+				LANES[lane_id] = rect.get_center()
 				spawn_index += 1
 			elif area_type == "tower_placement_area":
 				TOWER_PLACEMENT_AREAS.append(rect)
@@ -381,10 +385,25 @@ func spawn_enemies() -> void:
 		return
 	var spawn_points: Array = LANES.keys()
 	while not spawn_queue.is_empty() and spawn_queue[0].delay <= spawn_clock:
-		var entry = spawn_queue.pop_front()
-		var lane: String = str(spawn_points[enemies.size() % spawn_points.size()])
+		var entry: Dictionary = spawn_queue.pop_front()
+		var requested_lanes: Array = entry.get("lanes", [])
+		var lane := ""
+		if not requested_lanes.is_empty():
+			var requested_lane := str(requested_lanes[enemies.size() % requested_lanes.size()])
+			if LANES.has(requested_lane):
+				lane = requested_lane
+			elif requested_lane == "left" and spawn_points.size() >= 1:
+				lane = str(spawn_points[0])
+			elif requested_lane == "right" and spawn_points.size() >= 2:
+				lane = str(spawn_points[1])
+		if lane.is_empty():
+			lane = str(spawn_points[enemies.size() % spawn_points.size()])
 		var data: Dictionary = DATA.ENEMIES[entry.type]
-		enemies.append({"type": entry.type, "lane": lane, "position": LANES[lane], "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0})
+		var spawn_position: Vector2 = LANES[lane]
+		if SPAWN_AREAS.has(lane):
+			var spawn_rect: Rect2 = SPAWN_AREAS[lane]
+			spawn_position = Vector2(randf_range(spawn_rect.position.x, spawn_rect.end.x), randf_range(spawn_rect.position.y, spawn_rect.end.y))
+		enemies.append({"type": entry.type, "lane": lane, "position": spawn_position, "start_position": spawn_position, "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0})
 
 func damage_robot(amount: float) -> void:
 	if not robot.active: return
@@ -484,17 +503,6 @@ func get_robot_auto_spot() -> String:
 
 func move_robot_automatically(delta: float) -> void:
 	if not wave_running: return
-	var chase_target: Dictionary = get_robot_chase_target()
-	if not chase_target.is_empty():
-		var target_distance: float = robot.position.distance_to(chase_target.position)
-		var engagement_distance: float = DATA.ROBOT.range
-		if target_distance > engagement_distance:
-			var chase_step: float = minf(DATA.ROBOT.speed * delta, target_distance - engagement_distance)
-			robot.erase("target_pos")
-			robot.position += robot.position.direction_to(chase_target.position) * chase_step
-			return
-		robot.erase("target_pos")
-		return
 	if robot.has("target_pos"):
 		var manual_target: Vector2 = robot.target_pos
 		var manual_distance: float = robot.position.distance_to(manual_target)

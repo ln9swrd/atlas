@@ -8,15 +8,29 @@
   "gameplay_areas": [
 	{
 	  "enabled": true,
-	  "id": "gameplay.spawn_area.49646098",
-	  "name": "Spawn Area",
+	  "id": "gameplay.spawn_area.left",
+	  "name": "Spawn Area Left",
 	  "position": [
-		1.0,
-		505.0
+		6.0,
+		314.0
 	  ],
 	  "size": [
-		320.0,
-		320.0
+		128.0,
+		64.0
+	  ],
+	  "type": "spawn_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.right",
+	  "name": "Spawn Area Right",
+	  "position": [
+		224.0,
+		762.0
+	  ],
+	  "size": [
+		128.0,
+		64.0
 	  ],
 	  "type": "spawn_area"
 	},
