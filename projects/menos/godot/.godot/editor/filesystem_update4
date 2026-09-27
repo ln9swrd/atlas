@@ -1,3 +1,2 @@
-res://editor/map_editor.gd
-res://editor/asset_region_view.gd
-res://editor/editor_canvas.gd
+res://content/maps/map_01.json
+res://map_data/northbridge_sector_01.json
