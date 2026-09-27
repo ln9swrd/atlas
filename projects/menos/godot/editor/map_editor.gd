@@ -6,7 +6,8 @@ extends Control
 @onready var lbl_selected_type: Label = $MainLayout/Inspector/VBox/LblSelectedType
 @onready var lbl_position: Label = $MainLayout/Inspector/VBox/LblPosition
 @onready var lbl_tile_coords: Label = $MainLayout/Inspector/VBox/LblTileCoords
-@onready var asset_list: ItemList = $MainLayout/Inspector/VBox/AssetList
+@onready var asset_rows: VBoxContainer = $MainLayout/Inspector/VBox/AssetScroll/AssetRows
+@onready var btn_place_catalog_asset: Button = $MainLayout/Inspector/VBox/BtnPlaceCatalogAsset
 @onready var asset_preview: TextureRect = $MainLayout/Inspector/VBox/AssetPreview
 @onready var lbl_asset_preview_status: Label = $MainLayout/Inspector/VBox/LblAssetPreviewStatus
 @onready var lbl_asset_details: Label = $MainLayout/Inspector/VBox/LblAssetDetails
@@ -28,9 +29,11 @@ var active_atlas_x := 0
 var active_atlas_y := 0
 var catalog_entries: Array[Dictionary] = []
 var preview_texture_cache: Dictionary = {}
+var selected_asset_id := ""
 
 func _ready() -> void:
-	asset_catalog_window.close_requested.connect(load_asset_catalog)
+	asset_catalog_window.close_requested.connect(_on_asset_catalog_closed)
+	asset_catalog_window.connect("catalog_saved", _on_asset_catalog_saved)
 	if canvas:
 		canvas.object_selected.connect(_on_object_selected)
 		canvas.map_data_changed.connect(_on_map_data_changed)
@@ -43,7 +46,10 @@ func _ready() -> void:
 	load_asset_catalog()
 	load_map(current_map_path)
 
-func load_asset_catalog() -> void:
+func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: bool = false) -> void:
+	var desired_asset_id := selected_asset_id
+	if not preferred_asset_id.is_empty() or force_clear_selection:
+		desired_asset_id = preferred_asset_id
 	var file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
 	if file == null:
 		update_status("Could not open asset catalog")
@@ -53,7 +59,6 @@ func load_asset_catalog() -> void:
 		update_status("Invalid asset catalog JSON")
 		return
 	catalog_entries.clear()
-	asset_list.clear()
 	asset_preview.texture = null
 	lbl_asset_preview_status.text = "Select an asset to preview its source region."
 	preview_texture_cache.clear()
@@ -61,10 +66,105 @@ func load_asset_catalog() -> void:
 		if value is Dictionary:
 			var entry: Dictionary = value.duplicate(true)
 			catalog_entries.append(entry)
-			asset_list.add_item("%s · %s / %s" % [entry.get("display_name", entry.get("asset_id", "?")), entry.get("kind", "?"), entry.get("group", "?")])
 	if canvas:
 		canvas.set_catalog_assets(catalog_entries)
-	lbl_asset_details.text = "Select a catalog asset to place it."
+	_rebuild_asset_rows()
+	var selected_index := _find_catalog_asset_index(desired_asset_id)
+	if selected_index >= 0:
+		_select_catalog_asset(selected_index)
+	else:
+		selected_asset_id = ""
+		if canvas:
+			canvas.set_catalog_asset({})
+		lbl_asset_details.text = "Select an asset, then use Place Selected to paint it."
+
+func _find_catalog_asset_index(asset_id: String) -> int:
+	if asset_id.is_empty():
+		return -1
+	for index in range(catalog_entries.size()):
+		if str(catalog_entries[index].get("asset_id", "")) == asset_id:
+			return index
+	return -1
+
+func _rebuild_asset_rows() -> void:
+	for child in asset_rows.get_children():
+		child.queue_free()
+	for index in range(catalog_entries.size()):
+		var entry: Dictionary = catalog_entries[index]
+		var row := HBoxContainer.new()
+		row.custom_minimum_size.y = 58
+		asset_rows.add_child(row)
+		var image_button := TextureButton.new()
+		image_button.custom_minimum_size = Vector2(58, 54)
+		image_button.ignore_texture_size = true
+		image_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		image_button.texture_normal = _catalog_entry_preview(entry)
+		image_button.tooltip_text = "Edit source image or pixel region"
+		image_button.pressed.connect(_on_catalog_image_pressed.bind(index))
+		row.add_child(image_button)
+		var text_button := Button.new()
+		text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text_button.custom_minimum_size.y = 54
+		text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		text_button.text = "%s\n%s · %s" % [entry.get("display_name", entry.get("asset_id", "?")), str(entry.get("kind", "tile")).capitalize(), entry.get("group", "?")]
+		text_button.tooltip_text = "Edit catalog metadata"
+		text_button.pressed.connect(_on_catalog_text_pressed.bind(index))
+		row.add_child(text_button)
+
+func _catalog_entry_preview(entry: Dictionary) -> Texture2D:
+	var source_path := str(entry.get("source_path", ""))
+	var source_texture: Texture2D = preview_texture_cache.get(source_path)
+	if source_texture == null and not source_path.is_empty():
+		var loaded: Resource = ResourceLoader.load(source_path)
+		if loaded is Texture2D:
+			source_texture = loaded
+			preview_texture_cache[source_path] = source_texture
+	if source_texture == null:
+		return null
+	var rect_values: Array = entry.get("source_rect_px", [])
+	if rect_values.size() < 4:
+		return null
+	var rect := Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+	if rect.position.x < 0.0 or rect.position.y < 0.0 or rect.size.x <= 0.0 or rect.size.y <= 0.0 or rect.end.x > source_texture.get_width() or rect.end.y > source_texture.get_height():
+		return null
+	var preview := AtlasTexture.new()
+	preview.atlas = source_texture
+	preview.region = rect
+	return preview
+
+func _select_catalog_asset(index: int) -> void:
+	if index < 0 or index >= catalog_entries.size():
+		return
+	var entry: Dictionary = catalog_entries[index]
+	selected_asset_id = str(entry.get("asset_id", ""))
+	if canvas:
+		canvas.set_catalog_asset(entry)
+	set_asset_preview(entry)
+	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
+	var footprint: Array = entry.get("footprint_tiles", [1, 1])
+	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint[0]), str(footprint[1])]
+	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
+	update_selected_tile_label("Use Place Selected, then click canvas")
+
+func _on_catalog_image_pressed(index: int) -> void:
+	_open_catalog_editor(index, "image")
+
+func _on_catalog_text_pressed(index: int) -> void:
+	_open_catalog_editor(index, "metadata")
+
+func _open_catalog_editor(index: int, edit_target: String) -> void:
+	if index < 0 or index >= catalog_entries.size():
+		return
+	_select_catalog_asset(index)
+	asset_catalog_window.call("open_for_asset_id", selected_asset_id, edit_target)
+	asset_catalog_window.popup_centered(Vector2i(1280, 820))
+	asset_catalog_window.call_deferred("focus_edit_target", edit_target)
+
+func _on_asset_catalog_saved(asset_id: String) -> void:
+	load_asset_catalog(asset_id, true)
+
+func _on_asset_catalog_closed() -> void:
+	load_asset_catalog()
 
 func setup_layer_options() -> void:
 	if option_layer:
@@ -214,19 +314,6 @@ func _on_option_layer_item_selected(index: int) -> void:
 		if canvas: canvas.set_active_layer(selected_layer)
 		update_status("Active Layer: " + selected_layer)
 
-func _on_asset_list_item_selected(index: int) -> void:
-	if index < 0 or index >= catalog_entries.size():
-		return
-	var entry: Dictionary = catalog_entries[index]
-	if canvas:
-		canvas.set_catalog_asset(entry)
-	set_asset_preview(entry)
-	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
-	var footprint: Array = entry.get("footprint_tiles", [1, 1])
-	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint[0]), str(footprint[1])]
-	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
-	update_selected_tile_label("Click canvas to place selected catalog asset")
-
 func set_asset_preview(entry: Dictionary) -> void:
 	asset_preview.texture = null
 	var source_path := str(entry.get("source_path", ""))
@@ -253,8 +340,13 @@ func set_asset_preview(entry: Dictionary) -> void:
 	asset_preview.texture = cropped_preview
 	lbl_asset_preview_status.text = "Source region: %d × %d px · original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
 
-func _on_asset_list_item_clicked(index: int, _at_position: Vector2, _mouse_button_index: int) -> void:
-	_on_asset_list_item_selected(index)
+func _on_btn_place_catalog_asset_pressed() -> void:
+	var index := _find_catalog_asset_index(selected_asset_id)
+	if index < 0:
+		update_status("Select a catalog item first")
+		return
+	_select_catalog_asset(index)
+	update_status("Place selected catalog asset on the canvas")
 
 func _on_btn_load_pressed() -> void:
 	set_dialog_path(open_map_dialog)

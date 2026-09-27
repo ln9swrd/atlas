@@ -2,7 +2,7 @@
 	"assets": [
 		{
 			"asset_id": "asset.tile.a_7",
-			"display_name": "A 7",
+			"display_name": "Border Wall Tiles",
 			"group": "Boundary",
 			"kind": "tile",
 			"source_path": "res://images/map/tile/facility/a7.png",

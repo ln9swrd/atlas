@@ -1,5 +1,7 @@
 extends Window
 
+signal catalog_saved(selected_asset_id: String)
+
 const CATALOG_PATH := "res://content/editor/asset_catalog.json"
 const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facility", "Forest", "Ground", "Military", "River", "Sea"]
 const OBJECT_GROUPS := ["Combat", "Industrial", "Terrain"]
@@ -28,6 +30,28 @@ func _ready() -> void:
 	close_requested.connect(hide)
 	_build_interface()
 	_load_catalog()
+
+func open_for_asset_id(asset_id: String, edit_target: String) -> void:
+	_load_catalog()
+	var target_index := -1
+	for index in range(entries.size()):
+		if str(entries[index].get("asset_id", "")) == asset_id:
+			target_index = index
+			break
+	if target_index < 0:
+		status_label.text = "Catalog entry not found: " + asset_id
+		return
+	_on_asset_selected(target_index)
+	if edit_target == "image":
+		status_label.text = "Source image/region edit: choose a project image or drag a new region, then Update Selected and Save Catalog."
+	else:
+		status_label.text = "Metadata edit: update the visible ID, name, kind, group, and footprint fields, then Update Selected and Save Catalog."
+
+func focus_edit_target(edit_target: String) -> void:
+	if edit_target == "image":
+		region_view.grab_focus()
+	else:
+		id_edit.grab_focus()
 
 func _build_interface() -> void:
 	var root := MarginContainer.new()
@@ -72,6 +96,7 @@ func _build_interface() -> void:
 	region_view = REGION_VIEW_SCRIPT.new()
 	region_view.custom_minimum_size = Vector2(520, 520)
 	region_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	region_view.focus_mode = Control.FOCUS_ALL
 	region_view.region_changed.connect(_on_region_changed)
 	preview_box.add_child(region_view)
 	var details := VBoxContainer.new()
@@ -358,7 +383,10 @@ func _entry_preview_icon(entry: Dictionary) -> Texture2D:
 	return preview
 
 func _load_catalog() -> void:
+	entries.clear()
+	selected_index = -1
 	if not FileAccess.file_exists(CATALOG_PATH):
+		_refresh_list()
 		return
 	var file := FileAccess.open(CATALOG_PATH, FileAccess.READ)
 	if file == null:
@@ -383,3 +411,7 @@ func _save_catalog() -> void:
 		return
 	file.store_string(JSON.stringify({"schema_version": 1, "assets": entries}, "\t") + "\n")
 	status_label.text = "Saved %d assets to %s" % [entries.size(), CATALOG_PATH]
+	var selected_asset_id := ""
+	if selected_index >= 0 and selected_index < entries.size():
+		selected_asset_id = str(entries[selected_index].get("asset_id", ""))
+	catalog_saved.emit(selected_asset_id)

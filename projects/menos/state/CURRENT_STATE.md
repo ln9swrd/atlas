@@ -291,3 +291,11 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Failure handling: Missing source textures or invalid/out-of-bounds rectangles omit the thumbnail while retaining the text row. Source textures are cached by path for list refreshes.
 - Changed: `godot/editor/asset_catalog_editor.gd` and this handoff only. Existing catalog JSON and unrelated dirty files were preserved.
 - Verification: Static code and catalog JSON inspection plus `git diff --check`; Godot was not run, so visual/runtime behavior remains unverified.
+
+## Handoff — Map Editor catalog row edit targets (2026-09-27)
+
+- Status: Map Editor Inspector catalog rows now separate source-image and metadata edit targets while preserving explicit map placement.
+- Interaction: The thumbnail button shows the cropped asset image; clicking it selects the asset for placement and opens the authoring window preselected in source-image/region mode. The adjacent text button shows display name, kind, and group; clicking it selects the same asset and opens the visible metadata form. `Place Selected` arms the selected catalog record for canvas placement.
+- Refresh: Saving emits the selected asset ID to Map Editor for catalog/list/preview refresh; closing the authoring window also reloads the catalog and retains the selected asset when it still exists.
+- Changed: `godot/editor/map_editor.gd`, `map_editor.tscn`, `asset_catalog_editor.gd`, and this handoff only. No map, catalog JSON, image, or generated metadata was changed.
+- Verification: Static signal/path/selection review, catalog JSON parse, and `git diff --check`; Godot was not run, so runtime UI behavior remains unverified.
