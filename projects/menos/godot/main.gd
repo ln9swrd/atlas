@@ -742,7 +742,7 @@ func draw_oval(center: Vector2, rx: float, ry: float, color: Color) -> void:
 func _draw() -> void:
 	# Tactical Grid Background & Field Control Sidebar
 	draw_rect(Rect2(SIDEBAR_X, 0, 208, 860), Color("101f25"))
-	draw_string(ThemeDB.fallback_font, Vector2(30, 32), "MENOS // STRATEGIC BATTLE GRID", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, Vector2(30, 32), "MENOS // STRATEGIC BATTLE", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
 	draw_string(ThemeDB.fallback_font, Vector2(30, 50), "NORTHBRIDGE SECTOR // 36x24 TACTICAL FIELD", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("7ed6ce"))
 
 	# Tactical Field Boundary
