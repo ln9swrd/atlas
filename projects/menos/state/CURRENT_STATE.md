@@ -420,3 +420,9 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/map_data/northbridge_sector_01.json` and this handoff.
 - Verification: PowerShell JSON parse passed; Ground and Objects are empty, and the Border Wall size default remains 2×1. `git diff --check` passed.
 - Next: Reopen the map in Godot to confirm the Border Wall is absent.
+## Handoff — Asset catalog maximize, pan/zoom, double-click crop edit (2026-09-27)
+
+- Status: Resumed asset authoring UX. Maximize/Restore toolbar toggles `Window.MODE_MAXIMIZED`; source preview supports wheel zoom, Space/Alt/middle/right drag pan, and auto-fit zoom when image edit starts. Double-click a registered asset row to edit that entry’s catalog region on the **full** source image (erase alpha only inside the outlined rect); Save Edited Image still writes `content/editor/edited_assets/` PNGs and updates the catalog entry.
+- Changed: `godot/editor/asset_region_view.gd`, `asset_catalog_editor.gd`, `asset_catalog_editor.tscn`, `image_texture_loader.gd` (`load_image`), and this handoff.
+- Verification: `git diff --check` passed; Godot executable was not available on PATH, so Editor maximize, pan/zoom, double-click edit, and save remain runtime-unverified.
+- Next: Open Map Editor → Asset Catalog → Maximize; wheel/Space-drag on a project image; double-click a registered asset, erase, Save Edited Image, confirm catalog/thumbnail refresh.

@@ -514,10 +514,10 @@ func place_catalog_object(cell: Vector2i) -> void:
 	if not map_data.has("objects"):
 		map_data["objects"] = []
 	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
-	var position := origin + Vector2(cell.x * 32, cell.y * 32)
+	var object_pixel_pos := origin + Vector2(cell.x * 32, cell.y * 32)
 	map_data["objects"].append({
 		"asset_id": str(selected_catalog_asset.get("asset_id", "")),
-		"position": [position.x, position.y],
+		"position": [object_pixel_pos.x, object_pixel_pos.y],
 		"footprint_tiles": [width, height]
 	})
 	_mark_map_data_changed()

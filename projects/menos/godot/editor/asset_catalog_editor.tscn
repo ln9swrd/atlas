@@ -4,6 +4,8 @@
 
 [node name="AssetCatalogWindow" type="Window"]
 title = "MENOS Asset Catalog"
+initial_position = 1
 size = Vector2i(1280, 820)
+min_size = Vector2i(960, 640)
 visible = false
 script = ExtResource("1_script")
