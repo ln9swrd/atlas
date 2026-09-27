@@ -123,8 +123,8 @@ func restart_campaign() -> void:
 
 func apply_map_spatial_data(loaded_map: Dictionary) -> void:
 	if loaded_map.has("base"): BASE = loaded_map["base"]
-	if loaded_map.has("lanes"): LANES = loaded_map["lanes"]
-	if loaded_map.has("robot_spots"): ROBOT_SPOTS = loaded_map["robot_spots"]
+	if loaded_map.has("lanes") and not loaded_map["lanes"].is_empty(): LANES = loaded_map["lanes"]
+	if loaded_map.has("robot_spots") and not loaded_map["robot_spots"].is_empty(): ROBOT_SPOTS = loaded_map["robot_spots"]
 	if loaded_map.has("slots"): SLOTS = loaded_map["slots"]
 	if loaded_map.has("map_tiles"): MAP_TILES = loaded_map["map_tiles"]
 	if loaded_map.has("map_origin"): MAP_ORIGIN = loaded_map["map_origin"]
