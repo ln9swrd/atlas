@@ -1,6 +1,23 @@
 {
 	"assets": [
 		{
+			"asset_id": "asset.tile.ground.basic_meadow",
+			"display_name": "Basic Meadow",
+			"footprint_tiles": [
+				1,
+				1
+			],
+			"group": "Ground",
+			"kind": "tile",
+			"source_path": "res://assets/menos/maps/ground_basic_32.svg",
+			"source_rect_px": [
+				0,
+				0,
+				32,
+				32
+			]
+		},
+		{
 			"asset_id": "asset.tile.a_7",
 			"display_name": "Border Wall Tiles",
 			"group": "Boundary",

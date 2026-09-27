@@ -3,8 +3,8 @@ extends Window
 signal catalog_saved(selected_asset_id: String)
 
 const CATALOG_PATH := "res://content/editor/asset_catalog.json"
-const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facility", "Forest", "Ground", "Military", "River", "Sea"]
-const OBJECT_GROUPS := ["Combat", "Industrial", "Terrain"]
+const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facility", "Forest", "Ground", "Military", "Obstacle", "Other", "Prop", "River", "Sea", "Structure"]
+const OBJECT_GROUPS := ["Combat", "Decoration", "Ground", "Industrial", "Obstacle", "Other", "Prop", "Structure", "Terrain"]
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 const EDITED_ASSET_DIR := "res://content/editor/edited_assets"

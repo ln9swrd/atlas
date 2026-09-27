@@ -19,22 +19,31 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var asset_preview: TextureRect = $MainLayout/Inspector/VBox/AssetPreview
 @onready var lbl_asset_preview_status: Label = $MainLayout/Inspector/VBox/LblAssetPreviewStatus
 @onready var lbl_asset_details: Label = $MainLayout/Inspector/VBox/LblAssetDetails
+@onready var btn_asset_mode: Button = $MainLayout/Toolbox/VBox/ModeBar/BtnAssetMode
+@onready var btn_gameplay_mode: Button = $MainLayout/Toolbox/VBox/ModeBar/BtnGameplayMode
+@onready var gameplay_tools: VBoxContainer = $MainLayout/Toolbox/VBox/GameplayTools
+@onready var lbl_layer_title: Label = $MainLayout/Toolbox/VBox/LblLayerTitle
+@onready var eraser_size_row: HBoxContainer = $MainLayout/Toolbox/VBox/EraserSize
+@onready var gameplay_properties: VBoxContainer = $MainLayout/Inspector/VBox/GameplayProperties
+@onready var edit_gameplay_id: LineEdit = $MainLayout/Inspector/VBox/GameplayProperties/EditGameplayID
+@onready var edit_gameplay_name: LineEdit = $MainLayout/Inspector/VBox/GameplayProperties/EditGameplayName
+@onready var spin_gameplay_x: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayX
+@onready var spin_gameplay_y: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayY
+@onready var spin_gameplay_width: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow/SpinGameplayWidth
+@onready var spin_gameplay_height: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow/SpinGameplayHeight
+@onready var check_gameplay_enabled: CheckButton = $MainLayout/Inspector/VBox/GameplayProperties/GameplayEnabled
+@onready var option_gameplay_area: OptionButton = $MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow/OptionGameplayArea
 @onready var lbl_status: Label = $BottomBar/HBox/LblStatus
 @onready var open_map_dialog: FileDialog = $OpenMapDialog
 @onready var save_map_dialog: FileDialog = $SaveMapDialog
 @onready var lbl_current_tool: Label = $MainLayout/Toolbox/VBox/LblCurrentTool
 @onready var lbl_selected_tile: Label = $MainLayout/Toolbox/VBox/LblSelectedTile
 @onready var option_layer: OptionButton = $MainLayout/Toolbox/VBox/OptionLayer
-@onready var spin_atlas_x: SpinBox = $MainLayout/Toolbox/VBox/AtlasPicker/SpinX
-@onready var spin_atlas_y: SpinBox = $MainLayout/Toolbox/VBox/AtlasPicker/SpinY
 @onready var spin_eraser_size: SpinBox = $MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize
-@onready var atlas_palette: AtlasPalette = $MainLayout/Toolbox/VBox/PaletteContainer/AtlasPaletteView
 @onready var asset_catalog_window: Window = $AssetCatalogWindow
 
 var current_map_path := "res://map_data/northbridge_sector_01.json"
 var current_map_data := {}
-var active_atlas_x := 0
-var active_atlas_y := 0
 var catalog_entries: Array[Dictionary] = []
 var preview_texture_cache: Dictionary = {}
 var selected_asset_id := ""
@@ -51,13 +60,25 @@ func _ready() -> void:
 	btn_resize_placement.pressed.connect(_on_resize_placement_pressed)
 	btn_delete_placement.pressed.connect(_on_delete_placement_pressed)
 	btn_open_asset_catalog.pressed.connect(_on_open_asset_catalog_pressed)
+	btn_asset_mode.pressed.connect(_on_asset_mode_pressed)
+	btn_gameplay_mode.pressed.connect(_on_gameplay_mode_pressed)
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnGameplaySelect.pressed.connect(_on_gameplay_tool_pressed.bind("SELECT"))
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnSpawnArea.pressed.connect(_on_gameplay_tool_pressed.bind("SPAWN_AREA"))
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnTowerArea.pressed.connect(_on_gameplay_tool_pressed.bind("TOWER_PLACEMENT_AREA"))
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnTowerPoint.pressed.connect(_on_gameplay_tool_pressed.bind("TOWER_PLACEMENT_POINT"))
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnRobotPoint.pressed.connect(_on_gameplay_tool_pressed.bind("ROBOT_POSITION_POINT"))
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnGoalArea.pressed.connect(_on_gameplay_tool_pressed.bind("GOAL_AREA"))
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnObstacleArea.pressed.connect(_on_gameplay_tool_pressed.bind("OBSTACLE_AREA"))
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnMovementArea.pressed.connect(_on_gameplay_tool_pressed.bind("MOVEMENT_AREA"))
+	$MainLayout/Toolbox/VBox/GameplayTools/BtnBlockedArea.pressed.connect(_on_gameplay_tool_pressed.bind("BLOCKED_AREA"))
+	$MainLayout/Inspector/VBox/GameplayProperties/BtnApplyGameplayProperties.pressed.connect(_on_apply_gameplay_properties_pressed)
+	$MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement.pressed.connect(_on_delete_gameplay_element_pressed)
 	lbl_placement_size.hide()
 	spin_placement_width.get_parent().hide()
 	btn_resize_placement.hide()
 	btn_delete_placement.hide()
-
-	if atlas_palette:
-		atlas_palette.tile_selected.connect(_on_atlas_palette_tile_selected)
+	gameplay_properties.hide()
+	_set_mode_ui("ASSET")
 
 	setup_layer_options()
 	load_asset_catalog()
@@ -106,29 +127,48 @@ func _find_catalog_asset_index(asset_id: String) -> int:
 func _rebuild_asset_rows() -> void:
 	for child in asset_rows.get_children():
 		child.queue_free()
+	var grouped_entries: Dictionary = {}
 	for index in range(catalog_entries.size()):
-		var entry: Dictionary = catalog_entries[index]
-		var row := HBoxContainer.new()
-		row.custom_minimum_size.y = 58
-		asset_rows.add_child(row)
-		var image_button := TextureButton.new()
-		image_button.custom_minimum_size = Vector2(58, 54)
-		image_button.ignore_texture_size = true
-		image_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		image_button.texture_normal = _catalog_entry_preview(entry)
-		image_button.tooltip_text = "Select asset; double-click to edit its source image or region"
-		image_button.pressed.connect(_on_catalog_image_pressed.bind(index))
-		image_button.gui_input.connect(_on_catalog_asset_gui_input.bind(index, "image"))
-		row.add_child(image_button)
-		var text_button := Button.new()
-		text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		text_button.custom_minimum_size.y = 54
-		text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		text_button.text = "%s\n%s · %s" % [entry.get("display_name", entry.get("asset_id", "?")), str(entry.get("kind", "tile")).capitalize(), entry.get("group", "?")]
-		text_button.tooltip_text = "Select asset; double-click to edit its metadata"
-		text_button.pressed.connect(_on_catalog_text_pressed.bind(index))
-		text_button.gui_input.connect(_on_catalog_asset_gui_input.bind(index, "metadata"))
-		row.add_child(text_button)
+		var group_name := str(catalog_entries[index].get("group", "Other"))
+		var group_indices: Array = grouped_entries.get(group_name, [])
+		group_indices.append(index)
+		grouped_entries[group_name] = group_indices
+	var group_names: Array = grouped_entries.keys()
+	group_names.sort()
+	for group_name in group_names:
+		var heading := Label.new()
+		heading.text = str(group_name).to_upper()
+		heading.add_theme_font_size_override("font_size", 12)
+		asset_rows.add_child(heading)
+		var indices: Array = grouped_entries[group_name]
+		indices.sort_custom(func(left: int, right: int) -> bool:
+			var left_name := str(catalog_entries[left].get("display_name", catalog_entries[left].get("asset_id", "?")))
+			var right_name := str(catalog_entries[right].get("display_name", catalog_entries[right].get("asset_id", "?")))
+			return left_name.naturalnocasecmp_to(right_name) < 0
+		)
+		for index in indices:
+			var entry: Dictionary = catalog_entries[index]
+			var row := HBoxContainer.new()
+			row.custom_minimum_size.y = 62
+			asset_rows.add_child(row)
+			var image_button := TextureButton.new()
+			image_button.custom_minimum_size = Vector2(64, 58)
+			image_button.ignore_texture_size = true
+			image_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+			image_button.texture_normal = _catalog_entry_preview(entry)
+			image_button.tooltip_text = "Select asset; double-click to edit its source image or region"
+			image_button.pressed.connect(_on_catalog_image_pressed.bind(index))
+			image_button.gui_input.connect(_on_catalog_asset_gui_input.bind(index, "image"))
+			row.add_child(image_button)
+			var text_button := Button.new()
+			text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			text_button.custom_minimum_size.y = 58
+			text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			text_button.text = "%s\n%s" % [entry.get("display_name", entry.get("asset_id", "?")), str(entry.get("kind", "tile")).capitalize()]
+			text_button.tooltip_text = "Select asset; double-click to edit its metadata"
+			text_button.pressed.connect(_on_catalog_text_pressed.bind(index))
+			text_button.gui_input.connect(_on_catalog_asset_gui_input.bind(index, "metadata"))
+			row.add_child(text_button)
 
 func _catalog_entry_preview(entry: Dictionary) -> Texture2D:
 	var source_path := str(entry.get("source_path", ""))
@@ -158,6 +198,7 @@ func _select_catalog_asset(index: int) -> void:
 	selected_asset_id = str(entry.get("asset_id", ""))
 	if canvas:
 		canvas.set_catalog_asset(entry)
+	_set_mode_ui("ASSET")
 	set_asset_preview(entry)
 	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
 	var footprint := canvas.catalog_asset_footprint(entry)
@@ -253,12 +294,15 @@ func update_status(text: String) -> void:
 func _on_object_selected(info: Dictionary) -> void:
 	var placement_type := str(info.get("type", ""))
 	var can_resize := placement_type in ["Catalog Object", "Catalog Tile", "Catalog Tile Overlay"]
+	var is_gameplay := placement_type in ["Gameplay Area", "Gameplay Point"]
+	var is_gameplay_area := placement_type == "Gameplay Area"
 	lbl_placement_size.visible = can_resize
 	spin_placement_width.get_parent().visible = can_resize
 	btn_resize_placement.visible = can_resize
 	btn_resize_placement.disabled = not can_resize
 	btn_delete_placement.visible = can_resize
 	btn_delete_placement.disabled = not can_resize
+	gameplay_properties.visible = is_gameplay
 	if info.is_empty():
 		lbl_selected_id.text = "ID: None"
 		lbl_selected_type.text = "Type: -"
@@ -275,11 +319,84 @@ func _on_object_selected(info: Dictionary) -> void:
 	lbl_selected_type.text = "Type: " + str(info.get("type", "-"))
 	lbl_position.text = "Position: (%.1f, %.1f)" % [pos.x, pos.y]
 	lbl_tile_coords.text = "Tile Coords: (%d, %d)" % [tile_x, tile_y]
-	if can_resize:
+	if is_gameplay:
+		edit_gameplay_id.text = str(info.get("id", ""))
+		edit_gameplay_name.text = str(info.get("name", ""))
+		spin_gameplay_x.value = pos.x
+		spin_gameplay_y.value = pos.y
+		check_gameplay_enabled.button_pressed = bool(info.get("enabled", true))
+		$MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow.visible = is_gameplay_area
+		$MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow.visible = not is_gameplay_area
+		if is_gameplay_area:
+			var area_size: Vector2 = info.get("size", Vector2(32, 32))
+			spin_gameplay_width.value = area_size.x
+			spin_gameplay_height.value = area_size.y
+		else:
+			_refresh_gameplay_area_options(str(info.get("area_id", "")))
+	elif can_resize:
 		var footprint: Variant = info.get("footprint", [1, 1])
 		if footprint is Array and footprint.size() >= 2:
 			spin_placement_width.value = int(footprint[0])
 			spin_placement_height.value = int(footprint[1])
+
+func _set_mode_ui(mode: String) -> void:
+	var is_gameplay_mode := mode == "GAMEPLAY"
+	btn_asset_mode.button_pressed = not is_gameplay_mode
+	btn_gameplay_mode.button_pressed = is_gameplay_mode
+	gameplay_tools.visible = is_gameplay_mode
+	for node in [lbl_layer_title, option_layer, $MainLayout/Toolbox/VBox/BtnSelect, $MainLayout/Toolbox/VBox/BtnErase, eraser_size_row]:
+		node.visible = not is_gameplay_mode
+
+func _on_asset_mode_pressed() -> void:
+	canvas.set_editor_mode("ASSET")
+	_set_mode_ui("ASSET")
+	update_tool_label("ASSET")
+
+func _on_gameplay_mode_pressed() -> void:
+	canvas.set_gameplay_tool("SELECT")
+	_set_mode_ui("GAMEPLAY")
+	update_tool_label("GAMEPLAY: SELECT / MOVE")
+
+func _on_gameplay_tool_pressed(tool: String) -> void:
+	canvas.set_gameplay_tool(tool)
+	_set_mode_ui("GAMEPLAY")
+	update_tool_label("GAMEPLAY: " + tool.replace("_", " "))
+	update_selected_tile_label("Click to place or select")
+
+func _refresh_gameplay_area_options(selected_area_id: String) -> void:
+	option_gameplay_area.clear()
+	option_gameplay_area.add_item("No Area")
+	option_gameplay_area.set_item_metadata(0, "")
+	var selected_index := 0
+	var areas: Array = canvas.map_data.get("gameplay_areas", [])
+	for area in areas:
+		if not area is Dictionary:
+			continue
+		var area_id := str(area.get("id", ""))
+		option_gameplay_area.add_item(str(area.get("name", area_id)))
+		option_gameplay_area.set_item_metadata(option_gameplay_area.item_count - 1, area_id)
+		if area_id == selected_area_id:
+			selected_index = option_gameplay_area.item_count - 1
+	option_gameplay_area.select(selected_index)
+
+func _on_apply_gameplay_properties_pressed() -> void:
+	var selected_type := str(canvas.selected_object.get("type", ""))
+	var area_id := ""
+	if selected_type == "Gameplay Point" and option_gameplay_area.selected >= 0:
+		area_id = str(option_gameplay_area.get_item_metadata(option_gameplay_area.selected))
+	if not canvas.update_selected_gameplay_properties(edit_gameplay_id.text, edit_gameplay_name.text, check_gameplay_enabled.button_pressed, area_id):
+		update_status("Properties were not applied. Check that the ID is unique and the Area exists.")
+		return
+	canvas.update_selected_gameplay_position(Vector2(spin_gameplay_x.value, spin_gameplay_y.value))
+	if selected_type == "Gameplay Area":
+		canvas.update_selected_gameplay_area_size(Vector2(spin_gameplay_width.value, spin_gameplay_height.value))
+	update_status("Gameplay properties updated.")
+
+func _on_delete_gameplay_element_pressed() -> void:
+	if canvas.delete_selected_editor_object():
+		update_status("Selected gameplay element deleted.")
+	else:
+		update_status("Select a gameplay Area or Point first.")
 
 func _on_resize_placement_pressed() -> void:
 	var width_tiles := int(spin_placement_width.value)
@@ -308,27 +425,6 @@ func update_selected_tile_label(tile_desc: String) -> void:
 	if lbl_selected_tile:
 		lbl_selected_tile.text = "Selected: " + tile_desc
 
-func select_ground4_tile(x: int, y: int) -> void:
-	active_atlas_x = clamp(x, 0, 47)
-	active_atlas_y = clamp(y, 0, 31)
-
-	if spin_atlas_x and spin_atlas_x.value != active_atlas_x:
-		spin_atlas_x.value = active_atlas_x
-	if spin_atlas_y and spin_atlas_y.value != active_atlas_y:
-		spin_atlas_y.value = active_atlas_y
-	if atlas_palette:
-		atlas_palette.set_selected_cell(active_atlas_x, active_atlas_y)
-
-	if canvas:
-		canvas.set_selected_tile(8, Vector2i(active_atlas_x, active_atlas_y))
-
-	var desc := "Ground4 (%d, %d)" % [active_atlas_x, active_atlas_y]
-	update_tool_label("PAINT: " + desc)
-	update_selected_tile_label(desc)
-
-func _on_atlas_palette_tile_selected(x: int, y: int) -> void:
-	select_ground4_tile(x, y)
-
 func _on_btn_select_pressed() -> void:
 	if canvas: canvas.set_edit_mode("SELECT")
 	update_tool_label("SELECT")
@@ -339,40 +435,9 @@ func _on_btn_erase_pressed() -> void:
 	update_tool_label("ERASE TILE")
 	update_selected_tile_label("Erase Tool")
 
-func _on_btn_tile_ground_pressed() -> void:
-	if canvas: canvas.set_selected_tile(0, Vector2i(0, 0))
-	update_tool_label("PAINT: Ground Basic")
-	update_selected_tile_label("Ground Basic (0,0)")
-
-func _on_spin_atlas_x_value_changed(value: float) -> void:
-	select_ground4_tile(int(value), active_atlas_y)
-
-func _on_spin_atlas_y_value_changed(value: float) -> void:
-	select_ground4_tile(active_atlas_x, int(value))
-
 func _on_eraser_size_value_changed(value: float) -> void:
 	if canvas:
 		canvas.set_eraser_size(int(value))
-
-func _on_btn_tile_g4_preset0_pressed() -> void: select_ground4_tile(0, 0)
-func _on_btn_tile_g4_preset1_pressed() -> void: select_ground4_tile(1, 0)
-func _on_btn_tile_g4_preset2_pressed() -> void: select_ground4_tile(2, 0)
-func _on_btn_tile_g4_preset3_pressed() -> void: select_ground4_tile(3, 0)
-
-func _on_btn_tile_concrete_pressed() -> void:
-	if canvas: canvas.set_selected_tile(5, Vector2i(40, 16))
-	update_tool_label("PAINT: Concrete Module")
-	update_selected_tile_label("Concrete Module")
-
-func _on_btn_tile_grass_pressed() -> void:
-	if canvas: canvas.set_selected_tile(4, Vector2i(0, 0))
-	update_tool_label("PAINT: Vegetation Cluster")
-	update_selected_tile_label("Vegetation Cluster")
-
-func _on_btn_tile_road_pressed() -> void:
-	if canvas: canvas.set_selected_tile(3, Vector2i(0, 0))
-	update_tool_label("PAINT: Road Segment")
-	update_selected_tile_label("Road Segment")
 
 func _on_option_layer_item_selected(index: int) -> void:
 	var layers: Array[String] = ["Ground", "Vegetation", "RoadComposition"]
@@ -413,6 +478,8 @@ func _on_btn_place_catalog_asset_pressed() -> void:
 		update_status("Select a catalog item first")
 		return
 	_select_catalog_asset(index)
+	canvas.set_edit_mode("PAINT")
+	update_tool_label("PLACE: " + str(catalog_entries[index].get("display_name", selected_asset_id)))
 	update_status("Place selected catalog asset on the canvas")
 
 func _on_btn_load_pressed() -> void:

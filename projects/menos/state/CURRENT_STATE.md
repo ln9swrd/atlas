@@ -426,3 +426,14 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/asset_region_view.gd`, `asset_catalog_editor.gd`, `asset_catalog_editor.tscn`, `image_texture_loader.gd` (`load_image`), and this handoff.
 - Verification: `git diff --check` passed; Godot executable was not available on PATH, so Editor maximize, pan/zoom, double-click edit, and save remain runtime-unverified.
 - Next: Open Map Editor → Asset Catalog → Maximize; wheel/Space-drag on a project image; double-click a registered asset, erase, Save Edited Image, confirm catalog/thumbnail refresh.
+
+## Handoff — Asset Catalog and Gameplay Map Editor (2026-09-27)
+
+- Status: IMPLEMENTED. Map Editor now separates ASSET and GAMEPLAY modes; Catalog assets are grouped, sorted, thumbnail-backed, and selectable/placeable/movable/deletable. Basic Meadow is a Ground Catalog asset. Gameplay Areas and Points have unique IDs, individual selection, Inspector properties, drag movement, Area resizing, and individual deletion.
+- Data compatibility: `MapLoader` preserves original top-level JSON and nested Goal fields, map identity metadata, and legacy `goal`, `spawns`, `robot_spots`, `tower_slots`, `tiles`, and `objects`. New `gameplay_areas` and `gameplay_points` round-trip without mass-converting existing maps. Deleting an Area detaches, but does not delete, its Points.
+- Changed: `godot/content/editor/asset_catalog.json`, `godot/editor/asset_catalog_editor.gd`, `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, `godot/editor/map_editor.tscn`, `godot/scripts/map_loader.gd`, and `godot/tests/editor_data_smoke_test.gd`. Removed `godot/editor/atlas_palette.gd` and its UID. The `ground4.png` asset and TileSet source remain unchanged.
+- Verification: Godot 4.7.2 headless editor scan passed; `editor_data_smoke_test.gd` passed for legacy/unknown-field round-trip, existing map load, Catalog group/thumbnail and Basic Meadow placement/move/delete, Gameplay Area create/move/resize/delete, Point create/move/delete/properties, and save/reload. Pylance diagnostics and `git diff --check` passed.
+- NOT VERIFIED: Native GUI visual inspection and exported BUILD. The editor scene and controls were instantiated and exercised headlessly with synthetic input; PIE/runtime combat was not run and remains out of scope.
+- Related commit: none. Baseline HEAD: `04eb86f0cf9e59ad4b22c1859289ae7caa27fb65` on `main`.
+- Next: Visually inspect the Map Editor in the Godot GUI for layout/clipping, then confirm the same save/reload flow in a manual editor session. No runtime systems are authorized by this task.
+- Resume condition: Continue only for concrete visual/UI defects or user-requested runtime work; do not add unrequested gameplay systems.

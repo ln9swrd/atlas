@@ -1,0 +1,283 @@
+extends SceneTree
+
+const MAP_LOADER := preload("res://scripts/map_loader.gd")
+const EDITOR_CANVAS := preload("res://editor/editor_canvas.gd")
+const TEST_MAP_PATH := "user://menos_editor_data_smoke.json"
+
+func _initialize() -> void:
+	call_deferred("_run")
+
+func _run() -> void:
+	var source_map := {
+		"version": 7,
+		"map_id": "roundtrip_fixture",
+		"name": "Roundtrip Fixture",
+		"map_size": [36, 24],
+		"map_origin": [0.0, 58.0],
+		"map_pixel_size": [1152.0, 768.0],
+		"goal": {"id": "legacy_hq", "position": [1080.0, 122.0], "custom_goal_flag": "keep"},
+		"spawns": {"left": [70.0, 346.0]},
+		"robot_spots": {"CENTER": [720.0, 250.0]},
+		"tower_slots": {"L1": [220.0, 310.0]},
+		"tiles": {"Ground": {}},
+		"objects": [],
+		"custom_runtime_metadata": {"revision": "alpha", "preserve": true}
+	}
+	var map_data: Dictionary = MAP_LOADER.parse_raw_data(source_map)
+	map_data["gameplay_areas"] = []
+	map_data["gameplay_points"] = []
+	if not _check(_save_and_check_map(map_data, source_map), "MapLoader did not preserve legacy or unknown map data"):
+		return
+	var catalog_file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
+	if not _check(catalog_file != null, "Could not open Asset Catalog"):
+		return
+	var catalog_data: Variant = JSON.parse_string(catalog_file.get_as_text())
+	var basic_meadow: Dictionary = {}
+	if catalog_data is Dictionary:
+		for entry in catalog_data.get("assets", []):
+			if entry is Dictionary and str(entry.get("asset_id", "")) == "asset.tile.ground.basic_meadow":
+				basic_meadow = entry
+	if not _check(str(basic_meadow.get("group", "")) == "Ground" and ResourceLoader.exists(str(basic_meadow.get("source_path", ""))), "Basic Meadow is not registered as a loadable Ground asset"):
+		return
+
+	var canvas = EDITOR_CANVAS.new()
+	root.add_child(canvas)
+	canvas.set_map_data(map_data)
+	for element_type in ["spawn_area", "tower_placement_area", "goal_area", "obstacle_area"]:
+		if not _check(canvas.create_gameplay_area(element_type, Vector2(34, 92), Vector2(96, 150)), "Could not create %s" % element_type):
+			return
+	if not _check(canvas.map_data["gameplay_areas"].size() == 4, "Gameplay areas were not stored independently"):
+		return
+
+	canvas._select_gameplay_area(0)
+	var spawn_area_id := str(canvas.selected_object["id"])
+	if not _check(canvas.update_selected_gameplay_properties("zone.spawn.alpha", "North Spawn", false), "Could not update area properties"):
+		return
+	if not _check(canvas.update_selected_gameplay_area_size(Vector2(96, 64)), "Could not resize gameplay area"):
+		return
+	var start_position: Vector2 = canvas.selected_object["position"]
+	canvas._begin_selected_move(start_position)
+	var moved := canvas._apply_selected_move(start_position + Vector2(32, 32))
+	if moved:
+		canvas._mark_map_data_changed()
+		canvas._finish_edit_stroke()
+	if not _check(moved and canvas.map_data["gameplay_areas"][0]["position"] == [64.0, 122.0], "Gameplay area drag did not move the area"):
+		return
+
+	if not _check(canvas.create_gameplay_point("tower_placement_point", Vector2(170, 220)), "Could not create tower point"):
+		return
+	if not _check(canvas.create_gameplay_point("robot_position_point", Vector2(230, 260)), "Could not create robot point"):
+		return
+	var robot_point_id := str(canvas.selected_object["id"])
+	canvas._select_gameplay_point(0)
+	if not _check(canvas.delete_selected_editor_object(), "Could not delete the selected Tower Point"):
+		return
+	if not _check(canvas.map_data["gameplay_points"].size() == 1 and str(canvas.map_data["gameplay_points"][0]["id"]) == robot_point_id, "Deleting the Tower Point affected the Robot Point"):
+		return
+	canvas._select_gameplay_point(0)
+	if not _check(canvas.update_selected_gameplay_properties(robot_point_id, "Robot Position A", false, "zone.spawn.alpha"), "Could not edit point properties"):
+		return
+	if not _check(canvas.update_selected_gameplay_position(Vector2(262, 292)), "Could not move point from Inspector"):
+		return
+
+	canvas._select_gameplay_area(0)
+	if not _check(canvas.delete_selected_editor_object(), "Could not delete the selected area"):
+		return
+	var remaining_point: Dictionary = canvas.map_data["gameplay_points"][0]
+	if not _check(canvas.map_data["gameplay_areas"].size() == 3 and str(remaining_point.get("area_id", "")) == "", "Deleting an area should preserve its points and clear their relationship"):
+		return
+	if not _check(spawn_area_id != "", "Area IDs were not generated"):
+		return
+
+	var ground_asset := {
+		"asset_id": "test.basic_meadow",
+		"display_name": "Basic Meadow",
+		"group": "Ground",
+		"kind": "tile",
+		"source_path": "res://assets/menos/maps/ground_basic_32.svg",
+		"source_rect_px": [0, 0, 32, 32],
+		"footprint_tiles": [1, 1]
+	}
+	canvas.set_catalog_assets([ground_asset])
+	canvas.set_catalog_asset(ground_asset)
+	canvas.paint_tile_at(Vector2(16, 74))
+	if not _check(canvas.map_data["tiles"]["Ground"].has("0,0"), "Basic Meadow was not placed through the Catalog path"):
+		return
+	canvas._begin_selected_move(Vector2(16, 74))
+	var asset_moved := canvas._apply_selected_move(Vector2(48, 74))
+	if asset_moved:
+		canvas._mark_map_data_changed()
+		canvas._finish_edit_stroke()
+	if not _check(asset_moved and canvas.map_data["tiles"]["Ground"].has("1,0"), "Catalog tile placement did not move"):
+		return
+	if not _check(_save_and_check_map(canvas.map_data, source_map), "Moved Catalog tile did not survive map save/reload"):
+		return
+	if not _check(canvas.delete_selected_editor_object() and not canvas.map_data["tiles"]["Ground"].has("1,0"), "Catalog tile placement did not delete"):
+		return
+
+	if not _check(_save_and_check_map(canvas.map_data, source_map), "Edited map failed save/reload persistence checks"):
+		return
+	var editor_scene: PackedScene = load("res://editor/map_editor.tscn")
+	if not _check(editor_scene != null, "Could not load the Map Editor scene"):
+		return
+	var map_editor = editor_scene.instantiate()
+	root.add_child(map_editor)
+	await process_frame
+	if not _check(not map_editor.current_map_data.is_empty(), "The existing Northbridge map did not load in the Editor"):
+		return
+	if not _check(map_editor.current_map_data.get("lanes", {}).size() == 2 and map_editor.current_map_data.get("robot_spots", {}).size() == 3 and map_editor.current_map_data.get("slots", {}).size() == 6, "Existing spawn, robot, or tower data was not loaded"):
+		return
+	var editor_asset_rows: VBoxContainer = map_editor.get_node("MainLayout/Inspector/VBox/AssetScroll/AssetRows")
+	var meadow_visible := false
+	var ground_group_visible := false
+	var basic_meadow_button: Button
+	for child in editor_asset_rows.get_children():
+		if child is Label and str(child.text) == "GROUND":
+			ground_group_visible = true
+		if child is HBoxContainer:
+			for row_child in child.get_children():
+				if row_child is Button and str(row_child.text).contains("Basic Meadow"):
+					meadow_visible = true
+					basic_meadow_button = row_child
+				if row_child is TextureButton and row_child.texture_normal != null:
+					meadow_visible = meadow_visible or str(child.get_child(1).text).contains("Basic Meadow")
+	if not _check(ground_group_visible and meadow_visible, "Ground group or Basic Meadow thumbnail is missing from the Editor Catalog"):
+		return
+	if not _check(map_editor.get_node_or_null("MainLayout/Toolbox/VBox/PaletteContainer") == null and map_editor.get_node_or_null("MainLayout/Toolbox/VBox/BtnTileGround") == null and map_editor.get_node_or_null("MainLayout/Toolbox/VBox/LblGuideContent") == null, "Obsolete tile palette, Basic Meadow button, or controls guide remains"):
+		return
+	if not _check(ResourceLoader.exists("res://assets/menos/maps/ground4.png"), "Ground4 asset file was unexpectedly removed"):
+		return
+	var editor_canvas = map_editor.get_node("MainLayout/CanvasContainer/CanvasRoot")
+	var canvas_container: Control = map_editor.get_node("MainLayout/CanvasContainer")
+	canvas_container.size = Vector2(640, 700)
+	var interactive_map: Dictionary = MAP_LOADER.parse_raw_data(source_map)
+	interactive_map["gameplay_areas"] = []
+	interactive_map["gameplay_points"] = []
+	editor_canvas.set_map_data(interactive_map)
+	map_editor.get_node("MainLayout/Toolbox/VBox/ModeBar/BtnGameplayMode").pressed.emit()
+	if not _check(editor_canvas.editor_mode == "GAMEPLAY" and map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools").visible, "Gameplay editor mode did not activate"):
+		return
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnSpawnArea").pressed.emit()
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(48, 100))
+	_send_mouse_motion(editor_canvas, Vector2(112, 164), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(112, 164))
+	if not _check(editor_canvas.map_data["gameplay_areas"].size() == 1, "Canvas input did not create a Spawn Area"):
+		return
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnGameplaySelect").pressed.emit()
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(48, 106))
+	_send_mouse_motion(editor_canvas, Vector2(80, 106), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(80, 106))
+	if not _check(editor_canvas.map_data["gameplay_areas"][0]["position"] == [64.0, 90.0], "Canvas input did not move the selected Spawn Area"):
+		return
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(154, 180))
+	_send_mouse_motion(editor_canvas, Vector2(186, 212), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(186, 212))
+	if not _check(editor_canvas.map_data["gameplay_areas"][0]["size"] == [128.0, 128.0], "Canvas input did not resize the Spawn Area"):
+		return
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnRobotPoint").pressed.emit()
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(208, 202))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(208, 202))
+	if not _check(editor_canvas.map_data["gameplay_points"].size() == 1, "Canvas input did not create a Robot Position Point"):
+		return
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnGameplaySelect").pressed.emit()
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(208, 202))
+	_send_mouse_motion(editor_canvas, Vector2(240, 202), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(240, 202))
+	if not _check(editor_canvas.map_data["gameplay_points"][0]["position"] == [240.0, 202.0], "Canvas input did not move the selected Robot Point"):
+		return
+	var gameplay_name_edit: LineEdit = map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/EditGameplayName")
+	gameplay_name_edit.text = "Relay Position"
+	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnApplyGameplayProperties").pressed.emit()
+	if not _check(str(editor_canvas.map_data["gameplay_points"][0]["name"]) == "Relay Position", "Inspector did not apply Gameplay Point properties"):
+		return
+	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
+	if not _check(editor_canvas.map_data["gameplay_points"].is_empty(), "Inspector did not delete the selected Gameplay Point"):
+		return
+	map_editor.get_node("MainLayout/Toolbox/VBox/ModeBar/BtnAssetMode").pressed.emit()
+	if not _check(editor_canvas.editor_mode == "ASSET" and not map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools").visible, "Asset editor mode did not activate"):
+		return
+	if not _check(basic_meadow_button != null, "Basic Meadow Catalog row button was not created"):
+		return
+	basic_meadow_button.pressed.emit()
+	map_editor.get_node("MainLayout/Inspector/VBox/BtnPlaceCatalogAsset").pressed.emit()
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(16, 74))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(16, 74))
+	if not _check(editor_canvas.map_data["tiles"]["Ground"].has("0,0"), "Catalog UI did not place Basic Meadow"):
+		return
+	map_editor.get_node("MainLayout/Toolbox/VBox/BtnSelect").pressed.emit()
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(16, 74))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(16, 74))
+	if not _check(str(editor_canvas.selected_object.get("id", "")) == "asset.tile.ground.basic_meadow", "Catalog placement could not be selected in the Editor"):
+		return
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(16, 74))
+	_send_mouse_motion(editor_canvas, Vector2(48, 74), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(48, 74))
+	if not _check(editor_canvas.map_data["tiles"]["Ground"].has("1,0"), "Catalog placement could not be moved in the Editor"):
+		return
+	map_editor.get_node("MainLayout/Inspector/VBox/BtnDeletePlacement").pressed.emit()
+	if not _check(not editor_canvas.map_data["tiles"]["Ground"].has("1,0"), "Inspector could not delete the moved Catalog placement"):
+		return
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_MAP_PATH))
+	print("EDITOR_DATA_SMOKE_TEST_PASS")
+	quit(0)
+
+func _save_and_check_map(map_data: Dictionary, original_map: Dictionary) -> bool:
+	if not MAP_LOADER.save_map_data(TEST_MAP_PATH, map_data):
+		push_error("MapLoader save failed")
+		return false
+	var loaded := MAP_LOADER.load_map_data(TEST_MAP_PATH)
+	if loaded.is_empty():
+		push_error("MapLoader reload failed")
+		return false
+	if loaded.get("map_id") != original_map.get("map_id") or loaded.get("name") != original_map.get("name") or loaded.get("version") != original_map.get("version"):
+		push_error("Map identity metadata changed during round trip")
+		return false
+	if loaded.get("base") != Vector2(1080, 122) or loaded.get("lanes", {}).get("left") != Vector2(70, 346):
+		push_error("Legacy goal/spawn fields changed during round trip")
+		return false
+	if loaded.get("robot_spots", {}).get("CENTER") != Vector2(720, 250) or loaded.get("slots", {}).get("L1") != Vector2(220, 310):
+		push_error("Legacy robot/tower fields changed during round trip")
+		return false
+	var file := FileAccess.open(TEST_MAP_PATH, FileAccess.READ)
+	if file == null:
+		push_error("Could not read serialized fixture")
+		return false
+	var serialized: Variant = JSON.parse_string(file.get_as_text())
+	if not serialized is Dictionary:
+		push_error("Serialized fixture is not a JSON object")
+		return false
+	if serialized.get("custom_runtime_metadata") != original_map.get("custom_runtime_metadata"):
+		push_error("Unknown top-level field was lost")
+		return false
+	if serialized.get("goal", {}).get("custom_goal_flag") != "keep":
+		push_error("Unknown goal field was lost")
+		return false
+	var expected_tiles: Variant = JSON.parse_string(JSON.stringify(map_data.get("tiles", {})))
+	var expected_objects: Variant = JSON.parse_string(JSON.stringify(map_data.get("objects", [])))
+	if serialized.get("tiles") != expected_tiles or serialized.get("objects") != expected_objects:
+		push_error("Visual asset map data changed during round trip")
+		return false
+	if serialized.get("gameplay_areas") != map_data.get("gameplay_areas") or serialized.get("gameplay_points") != map_data.get("gameplay_points"):
+		push_error("Gameplay area/point data changed during round trip")
+		return false
+	return true
+
+func _check(condition: bool, message: String) -> bool:
+	if condition:
+		return true
+	push_error(message)
+	quit(1)
+	return false
+
+func _send_mouse_button(canvas, button_index: MouseButton, pressed: bool, local_position: Vector2) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = button_index
+	event.pressed = pressed
+	event.position = canvas.get_global_transform_with_canvas() * local_position
+	canvas._input(event)
+
+func _send_mouse_motion(canvas, local_position: Vector2, button_mask: MouseButtonMask) -> void:
+	var event := InputEventMouseMotion.new()
+	event.button_mask = button_mask
+	event.position = canvas.get_global_transform_with_canvas() * local_position
+	canvas._input(event)

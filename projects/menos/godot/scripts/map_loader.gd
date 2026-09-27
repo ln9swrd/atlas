@@ -25,6 +25,10 @@ static func load_map_data(file_path: String) -> Dictionary:
 
 static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 	var parsed := {}
+	parsed["_source_map_data"] = raw_data.duplicate(true)
+	parsed["version"] = raw_data.get("version", 1)
+	parsed["map_id"] = raw_data.get("map_id", "northbridge_sector_01")
+	parsed["name"] = raw_data.get("name", "Northbridge Sector 01")
 
 	if raw_data.has("map_size"):
 		var ms: Array = raw_data["map_size"]
@@ -70,6 +74,10 @@ static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 	parsed["objects"] = raw_data.get("objects", [])
 	var footprint_defaults: Variant = raw_data.get("asset_footprint_defaults", {})
 	parsed["asset_footprint_defaults"] = footprint_defaults if footprint_defaults is Dictionary else {}
+	var gameplay_areas: Variant = raw_data.get("gameplay_areas", [])
+	parsed["gameplay_areas"] = gameplay_areas.duplicate(true) if gameplay_areas is Array else []
+	var gameplay_points: Variant = raw_data.get("gameplay_points", [])
+	parsed["gameplay_points"] = gameplay_points.duplicate(true) if gameplay_points is Array else []
 
 	return parsed
 
@@ -78,8 +86,9 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 	var map_origin_vec: Vector2 = map_data.get("map_origin", Vector2(0, 58))
 	var map_pixel_vec: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
 	var base_vec: Vector2 = map_data.get("base", Vector2(1080, 122))
-
-	var raw_data := {
+	var source_data: Variant = map_data.get("_source_map_data", {})
+	var raw_data: Dictionary = source_data.duplicate(true) if source_data is Dictionary else {}
+	raw_data.merge({
 		"version": map_data.get("version", 1),
 		"map_id": map_data.get("map_id", "northbridge_sector_01"),
 		"name": map_data.get("name", "Northbridge Sector 01"),
@@ -87,17 +96,20 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 		"tile_size": [32, 32],
 		"map_origin": [map_origin_vec.x, map_origin_vec.y],
 		"map_pixel_size": [map_pixel_vec.x, map_pixel_vec.y],
-		"goal": {
-			"id": "base_hq",
-			"position": [base_vec.x, base_vec.y]
-		},
 		"spawns": {},
 		"robot_spots": {},
 		"tower_slots": {},
 		"tiles": map_data.get("tiles", {}),
 		"objects": map_data.get("objects", []),
-		"asset_footprint_defaults": map_data.get("asset_footprint_defaults", {})
-	}
+		"asset_footprint_defaults": map_data.get("asset_footprint_defaults", {}),
+		"gameplay_areas": map_data.get("gameplay_areas", []),
+		"gameplay_points": map_data.get("gameplay_points", [])
+	}, true)
+	var goal_data: Variant = raw_data.get("goal", {})
+	var goal: Dictionary = goal_data.duplicate(true) if goal_data is Dictionary else {}
+	goal["id"] = str(goal.get("id", "base_hq"))
+	goal["position"] = [base_vec.x, base_vec.y]
+	raw_data["goal"] = goal
 
 	if map_data.has("lanes"):
 		for k in map_data["lanes"]:

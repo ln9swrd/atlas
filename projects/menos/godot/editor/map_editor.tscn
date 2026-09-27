@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://iysha3xdnm5m" path="res://editor/map_editor.gd" id="1_editor"]
 [ext_resource type="Script" uid="uid://dtlgvr18i2nld" path="res://editor/editor_canvas.gd" id="2_canvas"]
-[ext_resource type="Script" uid="uid://bhkujy0mt22xt" path="res://editor/atlas_palette.gd" id="3_palette"]
 [ext_resource type="PackedScene" path="res://editor/asset_catalog_editor.tscn" id="4_asset_catalog"]
 
 [node name="MapEditor" type="Control" unique_id=1139210866]
@@ -42,6 +41,22 @@ text = "Active Tool: [SELECT]"
 layout_mode = 2
 text = "Selected: None"
 
+[node name="ModeBar" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+
+[node name="BtnAssetMode" type="Button" parent="MainLayout/Toolbox/VBox/ModeBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+text = "ASSET"
+
+[node name="BtnGameplayMode" type="Button" parent="MainLayout/Toolbox/VBox/ModeBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "GAMEPLAY"
+
 [node name="HSeparator1" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=304884929]
 layout_mode = 2
 
@@ -63,6 +78,46 @@ text = "Mode: Select"
 layout_mode = 2
 text = "Mode: Erase Tile"
 
+[node name="GameplayTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
+visible = false
+layout_mode = 2
+
+[node name="BtnGameplaySelect" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Select / Move"
+
+[node name="BtnSpawnArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Spawn Area"
+
+[node name="BtnTowerArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Tower Placement Area"
+
+[node name="BtnTowerPoint" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Tower Placement Point"
+
+[node name="BtnRobotPoint" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Robot Position Point"
+
+[node name="BtnGoalArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Goal Area"
+
+[node name="BtnObstacleArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Obstacle Area"
+
+[node name="BtnMovementArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Movement Area"
+
+[node name="BtnBlockedArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "Blocked Area"
+
 [node name="EraserSize" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 
@@ -80,91 +135,6 @@ value = 1.0
 
 [node name="HSeparator3" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=1928436321]
 layout_mode = 2
-
-[node name="LblPaletteTitle" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1790036470]
-layout_mode = 2
-text = "GROUND4 ATLAS PALETTE (48x32)"
-
-[node name="PaletteContainer" type="PanelContainer" parent="MainLayout/Toolbox/VBox" unique_id=1420122572]
-custom_minimum_size = Vector2(216, 144)
-layout_mode = 2
-
-[node name="AtlasPaletteView" type="Control" parent="MainLayout/Toolbox/VBox/PaletteContainer" unique_id=125640546]
-custom_minimum_size = Vector2(216, 144)
-layout_mode = 2
-script = ExtResource("3_palette")
-
-[node name="AtlasPicker" type="HBoxContainer" parent="MainLayout/Toolbox/VBox" unique_id=1780303663]
-layout_mode = 2
-
-[node name="LblX" type="Label" parent="MainLayout/Toolbox/VBox/AtlasPicker" unique_id=825656437]
-layout_mode = 2
-text = "Atlas X:"
-
-[node name="SpinX" type="SpinBox" parent="MainLayout/Toolbox/VBox/AtlasPicker" unique_id=1837466115]
-layout_mode = 2
-max_value = 47.0
-
-[node name="LblY" type="Label" parent="MainLayout/Toolbox/VBox/AtlasPicker" unique_id=1475211611]
-layout_mode = 2
-text = "Y:"
-
-[node name="SpinY" type="SpinBox" parent="MainLayout/Toolbox/VBox/AtlasPicker" unique_id=495088272]
-layout_mode = 2
-max_value = 31.0
-
-[node name="BtnTileG4Preset0" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1695177323]
-layout_mode = 2
-text = "[G4] Meadow (0,0)"
-
-[node name="BtnTileG4Preset1" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=2133237211]
-layout_mode = 2
-text = "[G4] Path (1,0)"
-
-[node name="BtnTileG4Preset2" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1748306777]
-layout_mode = 2
-text = "[G4] Rock (2,0)"
-
-[node name="BtnTileG4Preset3" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1383863515]
-layout_mode = 2
-text = "[G4] Water/Alt (3,0)"
-
-[node name="HSeparator5" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=1020992700]
-layout_mode = 2
-
-[node name="BtnTileGround" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=445228246]
-layout_mode = 2
-text = "[Tile] Basic Meadow"
-
-[node name="BtnTileConcrete" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1025841249]
-layout_mode = 2
-text = "[Tile] Concrete Module"
-
-[node name="BtnTileGrass" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=2022576003]
-layout_mode = 2
-text = "[Tile] Vegetation Cluster"
-
-[node name="BtnTileRoad" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1282810782]
-layout_mode = 2
-text = "[Tile] Road Segment"
-
-[node name="HSeparator4" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=228900261]
-layout_mode = 2
-
-[node name="LblGuideTitle" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1558563586]
-layout_mode = 2
-text = "CONTROLS GUIDE"
-
-[node name="LblGuideContent" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=455790128]
-layout_mode = 2
-text = "ATLAS: Click tile to select
-CANVAS:
-LMB: Paint / Select
-LMB Drag: Continuous Paint
-MMB/RMB Drag: Pan
-Wheel: Zoom
-Ctrl+Z: Undo last edit
-Save: [Save JSON] Button"
 
 [node name="CanvasContainer" type="Control" parent="MainLayout" unique_id=1780933295]
 clip_contents = true
@@ -203,6 +173,93 @@ text = "Position: -"
 [node name="LblTileCoords" type="Label" parent="MainLayout/Inspector/VBox" unique_id=934902042]
 layout_mode = 2
 text = "Tile: -"
+
+[node name="GameplayProperties" type="VBoxContainer" parent="MainLayout/Inspector/VBox"]
+visible = false
+layout_mode = 2
+
+[node name="LblGameplayProperties" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+text = "GAMEPLAY PROPERTIES"
+
+[node name="EditGameplayID" type="LineEdit" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+placeholder_text = "Element ID"
+
+[node name="EditGameplayName" type="LineEdit" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+placeholder_text = "Display name"
+
+[node name="GameplayPositionRow" type="HBoxContainer" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+
+[node name="LblGameplayX" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow"]
+layout_mode = 2
+text = "X"
+
+[node name="SpinGameplayX" type="SpinBox" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow"]
+size_flags_horizontal = 3
+layout_mode = 2
+max_value = 100000.0
+
+[node name="LblGameplayY" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow"]
+layout_mode = 2
+text = "Y"
+
+[node name="SpinGameplayY" type="SpinBox" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow"]
+size_flags_horizontal = 3
+layout_mode = 2
+max_value = 100000.0
+
+[node name="GameplaySizeRow" type="HBoxContainer" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+
+[node name="LblGameplayWidth" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow"]
+layout_mode = 2
+text = "W"
+
+[node name="SpinGameplayWidth" type="SpinBox" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow"]
+size_flags_horizontal = 3
+layout_mode = 2
+min_value = 32.0
+max_value = 100000.0
+step = 32.0
+value = 32.0
+
+[node name="LblGameplayHeight" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow"]
+layout_mode = 2
+text = "H"
+
+[node name="SpinGameplayHeight" type="SpinBox" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow"]
+size_flags_horizontal = 3
+layout_mode = 2
+min_value = 32.0
+max_value = 100000.0
+step = 32.0
+value = 32.0
+
+[node name="GameplayEnabled" type="CheckButton" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+text = "Enabled"
+
+[node name="GameplayAreaRow" type="HBoxContainer" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+
+[node name="LblGameplayArea" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow"]
+layout_mode = 2
+text = "Area"
+
+[node name="OptionGameplayArea" type="OptionButton" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow"]
+size_flags_horizontal = 3
+layout_mode = 2
+
+[node name="BtnApplyGameplayProperties" type="Button" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+text = "Apply Properties"
+
+[node name="BtnDeleteGameplayElement" type="Button" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+layout_mode = 2
+text = "Delete Selected Element"
 
 [node name="LblPlacementSize" type="Label" parent="MainLayout/Inspector/VBox"]
 layout_mode = 2
@@ -336,17 +393,7 @@ filters = PackedStringArray("*.json ; JSON Maps")
 [connection signal="pressed" from="MainLayout/Inspector/VBox/BtnPlaceCatalogAsset" to="." method="_on_btn_place_catalog_asset_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnSelect" to="." method="_on_btn_select_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnErase" to="." method="_on_btn_erase_pressed"]
-[connection signal="value_changed" from="MainLayout/Toolbox/VBox/AtlasPicker/SpinX" to="." method="_on_spin_atlas_x_value_changed"]
-[connection signal="value_changed" from="MainLayout/Toolbox/VBox/AtlasPicker/SpinY" to="." method="_on_spin_atlas_y_value_changed"]
 [connection signal="value_changed" from="MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize" to="." method="_on_eraser_size_value_changed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset0" to="." method="_on_btn_tile_g4_preset0_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset1" to="." method="_on_btn_tile_g4_preset1_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset2" to="." method="_on_btn_tile_g4_preset2_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileG4Preset3" to="." method="_on_btn_tile_g4_preset3_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGround" to="." method="_on_btn_tile_ground_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileConcrete" to="." method="_on_btn_tile_concrete_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileGrass" to="." method="_on_btn_tile_grass_pressed"]
-[connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnTileRoad" to="." method="_on_btn_tile_road_pressed"]
 [connection signal="pressed" from="BottomBar/HBox/BtnLoad" to="." method="_on_btn_load_pressed"]
 [connection signal="pressed" from="BottomBar/HBox/BtnSave" to="." method="_on_btn_save_pressed"]
 [connection signal="pressed" from="BottomBar/HBox/BtnAssetCatalog" to="." method="_on_btn_asset_catalog_pressed"]

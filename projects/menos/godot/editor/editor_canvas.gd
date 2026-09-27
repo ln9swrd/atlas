@@ -13,8 +13,10 @@ const MAX_UNDO_HISTORY := 100
 var map_data: Dictionary = {}
 var selected_object: Dictionary = {}
 
+var editor_mode := "ASSET"
 var edit_mode := "SELECT" # SELECT, PAINT, ERASE
 var active_layer := "Ground" # Ground, Vegetation, RoadComposition
+var gameplay_tool := "SELECT"
 var selected_tile_source_id := 0
 var selected_tile_atlas_coords := Vector2i.ZERO
 var last_pointer_local := Vector2(-1, -1)
@@ -30,7 +32,15 @@ var camera_zoom := 1.0
 var camera_offset := Vector2.ZERO
 var is_panning := false
 var is_painting_drag := false
+var is_moving_selection := false
+var is_resizing_gameplay_area := false
+var is_creating_gameplay_area := false
 var is_resizing_placement := false
+var operation_changed := false
+var operation_start_world := Vector2.ZERO
+var operation_start_position := Vector2.ZERO
+var operation_start_size := Vector2.ZERO
+var gameplay_area_drag_end := Vector2.ZERO
 var resize_preview_footprint := Vector2i.ONE
 var resize_start_footprint := Vector2i.ONE
 var resize_start_world := Vector2.ZERO
@@ -52,6 +62,25 @@ func set_map_data(data: Dictionary) -> void:
 	if not map_data.has("tiles"):
 		map_data["tiles"] = {}
 	queue_redraw()
+
+func set_editor_mode(mode: String) -> void:
+	editor_mode = "GAMEPLAY" if mode == "GAMEPLAY" else "ASSET"
+	gameplay_tool = "SELECT"
+	edit_mode = "SELECT"
+	is_moving_selection = false
+	is_resizing_gameplay_area = false
+	is_creating_gameplay_area = false
+	select_object({})
+
+func set_gameplay_tool(tool: String) -> void:
+	editor_mode = "GAMEPLAY"
+	gameplay_tool = tool
+	edit_mode = "SELECT"
+	selected_catalog_asset.clear()
+	is_moving_selection = false
+	is_resizing_gameplay_area = false
+	is_creating_gameplay_area = false
+	select_object({})
 
 func set_edit_mode(mode: String) -> void:
 	edit_mode = mode
@@ -86,7 +115,7 @@ func set_catalog_assets(entries: Array[Dictionary]) -> void:
 
 func set_catalog_asset(entry: Dictionary) -> void:
 	selected_catalog_asset = entry.duplicate(true)
-	edit_mode = "PAINT"
+	editor_mode = "ASSET"
 	select_object({})
 	queue_redraw()
 
@@ -155,6 +184,34 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 		elif mb_event.button_index == MOUSE_BUTTON_LEFT:
 			if not mb_event.pressed:
+				if is_creating_gameplay_area:
+					var end_world := (local_position - camera_offset) / camera_zoom
+					create_gameplay_area(gameplay_tool.to_lower(), operation_start_world, end_world)
+					is_creating_gameplay_area = false
+					queue_redraw()
+					get_viewport().set_input_as_handled()
+					return
+				if is_resizing_gameplay_area:
+					var end_world := (local_position - camera_offset) / camera_zoom
+					var final_size := _preview_gameplay_area_size(end_world)
+					is_resizing_gameplay_area = false
+					update_selected_gameplay_area_size(final_size)
+					queue_redraw()
+					get_viewport().set_input_as_handled()
+					return
+				if is_moving_selection:
+					is_moving_selection = false
+					if operation_changed:
+						_mark_map_data_changed()
+						_finish_edit_stroke()
+						object_selected.emit(selected_object)
+						queue_redraw()
+						operation_changed = false
+					else:
+						_finish_edit_stroke()
+						object_selected.emit(selected_object)
+				get_viewport().set_input_as_handled()
+				return
 				if is_resizing_placement:
 					var world_pos := (local_position - camera_offset) / camera_zoom
 					var footprint := _resize_footprint_for_drag(world_pos)
@@ -173,19 +230,49 @@ func _input(event: InputEvent) -> void:
 				return
 			var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
 			_update_eraser_preview(local_position)
-			if _selected_resize_handle_contains(world_pos):
-				is_resizing_placement = true
-				resize_start_world = world_pos
-				var selected_footprint: Array = selected_object.get("footprint", [1, 1])
-				resize_start_footprint = Vector2i(int(selected_footprint[0]), int(selected_footprint[1]))
-				resize_preview_footprint = resize_start_footprint
+			if editor_mode == "GAMEPLAY":
+				if _is_gameplay_area_tool(gameplay_tool):
+					operation_start_world = world_pos
+					gameplay_area_drag_end = world_pos
+					is_creating_gameplay_area = true
+					queue_redraw()
+					get_viewport().set_input_as_handled()
+					return
+				if _is_gameplay_point_tool(gameplay_tool):
+					create_gameplay_point(gameplay_tool.to_lower(), world_pos)
+					get_viewport().set_input_as_handled()
+					return
+				pick_object_at(world_pos)
+				if _selected_gameplay_area_handle_contains(world_pos):
+					is_resizing_gameplay_area = true
+					operation_start_world = world_pos
+					operation_start_size = _selected_gameplay_area_rect().size
+					get_viewport().set_input_as_handled()
+					return
+				if _selected_gameplay_contains(world_pos):
+					_begin_selected_move(world_pos)
 				get_viewport().set_input_as_handled()
 				return
-			is_painting_drag = true
-			if edit_mode in ["PAINT", "ERASE"]:
+			if edit_mode == "SELECT":
+				pick_object_at(world_pos)
+				if _selected_resize_handle_contains(world_pos):
+					is_resizing_placement = true
+					resize_start_world = world_pos
+					var selected_footprint: Array = selected_object.get("footprint", [1, 1])
+					resize_start_footprint = Vector2i(int(selected_footprint[0]), int(selected_footprint[1]))
+					resize_preview_footprint = resize_start_footprint
+					get_viewport().set_input_as_handled()
+					return
+				if _selected_catalog_placement_rect().has_point(world_pos):
+					_begin_selected_move(world_pos)
+				get_viewport().set_input_as_handled()
+				return
+			is_painting_drag = edit_mode in ["PAINT", "ERASE"]
+			if is_painting_drag:
 				_begin_edit_stroke()
 			handle_canvas_click(world_pos)
 			get_viewport().set_input_as_handled()
+			return
 		elif not inside_canvas:
 			return
 		elif mb_event.button_index == MOUSE_BUTTON_WHEEL_UP and mb_event.pressed:
@@ -202,7 +289,22 @@ func _input(event: InputEvent) -> void:
 		var local_position := viewport_to_canvas_position(mm_event.position)
 		last_pointer_local = local_position
 		_update_eraser_preview(local_position)
-		if is_resizing_placement:
+		if is_creating_gameplay_area:
+			gameplay_area_drag_end = (local_position - camera_offset) / camera_zoom
+			queue_redraw()
+			get_viewport().set_input_as_handled()
+		elif is_resizing_gameplay_area:
+			var world_pos := (local_position - camera_offset) / camera_zoom
+			selected_object["size"] = _preview_gameplay_area_size(world_pos)
+			queue_redraw()
+			get_viewport().set_input_as_handled()
+		elif is_moving_selection:
+			if pointer_is_inside_canvas(local_position):
+				var world_pos := (local_position - camera_offset) / camera_zoom
+				operation_changed = _apply_selected_move(world_pos) or operation_changed
+				queue_redraw()
+			get_viewport().set_input_as_handled()
+		elif is_resizing_placement:
 			var world_pos := (local_position - camera_offset) / camera_zoom
 			resize_preview_footprint = _resize_footprint_for_drag(world_pos)
 			queue_redraw()
@@ -292,6 +394,163 @@ func _resize_handle_rect(placement_rect: Rect2) -> Rect2:
 func _selected_resize_handle_contains(world_pos: Vector2) -> bool:
 	var placement_rect := _selected_catalog_placement_rect()
 	return placement_rect.size.x > 0.0 and placement_rect.size.y > 0.0 and _resize_handle_rect(placement_rect).has_point(world_pos)
+
+func _selected_gameplay_area_rect() -> Rect2:
+	if str(selected_object.get("type", "")) != "Gameplay Area":
+		return Rect2()
+	return Rect2(selected_object.get("position", Vector2.ZERO), selected_object.get("size", Vector2.ZERO))
+
+func _selected_gameplay_area_handle_contains(world_pos: Vector2) -> bool:
+	var area_rect := _selected_gameplay_area_rect()
+	return area_rect.size.x > 0.0 and area_rect.size.y > 0.0 and _resize_handle_rect(area_rect).has_point(world_pos)
+
+func _selected_gameplay_contains(world_pos: Vector2) -> bool:
+	var selection_type := str(selected_object.get("type", ""))
+	if selection_type == "Gameplay Area":
+		return _selected_gameplay_area_rect().has_point(world_pos)
+	if selection_type in ["Gameplay Point", "Goal", "Spawn", "Tower Slot", "Robot Spot"]:
+		return Vector2(selected_object.get("position", Vector2.ZERO)).distance_to(world_pos) <= 14.0
+	return false
+
+func _preview_gameplay_area_size(world_pos: Vector2) -> Vector2:
+	var delta := world_pos - operation_start_world
+	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var area_position := Vector2(selected_object.get("position", Vector2.ZERO))
+	var max_size := map_pixel_size - (area_position - origin)
+	return Vector2(
+		clampf(roundf((operation_start_size.x + delta.x) / 32.0) * 32.0, 32.0, max_size.x),
+		clampf(roundf((operation_start_size.y + delta.y) / 32.0) * 32.0, 32.0, max_size.y)
+	)
+
+func _is_gameplay_area_tool(tool: String) -> bool:
+	return tool in ["SPAWN_AREA", "TOWER_PLACEMENT_AREA", "GOAL_AREA", "OBSTACLE_AREA", "MOVEMENT_AREA", "BLOCKED_AREA"]
+
+func _is_gameplay_point_tool(tool: String) -> bool:
+	return tool in ["TOWER_PLACEMENT_POINT", "ROBOT_POSITION_POINT"]
+
+func _begin_selected_move(world_pos: Vector2) -> void:
+	operation_start_world = world_pos
+	operation_start_position = Vector2(selected_object.get("position", Vector2.ZERO))
+	operation_changed = false
+	_begin_edit_stroke()
+	is_moving_selection = true
+
+func _move_catalog_tile_to(position: Vector2) -> bool:
+	var layer_name := str(selected_object.get("layer", active_layer))
+	var anchor_value: Variant = selected_object.get("cell", Vector2i.ZERO)
+	if not anchor_value is Vector2i or not map_data.has("tiles") or not map_data["tiles"].has(layer_name):
+		return false
+	var old_anchor: Vector2i = anchor_value
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var new_anchor := get_cell_coords(position)
+	if new_anchor == old_anchor:
+		return false
+	var footprint_values: Array = selected_object.get("footprint", [1, 1])
+	var footprint := Vector2i(int(footprint_values[0]), int(footprint_values[1]))
+	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	if new_anchor.x < 0 or new_anchor.y < 0 or new_anchor.x + footprint.x > map_tiles.x or new_anchor.y + footprint.y > map_tiles.y:
+		return false
+	var layer_tiles: Dictionary = map_data["tiles"][layer_name]
+	var asset_id := str(selected_object.get("id", ""))
+	var old_keys: Array[String] = []
+	var values_by_offset: Dictionary = {}
+	for key in layer_tiles.keys():
+		var coordinates := str(key).split(",")
+		if coordinates.size() < 2:
+			continue
+		var cell := Vector2i(coordinates[0].to_int(), coordinates[1].to_int())
+		var tile_info: Variant = layer_tiles[key]
+		if tile_info is Dictionary and str(tile_info.get("asset_id", "")) == asset_id and _catalog_tile_anchor(tile_info, cell) == old_anchor:
+			old_keys.append(str(key))
+			values_by_offset["%d,%d" % [cell.x - old_anchor.x, cell.y - old_anchor.y]] = tile_info.duplicate(true)
+	if old_keys.is_empty():
+		return false
+	var old_key_lookup: Dictionary = {}
+	for key in old_keys:
+		old_key_lookup[key] = true
+	for y in range(footprint.y):
+		for x in range(footprint.x):
+			var target_key := "%d,%d" % [new_anchor.x + x, new_anchor.y + y]
+			if layer_tiles.has(target_key) and not old_key_lookup.has(target_key):
+				return false
+	for key in old_keys:
+		layer_tiles.erase(key)
+	for y in range(footprint.y):
+		for x in range(footprint.x):
+			var offset_key := "%d,%d" % [x, y]
+			var tile_info: Dictionary = values_by_offset.get(offset_key, {"asset_id": asset_id})
+			tile_info = tile_info.duplicate(true)
+			tile_info["anchor"] = [new_anchor.x, new_anchor.y]
+			if footprint != Vector2i.ONE:
+				tile_info["footprint_tiles"] = [footprint.x, footprint.y]
+			layer_tiles["%d,%d" % [new_anchor.x + x, new_anchor.y + y]] = tile_info
+	map_data["tiles"][layer_name] = layer_tiles
+	selected_object["cell"] = new_anchor
+	selected_object["position"] = origin + Vector2(new_anchor) * 32.0
+	return true
+
+func _apply_selected_move(world_pos: Vector2) -> bool:
+	var target_position := operation_start_position + (world_pos - operation_start_world)
+	var selection_type := str(selected_object.get("type", ""))
+	if selection_type == "Catalog Tile":
+		return _move_catalog_tile_to(target_position)
+	var map_origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
+	var bounds := Rect2(map_origin, map_pixel_size)
+	if selection_type == "Gameplay Area":
+		var area_index := int(selected_object.get("element_index", -1))
+		var areas: Array = map_data.get("gameplay_areas", [])
+		if area_index < 0 or area_index >= areas.size() or not areas[area_index] is Dictionary:
+			return false
+		var area: Dictionary = areas[area_index].duplicate(true)
+		var area_size := Vector2(selected_object.get("size", Vector2(32, 32)))
+		target_position.x = clampf(target_position.x, bounds.position.x, bounds.end.x - area_size.x)
+		target_position.y = clampf(target_position.y, bounds.position.y, bounds.end.y - area_size.y)
+		area["position"] = [target_position.x, target_position.y]
+		areas[area_index] = area
+		map_data["gameplay_areas"] = areas
+	elif selection_type == "Gameplay Point":
+		var point_index := int(selected_object.get("element_index", -1))
+		var points: Array = map_data.get("gameplay_points", [])
+		if point_index < 0 or point_index >= points.size() or not points[point_index] is Dictionary:
+			return false
+		target_position.x = clampf(target_position.x, bounds.position.x, bounds.end.x)
+		target_position.y = clampf(target_position.y, bounds.position.y, bounds.end.y)
+		var point: Dictionary = points[point_index].duplicate(true)
+		point["position"] = [target_position.x, target_position.y]
+		points[point_index] = point
+		map_data["gameplay_points"] = points
+	elif selection_type in ["Goal", "Spawn", "Tower Slot", "Robot Spot"]:
+		target_position.x = clampf(target_position.x, bounds.position.x, bounds.end.x)
+		target_position.y = clampf(target_position.y, bounds.position.y, bounds.end.y)
+		var legacy_field := str(selected_object.get("legacy_field", ""))
+		if legacy_field == "base":
+			map_data["base"] = target_position
+		else:
+			var legacy_points: Dictionary = map_data.get(legacy_field, {})
+			var legacy_id := str(selected_object.get("id", ""))
+			if not legacy_points.has(legacy_id):
+				return false
+			legacy_points[legacy_id] = target_position
+			map_data[legacy_field] = legacy_points
+	elif selection_type in ["Catalog Object", "Catalog Tile Overlay"]:
+		var object_index := int(selected_object.get("object_index", -1))
+		var objects: Array = map_data.get("objects", [])
+		if object_index < 0 or object_index >= objects.size() or not objects[object_index] is Dictionary:
+			return false
+		var footprint_values: Array = selected_object.get("footprint", [1, 1])
+		var footprint_size := Vector2(float(footprint_values[0]), float(footprint_values[1])) * 32.0
+		target_position.x = clampf(target_position.x, bounds.position.x, bounds.end.x - footprint_size.x)
+		target_position.y = clampf(target_position.y, bounds.position.y, bounds.end.y - footprint_size.y)
+		var object_data: Dictionary = objects[object_index].duplicate(true)
+		object_data["position"] = [target_position.x, target_position.y]
+		objects[object_index] = object_data
+		map_data["objects"] = objects
+	else:
+		return false
+	selected_object["position"] = target_position
+	return target_position != operation_start_position
 
 func _resize_footprint_for_drag(world_pos: Vector2) -> Vector2i:
 	var delta_in_cells := (world_pos - resize_start_world) / 32.0
@@ -651,6 +910,267 @@ func delete_selected_catalog_placement() -> bool:
 	select_object({})
 	return true
 
+func create_gameplay_area(element_type: String, start_world: Vector2, end_world: Vector2) -> bool:
+	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var start_cell := get_cell_coords(start_world)
+	var end_cell := get_cell_coords(end_world)
+	start_cell.x = clampi(start_cell.x, 0, map_tiles.x - 1)
+	start_cell.y = clampi(start_cell.y, 0, map_tiles.y - 1)
+	end_cell.x = clampi(end_cell.x, 0, map_tiles.x - 1)
+	end_cell.y = clampi(end_cell.y, 0, map_tiles.y - 1)
+	var first_cell := Vector2i(mini(start_cell.x, end_cell.x), mini(start_cell.y, end_cell.y))
+	var last_cell := Vector2i(maxi(start_cell.x, end_cell.x), maxi(start_cell.y, end_cell.y))
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var area_position := origin + Vector2(first_cell) * 32.0
+	var area_size := Vector2(last_cell - first_cell + Vector2i.ONE) * 32.0
+	var element_id := _new_gameplay_id(element_type)
+	var areas: Array = map_data.get("gameplay_areas", [])
+	_begin_edit_stroke()
+	areas.append({
+		"id": element_id,
+		"type": element_type,
+		"name": _gameplay_type_label(element_type),
+		"position": [area_position.x, area_position.y],
+		"size": [area_size.x, area_size.y],
+		"enabled": true
+	})
+	map_data["gameplay_areas"] = areas
+	_mark_map_data_changed()
+	_finish_edit_stroke()
+	_select_gameplay_area(areas.size() - 1)
+	return true
+
+func create_gameplay_point(element_type: String, world_pos: Vector2) -> bool:
+	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var cell := get_cell_coords(world_pos)
+	if cell.x < 0 or cell.y < 0 or cell.x >= map_tiles.x or cell.y >= map_tiles.y:
+		return false
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var point_position := origin + Vector2(cell) * 32.0 + Vector2.ONE * 16.0
+	var element_id := _new_gameplay_id(element_type)
+	var points: Array = map_data.get("gameplay_points", [])
+	_begin_edit_stroke()
+	points.append({
+		"id": element_id,
+		"type": element_type,
+		"name": _gameplay_type_label(element_type),
+		"position": [point_position.x, point_position.y],
+		"area_id": "",
+		"enabled": true
+	})
+	map_data["gameplay_points"] = points
+	_mark_map_data_changed()
+	_finish_edit_stroke()
+	_select_gameplay_point(points.size() - 1)
+	return true
+
+func _new_gameplay_id(element_type: String) -> String:
+	var base_id := "gameplay.%s.%d" % [element_type, Time.get_ticks_usec()]
+	var candidate_id := base_id
+	var suffix := 1
+	while _gameplay_id_exists(candidate_id):
+		candidate_id = "%s.%d" % [base_id, suffix]
+		suffix += 1
+	return candidate_id
+
+func _gameplay_type_label(element_type: String) -> String:
+	var words := element_type.trim_prefix("gameplay_").replace("_", " ").split(" ")
+	for index in range(words.size()):
+		words[index] = str(words[index]).capitalize()
+	return " ".join(words)
+
+func _select_gameplay_area(index: int) -> void:
+	var areas: Array = map_data.get("gameplay_areas", [])
+	if index < 0 or index >= areas.size() or not areas[index] is Dictionary:
+		return
+	var area: Dictionary = areas[index]
+	var pos := object_position(area)
+	var size_values: Variant = area.get("size", [32.0, 32.0])
+	var area_size := Vector2(float(size_values[0]), float(size_values[1])) if size_values is Array and size_values.size() >= 2 else Vector2(32.0, 32.0)
+	select_object({
+		"type": "Gameplay Area",
+		"id": str(area.get("id", "")),
+		"element_type": str(area.get("type", "")),
+		"element_index": index,
+		"position": pos,
+		"size": area_size,
+		"enabled": bool(area.get("enabled", true)),
+		"name": str(area.get("name", ""))
+	})
+
+func _select_gameplay_point(index: int) -> void:
+	var points: Array = map_data.get("gameplay_points", [])
+	if index < 0 or index >= points.size() or not points[index] is Dictionary:
+		return
+	var point: Dictionary = points[index]
+	select_object({
+		"type": "Gameplay Point",
+		"id": str(point.get("id", "")),
+		"element_type": str(point.get("type", "")),
+		"element_index": index,
+		"position": object_position(point),
+		"area_id": str(point.get("area_id", "")),
+		"enabled": bool(point.get("enabled", true)),
+		"name": str(point.get("name", ""))
+	})
+
+func update_selected_gameplay_properties(element_id: String, element_name: String, enabled: bool, area_id: String = "") -> bool:
+	var selection_type := str(selected_object.get("type", ""))
+	var index := int(selected_object.get("element_index", -1))
+	var key := "gameplay_areas" if selection_type == "Gameplay Area" else "gameplay_points"
+	if selection_type not in ["Gameplay Area", "Gameplay Point"]:
+		return false
+	var elements: Array = map_data.get(key, [])
+	if index < 0 or index >= elements.size() or not elements[index] is Dictionary:
+		return false
+	var old_id := str(elements[index].get("id", ""))
+	if element_id.strip_edges().is_empty() or _gameplay_id_exists(element_id.strip_edges(), selection_type, index):
+		return false
+	if selection_type == "Gameplay Point" and not area_id.is_empty() and not _gameplay_area_exists(area_id):
+		return false
+	var updated: Dictionary = elements[index].duplicate(true)
+	updated["id"] = element_id.strip_edges()
+	updated["name"] = element_name.strip_edges() if not element_name.strip_edges().is_empty() else _gameplay_type_label(str(updated.get("type", "")))
+	updated["enabled"] = enabled
+	if selection_type == "Gameplay Point":
+		updated["area_id"] = area_id.strip_edges()
+	_begin_edit_stroke()
+	elements[index] = updated
+	map_data[key] = elements
+	if selection_type == "Gameplay Area" and old_id != str(updated["id"]):
+		var points: Array = map_data.get("gameplay_points", [])
+		for point_index in range(points.size()):
+			if points[point_index] is Dictionary and str(points[point_index].get("area_id", "")) == old_id:
+				var point: Dictionary = points[point_index].duplicate(true)
+				point["area_id"] = str(updated["id"])
+				points[point_index] = point
+		map_data["gameplay_points"] = points
+	_mark_map_data_changed()
+	_finish_edit_stroke()
+	if selection_type == "Gameplay Area":
+		_select_gameplay_area(index)
+	else:
+		_select_gameplay_point(index)
+	return true
+
+func update_selected_gameplay_area_size(new_size: Vector2) -> bool:
+	if str(selected_object.get("type", "")) != "Gameplay Area":
+		return false
+	var index := int(selected_object.get("element_index", -1))
+	var areas: Array = map_data.get("gameplay_areas", [])
+	if index < 0 or index >= areas.size() or not areas[index] is Dictionary:
+		return false
+	var area: Dictionary = areas[index].duplicate(true)
+	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
+	var area_position := object_position(area)
+	var bounded_size := Vector2(
+		clampf(new_size.x, 32.0, map_pixel_size.x - (area_position.x - float(map_data.get("map_origin", Vector2(0, 58)).x))),
+		clampf(new_size.y, 32.0, map_pixel_size.y - (area_position.y - float(map_data.get("map_origin", Vector2(0, 58)).y)))
+	)
+	area["size"] = [bounded_size.x, bounded_size.y]
+	_begin_edit_stroke()
+	areas[index] = area
+	map_data["gameplay_areas"] = areas
+	_mark_map_data_changed()
+	_finish_edit_stroke()
+	_select_gameplay_area(index)
+	return true
+
+func update_selected_gameplay_position(new_position: Vector2) -> bool:
+	var selection_type := str(selected_object.get("type", ""))
+	if selection_type not in ["Gameplay Area", "Gameplay Point"]:
+		return false
+	var index := int(selected_object.get("element_index", -1))
+	var key := "gameplay_areas" if selection_type == "Gameplay Area" else "gameplay_points"
+	var elements: Array = map_data.get(key, [])
+	if index < 0 or index >= elements.size() or not elements[index] is Dictionary:
+		return false
+	var map_origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
+	var bounds := Rect2(map_origin, map_pixel_size)
+	var bounded_position := new_position
+	if selection_type == "Gameplay Area":
+		var area_size := Vector2(selected_object.get("size", Vector2(32, 32)))
+		bounded_position.x = clampf(bounded_position.x, bounds.position.x, bounds.end.x - area_size.x)
+		bounded_position.y = clampf(bounded_position.y, bounds.position.y, bounds.end.y - area_size.y)
+	else:
+		bounded_position.x = clampf(bounded_position.x, bounds.position.x, bounds.end.x)
+		bounded_position.y = clampf(bounded_position.y, bounds.position.y, bounds.end.y)
+	if bounded_position == object_position(elements[index]):
+		return false
+	var element: Dictionary = elements[index].duplicate(true)
+	element["position"] = [bounded_position.x, bounded_position.y]
+	_begin_edit_stroke()
+	elements[index] = element
+	map_data[key] = elements
+	_mark_map_data_changed()
+	_finish_edit_stroke()
+	if selection_type == "Gameplay Area":
+		_select_gameplay_area(index)
+	else:
+		_select_gameplay_point(index)
+	return true
+
+func _gameplay_id_exists(element_id: String, selection_type: String = "", except_index: int = -1) -> bool:
+	for key in ["gameplay_areas", "gameplay_points"]:
+		var elements: Array = map_data.get(key, [])
+		for index in range(elements.size()):
+			if key == ("gameplay_areas" if selection_type == "Gameplay Area" else "gameplay_points") and index == except_index:
+				continue
+			if elements[index] is Dictionary and str(elements[index].get("id", "")) == element_id:
+				return true
+	return false
+
+func _gameplay_area_exists(area_id: String) -> bool:
+	for area in map_data.get("gameplay_areas", []):
+		if area is Dictionary and str(area.get("id", "")) == area_id:
+			return true
+	return false
+
+func delete_selected_editor_object() -> bool:
+	var selection_type := str(selected_object.get("type", ""))
+	if selection_type in ["Catalog Tile", "Catalog Object", "Catalog Tile Overlay"]:
+		return delete_selected_catalog_placement()
+	if selection_type == "Gameplay Area":
+		var area_index := int(selected_object.get("element_index", -1))
+		var areas: Array = map_data.get("gameplay_areas", [])
+		if area_index < 0 or area_index >= areas.size():
+			return false
+		var removed_id := str(areas[area_index].get("id", ""))
+		_begin_edit_stroke()
+		areas.remove_at(area_index)
+		map_data["gameplay_areas"] = areas
+		var points: Array = map_data.get("gameplay_points", [])
+		for index in range(points.size()):
+			if points[index] is Dictionary and str(points[index].get("area_id", "")) == removed_id:
+				var point: Dictionary = points[index].duplicate(true)
+				point["area_id"] = ""
+				points[index] = point
+		map_data["gameplay_points"] = points
+	elif selection_type == "Gameplay Point":
+		var point_index := int(selected_object.get("element_index", -1))
+		var points: Array = map_data.get("gameplay_points", [])
+		if point_index < 0 or point_index >= points.size():
+			return false
+		_begin_edit_stroke()
+		points.remove_at(point_index)
+		map_data["gameplay_points"] = points
+	elif selection_type in ["Spawn", "Tower Slot", "Robot Spot"]:
+		var legacy_field := str(selected_object.get("legacy_field", ""))
+		var legacy_points: Dictionary = map_data.get(legacy_field, {})
+		var legacy_id := str(selected_object.get("id", ""))
+		if not legacy_points.has(legacy_id):
+			return false
+		_begin_edit_stroke()
+		legacy_points.erase(legacy_id)
+		map_data[legacy_field] = legacy_points
+	else:
+		return false
+	_mark_map_data_changed()
+	_finish_edit_stroke()
+	select_object({})
+	return true
+
 func erase_tile_at(world_pos: Vector2) -> void:
 	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
 	var cell := get_cell_coords(world_pos)
@@ -712,6 +1232,15 @@ func object_position(object_data: Dictionary) -> Vector2:
 	return Vector2.ZERO
 
 func pick_object_at(point: Vector2) -> void:
+	if editor_mode == "GAMEPLAY" and _pick_gameplay_element_at(point):
+		return
+	if _pick_visual_asset_at(point):
+		return
+	if editor_mode != "GAMEPLAY" and _pick_gameplay_element_at(point):
+		return
+	select_object({})
+
+func _pick_visual_asset_at(point: Vector2) -> bool:
 	var objects: Array = map_data.get("objects", [])
 	for object_index in range(objects.size() - 1, -1, -1):
 		var object_data: Dictionary = objects[object_index]
@@ -722,42 +1251,60 @@ func pick_object_at(point: Vector2) -> void:
 		if object_rect.has_point(point):
 			var placement_type := "Catalog Tile Overlay" if object_data.has("placement_layer") else "Catalog Object"
 			select_object({"type": placement_type, "id": asset_id, "position": object_position(object_data), "object_index": object_index, "layer": str(object_data.get("placement_layer", "")), "footprint": [footprint.x, footprint.y]})
-			return
+			return true
 	if _pick_catalog_tile_at(point):
-		return
+		return true
+	return false
 
-	# Check Goal
+
+func _pick_gameplay_element_at(point: Vector2) -> bool:
+	var points: Array = map_data.get("gameplay_points", [])
+	for index in range(points.size() - 1, -1, -1):
+		if not points[index] is Dictionary:
+			continue
+		var gameplay_point: Dictionary = points[index]
+		if object_position(gameplay_point).distance_to(point) <= 14.0:
+			_select_gameplay_point(index)
+			return true
+	var areas: Array = map_data.get("gameplay_areas", [])
+	for index in range(areas.size() - 1, -1, -1):
+		if not areas[index] is Dictionary:
+			continue
+		var area: Dictionary = areas[index]
+		var size_values: Variant = area.get("size", [32.0, 32.0])
+		if not size_values is Array or size_values.size() < 2:
+			continue
+		var area_rect := Rect2(object_position(area), Vector2(float(size_values[0]), float(size_values[1])))
+		if area_rect.has_point(point):
+			_select_gameplay_area(index)
+			return true
 	if map_data.has("base"):
 		var base_pos: Vector2 = map_data["base"]
 		if point.distance_to(base_pos) < 40.0:
-			select_object({"type": "Goal", "id": "base_hq", "position": base_pos})
-			return
+			select_object({"type": "Goal", "id": "base_hq", "position": base_pos, "legacy_field": "base"})
+			return true
 
-	# Check Spawns
 	if map_data.has("lanes"):
 		for key in map_data["lanes"]:
 			var spawn_pos: Vector2 = map_data["lanes"][key]
 			if point.distance_to(spawn_pos) < 30.0:
-				select_object({"type": "Spawn", "id": str(key), "position": spawn_pos})
-				return
+				select_object({"type": "Spawn", "id": str(key), "position": spawn_pos, "legacy_field": "lanes"})
+				return true
 
-	# Check Tower Slots
 	if map_data.has("slots"):
 		for key in map_data["slots"]:
 			var slot_pos: Vector2 = map_data["slots"][key]
 			if point.distance_to(slot_pos) < 30.0:
-				select_object({"type": "Tower Slot", "id": str(key), "position": slot_pos})
-				return
+				select_object({"type": "Tower Slot", "id": str(key), "position": slot_pos, "legacy_field": "slots"})
+				return true
 
-	# Check Robot Spots
 	if map_data.has("robot_spots"):
 		for key in map_data["robot_spots"]:
 			var spot_pos: Vector2 = map_data["robot_spots"][key]
 			if point.distance_to(spot_pos) < 35.0:
-				select_object({"type": "Robot Spot", "id": str(key), "position": spot_pos})
-				return
-
-	select_object({})
+				select_object({"type": "Robot Spot", "id": str(key), "position": spot_pos, "legacy_field": "robot_spots"})
+				return true
+	return false
 
 func _pick_catalog_tile_at(point: Vector2) -> bool:
 	if not map_data.has("tiles") or not map_data["tiles"].has(active_layer):
@@ -882,6 +1429,8 @@ func _draw() -> void:
 			draw_arc(pos, 20.0, 0, TAU, 16, Color("7ed6ce"), 2.0)
 			draw_string(ThemeDB.fallback_font, pos + Vector2(-24, 34), "SPOT: " + str(key), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
 
+	_draw_gameplay_elements()
+
 	# Render Selected Object Highlight
 	if not selected_object.is_empty() and selected_object.has("position"):
 		var sel_pos: Vector2 = selected_object["position"]
@@ -901,6 +1450,63 @@ func _draw() -> void:
 		draw_rect(preview_rect, Color("ff6b61"), false, 2.0 / camera_zoom)
 		var label_size := maxi(10, roundi(12.0 / camera_zoom))
 		draw_string(ThemeDB.fallback_font, preview_rect.position + Vector2(5, label_size + 4), "%d × %d" % [eraser_size, eraser_size], HORIZONTAL_ALIGNMENT_LEFT, -1, label_size, Color("fff3ed"))
+
+func _draw_gameplay_elements() -> void:
+	var type_colors := {
+		"spawn_area": Color("ef7068"),
+		"tower_placement_area": Color("f0a35a"),
+		"goal_area": Color("7ed6ce"),
+		"obstacle_area": Color("b7836f"),
+		"movement_area": Color("7ea6ef"),
+		"blocked_area": Color("a27eef"),
+		"tower_placement_point": Color("f0a35a"),
+		"robot_position_point": Color("7ed6ce")
+	}
+	var areas: Array = map_data.get("gameplay_areas", [])
+	for index in range(areas.size()):
+		if not areas[index] is Dictionary:
+			continue
+		var area: Dictionary = areas[index]
+		var size_values: Variant = area.get("size", [32.0, 32.0])
+		if not size_values is Array or size_values.size() < 2:
+			continue
+		var area_rect := Rect2(object_position(area), Vector2(float(size_values[0]), float(size_values[1])))
+		var element_type := str(area.get("type", ""))
+		var color: Color = type_colors.get(element_type, Color("d3d9df"))
+		var enabled := bool(area.get("enabled", true))
+		color.a = 0.72 if enabled else 0.28
+		draw_rect(area_rect, Color(color, 0.13 if enabled else 0.05), true)
+		draw_rect(area_rect, color, false, 2.0 / camera_zoom)
+		draw_string(ThemeDB.fallback_font, area_rect.position + Vector2(5, 16), str(area.get("name", _gameplay_type_label(element_type))), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
+		if str(selected_object.get("type", "")) == "Gameplay Area" and int(selected_object.get("element_index", -1)) == index:
+			var selected_rect := area_rect
+			if is_resizing_gameplay_area:
+				selected_rect.size = Vector2(selected_object.get("size", area_rect.size))
+			draw_rect(selected_rect, Color("ffe066"), false, 3.0 / camera_zoom)
+			draw_rect(_resize_handle_rect(selected_rect), Color("ffe066"), true)
+	if is_creating_gameplay_area:
+		var start_cell := get_cell_coords(operation_start_world)
+		var end_cell := get_cell_coords(gameplay_area_drag_end)
+		var first_cell := Vector2i(mini(start_cell.x, end_cell.x), mini(start_cell.y, end_cell.y))
+		var last_cell := Vector2i(maxi(start_cell.x, end_cell.x), maxi(start_cell.y, end_cell.y))
+		var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+		var preview_rect := Rect2(origin + Vector2(first_cell) * 32.0, Vector2(last_cell - first_cell + Vector2i.ONE) * 32.0)
+		draw_rect(preview_rect, Color("ffe066", 0.18), true)
+		draw_rect(preview_rect, Color("ffe066"), false, 2.0 / camera_zoom)
+	var points: Array = map_data.get("gameplay_points", [])
+	for index in range(points.size()):
+		if not points[index] is Dictionary:
+			continue
+		var gameplay_point: Dictionary = points[index]
+		var pos := object_position(gameplay_point)
+		var element_type := str(gameplay_point.get("type", ""))
+		var color: Color = type_colors.get(element_type, Color("d3d9df"))
+		color.a = 0.9 if bool(gameplay_point.get("enabled", true)) else 0.35
+		draw_circle(pos, 8.0 / camera_zoom, color)
+		draw_arc(pos, 10.0 / camera_zoom, 0, TAU, 16, color, 2.0 / camera_zoom)
+		draw_string(ThemeDB.fallback_font, pos + Vector2(10, 4), str(gameplay_point.get("name", _gameplay_type_label(element_type))), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, color)
+		if str(selected_object.get("type", "")) == "Gameplay Point" and int(selected_object.get("element_index", -1)) == index:
+			draw_arc(pos, 14.0 / camera_zoom, 0, TAU, 20, Color("ffe066"), 3.0 / camera_zoom)
 
 func draw_tile_cell(dest_pos: Vector2, source_id: int, atlas_coords: Vector2i, _layer_name: String) -> void:
 	var rect := Rect2(dest_pos, Vector2(32, 32))
