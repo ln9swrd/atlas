@@ -142,7 +142,7 @@ func _build_interface() -> void:
 	rect_label = Label.new()
 	rect_label.text = "[0, 0, 0, 0]"
 	form.add_child(rect_label)
-	_add_form_label(form, "Object Footprint")
+	_add_form_label(form, "Footprint (map tiles)")
 	footprint_row = HBoxContainer.new()
 	footprint_row.add_child(_new_label("W"))
 	footprint_x = _new_spin(1, 128)
@@ -219,6 +219,7 @@ func _on_source_file_selected(path: String) -> void:
 
 func _on_region_changed(rect: Rect2i) -> void:
 	_update_rect_label(rect)
+	status_label.text = "Region changed to [%d, %d, %d, %d]. Click Update Selected, then Save Catalog." % [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
 
 func _update_rect_label(rect: Rect2i) -> void:
 	rect_label.text = "[%d, %d, %d, %d]" % [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
@@ -236,7 +237,7 @@ func _refresh_group_options(preferred: String = "") -> void:
 	var preferred_index := groups.find(preferred)
 	group_option.select(preferred_index if preferred_index >= 0 else 0)
 	if footprint_row != null:
-		footprint_row.visible = kind_option != null and kind_option.selected == 1
+		footprint_row.visible = true
 
 func _current_rect() -> Rect2i:
 	var value: Variant = region_view.get("selected_region")
@@ -255,10 +256,9 @@ func _build_entry() -> Dictionary:
 		"group": group_option.get_item_text(group_option.selected),
 		"display_name": name_edit.text.strip_edges(),
 		"source_path": source_path,
-		"source_rect_px": [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+		"source_rect_px": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
+		"footprint_tiles": [int(footprint_x.value), int(footprint_y.value)]
 	}
-	if kind_option.selected == 1:
-		entry["footprint_tiles"] = [int(footprint_x.value), int(footprint_y.value)]
 	return entry
 
 func _id_exists(asset_id: String, except_index: int = -1) -> bool:
