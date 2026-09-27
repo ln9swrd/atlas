@@ -6,6 +6,8 @@ const CATALOG_PATH := "res://content/editor/asset_catalog.json"
 const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facility", "Forest", "Ground", "Military", "River", "Sea"]
 const OBJECT_GROUPS := ["Combat", "Industrial", "Terrain"]
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
+const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
+const EDITED_ASSET_DIR := "res://content/editor/edited_assets"
 
 var entries: Array[Dictionary] = []
 var source_path := ""
@@ -25,9 +27,15 @@ var footprint_y: SpinBox
 var footprint_row: HBoxContainer
 var rect_label: Label
 var status_label: Label
+var maximize_button: Button
+var brush_size_spin: SpinBox
+var save_edited_button: Button
+var cancel_edit_button: Button
+var windowed_size := Vector2i(1280, 820)
 
 func _ready() -> void:
 	close_requested.connect(hide)
+	windowed_size = size
 	_build_interface()
 	_load_catalog()
 
@@ -68,7 +76,7 @@ func _build_interface() -> void:
 	heading.add_theme_font_size_override("font_size", 22)
 	vertical.add_child(heading)
 	var intro := Label.new()
-	intro.text = "Register source image regions for later map-editor integration. Entries are saved separately from map data."
+	intro.text = "Register image regions and edit asset crops safely. Source sheets remain unchanged; edited crops are saved as separate project PNGs."
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vertical.add_child(intro)
 	var toolbar := HBoxContainer.new()
@@ -77,10 +85,31 @@ func _build_interface() -> void:
 	choose_button.text = "Choose Project Image"
 	choose_button.pressed.connect(_open_source_dialog)
 	toolbar.add_child(choose_button)
+	maximize_button = Button.new()
+	maximize_button.text = "Maximize"
+	maximize_button.pressed.connect(_toggle_window_mode)
+	toolbar.add_child(maximize_button)
 	source_label = Label.new()
 	source_label.text = "No project image selected"
 	source_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	toolbar.add_child(source_label)
+	var image_edit_toolbar := HBoxContainer.new()
+	vertical.add_child(image_edit_toolbar)
+	image_edit_toolbar.add_child(_new_label("Erase brush (source px):"))
+	brush_size_spin = _new_spin(1, 256)
+	brush_size_spin.value = 12
+	brush_size_spin.value_changed.connect(_on_erase_brush_size_changed)
+	image_edit_toolbar.add_child(brush_size_spin)
+	save_edited_button = Button.new()
+	save_edited_button.text = "Save Edited Image"
+	save_edited_button.disabled = true
+	save_edited_button.pressed.connect(_save_edited_image)
+	image_edit_toolbar.add_child(save_edited_button)
+	cancel_edit_button = Button.new()
+	cancel_edit_button.text = "Cancel Image Edit"
+	cancel_edit_button.disabled = true
+	cancel_edit_button.pressed.connect(_cancel_image_edit)
+	image_edit_toolbar.add_child(cancel_edit_button)
 	var columns := HBoxContainer.new()
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vertical.add_child(columns)
@@ -112,6 +141,7 @@ func _build_interface() -> void:
 	asset_list.icon_mode = ItemList.ICON_MODE_LEFT
 	asset_list.fixed_icon_size = Vector2i(48, 48)
 	asset_list.item_selected.connect(_on_asset_selected)
+	asset_list.item_activated.connect(_on_asset_activated)
 	details.add_child(asset_list)
 	var form := GridContainer.new()
 	form.columns = 2
