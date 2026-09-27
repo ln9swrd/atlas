@@ -370,3 +370,10 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, `godot/editor/map_editor.tscn`, and this handoff.
 - Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot was not rerun because `.godot/editor/filesystem_update4` is already untracked.
 - Next: In Select mode, select and delete one catalog tile and one object; verify Ctrl+Z restores them, then resize an asset, place it again, and save/reopen the map.
+
+## Handoff — On-canvas eraser size preview (2026-09-27)
+
+- Status: In Erase mode, the canvas shows a translucent red grid footprint under the pointer with an `N × N` label. Preview placement uses the same center offset as the erase loop, and refreshes when the pointer or brush size changes.
+- Changed: `godot/editor/editor_canvas.gd` and this handoff.
+- Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot was not run because `.godot/editor/filesystem_update4` is already untracked.
+- Next: In Godot Erase mode, verify 1×1, even and odd brush sizes, cursor movement, zoom, and that the preview matches erased cells.

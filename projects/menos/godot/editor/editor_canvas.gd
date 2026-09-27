@@ -16,6 +16,9 @@ var edit_mode := "SELECT" # SELECT, PAINT, ERASE
 var active_layer := "Ground" # Ground, Vegetation, RoadComposition
 var selected_tile_source_id := 0
 var selected_tile_atlas_coords := Vector2i.ZERO
+var last_pointer_local := Vector2(-1, -1)
+var eraser_preview_cell := Vector2i.ZERO
+var eraser_preview_visible := false
 var selected_catalog_asset: Dictionary = {}
 var catalog_assets_by_id: Dictionary = {}
 var catalog_texture_cache: Dictionary = {}
@@ -51,7 +54,7 @@ func set_map_data(data: Dictionary) -> void:
 func set_edit_mode(mode: String) -> void:
 	edit_mode = mode
 	select_object({})
-	queue_redraw()
+	_update_eraser_preview(last_pointer_local)
 
 func set_active_layer(layer_name: String) -> void:
 	active_layer = layer_name
@@ -59,6 +62,7 @@ func set_active_layer(layer_name: String) -> void:
 
 func set_eraser_size(size_in_tiles: int) -> void:
 	eraser_size = clampi(size_in_tiles, 1, 10)
+	queue_redraw()
 
 func set_selected_tile(source_id: int, atlas_coords: Vector2i) -> void:
 	selected_catalog_asset.clear()
@@ -114,15 +118,18 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb_event := event as InputEventMouseButton
 		var local_position := viewport_to_canvas_position(mb_event.position)
+		last_pointer_local = local_position
 		var inside_canvas := pointer_is_inside_canvas(local_position)
 
 		if mb_event.button_index in [MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_RIGHT]:
 			if mb_event.pressed and inside_canvas:
 				is_panning = true
 				pan_start_pos = local_position
+				_update_eraser_preview(local_position)
 				get_viewport().set_input_as_handled()
 			elif not mb_event.pressed and is_panning:
 				is_panning = false
+				_update_eraser_preview(local_position)
 				get_viewport().set_input_as_handled()
 		elif mb_event.button_index == MOUSE_BUTTON_LEFT:
 			if not mb_event.pressed:
@@ -143,6 +150,7 @@ func _input(event: InputEvent) -> void:
 			if not inside_canvas:
 				return
 			var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
+			_update_eraser_preview(local_position)
 			if _selected_resize_handle_contains(world_pos):
 				is_resizing_placement = true
 				resize_start_world = world_pos
@@ -170,6 +178,8 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		var mm_event := event as InputEventMouseMotion
 		var local_position := viewport_to_canvas_position(mm_event.position)
+		last_pointer_local = local_position
+		_update_eraser_preview(local_position)
 		if is_resizing_placement:
 			var world_pos := (local_position - camera_offset) / camera_zoom
 			resize_preview_footprint = _resize_footprint_for_drag(world_pos)
@@ -223,6 +233,24 @@ func viewport_to_canvas_position(viewport_position: Vector2) -> Vector2:
 func pointer_is_inside_canvas(local_position: Vector2) -> bool:
 	var canvas_container := get_parent() as Control
 	return canvas_container != null and Rect2(Vector2.ZERO, canvas_container.size).has_point(local_position)
+
+func _update_eraser_preview(local_position: Vector2) -> void:
+	var was_visible := eraser_preview_visible
+	var old_cell := eraser_preview_cell
+	eraser_preview_visible = edit_mode == "ERASE" and not is_panning and pointer_is_inside_canvas(local_position)
+	if eraser_preview_visible:
+		var world_pos := (local_position - camera_offset) / camera_zoom
+		eraser_preview_cell = get_cell_coords(world_pos)
+		var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+		eraser_preview_visible = eraser_preview_cell.x >= 0 and eraser_preview_cell.y >= 0 and eraser_preview_cell.x < map_tiles.x and eraser_preview_cell.y < map_tiles.y
+	if was_visible != eraser_preview_visible or (eraser_preview_visible and old_cell != eraser_preview_cell):
+		queue_redraw()
+
+func _eraser_preview_rect() -> Rect2:
+	var half_size := int(floor(float(eraser_size) / 2.0))
+	var start_cell := eraser_preview_cell - Vector2i(half_size, half_size)
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	return Rect2(origin + Vector2(start_cell) * 32.0, Vector2.ONE * float(eraser_size * 32))
 
 func _selected_catalog_placement_rect() -> Rect2:
 	var selection_type := str(selected_object.get("type", ""))
@@ -784,6 +812,12 @@ func _draw() -> void:
 		var handle_rect := _resize_handle_rect(placement_rect)
 		draw_rect(handle_rect, Color("ffe066"), true)
 		draw_rect(handle_rect, Color("20242b"), false, 1.0 / camera_zoom)
+	if eraser_preview_visible:
+		var preview_rect := _eraser_preview_rect()
+		draw_rect(preview_rect, Color(0.96, 0.35, 0.3, 0.2), true)
+		draw_rect(preview_rect, Color("ff6b61"), false, 2.0 / camera_zoom)
+		var label_size := maxi(10, roundi(12.0 / camera_zoom))
+		draw_string(ThemeDB.fallback_font, preview_rect.position + Vector2(5, label_size + 4), "%d × %d" % [eraser_size, eraser_size], HORIZONTAL_ALIGNMENT_LEFT, -1, label_size, Color("fff3ed"))
 
 func draw_tile_cell(dest_pos: Vector2, source_id: int, atlas_coords: Vector2i, _layer_name: String) -> void:
 	var rect := Rect2(dest_pos, Vector2(32, 32))

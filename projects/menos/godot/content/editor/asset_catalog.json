@@ -17,17 +17,17 @@
 			"asset_id": "asset.tile.ground_1",
 			"display_name": "Ground 1",
 			"footprint_tiles": [
-				5,
-				3
+				5.0,
+				3.0
 			],
 			"group": "Boundary",
 			"kind": "tile",
 			"source_path": "res://content/editor/edited_assets/asset_tile_ground_1_edit_217984384.png",
 			"source_rect_px": [
-				0,
-				0,
-				134,
-				81
+				0.0,
+				0.0,
+				134.0,
+				81.0
 			]
 		}
 	],
