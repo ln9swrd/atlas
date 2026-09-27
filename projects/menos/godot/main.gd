@@ -754,15 +754,14 @@ func _draw() -> void:
 
 	# Tactical Field Boundary
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "WEST MID GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
-	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(176, MAP_PIXEL_SIZE.y - 16), "SOUTH QUARTER GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
+	# Spawn location labels are intentionally hidden.
 
 	# Base Facility (Strategic HQ Node)
 	var base_feet := BASE + Vector2(0, 30)
 	draw_oval(base_feet, 54.0, 16.0, Color(0, 0, 0, 0.5))
 	draw_arc(base_feet, 56, 0, TAU, 32, Color("7ed6ce"), 2.5)
 	draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92))
-	draw_string(ThemeDB.fallback_font, BASE + Vector2(-24, 64), "BASE HQ", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
+	# Base HQ label is intentionally hidden.
 
 	# Placed towers
 	if not selected_slot.is_empty() and towers.all(func(tower): return tower.id != selected_slot):
