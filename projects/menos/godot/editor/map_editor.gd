@@ -63,6 +63,8 @@ func _ready() -> void:
 	btn_open_asset_catalog.pressed.connect(_on_open_asset_catalog_pressed)
 	btn_asset_mode.pressed.connect(_on_asset_mode_pressed)
 	btn_gameplay_mode.pressed.connect(_on_gameplay_mode_pressed)
+	btn_asset_mode.gui_input.connect(_on_mode_tab_gui_input.bind("ASSET"))
+	btn_gameplay_mode.gui_input.connect(_on_mode_tab_gui_input.bind("GAMEPLAY"))
 	$MainLayout/Toolbox/VBox/GameplayTools/BtnGameplaySelect.pressed.connect(_on_gameplay_tool_pressed.bind("SELECT"))
 	$MainLayout/Toolbox/VBox/GameplayTools/BtnSpawnArea.pressed.connect(_on_gameplay_tool_pressed.bind("SPAWN_AREA"))
 	$MainLayout/Toolbox/VBox/GameplayTools/BtnTowerArea.pressed.connect(_on_gameplay_tool_pressed.bind("TOWER_PLACEMENT_AREA"))
@@ -357,6 +359,21 @@ func _set_mode_ui(mode: String) -> void:
 	for node in [lbl_layer_title, option_layer, $MainLayout/Toolbox/VBox/BtnSelect, $MainLayout/Toolbox/VBox/BtnErase, eraser_size_row]:
 		node.visible = not is_gameplay_mode
 
+func _on_mode_tab_gui_input(event: InputEvent, mode: String) -> void:
+	if not event is InputEventMouseButton:
+		return
+	var mouse_event := event as InputEventMouseButton
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
+		return
+	call_deferred("_apply_mode_tab", mode)
+	accept_event()
+
+func _apply_mode_tab(mode: String) -> void:
+	if mode == "GAMEPLAY":
+		_on_gameplay_mode_pressed()
+	else:
+		_on_asset_mode_pressed()
+
 func _on_asset_mode_pressed() -> void:
 	canvas.set_editor_mode("ASSET")
 	_set_mode_ui("ASSET")
@@ -411,6 +428,21 @@ func _on_delete_gameplay_element_pressed() -> void:
 	else:
 		update_status("Select a gameplay Area or Point first.")
 
+func _on_place_catalog_asset_pressed() -> void:
+	if canvas.selected_catalog_asset.is_empty():
+		update_status("Select a catalog asset first.")
+		return
+	var asset_kind := str(canvas.selected_catalog_asset.get("kind", "tile"))
+	var asset_group := str(canvas.selected_catalog_asset.get("group", ""))
+	if asset_kind == "tile":
+		var layer_by_group := {"Ground": "Ground", "Vegetation": "Vegetation", "RoadComposition": "RoadComposition"}
+		if layer_by_group.has(asset_group):
+			canvas.set_active_layer(str(layer_by_group[asset_group]))
+	canvas.set_edit_mode("PAINT")
+	_set_mode_ui("ASSET")
+	update_tool_label("CATALOG: PLACE " + str(canvas.selected_catalog_asset.get("display_name", canvas.selected_catalog_asset.get("asset_id", ""))))
+	update_selected_tile_label("Click canvas to place selected catalog asset")
+
 func _on_resize_placement_pressed() -> void:
 	var width_tiles := int(spin_placement_width.value)
 	var height_tiles := int(spin_placement_height.value)
@@ -430,9 +462,9 @@ func _on_map_data_changed() -> void:
 		current_map_data = canvas.map_data
 	update_status("Map edited (Unsaved changes)")
 
-func update_tool_label(name: String) -> void:
+func update_tool_label(tool_name: String) -> void:
 	if lbl_current_tool:
-		lbl_current_tool.text = "Active Tool: [" + name + "]"
+		lbl_current_tool.text = "Active Tool: [" + tool_name + "]"
 
 func update_selected_tile_label(tile_desc: String) -> void:
 	if lbl_selected_tile:
@@ -485,15 +517,6 @@ func set_asset_preview(entry: Dictionary) -> void:
 	asset_preview.texture = cropped_preview
 	lbl_asset_preview_status.text = "Source region: %d × %d px · original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
 
-func _on_btn_place_catalog_asset_pressed() -> void:
-	var index := _find_catalog_asset_index(selected_asset_id)
-	if index < 0:
-		update_status("Select a catalog item first")
-		return
-	_select_catalog_asset(index)
-	canvas.set_edit_mode("PAINT")
-	update_tool_label("PLACE: " + str(catalog_entries[index].get("display_name", selected_asset_id)))
-	update_status("Place selected catalog asset on the canvas")
 
 func _on_btn_load_pressed() -> void:
 	set_dialog_path(open_map_dialog)

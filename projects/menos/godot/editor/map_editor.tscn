@@ -396,7 +396,7 @@ access = 2
 filters = PackedStringArray("*.json ; JSON Maps")
 
 [connection signal="item_selected" from="MainLayout/Toolbox/VBox/OptionLayer" to="." method="_on_option_layer_item_selected"]
-[connection signal="pressed" from="MainLayout/Inspector/VBox/BtnPlaceCatalogAsset" to="." method="_on_btn_place_catalog_asset_pressed"]
+[connection signal="pressed" from="MainLayout/Inspector/VBox/BtnPlaceCatalogAsset" to="." method="_on_place_catalog_asset_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnSelect" to="." method="_on_btn_select_pressed"]
 [connection signal="pressed" from="MainLayout/Toolbox/VBox/BtnErase" to="." method="_on_btn_erase_pressed"]
 [connection signal="value_changed" from="MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize" to="." method="_on_eraser_size_value_changed"]

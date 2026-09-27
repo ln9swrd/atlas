@@ -102,7 +102,6 @@ func _get_image_rect() -> Rect2:
 func _fit_view_to_pixel_rect(pixel_rect: Rect2i) -> void:
 	if texture == null or pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0:
 		return
-	var image_size := Vector2(texture.get_size())
 	var base := _get_base_scale()
 	var margin := 0.88
 	_zoom = 1.0

@@ -221,11 +221,11 @@ func _input(event: InputEvent) -> void:
 					else:
 						_finish_edit_stroke()
 						object_selected.emit(selected_object)
-				get_viewport().set_input_as_handled()
-				return
+					get_viewport().set_input_as_handled()
+					return
 				if is_resizing_placement:
-					var world_pos := (local_position - camera_offset) / camera_zoom
-					var footprint := _resize_footprint_for_drag(world_pos)
+					var resize_world_pos := (local_position - camera_offset) / camera_zoom
+					var footprint := _resize_footprint_for_drag(resize_world_pos)
 					is_resizing_placement = false
 					if footprint != resize_start_footprint and not resize_selected_catalog_placement(footprint.x, footprint.y):
 						placement_resize_failed.emit("Resize failed: target bounds are outside the map or overlap another tile.")
@@ -1045,15 +1045,15 @@ func update_selected_gameplay_properties(element_id: String, element_name: Strin
 	if selection_type in ["Spawn", "Tower Slot", "Robot Spot"]:
 		var legacy_field := str(selected_object.get("legacy_field", ""))
 		var legacy_points: Dictionary = map_data.get(legacy_field, {})
-		var old_id := str(selected_object.get("id", ""))
+		var legacy_old_id := str(selected_object.get("id", ""))
 		var new_id := element_id.strip_edges()
-		if not enabled or new_id.is_empty() or not legacy_points.has(old_id):
+		if not enabled or new_id.is_empty() or not legacy_points.has(legacy_old_id):
 			return false
-		if new_id != old_id and legacy_points.has(new_id):
+		if new_id != legacy_old_id and legacy_points.has(new_id):
 			return false
 		_begin_edit_stroke()
-		var point_position: Vector2 = legacy_points[old_id]
-		legacy_points.erase(old_id)
+		var point_position: Vector2 = legacy_points[legacy_old_id]
+		legacy_points.erase(legacy_old_id)
 		legacy_points[new_id] = point_position
 		map_data[legacy_field] = legacy_points
 		selected_object["id"] = new_id
@@ -1068,7 +1068,7 @@ func update_selected_gameplay_properties(element_id: String, element_name: Strin
 	var elements: Array = map_data.get(key, [])
 	if index < 0 or index >= elements.size() or not elements[index] is Dictionary:
 		return false
-	var old_id := str(elements[index].get("id", ""))
+	var previous_element_id := str(elements[index].get("id", ""))
 	if element_id.strip_edges().is_empty() or _gameplay_id_exists(element_id.strip_edges(), selection_type, index):
 		return false
 	if selection_type == "Gameplay Point" and not area_id.is_empty() and not _gameplay_area_exists(area_id):
@@ -1082,10 +1082,10 @@ func update_selected_gameplay_properties(element_id: String, element_name: Strin
 	_begin_edit_stroke()
 	elements[index] = updated
 	map_data[key] = elements
-	if selection_type == "Gameplay Area" and old_id != str(updated["id"]):
+	if selection_type == "Gameplay Area" and previous_element_id != str(updated["id"]):
 		var points: Array = map_data.get("gameplay_points", [])
 		for point_index in range(points.size()):
-			if points[point_index] is Dictionary and str(points[point_index].get("area_id", "")) == old_id:
+			if points[point_index] is Dictionary and str(points[point_index].get("area_id", "")) == previous_element_id:
 				var point: Dictionary = points[point_index].duplicate(true)
 				point["area_id"] = str(updated["id"])
 				points[point_index] = point
