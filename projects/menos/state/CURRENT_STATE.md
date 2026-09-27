@@ -377,3 +377,10 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/editor_canvas.gd` and this handoff.
 - Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot was not run because `.godot/editor/filesystem_update4` is already untracked.
 - Next: In Godot Erase mode, verify 1×1, even and odd brush sizes, cursor movement, zoom, and that the preview matches erased cells.
+
+## Handoff — Preserve occupied cells when painting (2026-09-27)
+
+- Status: Atlas and catalog tile painting no longer overwrite or remove existing placements. Painting into an occupied target cell/area is rejected with a status message; empty adjacent cells remain paintable. Repainting the same atlas tile or same catalog placement is a no-op. Eraser/Delete Placement remain the explicit removal paths.
+- Changed: `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, and this handoff.
+- Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot runtime was not run because project editor metadata was already untracked.
+- Next: In Godot, try Ground 1 over an occupied cell and adjacent to it; verify overlap preserves the old placement, adjacent placement succeeds, and erasing remains available.

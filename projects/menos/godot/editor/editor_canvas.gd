@@ -4,6 +4,7 @@ extends Node2D
 signal object_selected(info: Dictionary)
 signal map_data_changed()
 signal placement_resize_failed(message: String)
+signal placement_rejected(message: String)
 
 const TILESET: TileSet = preload("res://assets/menos/maps/northbridge_tileset.tres")
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
@@ -313,10 +314,14 @@ func paint_tile_at(world_pos: Vector2) -> void:
 
 	var key := "%d,%d" % [cell.x, cell.y]
 	var tile_info := [selected_tile_source_id, selected_tile_atlas_coords.x, selected_tile_atlas_coords.y]
-
-	if map_data["tiles"][active_layer].get(key) != tile_info:
-		map_data["tiles"][active_layer][key] = tile_info
-		_mark_map_data_changed()
+	var layer_tiles: Dictionary = map_data["tiles"][active_layer]
+	if layer_tiles.has(key):
+		if layer_tiles[key] == tile_info:
+			return
+		placement_rejected.emit("Placement blocked: target cell is occupied. Erase it first or choose an empty cell.")
+		return
+	layer_tiles[key] = tile_info
+	_mark_map_data_changed()
 
 func paint_catalog_tile(cell: Vector2i) -> void:
 	var footprint := catalog_asset_footprint(selected_catalog_asset)
@@ -329,13 +334,17 @@ func paint_catalog_tile(cell: Vector2i) -> void:
 		map_data["tiles"][active_layer] = {}
 	var layer_tiles: Dictionary = map_data["tiles"][active_layer]
 	var asset_id := str(selected_catalog_asset.get("asset_id", ""))
-	if footprint == Vector2i.ONE and layer_tiles.get("%d,%d" % [cell.x, cell.y]) == {"asset_id": asset_id}:
+	var anchor_key := "%d,%d" % [cell.x, cell.y]
+	var existing_anchor: Variant = layer_tiles.get(anchor_key)
+	if existing_anchor is Dictionary and str(existing_anchor.get("asset_id", "")) == asset_id and _catalog_tile_anchor(existing_anchor, cell) == cell and _catalog_tile_footprint(existing_anchor) == footprint:
 		_select_catalog_tile(asset_id, cell, footprint)
 		return
-	var changed := false
 	for offset_y in range(footprint.y):
 		for offset_x in range(footprint.x):
-			changed = _remove_catalog_tile_at(layer_tiles, cell + Vector2i(offset_x, offset_y)) or changed
+			var occupied_cell := cell + Vector2i(offset_x, offset_y)
+			if layer_tiles.has("%d,%d" % [occupied_cell.x, occupied_cell.y]):
+				placement_rejected.emit("Placement blocked: target area is occupied. Erase or delete the existing placement first.")
+				return
 	for offset_y in range(footprint.y):
 		for offset_x in range(footprint.x):
 			var occupied_cell := cell + Vector2i(offset_x, offset_y)
@@ -344,10 +353,8 @@ func paint_catalog_tile(cell: Vector2i) -> void:
 				tile_info["anchor"] = [cell.x, cell.y]
 				tile_info["footprint_tiles"] = [footprint.x, footprint.y]
 			layer_tiles["%d,%d" % [occupied_cell.x, occupied_cell.y]] = tile_info
-			changed = true
-	if changed:
-		_mark_map_data_changed()
-		_select_catalog_tile(asset_id, cell, footprint)
+	_mark_map_data_changed()
+	_select_catalog_tile(asset_id, cell, footprint)
 
 func _select_catalog_tile(asset_id: String, anchor: Vector2i, footprint: Vector2i) -> void:
 	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))

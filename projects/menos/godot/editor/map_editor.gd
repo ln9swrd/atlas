@@ -46,6 +46,7 @@ func _ready() -> void:
 		canvas.object_selected.connect(_on_object_selected)
 		canvas.map_data_changed.connect(_on_map_data_changed)
 		canvas.placement_resize_failed.connect(update_status)
+		canvas.placement_rejected.connect(update_status)
 		canvas.set_eraser_size(int(spin_eraser_size.value))
 	btn_resize_placement.pressed.connect(_on_resize_placement_pressed)
 	btn_delete_placement.pressed.connect(_on_delete_placement_pressed)
