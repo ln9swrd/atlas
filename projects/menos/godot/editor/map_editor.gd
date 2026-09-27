@@ -8,7 +8,12 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var lbl_selected_type: Label = $MainLayout/Inspector/VBox/LblSelectedType
 @onready var lbl_position: Label = $MainLayout/Inspector/VBox/LblPosition
 @onready var lbl_tile_coords: Label = $MainLayout/Inspector/VBox/LblTileCoords
+@onready var lbl_placement_size: Label = $MainLayout/Inspector/VBox/LblPlacementSize
+@onready var spin_placement_width: SpinBox = $MainLayout/Inspector/VBox/PlacementSizeRow/SpinPlacementWidth
+@onready var spin_placement_height: SpinBox = $MainLayout/Inspector/VBox/PlacementSizeRow/SpinPlacementHeight
+@onready var btn_resize_placement: Button = $MainLayout/Inspector/VBox/BtnResizePlacement
 @onready var asset_rows: VBoxContainer = $MainLayout/Inspector/VBox/AssetScroll/AssetRows
+@onready var btn_open_asset_catalog: Button = $MainLayout/Inspector/VBox/BtnOpenAssetCatalog
 @onready var btn_place_catalog_asset: Button = $MainLayout/Inspector/VBox/BtnPlaceCatalogAsset
 @onready var asset_preview: TextureRect = $MainLayout/Inspector/VBox/AssetPreview
 @onready var lbl_asset_preview_status: Label = $MainLayout/Inspector/VBox/LblAssetPreviewStatus
@@ -39,7 +44,13 @@ func _ready() -> void:
 	if canvas:
 		canvas.object_selected.connect(_on_object_selected)
 		canvas.map_data_changed.connect(_on_map_data_changed)
+		canvas.placement_resize_failed.connect(update_status)
 		canvas.set_eraser_size(int(spin_eraser_size.value))
+	btn_resize_placement.pressed.connect(_on_resize_placement_pressed)
+	btn_open_asset_catalog.pressed.connect(_on_open_asset_catalog_pressed)
+	lbl_placement_size.hide()
+	spin_placement_width.get_parent().hide()
+	btn_resize_placement.hide()
 
 	if atlas_palette:
 		atlas_palette.tile_selected.connect(_on_atlas_palette_tile_selected)
@@ -101,16 +112,18 @@ func _rebuild_asset_rows() -> void:
 		image_button.ignore_texture_size = true
 		image_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		image_button.texture_normal = _catalog_entry_preview(entry)
-		image_button.tooltip_text = "Edit source image or pixel region"
+		image_button.tooltip_text = "Select asset; double-click to edit its source image or region"
 		image_button.pressed.connect(_on_catalog_image_pressed.bind(index))
+		image_button.gui_input.connect(_on_catalog_asset_gui_input.bind(index, "image"))
 		row.add_child(image_button)
 		var text_button := Button.new()
 		text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_button.custom_minimum_size.y = 54
 		text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		text_button.text = "%s\n%s · %s" % [entry.get("display_name", entry.get("asset_id", "?")), str(entry.get("kind", "tile")).capitalize(), entry.get("group", "?")]
-		text_button.tooltip_text = "Edit catalog metadata"
+		text_button.tooltip_text = "Select asset; double-click to edit its metadata"
 		text_button.pressed.connect(_on_catalog_text_pressed.bind(index))
+		text_button.gui_input.connect(_on_catalog_asset_gui_input.bind(index, "metadata"))
 		row.add_child(text_button)
 
 func _catalog_entry_preview(entry: Dictionary) -> Texture2D:
@@ -143,24 +156,45 @@ func _select_catalog_asset(index: int) -> void:
 		canvas.set_catalog_asset(entry)
 	set_asset_preview(entry)
 	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
-	var footprint: Array = entry.get("footprint_tiles", [1, 1])
-	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint[0]), str(footprint[1])]
+	var footprint := canvas.catalog_asset_footprint(entry)
+	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
 	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
 	update_selected_tile_label("Use Place Selected, then click canvas")
 
 func _on_catalog_image_pressed(index: int) -> void:
-	_open_catalog_editor(index, "image")
+	_select_catalog_asset(index)
 
 func _on_catalog_text_pressed(index: int) -> void:
-	_open_catalog_editor(index, "metadata")
+	_select_catalog_asset(index)
+
+func _on_catalog_asset_gui_input(event: InputEvent, index: int, edit_target: String) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.double_click:
+			_open_catalog_editor(index, edit_target)
 
 func _open_catalog_editor(index: int, edit_target: String) -> void:
 	if index < 0 or index >= catalog_entries.size():
 		return
 	_select_catalog_asset(index)
 	asset_catalog_window.call("open_for_asset_id", selected_asset_id, edit_target)
-	asset_catalog_window.popup_centered(Vector2i(1280, 820))
+	_popup_asset_catalog_window()
 	asset_catalog_window.call_deferred("focus_edit_target", edit_target)
+
+func _on_open_asset_catalog_pressed() -> void:
+	var selected_index := _find_catalog_asset_index(selected_asset_id)
+	if selected_index >= 0:
+		_open_catalog_editor(selected_index, "metadata")
+		return
+	asset_catalog_window.call("open_catalog")
+	_popup_asset_catalog_window()
+	asset_catalog_window.call_deferred("focus_edit_target", "metadata")
+
+func _popup_asset_catalog_window() -> void:
+	if asset_catalog_window.mode == Window.MODE_MAXIMIZED:
+		asset_catalog_window.popup()
+	else:
+		asset_catalog_window.popup_centered(Vector2i(1280, 820))
 
 func _on_asset_catalog_saved(asset_id: String) -> void:
 	load_asset_catalog(asset_id, true)
@@ -213,6 +247,12 @@ func update_status(text: String) -> void:
 		lbl_status.text = "Status: " + text
 
 func _on_object_selected(info: Dictionary) -> void:
+	var placement_type := str(info.get("type", ""))
+	var can_resize := placement_type in ["Catalog Object", "Catalog Tile"]
+	lbl_placement_size.visible = can_resize
+	spin_placement_width.get_parent().visible = can_resize
+	btn_resize_placement.visible = can_resize
+	btn_resize_placement.disabled = not can_resize
 	if info.is_empty():
 		lbl_selected_id.text = "ID: None"
 		lbl_selected_type.text = "Type: -"
@@ -229,6 +269,19 @@ func _on_object_selected(info: Dictionary) -> void:
 	lbl_selected_type.text = "Type: " + str(info.get("type", "-"))
 	lbl_position.text = "Position: (%.1f, %.1f)" % [pos.x, pos.y]
 	lbl_tile_coords.text = "Tile Coords: (%d, %d)" % [tile_x, tile_y]
+	if can_resize:
+		var footprint: Variant = info.get("footprint", [1, 1])
+		if footprint is Array and footprint.size() >= 2:
+			spin_placement_width.value = int(footprint[0])
+			spin_placement_height.value = int(footprint[1])
+
+func _on_resize_placement_pressed() -> void:
+	var width_tiles := int(spin_placement_width.value)
+	var height_tiles := int(spin_placement_height.value)
+	if canvas.resize_selected_catalog_placement(width_tiles, height_tiles):
+		update_status("Placed asset resized to %d × %d cells." % [width_tiles, height_tiles])
+	else:
+		update_status("Resize failed: target bounds are outside the map or overlap another tile.")
 
 func _on_map_data_changed() -> void:
 	if canvas:

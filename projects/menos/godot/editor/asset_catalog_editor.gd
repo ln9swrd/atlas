@@ -23,8 +23,8 @@ var id_edit: LineEdit
 var name_edit: LineEdit
 var kind_option: OptionButton
 var group_option: OptionButton
-var footprint_x: SpinBox
-var footprint_y: SpinBox
+var footprint_width_label: Label
+var footprint_height_label: Label
 var footprint_row: HBoxContainer
 var rect_label: Label
 var status_label: Label
@@ -33,10 +33,12 @@ var brush_size_spin: SpinBox
 var save_edited_button: Button
 var cancel_edit_button: Button
 var windowed_size := Vector2i(1280, 820)
+var windowed_position := Vector2i.ZERO
 
 func _ready() -> void:
 	close_requested.connect(hide)
 	windowed_size = size
+	windowed_position = position
 	_build_interface()
 	_load_catalog()
 
@@ -55,6 +57,11 @@ func open_for_asset_id(asset_id: String, edit_target: String) -> void:
 		status_label.text = "Source image/region edit: choose a project image or drag a new region, then Update Selected and Save Catalog."
 	else:
 		status_label.text = "Metadata edit: update the visible ID, name, kind, group, and footprint fields, then Update Selected and Save Catalog."
+
+func open_catalog() -> void:
+	_load_catalog()
+	_clear_form()
+	status_label.text = "Catalog ready. Select an entry or add a new one."
 
 func focus_edit_target(edit_target: String) -> void:
 	if edit_target == "image":
@@ -173,21 +180,25 @@ func _build_interface() -> void:
 	rect_label = Label.new()
 	rect_label.text = "[0, 0, 0, 0]"
 	form.add_child(rect_label)
-	_add_form_label(form, "Footprint (map tiles)")
+	_add_form_label(form, "Grid size (map tiles)")
 	footprint_row = HBoxContainer.new()
 	footprint_row.add_child(_new_label("W"))
-	footprint_x = _new_spin(1, 128)
-	footprint_row.add_child(footprint_x)
+	footprint_width_label = Label.new()
+	footprint_width_label.custom_minimum_size.x = 48
+	footprint_width_label.text = "1"
+	footprint_row.add_child(footprint_width_label)
 	footprint_row.add_child(_new_label("H"))
-	footprint_y = _new_spin(1, 128)
-	footprint_row.add_child(footprint_y)
+	footprint_height_label = Label.new()
+	footprint_height_label.custom_minimum_size.x = 48
+	footprint_height_label.text = "1"
+	footprint_row.add_child(footprint_height_label)
 	form.add_child(footprint_row)
 	var buttons := HBoxContainer.new()
 	details.add_child(buttons)
 	_add_button(buttons, "Add Entry", _add_entry)
 	_add_button(buttons, "Update Selected", _update_entry)
 	_add_button(buttons, "Remove Selected", _remove_entry)
-	_add_button(buttons, "Save Catalog", _save_catalog)
+	_add_button(buttons, "Save Catalog", _on_save_catalog_pressed)
 	status_label = Label.new()
 	status_label.text = "Catalog ready. Choose an image and drag-select a pixel region."
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -232,11 +243,20 @@ func _open_source_dialog() -> void:
 
 func _toggle_window_mode() -> void:
 	if mode == Window.MODE_MAXIMIZED:
+		max_size = Vector2i.ZERO
 		mode = Window.MODE_WINDOWED
+		position = windowed_position
 		size = windowed_size
 		maximize_button.text = "Maximize"
 	else:
 		windowed_size = size
+		windowed_position = position
+		var usable_rect := DisplayServer.screen_get_usable_rect(current_screen)
+		if usable_rect.size.x <= 0 or usable_rect.size.y <= 0:
+			return
+		max_size = usable_rect.size
+		position = usable_rect.position
+		size = usable_rect.size
 		mode = Window.MODE_MAXIMIZED
 		maximize_button.text = "Restore"
 
@@ -266,7 +286,7 @@ func _on_asset_activated(index: int) -> void:
 	crop.convert(Image.FORMAT_RGBA8)
 	region_view.begin_image_edit(crop, int(brush_size_spin.value))
 	editing_asset_index = index
-	asset_list.disabled = true
+	asset_list.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	save_edited_button.disabled = false
 	cancel_edit_button.disabled = false
 	status_label.text = "Erase brush edits only this asset crop. Wheel zooms, middle/right drag pans, left drag erases alpha. Save Edited Image writes a separate PNG."
@@ -283,7 +303,7 @@ func _cancel_image_edit() -> void:
 
 func _finish_image_edit() -> void:
 	editing_asset_index = -1
-	asset_list.disabled = false
+	asset_list.mouse_filter = Control.MOUSE_FILTER_STOP
 	save_edited_button.disabled = true
 	cancel_edit_button.disabled = true
 
@@ -310,6 +330,8 @@ func _save_edited_image() -> void:
 	var updated_entry: Dictionary = entries[editing_asset_index].duplicate(true)
 	updated_entry["source_path"] = output_path
 	updated_entry["source_rect_px"] = [0, 0, edited_image.get_width(), edited_image.get_height()]
+	var edited_footprint := _footprint_for_size(edited_image.get_width(), edited_image.get_height())
+	updated_entry["footprint_tiles"] = [edited_footprint.x, edited_footprint.y]
 	var old_entry: Dictionary = entries[editing_asset_index]
 	var completed_index := editing_asset_index
 	entries[editing_asset_index] = updated_entry
@@ -325,6 +347,7 @@ func _save_edited_image() -> void:
 	region_view.selected_region = Rect2i(0, 0, edited_image.get_width(), edited_image.get_height())
 	region_view.queue_redraw()
 	_update_rect_label(region_view.selected_region)
+	_update_footprint_display(region_view.selected_region)
 	preview_source_cache.clear()
 	_finish_image_edit()
 	status_label.text = "Saved edited crop %s and updated asset %s." % [output_path, asset_id]
@@ -350,6 +373,7 @@ func _on_source_file_selected(path: String) -> void:
 	source_label.text = "%s  (%d × %d)" % [path, source_texture.get_width(), source_texture.get_height()]
 	region_view.set_source_texture(source_texture)
 	_update_rect_label(Rect2i())
+	_update_footprint_display(Rect2i())
 	if selected_index < 0 and id_edit.text.strip_edges().is_empty():
 		id_edit.text = "asset.tile." + path.get_file().get_basename().to_snake_case()
 	if selected_index < 0 and name_edit.text.strip_edges().is_empty():
@@ -358,10 +382,19 @@ func _on_source_file_selected(path: String) -> void:
 
 func _on_region_changed(rect: Rect2i) -> void:
 	_update_rect_label(rect)
+	_update_footprint_display(rect)
 	status_label.text = "Region changed to [%d, %d, %d, %d]. Click Update Selected, then Save Catalog." % [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
 
 func _update_rect_label(rect: Rect2i) -> void:
 	rect_label.text = "[%d, %d, %d, %d]" % [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+
+func _footprint_for_size(width_px: int, height_px: int) -> Vector2i:
+	return Vector2i(maxi(1, ceili(float(width_px) / 32.0)), maxi(1, ceili(float(height_px) / 32.0)))
+
+func _update_footprint_display(rect: Rect2i) -> void:
+	var footprint := _footprint_for_size(rect.size.x, rect.size.y)
+	footprint_width_label.text = str(footprint.x)
+	footprint_height_label.text = str(footprint.y)
 
 func _on_kind_changed(_index: int) -> void:
 	_refresh_group_options()
@@ -389,6 +422,7 @@ func _build_entry() -> Dictionary:
 	if id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty() or source_path.is_empty() or rect.size.x <= 0 or rect.size.y <= 0:
 		status_label.text = "Add an ID, name, project image, and valid selected region first."
 		return {}
+	var footprint := _footprint_for_size(rect.size.x, rect.size.y)
 	var entry := {
 		"asset_id": id_edit.text.strip_edges(),
 		"kind": "object" if kind_option.selected == 1 else "tile",
@@ -396,7 +430,7 @@ func _build_entry() -> Dictionary:
 		"display_name": name_edit.text.strip_edges(),
 		"source_path": source_path,
 		"source_rect_px": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
-		"footprint_tiles": [int(footprint_x.value), int(footprint_y.value)]
+		"footprint_tiles": [footprint.x, footprint.y]
 	}
 	return entry
 
@@ -456,9 +490,7 @@ func _on_asset_selected(index: int) -> void:
 	var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
 	source_path = str(entry.get("source_path", ""))
 	_load_source_for_entry(rect)
-	var footprint: Array = entry.get("footprint_tiles", [1, 1])
-	footprint_x.value = int(footprint[0])
-	footprint_y.value = int(footprint[1])
+	_update_footprint_display(rect)
 
 func _load_source_for_entry(rect: Rect2i) -> void:
 	var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path)
@@ -484,6 +516,7 @@ func _clear_form() -> void:
 	region_view.set_source_texture(null)
 	region_view.set("selected_region", Rect2i())
 	_update_rect_label(Rect2i())
+	_update_footprint_display(Rect2i())
 
 func _refresh_list() -> void:
 	asset_list.clear()
@@ -554,3 +587,9 @@ func _save_catalog() -> bool:
 		selected_asset_id = str(entries[selected_index].get("asset_id", ""))
 	catalog_saved.emit(selected_asset_id)
 	return true
+
+func _on_save_catalog_pressed() -> void:
+	if region_view.is_editing_pixels():
+		_save_edited_image()
+		return
+	_save_catalog()

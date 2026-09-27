@@ -68,6 +68,8 @@ static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 	else:
 		parsed["tiles"] = {}
 	parsed["objects"] = raw_data.get("objects", [])
+	var footprint_defaults: Variant = raw_data.get("asset_footprint_defaults", {})
+	parsed["asset_footprint_defaults"] = footprint_defaults if footprint_defaults is Dictionary else {}
 
 	return parsed
 
@@ -93,7 +95,8 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 		"robot_spots": {},
 		"tower_slots": {},
 		"tiles": map_data.get("tiles", {}),
-		"objects": map_data.get("objects", [])
+		"objects": map_data.get("objects", []),
+		"asset_footprint_defaults": map_data.get("asset_footprint_defaults", {})
 	}
 
 	if map_data.has("lanes"):

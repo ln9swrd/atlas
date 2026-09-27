@@ -204,12 +204,52 @@ text = "Position: -"
 layout_mode = 2
 text = "Tile: -"
 
+[node name="LblPlacementSize" type="Label" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = "Placed grid size (W × H); drag corner to resize"
+
+[node name="PlacementSizeRow" type="HBoxContainer" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+
+[node name="LblPlacementWidth" type="Label" parent="MainLayout/Inspector/VBox/PlacementSizeRow"]
+layout_mode = 2
+text = "W"
+
+[node name="SpinPlacementWidth" type="SpinBox" parent="MainLayout/Inspector/VBox/PlacementSizeRow"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 128.0
+step = 1.0
+value = 1.0
+
+[node name="LblPlacementHeight" type="Label" parent="MainLayout/Inspector/VBox/PlacementSizeRow"]
+layout_mode = 2
+text = "H"
+
+[node name="SpinPlacementHeight" type="SpinBox" parent="MainLayout/Inspector/VBox/PlacementSizeRow"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 128.0
+step = 1.0
+value = 1.0
+
+[node name="BtnResizePlacement" type="Button" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = "Apply Size"
+disabled = true
+
 [node name="HSeparatorCatalog" type="HSeparator" parent="MainLayout/Inspector/VBox"]
 layout_mode = 2
 
 [node name="LblAssetCatalog" type="Label" parent="MainLayout/Inspector/VBox"]
 layout_mode = 2
 text = " ASSET CATALOG"
+
+[node name="BtnOpenAssetCatalog" type="Button" parent="MainLayout/Inspector/VBox"]
+layout_mode = 2
+text = "Asset Data Authoring"
 
 [node name="AssetScroll" type="ScrollContainer" parent="MainLayout/Inspector/VBox"]
 custom_minimum_size = Vector2(0, 220)

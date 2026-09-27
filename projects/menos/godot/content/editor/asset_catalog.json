@@ -5,12 +5,12 @@
 			"display_name": "Border Wall Tiles",
 			"group": "Boundary",
 			"kind": "tile",
-			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_path": "res://content/editor/edited_assets/asset_tile_a_7_edit_14449287.png",
 			"source_rect_px": [
-				1035,
-				77,
-				258,
-				151
+				0.0,
+				0.0,
+				258.0,
+				151.0
 			]
 		}
 	],

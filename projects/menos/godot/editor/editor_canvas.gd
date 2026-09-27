@@ -3,6 +3,7 @@ extends Node2D
 
 signal object_selected(info: Dictionary)
 signal map_data_changed()
+signal placement_resize_failed(message: String)
 
 const TILESET: TileSet = preload("res://assets/menos/maps/northbridge_tileset.tres")
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
@@ -24,6 +25,10 @@ var camera_zoom := 1.0
 var camera_offset := Vector2.ZERO
 var is_panning := false
 var is_painting_drag := false
+var is_resizing_placement := false
+var resize_preview_footprint := Vector2i.ONE
+var resize_start_footprint := Vector2i.ONE
+var resize_start_world := Vector2.ZERO
 var pan_start_pos := Vector2.ZERO
 var undo_history: Array[Dictionary] = []
 var edit_stroke_snapshot: Dictionary = {}
@@ -121,6 +126,15 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 		elif mb_event.button_index == MOUSE_BUTTON_LEFT:
 			if not mb_event.pressed:
+				if is_resizing_placement:
+					var world_pos := (local_position - camera_offset) / camera_zoom
+					var footprint := _resize_footprint_for_drag(world_pos)
+					is_resizing_placement = false
+					if footprint != resize_start_footprint and not resize_selected_catalog_placement(footprint.x, footprint.y):
+						placement_resize_failed.emit("Resize failed: target bounds are outside the map or overlap another tile.")
+					queue_redraw()
+					get_viewport().set_input_as_handled()
+					return
 				if is_painting_drag:
 					_finish_edit_stroke()
 					is_painting_drag = false
@@ -128,10 +142,18 @@ func _input(event: InputEvent) -> void:
 				return
 			if not inside_canvas:
 				return
+			var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
+			if _selected_resize_handle_contains(world_pos):
+				is_resizing_placement = true
+				resize_start_world = world_pos
+				var selected_footprint: Array = selected_object.get("footprint", [1, 1])
+				resize_start_footprint = Vector2i(int(selected_footprint[0]), int(selected_footprint[1]))
+				resize_preview_footprint = resize_start_footprint
+				get_viewport().set_input_as_handled()
+				return
 			is_painting_drag = true
 			if edit_mode in ["PAINT", "ERASE"]:
 				_begin_edit_stroke()
-			var world_pos: Vector2 = (local_position - camera_offset) / camera_zoom
 			handle_canvas_click(world_pos)
 			get_viewport().set_input_as_handled()
 		elif not inside_canvas:
@@ -148,7 +170,12 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		var mm_event := event as InputEventMouseMotion
 		var local_position := viewport_to_canvas_position(mm_event.position)
-		if is_panning:
+		if is_resizing_placement:
+			var world_pos := (local_position - camera_offset) / camera_zoom
+			resize_preview_footprint = _resize_footprint_for_drag(world_pos)
+			queue_redraw()
+			get_viewport().set_input_as_handled()
+		elif is_panning:
 			camera_offset += local_position - pan_start_pos
 			pan_start_pos = local_position
 			queue_redraw()
@@ -197,6 +224,32 @@ func pointer_is_inside_canvas(local_position: Vector2) -> bool:
 	var canvas_container := get_parent() as Control
 	return canvas_container != null and Rect2(Vector2.ZERO, canvas_container.size).has_point(local_position)
 
+func _selected_catalog_placement_rect() -> Rect2:
+	var selection_type := str(selected_object.get("type", ""))
+	if selection_type not in ["Catalog Tile", "Catalog Object"]:
+		return Rect2()
+	var footprint_values: Variant = selected_object.get("footprint", [1, 1])
+	if not footprint_values is Array or footprint_values.size() < 2:
+		return Rect2()
+	var position := object_position(selected_object)
+	var footprint := Vector2i(maxi(1, int(footprint_values[0])), maxi(1, int(footprint_values[1])))
+	return Rect2(position, Vector2(footprint) * 32.0)
+
+func _resize_handle_rect(placement_rect: Rect2) -> Rect2:
+	var handle_size := 12.0 / camera_zoom
+	return Rect2(placement_rect.end - Vector2.ONE * handle_size * 0.5, Vector2.ONE * handle_size)
+
+func _selected_resize_handle_contains(world_pos: Vector2) -> bool:
+	var placement_rect := _selected_catalog_placement_rect()
+	return placement_rect.size.x > 0.0 and placement_rect.size.y > 0.0 and _resize_handle_rect(placement_rect).has_point(world_pos)
+
+func _resize_footprint_for_drag(world_pos: Vector2) -> Vector2i:
+	var delta_in_cells := (world_pos - resize_start_world) / 32.0
+	return Vector2i(
+		clampi(resize_start_footprint.x + roundi(delta_in_cells.x), 1, 128),
+		clampi(resize_start_footprint.y + roundi(delta_in_cells.y), 1, 128)
+	)
+
 func handle_canvas_click(world_pos: Vector2) -> void:
 	if edit_mode == "SELECT":
 		pick_object_at(world_pos)
@@ -238,10 +291,7 @@ func paint_tile_at(world_pos: Vector2) -> void:
 		_mark_map_data_changed()
 
 func paint_catalog_tile(cell: Vector2i) -> void:
-	var footprint_values: Array = selected_catalog_asset.get("footprint_tiles", [1, 1])
-	if footprint_values.size() < 2:
-		footprint_values = [1, 1]
-	var footprint := Vector2i(maxi(1, int(footprint_values[0])), maxi(1, int(footprint_values[1])))
+	var footprint := catalog_asset_footprint(selected_catalog_asset)
 	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
 	if cell.x + footprint.x > map_tiles.x or cell.y + footprint.y > map_tiles.y:
 		return
@@ -252,6 +302,7 @@ func paint_catalog_tile(cell: Vector2i) -> void:
 	var layer_tiles: Dictionary = map_data["tiles"][active_layer]
 	var asset_id := str(selected_catalog_asset.get("asset_id", ""))
 	if footprint == Vector2i.ONE and layer_tiles.get("%d,%d" % [cell.x, cell.y]) == {"asset_id": asset_id}:
+		_select_catalog_tile(asset_id, cell, footprint)
 		return
 	var changed := false
 	for offset_y in range(footprint.y):
@@ -268,6 +319,18 @@ func paint_catalog_tile(cell: Vector2i) -> void:
 			changed = true
 	if changed:
 		_mark_map_data_changed()
+		_select_catalog_tile(asset_id, cell, footprint)
+
+func _select_catalog_tile(asset_id: String, anchor: Vector2i, footprint: Vector2i) -> void:
+	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	select_object({
+		"type": "Catalog Tile",
+		"id": asset_id,
+		"position": origin + Vector2(anchor) * 32.0,
+		"layer": active_layer,
+		"cell": anchor,
+		"footprint": [footprint.x, footprint.y]
+	})
 
 func _catalog_tile_anchor(tile_info: Dictionary, cell: Vector2i) -> Vector2i:
 	var anchor_values: Variant = tile_info.get("anchor", [])
@@ -276,14 +339,31 @@ func _catalog_tile_anchor(tile_info: Dictionary, cell: Vector2i) -> Vector2i:
 	return cell
 
 func _catalog_tile_footprint(tile_info: Dictionary) -> Vector2i:
-	var values: Variant = tile_info.get("footprint_tiles", [])
-	if not values is Array or values.size() < 2:
-		var asset_id := str(tile_info.get("asset_id", ""))
-		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
-		values = asset.get("footprint_tiles", [1, 1])
-	if not values is Array or values.size() < 2:
-		return Vector2i.ONE
-	return Vector2i(maxi(1, int(values[0])), maxi(1, int(values[1])))
+	var asset_id := str(tile_info.get("asset_id", ""))
+	var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
+	return catalog_asset_footprint(asset, tile_info)
+
+
+func catalog_asset_footprint(asset: Dictionary, placement_data: Dictionary = {}) -> Vector2i:
+	var override_values: Variant = placement_data.get("footprint_override", [])
+	if override_values is Array and override_values.size() >= 2:
+		return Vector2i(maxi(1, int(override_values[0])), maxi(1, int(override_values[1])))
+	var asset_id := str(asset.get("asset_id", ""))
+	var defaults: Variant = map_data.get("asset_footprint_defaults", {})
+	if defaults is Dictionary:
+		var default_values: Variant = defaults.get(asset_id, [])
+		if default_values is Array and default_values.size() >= 2:
+			return Vector2i(maxi(1, int(default_values[0])), maxi(1, int(default_values[1])))
+	var rect_values: Variant = asset.get("source_rect_px", [])
+	if rect_values is Array and rect_values.size() >= 4:
+		var width_px := float(rect_values[2])
+		var height_px := float(rect_values[3])
+		if width_px > 0.0 and height_px > 0.0:
+			return Vector2i(maxi(1, ceili(width_px / 32.0)), maxi(1, ceili(height_px / 32.0)))
+	var values: Variant = asset.get("footprint_tiles", placement_data.get("footprint_tiles", []))
+	if values is Array and values.size() >= 2:
+		return Vector2i(maxi(1, int(values[0])), maxi(1, int(values[1])))
+	return Vector2i.ONE
 
 func _tile_placement_contains(tile_info: Dictionary, tile_cell: Vector2i, target_cell: Vector2i) -> bool:
 	var anchor := _catalog_tile_anchor(tile_info, tile_cell)
@@ -326,9 +406,9 @@ func _remove_catalog_tile_at(layer_tiles: Dictionary, target_cell: Vector2i) -> 
 	return not keys_to_remove.is_empty()
 
 func place_catalog_object(cell: Vector2i) -> void:
-	var footprint: Array = selected_catalog_asset.get("footprint_tiles", [1, 1])
-	var width := maxi(1, int(footprint[0]))
-	var height := maxi(1, int(footprint[1]))
+	var footprint := catalog_asset_footprint(selected_catalog_asset)
+	var width := footprint.x
+	var height := footprint.y
 	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
 	if cell.x + width > map_tiles.x or cell.y + height > map_tiles.y:
 		return
@@ -342,6 +422,93 @@ func place_catalog_object(cell: Vector2i) -> void:
 		"footprint_tiles": [width, height]
 	})
 	_mark_map_data_changed()
+	select_object({
+		"type": "Catalog Object",
+		"id": str(selected_catalog_asset.get("asset_id", "")),
+		"position": position,
+		"object_index": map_data["objects"].size() - 1,
+		"footprint": [width, height]
+	})
+
+func resize_selected_catalog_placement(width_tiles: int, height_tiles: int) -> bool:
+	var footprint := Vector2i(maxi(1, width_tiles), maxi(1, height_tiles))
+	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var selection_type := str(selected_object.get("type", ""))
+	var asset_id := str(selected_object.get("id", ""))
+	if asset_id.is_empty():
+		return false
+	if selection_type == "Catalog Object":
+		var objects: Array = map_data.get("objects", [])
+		var object_index := int(selected_object.get("object_index", -1))
+		if object_index < 0 or object_index >= objects.size():
+			return false
+		var object_data: Dictionary = objects[object_index].duplicate(true)
+		var cell := get_cell_coords(object_position(object_data))
+		if cell.x < 0 or cell.y < 0 or cell.x + footprint.x > map_tiles.x or cell.y + footprint.y > map_tiles.y:
+			return false
+		_begin_edit_stroke()
+		object_data["footprint_override"] = [footprint.x, footprint.y]
+		objects[object_index] = object_data
+		map_data["objects"] = objects
+	elif selection_type == "Catalog Tile":
+		var layer_name := str(selected_object.get("layer", active_layer))
+		var anchor_value: Variant = selected_object.get("cell", Vector2i.ZERO)
+		if not anchor_value is Vector2i or not map_data.has("tiles"):
+			return false
+		var anchor: Vector2i = anchor_value
+		if anchor.x < 0 or anchor.y < 0 or anchor.x + footprint.x > map_tiles.x or anchor.y + footprint.y > map_tiles.y:
+			return false
+		var tiles: Dictionary = map_data["tiles"]
+		if not tiles.has(layer_name):
+			return false
+		var layer_tiles: Dictionary = tiles[layer_name]
+		var placement_keys: Array[String] = []
+		for key in layer_tiles.keys():
+			var coordinates := str(key).split(",")
+			if coordinates.size() < 2:
+				continue
+			var cell := Vector2i(coordinates[0].to_int(), coordinates[1].to_int())
+			var tile_info: Variant = layer_tiles[key]
+			if tile_info is Dictionary and str(tile_info.get("asset_id", "")) == asset_id and _catalog_tile_anchor(tile_info, cell) == anchor:
+				placement_keys.append(str(key))
+		if placement_keys.is_empty():
+			return false
+		var existing_keys: Dictionary = {}
+		for key in placement_keys:
+			existing_keys[key] = true
+		for y in range(footprint.y):
+			for x in range(footprint.x):
+				var key := "%d,%d" % [anchor.x + x, anchor.y + y]
+				if layer_tiles.has(key) and not existing_keys.has(key):
+					return false
+		_begin_edit_stroke()
+		for key in placement_keys:
+			layer_tiles.erase(key)
+		for y in range(footprint.y):
+			for x in range(footprint.x):
+				var cell := anchor + Vector2i(x, y)
+				var key := "%d,%d" % [cell.x, cell.y]
+				layer_tiles[key] = {
+					"asset_id": asset_id,
+					"anchor": [anchor.x, anchor.y],
+					"footprint_override": [footprint.x, footprint.y]
+				}
+		tiles[layer_name] = layer_tiles
+		map_data["tiles"] = tiles
+	else:
+		return false
+	_set_asset_footprint_default(asset_id, footprint)
+	_mark_map_data_changed()
+	_finish_edit_stroke()
+	var updated_selection := selected_object.duplicate(true)
+	updated_selection["footprint"] = [footprint.x, footprint.y]
+	select_object(updated_selection)
+	return true
+
+func _set_asset_footprint_default(asset_id: String, footprint: Vector2i) -> void:
+	var defaults: Dictionary = map_data.get("asset_footprint_defaults", {})
+	defaults[asset_id] = [footprint.x, footprint.y]
+	map_data["asset_footprint_defaults"] = defaults
 
 func erase_tile_at(world_pos: Vector2) -> void:
 	if erase_catalog_object_at(world_pos):
@@ -373,8 +540,10 @@ func erase_catalog_object_at(world_pos: Vector2) -> bool:
 	for index in range(objects.size() - 1, -1, -1):
 		var object_data: Dictionary = objects[index]
 		var position := object_position(object_data)
-		var footprint: Array = object_data.get("footprint_tiles", [1, 1])
-		var object_rect := Rect2(position, Vector2(int(footprint[0]), int(footprint[1])) * 32.0)
+		var asset_id := str(object_data.get("asset_id", ""))
+		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
+		var footprint := catalog_asset_footprint(asset, object_data)
+		var object_rect := Rect2(position, Vector2(footprint) * 32.0)
 		if object_rect.has_point(world_pos):
 			objects.remove_at(index)
 			map_data["objects"] = objects
@@ -396,11 +565,13 @@ func pick_object_at(point: Vector2) -> void:
 		var object_data: Dictionary = objects[object_index]
 		var asset_id := str(object_data.get("asset_id", ""))
 		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
-		var footprint: Array = object_data.get("footprint_tiles", asset.get("footprint_tiles", [1, 1]))
-		var object_rect := Rect2(object_position(object_data), Vector2(int(footprint[0]), int(footprint[1])) * 32.0)
+		var footprint := catalog_asset_footprint(asset, object_data)
+		var object_rect := Rect2(object_position(object_data), Vector2(footprint) * 32.0)
 		if object_rect.has_point(point):
-			select_object({"type": "Catalog Object", "id": asset_id, "position": object_position(object_data), "object_index": object_index})
+			select_object({"type": "Catalog Object", "id": asset_id, "position": object_position(object_data), "object_index": object_index, "footprint": [footprint.x, footprint.y]})
 			return
+	if _pick_catalog_tile_at(point):
+		return
 
 	# Check Goal
 	if map_data.has("base"):
@@ -434,6 +605,27 @@ func pick_object_at(point: Vector2) -> void:
 				return
 
 	select_object({})
+
+func _pick_catalog_tile_at(point: Vector2) -> bool:
+	if not map_data.has("tiles") or not map_data["tiles"].has(active_layer):
+		return false
+	var layer_tiles: Dictionary = map_data["tiles"][active_layer]
+	var cell := get_cell_coords(point)
+	for key in layer_tiles.keys():
+		var coordinates := str(key).split(",")
+		if coordinates.size() < 2:
+			continue
+		var tile_cell := Vector2i(coordinates[0].to_int(), coordinates[1].to_int())
+		var tile_info: Variant = layer_tiles[key]
+		if not tile_info is Dictionary or not tile_info.has("asset_id"):
+			continue
+		if not _tile_placement_contains(tile_info, tile_cell, cell):
+			continue
+		var anchor := _catalog_tile_anchor(tile_info, tile_cell)
+		var footprint := _catalog_tile_footprint(tile_info)
+		_select_catalog_tile(str(tile_info.get("asset_id", "")), anchor, footprint)
+		return true
+	return false
 
 func select_object(info: Dictionary) -> void:
 	selected_object = info
@@ -488,8 +680,8 @@ func _draw() -> void:
 		var texture := get_catalog_texture(asset_id)
 		if asset.is_empty() or texture == null:
 			continue
-		var footprint: Array = object_data.get("footprint_tiles", asset.get("footprint_tiles", [1, 1]))
-		var destination := Rect2(object_position(object_data), Vector2(int(footprint[0]), int(footprint[1])) * 32.0)
+		var footprint := catalog_asset_footprint(asset, object_data)
+		var destination := Rect2(object_position(object_data), Vector2(footprint) * 32.0)
 		draw_texture_rect_region(texture, destination, catalog_source_rect(asset))
 
 	# Grid Lines (32x32)
@@ -542,6 +734,14 @@ func _draw() -> void:
 		var sel_pos: Vector2 = selected_object["position"]
 		draw_arc(sel_pos, 28.0, 0, TAU, 24, Color("ffe066"), 3.0)
 		draw_string(ThemeDB.fallback_font, sel_pos + Vector2(-30, -32), "[SELECTED]", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("ffe066"))
+	var placement_rect := _selected_catalog_placement_rect()
+	if placement_rect.size.x > 0.0 and placement_rect.size.y > 0.0:
+		if is_resizing_placement:
+			placement_rect.size = Vector2(resize_preview_footprint) * 32.0
+		draw_rect(placement_rect, Color("ffe066"), false, 2.0 / camera_zoom)
+		var handle_rect := _resize_handle_rect(placement_rect)
+		draw_rect(handle_rect, Color("ffe066"), true)
+		draw_rect(handle_rect, Color("20242b"), false, 1.0 / camera_zoom)
 
 func draw_tile_cell(dest_pos: Vector2, source_id: int, atlas_coords: Vector2i, _layer_name: String) -> void:
 	var rect := Rect2(dest_pos, Vector2(32, 32))

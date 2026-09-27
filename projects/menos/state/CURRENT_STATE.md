@@ -307,3 +307,45 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Persistence: MapLoader already round-trips arbitrary tile dictionaries, so no loader change was needed.
 - Changed: `godot/editor/asset_catalog_editor.gd`, `editor_canvas.gd`, and this handoff only. Existing catalog/map JSON, images, and unrelated working-tree changes were preserved.
 - Verification: Static code/schema-path review, catalog JSON parse, and `git diff --check`; Godot runtime/editor verification was not run.
+
+## Handoff — Asset editor runtime API fixes (2026-09-27)
+
+- Status: Replaced the unsupported `Image.has_alpha()` call with `Image.detect_alpha()` and stopped assigning `disabled` on `ItemList`; the list now ignores mouse input during image editing and restores normal input afterward. `Save Catalog` now commits the edited crop PNG and catalog entry when pixel-edit mode is active, so subsequent asset placement resolves the updated image by `asset_id`.
+- Changed: `godot/editor/asset_region_view.gd` and `godot/editor/asset_catalog_editor.gd`. Existing staged edits were preserved.
+- Verification: VS Code diagnostics report no errors for both scripts; `git diff --check` passed. Godot CLI was unavailable, so runtime/editor behavior remains unverified.
+- Next: In Godot, edit an asset, click `Save Catalog`, place it, and confirm both the authoring thumbnail and map canvas use the saved crop. Also confirm the asset list becomes interactive again after save and cancel.
+
+## Handoff — Image-sized catalog placement (2026-09-27)
+
+- Status: Catalog grid footprint is now derived from source crop dimensions in 32px cells using ceiling division; a 32×64 crop occupies 1×2 cells. Existing saved per-placement footprint values no longer override the current source dimensions for catalog tiles or objects.
+- Changed: `godot/editor/asset_catalog_editor.gd`, `godot/editor/editor_canvas.gd`, and `godot/editor/map_editor.gd`. The editor shows the derived footprint and saves it with catalog entries.
+- Verification: VS Code diagnostics report no errors in the three scripts; `git diff --check` passed. Godot CLI was unavailable, so Editor/PIE placement verification remains unverified.
+- Next: In Godot, select a 32×64 crop and verify the editor reports 1×2, then place it and check rendering, picking, erasing, and resizing an existing catalog placement after changing its source crop.
+
+## Handoff — Placed catalog asset resizing (2026-09-27)
+
+- Status: Inspector W/H controls resize a selected Catalog Tile or Catalog Object independently of its source image. Catalog tiles can be selected by clicking them in Select mode on the active layer; per-placement overrides persist in map data and participate in undo. Tile resizing is rejected when it exceeds map bounds or overlaps another occupied tile.
+- Changed: `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, `godot/editor/map_editor.tscn`, and this handoff. Asset catalog dimensions remain unchanged by placement resizing.
+- Verification: VS Code diagnostics report no errors in the GDScript and scene files; `git diff --check` passed. Godot CLI was unavailable, so interactive resize, undo, and save/reload remain unverified.
+- Next: In Godot, select and resize both a Catalog Tile and Catalog Object; verify draw, pick, erase, undo, map save/reload, and overlap/bounds rejection.
+
+## Handoff — Asset authoring selection and window sizing (2026-09-27)
+
+- Status: Single-clicking an asset row selects it; double-clicking its image opens source-region editing, while double-clicking its text opens metadata editing. The authoring window maximizes to the current screen's usable area, limits its maximum size accordingly, and restores the previous size and position.
+- Changed: `godot/editor/map_editor.gd`, `godot/editor/asset_catalog_editor.gd`, and this handoff.
+- Verification: VS Code diagnostics report no errors in both scripts; `git diff --check` passed. Godot was unavailable for interactive double-click/maximize verification.
+- Next: In Godot, verify click-only selection, double-click popup/focus for both edit targets, maximize content layout, and restore geometry.
+
+## Handoff — Drag-resize placed assets (2026-09-27)
+
+- Status: Newly placed catalog tiles and objects are selected automatically and show a bottom-right resize handle. Dragging the handle resizes in grid-cell increments before paint-drag placement can run; unchanged clicks do not create map edits. Inspector W/H and Apply Size remain available.
+- Changed: `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, `godot/editor/map_editor.tscn`, and this handoff.
+- Verification: VS Code diagnostics report no errors in the GDScript and scene files; `git diff --check` passed. Godot CLI was unavailable, so drag behavior remains unverified in PIE.
+- Next: In Godot, place and drag-resize a tile and an object, then verify bounds/overlap rejection, undo, and map save/reload.
+
+## Handoff — Reuse resized asset size (2026-09-27)
+
+- Status: Resizing a catalog placement now updates that asset's default grid size for the current map. Later placements of the same asset use the resized dimensions; per-placement overrides remain intact. Defaults round-trip in map JSON as `asset_footprint_defaults`.
+- Changed: `godot/editor/editor_canvas.gd`, `godot/scripts/map_loader.gd`, and this handoff.
+- Verification: VS Code diagnostics report no errors in both scripts; `git diff --check` passed. Godot CLI was unavailable, so placement and save/reload behavior remain unverified at runtime.
+- Next: Resize one placement, place the same asset again, save/reopen the map, and verify the chosen size is reused.

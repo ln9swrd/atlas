@@ -1,4 +1,10 @@
 {
+  "asset_footprint_defaults": {
+	"asset.tile.a_7": [
+	  2,
+	  1
+	]
+  },
   "goal": {
 	"id": "base_hq",
 	"position": [
@@ -50,6 +56,30 @@
 	32
   ],
   "tiles": {
+	"Ground": {
+	  "22,13": {
+		"anchor": [
+		  22,
+		  13
+		],
+		"asset_id": "asset.tile.a_7",
+		"footprint_override": [
+		  2,
+		  1
+		]
+	  },
+	  "23,13": {
+		"anchor": [
+		  22,
+		  13
+		],
+		"asset_id": "asset.tile.a_7",
+		"footprint_override": [
+		  2,
+		  1
+		]
+	  }
+	},
 	"Vegetation": {}
   },
   "tower_slots": {
