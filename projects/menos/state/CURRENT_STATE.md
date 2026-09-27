@@ -413,3 +413,10 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/editor_canvas.gd` and this handoff.
 - Verification: VS Code diagnostics and `git diff --check` passed. A Godot 4.7.2 headless reproduction with active layer RoadComposition confirmed one 1×1 erase removes a 2×1 Ground catalog placement, atlas tiles from other layers, and an overlapping alpha overlay. The temporary test script was removed; no metadata changes remain.
 - Next: Verify the same multi-layer erase and Ctrl+Z behavior interactively in the Godot Editor.
+
+## Handoff — Remove Border Wall from current map (2026-09-27)
+
+- Status: Removed the Border Wall's two-cell Ground placement from `northbridge_sector_01.json`; its map-local 2×1 size default remains for future placements.
+- Changed: `godot/map_data/northbridge_sector_01.json` and this handoff.
+- Verification: PowerShell JSON parse passed; Ground and Objects are empty, and the Border Wall size default remains 2×1. `git diff --check` passed.
+- Next: Reopen the map in Godot to confirm the Border Wall is absent.
