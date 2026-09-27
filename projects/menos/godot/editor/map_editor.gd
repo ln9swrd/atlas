@@ -1,6 +1,8 @@
 class_name MapEditorMain
 extends Control
 
+const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
+
 @onready var canvas: EditorCanvas = $MainLayout/CanvasContainer/CanvasRoot
 @onready var lbl_selected_id: Label = $MainLayout/Inspector/VBox/LblSelectedID
 @onready var lbl_selected_type: Label = $MainLayout/Inspector/VBox/LblSelectedType
@@ -115,8 +117,8 @@ func _catalog_entry_preview(entry: Dictionary) -> Texture2D:
 	var source_path := str(entry.get("source_path", ""))
 	var source_texture: Texture2D = preview_texture_cache.get(source_path)
 	if source_texture == null and not source_path.is_empty():
-		var loaded: Resource = ResourceLoader.load(source_path)
-		if loaded is Texture2D:
+		var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path)
+		if loaded != null:
 			source_texture = loaded
 			preview_texture_cache[source_path] = source_texture
 	if source_texture == null:
@@ -319,8 +321,8 @@ func set_asset_preview(entry: Dictionary) -> void:
 	var source_path := str(entry.get("source_path", ""))
 	var source_texture: Texture2D = preview_texture_cache.get(source_path)
 	if source_texture == null and not source_path.is_empty():
-		var loaded: Resource = ResourceLoader.load(source_path)
-		if loaded is Texture2D:
+		var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path)
+		if loaded != null:
 			source_texture = loaded
 			preview_texture_cache[source_path] = source_texture
 	if source_texture == null:
