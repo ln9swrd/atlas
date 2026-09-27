@@ -349,3 +349,10 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/editor_canvas.gd`, `godot/scripts/map_loader.gd`, and this handoff.
 - Verification: VS Code diagnostics report no errors in both scripts; `git diff --check` passed. Godot CLI was unavailable, so placement and save/reload behavior remain unverified at runtime.
 - Next: Resize one placement, place the same asset again, save/reopen the map, and verify the chosen size is reused.
+
+## Handoff — Asset catalog launch button (2026-09-27)
+
+- Status: Added an Inspector button to open Asset Data Authoring. It opens the selected asset in metadata mode, or opens a cleared catalog view when no asset is selected. The popup preserves its maximized state.
+- Changed: `godot/editor/map_editor.gd`, `godot/editor/map_editor.tscn`, `godot/editor/asset_catalog_editor.gd`, and this handoff.
+- Verification: VS Code diagnostics report no errors in the three scene/script files; `git diff --check` passed. Godot CLI was unavailable, so popup behavior remains unverified interactively.
+- Next: In Godot, open with and without a selected asset; verify the correct authoring state and maximized window behavior.
