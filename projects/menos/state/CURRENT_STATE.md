@@ -406,3 +406,10 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Changed: `godot/editor/editor_canvas.gd` and this handoff.
 - Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot runtime was not run because `.godot` metadata is modified.
 - Next: In Godot, paint Ground 1 over both an existing catalog tile and the same atlas tile; verify the former is rejected cleanly and the latter remains a no-op.
+
+## Handoff — Erase across map layers (2026-09-27)
+
+- Status: One eraser brush pass removes overlapping object/alpha overlays and atlas/catalog tile placements from every tile layer, using the configured brush footprint. Map data is marked changed once after processing.
+- Changed: `godot/editor/editor_canvas.gd` and this handoff.
+- Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot runtime was not rerun because `.godot` metadata is modified.
+- Next: In Godot, place items on Ground, Vegetation, and RoadComposition under one brush footprint, erase once, and verify all layers and overlaps are removed while Undo restores them.
