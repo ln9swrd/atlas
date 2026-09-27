@@ -19,6 +19,8 @@ var source_dialog: FileDialog
 var asset_list: ItemList
 var region_view: Control
 var source_label: Label
+var source_preview_panel: PanelContainer
+var source_preview: TextureRect
 var id_edit: LineEdit
 var name_edit: LineEdit
 var kind_option: OptionButton
@@ -101,6 +103,18 @@ func _build_interface() -> void:
 	source_label.text = "No project image selected"
 	source_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	toolbar.add_child(source_label)
+	source_preview_panel = PanelContainer.new()
+	source_preview_panel.custom_minimum_size = Vector2(88, 64)
+	source_preview_panel.visible = false
+	var preview_style := StyleBoxFlat.new()
+	preview_style.bg_color = Color("151d26")
+	source_preview_panel.add_theme_stylebox_override("panel", preview_style)
+	source_preview = TextureRect.new()
+	source_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	source_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	source_preview.tooltip_text = "Loaded source image preview"
+	source_preview_panel.add_child(source_preview)
+	toolbar.add_child(source_preview_panel)
 	var image_edit_toolbar := HBoxContainer.new()
 	vertical.add_child(image_edit_toolbar)
 	image_edit_toolbar.add_child(_new_label("Erase brush (source px):"))
@@ -341,6 +355,7 @@ func _save_edited_image() -> void:
 		return
 	source_path = output_path
 	source_texture = ImageTexture.create_from_image(edited_image)
+	_set_source_preview(source_texture)
 	source_label.text = "%s  (%d × %d)" % [output_path, edited_image.get_width(), edited_image.get_height()]
 	region_view.cancel_image_edit()
 	region_view.set_source_texture(source_texture)
@@ -366,10 +381,16 @@ func _safe_asset_filename(asset_id: String) -> String:
 func _on_source_file_selected(path: String) -> void:
 	var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(path)
 	if loaded == null:
+		source_path = ""
+		source_texture = null
+		_set_source_preview(null)
+		region_view.set_source_texture(null)
+		source_label.text = "Could not load image: " + path
 		status_label.text = "Could not load image resource: " + path
 		return
 	source_path = path
 	source_texture = loaded
+	_set_source_preview(loaded)
 	source_label.text = "%s  (%d × %d)" % [path, source_texture.get_width(), source_texture.get_height()]
 	region_view.set_source_texture(source_texture)
 	_update_rect_label(Rect2i())
@@ -384,6 +405,10 @@ func _on_region_changed(rect: Rect2i) -> void:
 	_update_rect_label(rect)
 	_update_footprint_display(rect)
 	status_label.text = "Region changed to [%d, %d, %d, %d]. Click Update Selected, then Save Catalog." % [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+
+func _set_source_preview(value: Texture2D) -> void:
+	source_preview.texture = value
+	source_preview_panel.visible = value != null
 
 func _update_rect_label(rect: Rect2i) -> void:
 	rect_label.text = "[%d, %d, %d, %d]" % [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
@@ -496,6 +521,7 @@ func _load_source_for_entry(rect: Rect2i) -> void:
 	var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path)
 	if loaded != null:
 		source_texture = loaded
+		_set_source_preview(loaded)
 		source_label.text = "%s  (%d × %d)" % [source_path, source_texture.get_width(), source_texture.get_height()]
 		region_view.set_source_texture(source_texture)
 		region_view.set("selected_region", rect)
@@ -503,6 +529,7 @@ func _load_source_for_entry(rect: Rect2i) -> void:
 		_update_rect_label(rect)
 	else:
 		source_texture = null
+		_set_source_preview(null)
 		source_label.text = "Missing project image: " + source_path
 		region_view.set_source_texture(null)
 		_update_rect_label(rect)
@@ -512,6 +539,7 @@ func _clear_form() -> void:
 	name_edit.clear()
 	source_path = ""
 	source_texture = null
+	_set_source_preview(null)
 	source_label.text = "No project image selected"
 	region_view.set_source_texture(null)
 	region_view.set("selected_region", Rect2i())
