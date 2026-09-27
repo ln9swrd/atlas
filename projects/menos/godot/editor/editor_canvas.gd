@@ -1607,7 +1607,8 @@ func draw_catalog_tile(dest_pos: Vector2, asset_id: String, footprint: Vector2i 
 	draw_texture_rect_region(texture, Rect2(dest_pos, Vector2(footprint.x * 32, footprint.y * 32)), catalog_source_rect(asset))
 
 func catalog_source_rect(asset: Dictionary) -> Rect2:
-	var values: Array = asset.get("source_rect_px", [0, 0, 32, 32])
-	if values.size() < 4:
+	var values: Variant = asset.get("source_rect_px", [0, 0, 32, 32])
+	if not values is Array or values.size() < 4:
 		return Rect2(0, 0, 32, 32)
-	return Rect2(float(values[0]), float(values[1]), float(values[2]), float(values[3]))
+	var rect_values: Array = values
+	return Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))

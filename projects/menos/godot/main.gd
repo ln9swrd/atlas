@@ -1,5 +1,7 @@
 extends Node2D
 
+var _catalog_tile_cache: Dictionary = {}
+
 const DATA = preload("res://data.gd")
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
@@ -174,16 +176,70 @@ func build_map_from_data(map_data: Dictionary) -> bool:
 				continue
 			var cx := parts[0].to_int()
 			var cy := parts[1].to_int()
-			var val: Array = tiles_info[key]
-			if val.size() < 3:
+			var tile_data: Variant = tiles_info[key]
+			var tile_values: Array = []
+			if tile_data is Array:
+				tile_values = tile_data
+			elif tile_data is Dictionary:
+				var asset_id := str(tile_data.get("asset_id", ""))
+				var resolved := _resolve_catalog_tile(layer_node, asset_id)
+				if resolved.is_empty():
+					continue
+				tile_values = resolved
+			if tile_values.size() < 3:
 				continue
-			var source_id := int(val[0])
-			var atlas_x := int(val[1])
-			var atlas_y := int(val[2])
+			var source_id := int(tile_values[0])
+			var atlas_x := int(tile_values[1])
+			var atlas_y := int(tile_values[2])
 
 			layer_node.set_cell(Vector2i(cx, cy), source_id, Vector2i(atlas_x, atlas_y))
 
 	return true
+
+func _resolve_catalog_tile(layer_node: TileMapLayer, asset_id: String) -> Array:
+	if _catalog_tile_cache.has(asset_id):
+		return _catalog_tile_cache[asset_id]
+	var file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
+	if file == null:
+		_catalog_tile_cache[asset_id] = []
+		return []
+	var catalog_data: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not catalog_data is Dictionary:
+		_catalog_tile_cache[asset_id] = []
+		return []
+	var assets: Variant = catalog_data.get("assets", [])
+	if not assets is Array:
+		_catalog_tile_cache[asset_id] = []
+		return []
+	for entry_data in assets:
+		if not entry_data is Dictionary or str(entry_data.get("asset_id", "")) != asset_id:
+			continue
+		var source_path := str(entry_data.get("source_path", ""))
+		var rect_values: Variant = entry_data.get("source_rect_px", [0, 0, 32, 32])
+		if not rect_values is Array or rect_values.size() < 2:
+			break
+		var tile_set := layer_node.tile_set
+		if tile_set == null:
+			break
+		for source_index in range(tile_set.get_source_count()):
+			var source_id := tile_set.get_source_id(source_index)
+			var atlas_source := tile_set.get_source(source_id) as TileSetAtlasSource
+			if atlas_source == null or atlas_source.get_texture() == null:
+				continue
+			if atlas_source.get_texture().resource_path != source_path:
+				continue
+			var region_size := atlas_source.get_texture_region_size()
+			if region_size.x <= 0 or region_size.y <= 0:
+				continue
+			var atlas_coords := Vector2i(int(float(rect_values[0]) / region_size.x), int(float(rect_values[1]) / region_size.y))
+			if atlas_source.has_tile(atlas_coords):
+				var resolved := [source_id, atlas_coords.x, atlas_coords.y]
+				_catalog_tile_cache[asset_id] = resolved
+				return resolved
+		break
+	_catalog_tile_cache[asset_id] = []
+	return []
 
 func build_first_battle_map() -> void:
 	var ground: TileMapLayer = $Ground
@@ -221,7 +277,7 @@ func play_sfx(id: String) -> void:
 func reset_game() -> void:
 	base_hp = StageManager.get_base_hp(); gold = StageManager.get_initial_gold(); wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""; selected_tower = ""; robot_selected = false
-	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS.CENTER, "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
+	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS["CENTER"], "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
 	robot_progression = {"unlocked_abilities": []}
 	feed.clear(); log_event("Build towers, launch ATLAS-01, then start Wave 1.")
 
