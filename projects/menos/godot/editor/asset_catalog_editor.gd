@@ -229,17 +229,124 @@ func _add_button(parent: HBoxContainer, label_text: String, callback: Callable) 
 func _open_source_dialog() -> void:
 	source_dialog.popup_centered(Vector2i(1000, 700))
 
+func _toggle_window_mode() -> void:
+	if mode == Window.MODE_MAXIMIZED:
+		mode = Window.MODE_WINDOWED
+		size = windowed_size
+		maximize_button.text = "Maximize"
+	else:
+		windowed_size = size
+		mode = Window.MODE_MAXIMIZED
+		maximize_button.text = "Restore"
+
+func _on_erase_brush_size_changed(value: float) -> void:
+	region_view.set_erase_brush_size(int(value))
+
+func _on_asset_activated(index: int) -> void:
+	if index < 0 or index >= entries.size():
+		return
+	if region_view.is_editing_pixels():
+		status_label.text = "Save or cancel the current image edit before opening another asset."
+		return
+	_on_asset_selected(index)
+	var rect_values: Array = entries[index].get("source_rect_px", [])
+	if rect_values.size() < 4:
+		status_label.text = "Cannot edit image: source pixel rectangle is missing."
+		return
+	var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		status_label.text = "Cannot edit image: source pixel rectangle is empty."
+		return
+	var source_image := source_texture.get_image() if source_texture != null else null
+	if source_image == null or rect.position.x < 0 or rect.position.y < 0 or rect.end.x > source_image.get_width() or rect.end.y > source_image.get_height():
+		status_label.text = "Cannot edit image: source region is outside the image bounds."
+		return
+	var crop := source_image.get_region(rect)
+	crop.convert(Image.FORMAT_RGBA8)
+	region_view.begin_image_edit(crop, int(brush_size_spin.value))
+	editing_asset_index = index
+	asset_list.disabled = true
+	save_edited_button.disabled = false
+	cancel_edit_button.disabled = false
+	status_label.text = "Erase brush edits only this asset crop. Wheel zooms, middle/right drag pans, left drag erases alpha. Save Edited Image writes a separate PNG."
+
+func _cancel_image_edit() -> void:
+	if editing_asset_index < 0 or editing_asset_index >= entries.size():
+		return
+	var rect_values: Array = entries[editing_asset_index].get("source_rect_px", [0, 0, 0, 0])
+	var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+	region_view.cancel_image_edit()
+	_load_source_for_entry(rect)
+	_finish_image_edit()
+	status_label.text = "Image edit cancelled; catalog data was not changed."
+
+func _finish_image_edit() -> void:
+	editing_asset_index = -1
+	asset_list.disabled = false
+	save_edited_button.disabled = true
+	cancel_edit_button.disabled = true
+
+func _save_edited_image() -> void:
+	if editing_asset_index < 0 or editing_asset_index >= entries.size():
+		status_label.text = "Double-click a registered asset thumbnail before saving an image edit."
+		return
+	var edited_image := region_view.get_edited_image()
+	if edited_image == null or edited_image.is_empty():
+		status_label.text = "No editable image is available."
+		return
+	var directory_path := ProjectSettings.globalize_path(EDITED_ASSET_DIR)
+	var directory_error := DirAccess.make_dir_recursive_absolute(directory_path)
+	if directory_error != OK:
+		status_label.text = "Could not create edited asset directory. Error %d" % directory_error
+		return
+	var asset_id := str(entries[editing_asset_index].get("asset_id", "asset"))
+	var safe_id := _safe_asset_filename(asset_id)
+	var output_path := "%s/%s_edit_%d.png" % [EDITED_ASSET_DIR, safe_id, Time.get_ticks_usec()]
+	var save_error := edited_image.save_png(ProjectSettings.globalize_path(output_path))
+	if save_error != OK:
+		status_label.text = "Could not save edited PNG. Error %d" % save_error
+		return
+	var updated_entry: Dictionary = entries[editing_asset_index].duplicate(true)
+	updated_entry["source_path"] = output_path
+	updated_entry["source_rect_px"] = [0, 0, edited_image.get_width(), edited_image.get_height()]
+	var old_entry: Dictionary = entries[editing_asset_index]
+	entries[editing_asset_index] = updated_entry
+	if not _save_catalog():
+		entries[editing_asset_index] = old_entry
+		status_label.text = "PNG saved to %s, but catalog save failed. The catalog entry was kept unchanged." % output_path
+		return
+	source_path = output_path
+	source_texture = ImageTexture.create_from_image(edited_image)
+	source_label.text = "%s  (%d × %d)" % [output_path, edited_image.get_width(), edited_image.get_height()]
+	region_view.cancel_image_edit()
+	region_view.set_source_texture(source_texture)
+	region_view.selected_region = Rect2i(0, 0, edited_image.get_width(), edited_image.get_height())
+	region_view.queue_redraw()
+	_update_rect_label(region_view.selected_region)
+	preview_source_cache.clear()
+	_finish_image_edit()
+	status_label.text = "Saved edited crop %s and updated asset %s." % [output_path, asset_id]
+	_refresh_list()
+	asset_list.select(editing_asset_index if editing_asset_index >= 0 else entries.find(updated_entry))
+
+func _safe_asset_filename(asset_id: String) -> String:
+	var result := ""
+	for character in asset_id.to_lower():
+		if character in "abcdefghijklmnopqrstuvwxyz0123456789_-":
+			result += character
+		else:
+			result += "_"
+	return result if not result.is_empty() else "asset"
+
 func _on_source_file_selected(path: String) -> void:
-	var loaded := ResourceLoader.load(path)
-	if not loaded is Texture2D:
+	var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(path)
+	if loaded == null:
 		status_label.text = "Could not load image resource: " + path
 		return
 	source_path = path
 	source_texture = loaded
 	source_label.text = "%s  (%d × %d)" % [path, source_texture.get_width(), source_texture.get_height()]
-	region_view.set("texture", source_texture)
-	region_view.set("selected_region", Rect2i())
-	region_view.queue_redraw()
+	region_view.set_source_texture(source_texture)
 	_update_rect_label(Rect2i())
 	if selected_index < 0 and id_edit.text.strip_edges().is_empty():
 		id_edit.text = "asset.tile." + path.get_file().get_basename().to_snake_case()
