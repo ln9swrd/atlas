@@ -411,5 +411,5 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 
 - Status: One eraser brush pass removes overlapping object/alpha overlays and atlas/catalog tile placements from every tile layer, using the configured brush footprint. Map data is marked changed once after processing.
 - Changed: `godot/editor/editor_canvas.gd` and this handoff.
-- Verification: VS Code diagnostics report no errors; `git diff --check` passed. Godot runtime was not rerun because `.godot` metadata is modified.
-- Next: In Godot, place items on Ground, Vegetation, and RoadComposition under one brush footprint, erase once, and verify all layers and overlaps are removed while Undo restores them.
+- Verification: VS Code diagnostics and `git diff --check` passed. A Godot 4.7.2 headless reproduction with active layer RoadComposition confirmed one 1×1 erase removes a 2×1 Ground catalog placement, atlas tiles from other layers, and an overlapping alpha overlay. The temporary test script was removed; no metadata changes remain.
+- Next: Verify the same multi-layer erase and Ctrl+Z behavior interactively in the Godot Editor.
