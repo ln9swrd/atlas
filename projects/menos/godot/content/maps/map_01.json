@@ -1,2688 +1,2716 @@
 {
   "asset_footprint_defaults": {
-	"asset.tile.a_7": [
-	  2.0,
-	  1.0
-	]
+    "asset.tile.a_7": [
+      2.0,
+      1.0
+    ]
   },
   "gameplay_areas": [
-	{
-	  "enabled": true,
-	  "id": "gameplay.spawn_area.49646098",
-	  "name": "Spawn Area",
-	  "position": [
-		1.0,
-		505.0
-	  ],
-	  "size": [
-		320.0,
-		320.0
-	  ],
-	  "type": "spawn_area"
-	},
-	{
-	  "enabled": true,
-	  "id": "gameplay.tower_placement_area.151259551",
-	  "name": "Tower Placement Area",
-	  "position": [
-		640.0,
-		58.0
-	  ],
-	  "size": [
-		512.0,
-		352.0
-	  ],
-	  "type": "tower_placement_area"
-	},
-	{
-	  "enabled": true,
-	  "id": "gameplay.blocked_area.221665056",
-	  "name": "Blocked Area",
-	  "position": [
-		448.0,
-		346.0
-	  ],
-	  "size": [
-		64.0,
-		288.0
-	  ],
-	  "type": "blocked_area"
-	}
+    {
+      "enabled": true,
+      "id": "gameplay.spawn_area.49646098",
+      "name": "Spawn Area",
+      "position": [
+        1.0,
+        505.0
+      ],
+      "size": [
+        320.0,
+        320.0
+      ],
+      "type": "spawn_area"
+    },
+    {
+      "enabled": true,
+      "id": "gameplay.tower_placement_area.151259551",
+      "name": "Tower Placement Area",
+      "position": [
+        640.0,
+        58.0
+      ],
+      "size": [
+        512.0,
+        352.0
+      ],
+      "type": "tower_placement_area"
+    },
+    {
+      "enabled": true,
+      "id": "gameplay.blocked_area.221665056",
+      "name": "Blocked Area",
+      "position": [
+        448.0,
+        346.0
+      ],
+      "size": [
+        64.0,
+        288.0
+      ],
+      "type": "blocked_area"
+    },
+    {
+      "enabled": true,
+      "id": "gameplay.obstacle_area.98781163",
+      "name": "Obstacle Area",
+      "position": [
+        192.0,
+        186.0
+      ],
+      "size": [
+        352.0,
+        96.0
+      ],
+      "type": "obstacle_area"
+    },
+    {
+      "enabled": true,
+      "id": "gameplay.movement_area.106403827",
+      "name": "Movement Area",
+      "position": [
+        416.0,
+        698.0
+      ],
+      "size": [
+        448.0,
+        64.0
+      ],
+      "type": "movement_area"
+    }
   ],
   "gameplay_points": [
-	{
-	  "area_id": "",
-	  "enabled": true,
-	  "id": "gameplay.robot_position_point.192742199",
-	  "name": "Robot Position Point",
-	  "position": [
-		1008.0,
-		170.0
-	  ],
-	  "type": "robot_position_point"
-	}
+    {
+      "area_id": "",
+      "enabled": true,
+      "id": "gameplay.robot_position_point.192742199",
+      "name": "Robot Position Point",
+      "position": [
+        1008.0,
+        170.0
+      ],
+      "type": "robot_position_point"
+    }
   ],
   "goal": {
-	"id": "base_hq",
-	"position": [
-	  1082.0,
-	  113.0
-	]
+    "id": "base_hq",
+    "position": [
+      1082.0,
+      113.0
+    ]
   },
   "map_id": "northbridge_sector_01",
   "map_origin": [
-	0.0,
-	58.0
+    0.0,
+    58.0
   ],
   "map_pixel_size": [
-	1152.0,
-	768.0
+    1152.0,
+    768.0
   ],
   "map_size": [
-	36,
-	24
+    36,
+    24
   ],
   "name": "Northbridge Sector 01",
   "objects": [],
   "robot_spots": {},
   "spawns": {},
   "tile_size": [
-	32,
-	32
+    32,
+    32
   ],
   "tiles": {
-	"Ground": {
-	  "0,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "0,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "1,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "10,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "11,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "12,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "13,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "14,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "15,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "16,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "17,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "18,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "19,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "2,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "20,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "21,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "22,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "23,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "24,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "25,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "26,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "27,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "28,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "29,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "3,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "30,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "31,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "32,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "33,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "34,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "35,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "4,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "5,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "6,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "7,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "8,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,0": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,1": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,10": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,11": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,12": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,13": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,14": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,15": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,16": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,17": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,18": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,19": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,2": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,20": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,21": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,22": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,23": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,3": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,4": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,5": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,6": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,7": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,8": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  },
-	  "9,9": {
-		"asset_id": "asset.tile.ground.basic_meadow"
-	  }
-	},
-	"Vegetation": {}
+    "Ground": {
+      "0,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "0,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "1,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "10,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "11,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "12,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "13,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "14,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "15,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "16,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "17,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "18,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "19,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "2,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "20,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "21,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "22,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "23,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "24,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "25,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "26,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "27,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "28,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "29,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "3,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "30,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "31,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "32,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "33,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "34,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "35,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "4,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "5,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "6,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "7,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "8,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,0": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,1": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,10": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,11": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,12": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,13": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,14": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,15": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,16": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,17": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,18": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,19": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,2": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,20": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,21": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,22": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,23": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,3": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,4": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,5": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,6": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,7": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,8": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      },
+      "9,9": {
+        "asset_id": "asset.tile.ground.basic_meadow"
+      }
+    },
+    "Vegetation": {}
   },
   "tower_slots": {},
   "version": 1.0

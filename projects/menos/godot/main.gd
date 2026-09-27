@@ -48,10 +48,11 @@ const SFX_STREAMS := {
 	"enemy_spawn": preload("res://sound/172206__fins__teleport.wav"),
 	"wave_start": preload("res://sound/g_get_ready.wav")
 }
-var BASE := Vector2(1080, 122)
-var LANES := {"left": Vector2(70, 346), "right": Vector2(288, 794)}
-var ROBOT_SPOTS := {"LEFT": Vector2(480, 300), "CENTER": Vector2(720, 250), "RIGHT": Vector2(480, 540)}
-var SLOTS := {"L1": Vector2(220, 310), "L2": Vector2(450, 270), "L3": Vector2(720, 210), "R1": Vector2(300, 650), "R2": Vector2(520, 500), "R3": Vector2(760, 340)}
+var BASE := Vector2.ZERO
+var LANES: Dictionary = {}
+var ROBOT_SPOTS: Dictionary = {}
+var TOWER_PLACEMENT_AREAS: Array[Rect2] = []
+var SLOTS: Dictionary = {}
 const ROBOT_GROWTH_OPTIONS := {
 	"ability_area": {"name": "AREA ATTACK", "description": "Hits 3 or more nearby enemies."},
 	"ability_heavy_pierce": {"name": "HEAVY PIERCE", "description": "Targets Heavy and Giant enemies."}
@@ -91,6 +92,7 @@ var robot := {}
 var robot_progression := {}
 var feed: Array[String] = []
 var selected_slot := ""
+var selected_slot_position := Vector2.ZERO
 var selected_tower := ""
 var robot_selected := false
 var effects: Array = []
@@ -122,13 +124,61 @@ func restart_campaign() -> void:
 	reset_game()
 
 func apply_map_spatial_data(loaded_map: Dictionary) -> void:
-	if loaded_map.has("base"): BASE = loaded_map["base"]
-	if loaded_map.has("lanes") and not loaded_map["lanes"].is_empty(): LANES = loaded_map["lanes"]
-	if loaded_map.has("robot_spots") and not loaded_map["robot_spots"].is_empty(): ROBOT_SPOTS = loaded_map["robot_spots"]
-	if loaded_map.has("slots"): SLOTS = loaded_map["slots"]
-	if loaded_map.has("map_tiles"): MAP_TILES = loaded_map["map_tiles"]
-	if loaded_map.has("map_origin"): MAP_ORIGIN = loaded_map["map_origin"]
-	if loaded_map.has("map_pixel_size"): MAP_PIXEL_SIZE = loaded_map["map_pixel_size"]
+	BASE = Vector2.ZERO
+	LANES.clear()
+	ROBOT_SPOTS.clear()
+	TOWER_PLACEMENT_AREAS.clear()
+	SLOTS.clear()
+
+	if loaded_map.has("base"):
+		BASE = loaded_map["base"]
+	if loaded_map.has("map_tiles"):
+		MAP_TILES = loaded_map["map_tiles"]
+	if loaded_map.has("map_origin"):
+		MAP_ORIGIN = loaded_map["map_origin"]
+	if loaded_map.has("map_pixel_size"):
+		MAP_PIXEL_SIZE = loaded_map["map_pixel_size"]
+
+	var gameplay_areas: Variant = loaded_map.get("gameplay_areas", [])
+	if gameplay_areas is Array:
+		var spawn_index := 0
+		for area_data in gameplay_areas:
+			if not area_data is Dictionary or not bool(area_data.get("enabled", true)):
+				continue
+			var area_position: Variant = area_data.get("position", [0.0, 0.0])
+			var area_size: Variant = area_data.get("size", [0.0, 0.0])
+			if not area_position is Array or area_position.size() < 2 or not area_size is Array or area_size.size() < 2:
+				continue
+			var rect := Rect2(float(area_position[0]), float(area_position[1]), float(area_size[0]), float(area_size[1]))
+			var area_type := str(area_data.get("type", ""))
+			if area_type == "spawn_area":
+				LANES["spawn_%d" % spawn_index] = rect.get_center()
+				spawn_index += 1
+			elif area_type == "tower_placement_area":
+				TOWER_PLACEMENT_AREAS.append(rect)
+
+	var gameplay_points: Variant = loaded_map.get("gameplay_points", [])
+	if gameplay_points is Array:
+		var point_index := 0
+		for point_data in gameplay_points:
+			if not point_data is Dictionary or not bool(point_data.get("enabled", true)):
+				continue
+			if str(point_data.get("type", "")) != "robot_position_point":
+				continue
+			var point_position: Variant = point_data.get("position", [0.0, 0.0])
+			if not point_position is Array or point_position.size() < 2:
+				continue
+			var point_id := str(point_data.get("id", "robot_position_%d" % point_index))
+			ROBOT_SPOTS[point_id] = Vector2(float(point_position[0]), float(point_position[1]))
+			point_index += 1
+
+	# Legacy fields are accepted only when explicitly present in the map.
+	if LANES.is_empty() and loaded_map.has("lanes"):
+		LANES = loaded_map["lanes"].duplicate(true)
+	if ROBOT_SPOTS.is_empty() and loaded_map.has("robot_spots"):
+		ROBOT_SPOTS = loaded_map["robot_spots"].duplicate(true)
+	if loaded_map.has("slots"):
+		SLOTS = loaded_map["slots"].duplicate(true)
 
 func build_map_from_data(map_data: Dictionary) -> bool:
 	if not map_data.has("tiles") or map_data["tiles"].is_empty():
@@ -276,8 +326,13 @@ func play_sfx(id: String) -> void:
 
 func reset_game() -> void:
 	base_hp = StageManager.get_base_hp(); gold = StageManager.get_initial_gold(); wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
-	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""; selected_tower = ""; robot_selected = false
-	robot = {"active": false, "spot": "CENTER", "position": ROBOT_SPOTS["CENTER"], "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
+	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false
+	var initial_robot_spot := ""
+	var initial_robot_position := BASE
+	if not ROBOT_SPOTS.is_empty():
+		initial_robot_spot = str(ROBOT_SPOTS.keys()[0])
+		initial_robot_position = ROBOT_SPOTS[initial_robot_spot]
+	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
 	robot_progression = {"unlocked_abilities": []}
 	feed.clear(); log_event("Build towers, launch ATLAS-01, then start Wave 1.")
 
@@ -322,9 +377,12 @@ func start_wave() -> void:
 	log_event("WAVE %d STARTED: %s" % [wave, waves_data[wave - 1]["label"]])
 
 func spawn_enemies() -> void:
+	if LANES.is_empty():
+		return
+	var spawn_points: Array = LANES.keys()
 	while not spawn_queue.is_empty() and spawn_queue[0].delay <= spawn_clock:
 		var entry = spawn_queue.pop_front()
-		var lane: String = entry.lanes[enemies.size() % entry.lanes.size()]
+		var lane: String = str(spawn_points[enemies.size() % spawn_points.size()])
 		var data: Dictionary = DATA.ENEMIES[entry.type]
 		enemies.append({"type": entry.type, "lane": lane, "position": LANES[lane], "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0})
 
@@ -406,17 +464,23 @@ func get_robot_chase_target() -> Dictionary:
 	return candidates[0]
 
 func get_robot_auto_spot() -> String:
-	var lane_progress := {"left": -1.0, "right": -1.0}
-	for enemy in enemies:
-		if enemy.hp <= 0.0: continue
-		var lane: String = enemy.lane
-		var start: Vector2 = LANES[lane]
-		var progress := clampf((enemy.position.x - start.x) / (BASE.x - start.x), 0.0, 1.0)
-		lane_progress[lane] = maxf(float(lane_progress[lane]), progress)
-	if lane_progress.left < 0.0 and lane_progress.right < 0.0: return ""
-	if lane_progress.left >= 0.0 and lane_progress.right >= 0.0 and absf(lane_progress.left - lane_progress.right) < 0.12:
-		return "CENTER"
-	return "LEFT" if lane_progress.left > lane_progress.right else "RIGHT"
+	if ROBOT_SPOTS.is_empty():
+		return ""
+	var active_enemies: Array = enemies.filter(func(enemy): return enemy.hp > 0.0)
+	if active_enemies.is_empty():
+		return ""
+	var target := Vector2.ZERO
+	for enemy in active_enemies:
+		target += enemy.position
+	target /= float(active_enemies.size())
+	var best_id := ""
+	var best_distance := INF
+	for id in ROBOT_SPOTS:
+		var distance := ROBOT_SPOTS[id].distance_to(target)
+		if distance < best_distance:
+			best_distance = distance
+			best_id = str(id)
+	return best_id
 
 func move_robot_automatically(delta: float) -> void:
 	if not wave_running: return
@@ -561,7 +625,7 @@ func handle_click(point: Vector2) -> void:
 	if Rect2(SIDEBAR_X + 20.0, 385, 145, 42).has_point(point): build_tower("gatling"); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
-			selected_tower = tower.id; selected_slot = tower.id; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
+			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
 	if robot.active and point.distance_to(robot.position) < 28.0:
 		if robot_selected:
 			robot_selected = false; play_sfx("ui_cancel")
@@ -570,14 +634,32 @@ func handle_click(point: Vector2) -> void:
 		queue_redraw(); return
 	if robot_selected and Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE).has_point(point):
 		move_robot_to_position(point); return
-	for id in SLOTS:
-		if point.distance_to(SLOTS[id]) < 24.0 and not towers.any(func(tower): return tower.id == id): selected_slot = id; selected_tower = ""; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
+	if not robot_selected:
+		var tower_position := get_tower_placement_position(point)
+		if tower_position != Vector2.INF:
+			selected_slot_position = tower_position
+			selected_slot = "tower_%d_%d" % [int(tower_position.x), int(tower_position.y)]
+			selected_tower = ""
+			robot_selected = false
+			play_sfx("tower_select")
+			queue_redraw()
+			return
 	for id in ROBOT_SPOTS:
 		if point.distance_to(ROBOT_SPOTS[id]) < 55.0:
 			if robot_selected: move_robot(id)
 			return
 	if not selected_slot.is_empty() or not selected_tower.is_empty() or robot_selected: play_sfx("ui_cancel")
-	selected_slot = ""; selected_tower = ""; robot_selected = false; queue_redraw()
+	selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false; queue_redraw()
+
+func get_tower_placement_position(point: Vector2) -> Vector2:
+	for area in TOWER_PLACEMENT_AREAS:
+		if not area.has_point(point):
+			continue
+		var local := point - MAP_ORIGIN
+		var snapped := MAP_ORIGIN + Vector2(floor(local.x / 32.0 + 0.5) * 32.0, floor(local.y / 32.0 + 0.5) * 32.0)
+		if area.has_point(snapped):
+			return snapped
+	return Vector2.INF
 
 func build_tower(type: String) -> void:
 	if run_state not in [RunState.READY, RunState.RUNNING]: return
@@ -586,7 +668,7 @@ func build_tower(type: String) -> void:
 	if not DATA.TOWERS.has(type): play_sfx("ui_error"); return
 	var data: Dictionary = DATA.TOWERS[type]
 	if gold < data.cost: play_sfx("ui_error"); log_event("Need %d gold for %s." % [data.cost, data.name]); return
-	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": SLOTS[selected_slot], "data": data, "cooldown": 0.0}); play_sfx("tower_build"); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""; selected_tower = ""; robot_selected = false
+	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": selected_slot_position, "data": data, "cooldown": 0.0}); play_sfx("tower_build"); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false
 
 func upgrade_tower(type: String) -> void:
 	if run_state == RunState.RUNNING: play_sfx("ui_error"); log_event("Cannot upgrade towers during a wave."); return
@@ -606,7 +688,7 @@ func upgrade_tower(type: String) -> void:
 	tower.data.range = level2.range
 	towers[index] = tower
 	play_sfx("ui_confirm"); log_event("%s upgraded to LVL 2." % tower.data.name)
-	selected_slot = ""; selected_tower = ""; robot_selected = false; queue_redraw()
+	selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false; queue_redraw()
 
 func launch_robot() -> void:
 	if not can_launch_robot(): return
