@@ -5,6 +5,7 @@ signal object_selected(info: Dictionary)
 signal map_data_changed()
 
 const TILESET: TileSet = preload("res://assets/menos/maps/northbridge_tileset.tres")
+const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 const MAX_UNDO_HISTORY := 100
 
 var map_data: Dictionary = {}
@@ -84,8 +85,8 @@ func get_catalog_texture(asset_id: String) -> Texture2D:
 	var source_path := str(entry.get("source_path", ""))
 	if catalog_texture_cache.has(source_path):
 		return catalog_texture_cache[source_path]
-	var loaded := ResourceLoader.load(source_path)
-	if loaded is Texture2D:
+	var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path)
+	if loaded != null:
 		catalog_texture_cache[source_path] = loaded
 		return loaded
 	return null
