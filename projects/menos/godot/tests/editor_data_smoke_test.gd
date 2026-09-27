@@ -117,6 +117,8 @@ func _run() -> void:
 
 	if not _check(_save_and_check_map(canvas.map_data, source_map), "Edited map failed save/reload persistence checks"):
 		return
+	root.size = Vector2i(1600, 900)
+	await process_frame
 	var editor_scene: PackedScene = load("res://editor/map_editor.tscn")
 	if not _check(editor_scene != null, "Could not load the Map Editor scene"):
 		return
@@ -150,12 +152,31 @@ func _run() -> void:
 	var editor_canvas = map_editor.get_node("MainLayout/CanvasContainer/CanvasRoot")
 	var canvas_container: Control = map_editor.get_node("MainLayout/CanvasContainer")
 	canvas_container.size = Vector2(640, 700)
+	if not _check(not editor_canvas.is_painting_drag and not editor_canvas.is_moving_selection and not editor_canvas.is_resizing_gameplay_area and not editor_canvas.is_creating_gameplay_area, "Canvas gesture was active before Gameplay tab click"):
+		return
 	var interactive_map: Dictionary = MAP_LOADER.parse_raw_data(source_map)
 	interactive_map["gameplay_areas"] = []
 	interactive_map["gameplay_points"] = []
 	editor_canvas.set_map_data(interactive_map)
-	map_editor.get_node("MainLayout/Toolbox/VBox/ModeBar/BtnGameplayMode").pressed.emit()
-	if not _check(editor_canvas.editor_mode == "GAMEPLAY" and map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools").visible, "Gameplay editor mode did not activate"):
+	var gameplay_mode_button: Button = map_editor.get_node("MainLayout/Toolbox/VBox/ModeBar/BtnGameplayMode")
+	var gameplay_gui_events: Array[String] = []
+	gameplay_mode_button.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton:
+			gameplay_gui_events.append("pressed=%s button=%s pos=%s" % [str(event.pressed), str(event.button_index), str(event.position)])
+		else:
+			gameplay_gui_events.append(str(event))
+	)
+	if not _check(await _click_control(gameplay_mode_button), "Viewport click did not reach the Gameplay tab"):
+		return
+	if not _check(editor_canvas.editor_mode == "GAMEPLAY" and gameplay_mode_button.button_pressed and map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools").visible, "Gameplay mode click failed: mode=%s pressed=%s visible=%s rect=%s mouse_filter=%s" % [editor_canvas.editor_mode, str(gameplay_mode_button.button_pressed), str(gameplay_mode_button.visible), str(gameplay_mode_button.get_global_rect()), str(gameplay_mode_button.mouse_filter)]):
+		push_error("Gameplay button GUI events=%s hover=%s" % [str(gameplay_gui_events), str(root.gui_get_hovered_control())])
+		return
+	var asset_mode_button: Button = map_editor.get_node("MainLayout/Toolbox/VBox/ModeBar/BtnAssetMode")
+	if not _check(await _click_control(asset_mode_button), "Viewport click did not reach the Asset tab"):
+		return
+	if not _check(editor_canvas.editor_mode == "ASSET" and asset_mode_button.button_pressed, "Asset editor mode did not activate after a real UI click"):
+		return
+	if not _check(await _click_control(gameplay_mode_button) and editor_canvas.editor_mode == "GAMEPLAY", "Gameplay tab did not reactivate the Gameplay editor mode"):
 		return
 	editor_canvas.camera_zoom = 0.5
 	editor_canvas.camera_offset = Vector2(8, 8)
@@ -369,6 +390,25 @@ func _send_key(canvas, keycode: Key, control_pressed: bool = false) -> void:
 	event.pressed = true
 	event.ctrl_pressed = control_pressed
 	canvas._input(event)
+
+func _click_control(control: Control) -> bool:
+	var click_position := control.get_global_rect().get_center()
+	if control.get_global_rect().size.x <= 0.0 or control.get_global_rect().size.y <= 0.0:
+		return false
+	var mouse_down := InputEventMouseButton.new()
+	mouse_down.button_index = MOUSE_BUTTON_LEFT
+	mouse_down.pressed = true
+	mouse_down.position = click_position
+	mouse_down.global_position = click_position
+	root.push_input(mouse_down)
+	var mouse_up := InputEventMouseButton.new()
+	mouse_up.button_index = MOUSE_BUTTON_LEFT
+	mouse_up.pressed = false
+	mouse_up.position = click_position
+	mouse_up.global_position = click_position
+	root.push_input(mouse_up)
+	await process_frame
+	return true
 
 func _world_to_canvas_view(canvas, world_position: Vector2) -> Vector2:
 	return canvas.camera_offset + world_position * canvas.camera_zoom

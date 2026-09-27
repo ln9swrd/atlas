@@ -193,6 +193,8 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 		elif mb_event.button_index == MOUSE_BUTTON_LEFT:
 			if not mb_event.pressed:
+				if not (is_creating_gameplay_area or is_resizing_gameplay_area or is_moving_selection or is_resizing_placement or is_painting_drag):
+					return
 				if is_creating_gameplay_area:
 					var end_world := (local_position - camera_offset) / camera_zoom
 					create_gameplay_area(gameplay_tool.to_lower(), operation_start_world, end_world)
