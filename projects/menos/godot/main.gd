@@ -51,6 +51,7 @@ const SFX_STREAMS := {
 var BASE := Vector2.ZERO
 var LANES: Dictionary = {}
 var SPAWN_AREAS: Dictionary = {}
+var SPAWN_AREA_SEQUENCE: Dictionary = {}
 var ROBOT_SPOTS: Dictionary = {}
 var TOWER_PLACEMENT_AREAS: Array[Rect2] = []
 var SLOTS: Dictionary = {}
@@ -128,6 +129,7 @@ func apply_map_spatial_data(loaded_map: Dictionary) -> void:
 	BASE = Vector2.ZERO
 	LANES.clear()
 	SPAWN_AREAS.clear()
+	SPAWN_AREA_SEQUENCE.clear()
 	ROBOT_SPOTS.clear()
 	TOWER_PLACEMENT_AREAS.clear()
 	SLOTS.clear()
@@ -376,7 +378,7 @@ func start_wave() -> void:
 		for index in range(group[1]):
 			spawn_queue.append({"type": group[0], "delay": offset + index * group[2], "lanes": group[3]})
 		offset += group[1] * group[2] + 0.3
-	spawn_clock = 0.0; wave_running = true; run_state = RunState.RUNNING; wave_clear = false
+	spawn_clock = 0.0; SPAWN_AREA_SEQUENCE.clear(); wave_running = true; run_state = RunState.RUNNING; wave_clear = false
 	play_sfx("wave_start")
 	log_event("WAVE %d STARTED: %s" % [wave, waves_data[wave - 1]["label"]])
 
@@ -402,7 +404,12 @@ func spawn_enemies() -> void:
 		var spawn_position: Vector2 = LANES[lane]
 		if SPAWN_AREAS.has(lane):
 			var spawn_rect: Rect2 = SPAWN_AREAS[lane]
-			spawn_position = Vector2(randf_range(spawn_rect.position.x, spawn_rect.end.x), randf_range(spawn_rect.position.y, spawn_rect.end.y))
+			var segment_count := 4
+			var segment_index := int(SPAWN_AREA_SEQUENCE.get(lane, 0)) % segment_count
+			SPAWN_AREA_SEQUENCE[lane] = int(SPAWN_AREA_SEQUENCE.get(lane, 0)) + 1
+			var segment_width := spawn_rect.size.x / float(segment_count)
+			var segment_rect := Rect2(spawn_rect.position + Vector2(segment_width * segment_index, 0.0), Vector2(segment_width, spawn_rect.size.y))
+			spawn_position = Vector2(randf_range(segment_rect.position.x, segment_rect.end.x), randf_range(segment_rect.position.y, segment_rect.end.y))
 		enemies.append({"type": entry.type, "lane": lane, "position": spawn_position, "start_position": spawn_position, "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0})
 
 func damage_robot(amount: float) -> void:
