@@ -1,1 +1,3 @@
 res://editor/map_editor.gd
+res://editor/asset_region_view.gd
+res://editor/editor_canvas.gd

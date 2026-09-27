@@ -394,9 +394,9 @@ func _selected_catalog_placement_rect() -> Rect2:
 	var footprint_values: Variant = selected_object.get("footprint", [1, 1])
 	if not footprint_values is Array or footprint_values.size() < 2:
 		return Rect2()
-	var position := object_position(selected_object)
+	var selected_position := object_position(selected_object)
 	var footprint := Vector2i(maxi(1, int(footprint_values[0])), maxi(1, int(footprint_values[1])))
-	return Rect2(position, Vector2(footprint) * 32.0)
+	return Rect2(selected_position, Vector2(footprint) * 32.0)
 
 func _resize_handle_rect(placement_rect: Rect2) -> Rect2:
 	var handle_size := 12.0 / camera_zoom
@@ -423,9 +423,9 @@ func _selected_gameplay_contains(world_pos: Vector2) -> bool:
 		return _gameplay_point_hit_contains(selection_type, Vector2(selected_object.get("position", Vector2.ZERO)), world_pos)
 	return false
 
-func _gameplay_point_hit_contains(element_type: String, position: Vector2, point: Vector2) -> bool:
+func _gameplay_point_hit_contains(element_type: String, hit_position: Vector2, point: Vector2) -> bool:
 	if element_type == "Goal":
-		return Rect2(position - Vector2(36.0, 24.0), Vector2(72.0, 48.0)).has_point(point)
+		return Rect2(hit_position - Vector2(36.0, 24.0), Vector2(72.0, 48.0)).has_point(point)
 	var hit_radius := 14.0
 	match element_type:
 		"Spawn":
@@ -434,7 +434,7 @@ func _gameplay_point_hit_contains(element_type: String, position: Vector2, point
 			hit_radius = 30.0
 		"Robot Spot":
 			hit_radius = 35.0
-	return position.distance_to(point) <= hit_radius
+	return hit_position.distance_to(point) <= hit_radius
 
 func _preview_gameplay_area_size(world_pos: Vector2) -> Vector2:
 	var delta := world_pos - operation_start_world
@@ -460,14 +460,14 @@ func _begin_selected_move(world_pos: Vector2) -> void:
 	_begin_edit_stroke()
 	is_moving_selection = true
 
-func _move_catalog_tile_to(position: Vector2) -> bool:
+func _move_catalog_tile_to(target_position: Vector2) -> bool:
 	var layer_name := str(selected_object.get("layer", active_layer))
 	var anchor_value: Variant = selected_object.get("cell", Vector2i.ZERO)
 	if not anchor_value is Vector2i or not map_data.has("tiles") or not map_data["tiles"].has(layer_name):
 		return false
 	var old_anchor: Vector2i = anchor_value
 	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
-	var new_anchor := get_cell_coords(position)
+	var new_anchor := get_cell_coords(target_position)
 	if new_anchor == old_anchor:
 		return false
 	var footprint_values: Array = selected_object.get("footprint", [1, 1])
@@ -683,15 +683,15 @@ func place_catalog_tile_overlay(cell: Vector2i) -> void:
 		map_data["objects"] = []
 	var asset_id := str(selected_catalog_asset.get("asset_id", ""))
 	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
-	var position := origin + Vector2(cell) * 32.0
+	var tile_position := origin + Vector2(cell) * 32.0
 	var objects: Array = map_data["objects"]
 	for index in range(objects.size()):
 		var object_data: Dictionary = objects[index]
-		if str(object_data.get("asset_id", "")) == asset_id and str(object_data.get("placement_layer", "")) == active_layer and object_position(object_data) == position:
+		if str(object_data.get("asset_id", "")) == asset_id and str(object_data.get("placement_layer", "")) == active_layer and object_position(object_data) == tile_position:
 			select_object({
 				"type": "Catalog Tile Overlay",
 				"id": asset_id,
-				"position": position,
+				"position": tile_position,
 				"object_index": index,
 				"layer": active_layer,
 				"footprint": [footprint.x, footprint.y]
@@ -699,7 +699,7 @@ func place_catalog_tile_overlay(cell: Vector2i) -> void:
 			return
 	objects.append({
 		"asset_id": asset_id,
-		"position": [position.x, position.y],
+		"position": [tile_position.x, tile_position.y],
 		"footprint_tiles": [footprint.x, footprint.y],
 		"placement_layer": active_layer
 	})
@@ -708,7 +708,7 @@ func place_catalog_tile_overlay(cell: Vector2i) -> void:
 	select_object({
 		"type": "Catalog Tile Overlay",
 		"id": asset_id,
-		"position": position,
+		"position": tile_position,
 		"object_index": objects.size() - 1,
 		"layer": active_layer,
 		"footprint": [footprint.x, footprint.y]
