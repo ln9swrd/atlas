@@ -476,7 +476,7 @@ func get_robot_auto_spot() -> String:
 	var best_id := ""
 	var best_distance := INF
 	for id in ROBOT_SPOTS:
-		var distance := ROBOT_SPOTS[id].distance_to(target)
+		var distance: float = ROBOT_SPOTS[id].distance_to(target)
 		if distance < best_distance:
 			best_distance = distance
 			best_id = str(id)
@@ -758,12 +758,11 @@ func _draw() -> void:
 	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(16, 56), "WEST MID GATE 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
 	draw_string(ThemeDB.fallback_font, MAP_ORIGIN + Vector2(176, MAP_PIXEL_SIZE.y - 16), "SOUTH QUARTER GATE 02", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("ef7068"))
 
-	# Strategic Lanes & Waypoint Trails
+	# Map-defined enemy spawn paths
 	for lane in LANES.values():
 		draw_line(lane, BASE, Color("1e343b", 0.8), 36)
 		draw_dashed_line(lane, BASE, Color("7ed6ce", 0.6), 2.0, 10.0)
-	draw_rect(Rect2(LANES.left - Vector2(8, 16), Vector2(16, 32)), Color("ef7068"))
-	draw_rect(Rect2(LANES.right - Vector2(8, 16), Vector2(16, 32)), Color("ef7068"))
+		draw_rect(Rect2(lane - Vector2(8, 16), Vector2(16, 32)), Color("ef7068"))
 
 	# Base Facility (Strategic HQ Node)
 	var base_feet := BASE + Vector2(0, 30)
@@ -772,31 +771,29 @@ func _draw() -> void:
 	draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92))
 	draw_string(ThemeDB.fallback_font, BASE + Vector2(-24, 64), "BASE HQ", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
 
-	# Tower Slots & Placed Towers (Strategic Node Bases)
-	for id in SLOTS:
-		var placed_tower: Dictionary = towers.filter(func(t): return t.id == id).front() if towers.any(func(t): return t.id == id) else {}
-		var occupied := not placed_tower.is_empty()
-		var slot_pos: Vector2 = SLOTS[id]
-		var slot_feet := slot_pos + Vector2(0, 26)
-		if not occupied:
-			var slot_visual: Texture2D = VISUALS["slot_selected"] if selected_slot == id else VISUALS["slot_empty"]
-			draw_oval(slot_feet, 30.0, 10.0, Color(0, 0, 0, 0.35))
-			draw_arc(slot_feet, 32.0, 0, TAU, 24, Color("f0a35a" if selected_slot == id else "6a858a"), 2.0)
-			draw_sprite(slot_visual, slot_pos, Vector2(76, 76))
-		else:
-			var anim_key := "tower_cannon_anim" if placed_tower.type == "cannon" else "tower_gatling_anim"
-			var cd_left: float = float(placed_tower.get("cooldown", 0.0))
-			var max_cd: float = float(placed_tower.get("data", {}).get("cooldown", 0.6))
-			var is_firing: bool = cd_left > (max_cd - 0.25)
-			var frame_idx := 0
-			if is_firing:
-				var fire_progress: float = 1.0 - clampf((cd_left - (max_cd - 0.25)) / 0.25, 0.0, 1.0)
-				frame_idx = int(fire_progress * 4.0) % 4
-			draw_oval(slot_feet, 28.0, 10.0, Color(0, 0, 0, 0.45))
-			draw_arc(slot_feet, 30.0, 0, TAU, 24, Color("7ed6ce" if placed_tower.type == "cannon" else "f0a35a"), 2.5)
-			draw_animated_sprite(VISUALS[anim_key], slot_pos, Vector2(60, 90), frame_idx, 4)
-			if selected_tower == id: draw_arc(slot_feet, 38.0, 0, TAU, 24, Color("d7fff7"), 2.0)
-		draw_string(ThemeDB.fallback_font, slot_pos + Vector2(-10, 54), id, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
+	# Map-defined tower placement areas and placed towers
+	for area in TOWER_PLACEMENT_AREAS:
+		draw_rect(area, Color("f0a35a", 0.08), true)
+		draw_rect(area, Color("f0a35a", 0.7), false, 2.0)
+	if not selected_slot.is_empty() and towers.all(func(tower): return tower.id != selected_slot):
+		draw_oval(selected_slot_position + Vector2(0, 26), 30.0, 10.0, Color(0, 0, 0, 0.35))
+		draw_arc(selected_slot_position + Vector2(0, 26), 32.0, 0, TAU, 24, Color("f0a35a"), 2.0)
+		draw_sprite(VISUALS["slot_selected"], selected_slot_position, Vector2(76, 76))
+	for tower in towers:
+		var tower_pos: Vector2 = tower.position
+		var tower_feet := tower_pos + Vector2(0, 26)
+		var anim_key := "tower_cannon_anim" if tower.type == "cannon" else "tower_gatling_anim"
+		var cd_left: float = float(tower.get("cooldown", 0.0))
+		var max_cd: float = float(tower.get("data", {}).get("cooldown", 0.6))
+		var is_firing: bool = cd_left > (max_cd - 0.25)
+		var frame_idx := 0
+		if is_firing:
+			var fire_progress: float = 1.0 - clampf((cd_left - (max_cd - 0.25)) / 0.25, 0.0, 1.0)
+			frame_idx = int(fire_progress * 4.0) % 4
+		draw_oval(tower_feet, 28.0, 10.0, Color(0, 0, 0, 0.45))
+		draw_arc(tower_feet, 30.0, 0, TAU, 24, Color("7ed6ce" if tower.type == "cannon" else "f0a35a"), 2.5)
+		draw_animated_sprite(VISUALS[anim_key], tower_pos, Vector2(60, 90), frame_idx, 4)
+		if selected_tower == tower.id: draw_arc(tower_feet, 38.0, 0, TAU, 24, Color("d7fff7"), 2.0)
 
 	# Robot Movement Spots
 	for id in ROBOT_SPOTS:
