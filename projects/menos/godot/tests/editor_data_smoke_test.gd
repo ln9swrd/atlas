@@ -16,7 +16,7 @@ func _run() -> void:
 		"map_origin": [0.0, 58.0],
 		"map_pixel_size": [1152.0, 768.0],
 		"goal": {"id": "legacy_hq", "position": [1080.0, 122.0], "custom_goal_flag": "keep"},
-		"spawns": {"left": [70.0, 346.0]},
+		"spawns": {"left": [70.0, 346.0], "right": [288.0, 794.0]},
 		"robot_spots": {"CENTER": [720.0, 250.0]},
 		"tower_slots": {"L1": [220.0, 310.0]},
 		"tiles": {"Ground": {}},
@@ -157,6 +157,79 @@ func _run() -> void:
 	map_editor.get_node("MainLayout/Toolbox/VBox/ModeBar/BtnGameplayMode").pressed.emit()
 	if not _check(editor_canvas.editor_mode == "GAMEPLAY" and map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools").visible, "Gameplay editor mode did not activate"):
 		return
+	editor_canvas.camera_zoom = 0.5
+	editor_canvas.camera_offset = Vector2(8, 8)
+	var spawn_screen_position := _world_to_canvas_view(editor_canvas, Vector2(70, 346))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, spawn_screen_position + Vector2(14.0, 0.0))
+	_send_mouse_motion(editor_canvas, spawn_screen_position + Vector2(30.0, 16.0), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, spawn_screen_position + Vector2(30.0, 16.0))
+	if not _check(editor_canvas.map_data["lanes"]["left"] == Vector2(102, 378), "Spawn Point did not drag under zoom and pan"):
+		return
+	var tower_screen_position := _world_to_canvas_view(editor_canvas, Vector2(220, 310))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, tower_screen_position + Vector2(14.0, 0.0))
+	_send_mouse_motion(editor_canvas, tower_screen_position + Vector2(30.0, 16.0), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, tower_screen_position + Vector2(30.0, 16.0))
+	if not _check(editor_canvas.map_data["slots"]["L1"] == Vector2(252, 342), "Tower Placement Point did not drag under zoom and pan"):
+		return
+	var robot_screen_position := _world_to_canvas_view(editor_canvas, Vector2(720, 250))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, robot_screen_position + Vector2(16.0, 0.0))
+	_send_mouse_motion(editor_canvas, robot_screen_position + Vector2(32.0, 16.0), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, robot_screen_position + Vector2(32.0, 16.0))
+	if not _check(editor_canvas.map_data["robot_spots"]["CENTER"] == Vector2(752, 282), "Robot Position Point did not drag under zoom and pan"):
+		return
+	var base_screen_position := _world_to_canvas_view(editor_canvas, Vector2(1080, 122))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, base_screen_position + Vector2(17.5, 0.0))
+	_send_mouse_motion(editor_canvas, base_screen_position + Vector2(33.5, 16.0), MOUSE_BUTTON_MASK_LEFT)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, base_screen_position + Vector2(33.5, 16.0))
+	if not _check(editor_canvas.map_data["base"] == Vector2(1112, 154), "Base did not select and drag from the visible hitbox edge"):
+		return
+	var gameplay_properties: VBoxContainer = map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties")
+	var delete_gameplay_button: Button = gameplay_properties.get_node("BtnDeleteGameplayElement")
+	var delete_status: Label = gameplay_properties.get_node("LblGameplayDeleteStatus")
+	if not _check(gameplay_properties.visible and str(map_editor.get_node("MainLayout/Inspector/VBox/LblSelectedType").text).contains("Goal") and delete_gameplay_button.disabled and delete_status.visible, "Base Inspector or required-object deletion warning is missing"):
+		return
+	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayX").value = 1120
+	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayY").value = 160
+	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnApplyGameplayProperties").pressed.emit()
+	if not _check(editor_canvas.map_data["base"] == Vector2(1120, 160), "Base Inspector position edit did not update the map data"):
+		return
+	var expected_legacy_map: Dictionary = source_map.duplicate(true)
+	expected_legacy_map["goal"]["position"] = [1120.0, 160.0]
+	expected_legacy_map["spawns"]["left"] = [102.0, 378.0]
+	expected_legacy_map["tower_slots"]["L1"] = [252.0, 342.0]
+	expected_legacy_map["robot_spots"]["CENTER"] = [752.0, 282.0]
+	if not _check(_save_and_check_map(editor_canvas.map_data, expected_legacy_map), "Moved legacy Points or Base did not persist after save/reload"):
+		return
+	_send_key(editor_canvas, KEY_DELETE)
+	if not _check(editor_canvas.map_data.has("base"), "Delete key removed the required Base"):
+		return
+	var tower_after_move := _world_to_canvas_view(editor_canvas, Vector2(252, 342))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, tower_after_move)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, tower_after_move)
+	_send_key(editor_canvas, KEY_DELETE)
+	if not _check(not editor_canvas.map_data["slots"].has("L1"), "Delete key did not remove only the selected Tower Point"):
+		return
+	_send_key(editor_canvas, KEY_Z, true)
+	if not _check(editor_canvas.map_data["slots"].get("L1") == Vector2(252, 342), "Undo did not restore the deleted Tower Point"):
+		return
+	var spawn_after_move := _world_to_canvas_view(editor_canvas, Vector2(102, 378))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, spawn_after_move)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, spawn_after_move)
+	if not _check(str(editor_canvas.selected_object.get("type", "")) == "Spawn" and str(editor_canvas.selected_object.get("id", "")) == "left", "Could not select the moved Spawn Point before deletion"):
+		return
+	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
+	var spawn_delete_button: Button = map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement")
+	var inspector_status: Label = map_editor.get_node("BottomBar/HBox/LblStatus")
+	if not _check(not editor_canvas.map_data["lanes"].has("left") and editor_canvas.map_data["lanes"].has("right"), "Spawn deletion failed. Remaining lanes=%s; disabled=%s; status=%s" % [JSON.stringify(editor_canvas.map_data.get("lanes", {})), str(spawn_delete_button.disabled), inspector_status.text]):
+		return
+	var robot_after_move := _world_to_canvas_view(editor_canvas, Vector2(752, 282))
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, robot_after_move)
+	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, robot_after_move)
+	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
+	if not _check(not editor_canvas.map_data["robot_spots"].has("CENTER"), "Delete key did not remove the selected Robot Position Point"):
+		return
+	editor_canvas.camera_zoom = 1.0
+	editor_canvas.camera_offset = Vector2.ZERO
 	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnSpawnArea").pressed.emit()
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(48, 100))
 	_send_mouse_motion(editor_canvas, Vector2(112, 164), MOUSE_BUTTON_MASK_LEFT)
@@ -232,10 +305,18 @@ func _save_and_check_map(map_data: Dictionary, original_map: Dictionary) -> bool
 	if loaded.get("map_id") != original_map.get("map_id") or loaded.get("name") != original_map.get("name") or loaded.get("version") != original_map.get("version"):
 		push_error("Map identity metadata changed during round trip")
 		return false
-	if loaded.get("base") != Vector2(1080, 122) or loaded.get("lanes", {}).get("left") != Vector2(70, 346):
+	var goal_position: Array = original_map.get("goal", {}).get("position", [1080, 122])
+	var expected_base := Vector2(float(goal_position[0]), float(goal_position[1]))
+	var spawn_position: Array = original_map.get("spawns", {}).get("left", [70, 346])
+	var expected_spawn := Vector2(float(spawn_position[0]), float(spawn_position[1]))
+	if loaded.get("base") != expected_base or loaded.get("lanes", {}).get("left") != expected_spawn:
 		push_error("Legacy goal/spawn fields changed during round trip")
 		return false
-	if loaded.get("robot_spots", {}).get("CENTER") != Vector2(720, 250) or loaded.get("slots", {}).get("L1") != Vector2(220, 310):
+	var robot_spot_position: Array = original_map.get("robot_spots", {}).get("CENTER", [720, 250])
+	var expected_robot_spot := Vector2(float(robot_spot_position[0]), float(robot_spot_position[1]))
+	var tower_slot_position: Array = original_map.get("tower_slots", {}).get("L1", [220, 310])
+	var expected_tower_slot := Vector2(float(tower_slot_position[0]), float(tower_slot_position[1]))
+	if loaded.get("robot_spots", {}).get("CENTER") != expected_robot_spot or loaded.get("slots", {}).get("L1") != expected_tower_slot:
 		push_error("Legacy robot/tower fields changed during round trip")
 		return false
 	var file := FileAccess.open(TEST_MAP_PATH, FileAccess.READ)
@@ -281,3 +362,13 @@ func _send_mouse_motion(canvas, local_position: Vector2, button_mask: MouseButto
 	event.button_mask = button_mask
 	event.position = canvas.get_global_transform_with_canvas() * local_position
 	canvas._input(event)
+
+func _send_key(canvas, keycode: Key, control_pressed: bool = false) -> void:
+	var event := InputEventKey.new()
+	event.keycode = keycode
+	event.pressed = true
+	event.ctrl_pressed = control_pressed
+	canvas._input(event)
+
+func _world_to_canvas_view(canvas, world_position: Vector2) -> Vector2:
+	return canvas.camera_offset + world_position * canvas.camera_zoom

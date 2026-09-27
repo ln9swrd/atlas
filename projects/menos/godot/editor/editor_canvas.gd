@@ -165,6 +165,15 @@ func _input(event: InputEvent) -> void:
 				if is_painting_drag and edit_mode in ["PAINT", "ERASE"]:
 					_begin_edit_stroke()
 			return
+		if key_event.pressed and not key_event.echo and key_event.keycode in [KEY_DELETE, KEY_BACKSPACE]:
+			if _has_text_input_focus():
+				return
+			if str(selected_object.get("type", "")) == "Goal":
+				placement_rejected.emit("Base HQ is required by the runtime and cannot be deleted.")
+			elif not delete_selected_editor_object():
+				return
+			get_viewport().set_input_as_handled()
+			return
 
 	if event is InputEventMouseButton:
 		var mb_event := event as InputEventMouseButton
@@ -409,8 +418,21 @@ func _selected_gameplay_contains(world_pos: Vector2) -> bool:
 	if selection_type == "Gameplay Area":
 		return _selected_gameplay_area_rect().has_point(world_pos)
 	if selection_type in ["Gameplay Point", "Goal", "Spawn", "Tower Slot", "Robot Spot"]:
-		return Vector2(selected_object.get("position", Vector2.ZERO)).distance_to(world_pos) <= 14.0
+		return _gameplay_point_hit_contains(selection_type, Vector2(selected_object.get("position", Vector2.ZERO)), world_pos)
 	return false
+
+func _gameplay_point_hit_contains(element_type: String, position: Vector2, point: Vector2) -> bool:
+	if element_type == "Goal":
+		return Rect2(position - Vector2(36.0, 24.0), Vector2(72.0, 48.0)).has_point(point)
+	var hit_radius := 14.0
+	match element_type:
+		"Spawn":
+			hit_radius = 30.0
+		"Tower Slot":
+			hit_radius = 30.0
+		"Robot Spot":
+			hit_radius = 35.0
+	return position.distance_to(point) <= hit_radius
 
 func _preview_gameplay_area_size(world_pos: Vector2) -> Vector2:
 	var delta := world_pos - operation_start_world
@@ -1016,6 +1038,27 @@ func _select_gameplay_point(index: int) -> void:
 
 func update_selected_gameplay_properties(element_id: String, element_name: String, enabled: bool, area_id: String = "") -> bool:
 	var selection_type := str(selected_object.get("type", ""))
+	if selection_type == "Goal":
+		return element_id.strip_edges() == "base_hq" and enabled
+	if selection_type in ["Spawn", "Tower Slot", "Robot Spot"]:
+		var legacy_field := str(selected_object.get("legacy_field", ""))
+		var legacy_points: Dictionary = map_data.get(legacy_field, {})
+		var old_id := str(selected_object.get("id", ""))
+		var new_id := element_id.strip_edges()
+		if not enabled or new_id.is_empty() or not legacy_points.has(old_id):
+			return false
+		if new_id != old_id and legacy_points.has(new_id):
+			return false
+		_begin_edit_stroke()
+		var point_position: Vector2 = legacy_points[old_id]
+		legacy_points.erase(old_id)
+		legacy_points[new_id] = point_position
+		map_data[legacy_field] = legacy_points
+		selected_object["id"] = new_id
+		_mark_map_data_changed()
+		_finish_edit_stroke()
+		select_object(selected_object.duplicate(true))
+		return true
 	var index := int(selected_object.get("element_index", -1))
 	var key := "gameplay_areas" if selection_type == "Gameplay Area" else "gameplay_points"
 	if selection_type not in ["Gameplay Area", "Gameplay Point"]:
@@ -1078,12 +1121,7 @@ func update_selected_gameplay_area_size(new_size: Vector2) -> bool:
 
 func update_selected_gameplay_position(new_position: Vector2) -> bool:
 	var selection_type := str(selected_object.get("type", ""))
-	if selection_type not in ["Gameplay Area", "Gameplay Point"]:
-		return false
-	var index := int(selected_object.get("element_index", -1))
-	var key := "gameplay_areas" if selection_type == "Gameplay Area" else "gameplay_points"
-	var elements: Array = map_data.get(key, [])
-	if index < 0 or index >= elements.size() or not elements[index] is Dictionary:
+	if selection_type not in ["Gameplay Area", "Gameplay Point", "Goal", "Spawn", "Tower Slot", "Robot Spot"]:
 		return false
 	var map_origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
 	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
@@ -1096,19 +1134,36 @@ func update_selected_gameplay_position(new_position: Vector2) -> bool:
 	else:
 		bounded_position.x = clampf(bounded_position.x, bounds.position.x, bounds.end.x)
 		bounded_position.y = clampf(bounded_position.y, bounds.position.y, bounds.end.y)
-	if bounded_position == object_position(elements[index]):
+	if bounded_position == Vector2(selected_object.get("position", Vector2.ZERO)):
 		return false
-	var element: Dictionary = elements[index].duplicate(true)
-	element["position"] = [bounded_position.x, bounded_position.y]
 	_begin_edit_stroke()
-	elements[index] = element
-	map_data[key] = elements
+	if selection_type in ["Gameplay Area", "Gameplay Point"]:
+		var index := int(selected_object.get("element_index", -1))
+		var key := "gameplay_areas" if selection_type == "Gameplay Area" else "gameplay_points"
+		var elements: Array = map_data.get(key, [])
+		if index < 0 or index >= elements.size() or not elements[index] is Dictionary:
+			_finish_edit_stroke()
+			return false
+		var element: Dictionary = elements[index].duplicate(true)
+		element["position"] = [bounded_position.x, bounded_position.y]
+		elements[index] = element
+		map_data[key] = elements
+	elif selection_type == "Goal":
+		map_data["base"] = bounded_position
+	else:
+		var legacy_field := str(selected_object.get("legacy_field", ""))
+		var legacy_points: Dictionary = map_data.get(legacy_field, {})
+		var legacy_id := str(selected_object.get("id", ""))
+		if not legacy_points.has(legacy_id):
+			_finish_edit_stroke()
+			return false
+		legacy_points[legacy_id] = bounded_position
+		map_data[legacy_field] = legacy_points
 	_mark_map_data_changed()
 	_finish_edit_stroke()
-	if selection_type == "Gameplay Area":
-		_select_gameplay_area(index)
-	else:
-		_select_gameplay_point(index)
+	var updated_selection := selected_object.duplicate(true)
+	updated_selection["position"] = bounded_position
+	select_object(updated_selection)
 	return true
 
 func _gameplay_id_exists(element_id: String, selection_type: String = "", except_index: int = -1) -> bool:
@@ -1280,28 +1335,28 @@ func _pick_gameplay_element_at(point: Vector2) -> bool:
 			return true
 	if map_data.has("base"):
 		var base_pos: Vector2 = map_data["base"]
-		if point.distance_to(base_pos) < 40.0:
+		if _gameplay_point_hit_contains("Goal", base_pos, point):
 			select_object({"type": "Goal", "id": "base_hq", "position": base_pos, "legacy_field": "base"})
 			return true
 
 	if map_data.has("lanes"):
 		for key in map_data["lanes"]:
 			var spawn_pos: Vector2 = map_data["lanes"][key]
-			if point.distance_to(spawn_pos) < 30.0:
+			if _gameplay_point_hit_contains("Spawn", spawn_pos, point):
 				select_object({"type": "Spawn", "id": str(key), "position": spawn_pos, "legacy_field": "lanes"})
 				return true
 
 	if map_data.has("slots"):
 		for key in map_data["slots"]:
 			var slot_pos: Vector2 = map_data["slots"][key]
-			if point.distance_to(slot_pos) < 30.0:
+			if _gameplay_point_hit_contains("Tower Slot", slot_pos, point):
 				select_object({"type": "Tower Slot", "id": str(key), "position": slot_pos, "legacy_field": "slots"})
 				return true
 
 	if map_data.has("robot_spots"):
 		for key in map_data["robot_spots"]:
 			var spot_pos: Vector2 = map_data["robot_spots"][key]
-			if point.distance_to(spot_pos) < 35.0:
+			if _gameplay_point_hit_contains("Robot Spot", spot_pos, point):
 				select_object({"type": "Robot Spot", "id": str(key), "position": spot_pos, "legacy_field": "robot_spots"})
 				return true
 	return false

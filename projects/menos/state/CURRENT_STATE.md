@@ -437,3 +437,14 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - Related commit: none. Baseline HEAD: `04eb86f0cf9e59ad4b22c1859289ae7caa27fb65` on `main`.
 - Next: Visually inspect the Map Editor in the Godot GUI for layout/clipping, then confirm the same save/reload flow in a manual editor session. No runtime systems are authorized by this task.
 - Resume condition: Continue only for concrete visual/UI defects or user-requested runtime work; do not add unrequested gameplay systems.
+
+## Handoff — Legacy Gameplay Point and Base Editing (2026-09-27)
+
+- Status: CODE VERIFIED. Legacy Spawn, Tower Slot, Robot Spot, and Base now use consistent selection/drag hit testing. The previous drag-start radius (14 px) was narrower than marker selection radii (30/35 px), so edge clicks selected without starting movement; drag now uses the same hit region. Base uses its visible editor rectangle for selection and drag.
+- Base constraint: Runtime `main.gd` loads `base` into required `BASE`, which drives enemy travel and base damage. Base is selectable/movable and has an Inspector position; its ID is fixed, and deletion is disabled with an explanation.
+- Legacy editing: Spawn/Tower/Robot IDs and positions edit the existing dictionaries without schema conversion. Delete/Backspace and the Inspector delete action remove only the selected point; Ctrl+Z restores a deleted Tower Slot.
+- Changed: `godot/editor/editor_canvas.gd`, `godot/editor/map_editor.gd`, `godot/editor/map_editor.tscn`, `godot/tests/editor_data_smoke_test.gd`, and this handoff.
+- Verification: Godot 4.7.2 smoke test passed selection, drag under zoom 0.5 and pan offset, Base edge-hit drag, Base Inspector position update/delete protection, individual Tower/Spawn/Robot deletion, Tower undo, and save/reload of moved legacy positions. Pylance diagnostics and `git diff --check` passed.
+- NOT VERIFIED: Native Godot GUI mouse interaction/visual inspection and exported BUILD. Headless synthetic input is CODE verification only, not EDITOR or PIE verification.
+- Baseline: `d56db1f629f297669f6aefabb6d7c70564502dac` on `main`. Pre-existing `.godot` editor changes and `filesystem_update4` were preserved.
+- Next: In the Godot GUI, verify the same five Point/Base selection and drag paths under zoom/pan, Base position Inspector, delete protection, and save/reload. Do not claim ACCEPT/STOP until directly observed.

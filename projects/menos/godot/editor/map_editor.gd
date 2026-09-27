@@ -33,6 +33,7 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var spin_gameplay_height: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow/SpinGameplayHeight
 @onready var check_gameplay_enabled: CheckButton = $MainLayout/Inspector/VBox/GameplayProperties/GameplayEnabled
 @onready var option_gameplay_area: OptionButton = $MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow/OptionGameplayArea
+@onready var lbl_gameplay_delete_status: Label = $MainLayout/Inspector/VBox/GameplayProperties/LblGameplayDeleteStatus
 @onready var lbl_status: Label = $BottomBar/HBox/LblStatus
 @onready var open_map_dialog: FileDialog = $OpenMapDialog
 @onready var save_map_dialog: FileDialog = $SaveMapDialog
@@ -294,8 +295,10 @@ func update_status(text: String) -> void:
 func _on_object_selected(info: Dictionary) -> void:
 	var placement_type := str(info.get("type", ""))
 	var can_resize := placement_type in ["Catalog Object", "Catalog Tile", "Catalog Tile Overlay"]
-	var is_gameplay := placement_type in ["Gameplay Area", "Gameplay Point"]
+	var is_legacy_gameplay_point := placement_type in ["Goal", "Spawn", "Tower Slot", "Robot Spot"]
+	var is_gameplay := placement_type in ["Gameplay Area", "Gameplay Point"] or is_legacy_gameplay_point
 	var is_gameplay_area := placement_type == "Gameplay Area"
+	var is_required_base := placement_type == "Goal"
 	lbl_placement_size.visible = can_resize
 	spin_placement_width.get_parent().visible = can_resize
 	btn_resize_placement.visible = can_resize
@@ -303,6 +306,10 @@ func _on_object_selected(info: Dictionary) -> void:
 	btn_delete_placement.visible = can_resize
 	btn_delete_placement.disabled = not can_resize
 	gameplay_properties.visible = is_gameplay
+	$MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement.disabled = is_required_base
+	lbl_gameplay_delete_status.visible = is_required_base
+	if is_required_base:
+		lbl_gameplay_delete_status.text = "Required runtime Base; deletion is disabled."
 	if info.is_empty():
 		lbl_selected_id.text = "ID: None"
 		lbl_selected_type.text = "Type: -"
@@ -321,12 +328,15 @@ func _on_object_selected(info: Dictionary) -> void:
 	lbl_tile_coords.text = "Tile Coords: (%d, %d)" % [tile_x, tile_y]
 	if is_gameplay:
 		edit_gameplay_id.text = str(info.get("id", ""))
-		edit_gameplay_name.text = str(info.get("name", ""))
+		edit_gameplay_name.text = str(info.get("name", "Base HQ" if is_required_base else placement_type))
+		edit_gameplay_id.editable = not is_required_base
+		edit_gameplay_name.editable = not is_legacy_gameplay_point
 		spin_gameplay_x.value = pos.x
 		spin_gameplay_y.value = pos.y
 		check_gameplay_enabled.button_pressed = bool(info.get("enabled", true))
+		check_gameplay_enabled.disabled = is_legacy_gameplay_point
 		$MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow.visible = is_gameplay_area
-		$MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow.visible = not is_gameplay_area
+		$MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow.visible = placement_type == "Gameplay Point"
 		if is_gameplay_area:
 			var area_size: Vector2 = info.get("size", Vector2(32, 32))
 			spin_gameplay_width.value = area_size.x
@@ -393,6 +403,9 @@ func _on_apply_gameplay_properties_pressed() -> void:
 	update_status("Gameplay properties updated.")
 
 func _on_delete_gameplay_element_pressed() -> void:
+	if str(canvas.selected_object.get("type", "")) == "Goal":
+		update_status("Base HQ is required by the runtime and cannot be deleted.")
+		return
 	if canvas.delete_selected_editor_object():
 		update_status("Selected gameplay element deleted.")
 	else:

@@ -1,0 +1,5 @@
+res://editor/asset_catalog_editor.gd
+res://editor/editor_canvas.gd
+res://editor/map_editor.gd
+res://scripts/map_loader.gd
+res://tests/editor_data_smoke_test.gd
