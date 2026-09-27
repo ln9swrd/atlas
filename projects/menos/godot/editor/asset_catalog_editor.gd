@@ -14,6 +14,7 @@ var source_path := ""
 var source_texture: Texture2D
 var preview_source_cache: Dictionary = {}
 var selected_index := -1
+var editing_asset_index := -1
 var source_dialog: FileDialog
 var asset_list: ItemList
 var region_view: Control
@@ -310,6 +311,7 @@ func _save_edited_image() -> void:
 	updated_entry["source_path"] = output_path
 	updated_entry["source_rect_px"] = [0, 0, edited_image.get_width(), edited_image.get_height()]
 	var old_entry: Dictionary = entries[editing_asset_index]
+	var completed_index := editing_asset_index
 	entries[editing_asset_index] = updated_entry
 	if not _save_catalog():
 		entries[editing_asset_index] = old_entry
@@ -327,7 +329,7 @@ func _save_edited_image() -> void:
 	_finish_image_edit()
 	status_label.text = "Saved edited crop %s and updated asset %s." % [output_path, asset_id]
 	_refresh_list()
-	asset_list.select(editing_asset_index if editing_asset_index >= 0 else entries.find(updated_entry))
+	asset_list.select(completed_index)
 
 func _safe_asset_filename(asset_id: String) -> String:
 	var result := ""
@@ -459,19 +461,18 @@ func _on_asset_selected(index: int) -> void:
 	footprint_y.value = int(footprint[1])
 
 func _load_source_for_entry(rect: Rect2i) -> void:
-	var loaded := ResourceLoader.load(source_path)
-	if loaded is Texture2D:
+	var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path)
+	if loaded != null:
 		source_texture = loaded
 		source_label.text = "%s  (%d × %d)" % [source_path, source_texture.get_width(), source_texture.get_height()]
-		region_view.set("texture", source_texture)
+		region_view.set_source_texture(source_texture)
 		region_view.set("selected_region", rect)
 		region_view.queue_redraw()
 		_update_rect_label(rect)
 	else:
 		source_texture = null
 		source_label.text = "Missing project image: " + source_path
-		region_view.set("texture", null)
-		region_view.queue_redraw()
+		region_view.set_source_texture(null)
 		_update_rect_label(rect)
 
 func _clear_form() -> void:
@@ -480,9 +481,8 @@ func _clear_form() -> void:
 	source_path = ""
 	source_texture = null
 	source_label.text = "No project image selected"
-	region_view.set("texture", null)
+	region_view.set_source_texture(null)
 	region_view.set("selected_region", Rect2i())
-	region_view.queue_redraw()
 	_update_rect_label(Rect2i())
 
 func _refresh_list() -> void:
@@ -504,8 +504,8 @@ func _entry_preview_icon(entry: Dictionary) -> Texture2D:
 		return null
 	var texture: Texture2D = preview_source_cache.get(source_path_value) as Texture2D
 	if texture == null:
-		var loaded: Resource = ResourceLoader.load(source_path_value)
-		if not loaded is Texture2D:
+		var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path_value)
+		if loaded == null:
 			return null
 		texture = loaded
 		preview_source_cache[source_path_value] = texture
@@ -537,18 +537,20 @@ func _load_catalog() -> void:
 	_refresh_list()
 	status_label.text = "Loaded %d catalog entries." % entries.size()
 
-func _save_catalog() -> void:
+func _save_catalog() -> bool:
 	var directory := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/editor"))
 	if directory != OK:
 		status_label.text = "Could not create catalog directory. Error %d" % directory
-		return
+		return false
 	var file := FileAccess.open(CATALOG_PATH, FileAccess.WRITE)
 	if file == null:
 		status_label.text = "Could not write catalog. Error %d" % FileAccess.get_open_error()
-		return
+		return false
 	file.store_string(JSON.stringify({"schema_version": 1, "assets": entries}, "\t") + "\n")
+	file.close()
 	status_label.text = "Saved %d assets to %s" % [entries.size(), CATALOG_PATH]
 	var selected_asset_id := ""
 	if selected_index >= 0 and selected_index < entries.size():
 		selected_asset_id = str(entries[selected_index].get("asset_id", ""))
 	catalog_saved.emit(selected_asset_id)
+	return true
