@@ -546,7 +546,7 @@ func move_enemies(delta: float) -> void:
 func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 	if enemy == null or enemy.hp <= 0.0: return
 	var data: Dictionary = enemy_catalog[enemy.type]
-	var dealt := max(1.0, amount - data.armor)
+	var dealt: float = max(1.0, amount - data.armor)
 	enemy.hp -= dealt; enemy.flash = 0.12
 	effects.append({"position": enemy.position, "type": "impact_explosion", "life": 0.35, "max_life": 0.35})
 	damage_numbers.append({"position": enemy.position + Vector2(0, -32), "value": int(dealt), "life": 0.7, "max_life": 0.7})
@@ -1059,13 +1059,13 @@ func draw_ui() -> void:
 
 func draw_minimap(position: Vector2) -> void:
 	var rect := Rect2(position, Vector2(155, 90))
+	var sx: float = rect.size.x / max(1.0, MAP_PIXEL_SIZE.x)
+	var sy: float = rect.size.y / max(1.0, MAP_PIXEL_SIZE.y)
 	draw_rect(rect, Color(0.02, 0.07, 0.08, 0.94), true)
 	draw_rect(rect, Color("527079"), false, 1)
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
 		var local: Vector2 = enemy.position - MAP_ORIGIN
-		var sx := rect.size.x / max(1.0, MAP_PIXEL_SIZE.x)
-		var sy := rect.size.y / max(1.0, MAP_PIXEL_SIZE.y)
 		draw_circle(rect.position + Vector2(local.x * sx, local.y * sy), 2.5 if enemy.type != "giant" else 4.0, Color("ef7068"))
 	if robot.active:
 		var local_robot: Vector2 = robot.position - MAP_ORIGIN

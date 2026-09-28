@@ -455,7 +455,7 @@ func _on_delete_placement_pressed() -> void:
 	if canvas.delete_selected_catalog_placement():
 		update_status("Selected asset placement deleted.")
 	else:
-		update_status("Delete failed: select a placed catalog asset first.")
+		update_status("삭제 failed: select a placed catalog asset first.")
 
 func _on_map_data_changed() -> void:
 	if canvas:

@@ -174,7 +174,7 @@ func _build_interface() -> void:
 	id_edit = LineEdit.new()
 	id_edit.placeholder_text = "asset.tile.ground.001"
 	form.add_child(id_edit)
-	_add_form_label(form, "Display Name")
+	_add_form_label(form, "Display 이름")
 	name_edit = LineEdit.new()
 	name_edit.placeholder_text = "Meadow tile"
 	form.add_child(name_edit)

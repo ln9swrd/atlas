@@ -11,9 +11,9 @@ var transition_started := false
 func _ready() -> void:
 	set_process_input(true)
 	start_button.pressed.connect(_on_start_campaign_pressed)
-single_button.pressed.connect(_on_start_single_pressed)
-for stage_id in ["stage_01", "stage_02", "stage_03"]:
-    stage_select.add_item(stage_id.to_upper())
+	single_button.pressed.connect(_on_start_single_pressed)
+	for stage_id in ["stage_01", "stage_02", "stage_03"]:
+		stage_select.add_item(stage_id.to_upper())
 	quit_button.pressed.connect(_on_quit_pressed)
 	start_button.grab_focus()
 
@@ -38,15 +38,16 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _on_start_single_pressed() -> void:
-    if transition_started: return
-    transition_started = true
-    StageManager.begin_run("single", "stage_%02d" % (stage_select.selected + 1))
-    get_tree().change_scene_to_file(GAME_SCENE)
+	if transition_started: return
+	transition_started = true
+	StageManager.begin_run("single", "stage_%02d" % (stage_select.selected + 1))
+	get_tree().change_scene_to_file(GAME_SCENE)
 
 func _on_start_campaign_pressed() -> void:
 	if transition_started:
 		return
 	transition_started = true
+	StageManager.begin_run("campaign", "stage_01")
 	var error := get_tree().change_scene_to_file(GAME_SCENE)
 	if error != OK:
 		transition_started = false

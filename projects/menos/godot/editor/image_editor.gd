@@ -24,7 +24,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(root)
 	var title := Label.new()
-	title.text = "IMAGE EDITOR"
+	title.text = "이미지 에디터"
 	title.add_theme_font_size_override("font_size", 22)
 	root.add_child(title)
 	var intro := Label.new()
@@ -37,7 +37,7 @@ func _build_ui() -> void:
 	left.custom_minimum_size.x = 300
 	body.add_child(left)
 	var list_title := Label.new()
-	list_title.text = "CONNECTED IMAGES"
+	list_title.text = "연결된 이미지"
 	left.add_child(list_title)
 	list = ItemList.new()
 	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -51,14 +51,14 @@ func _build_ui() -> void:
 	right.add_child(view)
 	var tools := HBoxContainer.new()
 	right.add_child(tools)
-	_add_button(tools, "ERASE ALPHA", _start_erase)
-	_add_button(tools, "CROP", _crop_selection)
-	_add_button(tools, "FLIP H", _flip_h)
-	_add_button(tools, "FLIP V", _flip_v)
-	_add_button(tools, "ROTATE CW", _rotate_cw)
-	_add_button(tools, "ROTATE CCW", _rotate_ccw)
-	_add_button(tools, "TRIM ALPHA", _trim_alpha)
-	_add_button(tools, "SAVE + RECONNECT", _save_reconnect)
+	_add_button(tools, "알파 삭제", _start_erase)
+	_add_button(tools, "자르기", _crop_selection)
+	_add_button(tools, "좌우 반전", _flip_h)
+	_add_button(tools, "상하 반전", _flip_v)
+	_add_button(tools, "시계 방향 회전", _rotate_cw)
+	_add_button(tools, "반시계 방향 회전", _rotate_ccw)
+	_add_button(tools, "투명 영역 제거", _trim_alpha)
+	_add_button(tools, "저장 + 연결 변경", _save_reconnect)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
 	var resize_label := Label.new()

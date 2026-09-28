@@ -28,7 +28,7 @@ layout_mode = 2
 
 [node name="Title" type="Label" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
-text = "MENOS CONTENT"
+text = "MENOS 콘텐츠"
 
 [node name="Separator" type="HSeparator" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
@@ -36,27 +36,27 @@ layout_mode = 2
 [node name="BtnMap" type="Button" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
 toggle_mode = true
-text = "MAP EDITOR"
+text = "맵 에디터"
 
 [node name="BtnStage" type="Button" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
 toggle_mode = true
-text = "STAGE EDITOR"
+text = "스테이지 에디터"
 
 [node name="BtnEnemy" type="Button" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
 toggle_mode = true
-text = "ENEMY EDITOR"
+text = "적 에디터"
 
 [node name="BtnTower" type="Button" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
 toggle_mode = true
-text = "TOWER EDITOR"
+text = "타워 에디터"
 
 [node name="BtnImage" type="Button" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
 toggle_mode = true
-text = "IMAGE EDITOR"
+text = "이미지 에디터"
 
 [node name="Spacer" type="Control" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
@@ -64,7 +64,7 @@ size_flags_vertical = 3
 
 [node name="BtnQuit" type="Button" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
-text = "QUIT"
+text = "종료"
 
 [node name="Content" type="Control" parent="MainLayout"]
 layout_mode = 2

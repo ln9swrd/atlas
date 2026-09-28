@@ -37,7 +37,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // ENEMY EDITOR"
+	title.text = "MENOS // 적 에디터"
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -47,11 +47,11 @@ func _build_ui() -> void:
 	enemy_list.item_selected.connect(_on_enemy_selected)
 	top.add_child(enemy_list)
 	var reload_btn := Button.new()
-	reload_btn.text = "Reload"
+	reload_btn.text = "새로고침"
 	reload_btn.pressed.connect(_load_data)
 	top.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "Save JSON"
+	save_btn.text = "JSON 저장"
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
 	status_label = Label.new()
@@ -70,17 +70,17 @@ func _build_properties(parent: VBoxContainer) -> void:
 	title.text = "ENEMY PROPERTIES"
 	title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(title)
-	name_edit = _line_row(parent, "Name")
+	name_edit = _line_row(parent, "이름")
 	hp_spin = _spin_row(parent, "HP", 1, 999999, 1, 100)
-	speed_spin = _spin_row(parent, "Speed", 0, 9999, 0.1, 10)
-	armor_spin = _spin_row(parent, "Armor", 0, 9999, 0.1, 0)
-	damage_spin = _spin_row(parent, "Base Damage", 0, 9999, 0.1, 1)
-	reward_spin = _spin_row(parent, "Reward", 0, 999999, 1, 10)
-	radius_spin = _spin_row(parent, "Radius", 1, 999, 0.5, 10)
+	speed_spin = _spin_row(parent, "속도", 0, 9999, 0.1, 10)
+	armor_spin = _spin_row(parent, "방어력", 0, 9999, 0.1, 0)
+	damage_spin = _spin_row(parent, "Base 공격력", 0, 9999, 0.1, 1)
+	reward_spin = _spin_row(parent, "보상", 0, 999999, 1, 10)
+	radius_spin = _spin_row(parent, "반경", 1, 999, 0.5, 10)
 	var color_row := HBoxContainer.new()
 	parent.add_child(color_row)
 	var color_label := Label.new()
-	color_label.text = "Color"
+	color_label.text = "색상"
 	color_label.custom_minimum_size.x = 130
 	color_row.add_child(color_label)
 	color_edit = ColorPickerButton.new()
@@ -89,14 +89,14 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var sprite_row := HBoxContainer.new()
 	parent.add_child(sprite_row)
 	var sprite_label := Label.new()
-	sprite_label.text = "Animation Sprite"
+	sprite_label.text = "애니메이션 이미지"
 	sprite_label.custom_minimum_size.x = 130
 	sprite_row.add_child(sprite_label)
 	sprite_edit = LineEdit.new()
 	sprite_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sprite_row.add_child(sprite_edit)
 	var browse := Button.new()
-	browse.text = "Browse"
+	browse.text = "찾아보기"
 	browse.pressed.connect(_open_sprite_dialog)
 	sprite_row.add_child(browse)
 	file_dialog = FileDialog.new()
@@ -117,12 +117,12 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var sep := HSeparator.new()
 	parent.add_child(sep)
 	var combat_title := Label.new()
-	combat_title.text = "GIANT SPECIAL COMBAT"
+	combat_title.text = "거대 적 특수 전투"
 	combat_title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(combat_title)
-	robot_damage_spin = _spin_row(parent, "Robot Damage", 0, 9999, 0.1, 0)
-	robot_range_spin = _spin_row(parent, "Robot Range", 0, 9999, 0.1, 0)
-	robot_cooldown_spin = _spin_row(parent, "Robot Cooldown", 0, 9999, 0.05, 0)
+	robot_damage_spin = _spin_row(parent, "Robot 공격력", 0, 9999, 0.1, 0)
+	robot_range_spin = _spin_row(parent, "Robot 사거리", 0, 9999, 0.1, 0)
+	robot_cooldown_spin = _spin_row(parent, "로봇 재사용 시간", 0, 9999, 0.05, 0)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -203,7 +203,7 @@ func _save_data() -> void:
 		_set_status("No enemy selected.")
 		return
 	if name_edit.text.strip_edges().is_empty():
-		_set_status("Name is required.")
+		_set_status("이름 is required.")
 		return
 	var data: Dictionary = enemy_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()

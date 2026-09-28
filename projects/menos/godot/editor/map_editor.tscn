@@ -49,13 +49,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 button_pressed = true
-text = "ASSET"
+text = "에셋"
 
 [node name="BtnGameplayMode" type="Button" parent="MainLayout/Toolbox/VBox/ModeBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
-text = "GAMEPLAY"
+text = "게임플레이"
 
 [node name="HSeparator1" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=304884929]
 layout_mode = 2

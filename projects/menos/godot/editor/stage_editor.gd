@@ -31,7 +31,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // STAGE EDITOR  —  MVP"
+	title.text = "MENOS // 스테이지 에디터  —  MVP"
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -40,26 +40,26 @@ func _build_ui() -> void:
 	stage_list.custom_minimum_size.x = 220
 	stage_list.item_selected.connect(_on_stage_selected)
 	top.add_child(stage_list)
-	var load_btn := Button.new(); load_btn.text = "Reload"; load_btn.pressed.connect(_load_selected_stage); top.add_child(load_btn)
-	var save_btn := Button.new(); save_btn.text = "Save JSON"; save_btn.pressed.connect(_save_stage); top.add_child(save_btn)
+	var load_btn := Button.new(); load_btn.text = "새로고침"; load_btn.pressed.connect(_load_selected_stage); top.add_child(load_btn)
+	var save_btn := Button.new(); save_btn.text = "JSON 저장"; save_btn.pressed.connect(_save_stage); top.add_child(save_btn)
 	status_label = Label.new(); status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; top.add_child(status_label)
 	var scroll := ScrollContainer.new(); scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; root.add_child(scroll)
 	var content := VBoxContainer.new(); content.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll.add_child(content)
 	_build_stage_properties(content)
 	var sep := HSeparator.new(); content.add_child(sep)
-	var waves_title := Label.new(); waves_title.text = "WAVES"; waves_title.add_theme_font_size_override("font_size", 16); content.add_child(waves_title)
+	var waves_title := Label.new(); waves_title.text = "웨이브"; waves_title.add_theme_font_size_override("font_size", 16); content.add_child(waves_title)
 	waves_box = VBoxContainer.new(); waves_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL; content.add_child(waves_box)
-	var add_wave := Button.new(); add_wave.text = "+ Add Wave"; add_wave.pressed.connect(_add_wave); content.add_child(add_wave)
+	var add_wave := Button.new(); add_wave.text = "+ 웨이브 추가"; add_wave.pressed.connect(_add_wave); content.add_child(add_wave)
 
 func _build_stage_properties(parent: VBoxContainer) -> void:
-	var title := Label.new(); title.text = "STAGE PROPERTIES"; title.add_theme_font_size_override("font_size", 16); parent.add_child(title)
-	id_edit = _line_row(parent, "Stage ID")
-	order_spin = _spin_row(parent, "Order", 1, 999, 1, 1)
-	name_edit = _line_row(parent, "Name")
+	var title := Label.new(); title.text = "스테이지 속성"; title.add_theme_font_size_override("font_size", 16); parent.add_child(title)
+	id_edit = _line_row(parent, "스테이지 ID")
+	order_spin = _spin_row(parent, "순서", 1, 999, 1, 1)
+	name_edit = _line_row(parent, "이름")
 	map_option = OptionButton.new(); _option_row(parent, "Map", map_option)
-	gold_spin = _spin_row(parent, "Initial Gold", 0, 999999, 10, 180)
-	hp_spin = _spin_row(parent, "Base HP", 1, 999999, 10, 100)
-	next_edit = _line_row(parent, "Next Stage ID")
+	gold_spin = _spin_row(parent, "초기 골드", 0, 999999, 10, 180)
+	hp_spin = _spin_row(parent, "기지 HP", 1, 999999, 10, 100)
+	next_edit = _line_row(parent, "Next 스테이지 ID")
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new(); parent.add_child(row)
@@ -144,10 +144,10 @@ func _build_wave_card(index: int) -> void:
 	wave_label.text_changed.connect(func(v): stage_data["waves"][index]["label"] = v)
 	var up := Button.new(); up.text = "↑"; up.disabled = index == 0; up.pressed.connect(func(): _move_wave(index, -1)); header.add_child(up)
 	var down := Button.new(); down.text = "↓"; down.disabled = index >= waves.size() - 1; down.pressed.connect(func(): _move_wave(index, 1)); header.add_child(down)
-	var del := Button.new(); del.text = "Delete Wave"; del.pressed.connect(func(): _delete_wave(index)); header.add_child(del)
+	var del := Button.new(); del.text = "삭제 Wave"; del.pressed.connect(func(): _delete_wave(index)); header.add_child(del)
 	var groups: Array = wave.get("groups", [])
 	for g in groups.size(): _build_group_row(box, index, g)
-	var add := Button.new(); add.text = "+ Add Group"; add.pressed.connect(func(): _add_group(index)); box.add_child(add)
+	var add := Button.new(); add.text = "+ 그룹 추가"; add.pressed.connect(func(): _add_group(index)); box.add_child(add)
 
 func _build_group_row(parent: VBoxContainer, wave_index: int, group_index: int) -> void:
 	var groups: Array = stage_data["waves"][wave_index]["groups"]
@@ -160,7 +160,7 @@ func _build_group_row(parent: VBoxContainer, wave_index: int, group_index: int) 
 	var interval := SpinBox.new(); interval.min_value = 0.05; interval.max_value = 60; interval.step = 0.05; interval.value = float(group[2]); interval.custom_minimum_size.x = 90; interval.value_changed.connect(func(v): stage_data["waves"][wave_index]["groups"][group_index][2] = float(v)); row.add_child(interval)
 	var lane := OptionButton.new(); lane.custom_minimum_size.x = 90; for l in LANES: lane.add_item(l)
 	var lanes: Array = group[3]; var lane_value := "both" if lanes.size() > 1 else str(lanes[0]) if not lanes.is_empty() else "left"; lane.select(LANES.find(lane_value)); lane.item_selected.connect(func(v): stage_data["waves"][wave_index]["groups"][group_index][3] = ["left", "right"] if LANES[v] == "both" else [LANES[v]]); row.add_child(lane)
-	var del := Button.new(); del.text = "Delete"; del.pressed.connect(func(): _delete_group(wave_index, group_index)); row.add_child(del)
+	var del := Button.new(); del.text = "삭제"; del.pressed.connect(func(): _delete_group(wave_index, group_index)); row.add_child(del)
 
 func _add_wave() -> void:
 	if not stage_data.has("waves"): stage_data["waves"] = []
@@ -186,7 +186,7 @@ func _delete_group(wave_index: int, group_index: int) -> void:
 
 func _save_stage() -> void:
 	if current_path.is_empty(): _set_status("No stage loaded."); return
-	if id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty(): _set_status("Stage ID and Name are required."); return
+	if id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty(): _set_status("스테이지 ID and 이름 are required."); return
 	if map_option.selected < 0: _set_status("A Map is required."); return
 	var waves: Array = stage_data.get("waves", [])
 	if waves.is_empty(): _set_status("At least one Wave is required."); return

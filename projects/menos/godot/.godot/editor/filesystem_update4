@@ -2,3 +2,10 @@ res://main.gd
 res://content/stages/stage_01.json
 res://editor/content_editor.gd
 res://editor/image_editor.gd
+res://editor/asset_catalog_editor.gd
+res://editor/enemy_editor.gd
+res://editor/map_editor.gd
+res://editor/stage_editor.gd
+res://editor/tower_editor.gd
+res://scripts/stage_manager.gd
+res://ui/title_screen.gd
