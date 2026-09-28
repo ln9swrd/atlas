@@ -53,6 +53,11 @@ layout_mode = 2
 toggle_mode = true
 text = "TOWER EDITOR"
 
+[node name="BtnImage" type="Button" parent="MainLayout/Sidebar/Buttons"]
+layout_mode = 2
+toggle_mode = true
+text = "IMAGE EDITOR"
+
 [node name="Spacer" type="Control" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3

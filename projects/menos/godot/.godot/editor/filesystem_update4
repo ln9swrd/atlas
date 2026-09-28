@@ -1,3 +1,4 @@
 res://main.gd
 res://content/stages/stage_01.json
 res://editor/content_editor.gd
+res://editor/image_editor.gd
