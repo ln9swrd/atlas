@@ -85,6 +85,8 @@ var wave := 1
 var run_state := RunState.READY
 var wave_running := false
 var wave_clear := false
+var wave_auto_start_timer := 0.0
+const WAVE_AUTO_START_DELAY := 2.5
 var elapsed := 0.0
 var spawn_clock := 0.0
 var spawn_queue: Array = []
@@ -101,9 +103,13 @@ var feed: Array[String] = []
 var selected_slot := ""
 var selected_slot_position := Vector2.ZERO
 var selected_tower := ""
+var pending_tower_type := ""
 var robot_selected := false
 var camera_dragging := false
 var camera_last_mouse := Vector2.ZERO
+const CAMERA_EDGE_MARGIN := 28.0
+const CAMERA_EDGE_SPEED := 720.0
+const BOTTOM_HUD_HEIGHT := 154.0
 var damage_numbers: Array = []
 var effects: Array = []
 
@@ -417,6 +423,7 @@ func play_sfx(id: String) -> void:
 func reset_game() -> void:
 	base_hp = StageManager.get_base_hp(); gold = StageManager.get_initial_gold(); wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); towers.clear(); effects.clear(); damage_numbers.clear(); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false
+	wave_auto_start_timer = WAVE_AUTO_START_DELAY
 	var initial_robot_spot := ""
 	var initial_robot_position := BASE
 	if not ROBOT_SPOTS.is_empty():
@@ -424,14 +431,19 @@ func reset_game() -> void:
 		initial_robot_position = ROBOT_SPOTS[initial_robot_spot]
 	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "special": 0.0, "special_type": "", "flash": 0.0}
 	robot_progression = {"unlocked_abilities": []}
-	feed.clear(); log_event("Build towers, launch ATLAS-01, then start Wave 1.")
+	feed.clear(); log_event("Build towers and prepare ATLAS-01. Wave 1 starts automatically.")
 
 func log_event(text: String) -> void:
 	feed.push_front(text); feed = feed.slice(0, 5); queue_redraw()
 
 func _process(delta: float) -> void:
 	elapsed += delta
+	update_camera_edge_scroll(delta)
 	update_robot_manual_input(delta)
+	if run_state == RunState.READY and not wave_running and wave_auto_start_timer > 0.0:
+		wave_auto_start_timer -= delta
+		if wave_auto_start_timer <= 0.0:
+			start_wave()
 	if wave_running:
 		spawn_clock += delta
 		spawn_enemies()
@@ -766,6 +778,59 @@ func check_wave_clear() -> void:
 			run_state = RunState.VICTORY
 			log_event("CAMPAIGN VICTORY. ALL STAGES CLEAR. Press RESTART to repeat.")
 
+func _camera_target_clamped(target: Vector2) -> Vector2:
+	var viewport_size := get_viewport_rect().size
+	var half_view := viewport_size * 0.5
+	var min_x := MAP_ORIGIN.x + half_view.x
+	var max_x := MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - half_view.x
+	var min_y := MAP_ORIGIN.y + half_view.y
+	var max_y := MAP_ORIGIN.y + MAP_PIXEL_SIZE.y - half_view.y
+	if min_x > max_x:
+		target.x = MAP_ORIGIN.x + MAP_PIXEL_SIZE.x * 0.5
+	else:
+		target.x = clampf(target.x, min_x, max_x)
+	if min_y > max_y:
+		target.y = MAP_ORIGIN.y + MAP_PIXEL_SIZE.y * 0.5
+	else:
+		target.y = clampf(target.y, min_y, max_y)
+	return target
+
+func update_camera_edge_scroll(delta: float) -> void:
+	if camera_dragging or not has_node("Camera2D"):
+		return
+	var mouse := get_viewport().get_mouse_position()
+	var viewport_size := get_viewport_rect().size
+	if get_minimap_screen_rect().has_point(mouse):
+		return
+	var direction := Vector2.ZERO
+	if mouse.x <= CAMERA_EDGE_MARGIN:
+		direction.x -= 1.0
+	elif mouse.x >= viewport_size.x - CAMERA_EDGE_MARGIN:
+		direction.x += 1.0
+	if mouse.y <= CAMERA_EDGE_MARGIN:
+		direction.y -= 1.0
+	elif mouse.y < viewport_size.y - BOTTOM_HUD_HEIGHT and mouse.y >= viewport_size.y - BOTTOM_HUD_HEIGHT - CAMERA_EDGE_MARGIN:
+		direction.y += 1.0
+	if direction == Vector2.ZERO:
+		return
+	$Camera2D.position = _camera_target_clamped($Camera2D.position + direction.normalized() * CAMERA_EDGE_SPEED * delta)
+
+func get_minimap_screen_rect() -> Rect2:
+	var viewport_size := get_viewport_rect().size
+	return Rect2(Vector2(viewport_size.x - 245.0, 18.0), Vector2(220, 112))
+
+func center_camera_from_minimap(screen_position: Vector2) -> void:
+	var rect := get_minimap_screen_rect()
+	if not rect.has_point(screen_position):
+		return
+	var normalized := Vector2(
+		clampf((screen_position.x - rect.position.x) / rect.size.x, 0.0, 1.0),
+		clampf((screen_position.y - rect.position.y) / rect.size.y, 0.0, 1.0)
+	)
+	var target := MAP_ORIGIN + Vector2(normalized.x * MAP_PIXEL_SIZE.x, normalized.y * MAP_PIXEL_SIZE.y)
+	$Camera2D.position = _camera_target_clamped(target)
+	queue_redraw()
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_SPACE:
 		try_special_attack()
@@ -775,17 +840,20 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion and camera_dragging:
-		$Camera2D.position -= event.relative
+		$Camera2D.position = _camera_target_clamped($Camera2D.position - event.relative)
 		get_viewport().set_input_as_handled()
 		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: handle_click(get_global_mouse_position())
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if get_minimap_screen_rect().has_point(event.position):
+			center_camera_from_minimap(event.position)
+			get_viewport().set_input_as_handled()
+			return
+		handle_click(get_global_mouse_position())
 
 func handle_click(point: Vector2) -> void:
-	if _ui_action_rect(0).has_point(point): start_wave(); return
-	if _ui_action_rect(1).has_point(point): launch_robot(); return
-	if _ui_action_rect(2).has_point(point): build_tower("cannon"); return
-	if _ui_action_rect(3).has_point(point): build_tower("gatling"); return
-	if _ui_action_rect(4).has_point(point): try_special_attack(); return
+	if _ui_action_rect(0).has_point(point): select_tower_for_build("cannon"); return
+	if _ui_action_rect(1).has_point(point): select_tower_for_build("gatling"); return
+	if _ui_action_rect(2).has_point(point): try_special_attack(); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -799,6 +867,15 @@ func handle_click(point: Vector2) -> void:
 		move_robot_to_position(point); return
 	if not robot_selected:
 		var tower_position := get_tower_placement_position(point)
+		if tower_position != Vector2.INF and not pending_tower_type.is_empty():
+			selected_slot_position = tower_position
+			selected_slot = "tower_%d_%d" % [int(tower_position.x), int(tower_position.y)]
+			selected_tower = ""
+			build_tower(pending_tower_type)
+			if selected_slot.is_empty():
+				pending_tower_type = ""
+			queue_redraw()
+			return
 		if tower_position != Vector2.INF:
 			selected_slot_position = tower_position
 			selected_slot = "tower_%d_%d" % [int(tower_position.x), int(tower_position.y)]
@@ -823,6 +900,22 @@ func get_tower_placement_position(point: Vector2) -> Vector2:
 		if area.has_point(snapped):
 			return snapped
 	return Vector2.INF
+
+func select_tower_for_build(type: String) -> void:
+	if run_state not in [RunState.READY, RunState.RUNNING]:
+		play_sfx("ui_error")
+		return
+	if not tower_catalog.has(type):
+		play_sfx("ui_error")
+		return
+	pending_tower_type = type
+	selected_slot = ""
+	selected_slot_position = Vector2.ZERO
+	selected_tower = ""
+	robot_selected = false
+	play_sfx("tower_select")
+	log_event("%s: 설치 위치를 클릭하세요." % str(tower_catalog[type].name))
+	queue_redraw()
 
 func build_tower(type: String) -> void:
 	if run_state not in [RunState.READY, RunState.RUNNING]: return
@@ -900,6 +993,10 @@ func _draw() -> void:
 
 	# Tactical Field Boundary
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
+	# Tower placement areas are always shown as a subtle translucent build zone.
+	for area in TOWER_PLACEMENT_AREAS:
+		draw_rect(area, Color(0.25, 0.85, 0.72, 0.10), true)
+		draw_rect(area, Color(0.45, 0.92, 0.82, 0.32), false, 1.5)
 	# Spawn location labels are intentionally hidden.
 
 	# Base Facility (Strategic HQ Node)
@@ -1051,7 +1148,7 @@ func draw_ui() -> void:
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 112), "상태: " + status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
 	button(_ui_button_rect(135), "웨이브 시작", run_state != RunState.READY)
 	button(_ui_button_rect(183), "전투 재시작", false)
-	button(_ui_button_rect(231), "로봇 출격", not can_launch_robot())
+
 	button(_ui_button_rect(279), "캐논 건설", run_state not in [RunState.READY, RunState.RUNNING])
 	button(_ui_button_rect(327), "개틀링 건설", run_state not in [RunState.READY, RunState.RUNNING])
 	var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0 and not robot_progression.get("unlocked_abilities", []).is_empty()
@@ -1097,11 +1194,9 @@ func draw_ui2() -> void:
 	elif run_state == RunState.VICTORY: status_text = SettingsManager.text("승리", "VICTORY")
 	elif run_state == RunState.DEFEAT: status_text = SettingsManager.text("패배", "DEFEAT")
 	draw_string(ThemeDB.fallback_font, origin + Vector2(520, 25), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
-	button(_ui_action_rect(0), SettingsManager.text("웨이브 시작", "START WAVE"), run_state != RunState.READY)
-	button(_ui_action_rect(1), SettingsManager.text("ATLAS 출격", "LAUNCH ATLAS"), not can_launch_robot())
-	button(_ui_action_rect(2), SettingsManager.text("캐논 건설", "BUILD CANNON"), run_state not in [RunState.READY, RunState.RUNNING])
-	button(_ui_action_rect(3), SettingsManager.text("개틀링 건설", "BUILD GATLING"), run_state not in [RunState.READY, RunState.RUNNING])
-	button(_ui_action_rect(4), SettingsManager.text("필살기 [SPACE]", "SPECIAL [SPACE]"), not (robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0))
+	button(_ui_action_rect(0), SettingsManager.text("캐논 건설", "BUILD CANNON"), run_state not in [RunState.READY, RunState.RUNNING])
+	button(_ui_action_rect(1), SettingsManager.text("개틀링 건설", "BUILD GATLING"), run_state not in [RunState.READY, RunState.RUNNING])
+	button(_ui_action_rect(2), SettingsManager.text("필살기 [SPACE]", "SPECIAL [SPACE]"), not (robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0))
 	var robot_status := SettingsManager.text("대기", "STANDBY")
 	if robot.active: robot_status = SettingsManager.text("출격 / ", "ACTIVE / ") + robot.spot
 	draw_string(ThemeDB.fallback_font, origin + Vector2(850, 25), "ATLAS-01 " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, 270, 12, Color("7ed6ce"))
@@ -1124,6 +1219,17 @@ func draw_minimap2(position: Vector2) -> void:
 		draw_circle(rect.position + Vector2(local.x * sx, local.y * sy), 3.0 if enemy.type != "giant" else 5.0, Color("ef7068"))
 	var local_robot: Vector2 = robot.position - MAP_ORIGIN
 	draw_circle(rect.position + Vector2(local_robot.x * sx, local_robot.y * sy), 4.0, Color("f0d28a"))
+	var viewport_size: Vector2 = get_viewport_rect().size
+	var view_world_size: Vector2 = viewport_size
+	var view_top_left: Vector2 = $Camera2D.position - view_world_size * 0.5 - MAP_ORIGIN
+	var view_rect: Rect2 = Rect2(
+		rect.position + Vector2(view_top_left.x * sx, view_top_left.y * sy),
+		Vector2(view_world_size.x * sx, view_world_size.y * sy)
+	)
+	var map_bounds := Rect2(rect.position, rect.size)
+	view_rect = view_rect.intersection(map_bounds)
+	if not view_rect.size.is_zero_approx():
+		draw_rect(view_rect, Color("f0d28a"), false, 2.0)
 	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), SettingsManager.text("기지 / ATLAS / 적", "BASE / ATLAS / ENEMIES"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d7fff7"))
 
 func draw_robot_growth_choice() -> void:
