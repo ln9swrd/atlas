@@ -16,7 +16,7 @@ const VISUALS := {
 	"enemy_normal": preload("res://assets/menos/sprites/enemy_normal.png"),
 	"enemy_rusher": preload("res://assets/menos/sprites/enemy_rusher.png"),
 	"enemy_heavy": preload("res://assets/menos/sprites/enemy_heavy.png"),
-	"enemy_giant": preload("res://assets/menos/sprites/enemy_giant.png"),
+	"enemy_giant": preload("res://content/editor/edited_assets/enemy_giant_edit_292534902.png"),
 	"robot": preload("res://assets/menos/sprites/robot_atlas01.png"),
 	"atlas_idle": preload("res://assets/menos/sprites/atlas_idle.png"),
 	"atlas_attack": preload("res://assets/menos/sprites/atlas_attack.png"),

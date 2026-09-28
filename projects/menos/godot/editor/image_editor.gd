@@ -87,10 +87,11 @@ func _build_ui() -> void:
 	source_region.text = "선택 영역으로 교체"
 	source_region.pressed.connect(_replace_from_source_region)
 	source_panel.add_child(source_region)
-	var tower_normalize := Button.new()
-	tower_normalize.text = "타워 크기로 맞춰 교체"
-	tower_normalize.pressed.connect(_replace_source_region_as_tower)
-	source_panel.add_child(tower_normalize)
+	var normalize := Button.new()
+	normalize.name = "NormalizeUnitButton"
+	normalize.text = "유닛 크기로 맞춰 교체"
+	normalize.pressed.connect(_replace_source_region_as_unit)
+	source_panel.add_child(normalize)
 	var source_reference := Button.new()
 	source_reference.text = "선택 영역을 참조 이미지로 설정"
 	source_reference.pressed.connect(_apply_source_region_reference)
@@ -314,14 +315,16 @@ func _replace_from_source_region() -> void:
 	_refresh_view()
 	status.text = "참조 영역 %d × %d px로 대상을 교체했습니다. 저장 + 연결 변경을 눌러 적용하세요." % [rect.size.x, rect.size.y]
 
-func _replace_source_region_as_tower() -> void:
+func _replace_source_region_as_unit() -> void:
 	if not _require_image(): return
 	if current_index < 0 or current_index >= entries.size():
-		status.text = "먼저 타워 이미지를 선택하세요."
+		status.text = "먼저 적 또는 타워 이미지를 선택하세요."
 		return
 	var entry: Dictionary = entries[current_index]
-	if str(entry.get("owner", "")) != "res://content/towers/towers.json":
-		status.text = "이 기능은 타워 이미지에서만 사용할 수 있습니다."
+	var owner_path := str(entry.get("owner", ""))
+	var owner_key := str(entry.get("owner_key", ""))
+	if str(entry.get("owner_kind", "")) != "json" or (owner_path != "res://content/towers/towers.json" and owner_path != "res://content/enemies/enemies.json"):
+		status.text = "적 또는 타워에 연결된 이미지에서 사용할 수 있습니다."
 		return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
@@ -329,26 +332,34 @@ func _replace_source_region_as_tower() -> void:
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "참조 이미지에서 타워로 사용할 영역을 드래그로 선택하세요."
+		status.text = "참조 이미지에서 유닛으로 사용할 영역을 드래그로 선택하세요."
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	var region := source_image.get_region(rect)
-	var frame := Image.create(60, 90, false, Image.FORMAT_RGBA8)
+	var frame_size := Vector2i(60, 90)
+	var frame_count := 4
+	var unit_label := "타워"
+	if owner_path == "res://content/enemies/enemies.json":
+		var sizes := {"normal": Vector2i(38, 52), "rusher": Vector2i(42, 54), "heavy": Vector2i(64, 72), "giant": Vector2i(112, 150)}
+		frame_size = sizes.get(owner_key, Vector2i(42, 54))
+		frame_count = 8
+		unit_label = "적"
+	var frame := Image.create(frame_size.x, frame_size.y, false, Image.FORMAT_RGBA8)
 	frame.fill(Color(0, 0, 0, 0))
-	var scale := minf(60.0 / float(region.get_width()), 90.0 / float(region.get_height()))
+	var scale := minf(float(frame_size.x) / float(region.get_width()), float(frame_size.y) / float(region.get_height()))
 	var fitted_w := maxi(1, roundi(region.get_width() * scale))
 	var fitted_h := maxi(1, roundi(region.get_height() * scale))
 	region.resize(fitted_w, fitted_h, Image.INTERPOLATE_LANCZOS)
-	var dest := Rect2i((60 - fitted_w) / 2, 90 - fitted_h, fitted_w, fitted_h)
+	var dest := Rect2i((frame_size.x - fitted_w) / 2, frame_size.y - fitted_h, fitted_w, fitted_h)
 	frame.blit_rect(region, Rect2i(0, 0, fitted_w, fitted_h), dest.position)
-	var sheet := Image.create(240, 90, false, Image.FORMAT_RGBA8)
+	var sheet := Image.create(frame_size.x * frame_count, frame_size.y, false, Image.FORMAT_RGBA8)
 	sheet.fill(Color(0, 0, 0, 0))
-	for frame_index in 4:
-		sheet.blit_rect(frame, Rect2i(0, 0, 60, 90), Vector2i(frame_index * 60, 0))
+	for frame_index in frame_count:
+		sheet.blit_rect(frame, Rect2i(0, 0, frame_size.x, frame_size.y), Vector2i(frame_index * frame_size.x, 0))
 	current_image = sheet
 	_refresh_view()
-	status.text = "타워용 4프레임 240 × 90 px로 정규화했습니다. 저장 + 연결 변경을 눌러 적용하세요."
+	status.text = "%s용 %d프레임 %d × %d px로 정규화했습니다. 저장 + 연결 변경을 눌러 적용하세요." % [unit_label, frame_count, sheet.get_width(), sheet.get_height()]
 
 func _resize_image(width_px: int, height_px: int) -> void:
 	if not _require_image(): return
