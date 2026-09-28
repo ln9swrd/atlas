@@ -15,7 +15,14 @@ var current_image: Image
 var source_index := -1
 var source_path := ""
 var source_image: Image
+var source_dialog: FileDialog
+var source_thumbnail_cache: Dictionary = {}
 var editing := false
+
+signal request_content_editor
+
+func _request_content_editor() -> void:
+	request_content_editor.emit()
 
 func _ready() -> void:
 	_build_ui()
@@ -27,10 +34,17 @@ func _build_ui() -> void:
 	var root := VBoxContainer.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(root)
+	var title_row := HBoxContainer.new()
+	root.add_child(title_row)
 	var title := Label.new()
 	title.text = "이미지 에디터"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 22)
-	root.add_child(title)
+	title_row.add_child(title)
+	var content_button := Button.new()
+	content_button.text = "콘텐츠 에디터"
+	content_button.pressed.connect(_request_content_editor)
+	title_row.add_child(content_button)
 	var intro := Label.new()
 	intro.text = "Connected images. Edit a copy, then reconnect the selected reference."
 	root.add_child(intro)
@@ -65,10 +79,29 @@ func _build_ui() -> void:
 	source_full.text = "전체 이미지로 교체"
 	source_full.pressed.connect(_replace_from_source_full)
 	source_panel.add_child(source_full)
+	var source_open := Button.new()
+	source_open.text = "다른 이미지 열기"
+	source_open.pressed.connect(_open_source_dialog)
+	source_panel.add_child(source_open)
 	var source_region := Button.new()
 	source_region.text = "선택 영역으로 교체"
 	source_region.pressed.connect(_replace_from_source_region)
 	source_panel.add_child(source_region)
+	var source_reference := Button.new()
+	source_reference.text = "선택 영역을 참조 이미지로 설정"
+	source_reference.pressed.connect(_apply_source_region_reference)
+	source_panel.add_child(source_reference)
+	source_dialog = FileDialog.new()
+	source_dialog.title = "참조 이미지 열기"
+	source_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	source_dialog.access = FileDialog.ACCESS_RESOURCES
+	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; 이미지"])
+	source_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
+	source_dialog.add_theme_constant_override("thumbnail_size", 112)
+	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_source_thumbnail"))
+	source_dialog.current_dir = "res://"
+	source_dialog.file_selected.connect(_on_source_file_selected)
+	add_child(source_dialog)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
@@ -193,6 +226,33 @@ func _select_entry(index: int) -> void:
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
 	status.text = "대상: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
 
+func _get_source_thumbnail(path: String) -> Texture2D:
+	var cached: Texture2D = source_thumbnail_cache.get(path) as Texture2D
+	if cached != null:
+		return cached
+	var loaded := load(path) as Texture2D
+	if loaded != null:
+		source_thumbnail_cache[path] = loaded
+	return loaded
+
+func _open_source_dialog() -> void:
+	source_thumbnail_cache.clear()
+	if source_dialog != null:
+		source_dialog.popup_centered(Vector2i(1000, 700))
+
+func _on_source_file_selected(path: String) -> void:
+	if path == current_path:
+		status.text = "대상과 다른 이미지를 참조 이미지로 선택하세요."
+		return
+	source_path = path
+	source_index = -1
+	source_image = LOADER.load_image(source_path)
+	if source_image == null:
+		status.text = "참조 이미지를 불러올 수 없습니다: %s" % source_path
+		return
+	view.set_source_texture(ImageTexture.create_from_image(source_image))
+	status.text = "참조: %s — 드래그로 영역을 선택하세요." % source_path
+
 func _select_source_entry(index: int) -> void:
 	if editing: return
 	if index < 0 or index >= entries.size(): return
@@ -217,6 +277,22 @@ func _replace_from_source_full() -> void:
 	current_image = source_image.duplicate()
 	_refresh_view()
 	status.text = "참조 이미지 전체를 대상으로 교체했습니다. 저장 + 연결 변경을 눌러 적용하세요."
+
+func _apply_source_region_reference() -> void:
+	if not _require_image(): return
+	if source_image == null or source_path.is_empty() or source_path == current_path:
+		status.text = "먼저 다른 참조 이미지를 열거나 선택하세요."
+		return
+	var rect := view.selected_region
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		status.text = "참조 이미지에서 영역을 드래그로 선택하세요."
+		return
+	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
+	if rect.size.x <= 0 or rect.size.y <= 0: return
+	if not _save_source_reference(source_path, rect):
+		status.text = "참조 이미지 설정을 저장하지 못했습니다."
+		return
+	status.text = "참조 이미지로 설정했습니다: %s [%d, %d, %d, %d]" % [source_path, rect.position.x, rect.position.y, rect.size.x, rect.size.y]
 
 func _replace_from_source_region() -> void:
 	if not _require_image(): return
@@ -346,6 +422,41 @@ func _save_reconnect() -> void:
 	current_path = output
 	_refresh_view()
 	status.text = "Saved edited image and reconnected the selected reference."
+func _save_source_reference(path: String, rect: Rect2i) -> bool:
+	if current_index < 0 or current_index >= entries.size(): return false
+	var entry: Dictionary = entries[current_index]
+	var owner_kind := str(entry.owner_kind)
+	if owner_kind == "json":
+		return _replace_json_reference(str(entry.owner), str(entry.owner_key), str(entry.field), path, rect)
+	if owner_kind == "catalog":
+		return _replace_catalog_reference(str(entry.owner_key), path, rect)
+	return false
+
+func _replace_json_reference(path: String, key: String, field: String, source_path_value: String, rect: Rect2i) -> bool:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null: return false
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary or not data.has(key): return false
+	data[key][field] = source_path_value
+	data[key][field + "_rect"] = [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+	return _write_json(path, data)
+
+func _replace_catalog_reference(asset_id: String, source_path_value: String, rect: Rect2i) -> bool:
+	var path := "res://content/editor/asset_catalog.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null: return false
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary: return false
+	var assets: Array = data.get("assets", [])
+	for asset in assets:
+		if asset is Dictionary and str(asset.get("asset_id", "")) == asset_id:
+			asset["source_path"] = source_path_value
+			asset["source_rect_px"] = [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+			return _write_json(path, data)
+	return false
+
 func _reconnect_entry(new_path: String) -> bool:
 	if current_index < 0 or current_index >= entries.size(): return false
 	var entry: Dictionary = entries[current_index]
@@ -365,6 +476,9 @@ func _replace_json_value(path: String, key: String, field: String, new_path: Str
 	file.close()
 	if not data is Dictionary or not data.has(key): return false
 	data[key][field] = new_path
+	# 저장 + 연결 변경으로 새 편집 PNG에 연결할 때는 이전 참조 영역을 제거한다.
+	# 새 PNG 자체가 교체 결과물이므로 전체 이미지를 사용해야 한다.
+	data[key].erase(field + "_rect")
 	return _write_json(path, data)
 
 func _replace_catalog_value(asset_id: String, new_path: String) -> bool:

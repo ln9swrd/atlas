@@ -50,6 +50,12 @@ func _load_editor(scene_path: String) -> void:
 	current_editor = packed.instantiate()
 	content_host.add_child(current_editor)
 	current_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if current_editor.has_signal("request_content_editor"):
+		current_editor.request_content_editor.connect(_open_content_editor_from_child)
+
+func _open_content_editor_from_child() -> void:
+	_load_editor(MAP_EDITOR_SCENE)
+	_set_active_button($MainLayout/Sidebar/Buttons/BtnMap)
 
 func _set_active_button(active: Button) -> void:
 	$MainLayout/Sidebar/Buttons/BtnMap.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnMap

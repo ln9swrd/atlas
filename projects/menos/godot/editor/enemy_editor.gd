@@ -19,6 +19,7 @@ var radius_spin: SpinBox
 var color_edit: ColorPickerButton
 var sprite_edit: LineEdit
 var file_dialog: FileDialog
+var file_thumbnail_cache: Dictionary = {}
 var robot_damage_spin: SpinBox
 var robot_range_spin: SpinBox
 var robot_cooldown_spin: SpinBox
@@ -102,7 +103,10 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
-	file_dialog.filters = ["*.png ; PNG"]
+	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; 이미지"]
+	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
+	file_dialog.add_theme_constant_override("thumbnail_size", 112)
+	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(func(path): sprite_edit.text = path; _refresh_sprite_preview(path))
 	sprite_preview = TextureRect.new()
 	sprite_preview.custom_minimum_size = Vector2(96, 96)
@@ -247,7 +251,17 @@ func _open_image_editor() -> void:
 	IMAGE_STATE.open_image(sprite_edit.text.strip_edges())
 	get_tree().change_scene_to_file("res://editor/image_editor.tscn")
 
+func _get_file_thumbnail(path: String) -> Texture2D:
+	var cached: Texture2D = file_thumbnail_cache.get(path) as Texture2D
+	if cached != null:
+		return cached
+	var loaded := load(path) as Texture2D
+	if loaded != null:
+		file_thumbnail_cache[path] = loaded
+	return loaded
+
 func _open_sprite_dialog() -> void:
+	file_thumbnail_cache.clear()
 	if file_dialog:
 		file_dialog.popup_centered_ratio(0.75)
 

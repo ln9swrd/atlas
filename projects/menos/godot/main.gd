@@ -134,6 +134,24 @@ func _setup_camera() -> void:
 	camera.position_smoothing_enabled = true
 	camera.position_smoothing_speed = 8.0
 
+func _texture_from_catalog_entry(data: Dictionary, field: String) -> Texture2D:
+	var sprite_path := str(data.get(field, ""))
+	if sprite_path.is_empty():
+		return null
+	var base_texture: Texture2D = load(sprite_path) as Texture2D
+	if base_texture == null:
+		return null
+	var rect_values: Variant = data.get(field + "_rect", [])
+	if rect_values is Array and rect_values.size() >= 4:
+		var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+		var image_size := Vector2i(base_texture.get_width(), base_texture.get_height())
+		if rect.size.x > 0 and rect.size.y > 0 and rect.position.x >= 0 and rect.position.y >= 0 and rect.end.x <= image_size.x and rect.end.y <= image_size.y:
+			var atlas := AtlasTexture.new()
+			atlas.atlas = base_texture
+			atlas.region = Rect2(rect.position, rect.size)
+			return atlas
+	return base_texture
+
 func _load_enemy_catalog() -> void:
 	var path := "res://content/enemies/enemies.json"
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -147,8 +165,7 @@ func _load_enemy_catalog() -> void:
 				enemy_catalog[enemy_type] = parsed[enemy_type].duplicate(true)
 	enemy_sprite_catalog.clear()
 	for enemy_type in DATA.ENEMIES:
-		var sprite_path := str(enemy_catalog[enemy_type].get("sprite_anim", ""))
-		var sprite: Texture2D = load(sprite_path) as Texture2D if not sprite_path.is_empty() else null
+		var sprite: Texture2D = _texture_from_catalog_entry(enemy_catalog[enemy_type], "sprite_anim")
 		if sprite:
 			enemy_sprite_catalog[enemy_type] = sprite
 		else:
@@ -166,8 +183,7 @@ func _load_tower_catalog() -> void:
 					tower_catalog[tower_type] = parsed[tower_type].duplicate(true)
 	tower_sprite_catalog.clear()
 	for tower_type in DATA.TOWERS:
-		var sprite_path := str(tower_catalog[tower_type].get("sprite_anim", ""))
-		var sprite: Texture2D = load(sprite_path) as Texture2D if not sprite_path.is_empty() else null
+		var sprite: Texture2D = _texture_from_catalog_entry(tower_catalog[tower_type], "sprite_anim")
 		if sprite:
 			tower_sprite_catalog[tower_type] = sprite
 		else:
