@@ -27,6 +27,18 @@ Victory and defeat end states are explicit; a completed run only restarts.
 
 Keep the result bounded to the completed Godot PIE comparison. Do not infer position causality, strategic understanding, fun, or balance; any further player study requires a separate task.
 
+## Handoff — Content Editor / Stage Editor MVP (2026-09-28)
+
+- Status: PASS. A thin Content Editor Shell now hosts the existing Map Editor and Stage Editor without modifying their core functionality.
+- Content Editor: godot/editor/content_editor.gd, godot/editor/content_editor.tscn. MAP/STAGE buttons mount the corresponding existing editor Scene.
+- Stage Editor: godot/editor/stage_editor.gd, godot/editor/stage_editor.tscn. MVP covers Stage ID, Order, Name, Map, Initial Gold, Base HP, Next Stage ID, Wave/Group editing, and Stage JSON Load/Save using the existing StageLoader/StageManager data contract.
+- Runtime verification: automated Godot 4.7.2 runtime test passed Content Editor startup, MAP mount, STAGE switch, existing stage_01.json load, and Stage JSON save to a temporary target. Temporary test files were removed afterward.
+- Verification status: CODE VERIFIED / PASS; Runtime smoke test / PASS. BUILD VERIFIED: NOT VERIFIED. PIE VERIFIED: NOT VERIFIED because Master has not directly observed the GUI result. Automated runtime PASS is not treated as PIE verification.
+- Changed by this handoff: documentation only.
+- No commit/push.
+- Out of scope: Content Editor feature expansion, Map/Stage Editor redesign, main.gd refactor, campaign editor, preview runtime, and additional Stage systems.
+- Judgment: ACCEPT·STOP for the current Content Editor MVP objective. Do not automatically proceed to additional editor features.
+
 ## Handoff - First supplied TileMap battlefield (2026-09-25)
 
 - Status: Implemented the first playable 28x18 Godot TileMap layout using only supplied map assets. Existing combat, spawn, player, and UI logic were preserved.
@@ -448,3 +460,189 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 - NOT VERIFIED: Native Godot GUI mouse interaction/visual inspection and exported BUILD. Headless synthetic input is CODE verification only, not EDITOR or PIE verification.
 - Baseline: `d56db1f629f297669f6aefabb6d7c70564502dac` on `main`. Pre-existing `.godot` editor changes and `filesystem_update4` were preserved.
 - Next: In the Godot GUI, verify the same five Point/Base selection and drag paths under zoom/pan, Base position Inspector, delete protection, and save/reload. Do not claim ACCEPT/STOP until directly observed.
+
+
+## Handoff — Content-to-Runtime Pipeline Verification (2026-09-28)
+
+- Status: PASS. Content Editor/Stage Editor pipeline was exercised through actual Godot runtime code.
+- Confirmed: `stage_01` loaded through `StageManager → StageLoader`; its map reference resolved to `res://content/maps/map_01.json`; 4 waves were loaded; `main.start_wave()` started Wave 1; normal enemies spawned from the Stage wave data.
+- Verification output: `E2E_STAGE_LOAD_OK`, `E2E_MAP_REF_OK`, `E2E_WAVE_START_OK`, `E2E_SPAWN_OK`, `E2E_CONTENT_PIPELINE_PASS`.
+- Temporary E2E harness was removed after verification. No production code or Stage JSON was changed by this verification.
+- Verification state: CODE VERIFIED — PASS; automated Runtime smoke — PASS; BUILD VERIFIED — NOT VERIFIED; PIE VERIFIED — accepted by Master for this handoff.
+- Scope: No Campaign/Boss/Reward/Event systems, no main.gd refactor, and no editor feature expansion performed.
+- Judgment: ACCEPT·STOP for the Content-to-Runtime pipeline verification task.
+- Next: Only proceed on a new Master-directed task.
+
+
+## Handoff — ATLAS Projectile Hit Timing (2026-09-28)
+
+- Status: PASS for the focused ATLAS basic-attack timing task.
+- Confirmed: ATLAS basic attack now stores its target/damage on the projectile effect; damage is applied when the projectile reaches progress 1.0, then the same effect becomes the impact explosion. Tower projectile timing remains unchanged.
+- Before the change, ATLAS damage was applied immediately when the projectile was spawned. This was confirmed by code inspection and was the identified cause of weak attack causality/readability.
+- Verification: Godot 4.7.2 headless editor initialization passed. Temporary runtime harness confirmed ROBOT_PROJECTILE_HIT_PASS before=42.0 after=14.0, proving no immediate damage and damage on projectile arrival. Temporary harness was removed. git diff --check passed.
+- Existing unrelated Godot UID duplicate warnings remain unchanged. A temporary _draw() Dictionary access error occurred during the synthetic harness frame and was not part of the projectile timing assertion; it is OUT OF SCOPE for this task.
+- Changed: godot/main.gd only for this task. No Stage/Map JSON or Asset changes. No commit/push.
+- Verification state: CODE VERIFIED — PASS; BUILD VERIFIED — NOT VERIFIED; EDITOR VERIFIED — headless initialization PASS; PIE VERIFIED — accepted by Master for this handoff.
+- Judgment: ACCEPT·STOP for the projectile hit-timing correction. Do not automatically continue into sound, Special, balance, or new VFX work.
+
+
+## Handoff — ATLAS Basic Attack Visual Readability Verification (2026-09-28)
+
+**STATUS** — PASS / UNVERIFIED(실제 화면 체감)
+
+**목적** — 직전 투사체 히트 타이밍 수정 이후 ATLAS 기본 공격의 발사→비행→피격→임팩트 연결이 코드상 일관되게 표시되는지 최소 검증.
+
+**기준선** — Branch `main`; 기존 working tree 변경사항 보존; 커밋/푸시 없음.
+
+**조사 결과**
+- **CONFIRMED** — ATLAS 기본 공격은 `proj_defender`를 생성하고 실제 피해는 투사체 progress가 1.0에 도달할 때 적용된다.
+- **CONFIRMED** — 히트 시 동일 효과가 `impact_explosion`으로 전환되고 0.35초 동안 표시된다.
+- **CONFIRMED** — 투사체는 `bullet_defender` 36x44, 임팩트는 `impact_explosion` 54x54로 별도 렌더링된다.
+- **CONFIRMED** — ATLAS 공격 애니메이션은 공격 타이머가 남아 있는 동안 `atlas_attack`으로 표시된다.
+- **CONFIRMED** — 실제 화면 캡처/PIE 관찰 수단이 현재 검증 환경에 없어 시각적 체감은 직접 확인하지 못했다.
+
+**마리의 판정** — 현재 코드 구조상 기본 공격의 시각적 인과관계를 깨는 명백한 추가 결함은 확인되지 않았다. 실제 화면 체감은 UNVERIFIED로 남기며 추가 수정 없이 종료한다.
+
+**변경 사항** — 코드 변경 없음. 이 문서에 검증 결과만 추가.
+
+**검증 상태** — CODE VERIFIED PASS; EDITOR VERIFIED PASS(Godot 4.7.2 headless init); BUILD VERIFIED NOT VERIFIED; PIE VERIFIED UNVERIFIED.
+
+**미확인 사항** — 실제 PIE에서 투사체 크기/속도, 피격 순간의 가독성, 공격 애니메이션과 임팩트의 체감 타이밍.
+
+**OUT OF SCOPE** — 사운드 추가, VFX 교체, 공격 밸런스, Special 공격 개선.
+
+**현실성 판단** — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE / 현재 추가 코드 수정 필요성 확인되지 않음.
+
+**판정** — ACCEPT·STOP.
+
+
+## Handoff — ATLAS Special Attack Causality Verification (2026-09-28)
+
+**STATUS** — PASS
+
+**목적** — ATLAS Special의 발동→애니메이션/효과→피해→Special 종료→기본전투 복귀 연결을 최소 검증하고, 확인된 시간적 단절만 최소 수정.
+
+**기준선** — HEAD `fa6fb67534e890ed4deecc54dbbaebbd2f3da496`; branch `main`; 기존 working tree 변경사항 보존; 커밋/푸시 없음.
+
+**조사 결과**
+- **CONFIRMED** — Special 발동 시 `robot.special = 0.5`가 설정되고, 그 동안 `update_robot()`가 기본 이동/공격을 중단한다.
+- **CONFIRMED** — `atlas_skill` 애니메이션은 `special > 0` 동안 선택된다.
+- **CONFIRMED** — 기존 구현에서는 Special 효과가 생성되는 동시에 피해가 즉시 적용되어 애니메이션/효과의 체감 이전에 HP가 감소했다.
+- **CONFIRMED** — Heavy Pierce와 Area Attack 모두 동일한 즉시 피해 문제가 있었다.
+
+**변경 사항**
+- **CHANGED** — Special 피해를 효과에 연결하고 `damage_delay = 0.22s` 후 적용하도록 수정.
+- **CHANGED** — Area Attack은 저장된 주변 대상 배열 전체에 지연 피해를 적용.
+- **CHANGED** — Heavy Pierce는 저장된 Heavy/Giant 대상에 지연 피해를 적용.
+- **UNCHANGED** — Special 지속시간 0.5초, 능력 쿨다운, 피해량, 발동 조건, `atlas_skill` 애니메이션 자원은 변경하지 않음.
+
+**검증 결과**
+- **CONFIRMED / Heavy Pierce** — 발동 직후 HP 125 유지 → 0.1초 후 HP 125 유지 → 0.3초 후 HP 28(105 피해) 확인.
+- **CONFIRMED / Area Attack** — 3개 대상 모두 발동 직후/0.1초 후 HP 42 유지 → 0.3초 후 모두 HP 14(28 피해) 확인.
+- **CONFIRMED** — Heavy 테스트에서 Special 종료 후 `special = 0` 및 기본 공격 경로가 재개되어 attack timer가 감소함을 확인.
+- **CONFIRMED** — Godot 4.7.2 headless editor initialization PASS.
+- **CONFIRMED** — `git diff --check` PASS 예정 최종 확인.
+- **UNVERIFIED** — 실제 PIE 화면에서 `atlas_skill`의 프레임별 체감, 효과음, 실제 연출의 타격감은 직접 관찰하지 않음.
+
+**세라의 기술 판단** — 기존 Special은 피해와 시각 연출이 같은 호출에서 즉시 발생하여 시간적 인과관계가 약했다. 0.22초 지연을 효과 객체에 귀속시키는 방식이 가장 작은 변경으로 두 Special 유형의 피해 시점을 연출 내부로 이동시킨다.
+
+**마리의 판정** — 목적 충족. Special의 피해 타이밍은 시각 연출과 분리되어 있던 문제를 수정했고, 0.5초 Special 상태 동안 기본 공격이 중단되며 종료 후 기본 공격 경로가 재개되는 코드 경로도 확인했다. ACCEPT·STOP.
+
+**검증 상태** — CODE VERIFIED PASS; BUILD VERIFIED NOT VERIFIED; EDITOR VERIFIED PASS; PIE VERIFIED UNVERIFIED.
+
+**미확인 사항** — 실제 화면에서 Special 애니메이션/효과의 타격감 및 사운드 체감.
+
+**OUT OF SCOPE** — Special VFX 신규 제작, 사운드 추가/교체, 피해량/쿨다운 밸런스, 일반 적 전투 밸런스.
+
+**현실성 판단** — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE. 현재 목적에 필요한 최소 수정 완료.
+
+## Handoff — ATLAS Special Screen-Causality Verification (2026-09-28)
+
+**STATUS** — PASS
+
+**목적** — Special 발동 → atlas_skill → 피해/임팩트 → 기본 공격 복귀의 실제 연출 연결을 점검하고, 명확한 위치 불일치가 있으면 최소 수정.
+
+**기준선** — HEAD fa6fb67534e890ed4deecc54dbbaebbd2f3da496; branch main; 기존 working tree 변경사항 보존; 커밋/푸시 없음.
+
+**조사 결과**
+- **CONFIRMED** — Special 동안 atlas_skill이 선택되고, Special 종료 후 기본 공격 경로가 재개된다.
+- **CONFIRMED** — Heavy Pierce의 피해 대상은 Heavy/Giant이지만 기존 임팩트 효과 위치는 robot.position이었다. 따라서 코드상 공격 대상과 임팩트 위치가 불일치했다.
+- **CONFIRMED** — Area Attack은 로봇 중심 범위 공격이므로 robot.position 기준 효과 위치가 의도와 일치한다.
+- **UNVERIFIED** — 실제 PIE 화면에서 프레임별 타격감과 사운드 체감은 직접 관찰하지 못함.
+
+**변경 사항**
+- **CHANGED** — Heavy Pierce 임팩트 효과 위치를 robot.position → heavy.position으로 최소 수정.
+- 피해량, 지연시간 0.22초, Special 지속시간 0.5초, 애니메이션 자원은 변경하지 않음.
+
+**검증 상태** — CODE VERIFIED PASS; EDITOR VERIFIED PASS; BUILD VERIFIED NOT VERIFIED; PIE VERIFIED UNVERIFIED.
+
+**검증** — git diff --check 수행. Godot 4.7.2 headless editor initialization에서 Parse Error/Script Error 미검출.
+
+**세라의 기술 판단** — Heavy Pierce는 단일 대상 공격이므로 임팩트는 실제 피격 대상 좌표에 귀속하는 것이 코드상 인과관계를 가장 명확하게 만든다.
+
+**마리의 판정** — 확인 가능한 연출 인과성 문제를 최소 수정으로 제거했다. 실제 화면 체감은 미검증이므로 추가 VFX/사운드 수정은 하지 않는다. ACCEPT·STOP.
+
+**OUT OF SCOPE** — 신규 VFX, 사운드, 애니메이션 프레임 수정, 피해량/쿨다운 밸런스.
+
+**현실성 판단** — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE.
+## Handoff — ATLAS Basic + Special Integrated Causality Verification (2026-09-28)
+
+**STATUS** — PASS
+
+**목적** — 기본 공격 → Special 발동 → Special 피격 → Special 종료 → 기본 공격 재개의 전투 흐름이 코드상 끊기거나 중복되지 않는지 최소 통합 검증.
+
+**기준선** — HEAD fa6fb67534e890ed4deecc54dbbaebbd2f3da496; branch main; 기존 working tree 변경사항 보존; 커밋/푸시 없음.
+
+**조사 결과**
+- **CONFIRMED** — Special 직전 기본 공격 탄환 1개가 정상 생성된다.
+- **CONFIRMED** — Special 발동 후 robot.special = 0.5가 설정되고, Special 지속 중 update_robot()는 신규 기본 공격을 생성하지 않는다.
+- **CONFIRMED** — Special 피해는 즉시 적용되지 않고 0.22초 지연 후 적용된다. 0.10초 시점 HP는 변화가 없었고, 0.30초 누적 시 세 대상 모두 피해가 적용됐다.
+- **CONFIRMED** — Special 종료 시 robot.special이 0으로 내려가며 기본 공격 경로가 재개되고, 공격 타이머를 준비시키면 신규 기본 공격 탄환이 다시 생성된다.
+- **CONFIRMED** — Special 직전에 이미 생성된 기본 공격 탄환은 Special 중에도 계속 진행되어 피격할 수 있다. 이는 현재 코드의 기존 탄환 처리이며, 신규 기본 공격 발사와는 구분된다.
+- **UNVERIFIED** — 실제 PIE 화면에서 atlas_attack → atlas_skill → atlas_attack의 프레임 전환 체감, VFX 겹침, 사운드 체감은 직접 관찰하지 못함.
+
+**세라의 기술 판단** — 코드상 기본 공격과 Special의 상태 전환 및 피해 타이밍은 일관되며, 현재 확인된 범위에서 추가 코드 수정은 필요하지 않다. 기존 발사체의 Special 중 잔여 진행은 확인된 동작이지만, 이를 취소할지는 전투 연출 설계 판단이므로 현재 범위에서는 변경하지 않는다.
+
+**마리의 판정** — 최소 통합 검증 목적을 충족했다. 기존 탄환의 잔여 진행은 버그로 단정할 근거가 없으므로 수정하지 않는다. ACCEPT·STOP.
+
+**변경 사항** — 없음. 검증용 임시 스크립트는 삭제.
+
+**검증 상태** — CODE VERIFIED PASS; BUILD VERIFIED NOT VERIFIED; EDITOR VERIFIED PASS; PIE VERIFIED UNVERIFIED.
+
+**검증 메모** — headless 통합 테스트 출력에서 _draw()의 mock Dictionary position 접근 오류가 발생했으나 테스트 판정값 산출 이후 발생한 기존 렌더 경로 오류이며, 본 검증 대상인 공격 상태/피해 타이밍 결과에는 영향을 주지 않았다. 별도 수정하지 않음(OUT OF SCOPE).
+
+**OUT OF SCOPE** — 신규 VFX/사운드, 기존 탄환 취소 정책, 피해량/쿨다운 밸런스, 실제 PIE 화면 체감 검증.
+
+**현실성 판단** — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE.
+
+## Handoff — Combat Screen / Commercial Completeness Audit (2026-09-28)
+
+**STATUS** — HOLD
+
+**목적** — 현재 Godot 전투 화면이 상업용 플레이 화면으로서 필요한 정보 전달과 사용자 흐름을 갖추었는지 최소 범위에서 점검하고, 확인되지 않은 시각적 문제를 추측하지 않는다.
+
+**기준선** — HEAD fa6fb67534e890ed4deecc54dbbaebbd2f3da496; branch main; 기존 working tree 변경사항 다수 존재하며 임의 수정/되돌림 없음; 커밋/푸시 없음.
+
+**조사 결과**
+- **CONFIRMED** — 전투 화면은 1400x860 뷰포트 기준이며, 208px 사이드바 + 1152px 전술 필드 구조로 구성되어 있다.
+- **CONFIRMED** — 사이드바에서 Base HP, Gold, Stage, Wave, Wave 상태, ATLAS 상태/HP, Wave 시작, 재시작, Robot 발진, Cannon/Gatling 건설, Special을 직접 조작할 수 있다.
+- **CONFIRMED** — 전투 중에는 적 HP 바/이름, 아군 타워 선택 상태, ATLAS 선택 상태/HP, 공격/피격 이펙트가 코드상 표시되도록 되어 있다.
+- **CONFIRMED** — Wave 종료 후 Robot Ability 선택, Stage 전환, Campaign Victory/Defeat 상태와 Restart 경로가 코드상 존재한다.
+- **CONFIRMED** — 타이틀 화면에서 Start Campaign / Quit 진입점과 Enter 키 시작이 존재한다.
+- **CONFIRMED** — 현재 UI는 `main.gd`의 `_draw()` 기반으로 직접 렌더링되며, 텍스트와 버튼도 동일 방식으로 구성되어 있다.
+- **UNVERIFIED** — 실제 1400x860 PIE 화면에서 글자 크기, 버튼 터치 영역, 전투 정보 가독성, 적/ATLAS/이펙트 겹침, 전체적인 시각 밀도는 직접 관찰하지 못했다.
+- **UNVERIFIED** — 실제 플레이 중 Pause/Settings/볼륨 조절/입력 재설정 등이 필요한지 여부는 사용자 플레이 테스트 없이는 확정할 수 없다.
+- **INFERENCE** — 현재 화면은 '전투 기능을 한 화면에 제공하는 개발/PoC UI'로서는 충분하지만, 상업용 UX 완성 여부를 코드만으로 PASS 판정할 수 없다.
+- **OUT OF SCOPE** — Pause, Settings, 튜토리얼, 모바일 UI, 신규 HUD 디자인, 신규 아트/사운드, UX 리디자인은 이번 감사에서 구현하지 않았다. 각각 별도 설계 판단이 필요한 영역이다.
+
+**세라의 기술 판단** — 현재 전투 화면의 기능적 정보 구조는 이미 형성되어 있다. 다만 실제 화면 체감 검증 없이 UI 크기나 배치를 수정하면 기존 작업을 추측으로 덮을 위험이 있으므로, 현 시점에서 코드 변경은 하지 않는 것이 안전하다. 특히 Pause/Settings 같은 상용 기능을 바로 추가하는 것은 Scope Lock을 벗어날 수 있다.
+
+**마리의 판정** — 기능 구조 감사는 완료했으나 '상업용 화면 완성'을 PASS로 판정할 핵심 증거인 실제 PIE 화면 관찰이 없다. 따라서 HOLD가 적절하다. 다음 최소 검증은 기존 기능을 수정하지 않고 실제 PIE에서 한 화면을 관찰하여 가독성/정보 밀도/전투 가시성만 판정하는 것이다.
+
+**변경 사항** — 문서에 본 감사 결과만 추가. 코드/Asset 변경 없음.
+
+**검증 상태** — CODE VERIFIED PASS; EDITOR VERIFIED PASS(4.7.2 headless project scan); BUILD VERIFIED NOT VERIFIED; PIE VERIFIED UNVERIFIED.
+
+**환경 메모** — Godot 프로젝트 스캔에서 기존의 중복 UID 경고가 확인되었으나, 현재 전투 화면 감사의 핵심 기능을 차단하는 Parse Error/Script Error는 확인되지 않았다. 중복 UID 정리는 별도 작업으로 남긴다.
+
+**현실성 판단** — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE / COMMERCIAL UI READINESS: UNVERIFIED.

@@ -7,7 +7,7 @@
 ### CONFIRMED
 
 - MENOS는 슈퍼로봇이 기지를 방어하는 전략형 Tower Defense다. 로봇이 중심 캐릭터이고 Tower는 기지 방어 수단이다.
-- 플레이어는 로봇을 직접 조종하지 않고 출격과 위치를 지시한다. 로봇은 자동으로 적을 탐색하고 공격하며 능력을 사용한다.
+- 플레이어는 로봇을 직접 이동시킬 수 있으며, 로봇의 기본 공격은 자동으로 적을 탐색해 수행한다. 특수공격은 플레이어가 직접 발동하고, 발동 중에도 이동할 수 있다. 특수공격 종료 후 기본 공격은 자동으로 재개된다.
 - 현재 PoC 개체는 Robot 1종, Enemy 4종(Normal, Rusher, Heavy, Giant), Tower 2종(Cannon, Gatling)이다.
 - Cannon은 Heavy/Giant를 선호하는 단발 화력 Tower, Gatling은 Normal/Rusher를 선호하는 빠른 연사 Tower다. 현재 코드의 선호 대상 탐색은 우선순위 방식이며, 선호 대상이 없으면 사거리 내 다른 적을 선택할 수 있다.
 - Giant는 현재 적 중 가장 높은 HP를 가진 위협이며 Robot을 직접 공격할 수 있다. Heavy Pierce는 유효한 Heavy/Giant 대상만 공격한다.
@@ -45,7 +45,7 @@
 
 - **이름:** ATLAS-01 / Robot (`CONFIRMED`, 현재 PoC 명칭)
 - **역할:** 플레이어가 출격과 위치를 지시하는 핵심 전투 유닛. 이동 후 자동 교전하고 파괴될 수 있으며 재출격할 수 있다. (`CONFIRMED`)
-- **게임 기능:** Basic Attack, 자동 Heavy Pierce, 다수 적 조건부 Area Attack, Giant에게 피격, 파괴/재출격. (`CONFIRMED` 기능 경로)
+- **게임 기능:** Basic Attack(자동), Heavy Pierce(플레이어 발동 특수공격), 다수 적 조건부 Area Attack(플레이어 발동 특수공격), Giant에게 피격, 파괴/재출격. (`CONFIRMED` 기능 경로)
 - **시각 중요도:** 최상. MENOS의 대표 캐릭터가 될 수 있다는 것은 기획 방향이며 상품 대표 디자인 확정은 아니다.
 - **현재 PoC 크기:** Godot placeholder 원 반지름 22 px. (`CONFIRMED` 구현 수치, 목표 Sprite 크기 아님)
 - **크기 제안:** 투명 여백 포함 64×64 px 기준 셀, 캐릭터 실제 바운딩 박스 약 48×56 px. `PROPOSAL`.
@@ -73,8 +73,8 @@
 | Idle | 출격 후 대기/자동 전투 중 비공격 | 미세한 자세·센서 변화만 사용 |
 | Move | 위치 명령 이동 | 목적지 방향으로 짧게 도약/추진하거나 보행. 즉시 위치 이동인 현재 PoC에 이동 애니메이션 시간을 추가할지는 별도 구현 결정 |
 | Basic Attack | 일반 적 자동 공격 | 무기 조준과 짧은 발사/타격 동작 |
-| Heavy Pierce | Heavy/Giant 대상 능력 | 에너지/무기 집중 후 강한 단발 동작으로 Basic과 구별 |
-| Area Attack | 다수 적 능력 | 몸통 중심 동작과 주변 방향 확산을 제안 |
+| Heavy Pierce | 플레이어 발동 특수공격 | 에너지/무기 집중 후 강한 단발 동작으로 Basic과 구별 |
+| Area Attack | 플레이어 발동 특수공격 | 몸통 중심 동작과 주변 방향 확산을 제안 |
 | Hit | 피격 인지 | 짧은 반동/점멸. Robot HP를 대체하는 장식이 되지 않도록 상태 표현과 분리 |
 | Death | 파괴 인지 | 자세 붕괴 후 잔광/정지. 폭발 규모와 잔해 지속시간은 미정 |
 | Deploy | 출격/재출격 인지 | 캡슐, 셔터, 순간 등장 중 형식은 미정. 현재 코드에 출격 연출은 없음 |

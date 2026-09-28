@@ -92,6 +92,7 @@ var enemies: Array = []
 var towers: Array = []
 var robot := {}
 var robot_progression := {}
+const ROBOT_SPECIAL_DURATION := 0.5
 var feed: Array[String] = []
 var selected_slot := ""
 var selected_slot_position := Vector2.ZERO
@@ -338,7 +339,7 @@ func reset_game() -> void:
 	if not ROBOT_SPOTS.is_empty():
 		initial_robot_spot = str(ROBOT_SPOTS.keys()[0])
 		initial_robot_position = ROBOT_SPOTS[initial_robot_spot]
-	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "flash": 0.0}
+	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "special": 0.0, "special_type": "", "flash": 0.0}
 	robot_progression = {"unlocked_abilities": []}
 	feed.clear(); log_event("Build towers, launch ATLAS-01, then start Wave 1.")
 
@@ -347,6 +348,7 @@ func log_event(text: String) -> void:
 
 func _process(delta: float) -> void:
 	elapsed += delta
+	update_robot_manual_input(delta)
 	if wave_running:
 		spawn_clock += delta
 		spawn_enemies()
@@ -359,9 +361,28 @@ func _process(delta: float) -> void:
 	for effect in effects:
 		if effect.has("progress"):
 			effect["progress"] = float(effect["progress"]) + delta * float(effect.get("speed", 4.0))
+			if float(effect["progress"]) >= 1.0 and effect.get("source", "") == "robot" and not effect.get("hit_applied", false):
+				effect["hit_applied"] = true
+				damage_enemy(effect.get("target_enemy", null), float(effect.get("damage", 0.0)), str(effect.get("source", "")))
+				effect["type"] = "impact_explosion"
+				effect.erase("progress")
+				effect["life"] = 0.35
+				effect["max_life"] = 0.35
+		elif effect.has("damage_delay"):
+			effect["damage_delay"] = float(effect["damage_delay"]) - delta
+			if float(effect["damage_delay"]) <= 0.0 and not effect.get("damage_applied", false):
+				effect["damage_applied"] = true
+				if effect.has("damage_targets"):
+					for target in effect["damage_targets"]:
+						damage_enemy(target, float(effect.get("damage", 0.0)), str(effect.get("source", "special")))
+				else:
+					damage_enemy(effect.get("target_enemy", null), float(effect.get("damage", 0.0)), str(effect.get("source", "special")))
+				effect.erase("damage_delay")
+				effect["life"] = 0.35
+				effect["max_life"] = 0.35
 		else:
 			effect["life"] = float(effect["life"]) - delta
-	effects = effects.filter(func(item): return float(item.get("progress", 0.0)) < 1.0 and float(item.get("life", 1.0)) > 0.0)
+	effects = effects.filter(func(item): return (item.has("progress") and float(item.get("progress", 0.0)) < 1.0) or (not item.has("progress") and float(item.get("life", 0.0)) > 0.0))
 	queue_redraw()
 
 func start_wave() -> void:
@@ -392,12 +413,13 @@ func spawn_enemies() -> void:
 		var lane := ""
 		if not requested_lanes.is_empty():
 			var requested_lane := str(requested_lanes[enemies.size() % requested_lanes.size()])
-			if LANES.has(requested_lane):
+			if LANES.has(requested_lane) and not SPAWN_AREAS.has(requested_lane):
 				lane = requested_lane
-			elif requested_lane == "left" and spawn_points.size() >= 1:
-				lane = str(spawn_points[0])
-			elif requested_lane == "right" and spawn_points.size() >= 2:
-				lane = str(spawn_points[1])
+			elif requested_lane in ["left", "right"] and not SPAWN_AREAS.is_empty():
+				var area_keys: Array = SPAWN_AREAS.keys()
+				var area_index := int(SPAWN_AREA_SEQUENCE.get("__global__", 0)) % area_keys.size()
+				lane = str(area_keys[area_index])
+				SPAWN_AREA_SEQUENCE["__global__"] = area_index + 1
 		if lane.is_empty():
 			lane = str(spawn_points[enemies.size() % spawn_points.size()])
 		var data: Dictionary = DATA.ENEMIES[entry.type]
@@ -508,8 +530,28 @@ func get_robot_auto_spot() -> String:
 			best_id = str(id)
 	return best_id
 
+func update_robot_manual_input(delta: float) -> void:
+	if not robot.get("active", false) or robot.hp <= 0.0 or run_state not in [RunState.READY, RunState.RUNNING]:
+		return
+	var direction := Vector2.ZERO
+	direction.x = float(Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT))
+	direction.y = float(Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)) - float(Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP))
+	if direction == Vector2.ZERO:
+		robot["is_moving"] = false
+		return
+	direction = direction.normalized()
+	robot["manual_position"] = true
+	robot.erase("target_pos")
+	robot["spot"] = "CUSTOM"
+	robot["is_moving"] = true
+	var target: Vector2 = robot.position + direction * DATA.ROBOT.speed * delta
+	robot.position = Vector2(
+		clampf(target.x, MAP_ORIGIN.x + 32.0, MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - 32.0),
+		clampf(target.y, MAP_ORIGIN.y + 32.0, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y - 32.0)
+	)
+
 func move_robot_automatically(delta: float) -> void:
-	if not wave_running: return
+	if not wave_running or float(robot.get("special", 0.0)) > 0.0: return
 	if robot.has("target_pos"):
 		var manual_target: Vector2 = robot.target_pos
 		var manual_distance: float = robot.position.distance_to(manual_target)
@@ -559,23 +601,42 @@ func update_towers(delta: float) -> void:
 
 func update_robot(delta: float) -> void:
 	if not robot.active or robot.hp <= 0.0: return
+	robot["special"] = max(0.0, float(robot.get("special", 0.0)) - delta)
+	if float(robot.get("special", 0.0)) > 0.0:
+		return
 	move_robot_automatically(delta)
 	robot.attack -= delta; robot.area -= delta; robot.pierce -= delta
 	var target: Dictionary = get_robot_target()
 	var heavy: Dictionary = get_robot_heavy_target()
+	if robot.attack <= 0.0 and not target.is_empty():
+		effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "target_enemy": target, "damage": DATA.ROBOT.damage, "source": "robot", "progress": 0.0, "speed": 5.5})
+		robot.attack = DATA.ROBOT.cooldown
+
+func try_special_attack() -> bool:
+	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
+		return false
+	if float(robot.get("special", 0.0)) > 0.0:
+		return false
 	var unlocked_abilities: Array = robot_progression.get("unlocked_abilities", [])
 	if unlocked_abilities.has("ability_area") and robot.area <= 0.0:
 		var nearby: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= DATA.ROBOT.ability_area.radius)
 		if nearby.size() >= DATA.ROBOT.ability_area.threshold:
-			for enemy in nearby: damage_enemy(enemy, DATA.ROBOT.ability_area.damage, "area")
-			effects.append({"position": robot.position, "type": "area", "life": 0.45}); robot.area = DATA.ROBOT.ability_area.cooldown
+			effects.append({"position": robot.position, "type": "area", "life": 0.45, "damage_delay": 0.22, "damage_targets": nearby, "damage": DATA.ROBOT.ability_area.damage, "source": "area"})
+			robot["special"] = ROBOT_SPECIAL_DURATION
+			robot["special_type"] = "area"
+			robot.area = DATA.ROBOT.ability_area.cooldown
 			log_event("ATLAS-01 used AREA ATTACK.")
-	if unlocked_abilities.has("ability_heavy_pierce") and robot.pierce <= 0.0 and not heavy.is_empty():
-		damage_enemy(heavy, DATA.ROBOT.ability_pierce.damage, "pierce"); robot.pierce = DATA.ROBOT.ability_pierce.cooldown
-		log_event("ATLAS-01 used HEAVY PIERCE on %s." % DATA.ENEMIES[heavy.type].name)
-	elif robot.attack <= 0.0 and not target.is_empty():
-		effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "progress": 0.0, "speed": 5.5})
-		damage_enemy(target, DATA.ROBOT.damage, "robot"); robot.attack = DATA.ROBOT.cooldown
+			return true
+	if unlocked_abilities.has("ability_heavy_pierce") and robot.pierce <= 0.0:
+		var heavy: Dictionary = get_robot_heavy_target()
+		if not heavy.is_empty():
+			effects.append({"position": heavy.position, "type": "pierce", "life": 0.45, "damage_delay": 0.22, "target_enemy": heavy, "damage": DATA.ROBOT.ability_pierce.damage, "source": "pierce"})
+			robot["special"] = ROBOT_SPECIAL_DURATION
+			robot["special_type"] = "pierce"
+			robot.pierce = DATA.ROBOT.ability_pierce.cooldown
+			log_event("ATLAS-01 used HEAVY PIERCE on %s." % DATA.ENEMIES[heavy.type].name)
+			return true
+	return false
 
 func available_robot_growths() -> Array[String]:
 	var available: Array[String] = []
@@ -621,6 +682,8 @@ func check_wave_clear() -> void:
 			log_event("CAMPAIGN VICTORY. ALL STAGES CLEAR. Press RESTART to repeat.")
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_SPACE:
+		try_special_attack()
 	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_R:
 		play_sfx("ui_click")
 		restart_campaign()
@@ -638,6 +701,7 @@ func handle_click(point: Vector2) -> void:
 	if Rect2(SIDEBAR_X + 20.0, 275, 145, 42).has_point(point): launch_robot(); return
 	if Rect2(SIDEBAR_X + 20.0, 330, 145, 42).has_point(point): build_tower("cannon"); return
 	if Rect2(SIDEBAR_X + 20.0, 385, 145, 42).has_point(point): build_tower("gatling"); return
+	if Rect2(SIDEBAR_X + 20.0, 433, 145, 42).has_point(point): try_special_attack(); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -851,7 +915,11 @@ func _draw() -> void:
 		var anim_key := "atlas_idle"
 		var total_f := 6
 		var fps := 8.0
-		if float(robot.get("attack", 0.0)) > 0.3:
+		if float(robot.get("special", 0.0)) > 0.0:
+			anim_key = "atlas_skill"
+			total_f = 5
+			fps = 10.0
+		elif float(robot.get("attack", 0.0)) > 0.3:
 			anim_key = "atlas_attack"
 			total_f = 7
 			fps = 14.0
@@ -882,7 +950,7 @@ func draw_ui() -> void:
 	var stage_data := StageManager.get_current_stage()
 	var waves_data := StageManager.get_waves()
 	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 78), "BASE HP  %03d" % max(0, ceil(base_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if base_hp > 30 else Color("ef7068")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 101), "GOLD     %03d" % gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f0b35a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 124), "STAGE    %d / %d" % [int(stage_data.get("order", 1)), CAMPAIGN_STAGE_COUNT], HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d7fff7")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 146), "WAVE     %d / %d" % [wave, waves_data.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d7fff7"))
-	var next_label := "CAMPAIGN CLEAR" if waves_data.is_empty() else str(waves_data[mini(wave - 1, waves_data.size() - 1)].get("label", "UNKNOWN")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 470), "NEXT THREAT", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("6a858a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 491), next_label, HORIZONTAL_ALIGNMENT_LEFT, 165, 11, Color("a9c5c7"))
+	var next_label := "CAMPAIGN CLEAR" if waves_data.is_empty() else str(waves_data[mini(wave - 1, waves_data.size() - 1)].get("label", "UNKNOWN")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 485), "NEXT THREAT", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("6a858a")); draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 506), next_label, HORIZONTAL_ALIGNMENT_LEFT, 165, 11, Color("a9c5c7"))
 	var status_text := "READY"
 	if run_state == RunState.RUNNING: status_text = "WAVE %d IN PROGRESS" % wave
 	elif run_state == RunState.GROWTH: status_text = "SELECT ROBOT ABILITY"
@@ -892,6 +960,8 @@ func draw_ui() -> void:
 	elif run_state == RunState.DEFEAT: draw_sprite(VISUALS["status_defeat"], Vector2(SIDEBAR_X + 127.0, 585), Vector2(48, 48))
 	draw_string(ThemeDB.fallback_font, Vector2(SIDEBAR_X + 20.0, 585), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("92d28b") if run_state == RunState.VICTORY else Color("ef7068") if run_state == RunState.DEFEAT else Color("d7fff7"))
 	button(Rect2(SIDEBAR_X + 20.0, 172, 145, 42), "START WAVE %d" % wave, run_state != RunState.READY); button(Rect2(SIDEBAR_X + 20.0, 220, 145, 42), "RESTART", false); button(Rect2(SIDEBAR_X + 20.0, 275, 145, 42), "LAUNCH ROBOT", not can_launch_robot()); button(Rect2(SIDEBAR_X + 20.0, 330, 145, 42), "BUILD CANNON  55", run_state not in [RunState.READY, RunState.RUNNING]); button(Rect2(SIDEBAR_X + 20.0, 385, 145, 42), "BUILD GATLING 35", run_state not in [RunState.READY, RunState.RUNNING])
+	var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0 and not robot_progression.get("unlocked_abilities", []).is_empty()
+	button(Rect2(SIDEBAR_X + 20.0, 433, 145, 42), "SPECIAL  [SPACE]", not special_ready)
 	var robot_status := "DOCKED"
 	if robot.active: robot_status = "DEPLOYED / " + robot.spot
 	if robot_selected: robot_status += " / SELECTED"
