@@ -89,6 +89,10 @@ var elapsed := 0.0
 var spawn_clock := 0.0
 var spawn_queue: Array = []
 var enemies: Array = []
+var enemy_catalog: Dictionary = DATA.ENEMIES.duplicate(true)
+var enemy_sprite_catalog: Dictionary = {}
+var tower_catalog: Dictionary = DATA.TOWERS.duplicate(true)
+var tower_sprite_catalog: Dictionary = {}
 var towers: Array = []
 var robot := {}
 var robot_progression := {}
@@ -102,11 +106,52 @@ var effects: Array = []
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_load_enemy_catalog()
+	_load_tower_catalog()
 	StageManager.reset_session()
 	if not load_stage_map("stage_01"):
 		build_first_battle_map()
 	reset_game()
 	queue_redraw()
+
+func _load_enemy_catalog() -> void:
+	var path := "res://content/enemies/enemies.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+	if parsed is Dictionary and not parsed.is_empty():
+		for enemy_type in parsed:
+			if parsed[enemy_type] is Dictionary and DATA.ENEMIES.has(enemy_type):
+				enemy_catalog[enemy_type] = parsed[enemy_type].duplicate(true)
+	enemy_sprite_catalog.clear()
+	for enemy_type in DATA.ENEMIES:
+		var sprite_path := str(enemy_catalog[enemy_type].get("sprite_anim", ""))
+		var sprite: Texture2D = load(sprite_path) as Texture2D if not sprite_path.is_empty() else null
+		if sprite:
+			enemy_sprite_catalog[enemy_type] = sprite
+		else:
+			enemy_sprite_catalog[enemy_type] = VISUALS.get("enemy_%s_anim" % enemy_type)
+
+func _load_tower_catalog() -> void:
+	var path := "res://content/towers/towers.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file:
+		var parsed = JSON.parse_string(file.get_as_text())
+		file.close()
+		if parsed is Dictionary and not parsed.is_empty():
+			for tower_type in parsed:
+				if parsed[tower_type] is Dictionary and DATA.TOWERS.has(tower_type):
+					tower_catalog[tower_type] = parsed[tower_type].duplicate(true)
+	tower_sprite_catalog.clear()
+	for tower_type in DATA.TOWERS:
+		var sprite_path := str(tower_catalog[tower_type].get("sprite_anim", ""))
+		var sprite: Texture2D = load(sprite_path) as Texture2D if not sprite_path.is_empty() else null
+		if sprite:
+			tower_sprite_catalog[tower_type] = sprite
+		else:
+			tower_sprite_catalog[tower_type] = VISUALS.get("tower_%s_anim" % tower_type)
 
 func load_stage_map(stage_id: String) -> bool:
 	if StageManager.load_stage(stage_id).is_empty():
@@ -422,7 +467,7 @@ func spawn_enemies() -> void:
 				SPAWN_AREA_SEQUENCE["__global__"] = area_index + 1
 		if lane.is_empty():
 			lane = str(spawn_points[enemies.size() % spawn_points.size()])
-		var data: Dictionary = DATA.ENEMIES[entry.type]
+		var data: Dictionary = enemy_catalog[entry.type]
 		var spawn_position: Vector2 = LANES[lane]
 		if SPAWN_AREAS.has(lane):
 			var spawn_rect: Rect2 = SPAWN_AREAS[lane]
@@ -444,7 +489,7 @@ func damage_robot(amount: float) -> void:
 
 func update_giant_robot_attack(delta: float, enemy: Dictionary) -> void:
 	if enemy.type != "giant" or not robot.active or robot.hp <= 0.0: return
-	var data: Dictionary = DATA.ENEMIES[enemy.type]
+	var data: Dictionary = enemy_catalog[enemy.type]
 	enemy.robot_attack_timer -= delta
 	if enemy.position.distance_to(robot.position) > data.robot_range: return
 	if enemy.robot_attack_timer > 0.0: return
@@ -457,7 +502,7 @@ func update_giant_robot_attack(delta: float, enemy: Dictionary) -> void:
 func move_enemies(delta: float) -> void:
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
-		var data: Dictionary = DATA.ENEMIES[enemy.type]
+		var data: Dictionary = enemy_catalog[enemy.type]
 		var start: Vector2 = enemy.get("start_position", LANES[enemy.lane])
 		enemy.position.x += data.speed * delta
 		var progress: float = clampf((enemy.position.x - start.x) / (BASE.x - start.x), 0.0, 1.0)
@@ -474,7 +519,7 @@ func move_enemies(delta: float) -> void:
 
 func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 	if enemy == null or enemy.hp <= 0.0: return
-	var data: Dictionary = DATA.ENEMIES[enemy.type]
+	var data: Dictionary = enemy_catalog[enemy.type]
 	enemy.hp -= max(1.0, amount - data.armor); enemy.flash = 0.12
 	effects.append({"position": enemy.position, "type": "impact_explosion", "life": 0.35, "max_life": 0.35})
 	if enemy.hp <= 0.0:
@@ -634,7 +679,7 @@ func try_special_attack() -> bool:
 			robot["special"] = ROBOT_SPECIAL_DURATION
 			robot["special_type"] = "pierce"
 			robot.pierce = DATA.ROBOT.ability_pierce.cooldown
-			log_event("ATLAS-01 used HEAVY PIERCE on %s." % DATA.ENEMIES[heavy.type].name)
+			log_event("ATLAS-01 used HEAVY PIERCE on %s." % enemy_catalog[heavy.type].name)
 			return true
 	return false
 
@@ -744,8 +789,8 @@ func build_tower(type: String) -> void:
 	if run_state not in [RunState.READY, RunState.RUNNING]: return
 	if selected_slot.is_empty(): play_sfx("ui_error"); log_event("Select an empty tower slot first."); return
 	if towers.any(func(tower): return tower.id == selected_slot): upgrade_tower(type); return
-	if not DATA.TOWERS.has(type): play_sfx("ui_error"); return
-	var data: Dictionary = DATA.TOWERS[type]
+	if not tower_catalog.has(type): play_sfx("ui_error"); return
+	var data: Dictionary = tower_catalog[type]
 	if gold < data.cost: play_sfx("ui_error"); log_event("Need %d gold for %s." % [data.cost, data.name]); return
 	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": selected_slot_position, "data": data, "cooldown": 0.0}); play_sfx("tower_build"); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false
 
@@ -845,13 +890,13 @@ func _draw() -> void:
 			frame_idx = int(fire_progress * 4.0) % 4
 		draw_oval(tower_feet, 28.0, 10.0, Color(0, 0, 0, 0.45))
 		draw_arc(tower_feet, 30.0, 0, TAU, 24, Color("7ed6ce" if tower.type == "cannon" else "f0a35a"), 2.5)
-		draw_animated_sprite(VISUALS[anim_key], tower_pos, Vector2(60, 90), frame_idx, 4)
+		draw_animated_sprite(tower_sprite_catalog.get(tower.type, VISUALS[anim_key]), tower_pos, Vector2(60, 90), frame_idx, 4)
 		if selected_tower == tower.id: draw_arc(tower_feet, 38.0, 0, TAU, 24, Color("d7fff7"), 2.0)
 
 	# Enemy Units (High Contrast Strategic Visibility)
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
-		var data: Dictionary = DATA.ENEMIES[enemy.type]
+		var data: Dictionary = enemy_catalog[enemy.type]
 		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES[enemy.type]
 		
 		# Strategic Base Indicator at Enemy Feet (drawn BEFORE sprite so feet sit inside base ring)
@@ -863,7 +908,7 @@ func _draw() -> void:
 		var anim_key: String = "enemy_" + enemy.type + "_anim"
 		var fps: float = 14.0 if enemy.type == "rusher" else (6.0 if enemy.type == "giant" else 10.0)
 		var e_frame: int = int((elapsed + float(enemy.position.x)) * fps) % 8
-		draw_animated_sprite(VISUALS[anim_key], enemy.position, enemy_size, e_frame, 8)
+		draw_animated_sprite(enemy_sprite_catalog.get(enemy.type, VISUALS[anim_key]), enemy.position, enemy_size, e_frame, 8)
 		
 		# Strategic HP Bar
 		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 9)
@@ -876,11 +921,11 @@ func _draw() -> void:
 	for effect in effects:
 		var etype: String = str(effect.get("type", ""))
 		if etype == "giantHit":
-			draw_arc(effect.position, 35.0, 0, TAU, 16, Color("ef7068"), 3.0)
+			draw_arc(effect.get("position", Vector2.ZERO), 35.0, 0, TAU, 16, Color("ef7068"), 3.0)
 		elif etype == "impact_explosion" or etype in ["cannon", "gatling", "robot", "area", "pierce"]:
 			var life_progress: float = 1.0 - clampf(float(effect.get("life", 0.0)) / max(0.01, float(effect.get("max_life", 0.35))), 0.0, 1.0)
 			var frame_idx: int = int(life_progress * 8.0) % 8
-			draw_animated_sprite(VISUALS["impact_explosion"], effect.position, Vector2(54, 54), frame_idx, 8)
+			draw_animated_sprite(VISUALS["impact_explosion"], effect.get("position", Vector2.ZERO), Vector2(54, 54), frame_idx, 8)
 		elif etype == "proj_defender":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
 			var start_p: Vector2 = effect.get("start", Vector2.ZERO)

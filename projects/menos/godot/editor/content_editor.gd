@@ -2,6 +2,8 @@ extends Control
 
 const MAP_EDITOR_SCENE := "res://editor/map_editor.tscn"
 const STAGE_EDITOR_SCENE := "res://editor/stage_editor.tscn"
+const ENEMY_EDITOR_SCENE := "res://editor/enemy_editor.tscn"
+const TOWER_EDITOR_SCENE := "res://editor/tower_editor.tscn"
 
 var current_editor: Node = null
 var content_host: Control
@@ -10,6 +12,8 @@ func _ready() -> void:
 	content_host = $MainLayout/Content
 	$MainLayout/Sidebar/Buttons/BtnMap.pressed.connect(_open_map_editor)
 	$MainLayout/Sidebar/Buttons/BtnStage.pressed.connect(_open_stage_editor)
+	$MainLayout/Sidebar/Buttons/BtnEnemy.pressed.connect(_open_enemy_editor)
+	$MainLayout/Sidebar/Buttons/BtnTower.pressed.connect(_open_tower_editor)
 	$MainLayout/Sidebar/Buttons/BtnQuit.pressed.connect(_quit)
 	_open_map_editor()
 
@@ -20,6 +24,14 @@ func _open_map_editor() -> void:
 func _open_stage_editor() -> void:
 	_load_editor(STAGE_EDITOR_SCENE)
 	_set_active_button($MainLayout/Sidebar/Buttons/BtnStage)
+
+func _open_enemy_editor() -> void:
+	_load_editor(ENEMY_EDITOR_SCENE)
+	_set_active_button($MainLayout/Sidebar/Buttons/BtnEnemy)
+
+func _open_tower_editor() -> void:
+	_load_editor(TOWER_EDITOR_SCENE)
+	_set_active_button($MainLayout/Sidebar/Buttons/BtnTower)
 
 func _load_editor(scene_path: String) -> void:
 	if current_editor:
@@ -36,6 +48,8 @@ func _load_editor(scene_path: String) -> void:
 func _set_active_button(active: Button) -> void:
 	$MainLayout/Sidebar/Buttons/BtnMap.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnMap
 	$MainLayout/Sidebar/Buttons/BtnStage.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnStage
+	$MainLayout/Sidebar/Buttons/BtnEnemy.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnEnemy
+	$MainLayout/Sidebar/Buttons/BtnTower.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnTower
 
 func _quit() -> void:
 	get_tree().quit()

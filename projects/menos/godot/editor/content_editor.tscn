@@ -43,6 +43,16 @@ layout_mode = 2
 toggle_mode = true
 text = "STAGE EDITOR"
 
+[node name="BtnEnemy" type="Button" parent="MainLayout/Sidebar/Buttons"]
+layout_mode = 2
+toggle_mode = true
+text = "ENEMY EDITOR"
+
+[node name="BtnTower" type="Button" parent="MainLayout/Sidebar/Buttons"]
+layout_mode = 2
+toggle_mode = true
+text = "TOWER EDITOR"
+
 [node name="Spacer" type="Control" parent="MainLayout/Sidebar/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3

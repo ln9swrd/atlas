@@ -1,42 +1,109 @@
 {
-  "stage_id": "stage_01",
-  "order": 1,
-  "name": "Northbridge Sector 01",
-  "map_file": "res://content/maps/map_01.json",
   "balance": {
-	"initial_gold": 180,
-	"base_hp": 100.0
+	"base_hp": 101.0,
+	"initial_gold": 180
   },
+  "map_file": "res://content/maps/map_01.json",
+  "name": "Northbridge Sector 01",
+  "next_stage_id": "stage_02",
+  "order": 1,
+  "stage_id": "stage_01",
   "waves": [
 	{
-	  "label": "NORMAL / BOTH LANES",
 	  "groups": [
-		["normal", 10, 0.75, ["left", "right"]]
-	  ]
+		[
+		  "normal",
+		  30,
+		  0.75,
+		  [
+			"left",
+            "right"
+		  ]
+		]
+	  ],
+	  "label": "NORMAL / BOTH LANES"
 	},
 	{
-	  "label": "RUSHER / NORTH PRESSURE",
 	  "groups": [
-		["normal", 6, 0.8, ["right"]],
-		["rusher", 8, 0.5, ["left"]]
-	  ]
+		[
+		  "normal",
+		  18,
+		  0.8,
+		  [
+            "right"
+		  ]
+		],
+		[
+		  "rusher",
+		  24,
+		  0.5,
+		  [
+            "left"
+		  ]
+		]
+	  ],
+	  "label": "RUSHER / NORTH PRESSURE"
 	},
 	{
-	  "label": "HEAVY / SOUTH PRESSURE",
 	  "groups": [
-		["rusher", 7, 0.45, ["right"]],
-		["heavy", 5, 1.1, ["left"]]
-	  ]
+		[
+		  "rusher",
+		  21,
+		  0.45,
+		  [
+            "right"
+		  ]
+		],
+		[
+		  "heavy",
+		  15,
+		  1.1,
+		  [
+            "left"
+		  ]
+		]
+	  ],
+	  "label": "HEAVY / SOUTH PRESSURE"
 	},
 	{
-	  "label": "ALL TYPES / GIANT / BOTH LANES",
 	  "groups": [
-		["normal", 8, 0.6, ["left", "right"]],
-		["rusher", 8, 0.42, ["left", "right"]],
-		["heavy", 6, 0.9, ["left", "right"]],
-		["giant", 1, 1.0, ["right"]]
-	  ]
+		[
+		  "normal",
+		  24,
+		  0.6,
+		  [
+			"left",
+            "right"
+		  ]
+		],
+		[
+		  "rusher",
+		  24,
+		  0.42,
+		  [
+			"left",
+            "right"
+		  ]
+		],
+		[
+		  "heavy",
+		  20,
+		  0.9,
+		  [
+			"left",
+            "right"
+		  ]
+		],
+		[
+		  "giant",
+		  1.0,
+		  1.0,
+		  [
+            "right"
+		  ]
+		]
+	  ],
+	  "label": "ALL TYPES / GIANT / BOTH LANES"
 	}
-  ],
-  "next_stage_id": "stage_02"
+  ]
 }

@@ -1,0 +1,32 @@
+{
+  "cannon": {
+    "name": "CANNON",
+    "cost": 55,
+    "damage": 42.0,
+    "cooldown": 1.35,
+    "range": 155.0,
+    "preference": "heavy",
+    "sprite_anim": "res://assets/menos/sprites/tower_cannon_anim.png",
+    "level2": {
+      "upgrade_cost": 75,
+      "damage": 60.0,
+      "cooldown": 1.15,
+      "range": 165.0
+    }
+  },
+  "gatling": {
+    "name": "GATLING",
+    "cost": 35,
+    "damage": 9.0,
+    "cooldown": 0.23,
+    "range": 145.0,
+    "preference": "fast",
+    "sprite_anim": "res://assets/menos/sprites/tower_gatling_anim.png",
+    "level2": {
+      "upgrade_cost": 50,
+      "damage": 13.0,
+      "cooldown": 0.2,
+      "range": 155.0
+    }
+  }
+}
