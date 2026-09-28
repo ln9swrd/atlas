@@ -87,6 +87,10 @@ func _build_ui() -> void:
 	source_region.text = "선택 영역으로 교체"
 	source_region.pressed.connect(_replace_from_source_region)
 	source_panel.add_child(source_region)
+	var tower_normalize := Button.new()
+	tower_normalize.text = "타워 크기로 맞춰 교체"
+	tower_normalize.pressed.connect(_replace_source_region_as_tower)
+	source_panel.add_child(tower_normalize)
 	var source_reference := Button.new()
 	source_reference.text = "선택 영역을 참조 이미지로 설정"
 	source_reference.pressed.connect(_apply_source_region_reference)
@@ -309,6 +313,42 @@ func _replace_from_source_region() -> void:
 	current_image = source_image.get_region(rect)
 	_refresh_view()
 	status.text = "참조 영역 %d × %d px로 대상을 교체했습니다. 저장 + 연결 변경을 눌러 적용하세요." % [rect.size.x, rect.size.y]
+
+func _replace_source_region_as_tower() -> void:
+	if not _require_image(): return
+	if current_index < 0 or current_index >= entries.size():
+		status.text = "먼저 타워 이미지를 선택하세요."
+		return
+	var entry: Dictionary = entries[current_index]
+	if str(entry.get("owner", "")) != "res://content/towers/towers.json":
+		status.text = "이 기능은 타워 이미지에서만 사용할 수 있습니다."
+		return
+	if editing: _finish_erase()
+	if source_image == null or source_path.is_empty() or source_path == current_path:
+		status.text = "먼저 다른 참조 이미지를 선택하세요."
+		return
+	var rect := view.selected_region
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		status.text = "참조 이미지에서 타워로 사용할 영역을 드래그로 선택하세요."
+		return
+	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
+	if rect.size.x <= 0 or rect.size.y <= 0: return
+	var region := source_image.get_region(rect)
+	var frame := Image.create(60, 90, false, Image.FORMAT_RGBA8)
+	frame.fill(Color(0, 0, 0, 0))
+	var scale := minf(60.0 / float(region.get_width()), 90.0 / float(region.get_height()))
+	var fitted_w := maxi(1, roundi(region.get_width() * scale))
+	var fitted_h := maxi(1, roundi(region.get_height() * scale))
+	region.resize(fitted_w, fitted_h, Image.INTERPOLATE_LANCZOS)
+	var dest := Rect2i((60 - fitted_w) / 2, 90 - fitted_h, fitted_w, fitted_h)
+	frame.blit_rect(region, Rect2i(0, 0, fitted_w, fitted_h), dest.position)
+	var sheet := Image.create(240, 90, false, Image.FORMAT_RGBA8)
+	sheet.fill(Color(0, 0, 0, 0))
+	for frame_index in 4:
+		sheet.blit_rect(frame, Rect2i(0, 0, 60, 90), Vector2i(frame_index * 60, 0))
+	current_image = sheet
+	_refresh_view()
+	status.text = "타워용 4프레임 240 × 90 px로 정규화했습니다. 저장 + 연결 변경을 눌러 적용하세요."
 
 func _resize_image(width_px: int, height_px: int) -> void:
 	if not _require_image(): return

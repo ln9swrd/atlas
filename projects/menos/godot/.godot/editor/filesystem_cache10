@@ -86,7 +86,7 @@ content_editor.tscn::PackedScene::-1::1790609468::0::1::::<><><>0<>0<><>::res://
 editor_canvas.gd::GDScript::8515960973698181157::1790519993::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
 enemy_editor.gd::GDScript::3049928235990941448::1790612397::0::1::::EnemyEditorMain<>Control<><>0<>0<><>::
 enemy_editor.tscn::PackedScene::-1::1790609468::0::1::::<><><>0<>0<><>::res://editor/enemy_editor.gd
-image_editor.gd::GDScript::850829310022179836::1790612789::0::1::::<>Control<><>0<>0<><>::
+image_editor.gd::GDScript::850829310022179836::1790613167::0::1::::<>Control<><>0<>0<><>::
 image_editor.tscn::PackedScene::-1::1790609468::0::1::::<><><>0<>0<><>::res://editor/image_editor.gd
 image_editor_state.gd::GDScript::302610657414012107::1790609058::0::1::::ImageEditorState<>RefCounted<><>0<>0<><>::
 image_texture_loader.gd::GDScript::2404187261731203358::1790511154::0::1::::<>RefCounted<><>0<>0<><>::
