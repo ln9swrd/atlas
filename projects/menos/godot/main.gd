@@ -734,12 +734,8 @@ func check_wave_clear() -> void:
 	var waves_count := StageManager.get_waves().size()
 	if wave < waves_count:
 		log_event("Wave %d clear." % wave); wave += 1
-		if available_robot_growths().is_empty():
-			run_state = RunState.READY
-			start_wave()
-		else:
-			run_state = RunState.GROWTH
-			log_event("Choose one Robot ability before Wave %d." % wave)
+		run_state = RunState.READY
+		start_wave()
 	else:
 		var next_stage_id := str(StageManager.get_current_stage().get("next_stage_id", ""))
 		if not next_stage_id.is_empty():
@@ -769,18 +765,11 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: handle_click(get_global_mouse_position())
 
 func handle_click(point: Vector2) -> void:
-	if _ui_button_rect(220).has_point(point): play_sfx("ui_click"); restart_campaign(); return
-	if run_state == RunState.GROWTH:
-		for ability_id in available_robot_growths():
-			if GROWTH_OPTION_RECTS[ability_id].has_point(point):
-				choose_robot_growth(ability_id)
-				return
-		return
-	if _ui_button_rect(172).has_point(point): start_wave(); return
-	if _ui_button_rect(275).has_point(point): launch_robot(); return
-	if _ui_button_rect(330).has_point(point): build_tower("cannon"); return
-	if _ui_button_rect(385).has_point(point): build_tower("gatling"); return
-	if _ui_button_rect(433).has_point(point): try_special_attack(); return
+	if _ui_action_rect(0).has_point(point): start_wave(); return
+	if _ui_action_rect(1).has_point(point): launch_robot(); return
+	if _ui_action_rect(2).has_point(point): build_tower("cannon"); return
+	if _ui_action_rect(3).has_point(point): build_tower("gatling"); return
+	if _ui_action_rect(4).has_point(point): try_special_attack(); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -1021,13 +1010,16 @@ func _draw() -> void:
 		var life := float(damage_number.get("life", 0.0))
 		var alpha := clampf(life / 0.7, 0.0, 1.0)
 		draw_string(ThemeDB.fallback_font, damage_number.get("position", Vector2.ZERO), str(damage_number.get("value", 0)), HORIZONTAL_ALIGNMENT_CENTER, 50, 16, Color(1, 0.85, 0.35, alpha))
-	draw_ui()
+	draw_ui2()
 
 func _ui_origin() -> Vector2:
-	return $Camera2D.position - get_viewport_rect().size * 0.5 + Vector2(18, 18)
+	return $Camera2D.position - get_viewport_rect().size * 0.5 + Vector2(0, get_viewport_rect().size.y - 154.0)
+
+func _ui_action_rect(index: int) -> Rect2:
+	return Rect2(_ui_origin() + Vector2(20.0 + index * 166.0, 72.0), Vector2(154, 46))
 
 func _ui_button_rect(y: float) -> Rect2:
-	return Rect2(_ui_origin() + Vector2(20, y), Vector2(145, 42))
+	return Rect2(_ui_origin() + Vector2(20, y), Vector2(154, 46))
 
 func draw_ui() -> void:
 	var origin := _ui_origin()
@@ -1071,6 +1063,52 @@ func draw_minimap(position: Vector2) -> void:
 		var local_robot: Vector2 = robot.position - MAP_ORIGIN
 		draw_circle(rect.position + Vector2(local_robot.x * sx, local_robot.y * sy), 3.0, Color("7ed6ce"))
 	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), "적 접근", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("d7fff7"))
+
+func draw_ui2() -> void:
+	var origin := _ui_origin()
+	var viewport_size := get_viewport_rect().size
+	var stage_data := StageManager.get_current_stage()
+	var waves_data := StageManager.get_waves()
+	var hud_rect := Rect2(origin, Vector2(viewport_size.x, 154.0))
+	draw_rect(hud_rect, Color(0.025, 0.055, 0.065, 0.96), true)
+	draw_line(origin, origin + Vector2(viewport_size.x, 0), Color("527079"), 2.0)
+	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 25), SettingsManager.text("기지 HP %03d", "BASE HP %03d") % max(0, ceil(base_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, origin + Vector2(145, 25), SettingsManager.text("골드 %03d", "GOLD %03d") % gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f0d28a"))
+	draw_string(ThemeDB.fallback_font, origin + Vector2(280, 25), SettingsManager.text("스테이지 %d", "STAGE %d") % int(stage_data.get("order", 1)), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
+	draw_string(ThemeDB.fallback_font, origin + Vector2(365, 25), SettingsManager.text("웨이브 %d / %d", "WAVE %d / %d") % [wave, waves_data.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
+	var status_text := SettingsManager.text("대기", "READY")
+	if run_state == RunState.RUNNING: status_text = SettingsManager.text("웨이브 진행 중", "WAVE IN PROGRESS")
+	elif run_state == RunState.VICTORY: status_text = SettingsManager.text("승리", "VICTORY")
+	elif run_state == RunState.DEFEAT: status_text = SettingsManager.text("패배", "DEFEAT")
+	draw_string(ThemeDB.fallback_font, origin + Vector2(520, 25), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
+	button(_ui_action_rect(0), SettingsManager.text("웨이브 시작", "START WAVE"), run_state != RunState.READY)
+	button(_ui_action_rect(1), SettingsManager.text("ATLAS 출격", "LAUNCH ATLAS"), not can_launch_robot())
+	button(_ui_action_rect(2), SettingsManager.text("캐논 건설", "BUILD CANNON"), run_state not in [RunState.READY, RunState.RUNNING])
+	button(_ui_action_rect(3), SettingsManager.text("개틀링 건설", "BUILD GATLING"), run_state not in [RunState.READY, RunState.RUNNING])
+	button(_ui_action_rect(4), SettingsManager.text("필살기 [SPACE]", "SPECIAL [SPACE]"), not (robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0))
+	var robot_status := SettingsManager.text("대기", "STANDBY")
+	if robot.active: robot_status = SettingsManager.text("출격 / ", "ACTIVE / ") + robot.spot
+	draw_string(ThemeDB.fallback_font, origin + Vector2(850, 25), "ATLAS-01 " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, 270, 12, Color("7ed6ce"))
+	draw_string(ThemeDB.fallback_font, origin + Vector2(850, 46), "HP %03d" % max(0, ceil(robot.hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("a9c5c7"))
+	for index in range(min(feed.size(), 3)):
+		draw_string(ThemeDB.fallback_font, origin + Vector2(850, 66 + index * 16), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 270, 10, Color("a9c5c7"))
+	draw_minimap2(origin + Vector2(viewport_size.x - 245, 18))
+
+func draw_minimap2(position: Vector2) -> void:
+	var rect := Rect2(position, Vector2(220, 112))
+	var sx: float = rect.size.x / max(1.0, MAP_PIXEL_SIZE.x)
+	var sy: float = rect.size.y / max(1.0, MAP_PIXEL_SIZE.y)
+	draw_rect(rect, Color(0.02, 0.07, 0.08, 0.96), true)
+	draw_rect(rect, Color("527079"), false, 1)
+	var base_local := BASE - MAP_ORIGIN
+	draw_circle(rect.position + Vector2(base_local.x * sx, base_local.y * sy), 5.0, Color("7ed6ce"))
+	for enemy in enemies:
+		if enemy.hp <= 0.0: continue
+		var local: Vector2 = enemy.position - MAP_ORIGIN
+		draw_circle(rect.position + Vector2(local.x * sx, local.y * sy), 3.0 if enemy.type != "giant" else 5.0, Color("ef7068"))
+	var local_robot: Vector2 = robot.position - MAP_ORIGIN
+	draw_circle(rect.position + Vector2(local_robot.x * sx, local_robot.y * sy), 4.0, Color("f0d28a"))
+	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), SettingsManager.text("기지 / ATLAS / 적", "BASE / ATLAS / ENEMIES"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d7fff7"))
 
 func draw_robot_growth_choice() -> void:
 	var rect := Rect2(_ui_origin() + Vector2(385, 180), Vector2(500, 185))

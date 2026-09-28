@@ -20,10 +20,11 @@ window/size/viewport_width=1400
 window/size/viewport_height=860
 window/size/window_width_override=1400
 window/size/window_height_override=860
-
-[input]
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.025, 0.055, 0.065, 1)

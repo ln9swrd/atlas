@@ -6,11 +6,15 @@ const EDITED_DIR := "res://content/editor/edited_assets"
 
 var entries: Array[Dictionary] = []
 var list: ItemList
+var source_list: ItemList
 var view: AssetRegionView
 var status: Label
 var current_index := -1
 var current_path := ""
 var current_image: Image
+var source_index := -1
+var source_path := ""
+var source_image: Image
 var editing := false
 
 func _ready() -> void:
@@ -43,6 +47,28 @@ func _build_ui() -> void:
 	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	list.item_selected.connect(_select_entry)
 	left.add_child(list)
+	var source_panel := VBoxContainer.new()
+	source_panel.custom_minimum_size.x = 280
+	body.add_child(source_panel)
+	var source_title := Label.new()
+	source_title.text = "참조 이미지 카탈로그"
+	source_panel.add_child(source_title)
+	source_list = ItemList.new()
+	source_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	source_list.item_selected.connect(_select_source_entry)
+	source_panel.add_child(source_list)
+	var source_help := Label.new()
+	source_help.text = "다른 이미지의 전체 또는 선택 영역을 현재 이미지로 교체합니다."
+	source_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	source_panel.add_child(source_help)
+	var source_full := Button.new()
+	source_full.text = "전체 이미지로 교체"
+	source_full.pressed.connect(_replace_from_source_full)
+	source_panel.add_child(source_full)
+	var source_region := Button.new()
+	source_region.text = "선택 영역으로 교체"
+	source_region.pressed.connect(_replace_from_source_region)
+	source_panel.add_child(source_region)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
@@ -98,9 +124,12 @@ func _scan_connected_images() -> void:
 	_scan_catalog(seen)
 	_scan_main_preloads(seen)
 	list.clear()
+	source_list.clear()
 	for entry in entries:
 		var icon: Texture2D = load(str(entry.path)) as Texture2D
-		list.add_item("%s | %s" % [entry.label, entry.path], icon)
+		var label_text := "%s | %s" % [entry.label, entry.path]
+		list.add_item(label_text, icon)
+		source_list.add_item(label_text, icon)
 	status.text = "%d connected images found." % entries.size()
 
 func _scan_json_images(path: String, kind: String, field: String, seen: Dictionary) -> void:
@@ -162,7 +191,48 @@ func _select_entry(index: int) -> void:
 		status.text = "Could not load: %s" % current_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
-	status.text = "%s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+	status.text = "대상: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+
+func _select_source_entry(index: int) -> void:
+	if editing: return
+	if index < 0 or index >= entries.size(): return
+	source_index = index
+	source_path = str(entries[index].path)
+	if source_path == current_path:
+		status.text = "대상과 다른 이미지를 참조 이미지로 선택하세요."
+		return
+	source_image = LOADER.load_image(source_path)
+	if source_image == null:
+		status.text = "참조 이미지를 불러올 수 없습니다: %s" % source_path
+		return
+	view.set_source_texture(ImageTexture.create_from_image(source_image))
+	status.text = "참조: %s — 전체 또는 드래그 선택 영역을 사용하세요." % source_path
+
+func _replace_from_source_full() -> void:
+	if not _require_image(): return
+	if editing: _finish_erase()
+	if source_image == null or source_path.is_empty() or source_path == current_path:
+		status.text = "먼저 다른 참조 이미지를 선택하세요."
+		return
+	current_image = source_image.duplicate()
+	_refresh_view()
+	status.text = "참조 이미지 전체를 대상으로 교체했습니다. 저장 + 연결 변경을 눌러 적용하세요."
+
+func _replace_from_source_region() -> void:
+	if not _require_image(): return
+	if editing: _finish_erase()
+	if source_image == null or source_path.is_empty() or source_path == current_path:
+		status.text = "먼저 다른 참조 이미지를 선택하세요."
+		return
+	var rect := view.selected_region
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		status.text = "참조 이미지에서 교체할 영역을 드래그로 선택하세요."
+		return
+	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
+	if rect.size.x <= 0 or rect.size.y <= 0: return
+	current_image = source_image.get_region(rect)
+	_refresh_view()
+	status.text = "참조 영역 %d × %d px로 대상을 교체했습니다. 저장 + 연결 변경을 눌러 적용하세요." % [rect.size.x, rect.size.y]
 
 func _resize_image(width_px: int, height_px: int) -> void:
 	if not _require_image(): return

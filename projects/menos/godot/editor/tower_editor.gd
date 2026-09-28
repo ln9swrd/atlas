@@ -99,7 +99,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	parent.add_child(sprite_preview)
 	var edit_image := Button.new()
-	edit_image.text = "이미지 편집"
+	edit_image.text = "이미지 편집 / 다른 이미지 참조"
 	edit_image.pressed.connect(_open_image_editor)
 	parent.add_child(edit_image)
 	add_child(file_dialog)

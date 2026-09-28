@@ -6,6 +6,7 @@ const GAME_SCENE := "res://main.tscn"
 @onready var single_button: Button = $CenterContainer/MainPanel/Content/Actions/SinglePlay
 @onready var stage_select: OptionButton = $CenterContainer/MainPanel/Content/Actions/StageSelect
 @onready var quit_button: Button = $CenterContainer/MainPanel/Content/Actions/Quit
+@onready var settings_button: Button = $CenterContainer/MainPanel/Content/Settings
 var transition_started := false
 
 func _ready() -> void:
@@ -15,6 +16,8 @@ func _ready() -> void:
 	for stage_id in ["stage_01", "stage_02", "stage_03"]:
 		stage_select.add_item(stage_id.to_upper())
 	quit_button.pressed.connect(_on_quit_pressed)
+	settings_button.pressed.connect(_on_settings_pressed)
+	_refresh_language()
 	start_button.grab_focus()
 
 func _draw() -> void:
@@ -52,6 +55,18 @@ func _on_start_campaign_pressed() -> void:
 	if error != OK:
 		transition_started = false
 		push_error("Could not open the MENOS campaign scene: %s" % GAME_SCENE)
+
+func _on_settings_pressed() -> void:
+	get_tree().change_scene_to_file("res://ui/settings_screen.tscn")
+
+func _refresh_language() -> void:
+	start_button.text = SettingsManager.text("캠페인 시작", "START CAMPAIGN")
+	single_button.text = SettingsManager.text("싱글 플레이", "SINGLE PLAY")
+	if stage_select.item_count > 0: stage_select.set_item_text(0, SettingsManager.text("스테이지 1", "STAGE 1"))
+	if stage_select.item_count > 1: stage_select.set_item_text(1, SettingsManager.text("스테이지 2", "STAGE 2"))
+	if stage_select.item_count > 2: stage_select.set_item_text(2, SettingsManager.text("스테이지 3", "STAGE 3"))
+	quit_button.text = SettingsManager.text("종료", "QUIT")
+	settings_button.text = SettingsManager.text("설정", "SETTINGS")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

@@ -1,49 +1,49 @@
 {
-  "normal": {
-    "name": "NORMAL",
-    "hp": 42.0,
-    "speed": 25.0,
-    "armor": 0.0,
-    "base_damage": 8.0,
-    "reward": 12,
-    "radius": 10.0,
-    "color": "#f0b35a",
-    "sprite_anim": "res://assets/menos/sprites/enemy_normal_anim.png"
-  },
-  "rusher": {
-    "name": "RUSHER",
-    "hp": 27.0,
-    "speed": 55.0,
-    "armor": 0.0,
-    "base_damage": 6.0,
-    "reward": 10,
-    "radius": 8.0,
-    "color": "#ef7068",
-    "sprite_anim": "res://assets/menos/sprites/enemy_rusher_anim.png"
-  },
-  "heavy": {
-    "name": "HEAVY",
-    "hp": 125.0,
-    "speed": 14.0,
-    "armor": 8.0,
-    "base_damage": 18.0,
-    "reward": 28,
-    "radius": 15.0,
-    "color": "#a98ce6",
-    "sprite_anim": "res://assets/menos/sprites/enemy_heavy_anim.png"
-  },
-  "giant": {
-    "name": "GIANT",
-    "hp": 620.0,
-    "speed": 7.0,
-    "armor": 18.0,
-    "base_damage": 45.0,
-    "reward": 90,
-    "radius": 28.0,
-    "color": "#f04f6b",
-    "sprite_anim": "res://assets/menos/sprites/enemy_giant_anim.png",
-    "robot_damage": 20.0,
-    "robot_range": 120.0,
-    "robot_cooldown": 2.0
-  }
+	"giant": {
+		"armor": 18.0,
+		"base_damage": 45.0,
+		"color": "#f04f6b",
+		"hp": 620.0,
+		"name": "GIANT",
+		"radius": 28.0,
+		"reward": 90.0,
+		"robot_cooldown": 2.0,
+		"robot_damage": 20.0,
+		"robot_range": 120.0,
+		"speed": 7.0,
+		"sprite_anim": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png"
+	},
+	"heavy": {
+		"armor": 8.0,
+		"base_damage": 18.0,
+		"color": "#a98ce6",
+		"hp": 125.0,
+		"name": "HEAVY",
+		"radius": 15.0,
+		"reward": 28.0,
+		"speed": 14.0,
+		"sprite_anim": "res://content/editor/edited_assets/enemy_heavy_anim_edit_140823606.png"
+	},
+	"normal": {
+		"armor": 0.0,
+		"base_damage": 8.0,
+		"color": "#f0b35a",
+		"hp": 42.0,
+		"name": "NORMAL",
+		"radius": 10.0,
+		"reward": 12.0,
+		"speed": 25.0,
+		"sprite_anim": "res://content/editor/edited_assets/enemy_normal_anim_edit_112117537.png"
+	},
+	"rusher": {
+		"armor": 0.0,
+		"base_damage": 6.0,
+		"color": "#ef7068",
+		"hp": 27.0,
+		"name": "RUSHER",
+		"radius": 8.0,
+		"reward": 10.0,
+		"speed": 55.0,
+		"sprite_anim": "res://content/editor/edited_assets/enemy_rusher_anim_edit_124894225.png"
+	}
 }
