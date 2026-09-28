@@ -3,6 +3,14 @@ extends RefCounted
 
 static var current_stage_id: String = "stage_01"
 static var current_stage_data: Dictionary = {}
+static var run_mode: String = "campaign"
+static var selected_stage_id: String = "stage_01"
+
+static func begin_run(mode: String, stage_id: String = "stage_01") -> void:
+	run_mode = mode
+	selected_stage_id = stage_id
+	current_stage_id = stage_id
+	current_stage_data = {}
 
 static func load_stage(stage_id: String) -> Dictionary:
 	var loaded_data := StageLoader.load_stage_data(stage_id)
@@ -36,5 +44,7 @@ static func get_waves() -> Array:
 	return stage.get("waves", [])
 
 static func reset_session() -> void:
+	run_mode = "campaign"
+	selected_stage_id = "stage_01"
 	current_stage_id = "stage_01"
 	current_stage_data = {}

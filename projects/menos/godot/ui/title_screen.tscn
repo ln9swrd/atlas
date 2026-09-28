@@ -239,8 +239,18 @@ theme_override_colors/font_color = Color(0.91, 0.98, 0.94, 1)
 theme_override_font_sizes/font_size = 17
 theme_override_styles/normal = SubResource("StyleBoxFlat_start")
 theme_override_styles/hover = SubResource("StyleBoxFlat_start_hover")
-text = "START CAMPAIGN"
+text = "캠페인 시작"
 focus_neighbor_right = NodePath("../Quit")
+
+[node name="SinglePlay" type="Button" parent="CenterContainer/MainPanel/Content/Actions"]
+custom_minimum_size = Vector2(190, 58)
+layout_mode = 2
+text = "싱글 플레이"
+
+[node name="StageSelect" type="OptionButton" parent="CenterContainer/MainPanel/Content/Actions"]
+custom_minimum_size = Vector2(160, 58)
+layout_mode = 2
+text = "스테이지 1"
 
 [node name="Quit" type="Button" parent="CenterContainer/MainPanel/Content/Actions"]
 custom_minimum_size = Vector2(170, 58)
@@ -249,12 +259,12 @@ theme_override_colors/font_color = Color(0.78, 0.86, 0.85, 1)
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxFlat_quit")
 theme_override_styles/hover = SubResource("StyleBoxFlat_quit_hover")
-text = "QUIT"
+text = "종료"
 focus_neighbor_left = NodePath("../StartCampaign")
 
 [node name="Hint" type="Label" parent="CenterContainer/MainPanel/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.43, 0.56, 0.57, 1)
 theme_override_font_sizes/font_size = 12
-text = "ENTER  START CAMPAIGN"
+text = "ENTER  캠페인 시작 / 싱글 플레이 선택"
 horizontal_alignment = 1

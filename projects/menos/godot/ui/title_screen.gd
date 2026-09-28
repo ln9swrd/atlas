@@ -3,12 +3,17 @@ extends Control
 const GAME_SCENE := "res://main.tscn"
 
 @onready var start_button: Button = $CenterContainer/MainPanel/Content/Actions/StartCampaign
+@onready var single_button: Button = $CenterContainer/MainPanel/Content/Actions/SinglePlay
+@onready var stage_select: OptionButton = $CenterContainer/MainPanel/Content/Actions/StageSelect
 @onready var quit_button: Button = $CenterContainer/MainPanel/Content/Actions/Quit
 var transition_started := false
 
 func _ready() -> void:
 	set_process_input(true)
 	start_button.pressed.connect(_on_start_campaign_pressed)
+single_button.pressed.connect(_on_start_single_pressed)
+for stage_id in ["stage_01", "stage_02", "stage_03"]:
+    stage_select.add_item(stage_id.to_upper())
 	quit_button.pressed.connect(_on_quit_pressed)
 	start_button.grab_focus()
 
@@ -31,6 +36,12 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_ENTER, KEY_KP_ENTER]:
 		_on_start_campaign_pressed()
 		get_viewport().set_input_as_handled()
+
+func _on_start_single_pressed() -> void:
+    if transition_started: return
+    transition_started = true
+    StageManager.begin_run("single", "stage_%02d" % (stage_select.selected + 1))
+    get_tree().change_scene_to_file(GAME_SCENE)
 
 func _on_start_campaign_pressed() -> void:
 	if transition_started:

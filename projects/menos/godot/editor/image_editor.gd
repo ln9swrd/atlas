@@ -1,6 +1,7 @@
 extends Control
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const LOADER := preload("res://editor/image_texture_loader.gd")
+const IMAGE_STATE := preload("res://editor/image_editor_state.gd")
 const EDITED_DIR := "res://content/editor/edited_assets"
 
 var entries: Array[Dictionary] = []
@@ -15,6 +16,8 @@ var editing := false
 func _ready() -> void:
 	_build_ui()
 	_scan_connected_images()
+	if not IMAGE_STATE.selected_path.is_empty():
+		_select_path(IMAGE_STATE.selected_path)
 
 func _build_ui() -> void:
 	var root := VBoxContainer.new()
@@ -56,6 +59,27 @@ func _build_ui() -> void:
 	_add_button(tools, "ROTATE CCW", _rotate_ccw)
 	_add_button(tools, "TRIM ALPHA", _trim_alpha)
 	_add_button(tools, "SAVE + RECONNECT", _save_reconnect)
+	var resize_row := HBoxContainer.new()
+	right.add_child(resize_row)
+	var resize_label := Label.new()
+	resize_label.text = "크기 변경"
+	resize_row.add_child(resize_label)
+	var width_spin := SpinBox.new()
+	width_spin.name = "WidthSpin"
+	width_spin.min_value = 1
+	width_spin.max_value = 4096
+	width_spin.step = 1
+	resize_row.add_child(width_spin)
+	var height_spin := SpinBox.new()
+	height_spin.name = "HeightSpin"
+	height_spin.min_value = 1
+	height_spin.max_value = 4096
+	height_spin.step = 1
+	resize_row.add_child(height_spin)
+	var resize_btn := Button.new()
+	resize_btn.text = "크기 적용"
+	resize_btn.pressed.connect(func(): _resize_image(int(width_spin.value), int(height_spin.value)))
+	resize_row.add_child(resize_btn)
 	status = Label.new()
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status)
@@ -75,7 +99,8 @@ func _scan_connected_images() -> void:
 	_scan_main_preloads(seen)
 	list.clear()
 	for entry in entries:
-		list.add_item("%s | %s" % [entry.label, entry.path])
+		var icon: Texture2D = load(str(entry.path)) as Texture2D
+		list.add_item("%s | %s" % [entry.label, entry.path], icon)
 	status.text = "%d connected images found." % entries.size()
 
 func _scan_json_images(path: String, kind: String, field: String, seen: Dictionary) -> void:
@@ -120,16 +145,30 @@ func _scan_main_preloads(seen: Dictionary) -> void:
 		seen[image_path] = true
 		entries.append({"label": "RUNTIME / %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload"})
 
+func _select_path(path: String) -> void:
+	for index in range(entries.size()):
+		if str(entries[index].path) == path:
+			list.select(index)
+			_select_entry(index)
+			return
+
 func _select_entry(index: int) -> void:
 	if editing: return
 	current_index = index
 	current_path = str(entries[index].path)
+	IMAGE_STATE.open_image(current_path)
 	current_image = LOADER.load_image(current_path)
 	if current_image == null:
 		status.text = "Could not load: %s" % current_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
 	status.text = "%s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+
+func _resize_image(width_px: int, height_px: int) -> void:
+	if not _require_image(): return
+	if editing: _finish_erase()
+	current_image.resize(maxi(1, width_px), maxi(1, height_px), Image.INTERPOLATE_LANCZOS)
+	_refresh_view()
 
 func _require_image() -> bool:
 	if current_image == null or current_image.is_empty():

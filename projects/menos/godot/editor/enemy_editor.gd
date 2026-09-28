@@ -4,6 +4,7 @@ extends Control
 const ENEMY_FILE := "res://content/enemies/enemies.json"
 const ENEMY_TYPES := ["normal", "rusher", "heavy", "giant"]
 const DEFAULT_DATA = preload("res://data.gd")
+const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var enemy_data: Dictionary = {}
 var selected_type := ""
@@ -22,6 +23,7 @@ var robot_damage_spin: SpinBox
 var robot_range_spin: SpinBox
 var robot_cooldown_spin: SpinBox
 var status_label: Label
+var sprite_preview: TextureRect
 
 func _ready() -> void:
 	_build_ui()
@@ -101,7 +103,16 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
 	file_dialog.filters = ["*.png ; PNG"]
-	file_dialog.file_selected.connect(func(path): sprite_edit.text = path)
+	file_dialog.file_selected.connect(func(path): sprite_edit.text = path; _refresh_sprite_preview(path))
+	sprite_preview = TextureRect.new()
+	sprite_preview.custom_minimum_size = Vector2(96, 96)
+	sprite_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	parent.add_child(sprite_preview)
+	var edit_image := Button.new()
+	edit_image.text = "이미지 편집"
+	edit_image.pressed.connect(_open_image_editor)
+	parent.add_child(edit_image)
 	add_child(file_dialog)
 	var sep := HSeparator.new()
 	parent.add_child(sep)
@@ -159,6 +170,7 @@ func _refresh_enemy_list() -> void:
 	for enemy_type in ENEMY_TYPES:
 		if enemy_data.has(enemy_type):
 			enemy_list.add_item(str(enemy_data[enemy_type].get("name", enemy_type.to_upper())))
+			enemy_list.set_item_icon(enemy_list.item_count - 1, load(str(enemy_data[enemy_type].get("sprite_anim", ""))) as Texture2D)
 		else:
 			enemy_list.add_item(enemy_type.to_upper())
 		enemy_list.set_item_metadata(enemy_list.item_count - 1, enemy_type)
@@ -177,6 +189,7 @@ func _on_enemy_selected(index: int) -> void:
 	radius_spin.value = float(data.get("radius", 10.0))
 	color_edit.color = Color(str(data.get("color", "#ffffff")))
 	sprite_edit.text = str(data.get("sprite_anim", "res://assets/menos/sprites/enemy_%s_anim.png" % selected_type))
+	_refresh_sprite_preview(sprite_edit.text)
 	robot_damage_spin.value = float(data.get("robot_damage", 0.0))
 	robot_range_spin.value = float(data.get("robot_range", 0.0))
 	robot_cooldown_spin.value = float(data.get("robot_cooldown", 0.0))
@@ -225,6 +238,14 @@ func _save_data() -> void:
 	_refresh_enemy_list()
 	enemy_list.select(ENEMY_TYPES.find(selected_type))
 	_set_status("SAVED: " + ENEMY_FILE)
+
+func _refresh_sprite_preview(path: String) -> void:
+	if sprite_preview:
+		sprite_preview.texture = load(path) as Texture2D
+
+func _open_image_editor() -> void:
+	IMAGE_STATE.open_image(sprite_edit.text.strip_edges())
+	get_tree().change_scene_to_file("res://editor/image_editor.tscn")
 
 func _open_sprite_dialog() -> void:
 	if file_dialog:
