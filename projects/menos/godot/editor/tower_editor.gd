@@ -26,9 +26,19 @@ var file_dialog: FileDialog
 var file_thumbnail_cache: Dictionary = {}
 var status_label: Label
 var sprite_preview: TextureRect
+var projectile_preview: TextureRect
+var animation_timer: Timer
+var animation_frame := 0
+const TOWER_ANIMATION_FRAMES := 4
+const PROJECTILE_ANIMATION_FRAMES := 8
 
 func _ready() -> void:
 	_build_ui()
+	animation_timer = Timer.new()
+	animation_timer.wait_time = 0.12
+	animation_timer.autostart = true
+	animation_timer.timeout.connect(_on_animation_tick)
+	add_child(animation_timer)
 	_load_data()
 	if tower_list.item_count > 0:
 		tower_list.select(0)
@@ -112,11 +122,14 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(_on_file_selected)
-	sprite_preview = TextureRect.new()
-	sprite_preview.custom_minimum_size = Vector2(96, 96)
-	sprite_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	sprite_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	parent.add_child(sprite_preview)
+	var animation_preview_title := Label.new()
+	animation_preview_title.text = "애니메이션 미리보기"
+	animation_preview_title.add_theme_font_size_override("font_size", 14)
+	parent.add_child(animation_preview_title)
+	var animation_preview_row := HBoxContainer.new()
+	parent.add_child(animation_preview_row)
+	sprite_preview = _create_animation_preview(animation_preview_row, "타워", Vector2(128, 128))
+	projectile_preview = _create_animation_preview(animation_preview_row, "탄환", Vector2(96, 96))
 	var edit_image := Button.new()
 	edit_image.text = "이미지 편집 / 다른 이미지 참조"
 	edit_image.pressed.connect(_open_image_editor)
@@ -197,7 +210,7 @@ func _on_tower_selected(index: int) -> void:
 	preference_edit.text = str(data.get("preference", ""))
 	sprite_edit.text = str(data.get("sprite_anim", "res://assets/menos/sprites/tower_%s_anim.png" % selected_type))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
-	_refresh_sprite_preview(sprite_edit.text)
+	_refresh_animation_previews()
 	level2_cost_spin.value = float(level2.get("upgrade_cost", 0.0))
 	level2_damage_spin.value = float(level2.get("damage", data.get("damage", 0.0)))
 	level2_cooldown_spin.value = float(level2.get("cooldown", data.get("cooldown", 1.0)))
@@ -237,9 +250,40 @@ func _save_data() -> void:
 	tower_list.select(TOWER_TYPES.find(selected_type))
 	_set_status("SAVED: " + TOWER_FILE)
 
-func _refresh_sprite_preview(path: String) -> void:
+func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(size.x + 12.0, size.y + 24.0)
+	parent.add_child(box)
+	var label := Label.new()
+	label.text = label_text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(label)
+	var preview := TextureRect.new()
+	preview.custom_minimum_size = size
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	box.add_child(preview)
+	return preview
+
+func _animated_texture(path: String, frame: int, total_frames: int) -> Texture2D:
+	var texture := load(path) as Texture2D
+	if texture == null or total_frames <= 1:
+		return texture
+	var frame_width := texture.get_width() / float(total_frames)
+	var atlas := AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = Rect2(frame_width * (frame % total_frames), 0.0, frame_width, texture.get_height())
+	return atlas
+
+func _refresh_animation_previews() -> void:
 	if sprite_preview:
-		sprite_preview.texture = load(path) as Texture2D
+		sprite_preview.texture = _animated_texture(sprite_edit.text.strip_edges(), animation_frame, TOWER_ANIMATION_FRAMES)
+	if projectile_preview:
+		projectile_preview.texture = _animated_texture(projectile_edit.text.strip_edges(), animation_frame, PROJECTILE_ANIMATION_FRAMES)
+
+func _on_animation_tick() -> void:
+	animation_frame = (animation_frame + 1) % 8
+	_refresh_animation_previews()
 
 func _open_image_editor() -> void:
 	IMAGE_STATE.open_image(sprite_edit.text.strip_edges())
@@ -265,7 +309,7 @@ func _on_file_selected(path: String) -> void:
 		projectile_edit.text = path
 	else:
 		sprite_edit.text = path
-		_refresh_sprite_preview(path)
+	_refresh_animation_previews()
 
 func _set_status(message: String) -> void:
 	if status_label:

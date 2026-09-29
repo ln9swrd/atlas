@@ -28,9 +28,18 @@ var area_threshold_spin: SpinBox
 var pierce_damage_spin: SpinBox
 var pierce_cooldown_spin: SpinBox
 var status_label: Label
+var animation_previews: Dictionary = {}
+var animation_timer: Timer
+var animation_frame := 0
+const ROBOT_ANIMATION_FRAMES := {"idle": 6, "attack": 7, "move": 5, "skill": 5, "projectile": 8}
 
 func _ready() -> void:
 	_build_ui()
+	animation_timer = Timer.new()
+	animation_timer.wait_time = 0.12
+	animation_timer.autostart = true
+	animation_timer.timeout.connect(_on_animation_tick)
+	add_child(animation_timer)
 	_load_data()
 	if robot_list.item_count > 0:
 		robot_list.select(0)
@@ -88,6 +97,18 @@ func _build_ui() -> void:
 	move_edit = _line_row(content, "이동 애니메이션")
 	skill_edit = _line_row(content, "특수 애니메이션")
 	projectile_edit = _line_row(content, "탄환 애니메이션")
+	var animation_preview_title := Label.new()
+	animation_preview_title.text = "애니메이션 미리보기"
+	animation_preview_title.add_theme_font_size_override("font_size", 14)
+	content.add_child(animation_preview_title)
+	var animation_preview_row := HBoxContainer.new()
+	animation_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(animation_preview_row)
+	animation_previews["idle"] = _create_animation_preview(animation_preview_row, "대기", Vector2(110, 150))
+	animation_previews["attack"] = _create_animation_preview(animation_preview_row, "공격", Vector2(110, 150))
+	animation_previews["move"] = _create_animation_preview(animation_preview_row, "이동", Vector2(110, 150))
+	animation_previews["skill"] = _create_animation_preview(animation_preview_row, "특수", Vector2(110, 150))
+	animation_previews["projectile"] = _create_animation_preview(animation_preview_row, "탄환", Vector2(90, 110))
 	var ability_title := Label.new()
 	ability_title.text = "SPECIAL ABILITIES"
 	ability_title.add_theme_font_size_override("font_size", 16)
@@ -196,6 +217,50 @@ func _on_robot_selected(index: int) -> void:
 	area_threshold_spin.value = float(area.get("threshold", 3))
 	pierce_damage_spin.value = float(pierce.get("damage", 105.0))
 	pierce_cooldown_spin.value = float(pierce.get("cooldown", 7.0))
+	_refresh_animation_previews()
+
+func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(size.x + 8.0, size.y + 24.0)
+	parent.add_child(box)
+	var label := Label.new()
+	label.text = label_text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(label)
+	var preview := TextureRect.new()
+	preview.custom_minimum_size = size
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	box.add_child(preview)
+	return preview
+
+func _animated_texture(path: String, frame: int, total_frames: int) -> Texture2D:
+	var texture := load(path) as Texture2D
+	if texture == null or total_frames <= 1:
+		return texture
+	var frame_width := texture.get_width() / float(total_frames)
+	var atlas := AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = Rect2(frame_width * (frame % total_frames), 0.0, frame_width, texture.get_height())
+	return atlas
+
+func _refresh_animation_previews() -> void:
+	var paths := {
+		"idle": idle_edit.text.strip_edges(),
+		"attack": attack_edit.text.strip_edges(),
+		"move": move_edit.text.strip_edges(),
+		"skill": skill_edit.text.strip_edges(),
+		"projectile": projectile_edit.text.strip_edges()
+	}
+	for key in animation_previews.keys():
+		var preview: TextureRect = animation_previews[key]
+		var path := str(paths.get(key, ""))
+		var frames := int(ROBOT_ANIMATION_FRAMES.get(key, 1))
+		preview.texture = _animated_texture(path, animation_frame, frames)
+
+func _on_animation_tick() -> void:
+	animation_frame = (animation_frame + 1) % 8
+	_refresh_animation_previews()
 
 func _save_data() -> void:
 	if selected_type.is_empty():

@@ -43,6 +43,10 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var spin_eraser_size: SpinBox = $MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize
 @onready var asset_catalog_window: Window = $AssetCatalogWindow
 
+var map_size_panel: PanelContainer
+var map_width_spin: SpinBox
+var map_height_spin: SpinBox
+
 var current_map_path := "res://map_data/northbridge_sector_01.json"
 var current_map_data := {}
 var catalog_entries: Array[Dictionary] = []
@@ -81,6 +85,7 @@ func _ready() -> void:
 	btn_resize_placement.hide()
 	btn_delete_placement.hide()
 	gameplay_properties.hide()
+	_build_map_size_controls()
 	_set_mode_ui("ASSET")
 
 	setup_layer_options()
@@ -250,6 +255,118 @@ func _on_asset_catalog_saved(asset_id: String) -> void:
 func _on_asset_catalog_closed() -> void:
 	load_asset_catalog()
 
+func _build_map_size_controls() -> void:
+	map_size_panel = PanelContainer.new()
+	map_size_panel.custom_minimum_size.y = 86
+	var box := VBoxContainer.new()
+	map_size_panel.add_child(box)
+	var title := Label.new()
+	title.text = "MAP SIZE (32 px / tile)"
+	title.add_theme_font_size_override("font_size", 13)
+	box.add_child(title)
+	var row := HBoxContainer.new()
+	box.add_child(row)
+	var width_label := Label.new()
+	width_label.text = "W"
+	row.add_child(width_label)
+	map_width_spin = SpinBox.new()
+	map_width_spin.min_value = 1
+	map_width_spin.max_value = 256
+	map_width_spin.step = 1
+	map_width_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(map_width_spin)
+	var height_label := Label.new()
+	height_label.text = "H"
+	row.add_child(height_label)
+	map_height_spin = SpinBox.new()
+	map_height_spin.min_value = 1
+	map_height_spin.max_value = 256
+	map_height_spin.step = 1
+	map_height_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(map_height_spin)
+	var apply := Button.new()
+	apply.text = "적용"
+	apply.pressed.connect(_on_map_size_apply_pressed)
+	row.add_child(apply)
+	$MainLayout/Inspector/VBox.add_child(map_size_panel)
+	$MainLayout/Inspector/VBox.move_child(map_size_panel, 0)
+
+func _sync_map_size_controls() -> void:
+	if map_width_spin == null or current_map_data.is_empty():
+		return
+	var tile_value: Variant = current_map_data.get("map_tiles", [36, 24])
+	var tiles := Vector2i(int(tile_value[0]), int(tile_value[1])) if tile_value is Array and tile_value.size() >= 2 else Vector2i(36, 24)
+	map_width_spin.value = tiles.x
+	map_height_spin.value = tiles.y
+
+func _on_map_size_apply_pressed() -> void:
+	if current_map_data.is_empty() or canvas == null:
+		return
+	var new_size := Vector2i(maxi(1, int(map_width_spin.value)), maxi(1, int(map_height_spin.value)))
+	var old_value: Variant = current_map_data.get("map_tiles", [36, 24])
+	var old_size := Vector2i(int(old_value[0]), int(old_value[1])) if old_value is Array and old_value.size() >= 2 else Vector2i(36, 24)
+	if new_size == old_size:
+		update_status("Map size unchanged: %d × %d." % [new_size.x, new_size.y])
+		return
+	if not _map_size_can_contain(new_size):
+		_sync_map_size_controls()
+		update_status("Resize rejected: existing content is outside the new map bounds.")
+		return
+	current_map_data["map_tiles"] = [new_size.x, new_size.y]
+	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
+	canvas.set_map_data(current_map_data)
+	_sync_map_size_controls()
+	update_status("Map resized to %d × %d tiles (%d × %d px). Save JSON to keep the change." % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
+
+func _map_size_can_contain(new_size: Vector2i) -> bool:
+	var pixel_size := Vector2(new_size) * 32.0
+	var origin: Vector2 = current_map_data.get("map_origin", Vector2(0, 58))
+	var bounds := Rect2(origin, pixel_size)
+	if current_map_data.has("tiles"):
+		var layers: Dictionary = current_map_data["tiles"]
+		for layer_name in layers.keys():
+			var layer_tiles: Dictionary = layers[layer_name]
+			for key in layer_tiles.keys():
+				var parts := str(key).split(",")
+				if parts.size() >= 2:
+					var cell := Vector2i(parts[0].to_int(), parts[1].to_int())
+					if cell.x < 0 or cell.y < 0 or cell.x >= new_size.x or cell.y >= new_size.y:
+						return false
+	for object_data in current_map_data.get("objects", []):
+			if object_data is Dictionary:
+				var pos := _map_data_position(object_data.get("position", []), origin)
+				var footprint: Array = object_data.get("footprint_tiles", object_data.get("footprint_override", [1, 1]))
+				var size := Vector2(32, 32)
+				if footprint.size() >= 2:
+					size = Vector2(maxi(1, int(footprint[0])), maxi(1, int(footprint[1]))) * 32.0
+				if not bounds.encloses(Rect2(pos, size)):
+					return false
+	for area in current_map_data.get("gameplay_areas", []):
+			if area is Dictionary:
+				var area_pos := _map_data_position(area.get("position", []), origin)
+				var area_size_values: Array = area.get("size", [32, 32])
+				var area_size := Vector2(32, 32)
+				if area_size_values.size() >= 2:
+					area_size = Vector2(float(area_size_values[0]), float(area_size_values[1]))
+				if not bounds.encloses(Rect2(area_pos, area_size)):
+					return false
+	for point in current_map_data.get("gameplay_points", []):
+			if point is Dictionary and not bounds.has_point(_map_data_position(point.get("position", []), origin)):
+				return false
+	for key in current_map_data.get("lanes", {}):
+			if not bounds.has_point(_map_data_position(current_map_data["lanes"][key], origin)):
+				return false
+	if current_map_data.has("base") and not bounds.has_point(_map_data_position(current_map_data["base"], origin)):
+		return false
+	return true
+
+func _map_data_position(value: Variant, origin: Vector2) -> Vector2:
+	if value is Vector2:
+		return value
+	if value is Array and value.size() >= 2:
+		return Vector2(float(value[0]), float(value[1]))
+	return origin
+
 func setup_layer_options() -> void:
 	if option_layer:
 		option_layer.clear()
@@ -267,6 +384,7 @@ func load_map(path: String) -> void:
 
 	if canvas:
 		canvas.set_map_data(current_map_data)
+	_sync_map_size_controls()
 	update_status("Loaded map: " + path)
 
 func save_map() -> void:

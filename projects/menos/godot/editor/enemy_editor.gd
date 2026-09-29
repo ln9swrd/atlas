@@ -274,7 +274,7 @@ func _save_data() -> void:
 	data["sprite_anim"] = sprite_edit.text.strip_edges()
 	data["projectile_anim"] = projectile_edit.text.strip_edges()
 	var attack_type_index := attack_type_list.selected
-	var attack_type := ["none", "melee", "ranged"][clampi(attack_type_index, 0, 2)]
+	var attack_type: String = ["none", "melee", "ranged"][clampi(attack_type_index, 0, 2)]
 	data["attack_type"] = attack_type
 	data["attack_range"] = float(attack_range_spin.value)
 	data["attack_cooldown"] = float(attack_cooldown_spin.value)

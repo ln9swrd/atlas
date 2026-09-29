@@ -116,12 +116,19 @@ const ROBOT_DAMAGE_GROWTH := 0.05
 const ROBOT_RANGE_GROWTH := 0.02
 const ROBOT_SPEED_GROWTH := 0.02
 const ROBOT_SPECIAL_DURATION := 0.5
+const ROBOT_FINISHER_MAX := 100.0
+const ROBOT_FINISHER_RADIUS := 260.0
+const ROBOT_FINISHER_DAMAGE := 180.0
+const ROBOT_ENERGY_MAX := 100.0
+const ROBOT_ENERGY_REGEN := 12.0
+const ROBOT_SPECIAL_ENERGY_COST := 30.0
 var feed: Array[String] = []
 var selected_slot := ""
 var selected_slot_position := Vector2.ZERO
 var selected_tower := ""
 var pending_tower_type := ""
 var robot_selected := false
+var selected_enemy_index := -1
 var camera_dragging := false
 var camera_last_mouse := Vector2.ZERO
 const CAMERA_EDGE_MARGIN := 28.0
@@ -498,7 +505,7 @@ func reset_game() -> void:
 		initial_robot_spot = str(ROBOT_SPOTS.keys()[0])
 		initial_robot_position = ROBOT_SPOTS[initial_robot_spot]
 	var robot_stats := get_robot_runtime_stats()
-	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": robot_stats.hp, "max_hp": robot_stats.hp, "commands": robot_stats.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "special": 0.0, "special_type": "", "flash": 0.0}
+	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": robot_stats.hp, "max_hp": robot_stats.hp, "commands": robot_stats.max_moves, "energy": ROBOT_ENERGY_MAX, "attack": 0.0, "area": 0.0, "pierce": 0.0, "special": 0.0, "special_type": "", "finisher": 0.0, "flash": 0.0}
 	if robot_progression.is_empty():
 		robot_progression = {"level": 1, "xp": 0, "unlocked_abilities": []}
 	feed.clear(); log_event("Build towers and prepare ATLAS-01. Wave 1 starts automatically.")
@@ -671,7 +678,7 @@ func move_enemies(delta: float) -> void:
 				return
 
 func get_robot_runtime_stats() -> Dictionary:
-	var level := max(1, int(robot_progression.get("level", 1)))
+	var level: int = max(1, int(robot_progression.get("level", 1)))
 	var level_count := float(level - 1)
 	var stats := {
 		"hp": float(robot_catalog.get("hp", 220.0)) * pow(1.0 + ROBOT_HP_GROWTH, level_count),
@@ -804,6 +811,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 	if enemy.hp <= 0.0:
 		gold += data.reward
 		add_robot_xp(int(data.reward))
+		robot["finisher"] = min(ROBOT_FINISHER_MAX, float(robot.get("finisher", 0.0)) + (50.0 if enemy.type == "giant" else 20.0))
 		if enemy.type == "giant": log_event("GIANT NEUTRALIZED. ATLAS-01 changed the outcome.")
 
 func find_target(position: Vector2, range_value: float, preference: String = "") -> Dictionary:
@@ -818,12 +826,59 @@ func find_target(position: Vector2, range_value: float, preference: String = "")
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
 
+func get_selected_robot_target() -> Dictionary:
+	if selected_enemy_index < 0 or selected_enemy_index >= enemies.size():
+		return {}
+	var target: Dictionary = enemies[selected_enemy_index]
+	if float(target.get("hp", 0.0)) <= 0.0:
+		return {}
+	return target
+
 func get_robot_target() -> Dictionary:
-	var robot_stats := get_robot_runtime_stats()
-	var candidates: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= robot_stats.range)
-	if candidates.is_empty(): return {}
-	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
-	return candidates[0]
+	return get_selected_robot_target()
+
+func select_robot_target_at(point: Vector2) -> bool:
+	var best_index := -1
+	var best_distance := INF
+	for index in range(enemies.size()):
+		var enemy: Dictionary = enemies[index]
+		if float(enemy.get("hp", 0.0)) <= 0.0:
+			continue
+		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES.get(str(enemy.get("type", "normal")), Vector2(48, 56))
+		var hit_radius: float = max(24.0, max(enemy_size.x, enemy_size.y) * 0.42)
+		var distance := point.distance_to(enemy.position)
+		if distance <= hit_radius and distance < best_distance:
+			best_distance = distance
+			best_index = index
+	if best_index < 0:
+		return false
+	selected_enemy_index = best_index
+	robot_selected = false
+	selected_tower = ""
+	selected_slot = ""
+	play_sfx("ui_click")
+	log_event("Target locked: %s." % str(enemy_catalog[enemies[best_index].type].name))
+	queue_redraw()
+	return true
+
+func switch_robot_target(direction: int = 1) -> bool:
+	var active_indices: Array[int] = []
+	for index in range(enemies.size()):
+		if float(enemies[index].get("hp", 0.0)) > 0.0:
+			active_indices.append(index)
+	if active_indices.is_empty():
+		selected_enemy_index = -1
+		return false
+	var current_pos := active_indices.find(selected_enemy_index)
+	if current_pos < 0:
+		current_pos = 0 if direction > 0 else active_indices.size() - 1
+	else:
+		current_pos = posmod(current_pos + direction, active_indices.size())
+	selected_enemy_index = active_indices[current_pos]
+	play_sfx("ui_click")
+	log_event("Target switched: %s." % str(enemy_catalog[enemies[selected_enemy_index].type].name))
+	queue_redraw()
+	return true
 
 func get_robot_heavy_target() -> Dictionary:
 	var robot_stats := get_robot_runtime_stats()
@@ -899,7 +954,7 @@ func move_robot_automatically(delta: float) -> void:
 	if not robot.has("target_pos"): return
 	var target_pos: Vector2 = robot.target_pos
 	var distance: float = robot.position.distance_to(target_pos)
-	var step := get_robot_runtime_stats().speed * delta
+	var step: float = float(get_robot_runtime_stats().speed) * delta
 	if distance <= step:
 		robot.position = target_pos
 		robot.erase("target_pos")
@@ -927,23 +982,57 @@ func update_towers(delta: float) -> void:
 		damage_enemy(target, tower.data.damage, tower.type); tower.cooldown = tower.data.cooldown
 
 func update_robot(delta: float) -> void:
+	if selected_enemy_index >= enemies.size() or (selected_enemy_index >= 0 and float(enemies[selected_enemy_index].get("hp", 0.0)) <= 0.0):
+		selected_enemy_index = -1
 	if not robot.active or robot.hp <= 0.0: return
 	robot["special"] = max(0.0, float(robot.get("special", 0.0)) - delta)
 	if float(robot.get("special", 0.0)) > 0.0:
 		return
-	move_robot_automatically(delta)
-	robot.attack -= delta; robot.area -= delta; robot.pierce -= delta
-	var target: Dictionary = get_robot_target()
-	var heavy: Dictionary = get_robot_heavy_target()
-	if robot.attack <= 0.0 and not target.is_empty():
-		var robot_stats := get_robot_runtime_stats()
-		effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "target_enemy": target, "damage": robot_stats.damage, "source": "robot", "weapon": "robot", "progress": 0.0, "speed": 5.5})
-		robot.attack = robot_stats.cooldown
+	robot["energy"] = min(ROBOT_ENERGY_MAX, float(robot.get("energy", ROBOT_ENERGY_MAX)) + ROBOT_ENERGY_REGEN * delta)
+	robot.attack = max(0.0, float(robot.get("attack", 0.0)) - delta)
+	robot.area -= delta; robot.pierce -= delta
+
+func try_basic_attack() -> bool:
+	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
+		return false
+	if robot.attack > 0.0:
+		return false
+	var target: Dictionary = get_selected_robot_target()
+	if target.is_empty():
+		return false
+	if target.position.distance_to(robot.position) > get_robot_runtime_stats().range:
+		log_event("Target is out of weapon range.")
+		return false
+	var robot_stats := get_robot_runtime_stats()
+	effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "target_enemy": target, "damage": robot_stats.damage, "source": "robot", "weapon": "robot", "progress": 0.0, "speed": 5.5})
+	robot.attack = robot_stats.cooldown
+	log_event("ATLAS-01 fired BASIC WEAPON.")
+	return true
+
+func try_finisher() -> bool:
+	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
+		return false
+	if float(robot.get("finisher", 0.0)) < ROBOT_FINISHER_MAX:
+		return false
+	var targets: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= ROBOT_FINISHER_RADIUS)
+	if targets.is_empty():
+		log_event("FINISHER requires enemies in range.")
+		return false
+	effects.append({"position": robot.position, "type": "area", "life": 0.8, "damage_delay": 0.28, "damage_targets": targets, "damage": ROBOT_FINISHER_DAMAGE, "source": "finisher"})
+	robot["special"] = 0.8
+	robot["special_type"] = "finisher"
+	robot["finisher"] = 0.0
+	log_event("ATLAS-01 FINISHER: ALL-RANGE STRIKE.")
+	play_sfx("ui_confirm")
+	return true
 
 func try_special_attack() -> bool:
 	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
 		return false
 	if float(robot.get("special", 0.0)) > 0.0:
+		return false
+	if float(robot.get("energy", ROBOT_ENERGY_MAX)) < ROBOT_SPECIAL_ENERGY_COST:
+		log_event("ENERGY 부족: SPECIAL 사용 불가.")
 		return false
 	var unlocked_abilities: Array = robot_progression.get("unlocked_abilities", [])
 	if unlocked_abilities.has("ability_area") and robot.area <= 0.0:
@@ -952,6 +1041,7 @@ func try_special_attack() -> bool:
 			effects.append({"position": robot.position, "type": "area", "life": 0.45, "damage_delay": 0.22, "damage_targets": nearby, "damage": robot_catalog.ability_area.damage, "source": "area"})
 			robot["special"] = ROBOT_SPECIAL_DURATION
 			robot["special_type"] = "area"
+			robot["energy"] = max(0.0, float(robot.get("energy", ROBOT_ENERGY_MAX)) - ROBOT_SPECIAL_ENERGY_COST)
 			robot.area = robot_catalog.ability_area.cooldown
 			log_event("ATLAS-01 used AREA ATTACK.")
 			return true
@@ -961,6 +1051,7 @@ func try_special_attack() -> bool:
 			effects.append({"position": heavy.position, "type": "pierce", "life": 0.45, "damage_delay": 0.22, "target_enemy": heavy, "damage": robot_catalog.ability_pierce.damage, "source": "pierce"})
 			robot["special"] = ROBOT_SPECIAL_DURATION
 			robot["special_type"] = "pierce"
+			robot["energy"] = max(0.0, float(robot.get("energy", ROBOT_ENERGY_MAX)) - ROBOT_SPECIAL_ENERGY_COST)
 			robot.pierce = robot_catalog.ability_pierce.cooldown
 			log_event("ATLAS-01 used HEAVY PIERCE on %s." % enemy_catalog[heavy.type].name)
 			return true
@@ -1065,13 +1156,27 @@ func center_camera_from_minimap(screen_position: Vector2) -> void:
 	queue_redraw()
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_TAB:
+		switch_robot_target(-1 if event.shift_pressed else 1)
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_I:
 		inventory_open = not inventory_open
 		queue_redraw()
 		get_viewport().set_input_as_handled()
 		return
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_J:
+		try_basic_attack()
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_SPACE:
 		try_special_attack()
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_R:
+		try_finisher()
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_MIDDLE:
 		camera_dragging = event.pressed
 		camera_last_mouse = event.position
@@ -1084,6 +1189,9 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if get_minimap_screen_rect().has_point(event.position):
 			center_camera_from_minimap(event.position)
+			get_viewport().set_input_as_handled()
+			return
+		if select_robot_target_at(get_global_mouse_position()):
 			get_viewport().set_input_as_handled()
 			return
 		handle_click(get_global_mouse_position())
@@ -1316,6 +1424,9 @@ func _draw() -> void:
 		draw_animated_sprite(enemy_sprite_catalog.get(enemy.type, VISUALS[anim_key]), enemy.position, enemy_size, e_frame, 8)
 		
 		# Strategic HP Bar
+		if selected_enemy_index == enemies.find(enemy):
+			draw_arc(feet_pos, ring_radius * 1.28, 0, TAU, 28, Color("f0d28a"), 3.0)
+			draw_string(ThemeDB.fallback_font, enemy.position + Vector2(-34, enemy_size.y * 0.5 + 24), "TARGET", HORIZONTAL_ALIGNMENT_CENTER, 68, 9, Color("f0d28a"))
 		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 11)
 		var hp_width: float = max(34.0, enemy_size.x)
 		hp_position.x = enemy.position.x - hp_width * 0.5
@@ -1419,7 +1530,7 @@ func _draw() -> void:
 		var r_hp_pos: Vector2 = robot.position + Vector2(-39, -76)
 		draw_rect(Rect2(r_hp_pos - Vector2(1, 1), Vector2(80, 6)), Color("101f25"))
 		draw_rect(Rect2(r_hp_pos, Vector2(78, 4)), Color("1c3e38"))
-		var robot_max_hp := max(1.0, float(robot.get("max_hp", get_robot_runtime_stats().hp)))
+		var robot_max_hp: float = max(1.0, float(robot.get("max_hp", get_robot_runtime_stats().hp)))
 		draw_rect(Rect2(r_hp_pos, Vector2(78 * max(0.0, robot.hp / robot_max_hp), 4)), Color("7ed6ce"))
 
 	for damage_number in damage_numbers:
@@ -1549,6 +1660,13 @@ func draw_ui2() -> void:
 	elif run_state == RunState.DEFEAT: status_text = "DEFEAT"
 	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x * 0.5 - 95, 23), "STAGE %d" % int(stage_data.get("order", 1)), HORIZONTAL_ALIGNMENT_CENTER, 190, 11, Color("a9c5c7"))
 	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x * 0.5 - 110, 45), "WAVE %d / %d   •   %s" % [wave, waves_data.size(), status_text], HORIZONTAL_ALIGNMENT_CENTER, 220, 13, Color("d7fff7"))
+	var selected_target := get_selected_robot_target()
+	var target_text := "TARGET: NONE"
+	if not selected_target.is_empty():
+		var target_data: Dictionary = enemy_catalog[selected_target.type]
+		var target_range_text := "IN RANGE" if selected_target.position.distance_to(robot.position) <= get_robot_runtime_stats().range else "OUT OF RANGE"
+		target_text = "TARGET: %s  %s  HP %03d" % [str(target_data.name), target_range_text, max(0, ceil(selected_target.hp))]
+	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x - 410, 35), target_text, HORIZONTAL_ALIGNMENT_RIGHT, 385, 11, Color("f0d28a") if not selected_target.is_empty() else Color("829aa0"))
 
 	# Bottom HUD: Atlas portrait/readout, build palette, combat log and minimap.
 	var hud_rect := Rect2(bottom, Vector2(viewport_size.x, BOTTOM_HUD_HEIGHT))
@@ -1568,18 +1686,21 @@ func draw_ui2() -> void:
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 49), robot_status, HORIZONTAL_ALIGNMENT_LEFT, 150, 9, Color("7ed6ce"))
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 78), "HP", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("829aa0"))
 	draw_rect(Rect2(portrait_panel.position + Vector2(132, 86), Vector2(150, 8)), Color("172a2d"), true)
-	var robot_max_hp := max(1.0, float(robot.get("max_hp", get_robot_runtime_stats().hp)))
+	var robot_max_hp: float = max(1.0, float(robot.get("max_hp", get_robot_runtime_stats().hp)))
 	draw_rect(Rect2(portrait_panel.position + Vector2(132, 86), Vector2(150 * max(0.0, robot.hp / robot_max_hp), 8)), Color("7ed6ce"), true)
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 112), "%03d / %03d" % [max(0, ceil(robot.hp)), ceil(robot_max_hp)], HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
-	var robot_level := max(1, int(robot_progression.get("level", 1)))
-	var robot_xp := max(0, int(robot_progression.get("xp", 0)))
-	var robot_xp_need := ROBOT_BASE_XP_PER_LEVEL * robot_level
-	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 132), "LV.%d  XP %d / %d" % [robot_level, robot_xp, robot_xp_need], HORIZONTAL_ALIGNMENT_LEFT, 155, 9, Color("f0d28a"))
+	var robot_energy: float = clampf(float(robot.get("energy", ROBOT_ENERGY_MAX)), 0.0, ROBOT_ENERGY_MAX)
+	draw_rect(Rect2(portrait_panel.position + Vector2(182, 122), Vector2(100, 7)), Color("172a2d"), true)
+	draw_rect(Rect2(portrait_panel.position + Vector2(182, 122), Vector2(100 * robot_energy / ROBOT_ENERGY_MAX, 7)), Color("c58cff"), true)
+	var robot_level: int = max(1, int(robot_progression.get("level", 1)))
+	var robot_xp: int = max(0, int(robot_progression.get("xp", 0)))
+	var robot_xp_need: int = ROBOT_BASE_XP_PER_LEVEL * robot_level
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 145), "LV.%d  XP %d / %d" % [robot_level, robot_xp, robot_xp_need], HORIZONTAL_ALIGNMENT_LEFT, 155, 9, Color("f0d28a"))
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(14, 140), "COMMANDS  %02d" % int(robot.get("commands", 0)), HORIZONTAL_ALIGNMENT_LEFT, 130, 10, Color("829aa0"))
-	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE  SPECIAL   I  INVENTORY", HORIZONTAL_ALIGNMENT_LEFT, 130, 9, Color("829aa0"))
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE SPECIAL  R FINISHER", HORIZONTAL_ALIGNMENT_LEFT, 130, 9, Color("829aa0"))
 
 	# Build / skill palette.
-	for index in range(3):
+	for index in range(4):
 		var rect := _ui_action_rect(index)
 		var disabled := false
 		var label := ""
@@ -1588,10 +1709,14 @@ func draw_ui2() -> void:
 			label = "CANNON"; sub = "BUILD"
 		elif index == 1:
 			label = "GATLING"; sub = "BUILD"
-		else:
+		elif index == 2:
 			label = "SPECIAL"; sub = "SPACE"
 			var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0
 			disabled = not special_ready
+		else:
+			var finisher_value: float = float(robot.get("finisher", 0.0))
+			label = "FINISHER"; sub = "R  %03d%%" % int(finisher_value)
+			disabled = not (robot.active and run_state == RunState.RUNNING and finisher_value >= ROBOT_FINISHER_MAX and float(robot.get("special", 0.0)) <= 0.0)
 		draw_rect(rect, Color("173337") if not disabled else Color("182226"), true)
 		var selected := (index == 0 and selected_tower == "cannon") or (index == 1 and selected_tower == "gatling")
 		draw_rect(rect, Color("7ed6ce") if selected else Color("527079"), false, 2.0)
