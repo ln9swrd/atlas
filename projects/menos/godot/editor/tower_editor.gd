@@ -16,6 +16,8 @@ var cooldown_spin: SpinBox
 var range_spin: SpinBox
 var preference_edit: LineEdit
 var sprite_edit: LineEdit
+var projectile_edit: LineEdit
+var file_dialog_target := "sprite"
 var level2_cost_spin: SpinBox
 var level2_damage_spin: SpinBox
 var level2_cooldown_spin: SpinBox
@@ -87,8 +89,21 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_row.add_child(sprite_edit)
 	var browse := Button.new()
 	browse.text = "찾아보기"
-	browse.pressed.connect(_open_sprite_dialog)
+	browse.pressed.connect(func(): _open_sprite_dialog("sprite"))
 	sprite_row.add_child(browse)
+	var projectile_row := HBoxContainer.new()
+	parent.add_child(projectile_row)
+	var projectile_label := Label.new()
+	projectile_label.text = "탄환 애니메이션"
+	projectile_label.custom_minimum_size.x = 130
+	projectile_row.add_child(projectile_label)
+	projectile_edit = LineEdit.new()
+	projectile_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	projectile_row.add_child(projectile_edit)
+	var projectile_browse := Button.new()
+	projectile_browse.text = "찾아보기"
+	projectile_browse.pressed.connect(func(): _open_sprite_dialog("projectile"))
+	projectile_row.add_child(projectile_browse)
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
@@ -96,7 +111,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
-	file_dialog.file_selected.connect(func(path): sprite_edit.text = path; _refresh_sprite_preview(path))
+	file_dialog.file_selected.connect(_on_file_selected)
 	sprite_preview = TextureRect.new()
 	sprite_preview.custom_minimum_size = Vector2(96, 96)
 	sprite_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -181,6 +196,7 @@ func _on_tower_selected(index: int) -> void:
 	range_spin.value = float(data.get("range", 0.0))
 	preference_edit.text = str(data.get("preference", ""))
 	sprite_edit.text = str(data.get("sprite_anim", "res://assets/menos/sprites/tower_%s_anim.png" % selected_type))
+	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
 	_refresh_sprite_preview(sprite_edit.text)
 	level2_cost_spin.value = float(level2.get("upgrade_cost", 0.0))
 	level2_damage_spin.value = float(level2.get("damage", data.get("damage", 0.0)))
@@ -202,6 +218,7 @@ func _save_data() -> void:
 	data["range"] = float(range_spin.value)
 	data["preference"] = preference_edit.text.strip_edges()
 	data["sprite_anim"] = sprite_edit.text.strip_edges()
+	data["projectile_anim"] = projectile_edit.text.strip_edges()
 	data["level2"] = {
 		"upgrade_cost": int(level2_cost_spin.value),
 		"damage": float(level2_damage_spin.value),
@@ -237,10 +254,18 @@ func _get_file_thumbnail(path: String) -> Texture2D:
 		file_thumbnail_cache[path] = loaded
 	return loaded
 
-func _open_sprite_dialog() -> void:
+func _open_sprite_dialog(target: String = "sprite") -> void:
+	file_dialog_target = target
 	file_thumbnail_cache.clear()
 	if file_dialog:
 		file_dialog.popup_centered_ratio(0.75)
+
+func _on_file_selected(path: String) -> void:
+	if file_dialog_target == "projectile":
+		projectile_edit.text = path
+	else:
+		sprite_edit.text = path
+		_refresh_sprite_preview(path)
 
 func _set_status(message: String) -> void:
 	if status_label:

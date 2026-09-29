@@ -565,3 +565,59 @@ MENOS의 핵심 가치는 슈퍼로봇의 전투 구현이다.
 **현실성 판단** — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE
 
 **판정** — ACCEPT·STOP. 다음 STEP은 Master의 별도 지시 후 진행한다.
+
+
+## Handoff — STEP 5 Attack / Hit Effect Readability (2026-09-29)
+
+**STATUS** — PASS / 실제 화면 UNVERIFIED
+
+**목적** — 기존 공격과 피격 이펙트를 전투 중 더 빠르게 식별할 수 있도록 시각적 차이를 강화한다. 데미지 계산, 공격 주기, 타겟팅, 특수공격 조건은 변경하지 않는다.
+
+**기준선** — Branch main; 기존 STEP 1~4 변경사항 보존. STEP 5의 `main.gd` 변경은 확인 과정에서 `f4de1bc8` 커밋으로 기록되어 있으며 Push 여부는 확인하지 않음. 추가 Commit / Push는 수행하지 않음.
+
+**조사 결과**
+- **CONFIRMED** — 타워와 ATLAS의 투사체가 공통 `proj_defender` 렌더링 경로를 사용한다.
+- **CONFIRMED** — 기존 투사체에는 무기 종류에 따른 추가 시각 구분이 없었다.
+- **CONFIRMED** — 일반 피격, 범위 공격, 관통 공격의 임팩트가 동일한 `impact_explosion` 계열 표시를 공유한다.
+- **CONFIRMED** — 적 피격 시 damage_enemy()에서 source 정보를 이미 받고 있었다.
+
+**변경 사항**
+- **CHANGED** — 투사체에 weapon 표시 정보를 추가해 Cannon / Gatling / ATLAS를 시각적으로 구분할 수 있게 했다.
+- **CHANGED** — 투사체에 짧은 방향성 트레일과 발광점 표시를 추가했다.
+- **CHANGED** — Cannon은 금색, Gatling은 주황색, ATLAS는 청록색 액센트를 사용한다.
+- **CHANGED** — 피격 임팩트에 공격 유형별 액센트 링을 추가했다.
+- **CHANGED** — Area는 금색, Pierce는 보라색으로 구분하고, Cannon/Gatling/ATLAS 일반 공격도 주체별 색상을 사용한다.
+- **CHANGED** — 임팩트 스프라이트 크기를 생명주기에 따라 약하게 확대해 타격 순간을 더 읽기 쉽게 했다.
+- **UNCHANGED** — 실제 데미지 계산, Armor 계산, 공격 쿨다운, 투사체 이동 속도, 타겟 선정, 특수공격 조건 및 쿨다운.
+- **UNCHANGED** — 기존 Asset 파일 자체 및 맵/스테이지 데이터.
+
+**검증**
+- **CODE VERIFIED** — 공격 생성 및 _draw() 이펙트 경로 diff 확인.
+- **git diff --check** — PASS.
+- **BUILD VERIFIED** — UNVERIFIED. Godot 실행 파일 미확인.
+- **EDITOR VERIFIED** — UNVERIFIED.
+- **PIE VERIFIED** — UNVERIFIED.
+
+**세라의 기술 판단**
+- 이 단계의 변경은 기존 effect Dictionary에 표시용 정보를 추가하고 렌더링만 확장하므로 전투 수치 및 판정 경로를 변경하지 않는다.
+- 기존 projectile/impact Asset은 그대로 사용하며 추가 Asset을 만들지 않았다.
+
+**마리의 판정**
+- STEP 5의 코드 목적은 충족했다.
+- 실제 PIE에서 이펙트가 과밀하지 않은지, 특히 다수 적과 다수 투사체가 동시에 존재할 때 가독성이 유지되는지는 확인하지 못했다.
+- 실제 화면 검증 전에는 최종 시각 품질 PASS로 확대하지 않는다.
+
+**미확인 사항**
+- 실제 PIE에서 Cannon/Gatling/ATLAS의 투사체 구분이 충분한지.
+- 다수 임팩트가 겹칠 때 이펙트가 과도하게 밝아지지 않는지.
+- Area/Pierce 액센트가 전장 색상과 충분히 대비되는지.
+
+**OUT OF SCOPE**
+- 새로운 VFX Asset 제작
+- 공격/피격 사운드 변경
+- 전투 밸런스 및 데미지 변경
+- STEP 6 HUD 정보 계층 개선
+
+**현실성 판단** — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE
+
+**판정** — ACCEPT·STOP. 다음 STEP은 Master의 별도 지시 후 진행한다.

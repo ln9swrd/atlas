@@ -93,8 +93,10 @@ var spawn_queue: Array = []
 var enemies: Array = []
 var enemy_catalog: Dictionary = DATA.ENEMIES.duplicate(true)
 var enemy_sprite_catalog: Dictionary = {}
+var enemy_projectile_catalog: Dictionary = {}
 var tower_catalog: Dictionary = DATA.TOWERS.duplicate(true)
 var tower_sprite_catalog: Dictionary = {}
+var tower_projectile_catalog: Dictionary = {}
 var towers: Array = []
 var robot := {}
 var robot_progression := {}
@@ -171,12 +173,15 @@ func _load_enemy_catalog() -> void:
 			if parsed[enemy_type] is Dictionary and DATA.ENEMIES.has(enemy_type):
 				enemy_catalog[enemy_type] = parsed[enemy_type].duplicate(true)
 	enemy_sprite_catalog.clear()
+	enemy_projectile_catalog.clear()
 	for enemy_type in DATA.ENEMIES:
 		var sprite: Texture2D = _texture_from_catalog_entry(enemy_catalog[enemy_type], "sprite_anim")
 		if sprite:
 			enemy_sprite_catalog[enemy_type] = sprite
 		else:
 			enemy_sprite_catalog[enemy_type] = VISUALS.get("enemy_%s_anim" % enemy_type)
+		var projectile: Texture2D = _texture_from_catalog_entry(enemy_catalog[enemy_type], "projectile_anim")
+		enemy_projectile_catalog[enemy_type] = projectile if projectile else VISUALS["bullet_threat"]
 
 func _load_tower_catalog() -> void:
 	var path := "res://content/towers/towers.json"
@@ -189,12 +194,15 @@ func _load_tower_catalog() -> void:
 				if parsed[tower_type] is Dictionary and DATA.TOWERS.has(tower_type):
 					tower_catalog[tower_type] = parsed[tower_type].duplicate(true)
 	tower_sprite_catalog.clear()
+	tower_projectile_catalog.clear()
 	for tower_type in DATA.TOWERS:
 		var sprite: Texture2D = _texture_from_catalog_entry(tower_catalog[tower_type], "sprite_anim")
 		if sprite:
 			tower_sprite_catalog[tower_type] = sprite
 		else:
 			tower_sprite_catalog[tower_type] = VISUALS.get("tower_%s_anim" % tower_type)
+		var projectile: Texture2D = _texture_from_catalog_entry(tower_catalog[tower_type], "projectile_anim")
+		tower_projectile_catalog[tower_type] = projectile if projectile else VISUALS["bullet_defender"]
 
 func load_stage_map(stage_id: String) -> bool:
 	if StageManager.load_stage(stage_id).is_empty():
@@ -548,7 +556,7 @@ func update_giant_robot_attack(delta: float, enemy: Dictionary) -> void:
 	enemy.robot_attack_timer -= delta
 	if enemy.position.distance_to(robot.position) > data.robot_range: return
 	if enemy.robot_attack_timer > 0.0: return
-	effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0})
+	effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type})
 	damage_robot(data.robot_damage)
 	enemy.robot_attack_timer = data.robot_cooldown
 	if robot.active:
@@ -1039,7 +1047,7 @@ func _draw() -> void:
 		# Presentation-only scale increase keeps battlefield combat as the primary visual focus.
 		# Enemy data, collision, targeting and movement are unchanged.
 		# Strategic Base Indicator at Enemy Feet (drawn BEFORE sprite so feet sit inside base ring)
-		var feet_pos := enemy.position + Vector2(0, enemy_size.y * 0.48)
+		var feet_pos: Vector2 = enemy.position + Vector2(0, enemy_size.y * 0.48)
 		var enemy_accent := Color("ef7068")
 		if enemy.type == "rusher":
 			enemy_accent = Color("f0a35a")
@@ -1062,7 +1070,7 @@ func _draw() -> void:
 		draw_animated_sprite(enemy_sprite_catalog.get(enemy.type, VISUALS[anim_key]), enemy.position, enemy_size, e_frame, 8)
 		
 		# Strategic HP Bar
-		var hp_position := enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 11)
+		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 11)
 		var hp_width: float = max(34.0, enemy_size.x)
 		hp_position.x = enemy.position.x - hp_width * 0.5
 		draw_string(ThemeDB.fallback_font, hp_position + Vector2(0, -6), data.name, HORIZONTAL_ALIGNMENT_LEFT, hp_width, 10, Color("ffd6d1"))
@@ -1107,7 +1115,8 @@ func _draw() -> void:
 			var trail_start := current_p - Vector2.from_angle(angle - PI / 2.0) * 22.0
 			draw_line(trail_start, current_p, Color(projectile_color, 0.55), 3.0)
 			draw_circle(current_p, 5.0, Color(projectile_color, 0.85))
-			draw_rotated_animated_sprite(VISUALS["bullet_defender"], current_p, Vector2(36, 44), angle, p_frame, 8)
+			var projectile_texture: Texture2D = tower_projectile_catalog.get(weapon_type, VISUALS["bullet_defender"]) as Texture2D
+			draw_rotated_animated_sprite(projectile_texture, current_p, Vector2(36, 44), angle, p_frame, 8)
 		elif etype == "proj_threat":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
 			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
@@ -1115,7 +1124,9 @@ func _draw() -> void:
 			var current_p: Vector2 = start_p.lerp(end_p, progress)
 			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
 			var p_frame: int = int(elapsed * 16.0) % 6
-			draw_rotated_animated_sprite(VISUALS["bullet_threat"], current_p, Vector2(40, 48), angle, p_frame, 6)
+			var enemy_type := str(effect.get("enemy_type", "giant"))
+			var projectile_texture: Texture2D = enemy_projectile_catalog.get(enemy_type, VISUALS["bullet_threat"]) as Texture2D
+			draw_rotated_animated_sprite(projectile_texture, current_p, Vector2(40, 48), angle, p_frame, 6)
 
 	# Player Unit ATLAS-01 Robot (Heroic Strategic Unit Base & Visibility)
 	if robot.active:
@@ -1171,7 +1182,8 @@ func _draw() -> void:
 	draw_ui2()
 
 func _ui_origin() -> Vector2:
-	return $Camera2D.position - get_viewport_rect().size * 0.5 + Vector2(0, get_viewport_rect().size.y - BOTTOM_HUD_HEIGHT)
+	var screen_to_world: Transform2D = get_viewport().get_canvas_transform().affine_inverse()
+	return screen_to_world * Vector2(0, get_viewport_rect().size.y - BOTTOM_HUD_HEIGHT)
 
 func _ui_action_rect(index: int) -> Rect2:
 	return Rect2(_ui_origin() + Vector2(350.0 + index * 82.0, 82.0), Vector2(74, 74))
@@ -1224,7 +1236,8 @@ func draw_minimap(position: Vector2) -> void:
 
 func draw_ui2() -> void:
 	var viewport_size := get_viewport_rect().size
-	var screen_origin := $Camera2D.position - viewport_size * 0.5
+	var screen_to_world: Transform2D = get_viewport().get_canvas_transform().affine_inverse()
+	var screen_origin: Vector2 = screen_to_world * Vector2.ZERO
 	var bottom := _ui_origin()
 	var stage_data := StageManager.get_current_stage()
 	var waves_data := StageManager.get_waves()
@@ -1279,7 +1292,7 @@ func draw_ui2() -> void:
 			label = "GATLING"; sub = "BUILD"
 		else:
 			label = "SPECIAL"; sub = "SPACE"
-			var special_ready := robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0
+			var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0
 			disabled = not special_ready
 		draw_rect(rect, Color("173337") if not disabled else Color("182226"), true)
 		var selected := (index == 0 and selected_tower == "cannon") or (index == 1 and selected_tower == "gatling")

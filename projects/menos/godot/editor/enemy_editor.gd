@@ -16,9 +16,12 @@ var armor_spin: SpinBox
 var damage_spin: SpinBox
 var reward_spin: SpinBox
 var radius_spin: SpinBox
+var melee_check: CheckButton
 var color_edit: ColorPickerButton
 var sprite_edit: LineEdit
+var projectile_edit: LineEdit
 var file_dialog: FileDialog
+var file_dialog_target := "sprite"
 var file_thumbnail_cache: Dictionary = {}
 var robot_damage_spin: SpinBox
 var robot_range_spin: SpinBox
@@ -78,6 +81,9 @@ func _build_properties(parent: VBoxContainer) -> void:
 	damage_spin = _spin_row(parent, "Base 공격력", 0, 9999, 0.1, 1)
 	reward_spin = _spin_row(parent, "보상", 0, 999999, 1, 10)
 	radius_spin = _spin_row(parent, "반경", 1, 999, 0.5, 10)
+	melee_check = CheckButton.new()
+	melee_check.text = "근접 공격형"
+	parent.add_child(melee_check)
 	var color_row := HBoxContainer.new()
 	parent.add_child(color_row)
 	var color_label := Label.new()
@@ -98,8 +104,21 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_row.add_child(sprite_edit)
 	var browse := Button.new()
 	browse.text = "찾아보기"
-	browse.pressed.connect(_open_sprite_dialog)
+	browse.pressed.connect(func(): _open_sprite_dialog("sprite"))
 	sprite_row.add_child(browse)
+	var projectile_row := HBoxContainer.new()
+	parent.add_child(projectile_row)
+	var projectile_label := Label.new()
+	projectile_label.text = "탄환 애니메이션"
+	projectile_label.custom_minimum_size.x = 130
+	projectile_row.add_child(projectile_label)
+	projectile_edit = LineEdit.new()
+	projectile_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	projectile_row.add_child(projectile_edit)
+	var projectile_browse := Button.new()
+	projectile_browse.text = "찾아보기"
+	projectile_browse.pressed.connect(func(): _open_sprite_dialog("projectile"))
+	projectile_row.add_child(projectile_browse)
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
@@ -107,7 +126,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
-	file_dialog.file_selected.connect(func(path): sprite_edit.text = path; _refresh_sprite_preview(path))
+	file_dialog.file_selected.connect(_on_file_selected)
 	sprite_preview = TextureRect.new()
 	sprite_preview.custom_minimum_size = Vector2(96, 96)
 	sprite_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -193,6 +212,8 @@ func _on_enemy_selected(index: int) -> void:
 	radius_spin.value = float(data.get("radius", 10.0))
 	color_edit.color = Color(str(data.get("color", "#ffffff")))
 	sprite_edit.text = str(data.get("sprite_anim", "res://assets/menos/sprites/enemy_%s_anim.png" % selected_type))
+	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_threat.png"))
+	melee_check.button_pressed = bool(data.get("melee", false))
 	_refresh_sprite_preview(sprite_edit.text)
 	robot_damage_spin.value = float(data.get("robot_damage", 0.0))
 	robot_range_spin.value = float(data.get("robot_range", 0.0))
@@ -219,6 +240,8 @@ func _save_data() -> void:
 	data["radius"] = float(radius_spin.value)
 	data["color"] = color_edit.color.to_html(false)
 	data["sprite_anim"] = sprite_edit.text.strip_edges()
+	data["projectile_anim"] = projectile_edit.text.strip_edges()
+	data["melee"] = melee_check.button_pressed
 	if selected_type == "giant":
 		data["robot_damage"] = float(robot_damage_spin.value)
 		data["robot_range"] = float(robot_range_spin.value)
@@ -260,10 +283,18 @@ func _get_file_thumbnail(path: String) -> Texture2D:
 		file_thumbnail_cache[path] = loaded
 	return loaded
 
-func _open_sprite_dialog() -> void:
+func _open_sprite_dialog(target: String = "sprite") -> void:
+	file_dialog_target = target
 	file_thumbnail_cache.clear()
 	if file_dialog:
 		file_dialog.popup_centered_ratio(0.75)
+
+func _on_file_selected(path: String) -> void:
+	if file_dialog_target == "projectile":
+		projectile_edit.text = path
+	else:
+		sprite_edit.text = path
+		_refresh_sprite_preview(path)
 
 func _set_status(message: String) -> void:
 	if status_label:
