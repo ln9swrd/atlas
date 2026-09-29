@@ -1042,6 +1042,17 @@ func try_special_attack() -> bool:
 		log_event("ENERGY 부족: SPECIAL 사용 불가.")
 		return false
 	var unlocked_abilities: Array = robot_progression.get("unlocked_abilities", [])
+	# Base SPECIAL is always available; progression abilities remain optional upgrades.
+	if robot.area <= 0.0:
+		var nearby_base: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= robot_catalog.ability_area.radius)
+		if not nearby_base.is_empty():
+			effects.append({"position": robot.position, "type": "area", "life": 0.45, "damage_delay": 0.22, "damage_targets": nearby_base, "damage": robot_catalog.ability_area.damage, "source": "area"})
+			robot["special"] = ROBOT_SPECIAL_DURATION
+			robot["special_type"] = "area"
+			robot["energy"] = max(0.0, float(robot.get("energy", ROBOT_ENERGY_MAX)) - ROBOT_SPECIAL_ENERGY_COST)
+			robot.area = robot_catalog.ability_area.cooldown
+			log_event("ATLAS-01 used BASE SPECIAL.")
+			return true
 	if unlocked_abilities.has("ability_area") and robot.area <= 0.0:
 		var nearby: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= robot_catalog.ability_area.radius)
 		if nearby.size() >= robot_catalog.ability_area.threshold:
@@ -1062,6 +1073,14 @@ func try_special_attack() -> bool:
 			robot.pierce = robot_catalog.ability_pierce.cooldown
 			log_event("ATLAS-01 used HEAVY PIERCE on %s." % enemy_catalog[heavy.type].name)
 			return true
+	return false
+
+func try_skill_slot(slot: int) -> bool:
+	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
+		return false
+	# Three additional HUD skill slots are reserved for future distinct skills.
+	log_event("SKILL %d is not implemented yet." % slot)
+	play_sfx("ui_cancel")
 	return false
 
 func available_robot_growths() -> Array[String]:
@@ -1200,7 +1219,7 @@ func _input(event: InputEvent) -> void:
 			return
 		var point := get_global_mouse_position()
 		# The bottom HUD overlaps the map's world rectangle, so UI hit-testing must happen first.
-		if _ui_button_rect(100).has_point(point) or _ui_action_rect(0).has_point(point) or _ui_action_rect(1).has_point(point) or _ui_action_rect(2).has_point(point) or _ui_action_rect(3).has_point(point):
+		if _ui_button_rect(100).has_point(point) or _ui_action_rect(0).has_point(point) or _ui_action_rect(1).has_point(point) or _ui_action_rect(2).has_point(point) or _ui_action_rect(3).has_point(point) or _ui_action_rect(4).has_point(point) or _ui_action_rect(5).has_point(point) or _ui_action_rect(6).has_point(point):
 			handle_click(point)
 			get_viewport().set_input_as_handled()
 			return
@@ -1246,7 +1265,10 @@ func handle_click(point: Vector2) -> void:
 	if _ui_action_rect(0).has_point(point): select_tower_for_build("cannon"); return
 	if _ui_action_rect(1).has_point(point): select_tower_for_build("gatling"); return
 	if _ui_action_rect(2).has_point(point): try_special_attack(); return
-	if _ui_action_rect(3).has_point(point): try_finisher(); return
+	if _ui_action_rect(3).has_point(point): try_skill_slot(1); return
+	if _ui_action_rect(4).has_point(point): try_skill_slot(2); return
+	if _ui_action_rect(5).has_point(point): try_skill_slot(3); return
+	if _ui_action_rect(6).has_point(point): try_finisher(); return
 	if _ui_button_rect(100).has_point(point): toggle_robot_attack_mode(); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
@@ -1737,7 +1759,7 @@ func draw_ui2() -> void:
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE SPECIAL  R FINISHER", HORIZONTAL_ALIGNMENT_LEFT, 130, 9, Color("829aa0"))
 
 	# Build / skill palette.
-	for index in range(4):
+	for index in range(7):
 		var rect := _ui_action_rect(index)
 		var disabled := false
 		var label := ""
@@ -1750,6 +1772,9 @@ func draw_ui2() -> void:
 			label = "SPECIAL"; sub = "SPACE"
 			var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0
 			disabled = not special_ready
+		elif index <= 5:
+			label = "SKILL %d" % (index - 2); sub = "READY"
+			disabled = not (robot.active and run_state == RunState.RUNNING)
 		else:
 			var finisher_value: float = float(robot.get("finisher", 0.0))
 			label = "FINISHER"; sub = "R  %03d%%" % int(finisher_value)
@@ -1761,6 +1786,12 @@ func draw_ui2() -> void:
 			var texture_key := "tower_cannon" if index == 0 else "tower_gatling"
 			if VISUALS.get(texture_key) != null:
 				draw_sprite(VISUALS[texture_key], rect.position + Vector2(37, 31), Vector2(42, 42))
+		elif index == 2:
+			draw_string(ThemeDB.fallback_font, rect.position + Vector2(8, 39), "SP", HORIZONTAL_ALIGNMENT_CENTER, 56, 15, Color("c58cff") if not disabled else Color("65777b"))
+		elif index >= 3 and index <= 5:
+			draw_string(ThemeDB.fallback_font, rect.position + Vector2(8, 39), str(index - 2), HORIZONTAL_ALIGNMENT_CENTER, 56, 15, Color("7ed6ce") if not disabled else Color("65777b"))
+		else:
+			draw_string(ThemeDB.fallback_font, rect.position + Vector2(8, 39), "F", HORIZONTAL_ALIGNMENT_CENTER, 56, 15, Color("f0d28a") if not disabled else Color("65777b"))
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 56), label, HORIZONTAL_ALIGNMENT_CENTER, 62, 9, Color("d7fff7") if not disabled else Color("65777b"))
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 68), sub, HORIZONTAL_ALIGNMENT_CENTER, 62, 8, Color("7ed6ce") if not disabled else Color("65777b"))
 
@@ -1771,7 +1802,7 @@ func draw_ui2() -> void:
 	draw_string(ThemeDB.fallback_font, attack_mode_rect.position + Vector2(8, 38), "클릭하여 자동 / 수동 전환", HORIZONTAL_ALIGNMENT_LEFT, attack_mode_rect.size.x - 16, 9, Color("7ed6ce"))
 
 	# Recent combat feed.
-	var feed_rect := Rect2(bottom + Vector2(660, 12), Vector2(230, 164))
+	var feed_rect := Rect2(bottom + Vector2(900, 12), Vector2(230, 164))
 	draw_rect(feed_rect, Color(0.035, 0.065, 0.07, 0.98), true)
 	draw_rect(feed_rect, Color("30484f"), false, 1.0)
 	draw_string(ThemeDB.fallback_font, feed_rect.position + Vector2(12, 20), "COMBAT LOG", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("829aa0"))
