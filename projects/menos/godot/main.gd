@@ -526,6 +526,7 @@ func _process(delta: float) -> void:
 		spawn_enemies()
 		move_enemies(delta)
 		update_towers(delta)
+		move_robot_automatically(delta)
 		update_robot(delta)
 		check_wave_clear()
 	for damage_number in damage_numbers:
@@ -1197,10 +1198,31 @@ func _input(event: InputEvent) -> void:
 			center_camera_from_minimap(event.position)
 			get_viewport().set_input_as_handled()
 			return
-		if select_robot_target_at(get_global_mouse_position()):
+		var point := get_global_mouse_position()
+		# The bottom HUD overlaps the map's world rectangle, so UI hit-testing must happen first.
+		if _ui_button_rect(100).has_point(point) or _ui_action_rect(0).has_point(point) or _ui_action_rect(1).has_point(point) or _ui_action_rect(2).has_point(point) or _ui_action_rect(3).has_point(point):
+			handle_click(point)
 			get_viewport().set_input_as_handled()
 			return
-		handle_click(get_global_mouse_position())
+		# World clicks: target selection and placed-tower selection must be resolved before movement.
+		if select_robot_target_at(point):
+			get_viewport().set_input_as_handled()
+			return
+		var tower_position := get_tower_placement_position(point)
+		if not pending_tower_type.is_empty() and tower_position != Vector2.INF:
+			handle_click(point)
+			get_viewport().set_input_as_handled()
+			return
+		for tower in towers:
+			if point.distance_to(tower.position) < 24.0:
+				handle_click(point)
+				get_viewport().set_input_as_handled()
+				return
+		if robot.active and Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE).has_point(point):
+			move_robot_to_position(point)
+			get_viewport().set_input_as_handled()
+			return
+		handle_click(point)
 
 func handle_click(point: Vector2) -> void:
 	if inventory_open:
@@ -1224,7 +1246,8 @@ func handle_click(point: Vector2) -> void:
 	if _ui_action_rect(0).has_point(point): select_tower_for_build("cannon"); return
 	if _ui_action_rect(1).has_point(point): select_tower_for_build("gatling"); return
 	if _ui_action_rect(2).has_point(point): try_special_attack(); return
-	if _ui_button_rect(423).has_point(point): toggle_robot_attack_mode(); return
+	if _ui_action_rect(3).has_point(point): try_finisher(); return
+	if _ui_button_rect(100).has_point(point): toggle_robot_attack_mode(); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -1248,10 +1271,10 @@ func handle_click(point: Vector2) -> void:
 			queue_redraw()
 			return
 		if tower_position != Vector2.INF:
-			selected_slot_position = tower_position
-			selected_slot = "tower_%d_%d" % [int(tower_position.x), int(tower_position.y)]
+			# Placement zone click without a selected tower only clears the temporary selection.
+			selected_slot = ""
+			selected_slot_position = Vector2.ZERO
 			selected_tower = ""
-			robot_selected = false
 			play_sfx("tower_select")
 			queue_redraw()
 			return
@@ -1388,10 +1411,6 @@ func _draw() -> void:
 	# Base HQ label is intentionally hidden.
 
 	# Placed towers
-	if not selected_slot.is_empty() and towers.all(func(tower): return tower.id != selected_slot):
-		draw_oval(selected_slot_position + Vector2(0, 26), 30.0, 10.0, Color(0, 0, 0, 0.35))
-		draw_arc(selected_slot_position + Vector2(0, 26), 32.0, 0, TAU, 24, Color("f0a35a"), 2.0)
-		draw_sprite(VISUALS["slot_selected"], selected_slot_position, Vector2(76, 76))
 	for tower in towers:
 		var tower_pos: Vector2 = tower.position
 		var tower_feet := tower_pos + Vector2(0, 26)
@@ -1560,10 +1579,10 @@ func _ui_origin() -> Vector2:
 	return screen_to_world * Vector2(0, get_viewport_rect().size.y - BOTTOM_HUD_HEIGHT)
 
 func _ui_action_rect(index: int) -> Rect2:
-	return Rect2(_ui_origin() + Vector2(350.0 + index * 82.0, 82.0), Vector2(74, 74))
+	return Rect2(_ui_origin() + Vector2(330.0 + index * 78.0, 14.0), Vector2(72, 76))
 
 func _ui_button_rect(y: float) -> Rect2:
-	return Rect2(_ui_origin() + Vector2(20, y), Vector2(154, 46))
+	return Rect2(_ui_origin() + Vector2(330, y), Vector2(300, 44))
 
 func draw_ui() -> void:
 	var origin := _ui_origin()
@@ -1745,8 +1764,14 @@ func draw_ui2() -> void:
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 56), label, HORIZONTAL_ALIGNMENT_CENTER, 62, 9, Color("d7fff7") if not disabled else Color("65777b"))
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 68), sub, HORIZONTAL_ALIGNMENT_CENTER, 62, 8, Color("7ed6ce") if not disabled else Color("65777b"))
 
+	# Basic attack mode toggle is always visible below the combat palette.
+	var auto_attack := bool(robot.get("auto_attack", true))
+	var attack_mode_rect := _ui_button_rect(100)
+	button(attack_mode_rect, "기본 공격  [" + ("자동" if auto_attack else "수동") + "]", false)
+	draw_string(ThemeDB.fallback_font, attack_mode_rect.position + Vector2(8, 38), "클릭하여 자동 / 수동 전환", HORIZONTAL_ALIGNMENT_LEFT, attack_mode_rect.size.x - 16, 9, Color("7ed6ce"))
+
 	# Recent combat feed.
-	var feed_rect := Rect2(bottom + Vector2(606, 12), Vector2(230, 164))
+	var feed_rect := Rect2(bottom + Vector2(660, 12), Vector2(230, 164))
 	draw_rect(feed_rect, Color(0.035, 0.065, 0.07, 0.98), true)
 	draw_rect(feed_rect, Color("30484f"), false, 1.0)
 	draw_string(ThemeDB.fallback_font, feed_rect.position + Vector2(12, 20), "COMBAT LOG", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("829aa0"))
