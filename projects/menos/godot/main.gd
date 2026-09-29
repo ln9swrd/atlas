@@ -505,7 +505,7 @@ func reset_game() -> void:
 		initial_robot_spot = str(ROBOT_SPOTS.keys()[0])
 		initial_robot_position = ROBOT_SPOTS[initial_robot_spot]
 	var robot_stats := get_robot_runtime_stats()
-	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": robot_stats.hp, "max_hp": robot_stats.hp, "commands": robot_stats.max_moves, "energy": ROBOT_ENERGY_MAX, "attack": 0.0, "area": 0.0, "pierce": 0.0, "special": 0.0, "special_type": "", "finisher": 0.0, "flash": 0.0}
+	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "auto_attack": true, "hp": robot_stats.hp, "max_hp": robot_stats.hp, "commands": robot_stats.max_moves, "energy": ROBOT_ENERGY_MAX, "attack": 0.0, "area": 0.0, "pierce": 0.0, "special": 0.0, "special_type": "", "finisher": 0.0, "flash": 0.0}
 	if robot_progression.is_empty():
 		robot_progression = {"level": 1, "xp": 0, "unlocked_abilities": []}
 	feed.clear(); log_event("Build towers and prepare ATLAS-01. Wave 1 starts automatically.")
@@ -991,6 +991,8 @@ func update_robot(delta: float) -> void:
 	robot["energy"] = min(ROBOT_ENERGY_MAX, float(robot.get("energy", ROBOT_ENERGY_MAX)) + ROBOT_ENERGY_REGEN * delta)
 	robot.attack = max(0.0, float(robot.get("attack", 0.0)) - delta)
 	robot.area -= delta; robot.pierce -= delta
+	if bool(robot.get("auto_attack", true)):
+		try_basic_attack()
 
 func try_basic_attack() -> bool:
 	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
@@ -998,6 +1000,10 @@ func try_basic_attack() -> bool:
 	if robot.attack > 0.0:
 		return false
 	var target: Dictionary = get_selected_robot_target()
+	if target.is_empty() and bool(robot.get("auto_attack", true)):
+		target = find_target(robot.position, get_robot_runtime_stats().range)
+		if not target.is_empty():
+			selected_enemy_index = enemies.find(target)
 	if target.is_empty():
 		return false
 	if target.position.distance_to(robot.position) > get_robot_runtime_stats().range:
@@ -1218,6 +1224,7 @@ func handle_click(point: Vector2) -> void:
 	if _ui_action_rect(0).has_point(point): select_tower_for_build("cannon"); return
 	if _ui_action_rect(1).has_point(point): select_tower_for_build("gatling"); return
 	if _ui_action_rect(2).has_point(point): try_special_attack(); return
+	if _ui_button_rect(423).has_point(point): toggle_robot_attack_mode(); return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -1310,10 +1317,19 @@ func upgrade_tower(type: String) -> void:
 	play_sfx("ui_confirm"); log_event("%s upgraded to LVL 2." % tower.data.name)
 	selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false; queue_redraw()
 
+func toggle_robot_attack_mode() -> void:
+	if not robot.active:
+		return
+	robot["auto_attack"] = not bool(robot.get("auto_attack", true))
+	play_sfx("ui_confirm")
+	log_event("ATLAS-01 기본 공격: %s." % ("자동" if bool(robot.auto_attack) else "수동"))
+	queue_redraw()
+
 func launch_robot() -> void:
 	if not can_launch_robot(): return
 	robot.hp = get_robot_runtime_stats().hp
 	robot.max_hp = get_robot_runtime_stats().hp
+	robot["auto_attack"] = true
 	robot.active = true; robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_confirm"); log_event("ATLAS-01 launched at %s. Choose a crisis zone." % robot.spot)
 
 func can_launch_robot() -> bool:
@@ -1567,6 +1583,8 @@ func draw_ui() -> void:
 	button(_ui_button_rect(327), "개틀링 건설", run_state not in [RunState.READY, RunState.RUNNING])
 	var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0 and not robot_progression.get("unlocked_abilities", []).is_empty()
 	button(_ui_button_rect(375), "필살기 [SPACE]", not special_ready)
+	var auto_attack := bool(robot.get("auto_attack", true))
+	button(_ui_button_rect(423), "기본 공격: " + ("자동" if auto_attack else "수동"), not robot.active)
 	var robot_status := "대기"
 	if robot.active: robot_status = "출격 / " + robot.spot
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 452), "ATLAS-01  " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
