@@ -16,7 +16,11 @@ var armor_spin: SpinBox
 var damage_spin: SpinBox
 var reward_spin: SpinBox
 var radius_spin: SpinBox
+var attack_type_list: OptionButton
+var attack_range_spin: SpinBox
+var attack_cooldown_spin: SpinBox
 var melee_check: CheckButton
+var melee_cooldown_spin: SpinBox
 var color_edit: ColorPickerButton
 var sprite_edit: LineEdit
 var projectile_edit: LineEdit
@@ -81,9 +85,26 @@ func _build_properties(parent: VBoxContainer) -> void:
 	damage_spin = _spin_row(parent, "Base 공격력", 0, 9999, 0.1, 1)
 	reward_spin = _spin_row(parent, "보상", 0, 999999, 1, 10)
 	radius_spin = _spin_row(parent, "반경", 1, 999, 0.5, 10)
+	var attack_type_row := HBoxContainer.new()
+	parent.add_child(attack_type_row)
+	var attack_type_label := Label.new()
+	attack_type_label.text = "공격 타입"
+	attack_type_label.custom_minimum_size.x = 130
+	attack_type_row.add_child(attack_type_label)
+	attack_type_list = OptionButton.new()
+	attack_type_list.add_item("없음")
+	attack_type_list.add_item("근접")
+	attack_type_list.add_item("원거리")
+	attack_type_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	attack_type_row.add_child(attack_type_list)
+	attack_range_spin = _spin_row(parent, "공격 사거리", 0, 9999, 0.5, 10)
+	attack_cooldown_spin = _spin_row(parent, "공격 쿨다운", 0.05, 9999, 0.05, 1.0)
 	melee_check = CheckButton.new()
-	melee_check.text = "근접 공격형"
+	melee_check.text = "근접 공격형 (구버전 호환)"
+	melee_check.visible = false
 	parent.add_child(melee_check)
+	melee_cooldown_spin = _spin_row(parent, "근접 공격 쿨다운 (구버전 호환)", 0.05, 9999, 0.05, 1.0)
+	melee_cooldown_spin.visible = false
 	var color_row := HBoxContainer.new()
 	parent.add_child(color_row)
 	var color_label := Label.new()
@@ -213,7 +234,18 @@ func _on_enemy_selected(index: int) -> void:
 	color_edit.color = Color(str(data.get("color", "#ffffff")))
 	sprite_edit.text = str(data.get("sprite_anim", "res://assets/menos/sprites/enemy_%s_anim.png" % selected_type))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_threat.png"))
+	var attack_type := str(data.get("attack_type", ""))
+	if attack_type == "melee":
+		attack_type_list.select(1)
+	elif attack_type == "ranged":
+		attack_type_list.select(2)
+	else:
+		attack_type_list.select(0)
+	attack_range_spin.value = float(data.get("attack_range", data.get("radius", 10.0)))
+	attack_cooldown_spin.value = float(data.get("attack_cooldown", data.get("melee_cooldown", 1.0)))
 	melee_check.button_pressed = bool(data.get("melee", false))
+	melee_cooldown_spin.value = float(data.get("melee_cooldown", 1.0))
+	melee_cooldown_spin.editable = melee_check.button_pressed
 	_refresh_sprite_preview(sprite_edit.text)
 	robot_damage_spin.value = float(data.get("robot_damage", 0.0))
 	robot_range_spin.value = float(data.get("robot_range", 0.0))
@@ -241,7 +273,13 @@ func _save_data() -> void:
 	data["color"] = color_edit.color.to_html(false)
 	data["sprite_anim"] = sprite_edit.text.strip_edges()
 	data["projectile_anim"] = projectile_edit.text.strip_edges()
-	data["melee"] = melee_check.button_pressed
+	var attack_type_index := attack_type_list.selected
+	var attack_type := ["none", "melee", "ranged"][clampi(attack_type_index, 0, 2)]
+	data["attack_type"] = attack_type
+	data["attack_range"] = float(attack_range_spin.value)
+	data["attack_cooldown"] = float(attack_cooldown_spin.value)
+	data["melee"] = attack_type == "melee"
+	data["melee_cooldown"] = float(attack_cooldown_spin.value)
 	if selected_type == "giant":
 		data["robot_damage"] = float(robot_damage_spin.value)
 		data["robot_range"] = float(robot_range_spin.value)

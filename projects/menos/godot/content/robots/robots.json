@@ -15,5 +15,23 @@
     "projectile_anim": "res://assets/menos/sprites/bullet_defender.png",
     "ability_area": {"damage": 28.0, "radius": 72.0, "cooldown": 6.0, "threshold": 3},
     "ability_pierce": {"damage": 105.0, "cooldown": 7.0}
+  },
+  "boss_giant": {
+    "id": "boss_giant",
+    "name": "GIANT",
+    "role": "boss",
+    "hp": 620.0,
+    "speed": 7.0,
+    "damage": 45.0,
+    "cooldown": 2.0,
+    "range": 120.0,
+    "max_moves": 0,
+    "sprite_idle": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
+    "sprite_attack": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
+    "sprite_move": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
+    "sprite_skill": "",
+    "projectile_anim": "res://assets/menos/sprites/bullet_threat.png",
+    "ability_area": {},
+    "ability_pierce": {}
   }
 }

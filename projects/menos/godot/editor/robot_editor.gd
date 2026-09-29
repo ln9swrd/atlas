@@ -2,7 +2,7 @@ class_name RobotEditorMain
 extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
-const ROBOT_TYPES := ["robot_main"]
+const ROBOT_TYPES := ["robot_main", "boss_giant"]
 const DEFAULT_DATA = preload("res://data.gd")
 
 var robot_data: Dictionary = {}
@@ -137,8 +137,30 @@ func _load_data() -> void:
 			robot_data = parsed
 	if robot_data.is_empty():
 		robot_data = {"robot_main": DEFAULT_DATA.ROBOT.duplicate(true)}
+	if not robot_data.has("boss_giant"):
+		robot_data["boss_giant"] = _default_boss_data()
 	_refresh_robot_list()
 	_set_status("Loaded: " + ROBOT_FILE if file else "Loaded defaults (JSON not found)")
+
+func _default_boss_data() -> Dictionary:
+	return {
+		"id": "boss_giant",
+		"name": "GIANT",
+		"role": "boss",
+		"hp": 620.0,
+		"speed": 7.0,
+		"damage": 45.0,
+		"cooldown": 2.0,
+		"range": 120.0,
+		"max_moves": 0,
+		"sprite_idle": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
+		"sprite_attack": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
+		"sprite_move": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
+		"sprite_skill": "",
+		"projectile_anim": "res://assets/menos/sprites/bullet_threat.png",
+		"ability_area": {},
+		"ability_pierce": {}
+	}
 
 func _refresh_robot_list() -> void:
 	robot_list.clear()
@@ -151,6 +173,7 @@ func _on_robot_selected(index: int) -> void:
 	if index < 0 or index >= robot_list.item_count:
 		return
 	selected_type = str(robot_list.get_item_metadata(index))
+	id_edit.editable = selected_type != "boss_giant"
 	var data: Dictionary = robot_data.get(selected_type, {})
 	var area: Dictionary = data.get("ability_area", {})
 	var pierce: Dictionary = data.get("ability_pierce", {})
@@ -182,8 +205,10 @@ func _save_data() -> void:
 		_set_status("ID and name are required.")
 		return
 	var data: Dictionary = robot_data.get(selected_type, {}).duplicate(true)
-	data["id"] = id_edit.text.strip_edges()
+	data["id"] = "boss_giant" if selected_type == "boss_giant" else id_edit.text.strip_edges()
 	data["name"] = name_edit.text.strip_edges()
+	if selected_type == "boss_giant":
+		data["role"] = "boss"
 	data["hp"] = float(hp_spin.value)
 	data["speed"] = float(speed_spin.value)
 	data["damage"] = float(damage_spin.value)

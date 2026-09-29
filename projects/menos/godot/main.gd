@@ -103,6 +103,18 @@ var robot_projectile_catalog: Dictionary = {}
 var towers: Array = []
 var robot := {}
 var robot_progression := {}
+var inventory: Array = []
+var equipped_items: Dictionary = {"weapon": "", "armor": "", "core": ""}
+var inventory_open := false
+const INVENTORY_COLS := 6
+const INVENTORY_ROWS := 4
+const ROBOT_PROFILE_PATH := "user://menos_campaign_robot_profile.json"
+const ITEM_CATALOG_PATH := "res://content/items/items.json"
+const ROBOT_BASE_XP_PER_LEVEL := 100
+const ROBOT_HP_GROWTH := 0.05
+const ROBOT_DAMAGE_GROWTH := 0.05
+const ROBOT_RANGE_GROWTH := 0.02
+const ROBOT_SPEED_GROWTH := 0.02
 const ROBOT_SPECIAL_DURATION := 0.5
 var feed: Array[String] = []
 var selected_slot := ""
@@ -123,6 +135,7 @@ func _ready() -> void:
 	_load_enemy_catalog()
 	_load_tower_catalog()
 	_load_robot_catalog()
+	_load_robot_progression()
 	if StageManager.run_mode == "single":
 		if not load_stage_map(StageManager.selected_stage_id):
 			build_first_battle_map()
@@ -176,6 +189,29 @@ func _load_enemy_catalog() -> void:
 		for enemy_type in parsed:
 			if parsed[enemy_type] is Dictionary and DATA.ENEMIES.has(enemy_type):
 				enemy_catalog[enemy_type] = parsed[enemy_type].duplicate(true)
+	# Boss entries can be maintained in Robot Editor while retaining enemy-only fields here.
+	var robot_file := FileAccess.open("res://content/robots/robots.json", FileAccess.READ)
+	if robot_file:
+		var robot_parsed = JSON.parse_string(robot_file.get_as_text())
+		robot_file.close()
+		if robot_parsed is Dictionary:
+			for enemy_type in enemy_catalog:
+				var enemy_data: Dictionary = enemy_catalog[enemy_type]
+				var robot_editor_id := str(enemy_data.get("robot_editor_id", ""))
+				if robot_editor_id.is_empty() or not robot_parsed.has(robot_editor_id):
+					continue
+				var boss_data: Dictionary = robot_parsed[robot_editor_id]
+				if str(boss_data.get("role", "")) != "boss":
+					continue
+				enemy_data["hp"] = float(boss_data.get("hp", enemy_data.get("hp", 0.0)))
+				enemy_data["speed"] = float(boss_data.get("speed", enemy_data.get("speed", 0.0)))
+				enemy_data["base_damage"] = float(boss_data.get("damage", enemy_data.get("base_damage", 0.0)))
+				enemy_data["attack_cooldown"] = float(boss_data.get("cooldown", enemy_data.get("attack_cooldown", 1.0)))
+				enemy_data["attack_range"] = float(boss_data.get("range", enemy_data.get("attack_range", 0.0)))
+				if not str(boss_data.get("sprite_idle", "")).is_empty():
+					enemy_data["sprite_anim"] = str(boss_data.get("sprite_idle"))
+				if not str(boss_data.get("projectile_anim", "")).is_empty():
+					enemy_data["projectile_anim"] = str(boss_data.get("projectile_anim"))
 	enemy_sprite_catalog.clear()
 	enemy_projectile_catalog.clear()
 	for enemy_type in DATA.ENEMIES:
@@ -238,10 +274,12 @@ func load_stage_map(stage_id: String) -> bool:
 		build_first_battle_map()
 	return true
 
-func restart_campaign() -> void:
-	StageManager.reset_session()
-	if not load_stage_map("stage_01"):
-		push_error("Could not reload campaign Stage 1.")
+func restart_run() -> void:
+	var mode := StageManager.run_mode
+	var stage_id := StageManager.selected_stage_id if mode == "single" else "stage_01"
+	StageManager.begin_run(mode, stage_id)
+	if not load_stage_map(stage_id):
+		push_error("Could not reload stage '%s'." % stage_id)
 		return
 	reset_game()
 
@@ -459,8 +497,10 @@ func reset_game() -> void:
 	if not ROBOT_SPOTS.is_empty():
 		initial_robot_spot = str(ROBOT_SPOTS.keys()[0])
 		initial_robot_position = ROBOT_SPOTS[initial_robot_spot]
-	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": DATA.ROBOT.hp, "commands": DATA.ROBOT.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "special": 0.0, "special_type": "", "flash": 0.0}
-	robot_progression = {"unlocked_abilities": []}
+	var robot_stats := get_robot_runtime_stats()
+	robot = {"active": false, "spot": initial_robot_spot, "position": initial_robot_position, "manual_position": false, "hp": robot_stats.hp, "max_hp": robot_stats.hp, "commands": robot_stats.max_moves, "attack": 0.0, "area": 0.0, "pierce": 0.0, "special": 0.0, "special_type": "", "flash": 0.0}
+	if robot_progression.is_empty():
+		robot_progression = {"level": 1, "xp": 0, "unlocked_abilities": []}
 	feed.clear(); log_event("Build towers and prepare ATLAS-01. Wave 1 starts automatically.")
 
 func log_event(text: String) -> void:
@@ -518,7 +558,8 @@ func start_wave() -> void:
 	var waves_data := StageManager.get_waves()
 	if run_state != RunState.READY or wave_running or base_hp <= 0.0 or wave > waves_data.size(): return
 	if not robot.active:
-		robot.hp = DATA.ROBOT.hp
+		robot.hp = get_robot_runtime_stats().hp
+		robot.max_hp = get_robot_runtime_stats().hp
 		robot.active = true
 		robot_selected = false
 		log_event("ATLAS-01 deployed at %s." % robot.spot)
@@ -561,7 +602,7 @@ func spawn_enemies() -> void:
 			var segment_width := spawn_rect.size.x / float(segment_count)
 			var segment_rect := Rect2(spawn_rect.position + Vector2(segment_width * segment_index, 0.0), Vector2(segment_width, spawn_rect.size.y))
 			spawn_position = Vector2(randf_range(segment_rect.position.x, segment_rect.end.x), randf_range(segment_rect.position.y, segment_rect.end.y))
-		enemies.append({"type": entry.type, "lane": lane, "position": spawn_position, "start_position": spawn_position, "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0})
+		enemies.append({"type": entry.type, "lane": lane, "position": spawn_position, "start_position": spawn_position, "hp": data.hp, "max_hp": data.hp, "flash": 0.0, "robot_attack_timer": 0.0, "melee_attack_timer": 0.0, "attack_timer": 0.0})
 
 func damage_robot(amount: float) -> void:
 	if not robot.active: return
@@ -583,10 +624,37 @@ func update_giant_robot_attack(delta: float, enemy: Dictionary) -> void:
 	if robot.active:
 		log_event("GIANT hit ATLAS-01 for %d damage." % int(data.robot_damage))
 
+func update_enemy_attack(delta: float, enemy: Dictionary, data: Dictionary) -> bool:
+	if enemy.type == "giant" or not robot.active or robot.hp <= 0.0:
+		return false
+	var attack_type := str(data.get("attack_type", ""))
+	if attack_type.is_empty() and bool(data.get("melee", false)):
+		attack_type = "melee"
+	if attack_type == "none" or attack_type.is_empty():
+		return false
+	var attack_range := float(data.get("attack_range", data.get("radius", 0.0)))
+	if attack_range <= 0.0 or enemy.position.distance_to(robot.position) > attack_range:
+		return false
+	enemy.attack_timer = max(0.0, float(enemy.get("attack_timer", 0.0)) - delta)
+	if enemy.attack_timer > 0.0:
+		return true
+	var damage := float(data.get("base_damage", 0.0))
+	if attack_type == "ranged":
+		effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type})
+	damage_robot(damage)
+	enemy.attack_timer = max(0.05, float(data.get("attack_cooldown", data.get("melee_cooldown", 1.0))))
+	log_event("%s hit ATLAS-01 for %d damage." % [data.name, int(damage)])
+	return true
+
+func update_melee_enemy_attack(delta: float, enemy: Dictionary, data: Dictionary) -> bool:
+	return update_enemy_attack(delta, enemy, data)
+
 func move_enemies(delta: float) -> void:
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
 		var data: Dictionary = enemy_catalog[enemy.type]
+		if update_enemy_attack(delta, enemy, data):
+			continue
 		var start: Vector2 = enemy.get("start_position", LANES[enemy.lane])
 		enemy.position.x += data.speed * delta
 		var progress: float = clampf((enemy.position.x - start.x) / (BASE.x - start.x), 0.0, 1.0)
@@ -598,8 +666,133 @@ func move_enemies(delta: float) -> void:
 			log_event("%s breached the base (-%d HP)." % [data.name, data.base_damage])
 			if base_hp <= 0.0:
 				base_hp = 0.0; wave_running = false; run_state = RunState.DEFEAT
+				play_sfx("ui_cancel")
 				log_event("DEFEAT. The base was destroyed. Press RESTART to try again.")
 				return
+
+func get_robot_runtime_stats() -> Dictionary:
+	var level := max(1, int(robot_progression.get("level", 1)))
+	var level_count := float(level - 1)
+	var stats := {
+		"hp": float(robot_catalog.get("hp", 220.0)) * pow(1.0 + ROBOT_HP_GROWTH, level_count),
+		"speed": float(robot_catalog.get("speed", 125.0)) * pow(1.0 + ROBOT_SPEED_GROWTH, level_count),
+		"damage": float(robot_catalog.get("damage", 28.0)) * pow(1.0 + ROBOT_DAMAGE_GROWTH, level_count),
+		"cooldown": float(robot_catalog.get("cooldown", 0.65)),
+		"range": float(robot_catalog.get("range", 180.0)) * pow(1.0 + ROBOT_RANGE_GROWTH, level_count),
+		"max_moves": int(robot_catalog.get("max_moves", 5))
+	}
+	for slot in equipped_items:
+		var item_id := str(equipped_items.get(slot, ""))
+		for item in inventory:
+			if str(item.get("id", "")) != item_id: continue
+			var item_stats: Dictionary = item.get("stats", {})
+			stats["hp"] += float(item_stats.get("hp", 0.0))
+			stats["damage"] += float(item_stats.get("damage", 0.0))
+			stats["range"] += float(item_stats.get("range", 0.0))
+			stats["speed"] *= 1.0 + float(item_stats.get("speed", 0.0))
+			break
+	return stats
+
+func _load_robot_progression() -> void:
+	robot_progression = {"level": 1, "xp": 0, "unlocked_abilities": []}
+	inventory = []
+	equipped_items = {"weapon": "", "armor": "", "core": ""}
+	if StageManager.run_mode != "campaign":
+		return
+	var file := FileAccess.open(ROBOT_PROFILE_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if parsed is Dictionary:
+		robot_progression["level"] = max(1, int(parsed.get("level", 1)))
+		robot_progression["xp"] = max(0, int(parsed.get("xp", 0)))
+		var unlocked: Variant = parsed.get("unlocked_abilities", [])
+		if unlocked is Array:
+			robot_progression["unlocked_abilities"] = unlocked.duplicate()
+		var saved_inventory: Variant = parsed.get("inventory", [])
+		if saved_inventory is Array:
+			inventory = saved_inventory.duplicate(true)
+		var saved_equipped: Variant = parsed.get("equipped_items", equipped_items)
+		if saved_equipped is Dictionary:
+			equipped_items = saved_equipped.duplicate(true)
+	if inventory.is_empty():
+		inventory.append(create_item("weapon"))
+		inventory.append(create_item("armor"))
+		inventory.append(create_item("core"))
+		for item in inventory:
+			equip_item(str(item.get("id", "")))
+	_save_robot_progression()
+
+func create_item(base_id: String) -> Dictionary:
+	var file := FileAccess.open(ITEM_CATALOG_PATH, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Dictionary or not parsed.has(base_id):
+		return {}
+	var base: Dictionary = parsed[base_id]
+	var stats: Dictionary = base.get("base_stats", {}).duplicate(true)
+	var prefix: Dictionary = {}
+	var suffix: Dictionary = {}
+	var prefixes: Array = base.get("prefixes", [])
+	var suffixes: Array = base.get("suffixes", [])
+	if not prefixes.is_empty():
+		prefix = prefixes[randi() % prefixes.size()].duplicate(true)
+	if not suffixes.is_empty():
+		suffix = suffixes[randi() % suffixes.size()].duplicate(true)
+	for affix in [prefix, suffix]:
+		if affix.is_empty(): continue
+		var stat := str(affix.get("stat", ""))
+		if stat.is_empty(): continue
+		stats[stat] = float(stats.get(stat, 0.0)) + randf_range(float(affix.get("min", 0)), float(affix.get("max", 0)))
+	var names: Array[String] = []
+	if not prefix.is_empty(): names.append(str(prefix.name))
+	names.append(str(base.name))
+	if not suffix.is_empty(): names.append(str(suffix.name))
+	return {"id": "%s_%d" % [base_id, Time.get_ticks_usec()], "base_id": base_id, "name": " ".join(names), "slot": str(base.slot), "size": base.size.duplicate(), "stats": stats}
+
+func equip_item(item_id: String) -> bool:
+	for item in inventory:
+		if str(item.get("id", "")) == item_id:
+			equipped_items[str(item.get("slot", ""))] = item_id
+			_save_robot_progression()
+			return true
+	return false
+
+func _save_robot_progression() -> void:
+	if StageManager.run_mode != "campaign":
+		return
+	var file := FileAccess.open(ROBOT_PROFILE_PATH, FileAccess.WRITE)
+	if file == null:
+		push_error("Failed to save campaign robot profile.")
+		return
+	var save_data := robot_progression.duplicate(true)
+	save_data["inventory"] = inventory.duplicate(true)
+	save_data["equipped_items"] = equipped_items.duplicate(true)
+	file.store_string(JSON.stringify(save_data, "  "))
+	file.close()
+
+func add_robot_xp(amount: int) -> void:
+	if StageManager.run_mode != "campaign" or amount <= 0:
+		return
+	robot_progression["xp"] = int(robot_progression.get("xp", 0)) + amount
+	var leveled_up := false
+	while int(robot_progression.get("xp", 0)) >= ROBOT_BASE_XP_PER_LEVEL * int(robot_progression.get("level", 1)):
+		var required_xp := ROBOT_BASE_XP_PER_LEVEL * int(robot_progression.get("level", 1))
+		robot_progression["xp"] = int(robot_progression.get("xp", 0)) - required_xp
+		robot_progression["level"] = int(robot_progression.get("level", 1)) + 1
+		leveled_up = true
+		var new_stats := get_robot_runtime_stats()
+		var old_max_hp := float(robot.get("max_hp", robot_catalog.get("hp", 220.0)))
+		robot["max_hp"] = new_stats.hp
+		if robot.get("active", false):
+			robot.hp = min(new_stats.hp, float(robot.get("hp", old_max_hp)) + (new_stats.hp - old_max_hp))
+	if leveled_up:
+		play_sfx("ui_confirm")
+		log_event("ATLAS-01 LEVEL UP! Lv.%d" % int(robot_progression["level"]))
+	_save_robot_progression()
 
 func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 	if enemy == null or enemy.hp <= 0.0: return
@@ -610,6 +803,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 	damage_numbers.append({"position": enemy.position + Vector2(0, -32), "value": int(dealt), "life": 0.7, "max_life": 0.7})
 	if enemy.hp <= 0.0:
 		gold += data.reward
+		add_robot_xp(int(data.reward))
 		if enemy.type == "giant": log_event("GIANT NEUTRALIZED. ATLAS-01 changed the outcome.")
 
 func find_target(position: Vector2, range_value: float, preference: String = "") -> Dictionary:
@@ -625,13 +819,15 @@ func find_target(position: Vector2, range_value: float, preference: String = "")
 	return candidates[0]
 
 func get_robot_target() -> Dictionary:
-	var candidates: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= DATA.ROBOT.range)
+	var robot_stats := get_robot_runtime_stats()
+	var candidates: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= robot_stats.range)
 	if candidates.is_empty(): return {}
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
 
 func get_robot_heavy_target() -> Dictionary:
-	var candidates: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.type in ["heavy", "giant"] and enemy.position.distance_to(robot.position) <= DATA.ROBOT.range + 20.0)
+	var robot_stats := get_robot_runtime_stats()
+	var candidates: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.type in ["heavy", "giant"] and enemy.position.distance_to(robot.position) <= robot_stats.range + 20.0)
 	if candidates.is_empty(): return {}
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
@@ -675,7 +871,7 @@ func update_robot_manual_input(delta: float) -> void:
 	robot.erase("target_pos")
 	robot["spot"] = "CUSTOM"
 	robot["is_moving"] = true
-	var target: Vector2 = robot.position + direction * DATA.ROBOT.speed * delta
+	var target: Vector2 = robot.position + direction * get_robot_runtime_stats().speed * delta
 	robot.position = Vector2(
 		clampf(target.x, MAP_ORIGIN.x + 32.0, MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - 32.0),
 		clampf(target.y, MAP_ORIGIN.y + 32.0, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y - 32.0)
@@ -686,7 +882,7 @@ func move_robot_automatically(delta: float) -> void:
 	if robot.has("target_pos"):
 		var manual_target: Vector2 = robot.target_pos
 		var manual_distance: float = robot.position.distance_to(manual_target)
-		var manual_step: float = DATA.ROBOT.speed * delta
+		var manual_step: float = get_robot_runtime_stats().speed * delta
 		if manual_distance <= manual_step:
 			robot.position = manual_target
 			robot.erase("target_pos")
@@ -703,7 +899,7 @@ func move_robot_automatically(delta: float) -> void:
 	if not robot.has("target_pos"): return
 	var target_pos: Vector2 = robot.target_pos
 	var distance: float = robot.position.distance_to(target_pos)
-	var step := DATA.ROBOT.speed * delta
+	var step := get_robot_runtime_stats().speed * delta
 	if distance <= step:
 		robot.position = target_pos
 		robot.erase("target_pos")
@@ -740,8 +936,9 @@ func update_robot(delta: float) -> void:
 	var target: Dictionary = get_robot_target()
 	var heavy: Dictionary = get_robot_heavy_target()
 	if robot.attack <= 0.0 and not target.is_empty():
-		effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "target_enemy": target, "damage": DATA.ROBOT.damage, "source": "robot", "weapon": "robot", "progress": 0.0, "speed": 5.5})
-		robot.attack = DATA.ROBOT.cooldown
+		var robot_stats := get_robot_runtime_stats()
+		effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "target_enemy": target, "damage": robot_stats.damage, "source": "robot", "weapon": "robot", "progress": 0.0, "speed": 5.5})
+		robot.attack = robot_stats.cooldown
 
 func try_special_attack() -> bool:
 	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
@@ -750,21 +947,21 @@ func try_special_attack() -> bool:
 		return false
 	var unlocked_abilities: Array = robot_progression.get("unlocked_abilities", [])
 	if unlocked_abilities.has("ability_area") and robot.area <= 0.0:
-		var nearby: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= DATA.ROBOT.ability_area.radius)
-		if nearby.size() >= DATA.ROBOT.ability_area.threshold:
-			effects.append({"position": robot.position, "type": "area", "life": 0.45, "damage_delay": 0.22, "damage_targets": nearby, "damage": DATA.ROBOT.ability_area.damage, "source": "area"})
+		var nearby: Array = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= robot_catalog.ability_area.radius)
+		if nearby.size() >= robot_catalog.ability_area.threshold:
+			effects.append({"position": robot.position, "type": "area", "life": 0.45, "damage_delay": 0.22, "damage_targets": nearby, "damage": robot_catalog.ability_area.damage, "source": "area"})
 			robot["special"] = ROBOT_SPECIAL_DURATION
 			robot["special_type"] = "area"
-			robot.area = DATA.ROBOT.ability_area.cooldown
+			robot.area = robot_catalog.ability_area.cooldown
 			log_event("ATLAS-01 used AREA ATTACK.")
 			return true
 	if unlocked_abilities.has("ability_heavy_pierce") and robot.pierce <= 0.0:
 		var heavy: Dictionary = get_robot_heavy_target()
 		if not heavy.is_empty():
-			effects.append({"position": heavy.position, "type": "pierce", "life": 0.45, "damage_delay": 0.22, "target_enemy": heavy, "damage": DATA.ROBOT.ability_pierce.damage, "source": "pierce"})
+			effects.append({"position": heavy.position, "type": "pierce", "life": 0.45, "damage_delay": 0.22, "target_enemy": heavy, "damage": robot_catalog.ability_pierce.damage, "source": "pierce"})
 			robot["special"] = ROBOT_SPECIAL_DURATION
 			robot["special_type"] = "pierce"
-			robot.pierce = DATA.ROBOT.ability_pierce.cooldown
+			robot.pierce = robot_catalog.ability_pierce.cooldown
 			log_event("ATLAS-01 used HEAVY PIERCE on %s." % enemy_catalog[heavy.type].name)
 			return true
 	return false
@@ -795,17 +992,21 @@ func check_wave_clear() -> void:
 		run_state = RunState.READY
 		start_wave()
 	else:
-		var next_stage_id := str(StageManager.get_current_stage().get("next_stage_id", ""))
+		var next_stage_id := StageManager.get_next_campaign_stage_id()
+		if StageManager.run_mode != "campaign":
+			next_stage_id = ""
 		if not next_stage_id.is_empty():
 			if not load_stage_map(next_stage_id):
 				push_error("Could not load next campaign Stage '%s'." % next_stage_id)
 				run_state = RunState.DEFEAT
+				play_sfx("ui_cancel")
 				log_event("STAGE LOAD FAILED. Press RESTART to retry the campaign.")
 				return
 			reset_game()
 			log_event("STAGE %d READY. Build defenses before Wave 1." % StageManager.get_current_stage().get("order", 1))
 		else:
 			run_state = RunState.VICTORY
+			play_sfx("ui_confirm")
 			log_event("CAMPAIGN VICTORY. ALL STAGES CLEAR. Press RESTART to repeat.")
 
 func _camera_target_clamped(target: Vector2) -> Vector2:
@@ -864,6 +1065,11 @@ func center_camera_from_minimap(screen_position: Vector2) -> void:
 	queue_redraw()
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_I:
+		inventory_open = not inventory_open
+		queue_redraw()
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_SPACE:
 		try_special_attack()
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_MIDDLE:
@@ -883,6 +1089,24 @@ func _input(event: InputEvent) -> void:
 		handle_click(get_global_mouse_position())
 
 func handle_click(point: Vector2) -> void:
+	if inventory_open:
+		var inventory_rect := get_inventory_rect()
+		if inventory_rect.has_point(point):
+			var grid_origin := inventory_rect.position + Vector2(24, 70)
+			var cell := Vector2i(floor((point.x - grid_origin.x) / 52.0), floor((point.y - grid_origin.y) / 52.0))
+			if cell.x >= 0 and cell.x < INVENTORY_COLS and cell.y >= 0 and cell.y < INVENTORY_ROWS:
+				var index := cell.y * INVENTORY_COLS + cell.x
+				if index < inventory.size():
+					equip_item(str(inventory[index].get("id", "")))
+					play_sfx("ui_confirm")
+					log_event("Equipped %s." % str(inventory[index].get("name", "ITEM")))
+					queue_redraw()
+			return
+	if _ui_action_rect(183).has_point(point):
+		if run_state in [RunState.VICTORY, RunState.DEFEAT]:
+			restart_run()
+			play_sfx("ui_confirm")
+			return
 	if _ui_action_rect(0).has_point(point): select_tower_for_build("cannon"); return
 	if _ui_action_rect(1).has_point(point): select_tower_for_build("gatling"); return
 	if _ui_action_rect(2).has_point(point): try_special_attack(); return
@@ -980,7 +1204,8 @@ func upgrade_tower(type: String) -> void:
 
 func launch_robot() -> void:
 	if not can_launch_robot(): return
-	robot.hp = DATA.ROBOT.hp
+	robot.hp = get_robot_runtime_stats().hp
+	robot.max_hp = get_robot_runtime_stats().hp
 	robot.active = true; robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_confirm"); log_event("ATLAS-01 launched at %s. Choose a crisis zone." % robot.spot)
 
 func can_launch_robot() -> bool:
@@ -1194,7 +1419,8 @@ func _draw() -> void:
 		var r_hp_pos: Vector2 = robot.position + Vector2(-39, -76)
 		draw_rect(Rect2(r_hp_pos - Vector2(1, 1), Vector2(80, 6)), Color("101f25"))
 		draw_rect(Rect2(r_hp_pos, Vector2(78, 4)), Color("1c3e38"))
-		draw_rect(Rect2(r_hp_pos, Vector2(78 * max(0.0, robot.hp / DATA.ROBOT.hp), 4)), Color("7ed6ce"))
+		var robot_max_hp := max(1.0, float(robot.get("max_hp", get_robot_runtime_stats().hp)))
+		draw_rect(Rect2(r_hp_pos, Vector2(78 * max(0.0, robot.hp / robot_max_hp), 4)), Color("7ed6ce"))
 
 	for damage_number in damage_numbers:
 		var life := float(damage_number.get("life", 0.0))
@@ -1224,7 +1450,6 @@ func draw_ui() -> void:
 	elif run_state == RunState.VICTORY: status_text = "승리"
 	elif run_state == RunState.DEFEAT: status_text = "패배"
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 112), "상태: " + status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
-	button(_ui_button_rect(135), "웨이브 시작", run_state != RunState.READY)
 	button(_ui_button_rect(183), "전투 재시작", false)
 
 	button(_ui_button_rect(279), "캐논 건설", run_state not in [RunState.READY, RunState.RUNNING])
@@ -1254,6 +1479,53 @@ func draw_minimap(position: Vector2) -> void:
 		var local_robot: Vector2 = robot.position - MAP_ORIGIN
 		draw_circle(rect.position + Vector2(local_robot.x * sx, local_robot.y * sy), 3.0, Color("7ed6ce"))
 	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), "적 접근", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("d7fff7"))
+
+func get_inventory_rect() -> Rect2:
+	var screen_to_world: Transform2D = get_viewport().get_canvas_transform().affine_inverse()
+	var viewport_size := get_viewport_rect().size
+	var screen_origin: Vector2 = screen_to_world * Vector2.ZERO
+	return Rect2(screen_origin + viewport_size * 0.5 - Vector2(390, 270), Vector2(780, 540))
+
+func draw_inventory() -> void:
+	if not inventory_open: return
+	var rect := get_inventory_rect()
+	draw_rect(rect, Color(0.02, 0.035, 0.04, 0.98), true)
+	draw_rect(rect, Color("7ed6ce"), false, 2.0)
+	draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 32), "ATLAS-01  EQUIPMENT / INVENTORY", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 51), "I  CLOSE   •   CLICK AN ITEM TO EQUIP", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("829aa0"))
+	var slot_y := rect.position.y + 72.0
+	for slot in ["weapon", "armor", "core"]:
+		var slot_rect := Rect2(rect.position + Vector2(500, slot_y), Vector2(240, 100 if slot == "armor" else 72))
+		draw_rect(slot_rect, Color("101f25"), true)
+		draw_rect(slot_rect, Color("527079"), false, 1.0)
+		draw_string(ThemeDB.fallback_font, slot_rect.position + Vector2(10, 17), str(slot).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("829aa0"))
+		var equipped_id := str(equipped_items.get(slot, ""))
+		var equipped_name := "EMPTY"
+		for item in inventory:
+			if str(item.get("id", "")) == equipped_id: equipped_name = str(item.get("name", "ITEM"))
+		draw_string(ThemeDB.fallback_font, slot_rect.position + Vector2(10, 39), equipped_name, HORIZONTAL_ALIGNMENT_LEFT, 220, 11, Color("f0d28a"))
+		slot_y += slot_rect.size.y + 10.0
+	var grid_origin := rect.position + Vector2(24, 70)
+	for y in range(INVENTORY_ROWS):
+		for x in range(INVENTORY_COLS):
+			var cell_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
+			draw_rect(cell_rect, Color("0b171b"), true)
+			draw_rect(cell_rect, Color("30484f"), false, 1.0)
+	for index in range(min(inventory.size(), INVENTORY_COLS * INVENTORY_ROWS)):
+		var item: Dictionary = inventory[index]
+		var x := index % INVENTORY_COLS
+		var y := index / INVENTORY_COLS
+		var item_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
+		var slot := str(item.get("slot", ""))
+		var item_color := Color("f0d28a") if equipped_items.get(slot, "") == item.get("id", "") else Color("7ed6ce")
+		draw_rect(item_rect.grow(-3), Color(item_color, 0.14), true)
+		draw_rect(item_rect.grow(-3), item_color, false, 2.0)
+		draw_string(ThemeDB.fallback_font, item_rect.position + Vector2(4, 17), str(item.get("base_id", "ITEM")).to_upper(), HORIZONTAL_ALIGNMENT_CENTER, 38, 8, item_color)
+		var stats: Dictionary = item.get("stats", {})
+		var stat_text := ""
+		if stats.has("damage"): stat_text = "+%d ATK" % int(stats.damage)
+		elif stats.has("hp"): stat_text = "+%d HP" % int(stats.hp)
+		draw_string(ThemeDB.fallback_font, item_rect.position + Vector2(2, 35), stat_text, HORIZONTAL_ALIGNMENT_CENTER, 42, 7, Color("d7fff7"))
 
 func draw_ui2() -> void:
 	var viewport_size := get_viewport_rect().size
@@ -1296,10 +1568,15 @@ func draw_ui2() -> void:
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 49), robot_status, HORIZONTAL_ALIGNMENT_LEFT, 150, 9, Color("7ed6ce"))
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 78), "HP", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("829aa0"))
 	draw_rect(Rect2(portrait_panel.position + Vector2(132, 86), Vector2(150, 8)), Color("172a2d"), true)
-	draw_rect(Rect2(portrait_panel.position + Vector2(132, 86), Vector2(150 * max(0.0, robot.hp / DATA.ROBOT.hp), 8)), Color("7ed6ce"), true)
-	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 112), "%03d / %03d" % [max(0, ceil(robot.hp)), DATA.ROBOT.hp], HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
+	var robot_max_hp := max(1.0, float(robot.get("max_hp", get_robot_runtime_stats().hp)))
+	draw_rect(Rect2(portrait_panel.position + Vector2(132, 86), Vector2(150 * max(0.0, robot.hp / robot_max_hp), 8)), Color("7ed6ce"), true)
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 112), "%03d / %03d" % [max(0, ceil(robot.hp)), ceil(robot_max_hp)], HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
+	var robot_level := max(1, int(robot_progression.get("level", 1)))
+	var robot_xp := max(0, int(robot_progression.get("xp", 0)))
+	var robot_xp_need := ROBOT_BASE_XP_PER_LEVEL * robot_level
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 132), "LV.%d  XP %d / %d" % [robot_level, robot_xp, robot_xp_need], HORIZONTAL_ALIGNMENT_LEFT, 155, 9, Color("f0d28a"))
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(14, 140), "COMMANDS  %02d" % int(robot.get("commands", 0)), HORIZONTAL_ALIGNMENT_LEFT, 130, 10, Color("829aa0"))
-	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE  SPECIAL", HORIZONTAL_ALIGNMENT_LEFT, 130, 10, Color("829aa0"))
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE  SPECIAL   I  INVENTORY", HORIZONTAL_ALIGNMENT_LEFT, 130, 9, Color("829aa0"))
 
 	# Build / skill palette.
 	for index in range(3):
@@ -1334,6 +1611,16 @@ func draw_ui2() -> void:
 		draw_string(ThemeDB.fallback_font, feed_rect.position + Vector2(12, 42 + index * 17), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 205, 9, Color("a9c5c7"))
 
 	draw_minimap2(bottom + Vector2(viewport_size.x - 238, 38))
+	draw_inventory()
+
+	if run_state == RunState.VICTORY or run_state == RunState.DEFEAT:
+		var overlay := Rect2(screen_origin, viewport_size)
+		draw_rect(overlay, Color(0.01, 0.025, 0.03, 0.72), true)
+		var status_texture: Texture2D = VISUALS["status_victory"] if run_state == RunState.VICTORY else VISUALS["status_defeat"]
+		draw_sprite(status_texture, screen_origin + viewport_size * 0.5 + Vector2(0, -28), Vector2(300, 100))
+		var result_text := "CAMPAIGN VICTORY" if run_state == RunState.VICTORY else "BASE DEFENSE FAILED"
+		draw_string(ThemeDB.fallback_font, screen_origin + viewport_size * 0.5 + Vector2(-180, 48), result_text, HORIZONTAL_ALIGNMENT_CENTER, 360, 18, Color("d7fff7"))
+		draw_string(ThemeDB.fallback_font, screen_origin + viewport_size * 0.5 + Vector2(-180, 78), "RESTART TO PLAY AGAIN", HORIZONTAL_ALIGNMENT_CENTER, 360, 11, Color("a9c5c7"))
 
 func draw_minimap2(position: Vector2) -> void:
 	var rect := Rect2(position, Vector2(220, 112))
