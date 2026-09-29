@@ -109,7 +109,7 @@ var camera_dragging := false
 var camera_last_mouse := Vector2.ZERO
 const CAMERA_EDGE_MARGIN := 28.0
 const CAMERA_EDGE_SPEED := 720.0
-const BOTTOM_HUD_HEIGHT := 154.0
+const BOTTOM_HUD_HEIGHT := 188.0
 var damage_numbers: Array = []
 var effects: Array = []
 
@@ -131,7 +131,8 @@ func _ready() -> void:
 
 func _setup_camera() -> void:
 	var camera: Camera2D = $Camera2D
-	camera.position = MAP_ORIGIN + MAP_PIXEL_SIZE * 0.5
+	# Keep the battlefield centered in the visible play area above the bottom HUD.
+	camera.position = MAP_ORIGIN + MAP_PIXEL_SIZE * 0.5 + Vector2(0.0, BOTTOM_HUD_HEIGHT * 0.5)
 	var viewport_size := get_viewport_rect().size
 	camera.limit_left = int(MAP_ORIGIN.x)
 	camera.limit_top = int(MAP_ORIGIN.y)
@@ -780,7 +781,9 @@ func check_wave_clear() -> void:
 
 func _camera_target_clamped(target: Vector2) -> Vector2:
 	var viewport_size := get_viewport_rect().size
-	var half_view := viewport_size * 0.5
+	# Camera bounds use the gameplay-safe area rather than the HUD-covered area.
+	var gameplay_viewport_size := Vector2(viewport_size.x, max(1.0, viewport_size.y - BOTTOM_HUD_HEIGHT))
+	var half_view := gameplay_viewport_size * 0.5
 	var min_x := MAP_ORIGIN.x + half_view.x
 	var max_x := MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - half_view.x
 	var min_y := MAP_ORIGIN.y + half_view.y
@@ -817,7 +820,7 @@ func update_camera_edge_scroll(delta: float) -> void:
 
 func get_minimap_screen_rect() -> Rect2:
 	var viewport_size := get_viewport_rect().size
-	return Rect2(Vector2(viewport_size.x - 245.0, 18.0), Vector2(220, 112))
+	return Rect2(Vector2(viewport_size.x - 238.0, viewport_size.y - 150.0), Vector2(220, 112))
 
 func center_camera_from_minimap(screen_position: Vector2) -> void:
 	var rect := get_minimap_screen_rect()
@@ -1024,32 +1027,48 @@ func _draw() -> void:
 			frame_idx = int(fire_progress * 4.0) % 4
 		draw_oval(tower_feet, 28.0, 10.0, Color(0, 0, 0, 0.45))
 		draw_arc(tower_feet, 30.0, 0, TAU, 24, Color("7ed6ce" if tower.type == "cannon" else "f0a35a"), 2.5)
-		draw_animated_sprite(tower_sprite_catalog.get(tower.type, VISUALS[anim_key]), tower_pos, Vector2(60, 90), frame_idx, 4)
+		draw_animated_sprite(tower_sprite_catalog.get(tower.type, VISUALS[anim_key]), tower_pos, Vector2(64, 96), frame_idx, 4)
 		if selected_tower == tower.id: draw_arc(tower_feet, 38.0, 0, TAU, 24, Color("d7fff7"), 2.0)
 
 	# Enemy Units (High Contrast Strategic Visibility)
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
 		var data: Dictionary = enemy_catalog[enemy.type]
-		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES[enemy.type]
+		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES[enemy.type] * 1.08
 		
+		# Presentation-only scale increase keeps battlefield combat as the primary visual focus.
+		# Enemy data, collision, targeting and movement are unchanged.
 		# Strategic Base Indicator at Enemy Feet (drawn BEFORE sprite so feet sit inside base ring)
-		var feet_pos: Vector2 = enemy.position + Vector2(0, enemy_size.y * 0.48)
-		draw_oval(feet_pos, enemy_size.x * 0.55, 9.0, Color(0, 0, 0, 0.5))
-		draw_arc(feet_pos, enemy_size.x * 0.55, 0, TAU, 16, Color("ef7068", 0.9), 2.5)
+		var feet_pos := enemy.position + Vector2(0, enemy_size.y * 0.48)
+		var enemy_accent := Color("ef7068")
+		if enemy.type == "rusher":
+			enemy_accent = Color("f0a35a")
+		elif enemy.type == "heavy":
+			enemy_accent = Color("c58cff")
+		elif enemy.type == "giant":
+			enemy_accent = Color("f0d28a")
+		var ring_radius: float = enemy_size.x * 0.55
+		draw_oval(feet_pos, ring_radius, 9.0, Color(0, 0, 0, 0.5))
+		draw_arc(feet_pos, ring_radius, 0, TAU, 20, Color(enemy_accent, 0.9), 2.5)
+		if enemy.type == "giant":
+			var giant_pulse := 1.0 + sin(elapsed * 3.0) * 0.04
+			draw_arc(feet_pos, ring_radius * 1.16 * giant_pulse, 0, TAU, 24, Color(enemy_accent, 0.35), 1.5)
 		
-		if enemy.flash > 0.0: draw_circle(enemy.position, data.radius + 4, Color.WHITE)
+		if enemy.flash > 0.0:
+			draw_circle(enemy.position, max(enemy_size.x, enemy_size.y) * 0.28, Color.WHITE, false, 3.0)
 		var anim_key: String = "enemy_" + enemy.type + "_anim"
 		var fps: float = 14.0 if enemy.type == "rusher" else (6.0 if enemy.type == "giant" else 10.0)
 		var e_frame: int = int((elapsed + float(enemy.position.x)) * fps) % 8
 		draw_animated_sprite(enemy_sprite_catalog.get(enemy.type, VISUALS[anim_key]), enemy.position, enemy_size, e_frame, 8)
 		
 		# Strategic HP Bar
-		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 9)
-		draw_string(ThemeDB.fallback_font, hp_position + Vector2(0, -5), data.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("ffd6d1"))
-		draw_rect(Rect2(hp_position - Vector2(1, 1), Vector2(enemy_size.x + 2, 6)), Color("101f25"))
-		draw_rect(Rect2(hp_position, Vector2(enemy_size.x, 4)), Color("3a1c1a"))
-		draw_rect(Rect2(hp_position, Vector2(enemy_size.x * max(0.0, enemy.hp / enemy.max_hp), 4)), Color("ef7068"))
+		var hp_position := enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 11)
+		var hp_width: float = max(34.0, enemy_size.x)
+		hp_position.x = enemy.position.x - hp_width * 0.5
+		draw_string(ThemeDB.fallback_font, hp_position + Vector2(0, -6), data.name, HORIZONTAL_ALIGNMENT_LEFT, hp_width, 10, Color("ffd6d1"))
+		draw_rect(Rect2(hp_position - Vector2(1, 1), Vector2(hp_width + 2, 7)), Color("101f25"))
+		draw_rect(Rect2(hp_position, Vector2(hp_width, 5)), Color("3a1c1a"))
+		draw_rect(Rect2(hp_position, Vector2(hp_width * max(0.0, enemy.hp / enemy.max_hp), 5)), enemy_accent)
 
 	# Effects
 	for effect in effects:
@@ -1082,15 +1101,16 @@ func _draw() -> void:
 		var is_flashing: bool = float(robot.get("flash", 0.0)) > 0.0
 		
 		# Strategic Base Indicator at Player Robot Feet (positioned at y=+52 at feet)
-		var r_feet_pos: Vector2 = robot.position + Vector2(0, 52)
+		var r_feet_pos: Vector2 = robot.position + Vector2(0, 60)
 		draw_oval(r_feet_pos, 42.0, 12.0, Color(0, 0, 0, 0.5))
 		draw_arc(r_feet_pos, 42.0, 0, TAU, 24, Color("ef7068") if is_flashing else Color("7ed6ce"), 2.5)
 		if robot_selected:
-			draw_arc(r_feet_pos, 52.0, 0, TAU, 24, Color("f0a35a"), 2.0)
-			draw_line(r_feet_pos - Vector2(60, 0), r_feet_pos + Vector2(60, 0), Color("f0a35a", 0.6), 1.5)
-			draw_line(r_feet_pos - Vector2(0, 18), r_feet_pos + Vector2(0, 18), Color("f0a35a", 0.6), 1.5)
+			var select_pulse := 1.0 + sin(elapsed * 5.0) * 0.06
+			draw_arc(r_feet_pos, 52.0 * select_pulse, 0, TAU, 32, Color("f0a35a", 0.9), 2.5)
+			draw_arc(r_feet_pos, 58.0 * select_pulse, -0.7, 0.7, 16, Color("f0a35a", 0.45), 1.5)
+			draw_arc(r_feet_pos, 58.0 * select_pulse, PI - 0.7, PI + 0.7, 16, Color("f0a35a", 0.45), 1.5)
 		
-		if is_flashing: draw_circle(robot.position, 34, Color("ef7068", 0.35))
+		if is_flashing: draw_circle(robot.position, 42, Color("ef7068", 0.30))
 		var anim_key := "atlas_idle"
 		var total_f := 6
 		var fps := 8.0
@@ -1111,13 +1131,17 @@ func _draw() -> void:
 			total_f = 5
 			fps = 12.0
 		var r_frame: int = int(elapsed * fps) % total_f
-		draw_animated_sprite(VISUALS[anim_key], robot.position, Vector2(64, 114), r_frame, total_f)
+		if float(robot.get("special", 0.0)) > 0.0:
+			draw_arc(r_feet_pos, 47.0, elapsed * 2.5, elapsed * 2.5 + PI * 1.35, 24, Color("f0d28a", 0.85), 3.0)
+		elif float(robot.get("attack", 0.0)) > 0.3:
+			draw_arc(r_feet_pos, 46.0, elapsed * 4.0, elapsed * 4.0 + PI, 20, Color("7ed6ce", 0.9), 2.5)
+		draw_animated_sprite(VISUALS[anim_key], robot.position, Vector2(78, 132), r_frame, total_f)
 		
 		# Player Robot Unit HP Bar
-		var r_hp_pos: Vector2 = robot.position + Vector2(-32, -66)
-		draw_rect(Rect2(r_hp_pos - Vector2(1, 1), Vector2(66, 6)), Color("101f25"))
-		draw_rect(Rect2(r_hp_pos, Vector2(64, 4)), Color("1c3e38"))
-		draw_rect(Rect2(r_hp_pos, Vector2(64 * max(0.0, robot.hp / DATA.ROBOT.hp), 4)), Color("7ed6ce"))
+		var r_hp_pos: Vector2 = robot.position + Vector2(-39, -76)
+		draw_rect(Rect2(r_hp_pos - Vector2(1, 1), Vector2(80, 6)), Color("101f25"))
+		draw_rect(Rect2(r_hp_pos, Vector2(78, 4)), Color("1c3e38"))
+		draw_rect(Rect2(r_hp_pos, Vector2(78 * max(0.0, robot.hp / DATA.ROBOT.hp), 4)), Color("7ed6ce"))
 
 	for damage_number in damage_numbers:
 		var life := float(damage_number.get("life", 0.0))
@@ -1126,10 +1150,10 @@ func _draw() -> void:
 	draw_ui2()
 
 func _ui_origin() -> Vector2:
-	return $Camera2D.position - get_viewport_rect().size * 0.5 + Vector2(0, get_viewport_rect().size.y - 154.0)
+	return $Camera2D.position - get_viewport_rect().size * 0.5 + Vector2(0, get_viewport_rect().size.y - BOTTOM_HUD_HEIGHT)
 
 func _ui_action_rect(index: int) -> Rect2:
-	return Rect2(_ui_origin() + Vector2(20.0 + index * 166.0, 72.0), Vector2(154, 46))
+	return Rect2(_ui_origin() + Vector2(350.0 + index * 82.0, 82.0), Vector2(74, 74))
 
 func _ui_button_rect(y: float) -> Rect2:
 	return Rect2(_ui_origin() + Vector2(20, y), Vector2(154, 46))
@@ -1178,32 +1202,83 @@ func draw_minimap(position: Vector2) -> void:
 	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), "적 접근", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("d7fff7"))
 
 func draw_ui2() -> void:
-	var origin := _ui_origin()
 	var viewport_size := get_viewport_rect().size
+	var screen_origin := $Camera2D.position - viewport_size * 0.5
+	var bottom := _ui_origin()
 	var stage_data := StageManager.get_current_stage()
 	var waves_data := StageManager.get_waves()
-	var hud_rect := Rect2(origin, Vector2(viewport_size.x, 154.0))
-	draw_rect(hud_rect, Color(0.025, 0.055, 0.065, 0.96), true)
-	draw_line(origin, origin + Vector2(viewport_size.x, 0), Color("527079"), 2.0)
-	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 25), SettingsManager.text("기지 HP %03d", "BASE HP %03d") % max(0, ceil(base_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("d7fff7"))
-	draw_string(ThemeDB.fallback_font, origin + Vector2(145, 25), SettingsManager.text("골드 %03d", "GOLD %03d") % gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f0d28a"))
-	draw_string(ThemeDB.fallback_font, origin + Vector2(280, 25), SettingsManager.text("스테이지 %d", "STAGE %d") % int(stage_data.get("order", 1)), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
-	draw_string(ThemeDB.fallback_font, origin + Vector2(365, 25), SettingsManager.text("웨이브 %d / %d", "WAVE %d / %d") % [wave, waves_data.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
-	var status_text := SettingsManager.text("대기", "READY")
-	if run_state == RunState.RUNNING: status_text = SettingsManager.text("웨이브 진행 중", "WAVE IN PROGRESS")
-	elif run_state == RunState.VICTORY: status_text = SettingsManager.text("승리", "VICTORY")
-	elif run_state == RunState.DEFEAT: status_text = SettingsManager.text("패배", "DEFEAT")
-	draw_string(ThemeDB.fallback_font, origin + Vector2(520, 25), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
-	button(_ui_action_rect(0), SettingsManager.text("캐논 건설", "BUILD CANNON"), run_state not in [RunState.READY, RunState.RUNNING])
-	button(_ui_action_rect(1), SettingsManager.text("개틀링 건설", "BUILD GATLING"), run_state not in [RunState.READY, RunState.RUNNING])
-	button(_ui_action_rect(2), SettingsManager.text("필살기 [SPACE]", "SPECIAL [SPACE]"), not (robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0))
-	var robot_status := SettingsManager.text("대기", "STANDBY")
-	if robot.active: robot_status = SettingsManager.text("출격 / ", "ACTIVE / ") + robot.spot
-	draw_string(ThemeDB.fallback_font, origin + Vector2(850, 25), "ATLAS-01 " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, 270, 12, Color("7ed6ce"))
-	draw_string(ThemeDB.fallback_font, origin + Vector2(850, 46), "HP %03d" % max(0, ceil(robot.hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("a9c5c7"))
-	for index in range(min(feed.size(), 3)):
-		draw_string(ThemeDB.fallback_font, origin + Vector2(850, 66 + index * 16), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 270, 10, Color("a9c5c7"))
-	draw_minimap2(origin + Vector2(viewport_size.x - 245, 18))
+
+	# Top-center combat bar: compact, readable, MOBA-style information hierarchy.
+	var top_rect := Rect2(screen_origin + Vector2(0, 10), Vector2(viewport_size.x, 58))
+	draw_rect(top_rect, Color(0.025, 0.045, 0.055, 0.94), true)
+	draw_line(top_rect.position + Vector2(0, top_rect.size.y), top_rect.position + Vector2(top_rect.size.x, top_rect.size.y), Color("527079"), 2.0)
+	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(22, 25), "BASE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("829aa0"))
+	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(22, 46), "%03d" % max(0, ceil(base_hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("7ed6ce"))
+	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(112, 25), "GOLD", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("829aa0"))
+	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(112, 46), "%03d" % gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("f0d28a"))
+	var status_text := "READY"
+	if run_state == RunState.RUNNING: status_text = "WAVE IN PROGRESS"
+	elif run_state == RunState.VICTORY: status_text = "VICTORY"
+	elif run_state == RunState.DEFEAT: status_text = "DEFEAT"
+	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x * 0.5 - 95, 23), "STAGE %d" % int(stage_data.get("order", 1)), HORIZONTAL_ALIGNMENT_CENTER, 190, 11, Color("a9c5c7"))
+	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x * 0.5 - 110, 45), "WAVE %d / %d   •   %s" % [wave, waves_data.size(), status_text], HORIZONTAL_ALIGNMENT_CENTER, 220, 13, Color("d7fff7"))
+
+	# Bottom HUD: Atlas portrait/readout, build palette, combat log and minimap.
+	var hud_rect := Rect2(bottom, Vector2(viewport_size.x, BOTTOM_HUD_HEIGHT))
+	draw_rect(hud_rect, Color(0.025, 0.045, 0.055, 0.97), true)
+	draw_line(bottom, bottom + Vector2(viewport_size.x, 0), Color("527079"), 2.0)
+
+	var portrait_panel := Rect2(bottom + Vector2(14, 12), Vector2(300, 164))
+	draw_rect(portrait_panel, Color(0.045, 0.08, 0.09, 0.98), true)
+	draw_rect(portrait_panel, Color("527079"), false, 1.0)
+	var portrait_rect := Rect2(portrait_panel.position + Vector2(10, 10), Vector2(112, 112))
+	draw_rect(portrait_rect, Color("0b171b"), true)
+	if VISUALS.get("robot") != null:
+		draw_sprite(VISUALS["robot"], portrait_rect.position + portrait_rect.size * 0.5, Vector2(94, 94))
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 29), "ATLAS-01", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("d7fff7"))
+	var robot_status := "STANDBY"
+	if robot.active: robot_status = "ACTIVE / " + robot.spot
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 49), robot_status, HORIZONTAL_ALIGNMENT_LEFT, 150, 9, Color("7ed6ce"))
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 78), "HP", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("829aa0"))
+	draw_rect(Rect2(portrait_panel.position + Vector2(132, 86), Vector2(150, 8)), Color("172a2d"), true)
+	draw_rect(Rect2(portrait_panel.position + Vector2(132, 86), Vector2(150 * max(0.0, robot.hp / DATA.ROBOT.hp), 8)), Color("7ed6ce"), true)
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 112), "%03d / %03d" % [max(0, ceil(robot.hp)), DATA.ROBOT.hp], HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("a9c5c7"))
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(14, 140), "COMMANDS  %02d" % int(robot.get("commands", 0)), HORIZONTAL_ALIGNMENT_LEFT, 130, 10, Color("829aa0"))
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE  SPECIAL", HORIZONTAL_ALIGNMENT_LEFT, 130, 10, Color("829aa0"))
+
+	# Build / skill palette.
+	for index in range(3):
+		var rect := _ui_action_rect(index)
+		var disabled := false
+		var label := ""
+		var sub := ""
+		if index == 0:
+			label = "CANNON"; sub = "BUILD"
+		elif index == 1:
+			label = "GATLING"; sub = "BUILD"
+		else:
+			label = "SPECIAL"; sub = "SPACE"
+			var special_ready := robot.active and run_state == RunState.RUNNING and float(robot.get("special", 0.0)) <= 0.0
+			disabled = not special_ready
+		draw_rect(rect, Color("173337") if not disabled else Color("182226"), true)
+		var selected := (index == 0 and selected_tower == "cannon") or (index == 1 and selected_tower == "gatling")
+		draw_rect(rect, Color("7ed6ce") if selected else Color("527079"), false, 2.0)
+		if index < 2:
+			var texture_key := "tower_cannon" if index == 0 else "tower_gatling"
+			if VISUALS.get(texture_key) != null:
+				draw_sprite(VISUALS[texture_key], rect.position + Vector2(37, 31), Vector2(42, 42))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 56), label, HORIZONTAL_ALIGNMENT_CENTER, 62, 9, Color("d7fff7") if not disabled else Color("65777b"))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 68), sub, HORIZONTAL_ALIGNMENT_CENTER, 62, 8, Color("7ed6ce") if not disabled else Color("65777b"))
+
+	# Recent combat feed.
+	var feed_rect := Rect2(bottom + Vector2(606, 12), Vector2(230, 164))
+	draw_rect(feed_rect, Color(0.035, 0.065, 0.07, 0.98), true)
+	draw_rect(feed_rect, Color("30484f"), false, 1.0)
+	draw_string(ThemeDB.fallback_font, feed_rect.position + Vector2(12, 20), "COMBAT LOG", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("829aa0"))
+	for index in range(min(feed.size(), 7)):
+		draw_string(ThemeDB.fallback_font, feed_rect.position + Vector2(12, 42 + index * 17), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 205, 9, Color("a9c5c7"))
+
+	draw_minimap2(bottom + Vector2(viewport_size.x - 238, 38))
 
 func draw_minimap2(position: Vector2) -> void:
 	var rect := Rect2(position, Vector2(220, 112))
