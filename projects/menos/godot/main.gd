@@ -97,6 +97,9 @@ var enemy_projectile_catalog: Dictionary = {}
 var tower_catalog: Dictionary = DATA.TOWERS.duplicate(true)
 var tower_sprite_catalog: Dictionary = {}
 var tower_projectile_catalog: Dictionary = {}
+var robot_catalog: Dictionary = DATA.ROBOT.duplicate(true)
+var robot_sprite_catalog: Dictionary = {}
+var robot_projectile_catalog: Dictionary = {}
 var towers: Array = []
 var robot := {}
 var robot_progression := {}
@@ -119,6 +122,7 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_load_enemy_catalog()
 	_load_tower_catalog()
+	_load_robot_catalog()
 	if StageManager.run_mode == "single":
 		if not load_stage_map(StageManager.selected_stage_id):
 			build_first_battle_map()
@@ -182,6 +186,23 @@ func _load_enemy_catalog() -> void:
 			enemy_sprite_catalog[enemy_type] = VISUALS.get("enemy_%s_anim" % enemy_type)
 		var projectile: Texture2D = _texture_from_catalog_entry(enemy_catalog[enemy_type], "projectile_anim")
 		enemy_projectile_catalog[enemy_type] = projectile if projectile else VISUALS["bullet_threat"]
+
+func _load_robot_catalog() -> void:
+	var path := "res://content/robots/robots.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+	if parsed is Dictionary and parsed.has("robot_main") and parsed["robot_main"] is Dictionary:
+		robot_catalog = parsed["robot_main"].duplicate(true)
+	robot_sprite_catalog = {
+		"idle": _texture_from_catalog_entry(robot_catalog, "sprite_idle"),
+		"attack": _texture_from_catalog_entry(robot_catalog, "sprite_attack"),
+		"move": _texture_from_catalog_entry(robot_catalog, "sprite_move"),
+		"skill": _texture_from_catalog_entry(robot_catalog, "sprite_skill")
+	}
+	robot_projectile_catalog["robot"] = _texture_from_catalog_entry(robot_catalog, "projectile_anim")
 
 func _load_tower_catalog() -> void:
 	var path := "res://content/towers/towers.json"
@@ -1115,7 +1136,7 @@ func _draw() -> void:
 			var trail_start := current_p - Vector2.from_angle(angle - PI / 2.0) * 22.0
 			draw_line(trail_start, current_p, Color(projectile_color, 0.55), 3.0)
 			draw_circle(current_p, 5.0, Color(projectile_color, 0.85))
-			var projectile_texture: Texture2D = tower_projectile_catalog.get(weapon_type, VISUALS["bullet_defender"]) as Texture2D
+			var projectile_texture: Texture2D = (robot_projectile_catalog.get("robot", VISUALS["bullet_defender"]) if weapon_type == "robot" else tower_projectile_catalog.get(weapon_type, VISUALS["bullet_defender"])) as Texture2D
 			draw_rotated_animated_sprite(projectile_texture, current_p, Vector2(36, 44), angle, p_frame, 8)
 		elif etype == "proj_threat":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
@@ -1167,7 +1188,7 @@ func _draw() -> void:
 			draw_arc(r_feet_pos, 47.0, elapsed * 2.5, elapsed * 2.5 + PI * 1.35, 24, Color("f0d28a", 0.85), 3.0)
 		elif float(robot.get("attack", 0.0)) > 0.3:
 			draw_arc(r_feet_pos, 46.0, elapsed * 4.0, elapsed * 4.0 + PI, 20, Color("7ed6ce", 0.9), 2.5)
-		draw_animated_sprite(VISUALS[anim_key], robot.position, Vector2(78, 132), r_frame, total_f)
+		draw_animated_sprite(robot_sprite_catalog.get(anim_key.replace("atlas_", ""), VISUALS[anim_key]) as Texture2D, robot.position, Vector2(78, 132), r_frame, total_f)
 		
 		# Player Robot Unit HP Bar
 		var r_hp_pos: Vector2 = robot.position + Vector2(-39, -76)

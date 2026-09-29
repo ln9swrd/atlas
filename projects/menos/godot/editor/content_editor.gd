@@ -4,6 +4,7 @@ const MAP_EDITOR_SCENE := "res://editor/map_editor.tscn"
 const STAGE_EDITOR_SCENE := "res://editor/stage_editor.tscn"
 const ENEMY_EDITOR_SCENE := "res://editor/enemy_editor.tscn"
 const TOWER_EDITOR_SCENE := "res://editor/tower_editor.tscn"
+const ROBOT_EDITOR_SCENE := "res://editor/robot_editor.tscn"
 const IMAGE_EDITOR_SCENE := "res://editor/image_editor.tscn"
 
 var current_editor: Node = null
@@ -15,6 +16,7 @@ func _ready() -> void:
 	$MainLayout/Sidebar/Buttons/BtnStage.pressed.connect(_open_stage_editor)
 	$MainLayout/Sidebar/Buttons/BtnEnemy.pressed.connect(_open_enemy_editor)
 	$MainLayout/Sidebar/Buttons/BtnTower.pressed.connect(_open_tower_editor)
+	$MainLayout/Sidebar/Buttons/BtnRobot.pressed.connect(_open_robot_editor)
 	$MainLayout/Sidebar/Buttons/BtnImage.pressed.connect(_open_image_editor)
 	$MainLayout/Sidebar/Buttons/BtnQuit.pressed.connect(_quit)
 	_open_map_editor()
@@ -34,6 +36,10 @@ func _open_enemy_editor() -> void:
 func _open_tower_editor() -> void:
 	_load_editor(TOWER_EDITOR_SCENE)
 	_set_active_button($MainLayout/Sidebar/Buttons/BtnTower)
+
+func _open_robot_editor() -> void:
+	_load_editor(ROBOT_EDITOR_SCENE)
+	_set_active_button($MainLayout/Sidebar/Buttons/BtnRobot)
 
 func _open_image_editor() -> void:
 	_load_editor(IMAGE_EDITOR_SCENE)
@@ -62,6 +68,7 @@ func _set_active_button(active: Button) -> void:
 	$MainLayout/Sidebar/Buttons/BtnStage.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnStage
 	$MainLayout/Sidebar/Buttons/BtnEnemy.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnEnemy
 	$MainLayout/Sidebar/Buttons/BtnTower.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnTower
+	$MainLayout/Sidebar/Buttons/BtnRobot.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnRobot
 	$MainLayout/Sidebar/Buttons/BtnImage.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnImage
 
 func _quit() -> void:
