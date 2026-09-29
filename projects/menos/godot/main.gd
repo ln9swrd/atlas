@@ -577,7 +577,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 	var data: Dictionary = enemy_catalog[enemy.type]
 	var dealt: float = max(1.0, amount - data.armor)
 	enemy.hp -= dealt; enemy.flash = 0.12
-	effects.append({"position": enemy.position, "type": "impact_explosion", "life": 0.35, "max_life": 0.35})
+	effects.append({"position": enemy.position, "type": "impact_explosion", "life": 0.35, "max_life": 0.35, "source": source})
 	damage_numbers.append({"position": enemy.position + Vector2(0, -32), "value": int(dealt), "life": 0.7, "max_life": 0.7})
 	if enemy.hp <= 0.0:
 		gold += data.reward
@@ -698,7 +698,7 @@ func update_towers(delta: float) -> void:
 		if tower.cooldown > 0.0: continue
 		var target: Dictionary = find_target(tower.position, tower.data.range, tower.data.preference)
 		if target.is_empty(): continue
-		effects.append({"type": "proj_defender", "start": tower.position, "target": target.position, "progress": 0.0, "speed": 5.0})
+		effects.append({"type": "proj_defender", "start": tower.position, "target": target.position, "progress": 0.0, "speed": 5.0, "weapon": tower.type})
 		damage_enemy(target, tower.data.damage, tower.type); tower.cooldown = tower.data.cooldown
 
 func update_robot(delta: float) -> void:
@@ -711,7 +711,7 @@ func update_robot(delta: float) -> void:
 	var target: Dictionary = get_robot_target()
 	var heavy: Dictionary = get_robot_heavy_target()
 	if robot.attack <= 0.0 and not target.is_empty():
-		effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "target_enemy": target, "damage": DATA.ROBOT.damage, "source": "robot", "progress": 0.0, "speed": 5.5})
+		effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "target_enemy": target, "damage": DATA.ROBOT.damage, "source": "robot", "weapon": "robot", "progress": 0.0, "speed": 5.5})
 		robot.attack = DATA.ROBOT.cooldown
 
 func try_special_attack() -> bool:
@@ -1077,8 +1077,20 @@ func _draw() -> void:
 			draw_arc(effect.get("position", Vector2.ZERO), 35.0, 0, TAU, 16, Color("ef7068"), 3.0)
 		elif etype == "impact_explosion" or etype in ["cannon", "gatling", "robot", "area", "pierce"]:
 			var life_progress: float = 1.0 - clampf(float(effect.get("life", 0.0)) / max(0.01, float(effect.get("max_life", 0.35))), 0.0, 1.0)
+			var impact_position: Vector2 = effect.get("position", Vector2.ZERO)
+			var impact_color := Color("7ed6ce")
+			if etype == "area":
+				impact_color = Color("f0d28a")
+			elif etype == "pierce":
+				impact_color = Color("c58cff")
+			elif str(effect.get("source", "")) == "cannon":
+				impact_color = Color("f0d28a")
+			elif str(effect.get("source", "")) == "gatling":
+				impact_color = Color("f0a35a")
+			var impact_scale := 1.0 + life_progress * 0.35
+			draw_arc(impact_position, 24.0 * impact_scale, 0, TAU, 20, Color(impact_color, 0.7 * (1.0 - life_progress)), 2.5)
 			var frame_idx: int = int(life_progress * 8.0) % 8
-			draw_animated_sprite(VISUALS["impact_explosion"], effect.get("position", Vector2.ZERO), Vector2(54, 54), frame_idx, 8)
+			draw_animated_sprite(VISUALS["impact_explosion"], impact_position, Vector2(54, 54) * impact_scale, frame_idx, 8)
 		elif etype == "proj_defender":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
 			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
@@ -1086,6 +1098,15 @@ func _draw() -> void:
 			var current_p: Vector2 = start_p.lerp(end_p, progress)
 			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
 			var p_frame: int = int(elapsed * 18.0) % 8
+			var weapon_type := str(effect.get("weapon", "robot"))
+			var projectile_color := Color("7ed6ce")
+			if weapon_type == "cannon":
+				projectile_color = Color("f0d28a")
+			elif weapon_type == "gatling":
+				projectile_color = Color("f0a35a")
+			var trail_start := current_p - Vector2.from_angle(angle - PI / 2.0) * 22.0
+			draw_line(trail_start, current_p, Color(projectile_color, 0.55), 3.0)
+			draw_circle(current_p, 5.0, Color(projectile_color, 0.85))
 			draw_rotated_animated_sprite(VISUALS["bullet_defender"], current_p, Vector2(36, 44), angle, p_frame, 8)
 		elif etype == "proj_threat":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
