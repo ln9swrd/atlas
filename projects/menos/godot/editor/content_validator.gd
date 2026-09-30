@@ -11,7 +11,7 @@ var warnings: Array[String] = []
 func _ready() -> void:
 	_validate_catalog("ENEMY", ENEMY_FILE, ["name", "hp", "speed", "armor", "base_damage", "reward", "radius", "sprite_anim"])
 	_validate_catalog("TOWER", TOWER_FILE, ["name", "cost", "damage", "cooldown", "range", "preference", "sprite_anim", "level2"])
-	_validate_catalog("ROBOT", ROBOT_FILE, ["id", "name", "hp", "speed", "damage", "cooldown", "range", "max_moves", "sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "projectile_anim", "ability_area", "ability_pierce"])
+	_validate_catalog("ROBOT", ROBOT_FILE, ["id", "name", "hp", "speed", "damage", "cooldown", "range", "max_moves", "sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "projectile_anim", "progression", "energy"])
 	_validate_resource_refs()
 	if errors.is_empty():
 		print("CONTENT_VALIDATION PASS")
