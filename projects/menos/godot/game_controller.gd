@@ -1639,8 +1639,8 @@ func draw_inventory() -> void:
 			var cell_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
 			draw_rect(cell_rect, Color("0b171b"), true)
 			draw_rect(cell_rect, Color("30484f"), false, 1.0)
-	for index in range(min(inventory.size(), INVENTORY_COLS * INVENTORY_ROWS)):
-		var item: Dictionary = inventory[index]
+	for index in range(min(player_profile.inventory.size(), INVENTORY_COLS * INVENTORY_ROWS)):
+		var item: Dictionary = player_profile.inventory[index]
 		var x := index % INVENTORY_COLS
 		var y := index / INVENTORY_COLS
 		var item_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
