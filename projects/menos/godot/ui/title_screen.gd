@@ -70,7 +70,9 @@ func _update_stage_info(index: int) -> void:
 	var wave_count := 0
 	for encounter in encounters:
 		if encounter is Dictionary:
-			wave_count += (encounter.get("waves", []) as Array).size()
+			var waves = encounter.get("waves", [])
+			if waves is Array:
+				wave_count += waves.size()
 	stage_info.text = "%s  /  %s  /  %d ENCOUNTER  /  %d WAVE" % [stage_id.to_upper(), str(stage_data.get("name", stage_id)), encounters.size(), wave_count]
 
 func _on_start_single_pressed() -> void:
