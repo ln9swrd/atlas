@@ -19,12 +19,6 @@ var attack_edit: LineEdit
 var move_edit: LineEdit
 var skill_edit: LineEdit
 var projectile_edit: LineEdit
-var area_damage_spin: SpinBox
-var area_radius_spin: SpinBox
-var area_cooldown_spin: SpinBox
-var area_threshold_spin: SpinBox
-var pierce_damage_spin: SpinBox
-var pierce_cooldown_spin: SpinBox
 var status_label: Label
 var animation_previews: Dictionary = {}
 var animation_timer: Timer
