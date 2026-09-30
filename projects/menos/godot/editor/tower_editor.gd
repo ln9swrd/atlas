@@ -1,4 +1,4 @@
-class_name TowerEditorMain
+﻿class_name TowerEditorMain
 extends Control
 
 const TOWER_FILE := "res://content/towers/towers.json"
@@ -48,7 +48,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // ????먮뵒??
+	title.text = "MENOS // TOWER EDITOR"
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -58,11 +58,11 @@ func _build_ui() -> void:
 	tower_list.item_selected.connect(_on_tower_selected)
 	top.add_child(tower_list)
 	var reload_btn := Button.new()
-	reload_btn.text = "?덈줈怨좎묠"
+	reload_btn.text = "RELOAD"
 	reload_btn.pressed.connect(_load_data)
 	top.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "JSON ???
+	save_btn.text = "SAVE JSON"
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
 	status_label = Label.new()
@@ -78,72 +78,72 @@ func _build_ui() -> void:
 
 func _build_properties(parent: VBoxContainer) -> void:
 	var title := Label.new()
-	title.text = "????띿꽦"
+	title.text = "??????욧쉐"
 	title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(title)
-	name_edit = _line_row(parent, "?대쫫")
-	cost_spin = _spin_row(parent, "嫄댁꽕 鍮꾩슜", 0, 999999, 1, 50)
-	damage_spin = _spin_row(parent, "怨듦꺽??, 0, 99999, 0.1, 10)
-	cooldown_spin = _spin_row(parent, "?ъ궗???쒓컙", 0.01, 9999, 0.01, 1)
-	range_spin = _spin_row(parent, "?ш굅由?, 0, 99999, 1, 150)
-	preference_edit = _line_row(parent, "?곗꽑 ???)
+	name_edit = _line_row(parent, "??已?)
+	cost_spin = _spin_row(parent, "Build Cost", 0, 999999, 1, 50)
+	damage_spin = _spin_row(parent, "Damage", 0, 99999, 0.1, 10)
+	cooldown_spin = _spin_row(parent, "Cooldown", 0.01, 9999, 0.01, 1)
+	range_spin = _spin_row(parent, "Range", 0, 99999, 1, 150)
+	preference_edit = _line_row(parent, "?怨쀪퐨 ????)
 	var sprite_row := HBoxContainer.new()
 	parent.add_child(sprite_row)
 	var sprite_label := Label.new()
-	sprite_label.text = "?좊땲硫붿씠???대?吏"
+	sprite_label.text = "?醫딅빍筌롫뗄??????筌왖"
 	sprite_label.custom_minimum_size.x = 130
 	sprite_row.add_child(sprite_label)
 	sprite_edit = LineEdit.new()
 	sprite_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sprite_row.add_child(sprite_edit)
 	var browse := Button.new()
-	browse.text = "李얠븘蹂닿린"
+	browse.text = "筌≪뼚釉섋퉪?용┛"
 	browse.pressed.connect(func(): _open_sprite_dialog("sprite"))
 	sprite_row.add_child(browse)
 	var projectile_row := HBoxContainer.new()
 	parent.add_child(projectile_row)
 	var projectile_label := Label.new()
-	projectile_label.text = "?꾪솚 ?좊땲硫붿씠??
+	projectile_label.text = "Projectile Animation"
 	projectile_label.custom_minimum_size.x = 130
 	projectile_row.add_child(projectile_label)
 	projectile_edit = LineEdit.new()
 	projectile_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	projectile_row.add_child(projectile_edit)
 	var projectile_browse := Button.new()
-	projectile_browse.text = "李얠븘蹂닿린"
+	projectile_browse.text = "筌≪뼚釉섋퉪?용┛"
 	projectile_browse.pressed.connect(func(): _open_sprite_dialog("projectile"))
 	projectile_row.add_child(projectile_browse)
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
-	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; ?대?吏"]
+	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; ???筌왖"]
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(_on_file_selected)
 	var animation_preview_title := Label.new()
-	animation_preview_title.text = "?좊땲硫붿씠??誘몃━蹂닿린"
+	animation_preview_title.text = "?醫딅빍筌롫뗄???沃섎챶?곮퉪?용┛"
 	animation_preview_title.add_theme_font_size_override("font_size", 14)
 	parent.add_child(animation_preview_title)
 	var animation_preview_row := HBoxContainer.new()
 	parent.add_child(animation_preview_row)
-	sprite_preview = _create_animation_preview(animation_preview_row, "???, Vector2(128, 128))
-	projectile_preview = _create_animation_preview(animation_preview_row, "?꾪솚", Vector2(96, 96))
+	sprite_preview = _create_animation_preview(animation_preview_row, "????, Vector2(128, 128))
+	projectile_preview = _create_animation_preview(animation_preview_row, "?袁れ넎", Vector2(96, 96))
 	var edit_image := Button.new()
-	edit_image.text = "?대?吏 ?몄쭛 / ?ㅻⅨ ?대?吏 李몄“"
+	edit_image.text = "Edit Image / Browse Image Reference"
 	edit_image.pressed.connect(_open_image_editor)
 	parent.add_child(edit_image)
 	add_child(file_dialog)
 	var sep := HSeparator.new()
 	parent.add_child(sep)
 	var upgrade_title := Label.new()
-	upgrade_title.text = "LV2 ?낃렇?덉씠??
+	upgrade_title.text = "LV2 UPGRADE"
 	upgrade_title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(upgrade_title)
-	level2_cost_spin = _spin_row(parent, "?낃렇?덉씠??鍮꾩슜", 0, 999999, 1, 50)
-	level2_damage_spin = _spin_row(parent, "LV2 怨듦꺽??, 0, 99999, 0.1, 10)
-	level2_cooldown_spin = _spin_row(parent, "Level 2 ?ъ궗???쒓컙", 0.01, 9999, 0.01, 1)
-	level2_range_spin = _spin_row(parent, "LV2 ?ш굅由?, 0, 99999, 1, 150)
+	level2_cost_spin = _spin_row(parent, "Upgrade Cost", 0, 999999, 1, 50)
+	level2_damage_spin = _spin_row(parent, "LV2 Damage", 0, 99999, 0.1, 10)
+	level2_cooldown_spin = _spin_row(parent, "Level 2 Cooldown", 0.01, 9999, 0.01, 1)
+	level2_range_spin = _spin_row(parent, "LV2 Range", 0, 99999, 1, 150)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -218,7 +218,7 @@ func _save_data() -> void:
 		_set_status("No tower selected.")
 		return
 	if name_edit.text.strip_edges().is_empty():
-		_set_status("?대쫫 is required.")
+		_set_status("??已?is required.")
 		return
 	var data: Dictionary = tower_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()

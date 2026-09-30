@@ -1,4 +1,4 @@
-class_name RobotEditorMain
+﻿class_name RobotEditorMain
 extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
@@ -41,7 +41,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // 로봇 ?�디??
+	title.text = "MENOS // ROBOT EDITOR"
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -51,11 +51,11 @@ func _build_ui() -> void:
 	robot_list.item_selected.connect(_on_robot_selected)
 	top.add_child(robot_list)
 	var reload_btn := Button.new()
-	reload_btn.text = "?�로고침"
+	reload_btn.text = "?占쎈줈怨좎묠"
 	reload_btn.pressed.connect(_load_data)
 	top.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "JSON ?�??
+	save_btn.text = "SAVE JSON"
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
 	status_label = Label.new()
@@ -72,33 +72,33 @@ func _build_ui() -> void:
 	base_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(base_title)
 	id_edit = _line_row(content, "ID")
-	name_edit = _line_row(content, "?�름")
+	name_edit = _line_row(content, "?占쎈쫫")
 	hp_spin = _spin_row(content, "HP", 1, 999999, 1, 220)
-	speed_spin = _spin_row(content, "?�도", 0, 9999, 0.1, 125)
-	damage_spin = _spin_row(content, "공격??, 0, 99999, 0.1, 28)
-	cooldown_spin = _spin_row(content, "?�사???�간", 0.01, 9999, 0.01, 0.65)
-	range_spin = _spin_row(content, "?�거�?, 0, 99999, 1, 180)
-	var visual_title := Label.new()
+	speed_spin = _spin_row(content, "?占쎈룄", 0, 9999, 0.1, 125)
+	damage_spin = _spin_row(content, "Damage", 0, 99999, 0.1, 28)
+	cooldown_spin = _spin_row(content, "?占쎌궗???占쎄컙", 0.01, 9999, 0.01, 0.65)
+	cooldown_spin = _spin_row(content, "Cooldown", 0.01, 9999, 0.01, 0.65)
+	range_spin = _spin_row(content, "Range", 0, 99999, 1, 180)
 	visual_title.text = "VISUAL / PROJECTILE"
 	visual_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(visual_title)
-	idle_edit = _line_row(content, "?��??�니메이??)
-	attack_edit = _line_row(content, "공격 ?�니메이??)
-	move_edit = _line_row(content, "?�동 ?�니메이??)
-	skill_edit = _line_row(content, "?�수 ?�니메이??)
-	projectile_edit = _line_row(content, "?�환 ?�니메이??)
+	idle_edit = _line_row(content, "?占쏙옙??占쎈땲硫붿씠??)
+	attack_edit = _line_row(content, "怨듦꺽 ?占쎈땲硫붿씠??)
+	move_edit = _line_row(content, "?占쎈룞 ?占쎈땲硫붿씠??)
+	skill_edit = _line_row(content, "?占쎌닔 ?占쎈땲硫붿씠??)
+	projectile_edit = _line_row(content, "?占쏀솚 ?占쎈땲硫붿씠??)
 	var animation_preview_title := Label.new()
-	animation_preview_title.text = "?�니메이??미리보기"
+	animation_preview_title.text = "?占쎈땲硫붿씠??誘몃━蹂닿린"
 	animation_preview_title.add_theme_font_size_override("font_size", 14)
 	content.add_child(animation_preview_title)
 	var animation_preview_row := HBoxContainer.new()
 	animation_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_child(animation_preview_row)
-	animation_previews["idle"] = _create_animation_preview(animation_preview_row, "?��?, Vector2(110, 150))
-	animation_previews["attack"] = _create_animation_preview(animation_preview_row, "공격", Vector2(110, 150))
-	animation_previews["move"] = _create_animation_preview(animation_preview_row, "?�동", Vector2(110, 150))
-	animation_previews["skill"] = _create_animation_preview(animation_preview_row, "?�수", Vector2(110, 150))
-	animation_previews["projectile"] = _create_animation_preview(animation_preview_row, "?�환", Vector2(90, 110))
+	animation_previews["idle"] = _create_animation_preview(animation_preview_row, "?占쏙옙?, Vector2(110, 150))
+	animation_previews["attack"] = _create_animation_preview(animation_preview_row, "怨듦꺽", Vector2(110, 150))
+	animation_previews["move"] = _create_animation_preview(animation_preview_row, "?占쎈룞", Vector2(110, 150))
+	animation_previews["skill"] = _create_animation_preview(animation_preview_row, "?占쎌닔", Vector2(110, 150))
+	animation_previews["projectile"] = _create_animation_preview(animation_preview_row, "?占쏀솚", Vector2(90, 110))
 	var ability_note := Label.new()
 	ability_note.text = "SPECIAL ABILITIES: managed by content/skills/skills.json"
 	ability_note.add_theme_font_size_override("font_size", 13)
