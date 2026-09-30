@@ -367,7 +367,7 @@ func build_map_from_data(map_data: Dictionary) -> bool:
 
 	var ground: TileMapLayer = get_parent().get_node("Ground")
 	var vegetation: TileMapLayer = get_parent().get_node("Vegetation")
-	var road: TileMapLayer = $Road
+	var road: TileMapLayer = get_parent().get_node("Road")
 	var road_composition: TileMapLayer = get_parent().get_node("RoadComposition")
 	var boundary: TileMapLayer = get_parent().get_node("Boundary")
 
@@ -465,7 +465,7 @@ func _resolve_catalog_tile(layer_node: TileMapLayer, asset_id: String) -> Array:
 func build_first_battle_map() -> void:
 	var ground: TileMapLayer = get_parent().get_node("Ground")
 	var vegetation: TileMapLayer = get_parent().get_node("Vegetation")
-	var road: TileMapLayer = $Road
+	var road: TileMapLayer = get_parent().get_node("Road")
 	var road_composition: TileMapLayer = get_parent().get_node("RoadComposition")
 	var boundary: TileMapLayer = get_parent().get_node("Boundary")
 	ground.clear()
