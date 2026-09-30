@@ -918,13 +918,22 @@ func damage_enemy(enemy: EnemyRuntimeState, amount: float, source: String) -> vo
 		if enemy.type == "giant": log_event("GIANT NEUTRALIZED. ATLAS-01 changed the outcome.")
 
 func find_target(position: Vector2, range_value: float, preference: String = "") -> EnemyRuntimeState:
-	var candidates: Array[EnemyRuntimeState] = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(position) <= range_value)
+	var candidates: Array[EnemyRuntimeState] = []
+	for enemy in enemies:
+		if enemy is EnemyRuntimeState and enemy.hp > 0.0 and enemy.position.distance_to(position) <= range_value:
+			candidates.append(enemy)
 	if candidates.is_empty(): return null
 	if preference == "heavy":
-		var heavy: Array[EnemyRuntimeState] = candidates.filter(func(enemy): return enemy.type in ["heavy", "giant"])
+		var heavy: Array[EnemyRuntimeState] = []
+		for enemy in candidates:
+			if enemy.type in ["heavy", "giant"]:
+				heavy.append(enemy)
 		if not heavy.is_empty(): candidates = heavy
 	elif preference == "fast":
-		var fast: Array[EnemyRuntimeState] = candidates.filter(func(enemy): return enemy.type in ["normal", "rusher"])
+		var fast: Array[EnemyRuntimeState] = []
+		for enemy in candidates:
+			if enemy.type in ["normal", "rusher"]:
+				fast.append(enemy)
 		if not fast.is_empty(): candidates = fast
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
@@ -985,7 +994,10 @@ func switch_robot_target(direction: int = 1) -> bool:
 
 func get_robot_heavy_target() -> EnemyRuntimeState:
 	var robot_stats := get_robot_runtime_stats()
-	var candidates: Array[EnemyRuntimeState] = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.type in ["heavy", "giant"] and enemy.position.distance_to(robot.position) <= robot_stats.range + 20.0)
+	var candidates: Array[EnemyRuntimeState] = []
+	for enemy in enemies:
+		if enemy is EnemyRuntimeState and enemy.hp > 0.0 and enemy.type in ["heavy", "giant"] and enemy.position.distance_to(robot.position) <= robot_stats.range + 20.0:
+			candidates.append(enemy)
 	if candidates.is_empty(): return null
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
@@ -1115,7 +1127,10 @@ func try_finisher() -> bool:
 		return false
 	if float(robot.state_get("finisher", 0.0)) < float(finisher_definition.get("meter_max", 0.0)):
 		return false
-	var targets: Array[EnemyRuntimeState] = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= float(finisher_definition.get("radius", 0.0)))
+	var targets: Array[EnemyRuntimeState] = []
+	for enemy in enemies:
+		if enemy is EnemyRuntimeState and enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= float(finisher_definition.get("radius", 0.0)):
+			targets.append(enemy)
 	if targets.is_empty():
 		log_event("FINISHER requires enemies in range.")
 		return false
@@ -1140,7 +1155,10 @@ func try_special_attack() -> bool:
 		log_event("ENERGY 遺議? SPECIAL ?ъ슜 遺덇?.")
 		return false
 	if robot.area <= 0.0:
-		var nearby_base: Array[EnemyRuntimeState] = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= float(base_special.get("radius", 0.0)))
+		var nearby_base: Array[EnemyRuntimeState] = []
+		for enemy in enemies:
+			if enemy is EnemyRuntimeState and enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= float(base_special.get("radius", 0.0)):
+				nearby_base.append(enemy)
 		if not nearby_base.is_empty():
 			effects.append({"position": robot.position, "type": "area", "life": float(base_special.get("duration", 0.0)), "damage_delay": 0.22, "damage_targets": nearby_base, "damage": float(base_special.get("damage", 0.0)), "source": "base_special"})
 			robot["special"] = float(base_special.get("duration", 0.0))
@@ -1173,7 +1191,10 @@ func try_skill_slot(slot: int) -> bool:
 	if execution_type == "area":
 		if robot.area > 0.0:
 			return false
-		var nearby: Array[EnemyRuntimeState] = enemies.filter(func(enemy): return enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= float(skill.get("radius", 0.0)))
+		var nearby: Array[EnemyRuntimeState] = []
+		for enemy in enemies:
+			if enemy is EnemyRuntimeState and enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= float(skill.get("radius", 0.0)):
+				nearby.append(enemy)
 		if nearby.size() < int(skill.get("threshold", 1)):
 			log_event("%s requires %d nearby enemies." % [str(skill.get("name", skill_id)), int(skill.get("threshold", 1))])
 			return false
