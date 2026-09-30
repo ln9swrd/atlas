@@ -91,7 +91,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	attack_type_label.custom_minimum_size.x = 130
 	attack_type_row.add_child(attack_type_label)
 	attack_type_list = OptionButton.new()
-	attack_type_list.add_item("??곸벉")
+	attack_type_list.add_item("None")
 	attack_type_list.add_item("Melee")
 	attack_type_list.add_item("Ranged")
 	attack_type_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -107,7 +107,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var color_row := HBoxContainer.new()
 	parent.add_child(color_row)
 	var color_label := Label.new()
-	color_label.text = "??깃맒"
+	color_label.text = "Color"
 	color_label.custom_minimum_size.x = 130
 	color_row.add_child(color_label)
 	color_edit = ColorPickerButton.new()
@@ -116,7 +116,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var sprite_row := HBoxContainer.new()
 	parent.add_child(sprite_row)
 	var sprite_label := Label.new()
-	sprite_label.text = "?醫딅빍筌롫뗄??????筌왖"
+	sprite_label.text = "Sprite Animation"
 	sprite_label.custom_minimum_size.x = 130
 	sprite_row.add_child(sprite_label)
 	sprite_edit = LineEdit.new()
@@ -136,7 +136,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	projectile_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	projectile_row.add_child(projectile_edit)
 	var projectile_browse := Button.new()
-	projectile_browse.text = "筌≪뼚釉섋퉪?용┛"
+	projectile_browse.text = "Browse"
 	projectile_browse.pressed.connect(func(): _open_sprite_dialog("projectile"))
 	projectile_row.add_child(projectile_browse)
 	file_dialog = FileDialog.new()
@@ -258,7 +258,7 @@ func _save_data() -> void:
 		_set_status("No enemy selected.")
 		return
 	if name_edit.text.strip_edges().is_empty():
-		_set_status("??已?is required.")
+		_set_status("Name is required.")
 		return
 	var data: Dictionary = enemy_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()

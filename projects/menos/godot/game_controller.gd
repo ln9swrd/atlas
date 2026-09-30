@@ -1099,7 +1099,7 @@ func update_robot(delta: float) -> void:
 			robot.erase_state("target_pos")
 			robot["is_moving"] = false
 		else:
-			var step := get_robot_runtime_stats().speed * delta
+			var step: float = float(get_robot_runtime_stats().speed) * delta
 			robot.position = robot.position.move_toward(move_target, step)
 			robot["is_moving"] = true
 	else:
@@ -1322,7 +1322,7 @@ func _camera_target_clamped(target: Vector2) -> Vector2:
 	return target
 
 func update_camera_edge_scroll(delta: float) -> void:
-	if camera_dragging or not has_node("Camera2D"):
+	if camera_dragging or not get_parent().has_node("Camera2D"):
 		return
 	var mouse := get_viewport().get_mouse_position()
 	var viewport_size := get_viewport_rect().size
@@ -1346,7 +1346,7 @@ func get_minimap_screen_rect() -> Rect2:
 	return Rect2(Vector2(viewport_size.x - 238.0, viewport_size.y - 150.0), Vector2(220, 112))
 
 func center_camera_on_base() -> void:
-	if not has_node("Camera2D"):
+	if not get_parent().has_node("Camera2D"):
 		return
 	get_parent().get_node("Camera2D").position = _camera_target_clamped(BASE)
 	queue_redraw()
@@ -1410,7 +1410,7 @@ func _input(event: InputEvent) -> void:
 			return
 		var point := get_global_mouse_position()
 		# The bottom HUD overlaps the map's world rectangle, so UI hit-testing must happen first.
-		if _ui_button_rect(100).has_point(point) or _ui_action_rect(0).has_point(point) or _ui_action_rect(1).has_point(point) or _ui_action_rect(2).has_point(point) or _ui_action_rect(3).has_point(point) or _ui_action_rect(4).has_point(point) or _ui_action_rect(5).has_point(point) or _ui_action_rect(6).has_point(point):
+		if _ui_button_rect(100).has_point(point) or _ui_combat_mode_rect().has_point(point) or _ui_action_rect(0).has_point(point) or _ui_action_rect(1).has_point(point) or _ui_action_rect(2).has_point(point) or _ui_action_rect(3).has_point(point) or _ui_action_rect(4).has_point(point) or _ui_action_rect(5).has_point(point) or _ui_action_rect(6).has_point(point):
 			handle_click(point)
 			get_viewport().set_input_as_handled()
 			return

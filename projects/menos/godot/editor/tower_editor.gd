@@ -110,13 +110,13 @@ func _build_properties(parent: VBoxContainer) -> void:
 	projectile_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	projectile_row.add_child(projectile_edit)
 	var projectile_browse := Button.new()
-	projectile_browse.text = "筌≪뼚釉섋퉪?용┛"
+	projectile_browse.text = "Browse"
 	projectile_browse.pressed.connect(func(): _open_sprite_dialog("projectile"))
 	projectile_row.add_child(projectile_browse)
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
-	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; ???筌왖"]
+	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Images"]
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
@@ -218,7 +218,7 @@ func _save_data() -> void:
 		_set_status("No tower selected.")
 		return
 	if name_edit.text.strip_edges().is_empty():
-		_set_status("??已?is required.")
+		_set_status("Name is required.")
 		return
 	var data: Dictionary = tower_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()
