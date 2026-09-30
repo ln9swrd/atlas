@@ -127,6 +127,7 @@ var robot_selected := false
 var selected_enemy_index := -1
 var camera_dragging := false
 var camera_last_mouse := Vector2.ZERO
+var robot_auto_attack := true
 const CAMERA_EDGE_MARGIN := 28.0
 const CAMERA_EDGE_SPEED := 720.0
 const BOTTOM_HUD_HEIGHT := 188.0
@@ -1090,12 +1091,33 @@ func update_robot(delta: float) -> void:
 	if selected_enemy_index >= enemies.size() or (selected_enemy_index >= 0 and enemies[selected_enemy_index].hp <= 0.0):
 		selected_enemy_index = -1
 	if not robot.active or robot.hp <= 0.0: return
+	if robot.state_get("target_pos", null) != null and run_state in [RunState.READY, RunState.RUNNING]:
+		var move_target: Vector2 = robot.state_get("target_pos", robot.position)
+		var distance_to_target := robot.position.distance_to(move_target)
+		if distance_to_target <= 6.0:
+			robot.position = move_target
+			robot.erase_state("target_pos")
+			robot["is_moving"] = false
+		else:
+			var step := get_robot_runtime_stats().speed * delta
+			robot.position = robot.position.move_toward(move_target, step)
+			robot["is_moving"] = true
+	else:
+		robot["is_moving"] = false
 	robot["special"] = max(0.0, float(robot.state_get("special", 0.0)) - delta)
 	if float(robot.state_get("special", 0.0)) > 0.0:
 		return
 	robot["energy"] = min(float(robot_energy_definition.get("max", 0.0)), float(robot.state_get("energy", float(robot_energy_definition.get("max", 0.0)))) + float(robot_energy_definition.get("regen", 0.0)) * delta)
 	robot.attack = max(0.0, float(robot.state_get("attack", 0.0)) - delta)
 	robot.area -= delta; robot.pierce -= delta
+	if robot_auto_attack and run_state == RunState.RUNNING:
+		var auto_target := get_selected_robot_target()
+		if auto_target == null:
+			auto_target = find_target(robot.position, robot_weapon_definition.range)
+			if auto_target != null:
+				selected_enemy_index = enemies.find(auto_target)
+		if auto_target != null and auto_target.position.distance_to(robot.position) <= robot_weapon_definition.range:
+			try_basic_attack()
 
 func try_basic_attack() -> bool:
 	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
@@ -1323,6 +1345,12 @@ func get_minimap_screen_rect() -> Rect2:
 	var viewport_size := get_viewport_rect().size
 	return Rect2(Vector2(viewport_size.x - 238.0, viewport_size.y - 150.0), Vector2(220, 112))
 
+func center_camera_on_base() -> void:
+	if not has_node("Camera2D"):
+		return
+	get_parent().get_node("Camera2D").position = _camera_target_clamped(BASE)
+	queue_redraw()
+
 func center_camera_from_minimap(screen_position: Vector2) -> void:
 	var rect := get_minimap_screen_rect()
 	if not rect.has_point(screen_position):
@@ -1347,6 +1375,10 @@ func _input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("basic_attack"):
 		try_basic_attack()
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_SPACE:
+		center_camera_on_base()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("special_attack"):
@@ -1428,6 +1460,12 @@ func handle_click(point: Vector2) -> void:
 	if _ui_action_rect(4).has_point(point): try_skill_slot(2); return
 	if _ui_action_rect(5).has_point(point): try_skill_slot(3); return
 	if _ui_action_rect(6).has_point(point): try_finisher(); return
+	if _ui_combat_mode_rect().has_point(point):
+		robot_auto_attack = not robot_auto_attack
+		log_event("ATLAS-01 attack mode: %s." % ("AUTO" if robot_auto_attack else "MANUAL"))
+		play_sfx("ui_click")
+		queue_redraw()
+		return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
 			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
@@ -1760,6 +1798,9 @@ func _ui_action_rect(index: int) -> Rect2:
 func _ui_button_rect(y: float) -> Rect2:
 	return Rect2(_ui_origin() + Vector2(330, y), Vector2(300, 44))
 
+func _ui_combat_mode_rect() -> Rect2:
+	return Rect2(_ui_origin() + Vector2(650.0, 104.0), Vector2(210, 36))
+
 func draw_ui() -> void:
 	var origin := _ui_origin()
 	var stage_data := StageManager.get_current_stage()
@@ -1951,6 +1992,12 @@ func draw_ui2() -> void:
 			draw_string(ThemeDB.fallback_font, rect.position + Vector2(8, 39), "F", HORIZONTAL_ALIGNMENT_CENTER, 56, 15, Color("f0d28a") if not disabled else Color("65777b"))
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 56), label, HORIZONTAL_ALIGNMENT_CENTER, 62, 9, Color("d7fff7") if not disabled else Color("65777b"))
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 68), sub, HORIZONTAL_ALIGNMENT_CENTER, 62, 8, Color("7ed6ce") if not disabled else Color("65777b"))
+
+	var combat_mode_rect := _ui_combat_mode_rect()
+	draw_rect(combat_mode_rect, Color("173337"), true)
+	draw_rect(combat_mode_rect, Color("7ed6ce") if robot_auto_attack else Color("527079"), false, 2.0)
+	draw_string(ThemeDB.fallback_font, combat_mode_rect.position + Vector2(10, 15), "ATTACK: %s" % ("AUTO" if robot_auto_attack else "MANUAL"), HORIZONTAL_ALIGNMENT_LEFT, 190, 11, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, combat_mode_rect.position + Vector2(10, 29), "CLICK TO TOGGLE", HORIZONTAL_ALIGNMENT_LEFT, 190, 8, Color("7ed6ce"))
 
 	# Recent combat feed.
 	var feed_rect := Rect2(bottom + Vector2(900, 12), Vector2(230, 164))
