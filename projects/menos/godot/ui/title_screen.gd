@@ -20,7 +20,12 @@ func _ready() -> void:
 		var stage_label := str(stage_data.get("name", stage_id)) if not stage_data.is_empty() else str(stage_id)
 		stage_select.add_item(stage_label)
 		stage_select.set_item_metadata(stage_select.item_count - 1, str(stage_id))
+	stage_select.item_selected.connect(_on_stage_selected)
 	stage_select.visible = false
+	stage_info.visible = false
+	if stage_select.item_count > 0:
+		stage_select.select(0)
+		_update_stage_info(0)
 	quit_button.pressed.connect(_on_quit_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
 	_refresh_language()
@@ -48,6 +53,25 @@ func _input(event: InputEvent) -> void:
 		else:
 			_on_start_campaign_pressed()
 		get_viewport().set_input_as_handled()
+
+func _on_stage_selected(index: int) -> void:
+	_update_stage_info(index)
+
+func _update_stage_info(index: int) -> void:
+	if index < 0 or index >= stage_select.item_count:
+		stage_info.text = ""
+		return
+	var stage_id := str(stage_select.get_item_metadata(index))
+	var stage_data := StageLoader.load_stage_data(stage_id)
+	if stage_data.is_empty():
+		stage_info.text = stage_id
+		return
+	var encounters: Array = stage_data.get("encounters", [])
+	var wave_count := 0
+	for encounter in encounters:
+		if encounter is Dictionary:
+			wave_count += (encounter.get("waves", []) as Array).size()
+	stage_info.text = "%s  /  %s  /  %d ENCOUNTER  /  %d WAVE" % [stage_id.to_upper(), str(stage_data.get("name", stage_id)), encounters.size(), wave_count]
 
 func _on_start_single_pressed() -> void:
 	if transition_started: return
