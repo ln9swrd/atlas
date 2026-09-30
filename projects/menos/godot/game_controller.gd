@@ -670,8 +670,7 @@ func get_robot_runtime_stats() -> Dictionary:
 
 func _load_robot_progression() -> void:
 	robot_progression.reset()
-	inventory = []
-	equipped_items = {"weapon": "", "armor": "", "core": ""}
+	player_profile.reset()
 	if StageManager.run_mode != "campaign":
 		return
 	var file := FileAccess.open(ROBOT_PROFILE_PATH, FileAccess.READ)
@@ -686,7 +685,7 @@ func _load_robot_progression() -> void:
 		player_profile.inventory.append(create_item("weapon"))
 		player_profile.inventory.append(create_item("armor"))
 		player_profile.inventory.append(create_item("core"))
-		for item in inventory:
+		for item in player_profile.inventory:
 			equip_item(str(item.get("id", "")))
 	_save_robot_progression()
 
