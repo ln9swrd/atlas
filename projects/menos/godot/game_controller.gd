@@ -486,7 +486,7 @@ func play_sfx(id: String) -> void:
 
 func reset_game() -> void:
 	base_hp = StageManager.get_base_hp(); gold = StageManager.get_initial_gold(); encounter = 1; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
-	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); allied_units.clear(); towers.clear(); effects.clear(); damage_numbers.clear(); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false
+	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); allied_units.clear(); towers.clear(); effects.clear(); damage_numbers.clear(); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; pending_tower_type = ""; robot_selected = false
 	wave_auto_start_timer = wave_auto_start_delay
 	var initial_robot_spot := ""
 	var initial_robot_position := BASE
@@ -497,9 +497,25 @@ func reset_game() -> void:
 	robot = RobotRuntimeState.new()
 	robot.reset(initial_robot_position, robot_stats.hp, float(robot_energy_definition.get("max", 0.0)))
 	robot.spot = initial_robot_spot
+	instantiate_preplaced_towers()
 	if robot_progression == null:
 		robot_progression = RobotProgressionState.new()
-	feed.clear(); log_event("Build towers and prepare ATLAS-01. Wave 1 starts automatically.")
+	feed.clear(); log_event("Stage support facilities are pre-deployed. Wave 1 starts automatically.")
+
+func instantiate_preplaced_towers() -> void:
+	for slot_id in SLOTS:
+		var slot_data: Variant = SLOTS[slot_id]
+		if not (slot_data is Dictionary):
+			continue
+		var tower_type := str(slot_data.get("type", ""))
+		var position: Variant = slot_data.get("position", Vector2.INF)
+		if tower_type.is_empty() or not (position is Vector2) or not tower_definitions.has(tower_type):
+			continue
+		var tower := TowerRuntimeState.create(str(slot_id), tower_type, position, tower_definitions[tower_type])
+		var level := int(slot_data.get("level", 1))
+		if level >= 2:
+			tower.upgrade_to_level2()
+		towers.append(tower)
 
 func log_event(text: String) -> void:
 	feed.push_front(text); feed = feed.slice(0, 5); queue_redraw()
@@ -529,10 +545,12 @@ func _process(delta: float) -> void:
 	for effect in effects:
 		if effect.has("progress"):
 			effect["progress"] = float(effect["progress"]) + delta * float(effect.get("speed", 4.0))
-			if float(effect["progress"]) >= 1.0 and effect.get("source", "") in ["robot", "tower"] and not effect.get("hit_applied", false):
+			if float(effect["progress"]) >= 1.0 and effect.get("source", "") in ["robot", "tower", "enemy"] and not effect.get("hit_applied", false):
 				effect["hit_applied"] = true
 				var hit_event := GameplayEvent.create("damage_requested", str(effect.get("source", "robot")), str(effect.get("weapon", "robot")))
 				hit_event.target = effect.get("target_enemy", null)
+				if hit_event.target == null:
+					hit_event.target = effect.get("target_actor", null)
 				hit_event.position = effect.get("target", Vector2.ZERO)
 				hit_event.damage = float(effect.get("damage", 0.0))
 				hit_event.payload = {"source": str(effect.get("source", ""))}
@@ -695,22 +713,51 @@ func damage_robot(amount: float) -> void:
 	if robot.hp <= 0.0:
 		robot.hp = 0.0; robot.active = false; robot_selected = false; log_event("ATLAS-01 destroyed. Base defense remains active.")
 
-func update_giant_robot_attack(delta: float, enemy: EnemyRuntimeState) -> void:
-	if enemy.type != "giant" or not robot.active or robot.hp <= 0.0: return
-	enemy.robot_attack_timer -= delta
+func update_giant_boss_attack(delta: float, enemy: EnemyRuntimeState) -> bool:
+	if enemy.type != "giant" or not robot.active or robot.hp <= 0.0:
+		return false
 	var weapon: WeaponDefinition = enemy_robot_weapon_definitions.get(enemy.type)
-	if weapon == null or enemy.position.distance_to(robot.position) > weapon.range: return
-	if enemy.robot_attack_timer > 0.0: return
-	effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type})
-	var event := GameplayEvent.create("damage_requested", "enemy", enemy.type)
-	event.target = robot
-	event.position = robot.position
-	event.damage = weapon.damage
-	event.payload = {"source": enemy.type}
-	_handle_gameplay_event(event)
-	enemy.robot_attack_timer = weapon.cooldown
-	if robot.active:
-		log_event("GIANT hit ATLAS-01 for %d damage." % int(weapon.damage))
+	if weapon == null:
+		return false
+
+	if enemy.boss_windup_timer > 0.0:
+		enemy.boss_windup_timer = max(0.0, enemy.boss_windup_timer - delta)
+		if enemy.boss_windup_timer > 0.0:
+			return true
+		var event := GameplayEvent.create("damage_requested", "enemy", enemy.type)
+		event.target = robot
+		event.position = robot.position
+		match enemy.boss_pattern_index:
+			0:
+				effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type})
+				event.damage = weapon.damage
+				log_event("GIANT: CANNON SHOT.")
+			1:
+				event.damage = weapon.damage * 1.55
+				event.position = enemy.boss_charge_target
+				log_event("GIANT: CRUSHING BLAST.")
+				effects.append({"type": "giantHit", "position": enemy.boss_charge_target, "life": 0.35})
+			2:
+				enemy.position = enemy.boss_charge_target
+				event.damage = weapon.damage * 2.0
+				log_event("GIANT: CHARGE.")
+				effects.append({"type": "giantHit", "position": enemy.position, "life": 0.45})
+		event.payload = {"source": enemy.type}
+		_handle_gameplay_event(event)
+		enemy.boss_pattern_timer = 1.4
+		enemy.boss_pattern_index = (enemy.boss_pattern_index + 1) % 3
+		enemy.boss_pattern_active = false
+		return true
+
+	if enemy.boss_pattern_timer > 0.0:
+		enemy.boss_pattern_timer = max(0.0, enemy.boss_pattern_timer - delta)
+		return false
+
+	enemy.boss_pattern_active = true
+	enemy.boss_windup_timer = 0.8 if enemy.boss_pattern_index == 0 else (1.15 if enemy.boss_pattern_index == 1 else 1.0)
+	enemy.boss_charge_target = robot.position
+	log_event("GIANT telegraphs %s." % (["CANNON SHOT", "CRUSHING BLAST", "CHARGE"][enemy.boss_pattern_index]))
+	return true
 
 func update_enemy_attack(delta: float, enemy: EnemyRuntimeState, data: Dictionary) -> bool:
 	if enemy.type == "giant":
@@ -732,18 +779,11 @@ func update_enemy_attack(delta: float, enemy: EnemyRuntimeState, data: Dictionar
 	var target_position: Vector2 = target.position
 	var damage := weapon.damage
 	if attack_type == "ranged":
-		effects.append({"type": "proj_threat", "start": enemy.position, "target": target_position, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type})
-	var event := GameplayEvent.create("damage_requested", "enemy", enemy.type)
-	event.target = target
-	event.position = target_position
-	event.damage = damage
-	event.payload = {"source": enemy.type}
-	_handle_gameplay_event(event)
-	if target is AlliedUnitRuntimeState:
-		log_event("%s hit %s for %d damage." % [data.name, target.definition.name, int(damage)])
+		effects.append({"type": "proj_threat", "start": enemy.position, "target": target_position, "target_enemy": target, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type, "source": "enemy", "weapon": enemy.type, "damage": damage})
 	else:
-		log_event("%s hit ATLAS-01 for %d damage." % [data.name, int(damage)])
+		effects.append({"type": "impact_explosion", "position": target_position, "target_enemy": target, "damage_delay": 0.08, "damage": damage, "source": enemy.type, "life": 0.08, "max_life": 0.08})
 	enemy.attack_timer = max(0.05, weapon.cooldown)
+	log_event("%s fired %s." % [data.name, "RANGED" if attack_type == "ranged" else "MELEE"])
 	return true
 
 func _get_enemy_attack_target(enemy: EnemyRuntimeState, attack_range: float) -> Variant:
@@ -772,14 +812,14 @@ func move_enemies(delta: float) -> void:
 			"attack_cooldown": definition.get_combat_value("attack_cooldown", 0.0), "armor": definition.get_combat_value("armor", 0.0),
 			"reward": definition.get_combat_value("reward", 0.0)
 		}
+		if enemy.type == "giant" and update_giant_boss_attack(delta, enemy):
+			continue
 		if update_enemy_attack(delta, enemy, data):
 			continue
 		var start: Vector2 = enemy.state_get("start_position", LANES[enemy.lane])
 		enemy.position.x += data.speed * delta
 		var progress: float = clampf((enemy.position.x - start.x) / (BASE.x - start.x), 0.0, 1.0)
 		enemy.position.y = lerp(start.y, BASE.y, progress)
-		if enemy.type == "giant":
-			update_giant_robot_attack(delta, enemy)
 		if enemy.position.x >= BASE.x - 25.0:
 			base_hp -= data.base_damage; enemy.hp = 0.0
 			log_event("%s breached the base (-%d HP)." % [data.name, data.base_damage])
@@ -1174,7 +1214,7 @@ func try_special_attack() -> bool:
 		log_event("BASE SPECIAL definition is missing.")
 		return false
 	if float(robot.state_get("energy", float(robot_energy_definition.get("max", 0.0)))) < float(base_special.get("energy_cost", 0.0)):
-		log_event("ENERGY 遺議? SPECIAL ?ъ슜 遺덇?.")
+		log_event("Not enough ENERGY for SPECIAL.")
 		return false
 	if robot.area <= 0.0:
 		var nearby_base: Array[EnemyRuntimeState] = []
@@ -1207,7 +1247,7 @@ func try_skill_slot(slot: int) -> bool:
 		return false
 	var skill: Dictionary = skills_catalog[skill_id]
 	if float(robot.state_get("energy", float(robot_energy_definition.get("max", 0.0)))) < float(skill.get("energy_cost", 0.0)):
-		log_event("ENERGY 遺議? %s ?ъ슜 遺덇?." % str(skill.get("name", skill_id)))
+		log_event("Not enough ENERGY for %s." % str(skill.get("name", skill_id)))
 		return false
 	var execution_type := str(skill.get("execution_type", ""))
 	if execution_type == "area":
@@ -1410,17 +1450,12 @@ func _input(event: InputEvent) -> void:
 			return
 		var point := get_global_mouse_position()
 		# The bottom HUD overlaps the map's world rectangle, so UI hit-testing must happen first.
-		if _ui_button_rect(100).has_point(point) or _ui_combat_mode_rect().has_point(point) or _ui_action_rect(0).has_point(point) or _ui_action_rect(1).has_point(point) or _ui_action_rect(2).has_point(point) or _ui_action_rect(3).has_point(point) or _ui_action_rect(4).has_point(point) or _ui_action_rect(5).has_point(point) or _ui_action_rect(6).has_point(point):
+		if _ui_button_rect(100).has_point(point) or _ui_combat_mode_rect().has_point(point) or _ui_action_rect(0).has_point(point) or _ui_action_rect(1).has_point(point) or _ui_action_rect(2).has_point(point) or _ui_action_rect(3).has_point(point) or _ui_action_rect(4).has_point(point) or _ui_action_rect(5).has_point(point):
 			handle_click(point)
 			get_viewport().set_input_as_handled()
 			return
 		# World clicks: target selection and placed-tower selection must be resolved before movement.
 		if select_robot_target_at(point):
-			get_viewport().set_input_as_handled()
-			return
-		var tower_position := get_tower_placement_position(point)
-		if not pending_tower_type.is_empty() and tower_position != Vector2.INF:
-			handle_click(point)
 			get_viewport().set_input_as_handled()
 			return
 		for tower in towers:
@@ -1453,13 +1488,12 @@ func handle_click(point: Vector2) -> void:
 			restart_run()
 			play_sfx("ui_confirm")
 			return
-	if _ui_action_rect(0).has_point(point): select_tower_for_build("cannon"); return
-	if _ui_action_rect(1).has_point(point): select_tower_for_build("gatling"); return
-	if _ui_action_rect(2).has_point(point): try_special_attack(); return
-	if _ui_action_rect(3).has_point(point): try_skill_slot(1); return
-	if _ui_action_rect(4).has_point(point): try_skill_slot(2); return
-	if _ui_action_rect(5).has_point(point): try_skill_slot(3); return
-	if _ui_action_rect(6).has_point(point): try_finisher(); return
+	if _ui_action_rect(0).has_point(point): try_basic_attack(); return
+	if _ui_action_rect(1).has_point(point): try_special_attack(); return
+	if _ui_action_rect(2).has_point(point): try_skill_slot(1); return
+	if _ui_action_rect(3).has_point(point): try_skill_slot(2); return
+	if _ui_action_rect(4).has_point(point): try_skill_slot(3); return
+	if _ui_action_rect(5).has_point(point): try_finisher(); return
 	if _ui_combat_mode_rect().has_point(point):
 		robot_auto_attack = not robot_auto_attack
 		log_event("ATLAS-01 attack mode: %s." % ("AUTO" if robot_auto_attack else "MANUAL"))
@@ -1468,7 +1502,9 @@ func handle_click(point: Vector2) -> void:
 		return
 	for tower in towers:
 		if point.distance_to(tower.position) < 24.0:
-			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select"); queue_redraw(); return
+			selected_tower = tower.id; selected_slot = tower.id; selected_slot_position = tower.position; robot_selected = false; play_sfx("tower_select")
+			log_event("%s / LV.%d / AUTO SUPPORT" % [tower.definition.name, tower.level])
+			queue_redraw(); return
 	if robot.active and point.distance_to(robot.position) < 28.0:
 		if robot_selected:
 			robot_selected = false; play_sfx("ui_cancel")
@@ -1477,25 +1513,6 @@ func handle_click(point: Vector2) -> void:
 		queue_redraw(); return
 	if robot_selected and Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE).has_point(point):
 		move_robot_to_position(point); return
-	if not robot_selected:
-		var tower_position := get_tower_placement_position(point)
-		if tower_position != Vector2.INF and not pending_tower_type.is_empty():
-			selected_slot_position = tower_position
-			selected_slot = "tower_%d_%d" % [int(tower_position.x), int(tower_position.y)]
-			selected_tower = ""
-			build_tower(pending_tower_type)
-			if selected_slot.is_empty():
-				pending_tower_type = ""
-			queue_redraw()
-			return
-		if tower_position != Vector2.INF:
-			# Placement zone click without a selected tower only clears the temporary selection.
-			selected_slot = ""
-			selected_slot_position = Vector2.ZERO
-			selected_tower = ""
-			play_sfx("tower_select")
-			queue_redraw()
-			return
 	for id in ROBOT_SPOTS:
 		if point.distance_to(ROBOT_SPOTS[id]) < 55.0:
 			if robot_selected: move_robot_to_position(ROBOT_SPOTS[id])
@@ -1664,6 +1681,17 @@ func _draw() -> void:
 		if enemy.type == "giant":
 			var giant_pulse := 1.0 + sin(elapsed * 3.0) * 0.04
 			draw_arc(feet_pos, ring_radius * 1.16 * giant_pulse, 0, TAU, 24, Color(enemy_accent, 0.35), 1.5)
+			if enemy.boss_pattern_active and enemy.boss_windup_timer > 0.0:
+				var telegraph_alpha := 0.35 + 0.2 * sin(elapsed * 10.0)
+				match enemy.boss_pattern_index:
+					0:
+						draw_arc(robot.position, 52.0, 0, TAU, 28, Color(0.94, 0.41, 0.36, telegraph_alpha), 3.0)
+					1:
+						draw_circle(enemy.boss_charge_target, 62.0, Color(0.94, 0.41, 0.36, 0.10))
+						draw_arc(enemy.boss_charge_target, 62.0, 0, TAU, 28, Color(0.94, 0.41, 0.36, telegraph_alpha), 3.0)
+					2:
+						draw_line(enemy.position, enemy.boss_charge_target, Color(0.94, 0.41, 0.36, telegraph_alpha), 10.0)
+						draw_arc(enemy.boss_charge_target, 30.0, 0, TAU, 20, Color(0.94, 0.41, 0.36, telegraph_alpha), 3.0)
 		
 		if enemy.flash > 0.0:
 			draw_circle(enemy.position, max(enemy_size.x, enemy_size.y) * 0.28, Color.WHITE, false, 3.0)
@@ -1801,34 +1829,6 @@ func _ui_button_rect(y: float) -> Rect2:
 func _ui_combat_mode_rect() -> Rect2:
 	return Rect2(_ui_origin() + Vector2(650.0, 104.0), Vector2(210, 36))
 
-func draw_ui() -> void:
-	var origin := _ui_origin()
-	var stage_data := StageManager.get_current_stage()
-	var waves_data := StageManager.get_waves(encounter - 1)
-	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 64), "湲곗? HP %03d   怨⑤뱶 %03d" % [max(0, ceil(base_hp)), gold], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("d7fff7"))
-	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 88), "?ㅽ뀒?댁? %d   ?⑥씠釉?%d / %d" % [int(stage_data.get("order", 1)), wave, waves_data.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
-	var status_text := "?湲?"
-	if run_state == RunState.RUNNING: status_text = "?⑥씠釉?吏꾪뻾 以?"
-	elif run_state == RunState.GROWTH: status_text = "濡쒕큸 ?λ젰 ?좏깮"
-	elif run_state == RunState.VICTORY: status_text = "?밸━"
-	elif run_state == RunState.DEFEAT: status_text = "?⑤같"
-	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 112), "?곹깭: " + status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
-	button(_ui_button_rect(183), "?꾪닾 ?ъ떆??", false)
-
-	button(_ui_button_rect(279), "罹먮끉 嫄댁꽕", run_state not in [RunState.READY, RunState.RUNNING])
-	button(_ui_button_rect(327), "媛쒗?留?嫄댁꽕", run_state not in [RunState.READY, RunState.RUNNING])
-	var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.state_get("special", 0.0)) <= 0.0 and not robot_progression.unlocked_abilities.is_empty()
-	button(_ui_button_rect(375), "?꾩궡湲?[SPACE]", not special_ready)
-
-	var robot_status := "?湲?"
-	if robot.active: robot_status = "異쒓꺽 / " + robot.spot
-	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 452), "ATLAS-01  " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
-	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 474), "HP %03d" % max(0, ceil(robot.hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
-	for index in range(mini(feed.size(), 5)):
-		draw_string(ThemeDB.fallback_font, origin + Vector2(20, 500 + index * 18), feed[index], HORIZONTAL_ALIGNMENT_LEFT, 320, 10, Color("a9c5c7"))
-	draw_minimap(origin + Vector2(185, 520))
-	if run_state == RunState.GROWTH: draw_robot_growth_choice()
-
 func draw_minimap(position: Vector2) -> void:
 	var rect := Rect2(position, Vector2(155, 90))
 	var sx: float = rect.size.x / max(1.0, MAP_PIXEL_SIZE.x)
@@ -1952,46 +1952,55 @@ func draw_ui2() -> void:
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(14, 140), "WASD MOVE  /  CLICK MOVE", HORIZONTAL_ALIGNMENT_LEFT, 150, 9, Color("829aa0"))
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE BASE  /  R FINISHER", HORIZONTAL_ALIGNMENT_LEFT, 130, 9, Color("829aa0"))
 
-	# Build / skill palette.
-	for index in range(7):
+	# Pilot action palette. Basic is explicit; Space remains reserved for BASE camera centering.
+	for index in range(6):
 		var rect := _ui_action_rect(index)
 		var disabled := false
 		var label := ""
 		var sub := ""
+		var status := ""
+		var icon := ""
 		if index == 0:
-			label = "CANNON"; sub = "BUILD"
+			label = "BASIC"; sub = "J"; icon = "ATK"
+			var basic_cd: float = float(robot.state_get("attack", 0.0))
+			status = "%.1fs" % basic_cd if basic_cd > 0.0 else ("READY" if robot.active and run_state == RunState.RUNNING else "OFF")
+			disabled = not (robot.active and run_state == RunState.RUNNING and basic_cd <= 0.0)
 		elif index == 1:
-			label = "GATLING"; sub = "BUILD"
-		elif index == 2:
-			label = "SPECIAL"; sub = "SPACE"
-			var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.state_get("special", 0.0)) <= 0.0
-			disabled = not special_ready
-		elif index <= 5:
-			var skill_slot := index - 2
-			var skill_id := str(skill_slot_definitions.get(str(skill_slot), ""))
+			label = "SPECIAL"; sub = "MOUSE"; icon = "SP"
+			var special_cd: float = float(robot.state_get("special", 0.0))
+			var special_def: Dictionary = skills_catalog.get("base_special", {})
+			var special_cost := float(special_def.get("energy_cost", 0.0))
+			var current_energy := float(robot.state_get("energy", 0.0))
+			if special_cd > 0.0: status = "%.1fs" % special_cd
+			elif current_energy < special_cost: status = "ENERGY"
+			else: status = "READY" if robot.active and run_state == RunState.RUNNING else "OFF"
+			disabled = not (robot.active and run_state == RunState.RUNNING and special_cd <= 0.0 and current_energy >= special_cost)
+		elif index <= 4:
+			var skill_slot := index - 1
+			var skill_id := str(skill_slot_definitions.get(str(skill_slot + 1), ""))
 			var skill_definition: Dictionary = skills_catalog.get(skill_id, {})
-			label = str(skill_definition.get("name", "SKILL %d" % skill_slot))
-			sub = str(skill_slot)
-			disabled = skill_id.is_empty() or not robot_progression.has_ability(skill_id) or not (robot.active and run_state == RunState.RUNNING)
+			label = str(skill_definition.get("name", "SKILL %d" % (skill_slot + 1)))
+			sub = str(skill_slot + 1); icon = sub
+			var skill_cd: float = float(robot.area if str(skill_definition.get("execution_type", "")) == "area" else robot.pierce)
+			var skill_cost := float(skill_definition.get("energy_cost", 0.0))
+			var skill_energy := float(robot.state_get("energy", 0.0))
+			if skill_id.is_empty() or not robot_progression.has_ability(skill_id): status = "LOCKED"
+			elif skill_cd > 0.0: status = "%.1fs" % skill_cd
+			elif skill_energy < skill_cost: status = "ENERGY"
+			else: status = "READY" if robot.active and run_state == RunState.RUNNING else "OFF"
+			disabled = skill_id.is_empty() or not robot_progression.has_ability(skill_id) or not (robot.active and run_state == RunState.RUNNING and skill_cd <= 0.0 and skill_energy >= skill_cost)
 		else:
 			var finisher_value: float = float(robot.state_get("finisher", 0.0))
-			label = "FINISHER"; sub = "R  %03d%%" % int(finisher_value)
-			disabled = not (robot.active and run_state == RunState.RUNNING and finisher_value >= float(finisher_definition.get("meter_max", 0.0)) and float(robot.state_get("special", 0.0)) <= 0.0)
+			label = "FINISHER"; sub = "R"; icon = "F"
+			var finisher_max := float(finisher_definition.get("meter_max", 0.0))
+			status = "%03d%%" % int(finisher_value) if finisher_value < finisher_max else "READY"
+			disabled = not (robot.active and run_state == RunState.RUNNING and finisher_value >= finisher_max and float(robot.state_get("special", 0.0)) <= 0.0)
 		draw_rect(rect, Color("173337") if not disabled else Color("182226"), true)
-		var selected := (index == 0 and selected_tower == "cannon") or (index == 1 and selected_tower == "gatling")
-		draw_rect(rect, Color("7ed6ce") if selected else Color("527079"), false, 2.0)
-		if index < 2:
-			var texture_key := "tower_cannon" if index == 0 else "tower_gatling"
-			if VISUALS.get(texture_key) != null:
-				draw_sprite(VISUALS[texture_key], rect.position + Vector2(37, 31), Vector2(42, 42))
-		elif index == 2:
-			draw_string(ThemeDB.fallback_font, rect.position + Vector2(8, 39), "SP", HORIZONTAL_ALIGNMENT_CENTER, 56, 15, Color("c58cff") if not disabled else Color("65777b"))
-		elif index >= 3 and index <= 5:
-			draw_string(ThemeDB.fallback_font, rect.position + Vector2(8, 39), str(index - 2), HORIZONTAL_ALIGNMENT_CENTER, 56, 15, Color("7ed6ce") if not disabled else Color("65777b"))
-		else:
-			draw_string(ThemeDB.fallback_font, rect.position + Vector2(8, 39), "F", HORIZONTAL_ALIGNMENT_CENTER, 56, 15, Color("f0d28a") if not disabled else Color("65777b"))
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 56), label, HORIZONTAL_ALIGNMENT_CENTER, 62, 9, Color("d7fff7") if not disabled else Color("65777b"))
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 68), sub, HORIZONTAL_ALIGNMENT_CENTER, 62, 8, Color("7ed6ce") if not disabled else Color("65777b"))
+		draw_rect(rect, Color("7ed6ce") if not disabled else Color("527079"), false, 2.0)
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(8, 31), icon, HORIZONTAL_ALIGNMENT_CENTER, 56, 13, Color("d7fff7") if not disabled else Color("65777b"))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 49), label, HORIZONTAL_ALIGNMENT_CENTER, 62, 8, Color("d7fff7") if not disabled else Color("65777b"))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 61), sub, HORIZONTAL_ALIGNMENT_CENTER, 62, 8, Color("7ed6ce") if not disabled else Color("65777b"))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 72), status, HORIZONTAL_ALIGNMENT_CENTER, 62, 8, Color("f0d28a") if not disabled else Color("65777b"))
 
 	var combat_mode_rect := _ui_combat_mode_rect()
 	draw_rect(combat_mode_rect, Color("173337"), true)

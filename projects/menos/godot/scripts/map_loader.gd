@@ -101,11 +101,23 @@ static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 			return {}
 		var slots := {}
 		for k in tower_slot_data:
-			var pos_arr: Variant = tower_slot_data[k]
-			if not _is_vector_array(pos_arr):
-				push_error("MapLoader: tower_slots[%s] must be an array with 2 values" % k)
+			var slot_data: Variant = tower_slot_data[k]
+			if slot_data is Array:
+				if not _is_vector_array(slot_data):
+					push_error("MapLoader: tower_slots[%s] must be an array with 2 values" % k)
+					return {}
+				slots[str(k)] = Vector2(float(slot_data[0]), float(slot_data[1]))
+			elif slot_data is Dictionary:
+				var position: Variant = slot_data.get("position", null)
+				if not _is_vector_array(position):
+					push_error("MapLoader: tower_slots[%s].position must be an array with 2 values" % k)
+					return {}
+				var normalized: Dictionary = slot_data.duplicate(true)
+				normalized["position"] = Vector2(float(position[0]), float(position[1]))
+				slots[str(k)] = normalized
+			else:
+				push_error("MapLoader: tower_slots[%s] must be an array or object" % k)
 				return {}
-			slots[str(k)] = Vector2(float(pos_arr[0]), float(pos_arr[1]))
 		parsed["slots"] = slots
 
 	if raw_data.has("tiles"):
@@ -167,8 +179,14 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 
 	if map_data.has("slots"):
 		for k in map_data["slots"]:
-			var v: Vector2 = map_data["slots"][k]
-			raw_data["tower_slots"][k] = [v.x, v.y]
+			var slot_data: Variant = map_data["slots"][k]
+			if slot_data is Dictionary:
+				raw_data["tower_slots"][k] = slot_data.duplicate(true)
+				var position: Variant = slot_data.get("position", null)
+				if position is Vector2:
+					raw_data["tower_slots"][k]["position"] = [position.x, position.y]
+			elif slot_data is Vector2:
+				raw_data["tower_slots"][k] = [slot_data.x, slot_data.y]
 
 	var file := FileAccess.open(file_path, FileAccess.WRITE)
 	if file == null:

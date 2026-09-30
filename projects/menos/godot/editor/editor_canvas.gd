@@ -559,7 +559,13 @@ func _apply_selected_move(world_pos: Vector2) -> bool:
 			var legacy_id := str(selected_object.get("id", ""))
 			if not legacy_points.has(legacy_id):
 				return false
-			legacy_points[legacy_id] = target_position
+			var legacy_value: Variant = legacy_points[legacy_id]
+			if selection_type == "Tower Slot" and legacy_value is Dictionary:
+				var tower_slot_data: Dictionary = legacy_value.duplicate(true)
+				tower_slot_data["position"] = target_position
+				legacy_points[legacy_id] = tower_slot_data
+			else:
+				legacy_points[legacy_id] = target_position
 			map_data[legacy_field] = legacy_points
 	elif selection_type in ["Catalog Object", "Catalog Tile Overlay"]:
 		var object_index := int(selected_object.get("object_index", -1))
@@ -1353,7 +1359,8 @@ func _pick_gameplay_element_at(point: Vector2) -> bool:
 
 	if map_data.has("slots"):
 		for key in map_data["slots"]:
-			var slot_pos: Vector2 = map_data["slots"][key]
+			var slot_data: Variant = map_data["slots"][key]
+			var slot_pos := _slot_position(slot_data)
 			if _gameplay_point_hit_contains("Tower Slot", slot_pos, point):
 				select_object({"type": "Tower Slot", "id": str(key), "position": slot_pos, "legacy_field": "slots"})
 				return true
@@ -1391,6 +1398,19 @@ func select_object(info: Dictionary) -> void:
 	selected_object = info
 	object_selected.emit(info)
 	queue_redraw()
+
+func _slot_position(slot_data: Variant) -> Vector2:
+	if slot_data is Dictionary:
+		var position: Variant = slot_data.get("position", Vector2.INF)
+		if position is Vector2:
+			return position
+		if position is Array and position.size() >= 2:
+			return Vector2(float(position[0]), float(position[1]))
+	elif slot_data is Vector2:
+		return slot_data
+	elif slot_data is Array and slot_data.size() >= 2:
+		return Vector2(float(slot_data[0]), float(slot_data[1]))
+	return Vector2.INF
 
 func _draw() -> void:
 	draw_set_transform(camera_offset, 0.0, Vector2(camera_zoom, camera_zoom))
@@ -1476,7 +1496,7 @@ func _draw() -> void:
 	# Render Tower Slots
 	if map_data.has("slots"):
 		for key in map_data["slots"]:
-			var pos: Vector2 = map_data["slots"][key]
+			var pos := _slot_position(map_data["slots"][key])
 			draw_circle(pos, 14.0, Color("f0a35a", 0.6))
 			draw_arc(pos, 16.0, 0, TAU, 16, Color("f0a35a"), 2.0)
 			draw_string(ThemeDB.fallback_font, pos + Vector2(-16, 28), "SLOT: " + str(key), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("f0a35a"))

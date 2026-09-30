@@ -11,6 +11,12 @@ var flash: float = 0.0
 var robot_attack_timer: float = 0.0
 var melee_attack_timer: float = 0.0
 var attack_timer: float = 0.0
+var boss_pattern_timer: float = 0.0
+var boss_pattern_index: int = 0
+var boss_windup_timer: float = 0.0
+var boss_charge_timer: float = 0.0
+var boss_charge_target: Vector2 = Vector2.ZERO
+var boss_pattern_active: bool = false
 
 static func create(enemy_type: String, enemy_lane: String, spawn_position: Vector2, initial_hp: float) -> EnemyRuntimeState:
 	var state := EnemyRuntimeState.new()
