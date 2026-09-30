@@ -174,12 +174,6 @@ func _on_robot_selected(index: int) -> void:
 	move_edit.text = str(data.get("sprite_move", "res://assets/menos/sprites/atlas_move.png"))
 	skill_edit.text = str(data.get("sprite_skill", "res://assets/menos/sprites/atlas_skill.png"))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
-	area_damage_spin.value = float(area.get("damage", 28.0))
-	area_radius_spin.value = float(area.get("radius", 72.0))
-	area_cooldown_spin.value = float(area.get("cooldown", 6.0))
-	area_threshold_spin.value = float(area.get("threshold", 3))
-	pierce_damage_spin.value = float(pierce.get("damage", 105.0))
-	pierce_cooldown_spin.value = float(pierce.get("cooldown", 7.0))
 	_refresh_animation_previews()
 
 func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
@@ -233,10 +227,8 @@ func _save_data() -> void:
 		_set_status("ID and name are required.")
 		return
 	var data: Dictionary = robot_data.get(selected_type, {}).duplicate(true)
-	data["id"] = "boss_giant" if selected_type == "boss_giant" else id_edit.text.strip_edges()
+	data["id"] = id_edit.text.strip_edges()
 	data["name"] = name_edit.text.strip_edges()
-	if selected_type == "boss_giant":
-		data["role"] = "boss"
 	data["hp"] = float(hp_spin.value)
 	data["speed"] = float(speed_spin.value)
 	data["damage"] = float(damage_spin.value)
