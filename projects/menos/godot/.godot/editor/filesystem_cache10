@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790771521
+::res://::1790771635
 export_presets.cfg::TextFile::-1::1790684967::0::1::::<><><>0<>0<><>::
 game_controller.gd::GDScript::8692213070628158787::1790770563::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790760072::0::1::::<>Node2D<><>0<>0<><>::
@@ -114,7 +114,7 @@ image_editor_state.gd::GDScript::302610657414012107::1790609058::0::1::::ImageEd
 image_texture_loader.gd::GDScript::2404187261731203358::1790511154::0::1::::<>RefCounted<><>0<>0<><>::
 map_editor.gd::GDScript::612161265932897584::1790686091::0::1::::MapEditorMain<>Control<><>0<>0<><>::
 map_editor.tscn::PackedScene::56458622543686955::1790609468::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
-robot_editor.gd::GDScript::1026590027043768138::1790771359::0::1::::RobotEditorMain<>Control<><>0<>0<><>::
+robot_editor.gd::GDScript::1026590027043768138::1790771599::0::1::::RobotEditorMain<>Control<><>0<>0<><>::
 robot_editor.tscn::PackedScene::-1::1790683767::0::1::::<><><>0<>0<><>::res://editor/robot_editor.gd
 stage_editor.gd::GDScript::1845567455619979794::1790768391::0::1::::StageEditorMain<>Control<><>0<>0<><>::
 stage_editor.tscn::PackedScene::-1::1790609468::0::1::::<><><>0<>0<><>::res://editor/stage_editor.gd
