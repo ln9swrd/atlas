@@ -1,4 +1,4 @@
-class_name EnemyEditorMain
+﻿class_name EnemyEditorMain
 extends Control
 
 const ENEMY_FILE := "res://content/enemies/enemies.json"
@@ -82,8 +82,8 @@ func _build_properties(parent: VBoxContainer) -> void:
 	speed_spin = _spin_row(parent, "Speed", 0, 9999, 0.1, 10)
 	armor_spin = _spin_row(parent, "Armor", 0, 9999, 0.1, 0)
 	damage_spin = _spin_row(parent, "Base Damage", 0, 9999, 0.1, 1)
-	reward_spin = _spin_row(parent, "蹂댁긽", 0, 999999, 1, 10)
-	radius_spin = _spin_row(parent, "諛섍꼍", 1, 999, 0.5, 10)
+	reward_spin = _spin_row(parent, "Reward", 0, 999999, 1, 10)
+	radius_spin = _spin_row(parent, "Radius", 1, 999, 0.5, 10)
 	var attack_type_row := HBoxContainer.new()
 	parent.add_child(attack_type_row)
 	var attack_type_label := Label.new()
@@ -91,7 +91,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	attack_type_label.custom_minimum_size.x = 130
 	attack_type_row.add_child(attack_type_label)
 	attack_type_list = OptionButton.new()
-	attack_type_list.add_item("?놁쓬")
+	attack_type_list.add_item("??곸벉")
 	attack_type_list.add_item("Melee")
 	attack_type_list.add_item("Ranged")
 	attack_type_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -107,7 +107,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var color_row := HBoxContainer.new()
 	parent.add_child(color_row)
 	var color_label := Label.new()
-	color_label.text = "?됱긽"
+	color_label.text = "??깃맒"
 	color_label.custom_minimum_size.x = 130
 	color_row.add_child(color_label)
 	color_edit = ColorPickerButton.new()
@@ -116,14 +116,14 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var sprite_row := HBoxContainer.new()
 	parent.add_child(sprite_row)
 	var sprite_label := Label.new()
-	sprite_label.text = "?좊땲硫붿씠???대?吏"
+	sprite_label.text = "?醫딅빍筌롫뗄??????筌왖"
 	sprite_label.custom_minimum_size.x = 130
 	sprite_row.add_child(sprite_label)
 	sprite_edit = LineEdit.new()
 	sprite_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sprite_row.add_child(sprite_edit)
 	var browse := Button.new()
-	browse.text = "李얠븘蹂닿린"
+	browse.text = "筌≪뼚釉섋퉪?용┛"
 	browse.pressed.connect(func(): _open_sprite_dialog("sprite"))
 	sprite_row.add_child(browse)
 	var projectile_row := HBoxContainer.new()
@@ -136,7 +136,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	projectile_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	projectile_row.add_child(projectile_edit)
 	var projectile_browse := Button.new()
-	projectile_browse.text = "李얠븘蹂닿린"
+	projectile_browse.text = "筌≪뼚釉섋퉪?용┛"
 	projectile_browse.pressed.connect(func(): _open_sprite_dialog("projectile"))
 	projectile_row.add_child(projectile_browse)
 	file_dialog = FileDialog.new()
@@ -153,7 +153,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	parent.add_child(sprite_preview)
 	var edit_image := Button.new()
-	edit_image.text = "?대?吏 ?몄쭛 / ?ㅻⅨ ?대?吏 李몄“"
+	edit_image.text = "Edit Image / Browse Image Reference"
 	edit_image.pressed.connect(_open_image_editor)
 	parent.add_child(edit_image)
 	add_child(file_dialog)
@@ -258,7 +258,7 @@ func _save_data() -> void:
 		_set_status("No enemy selected.")
 		return
 	if name_edit.text.strip_edges().is_empty():
-		_set_status("?대쫫 is required.")
+		_set_status("??已?is required.")
 		return
 	var data: Dictionary = enemy_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()
