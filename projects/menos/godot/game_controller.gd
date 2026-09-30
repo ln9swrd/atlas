@@ -1976,7 +1976,7 @@ func draw_minimap2(position: Vector2) -> void:
 	view_rect = view_rect.intersection(map_bounds)
 	if not view_rect.size.is_zero_approx():
 		draw_rect(view_rect, Color("f0d28a"), false, 2.0)
-	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), SettingsManager.text("湲곗? / ATLAS / ??, "BASE / ATLAS / ENEMIES"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), SettingsManager.text("BASE / ATLAS / ENEMIES"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d7fff7"))
 
 func draw_robot_growth_choice() -> void:
 	var rect := Rect2(_ui_origin() + Vector2(385, 180), Vector2(500, 185))
