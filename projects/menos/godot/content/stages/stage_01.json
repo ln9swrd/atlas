@@ -1,11 +1,10 @@
 {
   "balance": {
-	"base_hp": 101.0,
-	"initial_gold": 180
+    "base_hp": 101.0,
+    "initial_gold": 180
   },
   "map_file": "res://content/maps/map_01.json",
   "name": "Northbridge Sector 01",
-  "next_stage_id": "stage_02",
   "order": 1,
   "stage_id": "stage_01",
   "allied_units": [
@@ -25,102 +24,108 @@
       "spawn": "robot"
     }
   ],
-  "waves": [
-	{
-	  "groups": [
-		[
-		  "normal",
-		  30,
-		  0.75,
-		  [
-			"left",
-            "right"
-		  ]
-		]
-	  ],
-	  "label": "NORMAL / BOTH LANES"
-	},
-	{
-	  "groups": [
-		[
-		  "normal",
-		  18,
-		  0.8,
-		  [
-            "right"
-		  ]
-		],
-		[
-		  "rusher",
-		  24,
-		  0.5,
-		  [
-            "left"
-		  ]
-		]
-	  ],
-	  "label": "RUSHER / NORTH PRESSURE"
-	},
-	{
-	  "groups": [
-		[
-		  "rusher",
-		  21,
-		  0.45,
-		  [
-            "right"
-		  ]
-		],
-		[
-		  "heavy",
-		  15,
-		  1.1,
-		  [
-            "left"
-		  ]
-		]
-	  ],
-	  "label": "HEAVY / SOUTH PRESSURE"
-	},
-	{
-	  "groups": [
-		[
-		  "normal",
-		  24,
-		  0.6,
-		  [
-			"left",
-            "right"
-		  ]
-		],
-		[
-		  "rusher",
-		  24,
-		  0.42,
-		  [
-			"left",
-            "right"
-		  ]
-		],
-		[
-		  "heavy",
-		  20,
-		  0.9,
-		  [
-			"left",
-            "right"
-		  ]
-		],
-		[
-		  "giant",
-		  1.0,
-		  1.0,
-		  [
-            "right"
-		  ]
-		]
-	  ],
-	  "label": "ALL TYPES / GIANT / BOTH LANES"
-	}
+  "encounters": [
+    {
+      "id": "encounter_01",
+      "label": "ENCOUNTER 01",
+      "waves": [
+        {
+          "groups": [
+            [
+              "normal",
+              30,
+              0.75,
+              [
+                "left",
+                "right"
+              ]
+            ]
+          ],
+          "label": "NORMAL / BOTH LANES"
+        },
+        {
+          "groups": [
+            [
+              "normal",
+              18,
+              0.8,
+              [
+                "right"
+              ]
+            ],
+            [
+              "rusher",
+              24,
+              0.5,
+              [
+                "left"
+              ]
+            ]
+          ],
+          "label": "RUSHER / NORTH PRESSURE"
+        },
+        {
+          "groups": [
+            [
+              "rusher",
+              21,
+              0.45,
+              [
+                "right"
+              ]
+            ],
+            [
+              "heavy",
+              15,
+              1.1,
+              [
+                "left"
+              ]
+            ]
+          ],
+          "label": "HEAVY / SOUTH PRESSURE"
+        },
+        {
+          "groups": [
+            [
+              "normal",
+              24,
+              0.6,
+              [
+                "left",
+                "right"
+              ]
+            ],
+            [
+              "rusher",
+              24,
+              0.42,
+              [
+                "left",
+                "right"
+              ]
+            ],
+            [
+              "heavy",
+              20,
+              0.9,
+              [
+                "left",
+                "right"
+              ]
+            ],
+            [
+              "giant",
+              1.0,
+              1.0,
+              [
+                "right"
+              ]
+            ]
+          ],
+          "label": "ALL TYPES / GIANT / BOTH LANES"
+        }
+      ]
+    }
   ]
 }

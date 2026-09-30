@@ -72,6 +72,7 @@ enum RunState { READY, RUNNING, GROWTH, VICTORY, DEFEAT }
 
 var base_hp := 0.0
 var gold := 0
+var encounter := 1
 var wave := 1
 var run_state := RunState.READY
 var wave_running := false
@@ -483,7 +484,7 @@ func play_sfx(id: String) -> void:
 	player.play()
 
 func reset_game() -> void:
-	base_hp = StageManager.get_base_hp(); gold = StageManager.get_initial_gold(); wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
+	base_hp = StageManager.get_base_hp(); gold = StageManager.get_initial_gold(); encounter = 1; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); allied_units.clear(); towers.clear(); effects.clear(); damage_numbers.clear(); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false
 	wave_auto_start_timer = wave_auto_start_delay
 	var initial_robot_spot := ""
@@ -493,7 +494,7 @@ func reset_game() -> void:
 		initial_robot_position = ROBOT_SPOTS[initial_robot_spot]
 	var robot_stats := get_robot_runtime_stats()
 	robot = RobotRuntimeState.new()
-	robot.reset(initial_robot_position, robot_stats.hp, float(robot_energy_definition.get("max", 0.0)), robot_stats.max_moves)
+	robot.reset(initial_robot_position, robot_stats.hp, float(robot_energy_definition.get("max", 0.0)))
 	robot.spot = initial_robot_spot
 	if robot_progression == null:
 		robot_progression = RobotProgressionState.new()
@@ -569,7 +570,7 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func start_wave() -> void:
-	var waves_data := StageManager.get_waves()
+	var waves_data := StageManager.get_waves(encounter - 1)
 	if run_state != RunState.READY or wave_running or base_hp <= 0.0 or wave > waves_data.size(): return
 	if not robot.active:
 		robot.hp = get_robot_runtime_stats().hp
@@ -625,13 +626,14 @@ func spawn_allied_units() -> void:
 	var spawn_config: Variant = stage_data.get("allied_units", [])
 	if not spawn_config is Array:
 		return
-	var spawn_position := robot.position
 	for entry in spawn_config:
 		if not entry is Dictionary:
 			continue
 		var unit_type := str(entry.get("id", ""))
 		if unit_type.is_empty() or not allied_unit_definitions.has(unit_type):
 			continue
+		var spawn_id := str(entry.get("spawn", "robot")).strip_edges()
+		var spawn_position := _resolve_allied_spawn_position(spawn_id)
 		var count := max(0, int(entry.get("count", 0)))
 		var definition: AlliedUnitDefinition = allied_unit_definitions[unit_type]
 		for index in range(count):
@@ -643,6 +645,19 @@ func spawn_allied_units() -> void:
 				definition
 			))
 	log_event("Allied support deployed: %d." % allied_units.size())
+
+func _resolve_allied_spawn_position(spawn_id: String) -> Vector2:
+	if spawn_id.is_empty() or spawn_id == "robot":
+		return robot.position
+	if ROBOT_SPOTS.has(spawn_id):
+		return ROBOT_SPOTS[spawn_id]
+	var point_id := spawn_id
+	if spawn_id.begins_with("point:"):
+		point_id = spawn_id.substr(6)
+	if ROBOT_SPOTS.has(point_id):
+		return ROBOT_SPOTS[point_id]
+	push_warning("Unknown allied spawn point '%s'; using ATLAS-01 position." % spawn_id)
+	return robot.position
 
 func update_allied_units(delta: float) -> void:
 	for unit in allied_units:
@@ -781,8 +796,7 @@ func get_robot_runtime_stats() -> Dictionary:
 		"speed": float(robot_definition.get_base_stat("speed")) * pow(1.0 + float(robot_progression_definition.get("speed_growth", 0.0)), level_count),
 		"damage": float(robot_definition.get_base_stat("damage")) * pow(1.0 + float(robot_progression_definition.get("damage_growth", 0.0)), level_count),
 		"cooldown": float(robot_definition.get_base_stat("cooldown")),
-		"range": float(robot_definition.get_base_stat("range")) * pow(1.0 + float(robot_progression_definition.get("range_growth", 0.0)), level_count),
-		"max_moves": int(robot_definition.get_base_stat("max_moves"))
+		"range": float(robot_definition.get_base_stat("range")) * pow(1.0 + float(robot_progression_definition.get("range_growth", 0.0)), level_count)
 	}
 	for slot in player_profile.equipped_items:
 		var item_id := str(player_profile.equipped_items.get(slot, ""))
@@ -976,31 +990,6 @@ func get_robot_heavy_target() -> EnemyRuntimeState:
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
 	return candidates[0]
 
-func get_robot_chase_target() -> EnemyRuntimeState:
-	var candidates: Array[EnemyRuntimeState] = enemies.filter(func(enemy): return enemy.hp > 0.0)
-	if candidates.is_empty(): return null
-	candidates.sort_custom(func(a, b): return a.position.distance_to(robot.position) < b.position.distance_to(robot.position))
-	return candidates[0]
-
-func get_robot_auto_spot() -> String:
-	if ROBOT_SPOTS.is_empty():
-		return ""
-	var active_enemies: Array = enemies.filter(func(enemy): return enemy.hp > 0.0)
-	if active_enemies.is_empty():
-		return ""
-	var target := Vector2.ZERO
-	for enemy in active_enemies:
-		target += enemy.position
-	target /= float(active_enemies.size())
-	var best_id := ""
-	var best_distance := INF
-	for id in ROBOT_SPOTS:
-		var distance: float = ROBOT_SPOTS[id].distance_to(target)
-		if distance < best_distance:
-			best_distance = distance
-			best_id = str(id)
-	return best_id
-
 func update_robot_manual_input(delta: float) -> void:
 	if not robot.state_get("active", false) or robot.hp <= 0.0 or run_state not in [RunState.READY, RunState.RUNNING]:
 		return
@@ -1011,7 +1000,6 @@ func update_robot_manual_input(delta: float) -> void:
 		robot["is_moving"] = false
 		return
 	direction = direction.normalized()
-	robot["manual_position"] = true
 	robot.erase_state("target_pos")
 	robot["spot"] = "CUSTOM"
 	robot["is_moving"] = true
@@ -1021,39 +1009,9 @@ func update_robot_manual_input(delta: float) -> void:
 		clampf(target.y, MAP_ORIGIN.y + 32.0, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y - 32.0)
 	)
 
-func move_robot_automatically(delta: float) -> void:
-	if not wave_running or float(robot.state_get("special", 0.0)) > 0.0: return
-	if robot.has_state("target_pos"):
-		var manual_target: Vector2 = robot.target_pos
-		var manual_distance: float = robot.position.distance_to(manual_target)
-		var manual_step: float = get_robot_runtime_stats().speed * delta
-		if manual_distance <= manual_step:
-			robot.position = manual_target
-			robot.erase_state("target_pos")
-		else:
-			robot.position += robot.position.direction_to(manual_target) * manual_step
-		return
-	if robot.state_get("manual_position", false): return
-	var auto_spot := get_robot_auto_spot()
-	if auto_spot.is_empty(): return
-	if robot.spot != auto_spot:
-		robot.spot = auto_spot
-		robot["target_pos"] = ROBOT_SPOTS[auto_spot]
-		log_event("ATLAS-01 moving to %s." % auto_spot)
-	if not robot.has_state("target_pos"): return
-	var target_pos: Vector2 = robot.target_pos
-	var distance: float = robot.position.distance_to(target_pos)
-	var step: float = float(get_robot_runtime_stats().speed) * delta
-	if distance <= step:
-		robot.position = target_pos
-		robot.erase_state("target_pos")
-	else:
-		robot.position += robot.position.direction_to(target_pos) * step
-
 func move_robot_to_position(point: Vector2) -> void:
 	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING]: return
 	var target := Vector2(clampf(point.x, MAP_ORIGIN.x + 32.0, MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - 32.0), clampf(point.y, MAP_ORIGIN.y + 32.0, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y - 32.0))
-	robot["manual_position"] = true
 	robot.spot = "CUSTOM"
 	if wave_running:
 		robot["target_pos"] = target
@@ -1265,15 +1223,26 @@ func check_wave_clear() -> void:
 	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or not wave_running: return
 	if not spawn_queue.is_empty() or enemies.any(func(enemy): return enemy.hp > 0.0): return
 	wave_running = false; wave_clear = true
-	var waves_count := StageManager.get_waves().size()
+	var waves_count := StageManager.get_waves(encounter - 1).size()
 	if wave < waves_count:
-		log_event("Wave %d clear." % wave); wave += 1
+		log_event("Encounter %d / Wave %d clear." % [encounter, wave]); wave += 1
 		run_state = RunState.READY
 		start_wave()
 	else:
-		var next_stage_id := StageManager.get_next_campaign_stage_id()
+		var encounters_count := StageManager.get_encounters().size()
+		if encounter < encounters_count:
+			log_event("Encounter %d clear." % encounter)
+			encounter += 1
+			wave = 1
+			run_state = RunState.READY
+			start_wave()
+			return
 		if StageManager.run_mode != "campaign":
-			next_stage_id = ""
+			run_state = RunState.VICTORY
+			play_sfx("ui_confirm")
+			log_event("STAGE CLEAR. Press RESTART to play again.")
+			return
+		var next_stage_id := StageManager.get_next_campaign_stage_id()
 		player_profile.campaign_progression.complete_stage(StageManager.current_stage_id, next_stage_id)
 		_save_robot_progression()
 		if not next_stage_id.is_empty():
@@ -1528,28 +1497,6 @@ func upgrade_tower(type: String) -> void:
 	play_sfx("ui_confirm"); log_event("%s upgraded to LVL 2." % tower.definition.name)
 	selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false; queue_redraw()
 
-func toggle_robot_attack_mode() -> void:
-	if not robot.active:
-		return
-	robot["auto_attack"] = not bool(robot.state_get("auto_attack", true))
-	play_sfx("ui_confirm")
-	log_event("ATLAS-01 湲곕낯 怨듦꺽: %s." % ("?먮룞" if bool(robot.auto_attack) else "?섎룞"))
-	queue_redraw()
-
-func launch_robot() -> void:
-	if not can_launch_robot(): return
-	robot.hp = get_robot_runtime_stats().hp
-	robot.max_hp = get_robot_runtime_stats().hp
-	robot["auto_attack"] = false
-	robot.active = true; robot_selected = true; selected_tower = ""; selected_slot = ""; play_sfx("ui_confirm"); log_event("ATLAS-01 launched at %s. Choose a crisis zone." % robot.spot)
-
-func can_launch_robot() -> bool:
-	return not robot.active and run_state in [RunState.READY, RunState.RUNNING]
-
-func move_robot(id: String) -> void:
-	if not robot.active or run_state not in [RunState.READY, RunState.RUNNING] or not ROBOT_SPOTS.has(id) or robot.spot == id: return
-	robot["manual_position"] = true; robot.spot = id; robot["target_pos"] = ROBOT_SPOTS[id]; log_event("ATLAS-01 moved to %s." % id)
-
 func draw_sprite(texture: Texture2D, center: Vector2, size: Vector2) -> void:
 	draw_texture_rect(texture, Rect2(center - size * 0.5, size), false)
 
@@ -1795,7 +1742,7 @@ func _ui_button_rect(y: float) -> Rect2:
 func draw_ui() -> void:
 	var origin := _ui_origin()
 	var stage_data := StageManager.get_current_stage()
-	var waves_data := StageManager.get_waves()
+	var waves_data := StageManager.get_waves(encounter - 1)
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 64), "湲곗? HP %03d   怨⑤뱶 %03d" % [max(0, ceil(base_hp)), gold], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("d7fff7"))
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 88), "?ㅽ뀒?댁? %d   ?⑥씠釉?%d / %d" % [int(stage_data.get("order", 1)), wave, waves_data.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
 	var status_text := "?湲?
@@ -1888,7 +1835,7 @@ func draw_ui2() -> void:
 	var screen_origin: Vector2 = screen_to_world * Vector2.ZERO
 	var bottom := _ui_origin()
 	var stage_data := StageManager.get_current_stage()
-	var waves_data := StageManager.get_waves()
+	var waves_data := StageManager.get_waves(encounter - 1)
 
 	# Top-center combat bar: compact, readable, MOBA-style information hierarchy.
 	var top_rect := Rect2(screen_origin + Vector2(0, 10), Vector2(viewport_size.x, 58))
@@ -1903,7 +1850,7 @@ func draw_ui2() -> void:
 	elif run_state == RunState.VICTORY: status_text = "VICTORY"
 	elif run_state == RunState.DEFEAT: status_text = "DEFEAT"
 	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x * 0.5 - 95, 23), "STAGE %d" % int(stage_data.get("order", 1)), HORIZONTAL_ALIGNMENT_CENTER, 190, 11, Color("a9c5c7"))
-	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x * 0.5 - 110, 45), "WAVE %d / %d   ??  %s" % [wave, waves_data.size(), status_text], HORIZONTAL_ALIGNMENT_CENTER, 220, 13, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x * 0.5 - 110, 45), "ENCOUNTER %d  WAVE %d / %d   ??  %s" % [encounter, wave, waves_data.size(), status_text], HORIZONTAL_ALIGNMENT_CENTER, 220, 13, Color("d7fff7"))
 	var selected_target: EnemyRuntimeState = get_selected_robot_target()
 	var target_text := "TARGET: NONE"
 	if selected_target != null:
@@ -1940,7 +1887,7 @@ func draw_ui2() -> void:
 	var robot_xp: int = robot_progression.xp
 	var robot_xp_need: int = int(robot_progression_definition.get("xp_per_level", 0)) * robot_level
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 145), "LV.%d  XP %d / %d" % [robot_level, robot_xp, robot_xp_need], HORIZONTAL_ALIGNMENT_LEFT, 155, 9, Color("f0d28a"))
-	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(14, 140), "COMMANDS  %02d" % int(robot.state_get("commands", 0)), HORIZONTAL_ALIGNMENT_LEFT, 130, 10, Color("829aa0"))
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(14, 140), "WASD MOVE  /  CLICK MOVE", HORIZONTAL_ALIGNMENT_LEFT, 150, 9, Color("829aa0"))
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE SPECIAL  R FINISHER", HORIZONTAL_ALIGNMENT_LEFT, 130, 9, Color("829aa0"))
 
 	# Build / skill palette.

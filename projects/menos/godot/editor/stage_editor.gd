@@ -1,11 +1,10 @@
 class_name StageEditorMain
 extends Control
-
 const STAGE_DIR := "res://content/stages/"
+const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
 const MAP_DIR := "res://content/maps/"
 const ENEMY_TYPES := ["normal", "rusher", "heavy", "giant"]
 const LANES := ["left", "right", "both"]
-
 var current_path := ""
 var stage_data: Dictionary = {}
 var stage_list: OptionButton
@@ -16,7 +15,7 @@ var map_option: OptionButton
 var gold_spin: SpinBox
 var hp_spin: SpinBox
 var next_edit: LineEdit
-var waves_box: VBoxContainer
+var encounters_box: VBoxContainer
 var status_label: Label
 
 func _ready() -> void:
@@ -31,7 +30,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // 스테이지 에디터  —  MVP"
+	title.text = "MENOS // STAGE EDITOR"
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -40,43 +39,83 @@ func _build_ui() -> void:
 	stage_list.custom_minimum_size.x = 220
 	stage_list.item_selected.connect(_on_stage_selected)
 	top.add_child(stage_list)
-	var load_btn := Button.new(); load_btn.text = "새로고침"; load_btn.pressed.connect(_load_selected_stage); top.add_child(load_btn)
-	var save_btn := Button.new(); save_btn.text = "JSON 저장"; save_btn.pressed.connect(_save_stage); top.add_child(save_btn)
-	status_label = Label.new(); status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; top.add_child(status_label)
-	var scroll := ScrollContainer.new(); scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; root.add_child(scroll)
-	var content := VBoxContainer.new(); content.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll.add_child(content)
+	var load_btn := Button.new()
+	load_btn.text = "Reload"
+	load_btn.pressed.connect(_load_selected_stage)
+	top.add_child(load_btn)
+	var save_btn := Button.new()
+	save_btn.text = "Save JSON"
+	save_btn.pressed.connect(_save_stage)
+	top.add_child(save_btn)
+	status_label = Label.new()
+	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(status_label)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(content)
 	_build_stage_properties(content)
-	var sep := HSeparator.new(); content.add_child(sep)
-	var waves_title := Label.new(); waves_title.text = "웨이브"; waves_title.add_theme_font_size_override("font_size", 16); content.add_child(waves_title)
-	waves_box = VBoxContainer.new(); waves_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL; content.add_child(waves_box)
-	var add_wave := Button.new(); add_wave.text = "+ 웨이브 추가"; add_wave.pressed.connect(_add_wave); content.add_child(add_wave)
+	content.add_child(HSeparator.new())
+	var t := Label.new()
+	t.text = "Encounters"
+	t.add_theme_font_size_override("font_size", 16)
+	content.add_child(t)
+	encounters_box = VBoxContainer.new()
+	encounters_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(encounters_box)
+	var add_encounter := Button.new()
+	add_encounter.text = "+ Add Encounter"
+	add_encounter.pressed.connect(_add_encounter)
+	content.add_child(add_encounter)
 
 func _build_stage_properties(parent: VBoxContainer) -> void:
-	var title := Label.new(); title.text = "스테이지 속성"; title.add_theme_font_size_override("font_size", 16); parent.add_child(title)
-	id_edit = _line_row(parent, "스테이지 ID")
-	order_spin = _spin_row(parent, "순서", 1, 999, 1, 1)
-	name_edit = _line_row(parent, "이름")
-	map_option = OptionButton.new(); _option_row(parent, "Map", map_option)
-	gold_spin = _spin_row(parent, "초기 골드", 0, 999999, 10, 180)
-	hp_spin = _spin_row(parent, "기지 HP", 1, 999999, 10, 100)
-	next_edit = _line_row(parent, "Next 스테이지 ID")
+	id_edit = _line_row(parent, "Stage ID")
+	order_spin = _spin_row(parent, "Order", 1, 999, 1, 1)
+	name_edit = _line_row(parent, "Name")
+	map_option = OptionButton.new()
+	_option_row(parent, "Map", map_option)
+	gold_spin = _spin_row(parent, "Initial Gold", 0, 999999, 10, 180)
+	hp_spin = _spin_row(parent, "Base HP", 1, 999999, 10, 100)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
-	var row := HBoxContainer.new(); parent.add_child(row)
-	var label := Label.new(); label.text = label_text; label.custom_minimum_size.x = 130; row.add_child(label)
-	var edit := LineEdit.new(); edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(edit)
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 130
+	row.add_child(label)
+	var edit := LineEdit.new()
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(edit)
 	return edit
 
 func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximum: float, step: float, value: float) -> SpinBox:
-	var row := HBoxContainer.new(); parent.add_child(row)
-	var label := Label.new(); label.text = label_text; label.custom_minimum_size.x = 130; row.add_child(label)
-	var spin := SpinBox.new(); spin.min_value = minimum; spin.max_value = maximum; spin.step = step; spin.value = value; spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(spin)
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 130
+	row.add_child(label)
+	var spin := SpinBox.new()
+	spin.min_value = minimum
+	spin.max_value = maximum
+	spin.step = step
+	spin.value = value
+	spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(spin)
 	return spin
 
 func _option_row(parent: VBoxContainer, label_text: String, option: OptionButton) -> void:
-	var row := HBoxContainer.new(); parent.add_child(row)
-	var label := Label.new(); label.text = label_text; label.custom_minimum_size.x = 130; row.add_child(label)
-	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(option)
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 130
+	row.add_child(label)
+	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(option)
 
 func _refresh_stage_list() -> void:
 	stage_list.clear()
@@ -86,11 +125,13 @@ func _refresh_stage_list() -> void:
 	dir.list_dir_begin()
 	var file := dir.get_next()
 	while not file.is_empty():
-		if not dir.current_is_dir() and file.ends_with(".json"): files.append(file)
+		if not dir.current_is_dir() and file.ends_with(".json") and STAGE_DIR + file != STAGE_CATALOG_FILE: files.append(file)
 		file = dir.get_next()
 	dir.list_dir_end()
 	files.sort()
-	for f in files: stage_list.add_item(f.get_basename()); stage_list.set_item_metadata(stage_list.item_count - 1, STAGE_DIR + f)
+	for f in files:
+		stage_list.add_item(f.get_basename())
+		stage_list.set_item_metadata(stage_list.item_count - 1, STAGE_DIR + f)
 
 func _refresh_map_options(selected_path: String) -> void:
 	map_option.clear()
@@ -102,10 +143,13 @@ func _refresh_map_options(selected_path: String) -> void:
 	while not file.is_empty():
 		if not dir.current_is_dir() and file.ends_with(".json"): files.append(file)
 		file = dir.get_next()
-	dir.list_dir_end(); files.sort()
+	dir.list_dir_end()
+	files.sort()
 	var selected := 0
 	for f in files:
-		var path := MAP_DIR + f; map_option.add_item(f); map_option.set_item_metadata(map_option.item_count - 1, path)
+		var path := MAP_DIR + f
+		map_option.add_item(f)
+		map_option.set_item_metadata(map_option.item_count - 1, path)
 		if path == selected_path: selected = map_option.item_count - 1
 	if map_option.item_count > 0: map_option.select(selected)
 
@@ -117,95 +161,162 @@ func _load_selected_stage() -> void:
 	current_path = str(stage_list.get_item_metadata(stage_list.selected))
 	stage_data = StageLoader.load_stage_data(current_path)
 	if stage_data.is_empty():
-		_set_status("FAILED to load: " + current_path); return
+		_set_status("FAILED to load: " + current_path)
+		return
 	id_edit.text = str(stage_data.get("stage_id", ""))
 	order_spin.value = int(stage_data.get("order", 1))
 	name_edit.text = str(stage_data.get("name", ""))
 	_refresh_map_options(str(stage_data.get("map_file", "")))
 	gold_spin.value = int(stage_data.get("initial_gold", 180))
 	hp_spin.value = float(stage_data.get("base_hp", 100.0))
-	next_edit.text = str(stage_data.get("next_stage_id", ""))
-	_rebuild_waves()
-	_set_status("Loaded: " + current_path)
+	_rebuild_encounters()
 
-func _rebuild_waves() -> void:
-	for child in waves_box.get_children(): child.queue_free()
-	var waves: Array = stage_data.get("waves", [])
-	for i in waves.size(): _build_wave_card(i)
+func _rebuild_encounters() -> void:
+	for child in encounters_box.get_children(): child.queue_free()
+	for i in stage_data.get("encounters", []).size(): _build_encounter_card(i)
 
-func _build_wave_card(index: int) -> void:
-	var waves: Array = stage_data["waves"]
-	var wave: Dictionary = waves[index]
-	var panel := PanelContainer.new(); waves_box.add_child(panel)
-	var box := VBoxContainer.new(); panel.add_child(box)
-	var header := HBoxContainer.new(); box.add_child(header)
-	var label := Label.new(); label.text = "Wave %d" % (index + 1); label.custom_minimum_size.x = 80; header.add_child(label)
-	var wave_label := LineEdit.new(); wave_label.text = str(wave.get("label", "WAVE %d" % (index + 1))); wave_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; header.add_child(wave_label)
-	wave_label.text_changed.connect(func(v): stage_data["waves"][index]["label"] = v)
-	var up := Button.new(); up.text = "↑"; up.disabled = index == 0; up.pressed.connect(func(): _move_wave(index, -1)); header.add_child(up)
-	var down := Button.new(); down.text = "↓"; down.disabled = index >= waves.size() - 1; down.pressed.connect(func(): _move_wave(index, 1)); header.add_child(down)
-	var del := Button.new(); del.text = "삭제 Wave"; del.pressed.connect(func(): _delete_wave(index)); header.add_child(del)
-	var groups: Array = wave.get("groups", [])
-	for g in groups.size(): _build_group_row(box, index, g)
-	var add := Button.new(); add.text = "+ 그룹 추가"; add.pressed.connect(func(): _add_group(index)); box.add_child(add)
+func _build_encounter_card(ei: int) -> void:
+	var encounter: Dictionary = stage_data["encounters"][ei]
+	var panel := PanelContainer.new()
+	encounters_box.add_child(panel)
+	var box := VBoxContainer.new()
+	panel.add_child(box)
+	var header := HBoxContainer.new()
+	box.add_child(header)
+	var title := Label.new()
+	title.text = "Encounter %d" % (ei + 1)
+	title.custom_minimum_size.x = 100
+	header.add_child(title)
+	var id := LineEdit.new()
+	id.text = str(encounter.get("id", "encounter_%02d" % (ei + 1)))
+	id.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	id.text_changed.connect(func(v): stage_data["encounters"][ei]["id"] = v)
+	header.add_child(id)
+	var label := LineEdit.new()
+	label.text = str(encounter.get("label", "ENCOUNTER %d" % (ei + 1)))
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.text_changed.connect(func(v): stage_data["encounters"][ei]["label"] = v)
+	header.add_child(label)
+	var del := Button.new()
+	del.text = "Delete"
+	del.disabled = stage_data["encounters"].size() <= 1
+	del.pressed.connect(func(): _delete_encounter(ei))
+	header.add_child(del)
+	for wi in encounter.get("waves", []).size(): _build_wave_card(box, ei, wi)
+	var add := Button.new()
+	add.text = "+ Add Wave"
+	add.pressed.connect(func(): _add_wave(ei))
+	box.add_child(add)
 
-func _build_group_row(parent: VBoxContainer, wave_index: int, group_index: int) -> void:
-	var groups: Array = stage_data["waves"][wave_index]["groups"]
-	var group: Array = groups[group_index]
-	var row := HBoxContainer.new(); parent.add_child(row)
-	var enemy := OptionButton.new(); enemy.custom_minimum_size.x = 105
+func _build_wave_card(parent: VBoxContainer, ei: int, wi: int) -> void:
+	var wave: Dictionary = stage_data["encounters"][ei]["waves"][wi]
+	var panel := PanelContainer.new()
+	parent.add_child(panel)
+	var box := VBoxContainer.new()
+	panel.add_child(box)
+	var header := HBoxContainer.new()
+	box.add_child(header)
+	var title := Label.new()
+	title.text = "Wave %d" % (wi + 1)
+	header.add_child(title)
+	var label := LineEdit.new()
+	label.text = str(wave.get("label", "WAVE %d" % (wi + 1)))
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.text_changed.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["label"] = v)
+	header.add_child(label)
+	var del := Button.new()
+	del.text = "Delete Wave"
+	del.disabled = stage_data["encounters"][ei]["waves"].size() <= 1
+	del.pressed.connect(func(): _delete_wave(ei, wi))
+	header.add_child(del)
+	for gi in wave.get("groups", []).size(): _build_group_row(box, ei, wi, gi)
+	var add := Button.new()
+	add.text = "+ Add Group"
+	add.pressed.connect(func(): _add_group(ei, wi))
+	box.add_child(add)
+
+func _build_group_row(parent: VBoxContainer, ei: int, wi: int, gi: int) -> void:
+	var group: Array = stage_data["encounters"][ei]["waves"][wi]["groups"][gi]
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var enemy := OptionButton.new()
 	for e in ENEMY_TYPES: enemy.add_item(e.to_upper())
-	enemy.select(max(0, ENEMY_TYPES.find(str(group[0])))); enemy.item_selected.connect(func(v): stage_data["waves"][wave_index]["groups"][group_index][0] = ENEMY_TYPES[v]); row.add_child(enemy)
-	var count := SpinBox.new(); count.min_value = 1; count.max_value = 999; count.step = 1; count.value = int(group[1]); count.custom_minimum_size.x = 80; count.value_changed.connect(func(v): stage_data["waves"][wave_index]["groups"][group_index][1] = int(v)); row.add_child(count)
-	var interval := SpinBox.new(); interval.min_value = 0.05; interval.max_value = 60; interval.step = 0.05; interval.value = float(group[2]); interval.custom_minimum_size.x = 90; interval.value_changed.connect(func(v): stage_data["waves"][wave_index]["groups"][group_index][2] = float(v)); row.add_child(interval)
-	var lane := OptionButton.new(); lane.custom_minimum_size.x = 90; for l in LANES: lane.add_item(l)
-	var lanes: Array = group[3]; var lane_value := "both" if lanes.size() > 1 else str(lanes[0]) if not lanes.is_empty() else "left"; lane.select(LANES.find(lane_value)); lane.item_selected.connect(func(v): stage_data["waves"][wave_index]["groups"][group_index][3] = ["left", "right"] if LANES[v] == "both" else [LANES[v]]); row.add_child(lane)
-	var del := Button.new(); del.text = "삭제"; del.pressed.connect(func(): _delete_group(wave_index, group_index)); row.add_child(del)
+	enemy.select(max(0, ENEMY_TYPES.find(str(group[0]))))
+	enemy.item_selected.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["groups"][gi][0] = ENEMY_TYPES[v])
+	row.add_child(enemy)
+	var count := SpinBox.new()
+	count.min_value = 1
+	count.max_value = 999
+	count.step = 1
+	count.value = int(group[1])
+	count.value_changed.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["groups"][gi][1] = int(v))
+	row.add_child(count)
+	var interval := SpinBox.new()
+	interval.min_value = 0.05
+	interval.max_value = 60
+	interval.step = 0.05
+	interval.value = float(group[2])
+	interval.value_changed.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["groups"][gi][2] = float(v))
+	row.add_child(interval)
+	var lane := OptionButton.new()
+	for l in LANES: lane.add_item(l)
+	var lanes: Array = group[3]
+	var lane_value := "both" if lanes.size() > 1 else str(lanes[0]) if not lanes.is_empty() else "left"
+	lane.select(max(0, LANES.find(lane_value)))
+	lane.item_selected.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["groups"][gi][3] = ["left", "right"] if LANES[v] == "both" else [LANES[v]])
+	row.add_child(lane)
+	var del := Button.new()
+	del.text = "Delete"
+	del.pressed.connect(func(): _delete_group(ei, wi, gi))
+	row.add_child(del)
 
-func _add_wave() -> void:
-	if not stage_data.has("waves"): stage_data["waves"] = []
-	stage_data["waves"].append({"label": "NEW WAVE", "groups": []}); _rebuild_waves(); _set_status("Wave added (unsaved)")
+func _add_encounter() -> void:
+	stage_data["encounters"].append({"id": "encounter_%02d" % (stage_data["encounters"].size() + 1), "label": "NEW ENCOUNTER", "waves": [{"label": "NEW WAVE", "groups": []}]})
+	_rebuild_encounters()
 
-func _delete_wave(index: int) -> void:
-	if stage_data["waves"].size() <= 1: _set_status("At least one wave is required."); return
-	stage_data["waves"].remove_at(index); _rebuild_waves(); _set_status("Wave deleted (unsaved)")
+func _delete_encounter(ei: int) -> void:
+	if stage_data["encounters"].size() <= 1: return
+	stage_data["encounters"].remove_at(ei)
+	_rebuild_encounters()
 
-func _move_wave(index: int, direction: int) -> void:
-	var target := index + direction
-	if target < 0 or target >= stage_data["waves"].size(): return
-	var tmp = stage_data["waves"][index]; stage_data["waves"][index] = stage_data["waves"][target]; stage_data["waves"][target] = tmp
-	_rebuild_waves(); _set_status("Wave order changed (unsaved)")
+func _add_wave(ei: int) -> void:
+	stage_data["encounters"][ei]["waves"].append({"label": "NEW WAVE", "groups": []})
+	_rebuild_encounters()
 
-func _add_group(wave_index: int) -> void:
-	if not stage_data["waves"][wave_index].has("groups"): stage_data["waves"][wave_index]["groups"] = []
-	stage_data["waves"][wave_index]["groups"].append(["normal", 1, 1.0, ["left"]]); _rebuild_waves(); _set_status("Group added (unsaved)")
+func _delete_wave(ei: int, wi: int) -> void:
+	if stage_data["encounters"][ei]["waves"].size() <= 1: return
+	stage_data["encounters"][ei]["waves"].remove_at(wi)
+	_rebuild_encounters()
 
-func _delete_group(wave_index: int, group_index: int) -> void:
-	var groups: Array = stage_data["waves"][wave_index]["groups"]
-	groups.remove_at(group_index); _rebuild_waves(); _set_status("Group deleted (unsaved)")
+func _add_group(ei: int, wi: int) -> void:
+	stage_data["encounters"][ei]["waves"][wi]["groups"].append(["normal", 1, 1.0, ["left"]])
+	_rebuild_encounters()
+
+func _delete_group(ei: int, wi: int, gi: int) -> void:
+	stage_data["encounters"][ei]["waves"][wi]["groups"].remove_at(gi)
+	_rebuild_encounters()
 
 func _save_stage() -> void:
-	if current_path.is_empty(): _set_status("No stage loaded."); return
-	if id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty(): _set_status("스테이지 ID and 이름 are required."); return
-	if map_option.selected < 0: _set_status("A Map is required."); return
-	var waves: Array = stage_data.get("waves", [])
-	if waves.is_empty(): _set_status("At least one Wave is required."); return
+	if current_path.is_empty() or id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty():
+		_set_status("Stage ID and Name are required."); return
+	if map_option.selected < 0:
+		_set_status("A Map is required."); return
+	var encounters: Array = stage_data.get("encounters", [])
+	if encounters.is_empty():
+		_set_status("At least one Encounter is required."); return
+	for encounter in encounters:
+		if not (encounter is Dictionary) or str(encounter.get("id", "")).strip_edges().is_empty() or not (encounter.get("waves", []) is Array) or encounter["waves"].is_empty():
+			_set_status("Every Encounter requires an ID and at least one Wave."); return
 	stage_data["stage_id"] = id_edit.text.strip_edges()
 	stage_data["order"] = int(order_spin.value)
 	stage_data["name"] = name_edit.text
 	stage_data["map_file"] = str(map_option.get_item_metadata(map_option.selected))
 	stage_data["balance"] = {"initial_gold": int(gold_spin.value), "base_hp": float(hp_spin.value)}
-	stage_data["initial_gold"] = int(gold_spin.value); stage_data["base_hp"] = float(hp_spin.value)
-	stage_data["next_stage_id"] = next_edit.text.strip_edges()
 	var file := FileAccess.open(current_path, FileAccess.WRITE)
 	if file == null: _set_status("FAILED to open file for writing."); return
-	file.store_string(JSON.stringify(_raw_stage_data(), "  ")); file.close()
+	file.store_string(JSON.stringify(stage_data, "  "))
+	file.close()
 	_set_status("SAVED: " + current_path)
-
-func _raw_stage_data() -> Dictionary:
-	var raw := stage_data.duplicate(true)
-	raw.erase("initial_gold"); raw.erase("base_hp")
-	return raw
 
 func _set_status(message: String) -> void:
 	if status_label: status_label.text = "Status: " + message

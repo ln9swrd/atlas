@@ -13,7 +13,6 @@ var speed_spin: SpinBox
 var damage_spin: SpinBox
 var cooldown_spin: SpinBox
 var range_spin: SpinBox
-var moves_spin: SpinBox
 var idle_edit: LineEdit
 var attack_edit: LineEdit
 var move_edit: LineEdit
@@ -79,7 +78,6 @@ func _build_ui() -> void:
 	damage_spin = _spin_row(content, "공격??, 0, 99999, 0.1, 28)
 	cooldown_spin = _spin_row(content, "?�사???�간", 0.01, 9999, 0.01, 0.65)
 	range_spin = _spin_row(content, "?�거�?, 0, 99999, 1, 180)
-	moves_spin = _spin_row(content, "최�? ?�동 명령", 0, 999, 1, 5)
 	var visual_title := Label.new()
 	visual_title.text = "VISUAL / PROJECTILE"
 	visual_title.add_theme_font_size_override("font_size", 16)
@@ -167,7 +165,6 @@ func _on_robot_selected(index: int) -> void:
 	damage_spin.value = float(data["damage"])
 	cooldown_spin.value = float(data["cooldown"])
 	range_spin.value = float(data["range"])
-	moves_spin.value = float(data["max_moves"])
 	idle_edit.text = str(data.get("sprite_idle", "res://assets/menos/sprites/atlas_idle.png"))
 	attack_edit.text = str(data.get("sprite_attack", "res://assets/menos/sprites/atlas_attack.png"))
 	move_edit.text = str(data.get("sprite_move", "res://assets/menos/sprites/atlas_move.png"))
@@ -233,7 +230,6 @@ func _save_data() -> void:
 	data["damage"] = float(damage_spin.value)
 	data["cooldown"] = float(cooldown_spin.value)
 	data["range"] = float(range_spin.value)
-	data["max_moves"] = int(moves_spin.value)
 	data["sprite_idle"] = idle_edit.text.strip_edges()
 	data["sprite_attack"] = attack_edit.text.strip_edges()
 	data["sprite_move"] = move_edit.text.strip_edges()

@@ -6,15 +6,37 @@ static var current_stage_data: Dictionary = {}
 static var run_mode: String = "campaign"
 static var selected_stage_id: String = ""
 static var campaign_stage_ids: Array[String] = []
+static var all_stage_ids: Array[String] = []
 
 static func begin_run(mode: String, stage_id: String = "") -> void:
 	run_mode = mode
-	_load_campaign_data()
+	if mode == "campaign":
+		_load_campaign_data()
 	if stage_id.is_empty() and mode == "campaign":
 		stage_id = campaign_stage_ids[0] if not campaign_stage_ids.is_empty() else ""
 	selected_stage_id = stage_id
 	current_stage_id = stage_id
 	current_stage_data = {}
+
+static func _load_stage_catalog() -> void:
+	all_stage_ids.clear()
+	var file := FileAccess.open("res://content/stages/stage_catalog.json", FileAccess.READ)
+	if file == null:
+		push_error("StageManager: Failed to open stage catalog.")
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Dictionary or not parsed.has("stages") or not parsed["stages"] is Array:
+		push_error("StageManager: Invalid stage catalog.")
+		return
+	for stage_id in parsed["stages"]:
+		if not str(stage_id).is_empty():
+			all_stage_ids.append(str(stage_id))
+
+static func get_all_stage_ids() -> Array[String]:
+	if all_stage_ids.is_empty():
+		_load_stage_catalog()
+	return all_stage_ids.duplicate()
 
 static func _load_campaign_data() -> void:
 	campaign_stage_ids.clear()
@@ -30,6 +52,11 @@ static func _load_campaign_data() -> void:
 	for stage_id in parsed["stages"]:
 		if not str(stage_id).is_empty():
 			campaign_stage_ids.append(str(stage_id))
+
+static func get_available_stage_ids() -> Array[String]:
+	if campaign_stage_ids.is_empty():
+		_load_campaign_data()
+	return campaign_stage_ids.duplicate()
 
 static func get_next_campaign_stage_id() -> String:
 	if run_mode != "campaign":
@@ -74,12 +101,19 @@ static func get_base_hp() -> float:
 		return 0.0
 	return float(stage["base_hp"])
 
-static func get_waves() -> Array:
-	var stage := get_current_stage()
-	return stage.get("waves", [])
+static func get_encounters() -> Array:
+	return get_current_stage().get("encounters", [])
+
+static func get_waves(encounter_index: int = 0) -> Array:
+	var encounters := get_encounters()
+	if encounter_index < 0 or encounter_index >= encounters.size(): return []
+	var encounter = encounters[encounter_index]
+	if not (encounter is Dictionary): return []
+	return encounter.get("waves", [])
 
 static func reset_session() -> void:
 	campaign_stage_ids.clear()
+	all_stage_ids.clear()
 	run_mode = "campaign"
 	selected_stage_id = ""
 	current_stage_id = ""

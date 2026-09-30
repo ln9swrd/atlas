@@ -17,8 +17,7 @@ static func from_catalog(data: Dictionary) -> RobotDefinition:
 		"speed": float(data.get("speed", 0.0)),
 		"damage": float(data.get("damage", 0.0)),
 		"cooldown": float(data.get("cooldown", 0.0)),
-		"range": float(data.get("range", 0.0)),
-		"max_moves": int(data.get("max_moves", 0))
+		"range": float(data.get("range", 0.0))
 	}
 	definition.progression = data.get("progression", {}).duplicate(true)
 	definition.energy = data.get("energy", {}).duplicate(true)
