@@ -101,16 +101,10 @@ func _build_ui() -> void:
 	animation_previews["move"] = _create_animation_preview(animation_preview_row, "?�동", Vector2(110, 150))
 	animation_previews["skill"] = _create_animation_preview(animation_preview_row, "?�수", Vector2(110, 150))
 	animation_previews["projectile"] = _create_animation_preview(animation_preview_row, "?�환", Vector2(90, 110))
-	var ability_title := Label.new()
-	ability_title.text = "SPECIAL ABILITIES"
-	ability_title.add_theme_font_size_override("font_size", 16)
-	content.add_child(ability_title)
-	area_damage_spin = _spin_row(content, "AREA ?�해", 0, 99999, 0.1, 28)
-	area_radius_spin = _spin_row(content, "AREA 반경", 0, 99999, 1, 72)
-	area_cooldown_spin = _spin_row(content, "AREA ?�사???�간", 0, 99999, 0.1, 6)
-	area_threshold_spin = _spin_row(content, "AREA ?�요 ????, 0, 999, 1, 3)
-	pierce_damage_spin = _spin_row(content, "PIERCE ?�해", 0, 99999, 0.1, 105)
-	pierce_cooldown_spin = _spin_row(content, "PIERCE ?�사???�간", 0, 99999, 0.1, 7)
+	var ability_note := Label.new()
+	ability_note.text = "SPECIAL ABILITIES: managed by content/skills/skills.json"
+	ability_note.add_theme_font_size_override("font_size", 13)
+	content.add_child(ability_note)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -153,8 +147,10 @@ func _load_data() -> void:
 
 func _refresh_robot_list() -> void:
 	robot_list.clear()
-	for robot_type in ROBOT_TYPES:
+	for robot_type in robot_data.keys():
 		var data: Dictionary = robot_data.get(robot_type, {})
+		if not (data is Dictionary):
+			continue
 		robot_list.add_item(str(data.get("name", robot_type.to_upper())))
 		robot_list.set_item_metadata(robot_list.item_count - 1, robot_type)
 
@@ -162,9 +158,8 @@ func _on_robot_selected(index: int) -> void:
 	if index < 0 or index >= robot_list.item_count:
 		return
 	selected_type = str(robot_list.get_item_metadata(index))
-	id_edit.editable = selected_type != "boss_giant"
+	id_edit.editable = true
 	var data: Dictionary = robot_data.get(selected_type, {})
-	var area: Dictionary = data.get("ability_area", {})
 	var pierce: Dictionary = data.get("ability_pierce", {})
 	id_edit.text = str(data.get("id", selected_type))
 	name_edit.text = str(data.get("name", selected_type.to_upper()))
