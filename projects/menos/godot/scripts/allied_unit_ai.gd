@@ -61,8 +61,11 @@ static func _update_support(unit: AlliedUnitRuntimeState, robot: RobotRuntimeSta
 	event.payload = {"source": unit.type}
 	return event
 
-static func _select_target(unit: AlliedUnitRuntimeState, enemies: Array[EnemyRuntimeState]) -> EnemyRuntimeState:
-	var candidates: Array[EnemyRuntimeState] = enemies.filter(func(enemy): return enemy.hp > 0.0)
+static func _select_target(unit: AlliedUnitRuntimeState, enemies: Array) -> EnemyRuntimeState:
+	var candidates: Array[EnemyRuntimeState] = []
+	for enemy in enemies:
+		if enemy is EnemyRuntimeState and enemy.hp > 0.0:
+			candidates.append(enemy)
 	if candidates.is_empty():
 		return null
 	var preference := str(unit.get_ai_value("target_preference", "front"))

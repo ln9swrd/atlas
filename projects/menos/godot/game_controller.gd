@@ -634,7 +634,7 @@ func spawn_allied_units() -> void:
 			continue
 		var spawn_id := str(entry.get("spawn", "robot")).strip_edges()
 		var spawn_position := _resolve_allied_spawn_position(spawn_id)
-		var count := max(0, int(entry.get("count", 0)))
+		var count: int = max(0, int(entry.get("count", 0)))
 		var definition: AlliedUnitDefinition = allied_unit_definitions[unit_type]
 		for index in range(count):
 			var offset := Vector2(-26.0 - index * 24.0, (index % 2) * 42.0 - 21.0)
@@ -1439,7 +1439,7 @@ func handle_click(point: Vector2) -> void:
 			return
 	for id in ROBOT_SPOTS:
 		if point.distance_to(ROBOT_SPOTS[id]) < 55.0:
-			if robot_selected: move_robot(id)
+			if robot_selected: move_robot_to_position(ROBOT_SPOTS[id])
 			return
 	if not selected_slot.is_empty() or not selected_tower.is_empty() or robot_selected: play_sfx("ui_cancel")
 	selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false; queue_redraw()
@@ -1620,7 +1620,7 @@ func _draw() -> void:
 		var hp_position: Vector2 = enemy.position + Vector2(-enemy_size.x * 0.5, -enemy_size.y * 0.5 - 11)
 		var hp_width: float = max(34.0, enemy_size.x)
 		hp_position.x = enemy.position.x - hp_width * 0.5
-		draw_string(ThemeDB.fallback_font, hp_position + Vector2(0, -6), data.name, HORIZONTAL_ALIGNMENT_LEFT, hp_width, 10, Color("ffd6d1"))
+		draw_string(ThemeDB.fallback_font, hp_position + Vector2(0, -6), definition.name, HORIZONTAL_ALIGNMENT_LEFT, hp_width, 10, Color("ffd6d1"))
 		draw_rect(Rect2(hp_position - Vector2(1, 1), Vector2(hp_width + 2, 7)), Color("101f25"))
 		draw_rect(Rect2(hp_position, Vector2(hp_width, 5)), Color("3a1c1a"))
 		draw_rect(Rect2(hp_position, Vector2(hp_width * max(0.0, enemy.hp / enemy.max_hp), 5)), enemy_accent)
@@ -1976,7 +1976,7 @@ func draw_minimap2(position: Vector2) -> void:
 	view_rect = view_rect.intersection(map_bounds)
 	if not view_rect.size.is_zero_approx():
 		draw_rect(view_rect, Color("f0d28a"), false, 2.0)
-	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), SettingsManager.text("BASE / ATLAS / ENEMIES"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, rect.position + Vector2(6, 14), "BASE / ATLAS / ENEMIES", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d7fff7"))
 
 func draw_robot_growth_choice() -> void:
 	var rect := Rect2(_ui_origin() + Vector2(385, 180), Vector2(500, 185))

@@ -1,7 +1,7 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790770472
+::res://::1790770745
 export_presets.cfg::TextFile::-1::1790684967::0::1::::<><><>0<>0<><>::
-game_controller.gd::GDScript::8692213070628158787::1790770456::0::1::::<>Node2D<><>0<>0<><>::
+game_controller.gd::GDScript::8692213070628158787::1790770563::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790760072::0::1::::<>Node2D<><>0<>0<><>::
 main.tscn::PackedScene::6409794179911717756::1790609003::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
 ::res://assets/::1790251375
@@ -288,7 +288,7 @@ ChatGPT Image 2026년 9월 29일 오후 10_35_14.png::CompressedTexture2D::83866
 ::res://map_data/::1790519478
 northbridge_sector_01.json::JSON::-1::1790519478::0::1::::<><><>0<>0<><>::
 ::res://scripts/::1790770016
-allied_unit_ai.gd::GDScript::6916198602555178148::1790760072::0::1::::AlliedUnitAI<>RefCounted<><>0<>0<><>::
+allied_unit_ai.gd::GDScript::6916198602555178148::1790770709::0::1::::AlliedUnitAI<>RefCounted<><>0<>0<><>::
 allied_unit_definition.gd::GDScript::4241627096230391966::1790760072::0::1::::AlliedUnitDefinition<>RefCounted<><>0<>0<><>::
 allied_unit_runtime_state.gd::GDScript::39021056508424766::1790760072::0::1::::AlliedUnitRuntimeState<>RefCounted<><>0<>0<><>::
 campaign_progression_state.gd::GDScript::5221034389133738886::1790760072::0::1::::CampaignProgressionState<>RefCounted<><>0<>0<><>::
