@@ -127,8 +127,8 @@ func _build_properties(parent: VBoxContainer) -> void:
 	parent.add_child(animation_preview_title)
 	var animation_preview_row := HBoxContainer.new()
 	parent.add_child(animation_preview_row)
-	sprite_preview = _create_animation_preview(animation_preview_row, "????, Vector2(128, 128))
-	projectile_preview = _create_animation_preview(animation_preview_row, "?袁れ넎", Vector2(96, 96))
+	sprite_preview = _create_animation_preview(animation_preview_row, "Tower", Vector2(128, 128))
+	projectile_preview = _create_animation_preview(animation_preview_row, "Projectile", Vector2(96, 96))
 	var edit_image := Button.new()
 	edit_image.text = "Edit Image / Browse Image Reference"
 	edit_image.pressed.connect(_open_image_editor)
