@@ -1950,7 +1950,7 @@ func draw_ui2() -> void:
 	var robot_xp_need: int = int(robot_progression_definition.get("xp_per_level", 0)) * robot_level
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(132, 145), "LV.%d  XP %d / %d" % [robot_level, robot_xp, robot_xp_need], HORIZONTAL_ALIGNMENT_LEFT, 155, 9, Color("f0d28a"))
 	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(14, 140), "WASD MOVE  /  CLICK MOVE", HORIZONTAL_ALIGNMENT_LEFT, 150, 9, Color("829aa0"))
-	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE SPECIAL  R FINISHER", HORIZONTAL_ALIGNMENT_LEFT, 130, 9, Color("829aa0"))
+	draw_string(ThemeDB.fallback_font, portrait_panel.position + Vector2(160, 140), "SPACE BASE  /  R FINISHER", HORIZONTAL_ALIGNMENT_LEFT, 130, 9, Color("829aa0"))
 
 	# Build / skill palette.
 	for index in range(7):
