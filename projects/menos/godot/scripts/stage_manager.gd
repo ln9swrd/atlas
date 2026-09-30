@@ -1,15 +1,17 @@
 class_name StageManager
 extends RefCounted
 
-static var current_stage_id: String = "stage_01"
+static var current_stage_id: String = ""
 static var current_stage_data: Dictionary = {}
 static var run_mode: String = "campaign"
-static var selected_stage_id: String = "stage_01"
+static var selected_stage_id: String = ""
 static var campaign_stage_ids: Array[String] = []
 
-static func begin_run(mode: String, stage_id: String = "stage_01") -> void:
+static func begin_run(mode: String, stage_id: String = "") -> void:
 	run_mode = mode
 	_load_campaign_data()
+	if stage_id.is_empty() and mode == "campaign":
+		stage_id = campaign_stage_ids[0] if not campaign_stage_ids.is_empty() else ""
 	selected_stage_id = stage_id
 	current_stage_id = stage_id
 	current_stage_data = {}
@@ -56,15 +58,21 @@ static func get_current_stage() -> Dictionary:
 
 static func get_map_file() -> String:
 	var stage := get_current_stage()
-	return stage.get("map_file", "res://map_data/northbridge_sector_01.json")
+	return str(stage.get("map_file", ""))
 
 static func get_initial_gold() -> int:
 	var stage := get_current_stage()
-	return stage.get("initial_gold", 180)
+	if not stage.has("initial_gold"):
+		push_error("StageManager: stage data missing initial_gold.")
+		return 0
+	return int(stage["initial_gold"])
 
 static func get_base_hp() -> float:
 	var stage := get_current_stage()
-	return stage.get("base_hp", 100.0)
+	if not stage.has("base_hp"):
+		push_error("StageManager: stage data missing base_hp.")
+		return 0.0
+	return float(stage["base_hp"])
 
 static func get_waves() -> Array:
 	var stage := get_current_stage()
@@ -73,6 +81,6 @@ static func get_waves() -> Array:
 static func reset_session() -> void:
 	campaign_stage_ids.clear()
 	run_mode = "campaign"
-	selected_stage_id = "stage_01"
-	current_stage_id = "stage_01"
+	selected_stage_id = ""
+	current_stage_id = ""
 	current_stage_data = {}

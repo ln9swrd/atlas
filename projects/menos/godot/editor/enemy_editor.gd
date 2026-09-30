@@ -3,7 +3,6 @@ extends Control
 
 const ENEMY_FILE := "res://content/enemies/enemies.json"
 const ENEMY_TYPES := ["normal", "rusher", "heavy", "giant"]
-const DEFAULT_DATA = preload("res://data.gd")
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var enemy_data: Dictionary = {}
@@ -45,7 +44,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // 적 에디터"
+	title.text = "MENOS // ???�디??
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -55,11 +54,11 @@ func _build_ui() -> void:
 	enemy_list.item_selected.connect(_on_enemy_selected)
 	top.add_child(enemy_list)
 	var reload_btn := Button.new()
-	reload_btn.text = "새로고침"
+	reload_btn.text = "?�로고침"
 	reload_btn.pressed.connect(_load_data)
 	top.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "JSON 저장"
+	save_btn.text = "JSON ?�??
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
 	status_label = Label.new()
@@ -78,37 +77,37 @@ func _build_properties(parent: VBoxContainer) -> void:
 	title.text = "ENEMY PROPERTIES"
 	title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(title)
-	name_edit = _line_row(parent, "이름")
+	name_edit = _line_row(parent, "?�름")
 	hp_spin = _spin_row(parent, "HP", 1, 999999, 1, 100)
-	speed_spin = _spin_row(parent, "속도", 0, 9999, 0.1, 10)
-	armor_spin = _spin_row(parent, "방어력", 0, 9999, 0.1, 0)
-	damage_spin = _spin_row(parent, "Base 공격력", 0, 9999, 0.1, 1)
+	speed_spin = _spin_row(parent, "?�도", 0, 9999, 0.1, 10)
+	armor_spin = _spin_row(parent, "방어??, 0, 9999, 0.1, 0)
+	damage_spin = _spin_row(parent, "Base 공격??, 0, 9999, 0.1, 1)
 	reward_spin = _spin_row(parent, "보상", 0, 999999, 1, 10)
 	radius_spin = _spin_row(parent, "반경", 1, 999, 0.5, 10)
 	var attack_type_row := HBoxContainer.new()
 	parent.add_child(attack_type_row)
 	var attack_type_label := Label.new()
-	attack_type_label.text = "공격 타입"
+	attack_type_label.text = "공격 ?�??
 	attack_type_label.custom_minimum_size.x = 130
 	attack_type_row.add_child(attack_type_label)
 	attack_type_list = OptionButton.new()
-	attack_type_list.add_item("없음")
+	attack_type_list.add_item("?�음")
 	attack_type_list.add_item("근접")
-	attack_type_list.add_item("원거리")
+	attack_type_list.add_item("?�거�?)
 	attack_type_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	attack_type_row.add_child(attack_type_list)
-	attack_range_spin = _spin_row(parent, "공격 사거리", 0, 9999, 0.5, 10)
-	attack_cooldown_spin = _spin_row(parent, "공격 쿨다운", 0.05, 9999, 0.05, 1.0)
+	attack_range_spin = _spin_row(parent, "공격 ?�거�?, 0, 9999, 0.5, 10)
+	attack_cooldown_spin = _spin_row(parent, "공격 쿨다??, 0.05, 9999, 0.05, 1.0)
 	melee_check = CheckButton.new()
-	melee_check.text = "근접 공격형 (구버전 호환)"
+	melee_check.text = "근접 공격??(구버???�환)"
 	melee_check.visible = false
 	parent.add_child(melee_check)
-	melee_cooldown_spin = _spin_row(parent, "근접 공격 쿨다운 (구버전 호환)", 0.05, 9999, 0.05, 1.0)
+	melee_cooldown_spin = _spin_row(parent, "근접 공격 쿨다??(구버???�환)", 0.05, 9999, 0.05, 1.0)
 	melee_cooldown_spin.visible = false
 	var color_row := HBoxContainer.new()
 	parent.add_child(color_row)
 	var color_label := Label.new()
-	color_label.text = "색상"
+	color_label.text = "?�상"
 	color_label.custom_minimum_size.x = 130
 	color_row.add_child(color_label)
 	color_edit = ColorPickerButton.new()
@@ -117,7 +116,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var sprite_row := HBoxContainer.new()
 	parent.add_child(sprite_row)
 	var sprite_label := Label.new()
-	sprite_label.text = "애니메이션 이미지"
+	sprite_label.text = "?�니메이???��?지"
 	sprite_label.custom_minimum_size.x = 130
 	sprite_row.add_child(sprite_label)
 	sprite_edit = LineEdit.new()
@@ -130,7 +129,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var projectile_row := HBoxContainer.new()
 	parent.add_child(projectile_row)
 	var projectile_label := Label.new()
-	projectile_label.text = "탄환 애니메이션"
+	projectile_label.text = "?�환 ?�니메이??
 	projectile_label.custom_minimum_size.x = 130
 	projectile_row.add_child(projectile_label)
 	projectile_edit = LineEdit.new()
@@ -143,7 +142,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
-	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; 이미지"]
+	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; ?��?지"]
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
@@ -154,19 +153,19 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	parent.add_child(sprite_preview)
 	var edit_image := Button.new()
-	edit_image.text = "이미지 편집 / 다른 이미지 참조"
+	edit_image.text = "?��?지 ?�집 / ?�른 ?��?지 참조"
 	edit_image.pressed.connect(_open_image_editor)
 	parent.add_child(edit_image)
 	add_child(file_dialog)
 	var sep := HSeparator.new()
 	parent.add_child(sep)
 	var combat_title := Label.new()
-	combat_title.text = "거대 적 특수 전투"
+	combat_title.text = "거�? ???�수 ?�투"
 	combat_title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(combat_title)
-	robot_damage_spin = _spin_row(parent, "Robot 공격력", 0, 9999, 0.1, 0)
-	robot_range_spin = _spin_row(parent, "Robot 사거리", 0, 9999, 0.1, 0)
-	robot_cooldown_spin = _spin_row(parent, "로봇 재사용 시간", 0, 9999, 0.05, 0)
+	robot_damage_spin = _spin_row(parent, "Robot 공격??, 0, 9999, 0.1, 0)
+	robot_range_spin = _spin_row(parent, "Robot ?�거�?, 0, 9999, 0.1, 0)
+	robot_cooldown_spin = _spin_row(parent, "로봇 ?�사???�간", 0, 9999, 0.05, 0)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -205,9 +204,8 @@ func _load_data() -> void:
 		if parsed is Dictionary:
 			enemy_data = parsed
 	if enemy_data.is_empty():
-		enemy_data = DEFAULT_DATA.ENEMIES.duplicate(true)
 	_refresh_enemy_list()
-	_set_status("Loaded: " + ENEMY_FILE if file else "Loaded defaults (JSON not found)")
+	_set_status("Loaded: " + ENEMY_FILE if file else "Failed to load JSON")
 
 func _refresh_enemy_list() -> void:
 	enemy_list.clear()
@@ -260,7 +258,7 @@ func _save_data() -> void:
 		_set_status("No enemy selected.")
 		return
 	if name_edit.text.strip_edges().is_empty():
-		_set_status("이름 is required.")
+		_set_status("?�름 is required.")
 		return
 	var data: Dictionary = enemy_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()

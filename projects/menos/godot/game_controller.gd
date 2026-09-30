@@ -2,7 +2,7 @@ extends Node2D
 
 var _catalog_tile_cache: Dictionary = {}
 
-const DATA = preload("res://data.gd")
+
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
 	"facility_base": preload("res://assets/menos/sprites/facility_base.png"),
@@ -91,13 +91,13 @@ var elapsed := 0.0
 var spawn_clock := 0.0
 var spawn_queue: Array = []
 var enemies: Array = []
-var enemy_catalog: Dictionary = DATA.ENEMIES.duplicate(true)
+var enemy_catalog: Dictionary = {}
 var enemy_sprite_catalog: Dictionary = {}
 var enemy_projectile_catalog: Dictionary = {}
-var tower_catalog: Dictionary = DATA.TOWERS.duplicate(true)
+var tower_catalog: Dictionary = {}
 var tower_sprite_catalog: Dictionary = {}
 var tower_projectile_catalog: Dictionary = {}
-var robot_catalog: Dictionary = DATA.ROBOT.duplicate(true)
+var robot_catalog: Dictionary = {}
 var robot_sprite_catalog: Dictionary = {}
 var robot_projectile_catalog: Dictionary = {}
 var towers: Array = []
@@ -186,42 +186,31 @@ func _texture_from_catalog_entry(data: Dictionary, field: String) -> Texture2D:
 	return base_texture
 
 func _load_enemy_catalog() -> void:
-	var path := "res://content/enemies/enemies.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
+	enemy_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json")
+	if enemy_catalog.is_empty():
 		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if parsed is Dictionary and not parsed.is_empty():
-		for enemy_type in parsed:
-			if parsed[enemy_type] is Dictionary and DATA.ENEMIES.has(enemy_type):
-				enemy_catalog[enemy_type] = parsed[enemy_type].duplicate(true)
 	# Boss entries can be maintained in Robot Editor while retaining enemy-only fields here.
-	var robot_file := FileAccess.open("res://content/robots/robots.json", FileAccess.READ)
-	if robot_file:
-		var robot_parsed = JSON.parse_string(robot_file.get_as_text())
-		robot_file.close()
-		if robot_parsed is Dictionary:
-			for enemy_type in enemy_catalog:
-				var enemy_data: Dictionary = enemy_catalog[enemy_type]
-				var robot_editor_id := str(enemy_data.get("robot_editor_id", ""))
-				if robot_editor_id.is_empty() or not robot_parsed.has(robot_editor_id):
-					continue
-				var boss_data: Dictionary = robot_parsed[robot_editor_id]
-				if str(boss_data.get("role", "")) != "boss":
-					continue
-				enemy_data["hp"] = float(boss_data.get("hp", enemy_data.get("hp", 0.0)))
-				enemy_data["speed"] = float(boss_data.get("speed", enemy_data.get("speed", 0.0)))
-				enemy_data["base_damage"] = float(boss_data.get("damage", enemy_data.get("base_damage", 0.0)))
-				enemy_data["attack_cooldown"] = float(boss_data.get("cooldown", enemy_data.get("attack_cooldown", 1.0)))
-				enemy_data["attack_range"] = float(boss_data.get("range", enemy_data.get("attack_range", 0.0)))
-				if not str(boss_data.get("sprite_idle", "")).is_empty():
-					enemy_data["sprite_anim"] = str(boss_data.get("sprite_idle"))
-				if not str(boss_data.get("projectile_anim", "")).is_empty():
-					enemy_data["projectile_anim"] = str(boss_data.get("projectile_anim"))
+	var robot_catalog_data := ContentCatalogLoader.load_dictionary_catalog("res://content/robots/robots.json")
+	for enemy_type in enemy_catalog:
+		var enemy_data: Dictionary = enemy_catalog[enemy_type]
+		var robot_editor_id := str(enemy_data.get("robot_editor_id", ""))
+		if robot_editor_id.is_empty() or not robot_catalog_data.has(robot_editor_id):
+			continue
+		var boss_data: Dictionary = robot_catalog_data[robot_editor_id]
+		if str(boss_data.get("role", "")) != "boss":
+			continue
+		enemy_data["hp"] = float(boss_data.get("hp", enemy_data.get("hp", 0.0)))
+		enemy_data["speed"] = float(boss_data.get("speed", enemy_data.get("speed", 0.0)))
+		enemy_data["base_damage"] = float(boss_data.get("damage", enemy_data.get("base_damage", 0.0)))
+		enemy_data["attack_cooldown"] = float(boss_data.get("cooldown", enemy_data.get("attack_cooldown", 1.0)))
+		enemy_data["attack_range"] = float(boss_data.get("range", enemy_data.get("attack_range", 0.0)))
+		if not str(boss_data.get("sprite_idle", "")).is_empty():
+			enemy_data["sprite_anim"] = str(boss_data.get("sprite_idle"))
+		if not str(boss_data.get("projectile_anim", "")).is_empty():
+			enemy_data["projectile_anim"] = str(boss_data.get("projectile_anim"))
 	enemy_sprite_catalog.clear()
 	enemy_projectile_catalog.clear()
-	for enemy_type in DATA.ENEMIES:
+	for enemy_type in enemy_catalog:
 		var sprite: Texture2D = _texture_from_catalog_entry(enemy_catalog[enemy_type], "sprite_anim")
 		if sprite:
 			enemy_sprite_catalog[enemy_type] = sprite
@@ -231,14 +220,9 @@ func _load_enemy_catalog() -> void:
 		enemy_projectile_catalog[enemy_type] = projectile if projectile else VISUALS["bullet_threat"]
 
 func _load_robot_catalog() -> void:
-	var path := "res://content/robots/robots.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
+	robot_catalog = ContentCatalogLoader.load_single_entry("res://content/robots/robots.json", "robot_main")
+	if robot_catalog.is_empty():
 		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if parsed is Dictionary and parsed.has("robot_main") and parsed["robot_main"] is Dictionary:
-		robot_catalog = parsed["robot_main"].duplicate(true)
 	robot_sprite_catalog = {
 		"idle": _texture_from_catalog_entry(robot_catalog, "sprite_idle"),
 		"attack": _texture_from_catalog_entry(robot_catalog, "sprite_attack"),
@@ -248,18 +232,10 @@ func _load_robot_catalog() -> void:
 	robot_projectile_catalog["robot"] = _texture_from_catalog_entry(robot_catalog, "projectile_anim")
 
 func _load_tower_catalog() -> void:
-	var path := "res://content/towers/towers.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file:
-		var parsed = JSON.parse_string(file.get_as_text())
-		file.close()
-		if parsed is Dictionary and not parsed.is_empty():
-			for tower_type in parsed:
-				if parsed[tower_type] is Dictionary and DATA.TOWERS.has(tower_type):
-					tower_catalog[tower_type] = parsed[tower_type].duplicate(true)
+	tower_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/towers/towers.json")
 	tower_sprite_catalog.clear()
 	tower_projectile_catalog.clear()
-	for tower_type in DATA.TOWERS:
+	for tower_type in tower_catalog:
 		var sprite: Texture2D = _texture_from_catalog_entry(tower_catalog[tower_type], "sprite_anim")
 		if sprite:
 			tower_sprite_catalog[tower_type] = sprite

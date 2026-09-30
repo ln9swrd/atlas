@@ -3,7 +3,6 @@ extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
 const ROBOT_TYPES := ["robot_main", "boss_giant"]
-const DEFAULT_DATA = preload("res://data.gd")
 
 var robot_data: Dictionary = {}
 var selected_type := ""
@@ -50,7 +49,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // 로봇 에디터"
+	title.text = "MENOS // 로봇 ?�디??
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -60,11 +59,11 @@ func _build_ui() -> void:
 	robot_list.item_selected.connect(_on_robot_selected)
 	top.add_child(robot_list)
 	var reload_btn := Button.new()
-	reload_btn.text = "새로고침"
+	reload_btn.text = "?�로고침"
 	reload_btn.pressed.connect(_load_data)
 	top.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "JSON 저장"
+	save_btn.text = "JSON ?�??
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
 	status_label = Label.new()
@@ -81,44 +80,44 @@ func _build_ui() -> void:
 	base_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(base_title)
 	id_edit = _line_row(content, "ID")
-	name_edit = _line_row(content, "이름")
+	name_edit = _line_row(content, "?�름")
 	hp_spin = _spin_row(content, "HP", 1, 999999, 1, 220)
-	speed_spin = _spin_row(content, "속도", 0, 9999, 0.1, 125)
-	damage_spin = _spin_row(content, "공격력", 0, 99999, 0.1, 28)
-	cooldown_spin = _spin_row(content, "재사용 시간", 0.01, 9999, 0.01, 0.65)
-	range_spin = _spin_row(content, "사거리", 0, 99999, 1, 180)
-	moves_spin = _spin_row(content, "최대 이동 명령", 0, 999, 1, 5)
+	speed_spin = _spin_row(content, "?�도", 0, 9999, 0.1, 125)
+	damage_spin = _spin_row(content, "공격??, 0, 99999, 0.1, 28)
+	cooldown_spin = _spin_row(content, "?�사???�간", 0.01, 9999, 0.01, 0.65)
+	range_spin = _spin_row(content, "?�거�?, 0, 99999, 1, 180)
+	moves_spin = _spin_row(content, "최�? ?�동 명령", 0, 999, 1, 5)
 	var visual_title := Label.new()
 	visual_title.text = "VISUAL / PROJECTILE"
 	visual_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(visual_title)
-	idle_edit = _line_row(content, "대기 애니메이션")
-	attack_edit = _line_row(content, "공격 애니메이션")
-	move_edit = _line_row(content, "이동 애니메이션")
-	skill_edit = _line_row(content, "특수 애니메이션")
-	projectile_edit = _line_row(content, "탄환 애니메이션")
+	idle_edit = _line_row(content, "?��??�니메이??)
+	attack_edit = _line_row(content, "공격 ?�니메이??)
+	move_edit = _line_row(content, "?�동 ?�니메이??)
+	skill_edit = _line_row(content, "?�수 ?�니메이??)
+	projectile_edit = _line_row(content, "?�환 ?�니메이??)
 	var animation_preview_title := Label.new()
-	animation_preview_title.text = "애니메이션 미리보기"
+	animation_preview_title.text = "?�니메이??미리보기"
 	animation_preview_title.add_theme_font_size_override("font_size", 14)
 	content.add_child(animation_preview_title)
 	var animation_preview_row := HBoxContainer.new()
 	animation_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_child(animation_preview_row)
-	animation_previews["idle"] = _create_animation_preview(animation_preview_row, "대기", Vector2(110, 150))
+	animation_previews["idle"] = _create_animation_preview(animation_preview_row, "?��?, Vector2(110, 150))
 	animation_previews["attack"] = _create_animation_preview(animation_preview_row, "공격", Vector2(110, 150))
-	animation_previews["move"] = _create_animation_preview(animation_preview_row, "이동", Vector2(110, 150))
-	animation_previews["skill"] = _create_animation_preview(animation_preview_row, "특수", Vector2(110, 150))
-	animation_previews["projectile"] = _create_animation_preview(animation_preview_row, "탄환", Vector2(90, 110))
+	animation_previews["move"] = _create_animation_preview(animation_preview_row, "?�동", Vector2(110, 150))
+	animation_previews["skill"] = _create_animation_preview(animation_preview_row, "?�수", Vector2(110, 150))
+	animation_previews["projectile"] = _create_animation_preview(animation_preview_row, "?�환", Vector2(90, 110))
 	var ability_title := Label.new()
 	ability_title.text = "SPECIAL ABILITIES"
 	ability_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(ability_title)
-	area_damage_spin = _spin_row(content, "AREA 피해", 0, 99999, 0.1, 28)
+	area_damage_spin = _spin_row(content, "AREA ?�해", 0, 99999, 0.1, 28)
 	area_radius_spin = _spin_row(content, "AREA 반경", 0, 99999, 1, 72)
-	area_cooldown_spin = _spin_row(content, "AREA 재사용 시간", 0, 99999, 0.1, 6)
-	area_threshold_spin = _spin_row(content, "AREA 필요 적 수", 0, 999, 1, 3)
-	pierce_damage_spin = _spin_row(content, "PIERCE 피해", 0, 99999, 0.1, 105)
-	pierce_cooldown_spin = _spin_row(content, "PIERCE 재사용 시간", 0, 99999, 0.1, 7)
+	area_cooldown_spin = _spin_row(content, "AREA ?�사???�간", 0, 99999, 0.1, 6)
+	area_threshold_spin = _spin_row(content, "AREA ?�요 ????, 0, 999, 1, 3)
+	pierce_damage_spin = _spin_row(content, "PIERCE ?�해", 0, 99999, 0.1, 105)
+	pierce_cooldown_spin = _spin_row(content, "PIERCE ?�사???�간", 0, 99999, 0.1, 7)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -156,32 +155,8 @@ func _load_data() -> void:
 		file.close()
 		if parsed is Dictionary:
 			robot_data = parsed
-	if robot_data.is_empty():
-		robot_data = {"robot_main": DEFAULT_DATA.ROBOT.duplicate(true)}
-	if not robot_data.has("boss_giant"):
-		robot_data["boss_giant"] = _default_boss_data()
-	_refresh_robot_list()
-	_set_status("Loaded: " + ROBOT_FILE if file else "Loaded defaults (JSON not found)")
-
-func _default_boss_data() -> Dictionary:
-	return {
-		"id": "boss_giant",
-		"name": "GIANT",
-		"role": "boss",
-		"hp": 620.0,
-		"speed": 7.0,
-		"damage": 45.0,
-		"cooldown": 2.0,
-		"range": 120.0,
-		"max_moves": 0,
-		"sprite_idle": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
-		"sprite_attack": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
-		"sprite_move": "res://content/editor/edited_assets/enemy_giant_anim_edit_155034650.png",
-		"sprite_skill": "",
-		"projectile_anim": "res://assets/menos/sprites/bullet_threat.png",
-		"ability_area": {},
-		"ability_pierce": {}
-	}
+		_refresh_robot_list()
+	_set_status("Loaded: " + ROBOT_FILE if file else "Failed to load JSON")
 
 func _refresh_robot_list() -> void:
 	robot_list.clear()
@@ -200,12 +175,12 @@ func _on_robot_selected(index: int) -> void:
 	var pierce: Dictionary = data.get("ability_pierce", {})
 	id_edit.text = str(data.get("id", selected_type))
 	name_edit.text = str(data.get("name", selected_type.to_upper()))
-	hp_spin.value = float(data.get("hp", 220.0))
-	speed_spin.value = float(data.get("speed", 125.0))
-	damage_spin.value = float(data.get("damage", 28.0))
-	cooldown_spin.value = float(data.get("cooldown", 0.65))
-	range_spin.value = float(data.get("range", 180.0))
-	moves_spin.value = float(data.get("max_moves", 5))
+	hp_spin.value = float(data["hp"])
+	speed_spin.value = float(data["speed"])
+	damage_spin.value = float(data["damage"])
+	cooldown_spin.value = float(data["cooldown"])
+	range_spin.value = float(data["range"])
+	moves_spin.value = float(data["max_moves"])
 	idle_edit.text = str(data.get("sprite_idle", "res://assets/menos/sprites/atlas_idle.png"))
 	attack_edit.text = str(data.get("sprite_attack", "res://assets/menos/sprites/atlas_attack.png"))
 	move_edit.text = str(data.get("sprite_move", "res://assets/menos/sprites/atlas_move.png"))

@@ -3,7 +3,6 @@ extends Control
 
 const TOWER_FILE := "res://content/towers/towers.json"
 const TOWER_TYPES := ["cannon", "gatling"]
-const DEFAULT_DATA = preload("res://data.gd")
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var tower_data: Dictionary = {}
@@ -49,7 +48,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // 타워 에디터"
+	title.text = "MENOS // ?�???�디??
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -59,11 +58,11 @@ func _build_ui() -> void:
 	tower_list.item_selected.connect(_on_tower_selected)
 	top.add_child(tower_list)
 	var reload_btn := Button.new()
-	reload_btn.text = "새로고침"
+	reload_btn.text = "?�로고침"
 	reload_btn.pressed.connect(_load_data)
 	top.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "JSON 저장"
+	save_btn.text = "JSON ?�??
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
 	status_label = Label.new()
@@ -79,19 +78,19 @@ func _build_ui() -> void:
 
 func _build_properties(parent: VBoxContainer) -> void:
 	var title := Label.new()
-	title.text = "타워 속성"
+	title.text = "?�???�성"
 	title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(title)
-	name_edit = _line_row(parent, "이름")
+	name_edit = _line_row(parent, "?�름")
 	cost_spin = _spin_row(parent, "건설 비용", 0, 999999, 1, 50)
-	damage_spin = _spin_row(parent, "공격력", 0, 99999, 0.1, 10)
-	cooldown_spin = _spin_row(parent, "재사용 시간", 0.01, 9999, 0.01, 1)
-	range_spin = _spin_row(parent, "사거리", 0, 99999, 1, 150)
-	preference_edit = _line_row(parent, "우선 대상")
+	damage_spin = _spin_row(parent, "공격??, 0, 99999, 0.1, 10)
+	cooldown_spin = _spin_row(parent, "?�사???�간", 0.01, 9999, 0.01, 1)
+	range_spin = _spin_row(parent, "?�거�?, 0, 99999, 1, 150)
+	preference_edit = _line_row(parent, "?�선 ?�??)
 	var sprite_row := HBoxContainer.new()
 	parent.add_child(sprite_row)
 	var sprite_label := Label.new()
-	sprite_label.text = "애니메이션 이미지"
+	sprite_label.text = "?�니메이???��?지"
 	sprite_label.custom_minimum_size.x = 130
 	sprite_row.add_child(sprite_label)
 	sprite_edit = LineEdit.new()
@@ -104,7 +103,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var projectile_row := HBoxContainer.new()
 	parent.add_child(projectile_row)
 	var projectile_label := Label.new()
-	projectile_label.text = "탄환 애니메이션"
+	projectile_label.text = "?�환 ?�니메이??
 	projectile_label.custom_minimum_size.x = 130
 	projectile_row.add_child(projectile_label)
 	projectile_edit = LineEdit.new()
@@ -117,34 +116,34 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
-	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; 이미지"]
+	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; ?��?지"]
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(_on_file_selected)
 	var animation_preview_title := Label.new()
-	animation_preview_title.text = "애니메이션 미리보기"
+	animation_preview_title.text = "?�니메이??미리보기"
 	animation_preview_title.add_theme_font_size_override("font_size", 14)
 	parent.add_child(animation_preview_title)
 	var animation_preview_row := HBoxContainer.new()
 	parent.add_child(animation_preview_row)
-	sprite_preview = _create_animation_preview(animation_preview_row, "타워", Vector2(128, 128))
-	projectile_preview = _create_animation_preview(animation_preview_row, "탄환", Vector2(96, 96))
+	sprite_preview = _create_animation_preview(animation_preview_row, "?�??, Vector2(128, 128))
+	projectile_preview = _create_animation_preview(animation_preview_row, "?�환", Vector2(96, 96))
 	var edit_image := Button.new()
-	edit_image.text = "이미지 편집 / 다른 이미지 참조"
+	edit_image.text = "?��?지 ?�집 / ?�른 ?��?지 참조"
 	edit_image.pressed.connect(_open_image_editor)
 	parent.add_child(edit_image)
 	add_child(file_dialog)
 	var sep := HSeparator.new()
 	parent.add_child(sep)
 	var upgrade_title := Label.new()
-	upgrade_title.text = "LV2 업그레이드"
+	upgrade_title.text = "LV2 ?�그?�이??
 	upgrade_title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(upgrade_title)
-	level2_cost_spin = _spin_row(parent, "업그레이드 비용", 0, 999999, 1, 50)
-	level2_damage_spin = _spin_row(parent, "LV2 공격력", 0, 99999, 0.1, 10)
-	level2_cooldown_spin = _spin_row(parent, "Level 2 재사용 시간", 0.01, 9999, 0.01, 1)
-	level2_range_spin = _spin_row(parent, "LV2 사거리", 0, 99999, 1, 150)
+	level2_cost_spin = _spin_row(parent, "?�그?�이??비용", 0, 999999, 1, 50)
+	level2_damage_spin = _spin_row(parent, "LV2 공격??, 0, 99999, 0.1, 10)
+	level2_cooldown_spin = _spin_row(parent, "Level 2 ?�사???�간", 0.01, 9999, 0.01, 1)
+	level2_range_spin = _spin_row(parent, "LV2 ?�거�?, 0, 99999, 1, 150)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -181,10 +180,8 @@ func _load_data() -> void:
 		file.close()
 		if parsed is Dictionary:
 			tower_data = parsed
-	if tower_data.is_empty():
-		tower_data = DEFAULT_DATA.TOWERS.duplicate(true)
 	_refresh_tower_list()
-	_set_status("Loaded: " + TOWER_FILE if file else "Loaded defaults (JSON not found)")
+	_set_status("Loaded: " + TOWER_FILE if file else "Failed to load JSON")
 
 func _refresh_tower_list() -> void:
 	tower_list.clear()
@@ -221,7 +218,7 @@ func _save_data() -> void:
 		_set_status("No tower selected.")
 		return
 	if name_edit.text.strip_edges().is_empty():
-		_set_status("이름 is required.")
+		_set_status("?�름 is required.")
 		return
 	var data: Dictionary = tower_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()
