@@ -658,7 +658,7 @@ func get_robot_runtime_stats() -> Dictionary:
 	}
 	for slot in player_profile.equipped_items:
 		var item_id := str(player_profile.equipped_items.get(slot, ""))
-		for item in inventory:
+		for item in player_profile.inventory:
 			if str(item.get("id", "")) != item_id: continue
 			var item_stats: Dictionary = item.get("stats", {})
 			stats["hp"] += float(item_stats.get("hp", 0.0))
@@ -669,7 +669,6 @@ func get_robot_runtime_stats() -> Dictionary:
 	return stats
 
 func _load_robot_progression() -> void:
-	robot_progression.reset()
 	player_profile.reset()
 	if StageManager.run_mode != "campaign":
 		return
@@ -679,7 +678,6 @@ func _load_robot_progression() -> void:
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
 	if parsed is Dictionary:
-		robot_progression.load_from_data(parsed)
 		player_profile.load_from_data(parsed)
 	if player_profile.inventory.is_empty():
 		player_profile.inventory.append(create_item("weapon"))
@@ -719,7 +717,7 @@ func create_item(base_id: String) -> Dictionary:
 	return {"id": "%s_%d" % [base_id, Time.get_ticks_usec()], "base_id": base_id, "name": " ".join(names), "slot": str(base.slot), "size": base.size.duplicate(), "stats": stats}
 
 func equip_item(item_id: String) -> bool:
-	for item in inventory:
+	for item in player_profile.inventory:
 		if str(item.get("id", "")) == item_id:
 			player_profile.equipped_items[str(item.get("slot", ""))] = item_id
 			_save_robot_progression()
@@ -733,8 +731,7 @@ func _save_robot_progression() -> void:
 	if file == null:
 		push_error("Failed to save campaign robot profile.")
 		return
-	var save_data := robot_progression.to_data()
-	
+	var save_data := player_profile.to_data()
 	file.store_string(JSON.stringify(save_data, "  "))
 	file.close()
 
@@ -1628,7 +1625,7 @@ func draw_inventory() -> void:
 		draw_string(ThemeDB.fallback_font, slot_rect.position + Vector2(10, 17), str(slot).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("829aa0"))
 		var equipped_id := str(player_profile.equipped_items.get(slot, ""))
 		var equipped_name := "EMPTY"
-		for item in inventory:
+		for item in player_profile.inventory:
 			if str(item.get("id", "")) == equipped_id: equipped_name = str(item.get("name", "ITEM"))
 		draw_string(ThemeDB.fallback_font, slot_rect.position + Vector2(10, 39), equipped_name, HORIZONTAL_ALIGNMENT_LEFT, 220, 11, Color("f0d28a"))
 		slot_y += slot_rect.size.y + 10.0
