@@ -160,7 +160,6 @@ func _on_robot_selected(index: int) -> void:
 	selected_type = str(robot_list.get_item_metadata(index))
 	id_edit.editable = true
 	var data: Dictionary = robot_data.get(selected_type, {})
-	var pierce: Dictionary = data.get("ability_pierce", {})
 	id_edit.text = str(data.get("id", selected_type))
 	name_edit.text = str(data.get("name", selected_type.to_upper()))
 	hp_spin.value = float(data["hp"])
@@ -240,8 +239,6 @@ func _save_data() -> void:
 	data["sprite_move"] = move_edit.text.strip_edges()
 	data["sprite_skill"] = skill_edit.text.strip_edges()
 	data["projectile_anim"] = projectile_edit.text.strip_edges()
-	data["ability_area"] = {"damage": float(area_damage_spin.value), "radius": float(area_radius_spin.value), "cooldown": float(area_cooldown_spin.value), "threshold": int(area_threshold_spin.value)}
-	data["ability_pierce"] = {"damage": float(pierce_damage_spin.value), "cooldown": float(pierce_cooldown_spin.value)}
 	robot_data[selected_type] = data
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/robots"))
 	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
@@ -251,7 +248,10 @@ func _save_data() -> void:
 	file.store_string(JSON.stringify(robot_data, "  "))
 	file.close()
 	_refresh_robot_list()
-	robot_list.select(ROBOT_TYPES.find(selected_type))
+	for i in range(robot_list.item_count):
+		if str(robot_list.get_item_metadata(i)) == selected_type:
+			robot_list.select(i)
+			break
 	_set_status("SAVED: " + ROBOT_FILE)
 
 func _set_status(message: String) -> void:
