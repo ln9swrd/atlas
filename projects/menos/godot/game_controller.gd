@@ -84,13 +84,17 @@ var spawn_queue: Array = []
 var enemies: Array = []
 var enemy_catalog: Dictionary = {}
 var enemy_definitions: Dictionary = {}
+var enemy_weapon_definitions: Dictionary = {}
+var enemy_robot_weapon_definitions: Dictionary = {}
 var enemy_sprite_catalog: Dictionary = {}
 var enemy_projectile_catalog: Dictionary = {}
 var tower_catalog: Dictionary = {}
+var tower_definitions: Dictionary = {}
 var tower_sprite_catalog: Dictionary = {}
 var tower_projectile_catalog: Dictionary = {}
 var robot_catalog: Dictionary = {}
 var robot_definition: RobotDefinition
+var robot_weapon_definition: WeaponDefinition
 var robot_sprite_catalog: Dictionary = {}
 var robot_projectile_catalog: Dictionary = {}
 var towers: Array = []
@@ -176,6 +180,8 @@ func _load_enemy_catalog() -> void:
 	enemy_definitions.clear()
 	for enemy_id in enemy_catalog.keys():
 		enemy_definitions[enemy_id] = EnemyDefinition.from_catalog(str(enemy_id), enemy_catalog[enemy_id])
+		enemy_weapon_definitions[enemy_id] = WeaponDefinition.from_actor("enemy", str(enemy_id), enemy_catalog[enemy_id])
+		enemy_robot_weapon_definitions[enemy_id] = WeaponDefinition.from_enemy_robot_attack(str(enemy_id), enemy_catalog[enemy_id])
 	if enemy_catalog.is_empty():
 		return
 	enemy_sprite_catalog.clear()
@@ -200,6 +206,7 @@ func _load_robot_catalog() -> void:
 		"skill": _texture_from_catalog_entry(robot_catalog, "sprite_skill")
 	}
 	robot_definition = RobotDefinition.from_catalog(robot_catalog)
+	robot_weapon_definition = WeaponDefinition.from_actor("robot", "basic", robot_catalog)
 	robot_projectile_catalog["robot"] = _texture_from_catalog_entry(robot_catalog, "projectile_anim")
 
 func _load_combat_definitions() -> void:
@@ -215,6 +222,9 @@ func _load_combat_definitions() -> void:
 
 func _load_tower_catalog() -> void:
 	tower_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/towers/towers.json")
+	tower_definitions.clear()
+	for tower_id in tower_catalog:
+		tower_definitions[tower_id] = TowerDefinition.from_catalog(str(tower_id), tower_catalog[tower_id])
 	tower_sprite_catalog.clear()
 	tower_projectile_catalog.clear()
 	for tower_type in tower_catalog:
@@ -498,9 +508,14 @@ func _process(delta: float) -> void:
 	for effect in effects:
 		if effect.has("progress"):
 			effect["progress"] = float(effect["progress"]) + delta * float(effect.get("speed", 4.0))
-			if float(effect["progress"]) >= 1.0 and effect.get("source", "") == "robot" and not effect.get("hit_applied", false):
+			if float(effect["progress"]) >= 1.0 and effect.get("source", "") in ["robot", "tower"] and not effect.get("hit_applied", false):
 				effect["hit_applied"] = true
-				damage_enemy(effect.get("target_enemy", null), float(effect.get("damage", 0.0)), str(effect.get("source", "")))
+				var hit_event := GameplayEvent.create("damage_requested", str(effect.get("source", "robot")), str(effect.get("weapon", "robot")))
+				hit_event.target = effect.get("target_enemy", null)
+				hit_event.position = effect.get("target", Vector2.ZERO)
+				hit_event.damage = float(effect.get("damage", 0.0))
+				hit_event.payload = {"source": str(effect.get("source", ""))}
+				_handle_gameplay_event(hit_event)
 				effect["type"] = "impact_explosion"
 				effect.erase("progress")
 				effect["life"] = 0.35
@@ -582,35 +597,38 @@ func damage_robot(amount: float) -> void:
 
 func update_giant_robot_attack(delta: float, enemy: EnemyRuntimeState) -> void:
 	if enemy.type != "giant" or not robot.active or robot.hp <= 0.0: return
-	var definition: EnemyDefinition = enemy_definitions[enemy.type]
 	enemy.robot_attack_timer -= delta
-	if enemy.position.distance_to(robot.position) > float(definition.get_robot_attack_value("range", 0.0)): return
+	var weapon: WeaponDefinition = enemy_robot_weapon_definitions.get(enemy.type)
+	if weapon == null or enemy.position.distance_to(robot.position) > weapon.range: return
 	if enemy.robot_attack_timer > 0.0: return
 	effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type})
-	damage_robot(float(definition.get_robot_attack_value("damage", 0.0)))
-	enemy.robot_attack_timer = float(definition.get_robot_attack_value("cooldown", 0.0))
+	damage_robot(weapon.damage)
+	enemy.robot_attack_timer = weapon.cooldown
 	if robot.active:
-		log_event("GIANT hit ATLAS-01 for %d damage." % int(definition.get_robot_attack_value("damage", 0.0)))
+		log_event("GIANT hit ATLAS-01 for %d damage." % int(weapon.damage))
 
 func update_enemy_attack(delta: float, enemy: EnemyRuntimeState, data: Dictionary) -> bool:
 	if enemy.type == "giant" or not robot.active or robot.hp <= 0.0:
 		return false
-	var attack_type := str(data.get("attack_type", ""))
+	var weapon: WeaponDefinition = enemy_weapon_definitions.get(enemy.type)
+	if weapon == null:
+		return false
+	var attack_type := weapon.attack_type
 	if attack_type.is_empty() and bool(data.get("melee", false)):
 		attack_type = "melee"
 	if attack_type == "none" or attack_type.is_empty():
 		return false
-	var attack_range := float(data.get("attack_range", data.get("radius", 0.0)))
+	var attack_range := weapon.range
 	if attack_range <= 0.0 or enemy.position.distance_to(robot.position) > attack_range:
 		return false
 	enemy.attack_timer = max(0.0, float(enemy.state_get("attack_timer", 0.0)) - delta)
 	if enemy.attack_timer > 0.0:
 		return true
-	var damage := float(data.get("base_damage", 0.0))
+	var damage := weapon.damage
 	if attack_type == "ranged":
 		effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type})
 	damage_robot(damage)
-	enemy.attack_timer = max(0.05, float(data.get("attack_cooldown", data.get("melee_cooldown", 1.0))))
+	enemy.attack_timer = max(0.05, weapon.cooldown)
 	log_event("%s hit ATLAS-01 for %d damage." % [data.name, int(damage)])
 	return true
 
@@ -930,10 +948,46 @@ func update_towers(delta: float) -> void:
 	for tower in towers:
 		tower.cooldown -= delta
 		if tower.cooldown > 0.0: continue
-		var target: Dictionary = find_target(tower.position, tower.data.range, tower.data.preference)
+		var weapon: WeaponDefinition = tower.get_weapon_definition()
+		var target: Dictionary = find_target(tower.position, weapon.range, weapon.preference)
 		if target.is_empty(): continue
-		effects.append({"type": "proj_defender", "start": tower.position, "target": target.position, "progress": 0.0, "speed": 5.0, "weapon": tower.type})
-		damage_enemy(target, tower.data.damage, tower.type); tower.cooldown = tower.data.cooldown
+		var event := GameplayEvent.create("weapon_fired", "tower", tower.type)
+		event.target = target
+		event.position = tower.position
+		event.damage = weapon.damage
+		event.payload = {
+			"weapon": tower.type,
+			"target_position": target.position,
+			"projectile_speed": 5.0
+		}
+		_handle_gameplay_event(event)
+		tower.cooldown = weapon.cooldown
+
+func _handle_gameplay_event(event: GameplayEvent) -> void:
+	if event == null:
+		return
+	match event.type:
+		"weapon_fired":
+			if event.source in ["robot", "tower"]:
+				var target_enemy: Variant = event.target
+				if target_enemy == null:
+					return
+				effects.append({
+					"type": "proj_defender",
+					"start": event.position,
+					"target": event.payload.get("target_position", event.position),
+					"target_enemy": target_enemy,
+					"damage": event.damage,
+					"source": event.source,
+					"weapon": event.payload.get("weapon", "robot"),
+					"progress": 0.0,
+					"speed": float(event.payload.get("projectile_speed", 5.5))
+				})
+		"damage_requested":
+			var target_enemy: Variant = event.target
+			if target_enemy != null:
+				damage_enemy(target_enemy, event.damage, str(event.payload.get("source", event.source)))
+
 
 func update_robot(delta: float) -> void:
 	if selected_enemy_index >= enemies.size() or (selected_enemy_index >= 0 and float(enemies[selected_enemy_index].get("hp", 0.0)) <= 0.0):
@@ -955,17 +1009,25 @@ func try_basic_attack() -> bool:
 		return false
 	var target: Dictionary = get_selected_robot_target()
 	if target.is_empty() and bool(robot.state_get("auto_attack", true)):
-		target = find_target(robot.position, get_robot_runtime_stats().range)
+		target = find_target(robot.position, robot_weapon_definition.range)
 		if not target.is_empty():
 			selected_enemy_index = enemies.find(target)
 	if target.is_empty():
 		return false
-	if target.position.distance_to(robot.position) > get_robot_runtime_stats().range:
+	if target.position.distance_to(robot.position) > robot_weapon_definition.range:
 		log_event("Target is out of weapon range.")
 		return false
-	var robot_stats := get_robot_runtime_stats()
-	effects.append({"type": "proj_defender", "start": robot.position, "target": target.position, "target_enemy": target, "damage": robot_stats.damage, "source": "robot", "weapon": "robot", "progress": 0.0, "speed": 5.5})
-	robot.attack = robot_stats.cooldown
+	var event := GameplayEvent.create("weapon_fired", "robot", robot_weapon_definition.id)
+	event.target = target
+	event.position = robot.position
+	event.damage = robot_weapon_definition.damage
+	event.payload = {
+		"weapon": "robot",
+		"target_position": target.position,
+		"projectile_speed": 5.5
+	}
+	_handle_gameplay_event(event)
+	robot.attack = robot_weapon_definition.cooldown
 	log_event("ATLAS-01 fired BASIC WEAPON.")
 	return true
 
@@ -1066,6 +1128,8 @@ func check_wave_clear() -> void:
 		var next_stage_id := StageManager.get_next_campaign_stage_id()
 		if StageManager.run_mode != "campaign":
 			next_stage_id = ""
+		player_profile.campaign_progression.complete_stage(StageManager.current_stage_id, next_stage_id)
+		_save_robot_progression()
 		if not next_stage_id.is_empty():
 			if not load_stage_map(next_stage_id):
 				push_error("Could not load next campaign Stage '%s'." % next_stage_id)
@@ -1284,7 +1348,7 @@ func select_tower_for_build(type: String) -> void:
 	selected_tower = ""
 	robot_selected = false
 	play_sfx("tower_select")
-	log_event("%s: 설치 위치를 클릭하세요." % str(tower_catalog[type].name))
+	log_event("%s: 설치 위치를 클릭하세요." % tower_definitions[type].name)
 	queue_redraw()
 
 func build_tower(type: String) -> void:
@@ -1292,28 +1356,26 @@ func build_tower(type: String) -> void:
 	if selected_slot.is_empty(): play_sfx("ui_error"); log_event("Select an empty tower slot first."); return
 	if towers.any(func(tower): return tower.id == selected_slot): upgrade_tower(type); return
 	if not tower_catalog.has(type): play_sfx("ui_error"); return
-	var data: Dictionary = tower_catalog[type]
-	if gold < data.cost: play_sfx("ui_error"); log_event("Need %d gold for %s." % [data.cost, data.name]); return
-	gold -= data.cost; towers.append({"id": selected_slot, "type": type, "position": selected_slot_position, "data": data, "cooldown": 0.0}); play_sfx("tower_build"); log_event("%s deployed at %s." % [data.name, selected_slot]); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false
+	var definition: TowerDefinition = tower_definitions[type]
+	var cost := float(definition.get_combat_value("cost", 0.0))
+	if gold < cost: play_sfx("ui_error"); log_event("Need %d gold for %s." % [int(cost), definition.name]); return
+	gold -= cost
+	towers.append(TowerRuntimeState.create(selected_slot, type, selected_slot_position, definition))
+	play_sfx("tower_build"); log_event("%s deployed at %s." % [definition.name, selected_slot]); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false
 
 func upgrade_tower(type: String) -> void:
 	if run_state == RunState.RUNNING: play_sfx("ui_error"); log_event("Cannot upgrade towers during a wave."); return
 	var index := towers.find_custom(func(tower): return tower.id == selected_slot)
 	if index < 0: return
-	var tower: Dictionary = towers[index]
+	var tower: TowerRuntimeState = towers[index]
 	if tower.type != type: play_sfx("ui_error"); log_event("Select the matching tower type to upgrade."); return
-	if int(tower.get("level", 1)) >= 2: play_sfx("ui_error"); log_event("Tower is already MAX LVL 2."); return
-	var level2: Dictionary = tower.data.get("level2", {})
-	var cost := int(level2.get("upgrade_cost", 0))
+	if tower.level >= 2: play_sfx("ui_error"); log_event("Tower is already MAX LVL 2."); return
+	var cost := int(tower.get_upgrade_value("upgrade_cost", 0))
 	if gold < cost: play_sfx("ui_error"); log_event("Not enough gold for LVL 2 upgrade."); return
 	gold -= cost
-	tower.level = 2
-	tower.data = tower.data.duplicate(true)
-	tower.data.damage = level2.damage
-	tower.data.cooldown = level2.cooldown
-	tower.data.range = level2.range
+	tower.upgrade_to_level2()
 	towers[index] = tower
-	play_sfx("ui_confirm"); log_event("%s upgraded to LVL 2." % tower.data.name)
+	play_sfx("ui_confirm"); log_event("%s upgraded to LVL 2." % tower.definition.name)
 	selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; robot_selected = false; queue_redraw()
 
 func toggle_robot_attack_mode() -> void:
@@ -1391,8 +1453,8 @@ func _draw() -> void:
 		var tower_pos: Vector2 = tower.position
 		var tower_feet := tower_pos + Vector2(0, 26)
 		var anim_key := "tower_cannon_anim" if tower.type == "cannon" else "tower_gatling_anim"
-		var cd_left: float = float(tower.get("cooldown", 0.0))
-		var max_cd: float = float(tower.get("data", {}).get("cooldown", 0.6))
+		var cd_left: float = tower.cooldown
+		var max_cd: float = float(tower.get_combat_value("cooldown", 0.6))
 		var is_firing: bool = cd_left > (max_cd - 0.25)
 		var frame_idx := 0
 		if is_firing:
