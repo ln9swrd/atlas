@@ -8,6 +8,23 @@
   "next_stage_id": "stage_02",
   "order": 1,
   "stage_id": "stage_01",
+  "allied_units": [
+    {
+      "id": "vanguard",
+      "count": 1,
+      "spawn": "robot"
+    },
+    {
+      "id": "ranger",
+      "count": 1,
+      "spawn": "robot"
+    },
+    {
+      "id": "support",
+      "count": 1,
+      "spawn": "robot"
+    }
+  ],
   "waves": [
 	{
 	  "groups": [

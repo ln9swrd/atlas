@@ -1,7 +1,20 @@
 ﻿{
+  "base_special": {
+    "id": "base_special",
+    "name": "BASE SPECIAL",
+    "growth_available": false,
+    "description": "ATLAS-01's always-available close-range special attack.",
+    "damage": 28.0,
+    "radius": 72.0,
+    "cooldown": 6.0,
+    "energy_cost": 30.0,
+    "duration": 0.5
+  },
   "area_attack": {
     "id": "area_attack",
     "name": "AREA ATTACK",
+    "growth_available": true,
+    "execution_type": "area",
     "description": "Hits 3 or more nearby enemies.",
     "damage": 28.0,
     "radius": 72.0,
@@ -13,6 +26,8 @@
   "heavy_pierce": {
     "id": "heavy_pierce",
     "name": "HEAVY PIERCE",
+    "growth_available": true,
+    "execution_type": "target_pierce",
     "description": "Targets Heavy and Giant enemies.",
     "damage": 105.0,
     "cooldown": 7.0,
@@ -22,6 +37,7 @@
   "finisher": {
     "id": "finisher",
     "name": "ALL-RANGE STRIKE",
+    "growth_available": false,
     "meter_max": 100.0,
     "damage": 180.0,
     "radius": 260.0,

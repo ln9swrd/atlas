@@ -2,5 +2,14 @@
   "wave_auto_start": {
     "id": "wave_auto_start",
     "delay": 2.5
+  },
+  "wave_group_gap": {
+    "id": "wave_group_gap",
+    "delay": 0.3
+  },
+  "skill_slots": {
+    "1": "area_attack",
+    "2": "heavy_pierce",
+    "3": ""
   }
 }
