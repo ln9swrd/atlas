@@ -2,7 +2,6 @@ class_name RobotEditorMain
 extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
-const ROBOT_TYPES := ["robot_main", "boss_giant"]
 
 var robot_data: Dictionary = {}
 var selected_type := ""
