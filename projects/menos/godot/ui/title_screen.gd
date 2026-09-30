@@ -5,6 +5,7 @@ const GAME_SCENE := "res://main.tscn"
 @onready var start_button: Button = $CenterContainer/MainPanel/Content/Actions/StartCampaign
 @onready var single_button: Button = $CenterContainer/MainPanel/Content/Actions/SinglePlay
 @onready var stage_select: OptionButton = $CenterContainer/MainPanel/Content/Actions/StageSelect
+@onready var stage_info: Label = $CenterContainer/MainPanel/Content/StageInfo/Details
 @onready var quit_button: Button = $CenterContainer/MainPanel/Content/Actions/Quit
 @onready var settings_button: Button = $CenterContainer/MainPanel/Content/Settings
 var transition_started := false
