@@ -78,19 +78,19 @@ func _build_ui() -> void:
 
 func _build_properties(parent: VBoxContainer) -> void:
 	var title := Label.new()
-	title.text = "??????욧쉐"
+	title.text = "TOWER PROPERTIES"
 	title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(title)
-	name_edit = _line_row(parent, "??已?)
+	name_edit = _line_row(parent, "Name")
 	cost_spin = _spin_row(parent, "Build Cost", 0, 999999, 1, 50)
 	damage_spin = _spin_row(parent, "Damage", 0, 99999, 0.1, 10)
 	cooldown_spin = _spin_row(parent, "Cooldown", 0.01, 9999, 0.01, 1)
 	range_spin = _spin_row(parent, "Range", 0, 99999, 1, 150)
-	preference_edit = _line_row(parent, "?怨쀪퐨 ????)
+	preference_edit = _line_row(parent, "Target Preference")
 	var sprite_row := HBoxContainer.new()
 	parent.add_child(sprite_row)
 	var sprite_label := Label.new()
-	sprite_label.text = "?醫딅빍筌롫뗄??????筌왖"
+	sprite_label.text = "Sprite Animation"
 	sprite_label.custom_minimum_size.x = 130
 	sprite_row.add_child(sprite_label)
 	sprite_edit = LineEdit.new()
@@ -122,7 +122,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(_on_file_selected)
 	var animation_preview_title := Label.new()
-	animation_preview_title.text = "?醫딅빍筌롫뗄???沃섎챶?곮퉪?용┛"
+	animation_preview_title.text = "ANIMATION PREVIEW"
 	animation_preview_title.add_theme_font_size_override("font_size", 14)
 	parent.add_child(animation_preview_title)
 	var animation_preview_row := HBoxContainer.new()
