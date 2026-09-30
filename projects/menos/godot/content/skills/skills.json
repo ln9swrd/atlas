@@ -1,0 +1,32 @@
+﻿{
+  "area_attack": {
+    "id": "area_attack",
+    "name": "AREA ATTACK",
+    "description": "Hits 3 or more nearby enemies.",
+    "damage": 28.0,
+    "radius": 72.0,
+    "cooldown": 6.0,
+    "threshold": 3,
+    "energy_cost": 30.0,
+    "duration": 0.5
+  },
+  "heavy_pierce": {
+    "id": "heavy_pierce",
+    "name": "HEAVY PIERCE",
+    "description": "Targets Heavy and Giant enemies.",
+    "damage": 105.0,
+    "cooldown": 7.0,
+    "energy_cost": 30.0,
+    "duration": 0.5
+  },
+  "finisher": {
+    "id": "finisher",
+    "name": "ALL-RANGE STRIKE",
+    "meter_max": 100.0,
+    "damage": 180.0,
+    "radius": 260.0,
+    "duration": 0.8,
+    "charge_normal": 20.0,
+    "charge_boss": 50.0
+  }
+}

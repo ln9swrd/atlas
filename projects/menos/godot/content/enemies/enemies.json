@@ -1,6 +1,5 @@
 {
   "giant": {
-    "robot_editor_id": "boss_giant",
     "armor": 18.0,
     "attack_cooldown": 2.0,
     "attack_range": 120.0,
