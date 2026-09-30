@@ -1645,7 +1645,7 @@ func draw_inventory() -> void:
 		var y := index / INVENTORY_COLS
 		var item_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
 		var slot := str(item.get("slot", ""))
-		var item_color := Color("f0d28a") if equipped_items.get(slot, "") == item.get("id", "") else Color("7ed6ce")
+		var item_color := Color("f0d28a") if player_profile.equipped_items.get(slot, "") == item.get("id", "") else Color("7ed6ce")
 		draw_rect(item_rect.grow(-3), Color(item_color, 0.14), true)
 		draw_rect(item_rect.grow(-3), item_color, false, 2.0)
 		draw_string(ThemeDB.fallback_font, item_rect.position + Vector2(4, 17), str(item.get("base_id", "ITEM")).to_upper(), HORIZONTAL_ALIGNMENT_CENTER, 38, 8, item_color)
