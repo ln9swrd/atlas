@@ -526,9 +526,21 @@ func _process(delta: float) -> void:
 				effect["damage_applied"] = true
 				if effect.has("damage_targets"):
 					for target in effect["damage_targets"]:
-						damage_enemy(target, float(effect.get("damage", 0.0)), str(effect.get("source", "special")))
+						var skill_id := str(effect.get("source", "special"))
+						var skill_hit_event := GameplayEvent.create("damage_requested", "skill", skill_id)
+						skill_hit_event.target = target
+						skill_hit_event.position = target.position if target != null else effect.get("position", Vector2.ZERO)
+						skill_hit_event.damage = float(effect.get("damage", 0.0))
+						skill_hit_event.payload = {"source": skill_id}
+						_handle_gameplay_event(skill_hit_event)
 				else:
-					damage_enemy(effect.get("target_enemy", null), float(effect.get("damage", 0.0)), str(effect.get("source", "special")))
+					var skill_id := str(effect.get("source", "special"))
+					var skill_hit_event := GameplayEvent.create("damage_requested", "skill", skill_id)
+					skill_hit_event.target = effect.get("target_enemy", null)
+					skill_hit_event.position = effect.get("position", Vector2.ZERO)
+					skill_hit_event.damage = float(effect.get("damage", 0.0))
+					skill_hit_event.payload = {"source": skill_id}
+					_handle_gameplay_event(skill_hit_event)
 				effect.erase("damage_delay")
 				effect["life"] = 0.35
 				effect["max_life"] = 0.35
