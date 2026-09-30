@@ -123,7 +123,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sprite_row.add_child(sprite_edit)
 	var browse := Button.new()
-	browse.text = "筌≪뼚釉섋퉪?용┛"
+	browse.text = "Browse"
 	browse.pressed.connect(func(): _open_sprite_dialog("sprite"))
 	sprite_row.add_child(browse)
 	var projectile_row := HBoxContainer.new()
