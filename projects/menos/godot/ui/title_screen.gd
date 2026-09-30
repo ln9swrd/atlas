@@ -77,6 +77,7 @@ func _on_start_single_pressed() -> void:
 	if transition_started: return
 	single_mode_selected = not single_mode_selected
 	stage_select.visible = single_mode_selected
+	stage_info.visible = single_mode_selected
 	if single_mode_selected:
 		start_button.text = SettingsManager.text("\uC2F1\uAE00 \uD50C\uB808\uC774 \uC2DC\uC791", "START SINGLE PLAY")
 		single_button.text = SettingsManager.text("\uC2F1\uAE00 \uD50C\uB808\uC774 \uC120\uD0DD\uB428", "SINGLE PLAY SELECTED")

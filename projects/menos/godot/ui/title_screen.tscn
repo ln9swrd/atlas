@@ -173,6 +173,20 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_quit_hover")
 text = "종료"
 focus_neighbor_left = NodePath("../StartCampaign")
 
+[node name="StageInfo" type="PanelContainer" parent="CenterContainer/MainPanel/Content"]
+custom_minimum_size = Vector2(0, 74)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+visible = false
+
+[node name="Details" type="Label" parent="CenterContainer/MainPanel/Content/StageInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.74, 0.74, 1)
+theme_override_font_sizes/font_size = 13
+text = "STAGE_01  /  NORTHBRIDGE SECTOR 01  /  1 ENCOUNTER  /  4 WAVE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Settings" type="Button" parent="CenterContainer/MainPanel/Content"]
 custom_minimum_size = Vector2(180, 46)
 layout_mode = 2
