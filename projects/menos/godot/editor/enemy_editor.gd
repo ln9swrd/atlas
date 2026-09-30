@@ -44,7 +44,7 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // ???먮뵒??
+	title.text = "MENOS // ENEMY EDITOR"
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
@@ -54,11 +54,11 @@ func _build_ui() -> void:
 	enemy_list.item_selected.connect(_on_enemy_selected)
 	top.add_child(enemy_list)
 	var reload_btn := Button.new()
-	reload_btn.text = "?덈줈怨좎묠"
+	reload_btn.text = "RELOAD"
 	reload_btn.pressed.connect(_load_data)
 	top.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "JSON ???
+	save_btn.text = "SAVE JSON"
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
 	status_label = Label.new()
@@ -77,32 +77,32 @@ func _build_properties(parent: VBoxContainer) -> void:
 	title.text = "ENEMY PROPERTIES"
 	title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(title)
-	name_edit = _line_row(parent, "?대쫫")
+	name_edit = _line_row(parent, "Name")
 	hp_spin = _spin_row(parent, "HP", 1, 999999, 1, 100)
-	speed_spin = _spin_row(parent, "?띾룄", 0, 9999, 0.1, 10)
-	armor_spin = _spin_row(parent, "諛⑹뼱??, 0, 9999, 0.1, 0)
-	damage_spin = _spin_row(parent, "Base 怨듦꺽??, 0, 9999, 0.1, 1)
+	speed_spin = _spin_row(parent, "Speed", 0, 9999, 0.1, 10)
+	armor_spin = _spin_row(parent, "Armor", 0, 9999, 0.1, 0)
+	damage_spin = _spin_row(parent, "Base Damage", 0, 9999, 0.1, 1)
 	reward_spin = _spin_row(parent, "蹂댁긽", 0, 999999, 1, 10)
 	radius_spin = _spin_row(parent, "諛섍꼍", 1, 999, 0.5, 10)
 	var attack_type_row := HBoxContainer.new()
 	parent.add_child(attack_type_row)
 	var attack_type_label := Label.new()
-	attack_type_label.text = "怨듦꺽 ???
+	attack_type_label.text = "Attack Type"
 	attack_type_label.custom_minimum_size.x = 130
 	attack_type_row.add_child(attack_type_label)
 	attack_type_list = OptionButton.new()
 	attack_type_list.add_item("?놁쓬")
-	attack_type_list.add_item("洹쇱젒")
-	attack_type_list.add_item("?먭굅由?)
+	attack_type_list.add_item("Melee")
+	attack_type_list.add_item("Ranged")
 	attack_type_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	attack_type_row.add_child(attack_type_list)
-	attack_range_spin = _spin_row(parent, "怨듦꺽 ?ш굅由?, 0, 9999, 0.5, 10)
-	attack_cooldown_spin = _spin_row(parent, "怨듦꺽 荑⑤떎??, 0.05, 9999, 0.05, 1.0)
+	attack_range_spin = _spin_row(parent, "Attack Range", 0, 9999, 0.5, 10)
+	attack_cooldown_spin = _spin_row(parent, "Attack Cooldown", 0.05, 9999, 0.05, 1.0)
 	melee_check = CheckButton.new()
-	melee_check.text = "洹쇱젒 怨듦꺽??(援щ쾭???명솚)"
+	melee_check.text = "Melee Attack (legacy compatibility)"
 	melee_check.visible = false
 	parent.add_child(melee_check)
-	melee_cooldown_spin = _spin_row(parent, "洹쇱젒 怨듦꺽 荑⑤떎??(援щ쾭???명솚)", 0.05, 9999, 0.05, 1.0)
+	melee_cooldown_spin = _spin_row(parent, "Melee Cooldown", 0.05, 9999, 0.05, 1.0)
 	melee_cooldown_spin.visible = false
 	var color_row := HBoxContainer.new()
 	parent.add_child(color_row)
@@ -129,7 +129,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var projectile_row := HBoxContainer.new()
 	parent.add_child(projectile_row)
 	var projectile_label := Label.new()
-	projectile_label.text = "?꾪솚 ?좊땲硫붿씠??
+	projectile_label.text = "Projectile Animation"
 	projectile_label.custom_minimum_size.x = 130
 	projectile_row.add_child(projectile_label)
 	projectile_edit = LineEdit.new()
@@ -142,7 +142,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
-	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; ?대?吏"]
+	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Images"]
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
@@ -160,12 +160,12 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var sep := HSeparator.new()
 	parent.add_child(sep)
 	var combat_title := Label.new()
-	combat_title.text = "嫄곕? ???뱀닔 ?꾪닾"
+	combat_title.text = "Robot Combat"
 	combat_title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(combat_title)
-	robot_damage_spin = _spin_row(parent, "Robot 怨듦꺽??, 0, 9999, 0.1, 0)
-	robot_range_spin = _spin_row(parent, "Robot ?ш굅由?, 0, 9999, 0.1, 0)
-	robot_cooldown_spin = _spin_row(parent, "濡쒕큸 ?ъ궗???쒓컙", 0, 9999, 0.05, 0)
+	robot_damage_spin = _spin_row(parent, "Robot Damage", 0, 9999, 0.1, 0)
+	robot_range_spin = _spin_row(parent, "Robot Range", 0, 9999, 0.1, 0)
+	robot_cooldown_spin = _spin_row(parent, "Robot Cooldown", 0, 9999, 0.05, 0)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()

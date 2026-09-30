@@ -70,11 +70,17 @@ static func _select_target(unit: AlliedUnitRuntimeState, enemies: Array) -> Enem
 		return null
 	var preference := str(unit.get_ai_value("target_preference", "front"))
 	if preference == "heavy":
-		var heavy: Array[EnemyRuntimeState] = candidates.filter(func(enemy): return enemy.type in ["heavy", "giant"])
+		var heavy: Array[EnemyRuntimeState] = []
+		for enemy in candidates:
+			if enemy.type in ["heavy", "giant"]:
+				heavy.append(enemy)
 		if not heavy.is_empty():
 			candidates = heavy
 	elif preference == "fast":
-		var fast: Array[EnemyRuntimeState] = candidates.filter(func(enemy): return enemy.type in ["normal", "rusher"])
+		var fast: Array[EnemyRuntimeState] = []
+		for enemy in candidates:
+			if enemy.type in ["normal", "rusher"]:
+				fast.append(enemy)
 		if not fast.is_empty():
 			candidates = fast
 	candidates.sort_custom(func(a, b): return a.position.x > b.position.x)
