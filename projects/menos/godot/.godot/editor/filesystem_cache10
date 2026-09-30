@@ -1,7 +1,7 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790770015
+::res://::1790770332
 export_presets.cfg::TextFile::-1::1790684967::0::1::::<><><>0<>0<><>::
-game_controller.gd::GDScript::8692213070628158787::1790768546::0::1::::<>Node2D<><>0<>0<><>::
+game_controller.gd::GDScript::8692213070628158787::1790770423::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790760072::0::1::::<>Node2D<><>0<>0<><>::
 main.tscn::PackedScene::6409794179911717756::1790609003::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
 ::res://assets/::1790251375
@@ -91,10 +91,10 @@ robots.json::JSON::-1::1790762026::0::1::::<><><>0<>0<><>::
 gameplay.json::JSON::-1::1790760072::0::1::::<><><>0<>0<><>::
 ::res://content/skills/::1790760072
 skills.json::JSON::-1::1790760072::0::1::::<><><>0<>0<><>::
-::res://content/stages/::1790768055
-stage_01.json::JSON::-1::1790764840::0::1::::<><><>0<>0<><>::
-stage_02.json::JSON::-1::1790764840::0::1::::<><><>0<>0<><>::
-stage_03.json::JSON::-1::1790764840::0::1::::<><><>0<>0<><>::
+::res://content/stages/::1790770157
+stage_01.json::JSON::-1::1790770157::0::1::::<><><>0<>0<><>::
+stage_02.json::JSON::-1::1790770157::0::1::::<><><>0<>0<><>::
+stage_03.json::JSON::-1::1790770157::0::1::::<><><>0<>0<><>::
 stage_catalog.json::JSON::-1::1790768055::0::1::::<><><>0<>0<><>::
 ::res://content/towers/::1790605813
 towers.json::JSON::-1::1790613503::0::1::::<><><>0<>0<><>::
@@ -287,7 +287,7 @@ ChatGPT Image 2026년 9월 29일 오후 10_33_51.png::CompressedTexture2D::74984
 ChatGPT Image 2026년 9월 29일 오후 10_35_14.png::CompressedTexture2D::8386656307422546696::1790688915::1790692109::1::::<><><>0<>0<>cec300d01a2b00b92e69b1ebe2e11818<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_35_14.png-f4c049a8936feb4f95debd5195ed0807.ctex::
 ::res://map_data/::1790519478
 northbridge_sector_01.json::JSON::-1::1790519478::0::1::::<><><>0<>0<><>::
-::res://scripts/::1790760072
+::res://scripts/::1790770016
 allied_unit_ai.gd::GDScript::6916198602555178148::1790760072::0::1::::AlliedUnitAI<>RefCounted<><>0<>0<><>::
 allied_unit_definition.gd::GDScript::4241627096230391966::1790760072::0::1::::AlliedUnitDefinition<>RefCounted<><>0<>0<><>::
 allied_unit_runtime_state.gd::GDScript::39021056508424766::1790760072::0::1::::AlliedUnitRuntimeState<>RefCounted<><>0<>0<><>::

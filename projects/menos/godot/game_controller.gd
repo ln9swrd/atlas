@@ -1745,20 +1745,20 @@ func draw_ui() -> void:
 	var waves_data := StageManager.get_waves(encounter - 1)
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 64), "湲곗? HP %03d   怨⑤뱶 %03d" % [max(0, ceil(base_hp)), gold], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("d7fff7"))
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 88), "?ㅽ뀒?댁? %d   ?⑥씠釉?%d / %d" % [int(stage_data.get("order", 1)), wave, waves_data.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
-	var status_text := "?湲?
-	if run_state == RunState.RUNNING: status_text = "?⑥씠釉?吏꾪뻾 以?
+	var status_text := "?湲?"
+	if run_state == RunState.RUNNING: status_text = "?⑥씠釉?吏꾪뻾 以?"
 	elif run_state == RunState.GROWTH: status_text = "濡쒕큸 ?λ젰 ?좏깮"
 	elif run_state == RunState.VICTORY: status_text = "?밸━"
 	elif run_state == RunState.DEFEAT: status_text = "?⑤같"
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 112), "?곹깭: " + status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
-	button(_ui_button_rect(183), "?꾪닾 ?ъ떆??, false)
+	button(_ui_button_rect(183), "?꾪닾 ?ъ떆??", false)
 
 	button(_ui_button_rect(279), "罹먮끉 嫄댁꽕", run_state not in [RunState.READY, RunState.RUNNING])
 	button(_ui_button_rect(327), "媛쒗?留?嫄댁꽕", run_state not in [RunState.READY, RunState.RUNNING])
 	var special_ready: bool = robot.active and run_state == RunState.RUNNING and float(robot.state_get("special", 0.0)) <= 0.0 and not robot_progression.unlocked_abilities.is_empty()
 	button(_ui_button_rect(375), "?꾩궡湲?[SPACE]", not special_ready)
 
-	var robot_status := "?湲?
+	var robot_status := "?湲?"
 	if robot.active: robot_status = "異쒓꺽 / " + robot.spot
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 452), "ATLAS-01  " + robot_status, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("7ed6ce"))
 	draw_string(ThemeDB.fallback_font, origin + Vector2(20, 474), "HP %03d" % max(0, ceil(robot.hp)), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("a9c5c7"))
