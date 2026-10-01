@@ -73,7 +73,13 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         {
             // 출고 취소는 기존 OUT을 취소하고 동일 수량을 IN으로 복원하므로 현재 재고 부족을 이유로 취소를 막지 않는다.
             foreach (var movement in movements) { movement.StatusCode = "CANCELLED"; movement.UpdatedAt = DateTime.UtcNow; }
-            await CreateMovementAsync(order, detail, processed, "IN", "SALES_ORDER_CANCEL", cancellationToken);
+            var reverseMovement = await CreateMovementAsync(order, detail, processed, "IN", "SALES_ORDER_CANCEL", cancellationToken);
+            var reverseDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == reverseMovement.Id, cancellationToken);
+            if (originalHistories.Count == 0)
+                await AddProcessHistoryAsync("SALES_ORDER", detail.Id, reverseDetail.Id, processed, "REVERSE", null, cancellationToken);
+            else
+                foreach (var history in originalHistories)
+                    await AddProcessHistoryAsync("SALES_ORDER", detail.Id, reverseDetail.Id, history.ProcessQty, "REVERSE", history.Id, cancellationToken);
         }
         var before = Snapshot(order);
         order.StatusCode = "CANCELLED"; order.UpdatedAt = DateTime.UtcNow;
