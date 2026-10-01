@@ -1,0 +1,14 @@
+res://assets/menos/environment/tile_bask_floor.tres::895e45b23b5756345525d82a3fbd223e::1790251375::res://.godot/exported/133200997/export-f81c5cfc8b2a5a115f5befb98713ae70-tile_bask_floor.res
+res://assets/menos/environment/tile_dark_floor.tres::cc597f17ee42860c8057c9fef5ea99cf::1790251375::res://.godot/exported/133200997/export-75f0387473033f88a82b19bed3e730d2-tile_dark_floor.res
+res://assets/menos/maps/northbridge_tileset.tres::de7332dcbec8579514b236e450725e93::1790856809::res://.godot/exported/133200997/export-f3fcbd1334f420bcb16de4601842e9a5-northbridge_tileset.res
+res://editor/asset_catalog_editor.tscn::93b59eda584740269b1c9ba9a1b8ec20::1790609468::res://.godot/exported/133200997/export-2192748e13920d25eb26e0431aaa6c5e-asset_catalog_editor.scn
+res://editor/content_editor.tscn::096d138a5fde4ba208c416d378c01eca::1790683767::res://.godot/exported/133200997/export-8741a1f30da0b1eb91b9a61af38f1f85-content_editor.scn
+res://editor/enemy_editor.tscn::5193e82282e931c8e7189a8273a487fa::1790609468::res://.godot/exported/133200997/export-cfbbe45aaad988072dee98d11827dfa0-enemy_editor.scn
+res://editor/image_editor.tscn::f47e604dc35d776b2376c177d5935d52::1790609468::res://.godot/exported/133200997/export-07187ed98bdd4a46325645e70aba75be-image_editor.scn
+res://editor/map_editor.tscn::42bddbadc0574c8cb89b06e964507fd3::1790860119::res://.godot/exported/133200997/export-16b84009da638c0b008f0145c819ce12-map_editor.scn
+res://editor/robot_editor.tscn::8170801482edf7f5462a56a956feaf10::1790683767::res://.godot/exported/133200997/export-6d76fc3ad422ef0ad20dbc356a991bcd-robot_editor.scn
+res://editor/stage_editor.tscn::b8a42ba1c7a198d965834a5d0ed98052::1790609468::res://.godot/exported/133200997/export-4e10ab34793fcd26e6da45d3d9f65346-stage_editor.scn
+res://editor/tower_editor.tscn::45b8310e0463ed414fbbdf51209d8996::1790609468::res://.godot/exported/133200997/export-5741c8460b2f75edce7e01e17440604f-tower_editor.scn
+res://ui/settings_screen.tscn::96a0b7cc986869e91aa667cb810ce6b6::1790610775::res://.godot/exported/133200997/export-ea736b93dfc0ee7b4c5b4e50730f8a58-settings_screen.scn
+res://ui/title_screen.tscn::4a53e14671e1c6eb28fdef92c527ced7::1790853017::res://.godot/exported/133200997/export-3407386fbfccf8045630582c7c1c3b18-title_screen.scn
+res://main.tscn::7eda5aac012f41f8447d22ce6c67fe99::1790863010::res://.godot/exported/133200997/export-3070c538c03ee49b7677ff960a3f5195-main.scn
