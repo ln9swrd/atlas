@@ -10,6 +10,8 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
     public DbSet<Code> Codes => Set<Code>();
     public DbSet<Item> Items => Set<Item>();
     public DbSet<ItemGrade> ItemGrades => Set<ItemGrade>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<Partner> Partners => Set<Partner>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -71,6 +73,35 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.CategoryCode).HasColumnName("ITEM_CATEGORY_CODE").IsRequired();
             e.Property(x => x.GradeId).HasColumnName("GRADE_ID");
             e.Property(x => x.UnitCode).HasColumnName("UNIT_CODE").IsRequired();
+            e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
+            e.HasIndex(x => x.Code).IsUnique();
+        });
+
+        modelBuilder.Entity<AuditLog>(e =>
+        {
+            e.ToTable("TB_AUDIT_LOG");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("AUDIT_LOG_ID");
+            e.Property(x => x.EntityName).HasColumnName("ENTITY_NAME").IsRequired();
+            e.Property(x => x.EntityId).HasColumnName("ENTITY_ID");
+            e.Property(x => x.ActionCode).HasColumnName("ACTION_CODE").IsRequired();
+            e.Property(x => x.Actor).HasColumnName("ACTOR");
+            e.Property(x => x.OccurredAt).HasColumnName("OCCURRED_AT").IsRequired();
+            e.Property(x => x.BeforeJson).HasColumnName("BEFORE_JSON");
+            e.Property(x => x.AfterJson).HasColumnName("AFTER_JSON");
+            e.Property(x => x.Note).HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<Partner>(e =>
+        {
+            e.ToTable("TB_PARTNER");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("PARTNER_ID");
+            e.Property(x => x.Code).HasColumnName("PARTNER_CODE").IsRequired();
+            e.Property(x => x.Name).HasColumnName("PARTNER_NAME").IsRequired();
+            e.Property(x => x.TypeCode).HasColumnName("PARTNER_TYPE_CODE").IsRequired();
             e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();

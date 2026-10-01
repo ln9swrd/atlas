@@ -20,4 +20,10 @@ public partial class MainWindow : Window
         var window = new ItemManagementWindow(_databasePath) { Owner = this };
         window.ShowDialog();
     }
+
+    private void PartnerManagement_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new PartnerManagementWindow(_databasePath) { Owner = this };
+        window.ShowDialog();
+    }
 }

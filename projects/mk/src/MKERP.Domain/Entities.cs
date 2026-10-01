@@ -49,3 +49,27 @@ public sealed class ItemGrade
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
 }
+
+public sealed class AuditLog
+{
+    public long Id { get; set; }
+    public string EntityName { get; set; } = string.Empty;
+    public long? EntityId { get; set; }
+    public string ActionCode { get; set; } = string.Empty;
+    public string? Actor { get; set; }
+    public DateTime OccurredAt { get; set; }
+    public string? BeforeJson { get; set; }
+    public string? AfterJson { get; set; }
+    public string? Note { get; set; }
+}
+
+public sealed class Partner
+{
+    public long Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string TypeCode { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
