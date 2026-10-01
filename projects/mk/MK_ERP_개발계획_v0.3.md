@@ -259,3 +259,22 @@ Master 결정: **C안(별도 처리이력 테이블)**.
 ### 다음 구현 범위
 C안 구조를 기준으로 수주/발주를 실제 다품목 문서로 확장한다.
 각 상세행의 부분처리는 `TB_ORDER_PROCESS_HISTORY`를 통해 실제 입출고 상세와 연결한다.
+
+
+## 16. 라이선스 제한 구현
+
+- 목적: 배포판을 복사한 다른 PC에서 MK ERP를 사용할 수 없도록 고객별 사용 PC를 제한한다.
+- 방식: 오프라인 서명 라이선스 + Windows 설치 식별값 기반 Machine Fingerprint.
+- 라이선스 문서: LicenseId, CustomerId, Product, MachineFingerprint, IssuedAtUtc, ExpiresAtUtc, RSA 서명.
+- 앱에는 RSA 공개키만 포함한다. 발급용 개인키는 배포물과 프로젝트 소스에 포함하지 않는다.
+- 라이선스 파일 위치: 프로그램 폴더의 license.json 또는 %LocalAppData%\\MKERP\\license.json.
+- 무라이선스/서명 오류/제품 불일치/PC 불일치/만료 시 DB 초기화보다 먼저 종료한다.
+- 무라이선스 상태에서는 현재 PC의 활성화 코드를 표시하여 발급 요청에 사용한다.
+- 기본 라이선스는 만료일 없이 발급 가능하며, 필요 시 발급 시점에 만료일을 지정한다.
+- 다른 PC용으로 복사된 라이선스는 MachineFingerprint 불일치로 거부한다.
+- 발급 도구는 MKERP.LicenseTool로 분리하고 개인키는 D:\\Atlas\\license-keys\\mkerp 외부 저장소에 둔다.
+- 고객별 license.json은 기본 배포판에 포함하지 않는다.
+- 현재 구현은 오프라인 라이선스이므로 이미 발급된 라이선스를 원격으로 즉시 회수하는 기능은 포함하지 않는다.
+- Windows 재설치/주요 환경 변경으로 fingerprint가 바뀌면 재발급이 필요하다.
+- 보안 한계: 로컬 실행 파일을 역공학하여 검증 로직을 제거하는 공격까지 방지하는 DRM은 아니다.
+- 상태: PROPOSAL/IMPLEMENTED, 고객 정책(만료/재발급/원격회수)은 Master 최종 결정 대상.

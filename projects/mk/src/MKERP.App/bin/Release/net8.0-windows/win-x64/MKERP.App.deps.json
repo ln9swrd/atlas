@@ -11,6 +11,7 @@
         "dependencies": {
           "MKERP.Application": "1.0.0",
           "MKERP.Infrastructure": "1.0.0",
+          "MKERP.Licensing": "1.0.0",
           "MKERP.Reporting": "1.0.0",
           "runtimepack.Microsoft.NETCore.App.Runtime.win-x64": "8.0.31",
           "runtimepack.Microsoft.WindowsDesktop.App.Runtime.win-x64": "8.0.31"
@@ -1206,6 +1207,14 @@
           }
         }
       },
+      "MKERP.Licensing/1.0.0": {
+        "runtime": {
+          "MKERP.Licensing.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "MKERP.Reporting/1.0.0": {
         "dependencies": {
           "MKERP.Application": "1.0.0"
@@ -1386,6 +1395,11 @@
       "sha512": ""
     },
     "MKERP.Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MKERP.Licensing/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

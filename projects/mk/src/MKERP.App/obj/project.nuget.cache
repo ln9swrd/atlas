@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "xYA4RCBpwtw=",
+  "dgSpecHash": "/GVdPEgfAn8=",
   "success": true,
   "projectFilePath": "D:\\Atlas\\projects\\mk\\src\\MKERP.App\\MKERP.App.csproj",
   "expectedPackageFiles": [
@@ -22,11 +22,15 @@
     "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.options\\8.0.2\\microsoft.extensions.options.8.0.2.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.31\\microsoft.net.illink.tasks.8.0.31.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.6\\sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.core\\2.1.6\\sqlitepclraw.core.2.1.6.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.6\\sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.6\\sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512"
+    "C:\\Users\\user\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\8.0.31\\microsoft.netcore.app.runtime.win-x64.8.0.31.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\8.0.31\\microsoft.windowsdesktop.app.runtime.win-x64.8.0.31.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\8.0.31\\microsoft.aspnetcore.app.runtime.win-x64.8.0.31.nupkg.sha512"
   ],
   "logs": []
 }

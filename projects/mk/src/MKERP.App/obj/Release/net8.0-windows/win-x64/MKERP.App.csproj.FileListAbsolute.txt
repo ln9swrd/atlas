@@ -524,3 +524,5 @@ D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\refint\MKE
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.pdb
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.genruntimeconfig.cache
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\ref\MKERP.App.dll
+D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Licensing.dll
+D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Licensing.pdb

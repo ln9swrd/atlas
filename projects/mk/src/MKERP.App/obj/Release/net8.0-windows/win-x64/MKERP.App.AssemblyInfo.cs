@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MKERP.App")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aa7b1769f2ef91427554209cc3bbcb9846bf272d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dbff0cb7129d57b2a99f4c47416ea62cda0da7f4")]
 [assembly: System.Reflection.AssemblyProductAttribute("MKERP.App")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MKERP.App")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
