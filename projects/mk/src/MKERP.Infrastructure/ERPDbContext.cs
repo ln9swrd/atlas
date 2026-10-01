@@ -8,6 +8,8 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
     public DbSet<CodeGroup> CodeGroups => Set<CodeGroup>();
     public DbSet<Code> Codes => Set<Code>();
+    public DbSet<Item> Items => Set<Item>();
+    public DbSet<ItemGrade> ItemGrades => Set<ItemGrade>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
