@@ -15,7 +15,7 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         return pattern.Replace("{yyyyMM}", productionDate.ToString("yyyyMM")).Replace("{seq4}", (count + 1).ToString("D4"));
     }
 
-    public async Task CompleteAsync(Production production, ProductionDetail detail, CancellationToken cancellationToken = default)
+    public async Task CompleteAsync(Production production, ProductionDetail detail, string mkLotNo, CancellationToken cancellationToken = default)
     {
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         db.Productions.Add(production);
@@ -24,9 +24,11 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         db.ProductionDetails.Add(detail);
         await db.SaveChangesAsync(cancellationToken);
 
-        await AddMovementAsync("IN", detail.ProductionQty, "PRODUCTION", production.Id, production.ProductionDate, detail.ItemId, cancellationToken);
+        var lot = await db.Lots.SingleOrDefaultAsync(x => x.MkLotNo == mkLotNo.Trim(), cancellationToken);
+        if (lot is null) { lot = new Lot { MkLotNo = mkLotNo.Trim(), CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }; db.Lots.Add(lot); await db.SaveChangesAsync(cancellationToken); }
+        await AddMovementAsync("IN", detail.ProductionQty, "PRODUCTION", production.Id, production.ProductionDate, detail.ItemId, lot.Id, null, cancellationToken);
         if (detail.DefectQty > 0)
-            await AddMovementAsync("LOSS", detail.DefectQty, "PRODUCTION_DEFECT", production.Id, production.ProductionDate, detail.ItemId, cancellationToken);
+            await AddMovementAsync("LOSS", detail.DefectQty, "PRODUCTION_DEFECT", production.Id, production.ProductionDate, detail.ItemId, lot.Id, null, cancellationToken);
 
         await AuditLogger.WriteAsync(db, "TB_PRODUCTION", production.Id, "CREATE", null, production, cancellationToken: cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_PRODUCTION_DETAIL", detail.Id, "CREATE", null, detail, cancellationToken: cancellationToken);
@@ -68,7 +70,7 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
             foreach (var originalDetail in details.Where(x => x.InOutId == movement.Id))
             {
                 var reverseType = movement.MovementTypeCode == "IN" ? "OUT" : "IN";
-                await AddMovementAsync(reverseType, originalDetail.Quantity, "PRODUCTION_CANCEL", production.Id, movement.MovementDate, originalDetail.ItemId, cancellationToken);
+                await AddMovementAsync(reverseType, originalDetail.Quantity, "PRODUCTION_CANCEL", production.Id, movement.MovementDate, originalDetail.ItemId, originalDetail.LotId, originalDetail.PartnerLotId, cancellationToken);
             }
         }
 
@@ -89,7 +91,7 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
             - rows.Where(x => x.MovementTypeCode is "OUT" or "LOSS").Sum(x => x.Quantity);
     }
 
-    private async Task AddMovementAsync(string type, decimal quantity, string sourceType, long sourceId, DateTime date, long itemId, CancellationToken cancellationToken)
+    private async Task AddMovementAsync(string type, decimal quantity, string sourceType, long sourceId, DateTime date, long itemId, long? lotId, long? partnerLotId, CancellationToken cancellationToken)
     {
         var pattern = await db.SystemSettings.AsNoTracking().Where(x => x.Key == "DOC_NO.INOUT").Select(x => x.Value).SingleAsync(cancellationToken);
         var prefix = pattern.Replace("{yyyyMM}", date.ToString("yyyyMM"));
@@ -100,7 +102,7 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         var header = new InOut { DocumentNo = documentNo, MovementDate = date, MovementTypeCode = type, SourceTypeCode = sourceType, SourceId = sourceId, StatusCode = "CONFIRMED", CreatedAt = now, UpdatedAt = now };
         db.InOuts.Add(header);
         await db.SaveChangesAsync(cancellationToken);
-        db.InOutDetails.Add(new InOutDetail { InOutId = header.Id, ItemId = itemId, Quantity = quantity });
+        db.InOutDetails.Add(new InOutDetail { InOutId = header.Id, ItemId = itemId, LotId = lotId, PartnerLotId = partnerLotId, Quantity = quantity });
         await db.SaveChangesAsync(cancellationToken);
     }
 }

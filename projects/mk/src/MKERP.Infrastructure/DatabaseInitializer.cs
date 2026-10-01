@@ -36,6 +36,8 @@ public sealed class DatabaseInitializer(string databasePath) : IDatabaseInitiali
 
         await EnsureOrderProcessedQtyAsync(connection, "TB_SALES_ORDER_DETAIL", "SALES_ORDER_ID", "SALES_ORDER");
         await EnsureOrderProcessedQtyAsync(connection, "TB_PURCHASE_ORDER_DETAIL", "PURCHASE_ORDER_ID", "PURCHASE_ORDER");
+        await EnsureDetailActiveAsync(connection, "TB_SALES_ORDER_DETAIL");
+        await EnsureDetailActiveAsync(connection, "TB_PURCHASE_ORDER_DETAIL");
 
         await ExecuteNonQueryAsync(connection,
             "CREATE UNIQUE INDEX IF NOT EXISTS UX_LOT_MK_LOT_NO ON TB_LOT(MK_LOT_NO);",
@@ -53,6 +55,12 @@ public sealed class DatabaseInitializer(string databasePath) : IDatabaseInitiali
             "CREATE INDEX IF NOT EXISTS IX_PURCHASE_ORDER_DETAIL_PRICE ON TB_PURCHASE_ORDER_DETAIL(PRICE_ID);",
             cancellationToken);
         await EnsureOrderProcessHistoryAsync(connection, cancellationToken);
+    }
+
+    private static async Task EnsureDetailActiveAsync(SqliteConnection connection, string table)
+    {
+        if (!await HasColumnAsync(connection, table, "IS_ACTIVE", CancellationToken.None))
+            await ExecuteNonQueryAsync(connection, $"ALTER TABLE {table} ADD COLUMN IS_ACTIVE INTEGER NOT NULL DEFAULT 1;", CancellationToken.None);
     }
 
     private static async Task EnsureOrderProcessedQtyAsync(SqliteConnection connection, string detailTable, string orderIdColumn, string sourceType)

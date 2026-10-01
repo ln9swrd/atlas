@@ -40,10 +40,6 @@
         </DataGrid.Columns>
       </DataGrid>
     </Grid>
-    <TabControl x:Name="ResultsTabs" Grid.Row="3">
-      <TabItem Header="입출고 문서"><DataGrid x:Name="MovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem>
-      <TabItem Header="Lot별 내역"><DataGrid x:Name="LotMovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem>
-      <TabItem Header="재고현황"><DataGrid x:Name="InventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem>
-    </TabControl>
+    <TabControl x:Name="ResultsTabs" Grid.Row="3"><TabItem Header="?낆텧怨?臾몄꽌"><DataGrid x:Name="MovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="Lot蹂??댁뿭"><DataGrid x:Name="LotMovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="?ш퀬?꾪솴"><DataGrid x:Name="InventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="Lot蹂??ш퀬"><DataGrid x:Name="LotInventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem></TabControl>
   </Grid>
 </UserControl>

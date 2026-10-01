@@ -16,6 +16,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
     private Price? _applicablePrice;
     private bool _loading;
     private readonly ObservableCollection<PurchaseDraftRow> _draftRows = [];
+    private long? _editingOrderId;
 
     public PurchaseOrderManagementWindow(string databasePath)
     {
@@ -51,6 +52,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
         AppliedPriceBox.Text = string.Empty;
         _applicablePrice = null;
         _draftRows.Clear();
+        _editingOrderId = null;
         DetailGrid.ItemsSource = null;
     }
 
@@ -71,7 +73,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
             MessageBox.Show("적용단가를 올바르게 입력하세요.");
             return;
         }
-        _draftRows.Add(new PurchaseDraftRow(item.Id, item.Name, _applicablePrice.Id, qty, price, DueDateBox.SelectedDate?.Date));
+        _draftRows.Add(new PurchaseDraftRow(0, item.Id, item.Name, _applicablePrice.Id, qty, price, DueDateBox.SelectedDate?.Date));
     }
 
     private void RemoveDetail_Click(object sender, RoutedEventArgs e)
@@ -117,6 +119,19 @@ public partial class PurchaseOrderManagementWindow : UserControl
 
     private async void New_Click(object sender, RoutedEventArgs e) => await NewAsync();
 
+    private async void Edit_Click(object sender, RoutedEventArgs e)
+    {
+        if (Grid.SelectedItem is not PurchaseOrder order || order.StatusCode != "DRAFT") { MessageBox.Show("작성 상태의 발주만 수정할 수 있습니다."); return; }
+        _editingOrderId = order.Id;
+        DocumentNoText.Text = order.DocumentNo;
+        OrderDateBox.SelectedDate = order.OrderDate;
+        DueDateBox.SelectedDate = order.DueDate;
+        PartnerBox.SelectedValue = order.PartnerId;
+        _draftRows.Clear();
+        var rows = await _db.PurchaseOrderDetails.AsNoTracking().Where(x => x.PurchaseOrderId == order.Id && x.IsActive).Join(_db.Items.AsNoTracking(), d => d.ItemId, i => i.Id, (d,i) => new { d, i }).ToListAsync();
+        foreach (var x in rows) _draftRows.Add(new PurchaseDraftRow(x.d.Id, x.d.ItemId, x.i.Name, x.d.PriceId ?? 0, x.d.OrderQty, x.d.AppliedUnitPrice, x.d.DueDate));
+    }
+
     private async void Save_Click(object sender, RoutedEventArgs e)
     {
         if (PartnerBox.SelectedItem is not Partner partner)
@@ -158,6 +173,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
         };
         var details = _draftRows.Select(row => new PurchaseOrderDetail
         {
+            Id = row.Id,
             ItemId = row.ItemId,
             PriceId = row.PriceId,
             OrderQty = row.Quantity,
@@ -166,7 +182,14 @@ public partial class PurchaseOrderManagementWindow : UserControl
             DueDate = row.DueDate
         }).ToList();
 
-        await new PurchaseOrderRepository(_db).AddAsync(order, details);
+        var repo = new PurchaseOrderRepository(_db);
+        if (_editingOrderId is long editingId)
+        {
+            order.Id = editingId;
+            order.DocumentNo = DocumentNoText.Text;
+            await repo.UpdateAsync(order, details);
+        }
+        else await repo.AddAsync(order, details);
         await LoadGridAsync();
         await NewAsync();
     }
@@ -175,7 +198,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
     {
         if (Grid.SelectedItem is not PurchaseOrder order) { DetailGrid.ItemsSource = null; return; }
         DetailGrid.ItemsSource = await _db.PurchaseOrderDetails.AsNoTracking()
-            .Where(x => x.PurchaseOrderId == order.Id)
+             .Where(x => x.PurchaseOrderId == order.Id && x.IsActive)
             .Join(_db.Items.AsNoTracking(), d => d.ItemId, i => i.Id, (d, i) => new PurchaseDetailRow
             {
                 Id = d.Id, ItemName = i.Name, OrderQty = d.OrderQty, ProcessedQty = d.ProcessedQty,
@@ -187,7 +210,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
     {
         if (DetailGrid.SelectedItem is not PurchaseDetailRow detail) { MessageBox.Show("입고할 상세행을 선택하세요."); return; }
         if (!decimal.TryParse(ProcessQtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0) { MessageBox.Show("입고수량을 올바르게 입력하세요."); return; }
-        try { await new PurchaseOrderRepository(_db).ProcessDetailAsync(detail.Id, qty); await LoadGridAsync(); MessageBox.Show($"입고 {qty:N2}가 재고에 반영되었습니다."); }
+        try { await new PurchaseOrderRepository(_db).ProcessDetailAsync(detail.Id, qty, ProcessMkLotBox.Text.Trim(), ProcessPartnerLotBox.Text.Trim()); await LoadGridAsync(); MessageBox.Show($"입고 {qty:N2}가 재고에 반영되었습니다."); }
         catch (InvalidOperationException ex) { MessageBox.Show(ex.Message); }
     }
 
@@ -221,7 +244,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
     private void Excel_Click(object sender, RoutedEventArgs e) => ExcelExportHelper.Export(Grid, $"발주_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", "발주");
     private void Print_Click(object sender, RoutedEventArgs e) => PrintHelper.Print(Grid, "발주관리");
 
-    private sealed record PurchaseDraftRow(long ItemId, string ItemName, long PriceId, decimal Quantity, decimal UnitPrice, DateTime? DueDate);
+    private sealed record PurchaseDraftRow(long Id, long ItemId, string ItemName, long PriceId, decimal Quantity, decimal UnitPrice, DateTime? DueDate);
     private sealed class PurchaseDetailRow
     {
         public long Id { get; init; }

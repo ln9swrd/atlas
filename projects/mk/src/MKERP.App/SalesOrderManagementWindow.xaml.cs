@@ -16,6 +16,7 @@ public partial class SalesOrderManagementWindow : UserControl
     private Price? _applicablePrice;
     private bool _loading;
     private readonly ObservableCollection<SalesDraftRow> _draftRows = [];
+    private long? _editingOrderId;
 
     public SalesOrderManagementWindow(string databasePath)
     {
@@ -51,6 +52,7 @@ public partial class SalesOrderManagementWindow : UserControl
         AppliedPriceBox.Text = string.Empty;
         _applicablePrice = null;
         _draftRows.Clear();
+        _editingOrderId = null;
         DetailGrid.ItemsSource = null;
     }
 
@@ -75,7 +77,7 @@ public partial class SalesOrderManagementWindow : UserControl
         var partnerItemId = partner is null ? null : _db.PartnerItems.AsNoTracking()
             .Where(x => x.IsActive && x.PartnerId == partner.Id && x.ItemId == item.Id)
             .Select(x => (long?)x.Id).FirstOrDefault();
-        _draftRows.Add(new SalesDraftRow(item.Id, item.Name, partnerItemId, _applicablePrice.Id, qty, price, DueDateBox.SelectedDate?.Date));
+        _draftRows.Add(new SalesDraftRow(0, item.Id, item.Name, partnerItemId, _applicablePrice.Id, qty, price, DueDateBox.SelectedDate?.Date));
     }
 
     private void RemoveDetail_Click(object sender, RoutedEventArgs e)
@@ -121,6 +123,19 @@ public partial class SalesOrderManagementWindow : UserControl
 
     private async void New_Click(object sender, RoutedEventArgs e) => await NewAsync();
 
+    private async void Edit_Click(object sender, RoutedEventArgs e)
+    {
+        if (Grid.SelectedItem is not SalesOrder order || order.StatusCode != "DRAFT") { MessageBox.Show("작성 상태의 수주만 수정할 수 있습니다."); return; }
+        _editingOrderId = order.Id;
+        DocumentNoText.Text = order.DocumentNo;
+        OrderDateBox.SelectedDate = order.OrderDate;
+        DueDateBox.SelectedDate = order.DueDate;
+        PartnerBox.SelectedValue = order.PartnerId;
+        _draftRows.Clear();
+        var rows = await _db.SalesOrderDetails.AsNoTracking().Where(x => x.SalesOrderId == order.Id && x.IsActive).Join(_db.Items.AsNoTracking(), d => d.ItemId, i => i.Id, (d,i) => new { d, i }).ToListAsync();
+        foreach (var x in rows) _draftRows.Add(new SalesDraftRow(x.d.Id, x.d.ItemId, x.i.Name, x.d.PartnerItemId, x.d.PriceId ?? 0, x.d.OrderQty, x.d.AppliedUnitPrice, x.d.DueDate));
+    }
+
     private async void Save_Click(object sender, RoutedEventArgs e)
     {
         if (PartnerBox.SelectedItem is not Partner partner)
@@ -162,6 +177,7 @@ public partial class SalesOrderManagementWindow : UserControl
         };
         var details = _draftRows.Select(row => new SalesOrderDetail
         {
+            Id = row.Id,
             ItemId = row.ItemId,
             PartnerItemId = row.PartnerItemId,
             PriceId = row.PriceId,
@@ -171,7 +187,15 @@ public partial class SalesOrderManagementWindow : UserControl
             DueDate = row.DueDate
         }).ToList();
 
-        await new SalesOrderRepository(_db).AddAsync(order, details);
+        var repo = new SalesOrderRepository(_db);
+        if (_editingOrderId is long editingId)
+        {
+            order.Id = editingId;
+            order.DocumentNo = DocumentNoText.Text;
+            foreach (var d in details) if (d.Id == 0) { }
+            await repo.UpdateAsync(order, details);
+        }
+        else await repo.AddAsync(order, details);
         await LoadGridAsync();
         await NewAsync();
     }
@@ -180,7 +204,7 @@ public partial class SalesOrderManagementWindow : UserControl
     {
         if (Grid.SelectedItem is not SalesOrder order) { DetailGrid.ItemsSource = null; return; }
         DetailGrid.ItemsSource = await _db.SalesOrderDetails.AsNoTracking()
-            .Where(x => x.SalesOrderId == order.Id)
+             .Where(x => x.SalesOrderId == order.Id && x.IsActive)
             .Join(_db.Items.AsNoTracking(), d => d.ItemId, i => i.Id, (d, i) => new SalesDetailRow
             {
                 Id = d.Id, ItemName = i.Name, OrderQty = d.OrderQty, ProcessedQty = d.ProcessedQty,
@@ -192,7 +216,7 @@ public partial class SalesOrderManagementWindow : UserControl
     {
         if (DetailGrid.SelectedItem is not SalesDetailRow detail) { MessageBox.Show("출고할 상세행을 선택하세요."); return; }
         if (!decimal.TryParse(ProcessQtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0) { MessageBox.Show("출고수량을 올바르게 입력하세요."); return; }
-        try { await new SalesOrderRepository(_db).ProcessDetailAsync(detail.Id, qty); await LoadGridAsync(); MessageBox.Show($"출고 {qty:N2}가 재고에 반영되었습니다."); }
+        try { await new SalesOrderRepository(_db).ProcessDetailAsync(detail.Id, qty, ProcessMkLotBox.Text.Trim(), ProcessPartnerLotBox.Text.Trim()); await LoadGridAsync(); MessageBox.Show($"출고 {qty:N2}가 재고에 반영되었습니다."); }
         catch (InvalidOperationException ex) { MessageBox.Show(ex.Message); }
     }
 
@@ -226,7 +250,7 @@ public partial class SalesOrderManagementWindow : UserControl
     private void Excel_Click(object sender, RoutedEventArgs e) => ExcelExportHelper.Export(Grid, $"수주_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", "수주");
     private void Print_Click(object sender, RoutedEventArgs e) => PrintHelper.Print(Grid, "수주관리");
 
-    private sealed record SalesDraftRow(long ItemId, string ItemName, long? PartnerItemId, long PriceId, decimal Quantity, decimal UnitPrice, DateTime? DueDate);
+    private sealed record SalesDraftRow(long Id, long ItemId, string ItemName, long? PartnerItemId, long PriceId, decimal Quantity, decimal UnitPrice, DateTime? DueDate);
     private sealed class SalesDetailRow
     {
         public long Id { get; init; }

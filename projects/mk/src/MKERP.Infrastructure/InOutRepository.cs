@@ -74,6 +74,30 @@ public sealed class InOutRepository(ERPDbContext db) : IInOutRepository
         }).ToList();
     }
 
+    public async Task<IReadOnlyList<LotInventoryRow>> GetLotInventoryAsync(DateTime asOfDate, CancellationToken cancellationToken = default)
+    {
+        var rows = await (from h in db.InOuts.AsNoTracking()
+                          join d in db.InOutDetails.AsNoTracking() on h.Id equals d.InOutId
+                          join i in db.Items.AsNoTracking() on d.ItemId equals i.Id
+                          join l in db.Lots.AsNoTracking() on d.LotId equals l.Id
+                          join pl0 in db.PartnerLots.AsNoTracking() on d.PartnerLotId equals pl0.Id into pls
+                          from pl in pls.DefaultIfEmpty()
+                          where h.MovementDate <= asOfDate && h.StatusCode != "CANCELLED"
+                          select new { h, d, i, l, pl }).ToListAsync(cancellationToken);
+
+        return rows.GroupBy(x => new { x.d.LotId, x.d.PartnerLotId, x.l.MkLotNo, PartnerLotNo = x.pl == null ? "" : x.pl.PartnerLotNo, x.i.Code, x.i.Name })
+            .Select(g => new LotInventoryRow
+            {
+                LotId = g.Key.LotId!.Value,
+                PartnerLotId = g.Key.PartnerLotId,
+                MkLotNo = g.Key.MkLotNo,
+                PartnerLotNo = g.Key.PartnerLotNo,
+                ItemCode = g.Key.Code,
+                ItemName = g.Key.Name,
+                Inbound = g.Where(x => x.h.MovementTypeCode is "IN" or "OPENING" or "ADJUST").Sum(x => x.d.Quantity),
+                Outbound = g.Where(x => x.h.MovementTypeCode is "OUT" or "LOSS").Sum(x => x.d.Quantity)
+            }).OrderBy(x => x.ItemCode).ThenBy(x => x.MkLotNo).ThenBy(x => x.PartnerLotNo).ToList();
+    }
     public async Task<(long LotId, long PartnerLotId)> EnsureLotsAsync(long partnerId, string mkLotNo, string partnerLotNo, CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;

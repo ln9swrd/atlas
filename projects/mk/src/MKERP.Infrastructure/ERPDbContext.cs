@@ -177,6 +177,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.PriceId).HasColumnName("PRICE_ID");
             e.Property(x => x.OrderQty).HasColumnName("ORDER_QTY").IsRequired();
             e.Property(x => x.ProcessedQty).HasColumnName("PROCESSED_QTY").IsRequired();
+            e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
             e.Property(x => x.AppliedUnitPrice).HasColumnName("APPLIED_UNIT_PRICE").IsRequired();
             e.Property(x => x.Amount).HasColumnName("AMOUNT").IsRequired();
             e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
@@ -318,6 +319,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.PriceId).HasColumnName("PRICE_ID");
             e.Property(x => x.OrderQty).HasColumnName("ORDER_QTY").IsRequired();
             e.Property(x => x.ProcessedQty).HasColumnName("PROCESSED_QTY").IsRequired();
+            e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
             e.Property(x => x.AppliedUnitPrice).HasColumnName("APPLIED_UNIT_PRICE").IsRequired();
             e.Property(x => x.Amount).HasColumnName("AMOUNT").IsRequired();
             e.Property(x => x.DueDate).HasColumnName("DUE_DATE");

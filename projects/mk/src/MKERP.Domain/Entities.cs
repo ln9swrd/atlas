@@ -1,4 +1,4 @@
-namespace MKERP.Domain;
+﻿namespace MKERP.Domain;
 
 public sealed class SystemSetting
 {
@@ -108,6 +108,7 @@ public sealed class PurchaseOrderDetail
     public long? PriceId { get; set; }
     public decimal OrderQty { get; set; }
     public decimal ProcessedQty { get; set; }
+    public bool IsActive { get; set; } = true;
     public decimal AppliedUnitPrice { get; set; }
     public decimal Amount { get; set; }
     public DateTime? DueDate { get; set; }
@@ -219,6 +220,7 @@ public sealed class SalesOrderDetail
     public long? PriceId { get; set; }
     public decimal OrderQty { get; set; }
     public decimal ProcessedQty { get; set; }
+    public bool IsActive { get; set; } = true;
     public decimal AppliedUnitPrice { get; set; }
     public decimal Amount { get; set; }
     public DateTime? DueDate { get; set; }

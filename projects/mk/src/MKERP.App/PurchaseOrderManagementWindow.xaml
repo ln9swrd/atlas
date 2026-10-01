@@ -10,7 +10,7 @@ Width="1100" Height="700">
     </Grid.RowDefinitions>
     <StackPanel Orientation="Horizontal">
       <Button Content="신규 발주" Width="90" Margin="0,0,6,0" Click="New_Click"/>
-      <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click"/>
+      <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click"/><Button Content="수정" Width="80" Margin="0,0,6,0" Click="Edit_Click"/>
       <Button Content="확정" Width="80" Margin="0,0,6,0" Click="Confirm_Click"/>
       <Button Content="입고" Width="80" Margin="0,0,6,0" Click="Process_Click"/>
       <Button Content="취소" Width="80" Margin="0,0,6,0" Click="Cancel_Click"/>
@@ -39,6 +39,8 @@ Width="1100" Height="700">
         <ColumnDefinition Width="55"/><ColumnDefinition Width="100"/>
         <ColumnDefinition Width="70"/><ColumnDefinition Width="100"/>
         <ColumnDefinition Width="70"/><ColumnDefinition Width="100"/>
+        <ColumnDefinition Width="70"/><ColumnDefinition Width="150"/>
+        <ColumnDefinition Width="80"/><ColumnDefinition Width="150"/>
       </Grid.ColumnDefinitions>
       <TextBlock Text="품목" VerticalAlignment="Center"/>
       <ComboBox x:Name="ItemBox" Grid.Column="1" Margin="4" DisplayMemberPath="Name"
@@ -46,7 +48,7 @@ Width="1100" Height="700">
       <TextBlock Text="수량" Grid.Column="2" VerticalAlignment="Center"/>
       <TextBox x:Name="QtyBox" Grid.Column="3" Margin="4" Text="1"/>
       <TextBlock Text="입고수량" Grid.Column="4" VerticalAlignment="Center"/>
-      <TextBox x:Name="ProcessQtyBox" Grid.Column="5" Margin="4" Text="1"/>
+      <TextBox x:Name="ProcessQtyBox" Grid.Column="7" Margin="4" Text="1"/><TextBlock Text="MK Lot" Grid.Column="8" VerticalAlignment="Center"/><TextBox x:Name="ProcessMkLotBox" Grid.Column="9" Margin="4"/><TextBlock Text="嫄곕옒泥?Lot" Grid.Column="8" VerticalAlignment="Center"/><TextBox x:Name="ProcessPartnerLotBox" Grid.Column="9" Margin="4"/>
       <TextBlock Text="적용단가" Grid.Column="6" VerticalAlignment="Center"/>
       <TextBox x:Name="AppliedPriceBox" Grid.Column="7" Margin="4"/>
     </Grid>

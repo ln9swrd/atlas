@@ -50,6 +50,7 @@ public partial class InOutManagementWindow : UserControl
         MovementGrid.ItemsSource = await repository.GetRecentAsync();
         LotMovementGrid.ItemsSource = await repository.GetRecentLotDetailsAsync();
         InventoryGrid.ItemsSource = await repository.GetInventoryAsync(MovementDateBox.SelectedDate?.Date ?? DateTime.Today);
+        LotInventoryGrid.ItemsSource = await repository.GetLotInventoryAsync(MovementDateBox.SelectedDate?.Date ?? DateTime.Today);
     }
 
     private async void Date_Changed(object sender, SelectionChangedEventArgs e)

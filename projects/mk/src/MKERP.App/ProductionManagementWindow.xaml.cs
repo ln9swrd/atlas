@@ -36,6 +36,7 @@ public partial class ProductionManagementWindow : UserControl
         ItemBox.SelectedIndex = -1;
         ProductionQtyBox.Text = "1";
         DefectQtyBox.Text = "0";
+        MkLotBox.Text = string.Empty;
     }
 
     private async Task LoadGridAsync()
@@ -93,6 +94,12 @@ public partial class ProductionManagementWindow : UserControl
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(MkLotBox.Text))
+        {
+            MessageBox.Show("MK Lot No???꾩닔?낅땲??");
+            return;
+        }
+
         var statusCodes = await new CodeRepository(_db).GetActiveAsync("DOCUMENT_STATUS");
         if (statusCodes.All(x => x.Key != "CONFIRMED"))
         {
@@ -111,7 +118,7 @@ public partial class ProductionManagementWindow : UserControl
         };
         var detail = new ProductionDetail { ItemId = item.Id, ProductionQty = productionQty, DefectQty = defectQty };
 
-        await new ProductionRepository(_db).CompleteAsync(production, detail);
+        await new ProductionRepository(_db).CompleteAsync(production, detail, MkLotBox.Text.Trim());
         await LoadGridAsync();
         await NewAsync();
         MessageBox.Show("생산 완료 처리되었습니다. 생산수량은 전량 입고되고 불량수량은 LOSS 출고 처리되었습니다.");
