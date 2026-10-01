@@ -1,4 +1,4 @@
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -84,6 +84,6 @@ projects/Hunyuan3D-2.1
 projects/wafermap-converter
 unreal-5-mcp
 
- 
-# MK ERP customer license files 
-projects/mk/src/MKERP.App/bin/**/license.json 
+
+# MK ERP customer license files
+projects/mk/src/MKERP.App/bin/**/license.json
