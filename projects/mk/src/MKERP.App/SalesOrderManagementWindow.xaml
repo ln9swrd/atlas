@@ -5,7 +5,8 @@ Width="1100" Height="700">
   <Grid Margin="16">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/><RowDefinition Height="150"/>
+      <RowDefinition Height="170"/><RowDefinition Height="140"/><RowDefinition Height="*"/>
     </Grid.RowDefinitions>
     <StackPanel Orientation="Horizontal">
       <Button Content="신규 수주" Width="90" Margin="0,0,6,0" Click="New_Click"/>
@@ -49,7 +50,27 @@ Width="1100" Height="700">
       <TextBlock Text="적용단가" Grid.Column="6" VerticalAlignment="Center"/>
       <TextBox x:Name="AppliedPriceBox" Grid.Column="7" Margin="4"/>
     </Grid>
-    <DataGrid x:Name="Grid" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
+    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,4,0,4">
+      <Button Content="상세행 추가" Width="90" Margin="0,0,6,0" Click="AddDetail_Click"/>
+      <Button Content="선택행 삭제" Width="90" Click="RemoveDetail_Click"/>
+      <TextBlock Text="저장 전 상세행" VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="Bold"/>
+    </StackPanel>
+    <DataGrid x:Name="DraftGrid" Grid.Row="4" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="품목" Binding="{Binding ItemName}" Width="*"/>
+        <DataGridTextColumn Header="수량" Binding="{Binding Quantity, StringFormat=N2}" Width="120"/>
+        <DataGridTextColumn Header="단가" Binding="{Binding UnitPrice, StringFormat=N2}" Width="120"/>
+      </DataGrid.Columns>
+    </DataGrid>
+    <DataGrid x:Name="DetailGrid" Grid.Row="5" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="품목" Binding="{Binding ItemName}" Width="*"/>
+        <DataGridTextColumn Header="주문수량" Binding="{Binding OrderQty, StringFormat=N2}" Width="120"/>
+        <DataGridTextColumn Header="처리수량" Binding="{Binding ProcessedQty, StringFormat=N2}" Width="120"/>
+        <DataGridTextColumn Header="잔량" Binding="{Binding RemainingQty, StringFormat=N2}" Width="120"/>
+      </DataGrid.Columns>
+    </DataGrid>
+    <DataGrid x:Name="Grid" Grid.Row="6" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionChanged="Order_SelectionChanged">
       <DataGrid.Columns>
         <DataGridTextColumn Header="문서번호" Binding="{Binding DocumentNo}" Width="150"/>
         <DataGridTextColumn Header="수주일" Binding="{Binding OrderDate, StringFormat=yyyy-MM-dd}" Width="120"/>

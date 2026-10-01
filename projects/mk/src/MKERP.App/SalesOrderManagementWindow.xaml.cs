@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,12 +15,14 @@ public partial class SalesOrderManagementWindow : UserControl
     private IReadOnlyList<Item> _items = [];
     private Price? _applicablePrice;
     private bool _loading;
+    private readonly ObservableCollection<SalesDraftRow> _draftRows = [];
 
     public SalesOrderManagementWindow(string databasePath)
     {
         InitializeComponent();
         _db = DbContextFactory.Create(databasePath);
         OrderDateBox.SelectedDate = DateTime.Today;
+        DraftGrid.ItemsSource = _draftRows;
         Loaded += async (_, _) => await LoadAsync();
         Unloaded += (_, _) => _db.Dispose();
     }
@@ -47,6 +50,37 @@ public partial class SalesOrderManagementWindow : UserControl
         DueDateBox.SelectedDate = null;
         AppliedPriceBox.Text = string.Empty;
         _applicablePrice = null;
+        _draftRows.Clear();
+        DetailGrid.ItemsSource = null;
+    }
+
+    private void AddDetail_Click(object sender, RoutedEventArgs e)
+    {
+        if (ItemBox.SelectedItem is not Item item || _applicablePrice is null)
+        {
+            MessageBox.Show("품목과 적용단가를 먼저 선택하세요.");
+            return;
+        }
+        if (!decimal.TryParse(QtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0)
+        {
+            MessageBox.Show("수량을 올바르게 입력하세요.");
+            return;
+        }
+        if (!decimal.TryParse(AppliedPriceBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var price) || price < 0)
+        {
+            MessageBox.Show("적용단가를 올바르게 입력하세요.");
+            return;
+        }
+        var partner = PartnerBox.SelectedItem as Partner;
+        var partnerItemId = partner is null ? null : _db.PartnerItems.AsNoTracking()
+            .Where(x => x.IsActive && x.PartnerId == partner.Id && x.ItemId == item.Id)
+            .Select(x => (long?)x.Id).FirstOrDefault();
+        _draftRows.Add(new SalesDraftRow(item.Id, item.Name, partnerItemId, _applicablePrice.Id, qty, price, DueDateBox.SelectedDate?.Date));
+    }
+
+    private void RemoveDetail_Click(object sender, RoutedEventArgs e)
+    {
+        if (DraftGrid.SelectedItem is SalesDraftRow row) _draftRows.Remove(row);
     }
 
     private async Task LoadGridAsync()
@@ -89,27 +123,21 @@ public partial class SalesOrderManagementWindow : UserControl
 
     private async void Save_Click(object sender, RoutedEventArgs e)
     {
-        if (PartnerBox.SelectedItem is not Partner partner || ItemBox.SelectedItem is not Item item)
+        if (PartnerBox.SelectedItem is not Partner partner)
         {
-            MessageBox.Show("거래처와 품목은 필수입니다.");
+            MessageBox.Show("거래처는 필수입니다.");
+            return;
+        }
+
+        if (_draftRows.Count == 0)
+        {
+            MessageBox.Show("저장할 상세행을 하나 이상 추가하세요.");
             return;
         }
 
         if (_applicablePrice is null)
         {
             MessageBox.Show("수주일 기준 적용 단가가 없습니다. 단가관리에서 먼저 등록하세요.");
-            return;
-        }
-
-        if (!decimal.TryParse(QtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0)
-        {
-            MessageBox.Show("수량을 올바르게 입력하세요.");
-            return;
-        }
-
-        if (!decimal.TryParse(AppliedPriceBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var appliedPrice) || appliedPrice < 0)
-        {
-            MessageBox.Show("적용단가를 올바르게 입력하세요.");
             return;
         }
 
@@ -121,13 +149,7 @@ public partial class SalesOrderManagementWindow : UserControl
             return;
         }
 
-        var partnerItemId = await _db.PartnerItems.AsNoTracking()
-            .Where(x => x.IsActive && x.PartnerId == partner.Id && x.ItemId == item.Id)
-            .Select(x => (long?)x.Id)
-            .FirstOrDefaultAsync();
-
         var orderDate = OrderDateBox.SelectedDate?.Date ?? DateTime.Today;
-        var unitPrice = appliedPrice;
         var order = new SalesOrder
         {
             DocumentNo = DocumentNoText.Text,

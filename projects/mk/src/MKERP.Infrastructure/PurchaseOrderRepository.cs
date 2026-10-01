@@ -15,13 +15,16 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         return pattern.Replace("{yyyyMM}", orderDate.ToString("yyyyMM")).Replace("{seq4}", (count + 1).ToString("D4"));
     }
 
-    public async Task AddAsync(PurchaseOrder order, PurchaseOrderDetail detail, CancellationToken cancellationToken = default)
+    public async Task AddAsync(PurchaseOrder order, IReadOnlyList<PurchaseOrderDetail> details, CancellationToken cancellationToken = default)
     {
+        if (details.Count == 0) throw new ArgumentException("발주 상세가 없습니다.", nameof(details));
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         db.PurchaseOrders.Add(order); await db.SaveChangesAsync(cancellationToken);
-        detail.PurchaseOrderId = order.Id; db.PurchaseOrderDetails.Add(detail); await db.SaveChangesAsync(cancellationToken);
+        foreach (var detail in details) { detail.PurchaseOrderId = order.Id; db.PurchaseOrderDetails.Add(detail); }
+        await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER", order.Id, "CREATE", null, order, cancellationToken: cancellationToken);
-        await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER_DETAIL", detail.Id, "CREATE", null, detail, cancellationToken: cancellationToken);
+        foreach (var detail in details)
+            await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER_DETAIL", detail.Id, "CREATE", null, detail, cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
     }
 
@@ -38,11 +41,17 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
 
     public async Task ProcessAsync(long purchaseOrderId, decimal quantity, CancellationToken cancellationToken = default)
     {
+        var detail = await db.PurchaseOrderDetails.AsNoTracking().SingleAsync(x => x.PurchaseOrderId == purchaseOrderId, cancellationToken);
+        await ProcessDetailAsync(detail.Id, quantity, cancellationToken);
+    }
+
+    public async Task ProcessDetailAsync(long purchaseOrderDetailId, decimal quantity, CancellationToken cancellationToken = default)
+    {
         if (quantity <= 0) throw new InvalidOperationException("입고수량은 0보다 커야 합니다.");
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
-        var order = await db.PurchaseOrders.SingleAsync(x => x.Id == purchaseOrderId, cancellationToken);
+        var detail = await db.PurchaseOrderDetails.SingleAsync(x => x.Id == purchaseOrderDetailId, cancellationToken);
+        var order = await db.PurchaseOrders.SingleAsync(x => x.Id == detail.PurchaseOrderId, cancellationToken);
         if (order.StatusCode != "CONFIRMED") throw new InvalidOperationException("확정 상태의 발주만 입고 처리할 수 있습니다.");
-        var detail = await db.PurchaseOrderDetails.SingleAsync(x => x.PurchaseOrderId == purchaseOrderId, cancellationToken);
         var remaining = detail.OrderQty - detail.ProcessedQty;
         if (quantity > remaining) throw new InvalidOperationException($"입고 잔량을 초과했습니다. 잔량: {remaining:N2}");
         var movement = await CreateMovementAsync(order, detail, quantity, "IN", "PURCHASE_ORDER", cancellationToken);

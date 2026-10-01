@@ -43,11 +43,17 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
 
     public async Task ProcessAsync(long salesOrderId, decimal quantity, CancellationToken cancellationToken = default)
     {
+        var detail = await db.SalesOrderDetails.AsNoTracking().SingleAsync(x => x.SalesOrderId == salesOrderId, cancellationToken);
+        await ProcessDetailAsync(detail.Id, quantity, cancellationToken);
+    }
+
+    public async Task ProcessDetailAsync(long salesOrderDetailId, decimal quantity, CancellationToken cancellationToken = default)
+    {
         if (quantity <= 0) throw new InvalidOperationException("출고수량은 0보다 커야 합니다.");
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
-        var order = await db.SalesOrders.SingleAsync(x => x.Id == salesOrderId, cancellationToken);
+        var detail = await db.SalesOrderDetails.SingleAsync(x => x.Id == salesOrderDetailId, cancellationToken);
+        var order = await db.SalesOrders.SingleAsync(x => x.Id == detail.SalesOrderId, cancellationToken);
         if (order.StatusCode != "CONFIRMED") throw new InvalidOperationException("확정 상태의 수주만 출고 처리할 수 있습니다.");
-        var detail = await db.SalesOrderDetails.SingleAsync(x => x.SalesOrderId == salesOrderId, cancellationToken);
         var remaining = detail.OrderQty - detail.ProcessedQty;
         if (quantity > remaining) throw new InvalidOperationException($"출고 잔량을 초과했습니다. 잔량: {remaining:N2}");
         var available = await GetAvailableAsync(detail.ItemId, cancellationToken);
