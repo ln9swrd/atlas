@@ -137,18 +137,6 @@ public partial class PurchaseOrderManagementWindow : UserControl
             return;
         }
 
-        if (!decimal.TryParse(QtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0)
-        {
-            MessageBox.Show("수량을 올바르게 입력하세요.");
-            return;
-        }
-
-        if (!decimal.TryParse(AppliedPriceBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var appliedPrice) || appliedPrice < 0)
-        {
-            MessageBox.Show("적용단가를 올바르게 입력하세요.");
-            return;
-        }
-
         var statusCodes = await new CodeRepository(_db).GetActiveAsync("DOCUMENT_STATUS");
         var draftCode = statusCodes.FirstOrDefault(x => x.Key == "DRAFT");
         if (draftCode is null)
@@ -157,13 +145,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
             return;
         }
 
-        var partnerItemId = await _db.PartnerItems.AsNoTracking()
-            .Where(x => x.IsActive && x.PartnerId == partner.Id && x.ItemId == item.Id)
-            .Select(x => (long?)x.Id)
-            .FirstOrDefaultAsync();
-
         var orderDate = OrderDateBox.SelectedDate?.Date ?? DateTime.Today;
-        var unitPrice = appliedPrice;
         var order = new PurchaseOrder
         {
             DocumentNo = DocumentNoText.Text,
