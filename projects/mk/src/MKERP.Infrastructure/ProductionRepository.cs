@@ -17,6 +17,10 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
 
     public async Task CompleteAsync(Production production, ProductionDetail detail, string mkLotNo, CancellationToken cancellationToken = default)
     {
+        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var lossTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "LOSS", cancellationToken);
+        var productionSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PRODUCTION", cancellationToken);
+        var defectSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PRODUCTION_DEFECT", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         db.Productions.Add(production);
         await db.SaveChangesAsync(cancellationToken);
@@ -37,6 +41,12 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
 
     public async Task CancelAsync(long productionId, CancellationToken cancellationToken = default)
     {
+        var cancelledStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CANCELLED", cancellationToken);
+        var productionSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PRODUCTION", cancellationToken);
+        var defectSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PRODUCTION_DEFECT", cancellationToken);
+        var cancelSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PRODUCTION_CANCEL", cancellationToken);
+        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var production = await db.Productions.SingleOrDefaultAsync(x => x.Id == productionId, cancellationToken)
             ?? throw new InvalidOperationException("생산 문서를 찾을 수 없습니다.");
@@ -83,6 +93,12 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
 
     private async Task<decimal> GetAvailableAsync(long itemId, CancellationToken cancellationToken)
     {
+        var cancelledStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CANCELLED", cancellationToken);
+        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var openingTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OPENING", cancellationToken);
+        var adjustTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "ADJUST", cancellationToken);
+        var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
+        var lossTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "LOSS", cancellationToken);
         var rows = await db.InOuts.AsNoTracking()
             .Where(x => x.StatusId != cancelledStatusId)
             .Join(db.InOutDetails.AsNoTracking().Where(x => x.ItemId == itemId), h => h.Id, d => d.InOutId, (h, d) => new { h.MovementTypeId, d.Quantity })
