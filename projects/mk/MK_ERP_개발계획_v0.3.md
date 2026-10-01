@@ -227,3 +227,35 @@ STATUS: IN PROGRESS
 
 판정: HOLD
 이유: 다품목 업무의 부분처리와 취소 이력 정합성에 직접 영향을 주는 설계 결정 필요.
+
+## 15. DG-01 결정 결과 — C안 확정
+Master 결정: **C안(별도 처리이력 테이블)**.
+
+### 확정 구조
+- `TB_ORDER_PROCESS_HISTORY`를 추가한다.
+- `SOURCE_TYPE_CODE`: SALES_ORDER / PURCHASE_ORDER 등 원천 문서 유형
+- `SOURCE_DETAIL_ID`: 수주/발주 상세행 ID
+- `INOUT_DETAIL_ID`: 실제 입출고 상세행 ID
+- `PROCESS_QTY`: 해당 처리수량
+- `ACTION_CODE`: PROCESS / REVERSE
+- `REVERSES_HISTORY_ID`: 취소 역처리가 원 처리이력을 역전시키는 경우 연결
+- `CREATED_AT`: 처리 이력 생성 시각
+
+### 구현 결과
+- Domain: `OrderProcessHistory` 추가
+- EF Core: DbSet 및 매핑 추가
+- Schema: `TB_ORDER_PROCESS_HISTORY` 및 조회용 인덱스 추가
+- 초기화: 기존 DB에서도 테이블을 생성하도록 migration 보강
+- 기존 단일상세 수주/발주 처리: 신규 처리부터 이력 생성
+- 취소: 역입출고와 처리이력을 `REVERSE`로 기록
+- 기존 데이터: 원천 상세행을 품목 기준으로 유일하게 식별할 수 있는 경우에만 보강
+
+### 검증 결과
+- BUILD VERIFIED: 0 warnings / 0 errors
+- DB 초기화 VERIFIED: 실제 사용자 DB에 `TB_ORDER_PROCESS_HISTORY` 생성 확인
+- 현재 처리이력 건수: 0건
+- 다품목 Runtime 처리: 아직 NOT VERIFIED
+
+### 다음 구현 범위
+C안 구조를 기준으로 수주/발주를 실제 다품목 문서로 확장한다.
+각 상세행의 부분처리는 `TB_ORDER_PROCESS_HISTORY`를 통해 실제 입출고 상세와 연결한다.
