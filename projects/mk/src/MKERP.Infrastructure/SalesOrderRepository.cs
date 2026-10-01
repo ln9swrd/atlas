@@ -67,6 +67,7 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         if (order.StatusCode != "CONFIRMED") throw new InvalidOperationException("확정 상태의 수주만 취소할 수 있습니다.");
         var detail = await db.SalesOrderDetails.SingleAsync(x => x.SalesOrderId == salesOrderId, cancellationToken);
         var movements = await db.InOuts.Where(x => x.SourceTypeCode == "SALES_ORDER" && x.SourceId == salesOrderId && x.StatusCode != "CANCELLED").ToListAsync(cancellationToken);
+        var originalHistories = await db.OrderProcessHistories.Where(x => x.SourceTypeCode == "SALES_ORDER" && x.SourceDetailId == detail.Id && x.ActionCode == "PROCESS").OrderBy(x => x.Id).ToListAsync(cancellationToken);
         var processed = movements.Join(db.InOutDetails, h => h.Id, d => d.InOutId, (h,d) => d.Quantity).Sum();
         if (processed > 0)
         {
@@ -79,6 +80,12 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_SALES_ORDER", order.Id, "CANCEL", before, order, note: $"REVERSE_IN_QTY={processed:N2}", cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
+    }
+
+    private async Task AddProcessHistoryAsync(string sourceType, long sourceDetailId, long inOutDetailId, decimal quantity, string actionCode, long? reversesHistoryId, CancellationToken cancellationToken)
+    {
+        db.OrderProcessHistories.Add(new OrderProcessHistory { SourceTypeCode=sourceType, SourceDetailId=sourceDetailId, InOutDetailId=inOutDetailId, ProcessQty=quantity, ActionCode=actionCode, ReversesHistoryId=reversesHistoryId, CreatedAt=DateTime.UtcNow });
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     private static SalesOrder Snapshot(SalesOrder x) => new() { Id=x.Id, DocumentNo=x.DocumentNo, OrderDate=x.OrderDate, PartnerId=x.PartnerId, DueDate=x.DueDate, StatusCode=x.StatusCode, Note=x.Note, CreatedAt=x.CreatedAt, UpdatedAt=x.UpdatedAt };
