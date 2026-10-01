@@ -48,6 +48,16 @@ public sealed class DatabaseInitializer(string databasePath) : IDatabaseInitiali
             cancellationToken);
     }
 
+    private static async Task EnsureOrderProcessedQtyAsync(SqliteConnection connection, string detailTable, string orderIdColumn, string sourceType)
+    {
+        if (!await HasColumnAsync(connection, detailTable, "PROCESSED_QTY", CancellationToken.None))
+            await ExecuteNonQueryAsync(connection, $"ALTER TABLE {detailTable} ADD COLUMN PROCESSED_QTY NUMERIC NOT NULL DEFAULT 0;", CancellationToken.None);
+
+        var movementType = sourceType == "SALES_ORDER" ? "OUT" : "IN";
+        var sql = $"UPDATE {detailTable} SET PROCESSED_QTY = COALESCE((SELECT SUM(d.QUANTITY) FROM TB_INOUT h JOIN TB_INOUT_DETAIL d ON d.INOUT_ID=h.INOUT_ID WHERE h.SOURCE_TYPE_CODE='{sourceType}' AND h.SOURCE_ID={detailTable}.{orderIdColumn} AND h.MOVEMENT_TYPE_CODE='{movementType}' AND h.STATUS_CODE <> 'CANCELLED'), 0)";
+        await ExecuteNonQueryAsync(connection, sql, CancellationToken.None);
+    }
+
     private static async Task<bool> HasColumnAsync(SqliteConnection connection, string table, string column, CancellationToken cancellationToken)
     {
         await using var command = connection.CreateCommand();
