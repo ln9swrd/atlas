@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790857483
+::res://::1790859486
 export_presets.cfg::TextFile::-1::1790684967::0::1::::<><><>0<>0<><>::
 game_controller.gd::GDScript::8692213070628158787::1790854698::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790760072::0::1::::<>Node2D<><>0<>0<><>::
@@ -102,7 +102,7 @@ towers.json::JSON::-1::1790613503::0::1::::<><><>0<>0<><>::
 asset_catalog_editor.gd::GDScript::199735142467977770::1790609244::0::1::::<>Window<><>0<>0<><>::
 asset_catalog_editor.tscn::PackedScene::-1::1790609468::0::1::::<><><>0<>0<><>::res://editor/asset_catalog_editor.gd
 asset_region_view.gd::GDScript::7416892912445805548::1790517936::0::1::::AssetRegionView<>Control<><>0<>0<><>::
-content_editor.gd::GDScript::1241770450234517523::1790858024::0::1::::<>Control<><>0<>0<><>::
+content_editor.gd::GDScript::1241770450234517523::1790858619::0::1::::<>Control<><>0<>0<><>::
 content_editor.tscn::PackedScene::-1::1790683767::0::1::::<><><>0<>0<><>::res://editor/content_editor.gd
 content_validator.gd::GDScript::6950182015049002367::1790769510::0::1::::<>Node<><>0<>0<><>::
 editor_canvas.gd::GDScript::8515960973698181157::1790791738::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
@@ -112,8 +112,8 @@ image_editor.gd::GDScript::850829310022179836::1790613904::0::1::::<>Control<><>
 image_editor.tscn::PackedScene::-1::1790609468::0::1::::<><><>0<>0<><>::res://editor/image_editor.gd
 image_editor_state.gd::GDScript::302610657414012107::1790609058::0::1::::ImageEditorState<>RefCounted<><>0<>0<><>::
 image_texture_loader.gd::GDScript::2404187261731203358::1790511154::0::1::::<>RefCounted<><>0<>0<><>::
-map_editor.gd::GDScript::612161265932897584::1790857813::0::1::::MapEditorMain<>Control<><>0<>0<><>::
-map_editor.tscn::PackedScene::56458622543686955::1790857808::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
+map_editor.gd::GDScript::612161265932897584::1790859205::0::1::::MapEditorMain<>Control<><>0<>0<><>::
+map_editor.tscn::PackedScene::56458622543686955::1790859200::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
 robot_editor.gd::GDScript::1026590027043768138::1790771599::0::1::::RobotEditorMain<>Control<><>0<>0<><>::
 robot_editor.tscn::PackedScene::-1::1790683767::0::1::::<><><>0<>0<><>::res://editor/robot_editor.gd
 stage_editor.gd::GDScript::1845567455619979794::1790768391::0::1::::StageEditorMain<>Control<><>0<>0<><>::

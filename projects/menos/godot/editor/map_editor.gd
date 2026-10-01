@@ -13,12 +13,11 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var spin_placement_height: SpinBox = $MainLayout/Inspector/VBox/PlacementSizeRow/SpinPlacementHeight
 @onready var btn_resize_placement: Button = $MainLayout/Inspector/VBox/BtnResizePlacement
 @onready var btn_delete_placement: Button = $MainLayout/Inspector/VBox/BtnDeletePlacement
-@onready var asset_rows: VBoxContainer = $MainLayout/Inspector/VBox/AssetScroll/AssetRows
-@onready var btn_open_asset_catalog: Button = $MainLayout/Inspector/VBox/BtnOpenAssetCatalog
-@onready var btn_place_catalog_asset: Button = $MainLayout/Inspector/VBox/BtnPlaceCatalogAsset
-@onready var asset_preview: TextureRect = $MainLayout/Inspector/VBox/AssetPreview
-@onready var lbl_asset_preview_status: Label = $MainLayout/Inspector/VBox/LblAssetPreviewStatus
-@onready var lbl_asset_details: Label = $MainLayout/Inspector/VBox/LblAssetDetails
+@onready var asset_rows: VBoxContainer = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetScroll/AssetRows
+@onready var btn_open_asset_catalog: Button = $MainLayout/Toolbox/VBox/AssetCatalogSection/BtnOpenAssetCatalog
+@onready var asset_preview: TextureRect = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetPreview
+@onready var lbl_asset_preview_status: Label = $MainLayout/Toolbox/VBox/AssetCatalogSection/LblAssetPreviewStatus
+@onready var lbl_asset_details: Label = $MainLayout/Toolbox/VBox/AssetCatalogSection/LblAssetDetails
 @onready var btn_asset_mode: Button = $MainLayout/Toolbox/VBox/ModeBar/BtnAssetMode
 @onready var btn_gameplay_mode: Button = $MainLayout/Toolbox/VBox/ModeBar/BtnGameplayMode
 @onready var gameplay_tools: VBoxContainer = $MainLayout/Toolbox/VBox/GameplayTools
@@ -106,7 +105,7 @@ func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: 
 		return
 	catalog_entries.clear()
 	asset_preview.texture = null
-	lbl_asset_preview_status.text = "Select an asset to preview its source region."
+	lbl_asset_preview_status.text = ""
 	preview_texture_cache.clear()
 	for value in parsed.get("assets", []):
 		if value is Dictionary:
@@ -122,7 +121,7 @@ func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: 
 		selected_asset_id = ""
 		if canvas:
 			canvas.set_catalog_asset({})
-		lbl_asset_details.text = "Select an asset, then click the canvas to place it."
+		lbl_asset_details.text = ""
 
 func _find_catalog_asset_index(asset_id: String) -> int:
 	if asset_id.is_empty():
@@ -219,7 +218,7 @@ func _select_catalog_asset(index: int) -> void:
 		if layer_by_group.has(asset_group):
 			canvas.set_active_layer(str(layer_by_group[asset_group]))
 	canvas.set_edit_mode("PAINT")
-	update_selected_tile_label("Click canvas to place selected catalog asset")
+	update_selected_tile_label(str(entry.get("display_name", entry.get("asset_id", "Selected asset"))))
 
 func _on_catalog_image_pressed(index: int) -> void:
 	_select_catalog_asset(index)
@@ -482,6 +481,9 @@ func _set_mode_ui(mode: String) -> void:
 	btn_gameplay_mode.button_pressed = is_gameplay_mode
 	gameplay_tools.visible = is_gameplay_mode
 	for node in [lbl_layer_title, option_layer, $MainLayout/Toolbox/VBox/BtnSelect, $MainLayout/Toolbox/VBox/BtnErase, eraser_size_row]:
+		node.visible = not is_gameplay_mode
+	var asset_nodes = [lbl_placement_size, spin_placement_width.get_parent(), btn_resize_placement, btn_delete_placement, $MainLayout/Toolbox/VBox/AssetCatalogSection, asset_preview, lbl_asset_preview_status, lbl_asset_details]
+	for node in asset_nodes:
 		node.visible = not is_gameplay_mode
 
 func _on_mode_tab_gui_input(event: InputEvent, mode: String) -> void:

@@ -23,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Toolbox" type="PanelContainer" parent="MainLayout" unique_id=1038340238]
-custom_minimum_size = Vector2(230, 0)
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="MainLayout/Toolbox" unique_id=1701830802]
@@ -41,7 +41,7 @@ text = "Active Tool: [SELECT]"
 layout_mode = 2
 text = "Selected: None"
 
-[node name="ModeBar" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
+[node name="ModeBar" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 
 [node name="BtnAssetMode" type="Button" parent="MainLayout/Toolbox/VBox/ModeBar"]
@@ -56,6 +56,46 @@ layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "게임플레이"
+
+[node name="AssetCatalogSection" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LblAssetCatalog" type="Label" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
+layout_mode = 2
+text = " ASSET CATALOG"
+
+[node name="BtnOpenAssetCatalog" type="Button" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
+layout_mode = 2
+text = "Asset Data Authoring"
+
+[node name="AssetScroll" type="ScrollContainer" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AssetRows" type="VBoxContainer" parent="MainLayout/Toolbox/VBox/AssetCatalogSection/AssetScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AssetPreview" type="TextureRect" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LblAssetPreviewStatus" type="Label" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = ""
+autowrap_mode = 2
+
+[node name="LblAssetDetails" type="Label" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = ""
+autowrap_mode = 2
 
 [node name="HSeparator1" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=304884929]
 layout_mode = 2
@@ -166,7 +206,7 @@ size_flags_horizontal = 3
 script = ExtResource("2_canvas")
 
 [node name="Inspector" type="PanelContainer" parent="MainLayout" unique_id=1856458715]
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="MainLayout/Inspector" unique_id=2011114957]
@@ -328,45 +368,6 @@ disabled = true
 layout_mode = 2
 text = "Delete Placement"
 disabled = true
-
-[node name="HSeparatorCatalog" type="HSeparator" parent="MainLayout/Inspector/VBox"]
-layout_mode = 2
-
-[node name="LblAssetCatalog" type="Label" parent="MainLayout/Inspector/VBox"]
-layout_mode = 2
-text = " ASSET CATALOG"
-
-[node name="BtnOpenAssetCatalog" type="Button" parent="MainLayout/Inspector/VBox"]
-layout_mode = 2
-text = "Asset Data Authoring"
-
-[node name="AssetScroll" type="ScrollContainer" parent="MainLayout/Inspector/VBox"]
-custom_minimum_size = Vector2(0, 220)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="AssetRows" type="VBoxContainer" parent="MainLayout/Inspector/VBox/AssetScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="AssetPreview" type="TextureRect" parent="MainLayout/Inspector/VBox"]
-custom_minimum_size = Vector2(0, 150)
-layout_mode = 2
-size_flags_horizontal = 3
-expand_mode = 1
-stretch_mode = 5
-
-[node name="LblAssetPreviewStatus" type="Label" parent="MainLayout/Inspector/VBox"]
-custom_minimum_size = Vector2(0, 28)
-layout_mode = 2
-text = "Select an asset to preview its source region."
-autowrap_mode = 2
-
-[node name="LblAssetDetails" type="Label" parent="MainLayout/Inspector/VBox"]
-custom_minimum_size = Vector2(0, 132)
-layout_mode = 2
-text = "Select a catalog asset to place it."
-autowrap_mode = 2
 
 [node name="BottomBar" type="PanelContainer" parent="." unique_id=1815266710]
 layout_mode = 1
