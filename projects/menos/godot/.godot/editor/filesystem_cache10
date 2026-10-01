@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790855144
+::res://::1790857483
 export_presets.cfg::TextFile::-1::1790684967::0::1::::<><><>0<>0<><>::
 game_controller.gd::GDScript::8692213070628158787::1790854698::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790760072::0::1::::<>Node2D<><>0<>0<><>::
@@ -17,7 +17,7 @@ ground4.png::CompressedTexture2D::2454201290405000494::1790387677::1790388556::1
 ground.png::CompressedTexture2D::5993783051308976416::1790272451::1790274568::1::::<><><>0<>0<>f5a92f3085c9446487d21f9c041c1ce6<>res://.godot/imported/ground.png-6a1ead9ba4b2e09759f90d97b2a463cc.ctex::
 ground_basic_32.svg::CompressedTexture2D::1624442912138883870::1790278305::1790278378::1::::<><><>0<>0<>a802c495a2eeff7633ff502f8899c3c1<>res://.godot/imported/ground_basic_32.svg-a85e55b09a2ee0bb2769d3b2fbab8df7.ctex::
 map boundary.png::CompressedTexture2D::755254466062359743::1790273879::1790274568::1::::<><><>0<>0<>581150f22aff74af7163071a336f6d26<>res://.godot/imported/map boundary.png-99916eacee4cb8249c3008634144394c.ctex::
-northbridge_tileset.tres::TileSet::1037631523742254135::1790410256::0::1::::<><><>0<>0<><>::uid://crnoy4hhjdr5y::::res://assets/menos/maps/ground.png<>uid://dqvle15alh37p::::res://assets/menos/maps/road3.png<>uid://k036v5x63blv::::res://assets/menos/maps/map boundary.png<>uid://dbuk3tc6ieukd::::res://assets/menos/maps/forest.png<>uid://xe5lqckk1bkw::::res://assets/menos/maps/ground_basic_32.svg<>uid://b1bwlkrgxys25::::res://assets/menos/maps/a7.png<>uid://ba73lphisd33o::::res://assets/menos/maps/ground4.png
+northbridge_tileset.tres::TileSet::1037631523742254135::1790856809::0::1::::<><><>0<>0<><>::uid://crnoy4hhjdr5y::::res://assets/menos/maps/ground.png<>uid://dqvle15alh37p::::res://assets/menos/maps/road3.png<>uid://k036v5x63blv::::res://assets/menos/maps/map boundary.png<>uid://dbuk3tc6ieukd::::res://assets/menos/maps/forest.png<>uid://xe5lqckk1bkw::::res://assets/menos/maps/ground_basic_32.svg<>uid://b1bwlkrgxys25::::res://assets/menos/maps/a7.png<>uid://ba73lphisd33o::::res://assets/menos/maps/ground4.png<>res://images/active/SF 군사 지형 타일셋 아틀라스.png
 road2.png::CompressedTexture2D::1400819897129809030::1790278933::1790279238::1::::<><><>0<>0<>9516afa86d28536fa6eeb7e89cbd2b79<>res://.godot/imported/road2.png-23966a4445f51a2f3a0ee0499f9d1118.ctex::
 road3.png::CompressedTexture2D::8326311924185371815::1790279119::1790279238::1::::<><><>0<>0<>ee644ed9a21244c3f45cab5d0e6a0c49<>res://.godot/imported/road3.png-d2931a5d11bbea8120fdbf9d38ca245a.ctex::
 road.png::CompressedTexture2D::8888889670474614793::1790272893::1790274568::1::::<><><>0<>0<>ab460dd8648d92714cb3f7edcc5e04d8<>res://.godot/imported/road.png-a12f3e71831a7d56f91c43fa3b7a3192.ctex::
@@ -54,8 +54,8 @@ tower_slot_selected.png::CompressedTexture2D::221656078746077824::1790251375::17
 allied_units.json::JSON::-1::1790760072::0::1::::<><><>0<>0<><>::
 ::res://content/campaign/::1790420733
 main_campaign.json::JSON::-1::1790420733::0::1::::<><><>0<>0<><>::
-::res://content/editor/::1790502881
-asset_catalog.json::JSON::-1::1790504662::0::1::::<><><>0<>0<><>::
+::res://content/editor/::1790857328
+asset_catalog.json::JSON::-1::1790857339::0::1::::<><><>0<>0<><>::
 ::res://content/editor/edited_assets/::1790614057
 asset_tile_a_7_edit_14449287.png::CompressedTexture2D::5229816135099783188::1790502881::1790503201::1::::<><><>0<>0<>a0b6f8e0adf9a2a54b7b68876a3edc7d<>res://.godot/imported/asset_tile_a_7_edit_14449287.png-820773d900f9f4bbf0312f2c716af71a.ctex::
 asset_tile_ground_1_edit_217984384.png::CompressedTexture2D::8252042925242212953::1790502881::1790503201::1::::<><><>0<>0<>89abfb100e51884b32cdccab74a3b533<>res://.godot/imported/asset_tile_ground_1_edit_217984384.png-4c2f0bb382b5fce0d2bbcff3777d7260.ctex::
@@ -135,8 +135,8 @@ impact_explosion.png::CompressedTexture2D::7155184752949139812::1790259875::1790
 tower_cannon_anim.png::CompressedTexture2D::8879670591382398049::1790259875::1790426035::1::::<><><>0<>0<>e2a7ed720a150fa6028ad906e50ae9eb<>res://.godot/imported/tower_cannon_anim.png-efc475dbc81e1de460ed2562df9eaa58.ctex::
 tower_gatling_anim.png::CompressedTexture2D::1204124613717370849::1790259875::1790426035::1::::<><><>0<>0<>d4cedb84911b1e04e8bf6fc1abad2188<>res://.godot/imported/tower_gatling_anim.png-34b5fae1c0f5c982c8debb329b558035.ctex::
 ::res://images/_quarantine/::1790773528
-::res://images/active/::1790856319
-_catalog_preview_tmp.jpg::CompressedTexture2D::7397723707791141661::1790856319::1790856344::1::::<><><>0<>0<>dcbbe68191a065883933ec6e5722277d<>res://.godot/imported/_catalog_preview_tmp.jpg-c190331428a905046c2bd0f01b06a57b.ctex::
+::res://images/active/::1790857233
+_atlas_thumb.jpg::CompressedTexture2D::5568602788923344757::1790856857::1790857233::1::::<><><>0<>0<>06bdc721483ad449061aba4eb6dbf81d<>res://.godot/imported/_atlas_thumb.jpg-0d0d13e1604b3c6908ab94078bf5b710.ctex::
 SF 군사 지형 타일셋 아틀라스.png::CompressedTexture2D::7917815668546026698::1790856178::1790856273::1::::<><><>0<>0<>26c3c67b5736603d5a08610c91a090d6<>res://.godot/imported/SF 군사 지형 타일셋 아틀라스.png-8c65853216ecaa72014251bbe7933f4e.ctex::
 ::res://images/animation/::1790773630
 a2.png::CompressedTexture2D::7445193694133957385::1790251376::1790426036::1::::<><><>0<>0<>44ddd89d29106ec53a23ac63dce88e8c<>res://.godot/imported/a2.png-9f7ec09fd13fb75e285f41cb5a799463.ctex::
@@ -259,7 +259,7 @@ ChatGPT Image 2026년 9월 29일 오후 10_32_33.png::CompressedTexture2D::50373
 ChatGPT Image 2026년 9월 29일 오후 10_33_51.png::CompressedTexture2D::7498427597230104811::1790688832::1790692109::1::::<><><>0<>0<>f47a6ac5703b5e507f86f3837c12cf91<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_33_51.png-7da6ccf90c096000c28b2e1b1d731b8d.ctex::
 ChatGPT Image 2026년 9월 29일 오후 10_35_14.png::CompressedTexture2D::8386656307422546696::1790688915::1790692109::1::::<><><>0<>0<>cec300d01a2b00b92e69b1ebe2e11818<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_35_14.png-f4c049a8936feb4f95debd5195ed0807.ctex::
 ::res://map_data/::1790519478
-northbridge_sector_01.json::JSON::-1::1790519478::0::1::::<><><>0<>0<><>::
+northbridge_sector_01.json::JSON::-1::1790856809::0::1::::<><><>0<>0<><>::
 ::res://scripts/::1790770016
 allied_unit_ai.gd::GDScript::6916198602555178148::1790770845::0::1::::AlliedUnitAI<>RefCounted<><>0<>0<><>::
 allied_unit_definition.gd::GDScript::4241627096230391966::1790760072::0::1::::AlliedUnitDefinition<>RefCounted<><>0<>0<><>::
