@@ -1131,33 +1131,42 @@ func update_robot(delta: float) -> void:
 	if selected_enemy_index >= enemies.size() or (selected_enemy_index >= 0 and enemies[selected_enemy_index].hp <= 0.0):
 		selected_enemy_index = -1
 	if not robot.active or robot.hp <= 0.0: return
-	if robot.state_get("target_pos", null) != null and run_state in [RunState.READY, RunState.RUNNING]:
-		var move_target: Vector2 = robot.state_get("target_pos", robot.position)
-		var distance_to_target := robot.position.distance_to(move_target)
-		if distance_to_target <= 6.0:
-			robot.position = move_target
-			robot.erase_state("target_pos")
-			robot["is_moving"] = false
-		else:
-			var step: float = float(get_robot_runtime_stats().speed) * delta
-			robot.position = robot.position.move_toward(move_target, step)
-			robot["is_moving"] = true
-	else:
-		robot["is_moving"] = false
+	robot["is_moving"] = false
 	robot["special"] = max(0.0, float(robot.state_get("special", 0.0)) - delta)
 	if float(robot.state_get("special", 0.0)) > 0.0:
 		return
 	robot["energy"] = min(float(robot_energy_definition.get("max", 0.0)), float(robot.state_get("energy", float(robot_energy_definition.get("max", 0.0)))) + float(robot_energy_definition.get("regen", 0.0)) * delta)
 	robot.attack = max(0.0, float(robot.state_get("attack", 0.0)) - delta)
 	robot.area -= delta; robot.pierce -= delta
+
+	# Automatic attack also drives movement: approach the selected/nearest enemy until weapon range is reached.
+	var auto_target: EnemyRuntimeState = null
 	if robot_auto_attack and run_state == RunState.RUNNING:
-		var auto_target := get_selected_robot_target()
+		auto_target = get_selected_robot_target()
 		if auto_target == null:
-			auto_target = find_target(robot.position, robot_weapon_definition.range)
+			auto_target = find_target(robot.position, INF)
 			if auto_target != null:
 				selected_enemy_index = enemies.find(auto_target)
-		if auto_target != null and auto_target.position.distance_to(robot.position) <= robot_weapon_definition.range:
-			try_basic_attack()
+		if auto_target != null:
+			var distance_to_target := robot.position.distance_to(auto_target.position)
+			if distance_to_target > robot_weapon_definition.range:
+				robot["target_pos"] = auto_target.position
+				var step: float = float(get_robot_runtime_stats().speed) * delta
+				robot.position = robot.position.move_toward(auto_target.position, step)
+				robot["is_moving"] = true
+			else:
+				robot.erase_state("target_pos")
+				try_basic_attack()
+	elif robot.state_get("target_pos", null) != null:
+		var move_target: Vector2 = robot.state_get("target_pos", robot.position)
+		var distance_to_target := robot.position.distance_to(move_target)
+		if distance_to_target <= 6.0:
+			robot.position = move_target
+			robot.erase_state("target_pos")
+		else:
+			var step: float = float(get_robot_runtime_stats().speed) * delta
+			robot.position = robot.position.move_toward(move_target, step)
+			robot["is_moving"] = true
 
 func try_basic_attack() -> bool:
 	if not robot.active or robot.hp <= 0.0 or run_state != RunState.RUNNING:
