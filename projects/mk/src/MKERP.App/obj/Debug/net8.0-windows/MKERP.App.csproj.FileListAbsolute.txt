@@ -84,3 +84,5 @@ D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\refint\MKERP.App.dll
 D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\MKERP.App.pdb
 D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\MKERP.App.genruntimeconfig.cache
 D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\ref\MKERP.App.dll
+D:\Atlas\projects\mk\src\MKERP.App\bin\Debug\net8.0-windows\MKERP.Licensing.dll
+D:\Atlas\projects\mk\src\MKERP.App\bin\Debug\net8.0-windows\MKERP.Licensing.pdb
