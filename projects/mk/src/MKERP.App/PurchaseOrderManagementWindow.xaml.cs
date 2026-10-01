@@ -171,11 +171,23 @@ public partial class PurchaseOrderManagementWindow : UserControl
         await NewAsync();
     }
 
+    private async void Order_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (Grid.SelectedItem is not PurchaseOrder order) { DetailGrid.ItemsSource = null; return; }
+        DetailGrid.ItemsSource = await _db.PurchaseOrderDetails.AsNoTracking()
+            .Where(x => x.PurchaseOrderId == order.Id)
+            .Join(_db.Items.AsNoTracking(), d => d.ItemId, i => i.Id, (d, i) => new PurchaseDetailRow
+            {
+                Id = d.Id, ItemName = i.Name, OrderQty = d.OrderQty, ProcessedQty = d.ProcessedQty,
+                RemainingQty = d.OrderQty - d.ProcessedQty
+            }).ToListAsync();
+    }
+
     private async void Process_Click(object sender, RoutedEventArgs e)
     {
-        if (Grid.SelectedItem is not PurchaseOrder order) { MessageBox.Show("입고할 발주를 목록에서 선택하세요."); return; }
+        if (DetailGrid.SelectedItem is not PurchaseDetailRow detail) { MessageBox.Show("입고할 상세행을 선택하세요."); return; }
         if (!decimal.TryParse(ProcessQtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0) { MessageBox.Show("입고수량을 올바르게 입력하세요."); return; }
-        try { await new PurchaseOrderRepository(_db).ProcessAsync(order.Id, qty); await LoadGridAsync(); MessageBox.Show($"입고 {qty:N2}가 재고에 반영되었습니다."); }
+        try { await new PurchaseOrderRepository(_db).ProcessDetailAsync(detail.Id, qty); await LoadGridAsync(); MessageBox.Show($"입고 {qty:N2}가 재고에 반영되었습니다."); }
         catch (InvalidOperationException ex) { MessageBox.Show(ex.Message); }
     }
 
@@ -208,4 +220,14 @@ public partial class PurchaseOrderManagementWindow : UserControl
 
     private void Excel_Click(object sender, RoutedEventArgs e) => ExcelExportHelper.Export(Grid, $"발주_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", "발주");
     private void Print_Click(object sender, RoutedEventArgs e) => PrintHelper.Print(Grid, "발주관리");
+
+    private sealed record PurchaseDraftRow(long ItemId, string ItemName, long PriceId, decimal Quantity, decimal UnitPrice, DateTime? DueDate);
+    private sealed class PurchaseDetailRow
+    {
+        public long Id { get; init; }
+        public string ItemName { get; init; } = string.Empty;
+        public decimal OrderQty { get; init; }
+        public decimal ProcessedQty { get; init; }
+        public decimal RemainingQty { get; init; }
+    }
 }
