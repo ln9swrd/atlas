@@ -160,27 +160,39 @@ public partial class SalesOrderManagementWindow : UserControl
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-        var detail = new SalesOrderDetail
+        var details = _draftRows.Select(row => new SalesOrderDetail
         {
-            ItemId = item.Id,
-            PartnerItemId = partnerItemId,
-            PriceId = _applicablePrice.Id,
-            OrderQty = qty,
-            AppliedUnitPrice = unitPrice,
-            Amount = qty * unitPrice,
-            DueDate = DueDateBox.SelectedDate?.Date
-        };
+            ItemId = row.ItemId,
+            PartnerItemId = row.PartnerItemId,
+            PriceId = row.PriceId,
+            OrderQty = row.Quantity,
+            AppliedUnitPrice = row.UnitPrice,
+            Amount = row.Quantity * row.UnitPrice,
+            DueDate = row.DueDate
+        }).ToList();
 
-        await new SalesOrderRepository(_db).AddAsync(order, detail);
+        await new SalesOrderRepository(_db).AddAsync(order, details);
         await LoadGridAsync();
         await NewAsync();
     }
 
+    private async void Order_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (Grid.SelectedItem is not SalesOrder order) { DetailGrid.ItemsSource = null; return; }
+        DetailGrid.ItemsSource = await _db.SalesOrderDetails.AsNoTracking()
+            .Where(x => x.SalesOrderId == order.Id)
+            .Join(_db.Items.AsNoTracking(), d => d.ItemId, i => i.Id, (d, i) => new SalesDetailRow
+            {
+                Id = d.Id, ItemName = i.Name, OrderQty = d.OrderQty, ProcessedQty = d.ProcessedQty,
+                RemainingQty = d.OrderQty - d.ProcessedQty
+            }).ToListAsync();
+    }
+
     private async void Process_Click(object sender, RoutedEventArgs e)
     {
-        if (Grid.SelectedItem is not SalesOrder order) { MessageBox.Show("출고할 수주를 목록에서 선택하세요."); return; }
+        if (DetailGrid.SelectedItem is not SalesDetailRow detail) { MessageBox.Show("출고할 상세행을 선택하세요."); return; }
         if (!decimal.TryParse(ProcessQtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0) { MessageBox.Show("출고수량을 올바르게 입력하세요."); return; }
-        try { await new SalesOrderRepository(_db).ProcessAsync(order.Id, qty); await LoadGridAsync(); MessageBox.Show($"출고 {qty:N2}가 재고에 반영되었습니다."); }
+        try { await new SalesOrderRepository(_db).ProcessDetailAsync(detail.Id, qty); await LoadGridAsync(); MessageBox.Show($"출고 {qty:N2}가 재고에 반영되었습니다."); }
         catch (InvalidOperationException ex) { MessageBox.Show(ex.Message); }
     }
 
