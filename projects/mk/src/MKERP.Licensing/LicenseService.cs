@@ -1,8 +1,10 @@
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text.Json;
 
 namespace MKERP.Licensing;
 
+[SupportedOSPlatform("windows")]
 public sealed class LicenseService
 {
     public const string ProductName = "MK ERP";
