@@ -2,9 +2,16 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using MKERP.Licensing;
 
+if (args.Length == 1 && string.Equals(args[0], "machine", StringComparison.OrdinalIgnoreCase))
+{
+    Console.WriteLine(LicenseService.GetMachineFingerprint());
+    return 0;
+}
+
 if (args.Length < 3)
 {
-    Console.WriteLine("사용법: MKERP.LicenseTool <private-key.pem> <customer-id> <machine-fingerprint> [days] [license-id]");
+    Console.WriteLine("사용법: MKERP.LicenseTool machine");
+    Console.WriteLine("또는: MKERP.LicenseTool <private-key.pem> <customer-id> <machine-fingerprint> [days] [license-id]");
     Console.WriteLine("days를 생략하면 영구 라이선스입니다.");
     return 2;
 }

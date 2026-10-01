@@ -17,15 +17,15 @@
           "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "net8.0-windows"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "framework": "net8.0",
-            "targetAlias": "net8.0",
+          "net8.0-windows": {
+            "framework": "net8.0-windows7.0",
+            "targetAlias": "net8.0-windows",
             "projectReferences": {
               "D:\\Atlas\\projects\\mk\\src\\MKERP.Licensing\\MKERP.Licensing.csproj": {
                 "projectPath": "D:\\Atlas\\projects\\mk\\src\\MKERP.Licensing\\MKERP.Licensing.csproj"
@@ -46,9 +46,9 @@
         "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
-        "net8.0": {
-          "framework": "net8.0",
-          "targetAlias": "net8.0",
+        "net8.0-windows": {
+          "framework": "net8.0-windows7.0",
+          "targetAlias": "net8.0-windows",
           "imports": [
             "net461",
             "net462",
