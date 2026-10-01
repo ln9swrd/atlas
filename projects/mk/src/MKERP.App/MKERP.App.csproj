@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><LangVersion>latest</LangVersion></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MKERP.Application\MKERP.Application.csproj" />
+    <ProjectReference Include="..\MKERP.Infrastructure\MKERP.Infrastructure.csproj" />
+    <ProjectReference Include="..\MKERP.Reporting\MKERP.Reporting.csproj" />
+  </ItemGroup>
+</Project>
