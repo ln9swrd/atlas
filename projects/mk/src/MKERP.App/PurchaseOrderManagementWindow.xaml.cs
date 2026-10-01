@@ -121,7 +121,8 @@ public partial class PurchaseOrderManagementWindow : UserControl
 
     private async void Edit_Click(object sender, RoutedEventArgs e)
     {
-        if (Grid.SelectedItem is not PurchaseOrder order || order.StatusId != "DRAFT") { MessageBox.Show("작성 상태의 발주만 수정할 수 있습니다."); return; }
+        var draftStatusId = (await new CodeRepository(_db).GetActiveAsync("DOCUMENT_STATUS")).First(x => x.Key == "DRAFT").Id;
+        if (Grid.SelectedItem is not PurchaseOrder order || order.StatusId != draftStatusId) { MessageBox.Show("작성 상태의 발주만 수정할 수 있습니다."); return; }
         _editingOrderId = order.Id;
         DocumentNoText.Text = order.DocumentNo;
         OrderDateBox.SelectedDate = order.OrderDate;
@@ -167,7 +168,7 @@ public partial class PurchaseOrderManagementWindow : UserControl
             OrderDate = orderDate,
             PartnerId = partner.Id,
             DueDate = DueDateBox.SelectedDate?.Date,
-            StatusId = draftCode.Key,
+            StatusId = draftCode.Id,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };

@@ -112,7 +112,7 @@ public partial class ProductionManagementWindow : UserControl
         {
             DocumentNo = DocumentNoText.Text,
             ProductionDate = date,
-            StatusId = "CONFIRMED",
+            StatusId = statusCodes.First(x => x.Key == "CONFIRMED").Id,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };

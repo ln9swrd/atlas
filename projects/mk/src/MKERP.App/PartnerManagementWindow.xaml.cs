@@ -58,7 +58,7 @@ public partial class PartnerManagementWindow : UserControl
         {
             await repo.AddAsync(new Partner
             {
-                Code = CodeBox.Text.Trim(), Name = NameBox.Text.Trim(), TypeId = type.Key,
+                Code = CodeBox.Text.Trim(), Name = NameBox.Text.Trim(), TypeId = type.Id,
                 CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
             });
         }
@@ -66,7 +66,7 @@ public partial class PartnerManagementWindow : UserControl
         {
             _selected.Code = CodeBox.Text.Trim();
             _selected.Name = NameBox.Text.Trim();
-            _selected.TypeId = type.Key;
+            _selected.TypeId = type.Id;
             _selected.UpdatedAt = DateTime.UtcNow;
             await repo.UpdateAsync(_selected);
         }

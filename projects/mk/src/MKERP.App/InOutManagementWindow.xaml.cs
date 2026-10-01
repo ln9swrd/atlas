@@ -148,9 +148,9 @@ public partial class InOutManagementWindow : UserControl
             {
                 DocumentNo = DocumentNoText.Text,
                 MovementDate = date,
-                MovementTypeId = type.Key,
+                MovementTypeId = type.Id,
                 PartnerId = partner.Id,
-                StatusId = status.Key,
+                StatusId = status.Id,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             }, details);
