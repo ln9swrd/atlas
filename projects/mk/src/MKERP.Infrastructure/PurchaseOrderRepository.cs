@@ -33,7 +33,7 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         var draftStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "DRAFT", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var current = await db.PurchaseOrders.SingleAsync(x => x.Id == order.Id, cancellationToken);
-        if (current.StatusId != draftStatusId) throw new InvalidOperationException("?묒꽦 ?곹깭??諛쒖＜留??섏젙?????덉뒿?덈떎.");
+        if (current.StatusId != draftStatusId) throw new InvalidOperationException("작성 상태의 발주만 수정할 수 있습니다.");
         var existing = await db.PurchaseOrderDetails.Where(x => x.PurchaseOrderId == order.Id).ToListAsync(cancellationToken);
         foreach (var row in existing)
             if (!details.Any(x => x.Id == row.Id)) row.IsActive = false;
@@ -68,7 +68,7 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         var confirmedStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CONFIRMED", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var order = await db.PurchaseOrders.SingleAsync(x => x.Id == purchaseOrderId, cancellationToken);
-        if (order.StatusId != draftStatusId) throw new InvalidOperationException("?묒꽦以??곹깭??諛쒖＜留??뺤젙?????덉뒿?덈떎.");
+        if (order.StatusId != draftStatusId) throw new InvalidOperationException("작성중 상태의 발주만 확정할 수 있습니다.");
         var before = Snapshot(order); order.StatusId = confirmedStatusId; order.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER", order.Id, "CONFIRM", before, order, cancellationToken: cancellationToken);
@@ -78,7 +78,7 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
     public async Task ProcessAsync(long purchaseOrderId, decimal quantity, CancellationToken cancellationToken = default)
     {
         var detail = await db.PurchaseOrderDetails.AsNoTracking().SingleAsync(x => x.PurchaseOrderId == purchaseOrderId, cancellationToken);
-        throw new InvalidOperationException("Lot??筌왖?類λ퉸????몃빍?? ?怨멸쉭 筌ｌ꼶??疫꿸퀡????????뤾쉭??");
+        throw new InvalidOperationException("Lot을 지정해야 합니다. 상세 처리 기능을 사용하세요.");
     }
 
     public async Task ProcessDetailAsync(long purchaseOrderDetailId, decimal quantity, string mkLotNo, string partnerLotNo, CancellationToken cancellationToken = default)
@@ -87,15 +87,15 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
         var purchaseSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PURCHASE_ORDER", cancellationToken);
         var processActionId = await CodeResolver.GetRequiredIdAsync(db, "ORDER_PROCESS_ACTION", "PROCESS", cancellationToken);
-        if (quantity <= 0) throw new InvalidOperationException("??껎??롮쎗?? 0癰귣????뚣끉鍮???몃빍??");
+        if (quantity <= 0) throw new InvalidOperationException("입고수량은 0보다 커야 합니다.");
         if (string.IsNullOrWhiteSpace(mkLotNo) || string.IsNullOrWhiteSpace(partnerLotNo))
-            throw new InvalidOperationException("??껎?筌ｌ꼶??癒?뮉 MK Lot No?? 椰꾧퀡?믭㎗?Lot No揶쎛 ?袁⑹뒄??몃빍??");
+            throw new InvalidOperationException("입고 처리에는 MK Lot No와 거래처 Lot No가 필요합니다.");
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var detail = await db.PurchaseOrderDetails.SingleAsync(x => x.Id == purchaseOrderDetailId, cancellationToken);
         var order = await db.PurchaseOrders.SingleAsync(x => x.Id == detail.PurchaseOrderId, cancellationToken);
-        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("?類ㅼ젟 ?怨밴묶??獄쏆뮇竊쒙쭕???껎?筌ｌ꼶???????됰뮸??덈뼄.");
+        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("확정 상태의 발주만 입고 처리할 수 있습니다.");
         var remaining = detail.OrderQty - detail.ProcessedQty;
-        if (quantity > remaining) throw new InvalidOperationException($"??껎??遺얠쎗???λ뜃???됰뮸??덈뼄. ?遺얠쎗: {remaining:N2}");
+        if (quantity > remaining) throw new InvalidOperationException($"??껎?입고 수량이 잔량을 초과했습니다. 잔량: {remaining:N2}");
         var lotPair = await EnsureLotsAsync(order.PartnerId, mkLotNo, partnerLotNo, cancellationToken);
         var movement = await CreateMovementAsync(order, detail, quantity, inTypeId, purchaseSourceId, cancellationToken);
         var movementDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == movement.Id, cancellationToken);
@@ -135,7 +135,7 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         var reverseActionId = await CodeResolver.GetRequiredIdAsync(db, "ORDER_PROCESS_ACTION", "REVERSE", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var order = await db.PurchaseOrders.SingleAsync(x => x.Id == purchaseOrderId, cancellationToken);
-        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("?類ㅼ젟 ?怨밴묶??獄쏆뮇竊쒙쭕??띯뫁???????됰뮸??덈뼄.");
+        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("확정 상태의 발주만 취소할 수 있습니다.");
         var details = await db.PurchaseOrderDetails.Where(x => x.PurchaseOrderId == purchaseOrderId).ToListAsync(cancellationToken);
         var movements = await db.InOuts.Where(x => x.SourceTypeId == purchaseSourceId && x.SourceId == purchaseOrderId && x.StatusId != cancelledStatusId).ToListAsync(cancellationToken);
 
@@ -145,7 +145,7 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
             var processed = histories.Sum(x => x.ProcessQty);
             if (processed <= 0) continue;
             var available = await GetAvailableAsync(detail.ItemId, cancellationToken);
-            if (available < processed) throw new InvalidOperationException($"?띯뫁????袁⑹뒄?????у첎? ?봔鈺곌퉲鍮??덈뼄. ?袁⑹삺 ???? {available:N2}, ???땾 ??롮쎗: {processed:N2}");
+            if (available < processed) throw new InvalidOperationException($"취소할 수 없습니다. 재고가 부족합니다. 현재 재고: {available:N2}, 필요 수량: {processed:N2}");
         }
 
         foreach (var movement in movements) { movement.StatusId = cancelledStatusId; movement.UpdatedAt = DateTime.UtcNow; }
@@ -202,6 +202,17 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         return movement;
     }
 
-    public async Task<IReadOnlyList<PurchaseOrder>> GetRecentAsync(CancellationToken cancellationToken = default) =>
-        await db.PurchaseOrders.AsNoTracking().OrderByDescending(x => x.OrderDate).ThenByDescending(x => x.Id).Take(100).ToListAsync(cancellationToken);
+    public async Task<IReadOnlyList<PurchaseOrder>> GetRecentAsync(CancellationToken cancellationToken = default)
+    {
+        var orders = await db.PurchaseOrders.AsNoTracking().OrderByDescending(x => x.OrderDate).ThenByDescending(x => x.Id).Take(100).ToListAsync(cancellationToken);
+        var partners = await db.Partners.AsNoTracking().ToDictionaryAsync(x => x.Id, x => x.Name, cancellationToken);
+        var statuses = await new CodeRepository(db).GetActiveAsync("DOCUMENT_STATUS", cancellationToken);
+        var statusNames = statuses.ToDictionary(x => x.Id, x => x.Name);
+        foreach (var order in orders)
+        {
+            order.PartnerName = partners.GetValueOrDefault(order.PartnerId, string.Empty);
+            order.StatusName = statusNames.GetValueOrDefault(order.StatusId, string.Empty);
+        }
+        return orders;
+    }
 }

@@ -35,7 +35,9 @@ public sealed class Item
     public string Code { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public long CategoryId { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
     public long? GradeId { get; set; }
+    public string GradeName { get; set; } = string.Empty;
     public string UnitCode { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; }
@@ -69,6 +71,7 @@ public sealed class Partner
     public string Code { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public long TypeId { get; set; }
+    public string TypeName { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -93,8 +96,10 @@ public sealed class PurchaseOrder
     public string DocumentNo { get; set; } = string.Empty;
     public DateTime OrderDate { get; set; }
     public long PartnerId { get; set; }
+    public string PartnerName { get; set; } = string.Empty;
     public DateTime? DueDate { get; set; }
     public long StatusId { get; set; }
+    public string StatusName { get; set; } = string.Empty;
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -121,8 +126,10 @@ public sealed class SalesOrder
     public string DocumentNo { get; set; } = string.Empty;
     public DateTime OrderDate { get; set; }
     public long PartnerId { get; set; }
+    public string PartnerName { get; set; } = string.Empty;
     public DateTime? DueDate { get; set; }
     public long StatusId { get; set; }
+    public string StatusName { get; set; } = string.Empty;
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

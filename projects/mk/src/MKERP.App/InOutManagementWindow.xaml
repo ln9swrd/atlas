@@ -10,7 +10,7 @@
       <Button Content="행삭제" Width="80" Margin="0,0,6,0" Click="RemoveLine_Click"/>
       <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click"/>
       <Button Content="재고조회" Width="90" Margin="0,0,6,0" Click="Inventory_Click"/>
-      <Button Content="Excel" Width="80" Margin="6,0,0,0" Click="Excel_Click"/>
+      <Button Content="엑셀" Width="80" Margin="6,0,0,0" Click="Excel_Click"/>
       <Button Content="인쇄" Width="80" Margin="6,0,0,0" Click="Print_Click"/>
       <TextBlock Text="문서번호" VerticalAlignment="Center" Margin="12,0,4,0"/>
       <TextBlock x:Name="DocumentNoText" VerticalAlignment="Center" FontWeight="Bold"/>
@@ -23,7 +23,7 @@
       <TextBlock Text="일자" VerticalAlignment="Center"/>
       <DatePicker x:Name="MovementDateBox" Grid.Column="1" SelectedDateChanged="Date_Changed"/>
       <TextBlock Text="구분" Grid.Column="2" VerticalAlignment="Center"/>
-      <ComboBox x:Name="TypeBox" Grid.Column="3" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Key"/>
+      <ComboBox x:Name="TypeBox" Grid.Column="3" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Id"/>
       <TextBlock Text="거래처" Grid.Column="4" VerticalAlignment="Center"/>
       <ComboBox x:Name="PartnerBox" Grid.Column="5" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Id"/>
       <TextBlock Text="품목" Grid.Column="6" VerticalAlignment="Center"/>
@@ -40,6 +40,6 @@
         </DataGrid.Columns>
       </DataGrid>
     </Grid>
-    <TabControl x:Name="ResultsTabs" Grid.Row="3"><TabItem Header="?낆텧怨?臾몄꽌"><DataGrid x:Name="MovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="Lot蹂??댁뿭"><DataGrid x:Name="LotMovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="?ш퀬?꾪솴"><DataGrid x:Name="InventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="Lot蹂??ш퀬"><DataGrid x:Name="LotInventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem></TabControl>
+    <TabControl x:Name="ResultsTabs" Grid.Row="3"><TabItem Header="입출고 문서"><DataGrid x:Name="MovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="Lot별 내역"><DataGrid x:Name="LotMovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="재고 현황"><DataGrid x:Name="InventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="Lot별 재고"><DataGrid x:Name="LotInventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem></TabControl>
   </Grid>
 </UserControl>

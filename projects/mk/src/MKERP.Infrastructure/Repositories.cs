@@ -24,8 +24,14 @@ public sealed class CodeRepository(ERPDbContext db) : ICodeRepository
 
 public sealed class ItemRepository(ERPDbContext db) : IItemRepository
 {
-    public async Task<IReadOnlyList<Item>> GetActiveAsync(CancellationToken cancellationToken = default) =>
-        await db.Items.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
+    public async Task<IReadOnlyList<Item>> GetActiveAsync(CancellationToken cancellationToken = default)
+    {
+        var items = await db.Items.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
+        var codes = await new CodeRepository(db).GetActiveAsync("ITEM_CATEGORY", cancellationToken);
+        var names = codes.ToDictionary(x => x.Id, x => x.Name);
+        foreach (var item in items) item.CategoryName = names.GetValueOrDefault(item.CategoryId, string.Empty);
+        return items;
+    }
 
     public async Task<IReadOnlyList<ItemGrade>> GetGradesAsync(CancellationToken cancellationToken = default) =>
         await db.ItemGrades.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
@@ -58,8 +64,14 @@ public sealed class ItemRepository(ERPDbContext db) : IItemRepository
 
 public sealed class PartnerRepository(ERPDbContext db) : IPartnerRepository
 {
-    public async Task<IReadOnlyList<Partner>> GetActiveAsync(CancellationToken cancellationToken = default) =>
-        await db.Partners.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
+    public async Task<IReadOnlyList<Partner>> GetActiveAsync(CancellationToken cancellationToken = default)
+    {
+        var partners = await db.Partners.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
+        var codes = await new CodeRepository(db).GetActiveAsync("PARTNER_TYPE", cancellationToken);
+        var names = codes.ToDictionary(x => x.Id, x => x.Name);
+        foreach (var partner in partners) partner.TypeName = names.GetValueOrDefault(partner.TypeId, string.Empty);
+        return partners;
+    }
 
     public async Task AddAsync(Partner partner, CancellationToken cancellationToken = default)
     {

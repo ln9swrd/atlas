@@ -13,7 +13,7 @@ Width="1100" Height="700">
       <Button Content="신규" Width="80" Margin="0,0,6,0" Click="New_Click" />
       <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click" />
       <Button Content="비활성" Width="80" Click="Deactivate_Click" />
-      <Button Content="Excel" Width="80" Margin="6,0,0,0" Click="Excel_Click" />
+      <Button Content="엑셀" Width="80" Margin="6,0,0,0" Click="Excel_Click" />
       <Button Content="인쇄" Width="80" Margin="6,0,0,0" Click="Print_Click" />
     </StackPanel>
     <Grid Grid.Row="1" Margin="0,12,0,12">
@@ -39,8 +39,8 @@ Width="1100" Height="700">
       <DataGrid.Columns>
         <DataGridTextColumn Header="품목코드" Binding="{Binding Code}" Width="150" />
         <DataGridTextColumn Header="품목명" Binding="{Binding Name}" Width="*" />
-        <DataGridTextColumn Header="구분" Binding="{Binding CategoryCode}" Width="120" />
-        <DataGridTextColumn Header="등급" Binding="{Binding GradeId}" Width="100" />
+        <DataGridTextColumn Header="구분" Binding="{Binding CategoryName}" Width="120" />
+        <DataGridTextColumn Header="등급" Binding="{Binding GradeName}" Width="100" />
         <DataGridTextColumn Header="단위" Binding="{Binding UnitCode}" Width="100" />
         <DataGridCheckBoxColumn Header="사용" Binding="{Binding IsActive}" Width="70" />
       </DataGrid.Columns>

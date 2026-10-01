@@ -14,7 +14,7 @@ Width="1100" Height="700">
       <Button Content="확정" Width="80" Margin="0,0,6,0" Click="Confirm_Click"/>
       <Button Content="출고" Width="80" Margin="0,0,6,0" Click="Process_Click"/>
       <Button Content="취소" Width="80" Margin="0,0,6,0" Click="Cancel_Click"/>
-      <Button Content="Excel" Width="80" Margin="6,0,0,0" Click="Excel_Click"/>
+      <Button Content="엑셀" Width="80" Margin="6,0,0,0" Click="Excel_Click"/>
       <Button Content="인쇄" Width="80" Margin="6,0,0,0" Click="Print_Click"/>
       <TextBlock Text="문서번호" VerticalAlignment="Center" Margin="12,0,4,0"/>
       <TextBlock x:Name="DocumentNoText" VerticalAlignment="Center" FontWeight="Bold"/>
@@ -48,7 +48,7 @@ Width="1100" Height="700">
       <TextBlock Text="수량" Grid.Column="2" VerticalAlignment="Center"/>
       <TextBox x:Name="QtyBox" Grid.Column="3" Margin="4" Text="1"/>
       <TextBlock Text="적용단가" Grid.Column="4" VerticalAlignment="Center"/><TextBlock Text="출고수량" Grid.Column="6" VerticalAlignment="Center"/>
-      <TextBox x:Name="ProcessQtyBox" Grid.Column="7" Margin="4" Text="1"/><TextBlock Text="MK Lot" Grid.Column="8" VerticalAlignment="Center"/><TextBox x:Name="ProcessMkLotBox" Grid.Column="9" Margin="4"/><TextBlock Text="嫄곕옒泥?Lot" Grid.Column="8" VerticalAlignment="Center"/><TextBox x:Name="ProcessPartnerLotBox" Grid.Column="9" Margin="4"/>
+      <TextBox x:Name="ProcessQtyBox" Grid.Column="7" Margin="4" Text="1"/><TextBlock Text="MK Lot" Grid.Column="8" VerticalAlignment="Center"/><TextBox x:Name="ProcessMkLotBox" Grid.Column="9" Margin="4"/><TextBlock Text="거래처 Lot" Grid.Column="8" VerticalAlignment="Center"/><TextBox x:Name="ProcessPartnerLotBox" Grid.Column="9" Margin="4"/>
       <TextBlock Text="적용단가" Grid.Column="6" VerticalAlignment="Center"/>
       <TextBox x:Name="AppliedPriceBox" Grid.Column="7" Margin="4"/>
     </Grid>
@@ -76,8 +76,8 @@ Width="1100" Height="700">
       <DataGrid.Columns>
         <DataGridTextColumn Header="문서번호" Binding="{Binding DocumentNo}" Width="150"/>
         <DataGridTextColumn Header="수주일" Binding="{Binding OrderDate, StringFormat=yyyy-MM-dd}" Width="120"/>
-        <DataGridTextColumn Header="거래처" Binding="{Binding PartnerId}" Width="100"/>
-        <DataGridTextColumn Header="상태" Binding="{Binding StatusCode}" Width="100"/>
+        <DataGridTextColumn Header="거래처" Binding="{Binding PartnerName}" Width="100"/>
+        <DataGridTextColumn Header="상태" Binding="{Binding StatusName}" Width="100"/>
         <DataGridTextColumn Header="비고" Binding="{Binding Note}" Width="*"/>
       </DataGrid.Columns>
     </DataGrid>

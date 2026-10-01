@@ -80,7 +80,7 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
     public async Task ProcessAsync(long salesOrderId, decimal quantity, CancellationToken cancellationToken = default)
     {
         var detail = await db.SalesOrderDetails.AsNoTracking().SingleAsync(x => x.SalesOrderId == salesOrderId, cancellationToken);
-        throw new InvalidOperationException("Lot??吏?뺥빐???⑸땲?? ?곸꽭 泥섎━ 湲곕뒫???ъ슜?섏꽭??");
+        throw new InvalidOperationException("Lot을 지정해야 합니다. 상세 처리 기능을 사용하세요.");
     }
 
     public async Task ProcessDetailAsync(long salesOrderDetailId, decimal quantity, string mkLotNo, string partnerLotNo, CancellationToken cancellationToken = default)
@@ -89,23 +89,23 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
         var salesSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "SALES_ORDER", cancellationToken);
         var processActionId = await CodeResolver.GetRequiredIdAsync(db, "ORDER_PROCESS_ACTION", "PROCESS", cancellationToken);
-        if (quantity <= 0) throw new InvalidOperationException("異쒓퀬?섎웾? 0蹂대떎 而ㅼ빞 ?⑸땲??");
+        if (quantity <= 0) throw new InvalidOperationException("출고수량은 0보다 커야 합니다.");
         if (string.IsNullOrWhiteSpace(mkLotNo) || string.IsNullOrWhiteSpace(partnerLotNo))
-            throw new InvalidOperationException("異쒓퀬 泥섎━?먮뒗 MK Lot No? 嫄곕옒泥?Lot No媛 ?꾩슂?⑸땲??");
+            throw new InvalidOperationException("출고 처리에는 MK Lot No와 거래처 Lot No가 필요합니다.");
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var detail = await db.SalesOrderDetails.SingleAsync(x => x.Id == salesOrderDetailId, cancellationToken);
         var order = await db.SalesOrders.SingleAsync(x => x.Id == detail.SalesOrderId, cancellationToken);
-        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("?뺤젙 ?곹깭???섏＜留?異쒓퀬 泥섎━?????덉뒿?덈떎.");
+        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("확정 상태의 수주만 출고 처리할 수 있습니다.");
         var remaining = detail.OrderQty - detail.ProcessedQty;
-        if (quantity > remaining) throw new InvalidOperationException($"異쒓퀬 ?붾웾??珥덇낵?덉뒿?덈떎. ?붾웾: {remaining:N2}");
+        if (quantity > remaining) throw new InvalidOperationException($"출고 수량이 잔량을 초과했습니다. 잔량: {remaining:N2}");
         var lot = await db.Lots.SingleOrDefaultAsync(x => x.MkLotNo == mkLotNo, cancellationToken)
-            ?? throw new InvalidOperationException($"MK Lot??李얠쓣 ???놁뒿?덈떎: {mkLotNo}");
+            ?? throw new InvalidOperationException($"MK Lot을 찾을 수 없습니다: {mkLotNo}");
         var partnerLot = await db.PartnerLots.SingleOrDefaultAsync(x => x.PartnerId == order.PartnerId && x.PartnerLotNo == partnerLotNo, cancellationToken)
-            ?? throw new InvalidOperationException($"嫄곕옒泥?Lot??李얠쓣 ???놁뒿?덈떎: {partnerLotNo}");
+            ?? throw new InvalidOperationException($"거래처 Lot을 찾을 수 없습니다: {partnerLotNo}");
         if (!await db.LotPartnerLots.AnyAsync(x => x.LotId == lot.Id && x.PartnerLotId == partnerLot.Id, cancellationToken))
-            throw new InvalidOperationException("?낅젰??MK Lot怨?嫄곕옒泥?Lot??愿怨꾧? ?깅줉?섏뼱 ?덉? ?딆뒿?덈떎.");
+            throw new InvalidOperationException("선택한 MK Lot과 거래처 Lot의 관계가 등록되어 있지 않습니다.");
         var available = await GetLotAvailableAsync(detail.ItemId, lot.Id, partnerLot.Id, cancellationToken);
-        if (available < quantity) throw new InvalidOperationException($"?좏깮??Lot ?ш퀬媛 遺議깊빀?덈떎. ?꾩옱 ?ш퀬: {available:N2}, 異쒓퀬 ?붿껌: {quantity:N2}");
+        if (available < quantity) throw new InvalidOperationException($"선택한 Lot의 재고가 부족합니다. 현재 재고: {available:N2}, 출고 요청: {quantity:N2}");
         var movement = await CreateMovementAsync(order, detail, quantity, outTypeId, salesSourceId, cancellationToken);
         var movementDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == movement.Id, cancellationToken);
         movementDetail.LotId = lot.Id;
@@ -145,7 +145,7 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         var reverseActionId = await CodeResolver.GetRequiredIdAsync(db, "ORDER_PROCESS_ACTION", "REVERSE", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var order = await db.SalesOrders.SingleAsync(x => x.Id == salesOrderId, cancellationToken);
-        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("?뺤젙 ?곹깭???섏＜留?痍⑥냼?????덉뒿?덈떎.");
+        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("확정 상태의 수주만 취소할 수 있습니다.");
         var details = await db.SalesOrderDetails.Where(x => x.SalesOrderId == salesOrderId).ToListAsync(cancellationToken);
         var movements = await db.InOuts.Where(x => x.SourceTypeId == salesSourceId && x.SourceId == salesOrderId && x.StatusId != cancelledStatusId).ToListAsync(cancellationToken);
         foreach (var movement in movements) { movement.StatusId = cancelledStatusId; movement.UpdatedAt = DateTime.UtcNow; }
@@ -207,6 +207,17 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         return movement;
     }
 
-    public async Task<IReadOnlyList<SalesOrder>> GetRecentAsync(CancellationToken cancellationToken = default) =>
-        await db.SalesOrders.AsNoTracking().OrderByDescending(x => x.OrderDate).ThenByDescending(x => x.Id).Take(100).ToListAsync(cancellationToken);
+    public async Task<IReadOnlyList<SalesOrder>> GetRecentAsync(CancellationToken cancellationToken = default)
+    {
+        var orders = await db.SalesOrders.AsNoTracking().OrderByDescending(x => x.OrderDate).ThenByDescending(x => x.Id).Take(100).ToListAsync(cancellationToken);
+        var partners = await db.Partners.AsNoTracking().ToDictionaryAsync(x => x.Id, x => x.Name, cancellationToken);
+        var statuses = await new CodeRepository(db).GetActiveAsync("DOCUMENT_STATUS", cancellationToken);
+        var statusNames = statuses.ToDictionary(x => x.Id, x => x.Name);
+        foreach (var order in orders)
+        {
+            order.PartnerName = partners.GetValueOrDefault(order.PartnerId, string.Empty);
+            order.StatusName = statusNames.GetValueOrDefault(order.StatusId, string.Empty);
+        }
+        return orders;
+    }
 }

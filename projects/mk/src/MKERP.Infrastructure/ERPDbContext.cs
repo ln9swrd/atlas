@@ -85,7 +85,9 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.Code).HasColumnName("ITEM_CODE").IsRequired();
             e.Property(x => x.Name).HasColumnName("ITEM_NAME").IsRequired();
             e.Property(x => x.CategoryId).HasColumnName("ITEM_CATEGORY_ID").IsRequired();
+            e.Ignore(x => x.CategoryName);
             e.Property(x => x.GradeId).HasColumnName("GRADE_ID");
+            e.Ignore(x => x.GradeName);
             e.Property(x => x.UnitCode).HasColumnName("UNIT_CODE").IsRequired();
             e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
@@ -116,6 +118,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.Code).HasColumnName("PARTNER_CODE").IsRequired();
             e.Property(x => x.Name).HasColumnName("PARTNER_NAME").IsRequired();
             e.Property(x => x.TypeId).HasColumnName("PARTNER_TYPE_ID").IsRequired();
+            e.Ignore(x => x.TypeName);
             e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
@@ -161,6 +164,8 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
             e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
             e.Property(x => x.StatusId).HasColumnName("STATUS_ID").IsRequired();
+            e.Ignore(x => x.PartnerName);
+            e.Ignore(x => x.StatusName);
             e.Property(x => x.Note).HasColumnName("NOTE");
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
@@ -302,6 +307,8 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
             e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
             e.Property(x => x.StatusId).HasColumnName("STATUS_ID").IsRequired();
+            e.Ignore(x => x.PartnerName);
+            e.Ignore(x => x.StatusName);
             e.Property(x => x.Note).HasColumnName("NOTE");
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
