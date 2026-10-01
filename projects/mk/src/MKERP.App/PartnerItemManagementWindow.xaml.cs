@@ -98,4 +98,7 @@ public partial class PartnerItemManagementWindow : Window
         await LoadGridAsync();
         New_Click(sender, e);
     }
+
+    private void Excel_Click(object sender, RoutedEventArgs e) => ExcelExportHelper.Export(Grid, $"거래처별품목_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", "거래처별품목");
+    private void Print_Click(object sender, RoutedEventArgs e) => PrintHelper.Print(Grid, "거래처별 품목관리");
 }

@@ -115,6 +115,9 @@ public partial class PriceManagementWindow : Window
         New_Click(sender, e);
     }
 
+    private void Excel_Click(object sender, RoutedEventArgs e) => ExcelExportHelper.Export(Grid, $"단가_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", "단가");
+    private void Print_Click(object sender, RoutedEventArgs e) => PrintHelper.Print(Grid, "단가관리");
+
     private sealed class PriceRow
     {
         public long Id { get; init; }

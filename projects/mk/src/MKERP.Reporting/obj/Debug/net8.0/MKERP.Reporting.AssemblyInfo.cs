@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MKERP.Reporting")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+70aaff89d0d39b439dd0bd961df23e459dd5a1ba")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed0c7c0442fb3b17d01fc13bc1ae3ca55f313f27")]
 [assembly: System.Reflection.AssemblyProductAttribute("MKERP.Reporting")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MKERP.Reporting")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

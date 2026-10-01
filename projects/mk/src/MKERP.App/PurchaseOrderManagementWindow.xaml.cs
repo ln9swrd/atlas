@@ -43,7 +43,7 @@ public partial class PurchaseOrderManagementWindow : Window
         ItemBox.SelectedIndex = -1;
         QtyBox.Text = "1";
         DueDateBox.SelectedDate = null;
-        AppliedPriceText.Text = string.Empty;
+        AppliedPriceBox.Text = string.Empty;
         _applicablePrice = null;
     }
 
@@ -57,7 +57,7 @@ public partial class PurchaseOrderManagementWindow : Window
         if (_loading || PartnerBox.SelectedItem is not Partner partner
             || ItemBox.SelectedItem is not Item item)
         {
-            AppliedPriceText.Text = string.Empty;
+            AppliedPriceBox.Text = string.Empty;
             _applicablePrice = null;
             return;
         }
@@ -65,10 +65,9 @@ public partial class PurchaseOrderManagementWindow : Window
         var orderDate = OrderDateBox.SelectedDate?.Date ?? DateTime.Today;
         _applicablePrice = await new PriceRepository(_db)
             .GetApplicableAsync(partner.Id, item.Id, orderDate);
-        AppliedPriceText.Text = _applicablePrice is null
-            ? "적용 단가 없음"
-            : _applicablePrice.UnitPrice.ToString("N2", CultureInfo.CurrentCulture)
-              + $" (PRICE_ID={_applicablePrice.Id})";
+        AppliedPriceBox.Text = _applicablePrice is null
+            ? string.Empty
+            : _applicablePrice.UnitPrice.ToString("N2", CultureInfo.CurrentCulture);
     }
 
     private async void Input_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -106,6 +105,12 @@ public partial class PurchaseOrderManagementWindow : Window
             return;
         }
 
+        if (!decimal.TryParse(AppliedPriceBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var appliedPrice) || appliedPrice < 0)
+        {
+            MessageBox.Show("적용단가를 올바르게 입력하세요.");
+            return;
+        }
+
         var statusCodes = await new CodeRepository(_db).GetActiveAsync("DOCUMENT_STATUS");
         var draftCode = statusCodes.FirstOrDefault(x => x.Key == "DRAFT");
         if (draftCode is null)
@@ -120,7 +125,7 @@ public partial class PurchaseOrderManagementWindow : Window
             .FirstOrDefaultAsync();
 
         var orderDate = OrderDateBox.SelectedDate?.Date ?? DateTime.Today;
-        var unitPrice = _applicablePrice.UnitPrice;
+        var unitPrice = appliedPrice;
         var order = new PurchaseOrder
         {
             DocumentNo = DocumentNoText.Text,
@@ -145,4 +150,34 @@ public partial class PurchaseOrderManagementWindow : Window
         await LoadGridAsync();
         await NewAsync();
     }
+
+    private async void Confirm_Click(object sender, RoutedEventArgs e)
+    {
+        if (Grid.SelectedItem is not PurchaseOrder order)
+        {
+            MessageBox.Show("확정할 발주를 목록에서 선택하세요.");
+            return;
+        }
+
+        try
+        {
+            await new PurchaseOrderRepository(_db).ConfirmAsync(order.Id);
+            await LoadGridAsync();
+            MessageBox.Show("발주가 확정되고 입고(IN)가 재고에 반영되었습니다.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+
+    private async void Cancel_Click(object sender, RoutedEventArgs e)
+    {
+        if (Grid.SelectedItem is not PurchaseOrder order) { MessageBox.Show("취소할 발주를 목록에서 선택하세요."); return; }
+        try { await new PurchaseOrderRepository(_db).CancelAsync(order.Id); await LoadGridAsync(); MessageBox.Show("발주가 취소되고 재고가 복원되었습니다."); }
+        catch (InvalidOperationException ex) { MessageBox.Show(ex.Message); }
+    }
+
+    private void Excel_Click(object sender, RoutedEventArgs e) => ExcelExportHelper.Export(Grid, $"발주_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", "발주");
+    private void Print_Click(object sender, RoutedEventArgs e) => PrintHelper.Print(Grid, "발주관리");
 }

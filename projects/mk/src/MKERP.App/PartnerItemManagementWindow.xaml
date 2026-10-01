@@ -9,6 +9,8 @@
       <Button Content="신규" Width="80" Margin="0,0,6,0" Click="New_Click"/>
       <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click"/>
       <Button Content="비활성" Width="80" Click="Deactivate_Click"/>
+      <Button Content="Excel" Width="80" Margin="6,0,0,0" Click="Excel_Click"/>
+      <Button Content="인쇄" Width="80" Margin="6,0,0,0" Click="Print_Click"/>
     </StackPanel>
     <Grid Grid.Row="1" Margin="0,12">
       <Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="220"/><ColumnDefinition Width="90"/><ColumnDefinition Width="220"/><ColumnDefinition Width="90"/><ColumnDefinition Width="220"/></Grid.ColumnDefinitions>

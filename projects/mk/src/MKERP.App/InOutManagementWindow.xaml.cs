@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using MKERP.Domain;
 using MKERP.Infrastructure;
 
@@ -80,4 +81,16 @@ public partial class InOutManagementWindow : Window
     }
 
     private async void Inventory_Click(object sender, RoutedEventArgs e) => await LoadInventoryAsync();
+
+    private void Excel_Click(object sender, RoutedEventArgs e)
+    {
+        var selected = ResultsTabs.SelectedContent as DataGrid ?? MovementGrid;
+        ExcelExportHelper.Export(selected, $"입출고재고_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", selected == InventoryGrid ? "재고현황" : "입출고내역");
+    }
+
+    private void Print_Click(object sender, RoutedEventArgs e)
+    {
+        var selected = ResultsTabs.SelectedContent as DataGrid ?? MovementGrid;
+        PrintHelper.Print(selected, selected == InventoryGrid ? "재고현황" : "입출고내역");
+    }
 }

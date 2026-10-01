@@ -82,3 +82,5 @@ D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\PurchaseOrderManagem
 D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\SalesOrderManagementWindow.g.cs
 D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\InOutManagementWindow.baml
 D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\InOutManagementWindow.g.cs
+D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\ProductionManagementWindow.baml
+D:\Atlas\projects\mk\src\MKERP.App\obj\Debug\net8.0-windows\ProductionManagementWindow.g.cs

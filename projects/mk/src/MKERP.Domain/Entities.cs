@@ -126,6 +126,26 @@ public sealed class SalesOrder
     public DateTime UpdatedAt { get; set; }
 }
 
+public sealed class Production
+{
+    public long Id { get; set; }
+    public string DocumentNo { get; set; } = string.Empty;
+    public DateTime ProductionDate { get; set; }
+    public string StatusCode { get; set; } = string.Empty;
+    public string? Note { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+public sealed class ProductionDetail
+{
+    public long Id { get; set; }
+    public long ProductionId { get; set; }
+    public long ItemId { get; set; }
+    public decimal ProductionQty { get; set; }
+    public decimal DefectQty { get; set; }
+}
+
 public sealed class InOut
 {
     public long Id { get; set; }

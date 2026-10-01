@@ -91,4 +91,7 @@ public partial class ItemManagementWindow : Window
         await LoadAsync();
         New_Click(sender, e);
     }
+
+    private void Excel_Click(object sender, RoutedEventArgs e) => ExcelExportHelper.Export(ItemGrid, $"품목_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", "품목");
+    private void Print_Click(object sender, RoutedEventArgs e) => PrintHelper.Print(ItemGrid, "품목관리");
 }

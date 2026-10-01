@@ -10,6 +10,10 @@
     <StackPanel Orientation="Horizontal">
       <Button Content="신규 발주" Width="90" Margin="0,0,6,0" Click="New_Click"/>
       <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click"/>
+      <Button Content="확정" Width="80" Margin="0,0,6,0" Click="Confirm_Click"/>
+      <Button Content="취소" Width="80" Margin="0,0,6,0" Click="Cancel_Click"/>
+      <Button Content="Excel" Width="80" Margin="6,0,0,0" Click="Excel_Click"/>
+      <Button Content="인쇄" Width="80" Margin="6,0,0,0" Click="Print_Click"/>
       <TextBlock Text="문서번호" VerticalAlignment="Center" Margin="12,0,4,0"/>
       <TextBlock x:Name="DocumentNoText" VerticalAlignment="Center" FontWeight="Bold"/>
     </StackPanel>
@@ -39,9 +43,9 @@
       <TextBlock Text="수량" Grid.Column="2" VerticalAlignment="Center"/>
       <TextBox x:Name="QtyBox" Grid.Column="3" Margin="4" Text="1"/>
       <TextBlock Text="적용단가" Grid.Column="4" VerticalAlignment="Center"/>
-      <TextBlock x:Name="AppliedPriceText" Grid.Column="5" Margin="4" VerticalAlignment="Center"/>
+      <TextBox x:Name="AppliedPriceBox" Grid.Column="5" Margin="4"/>
     </Grid>
-    <DataGrid x:Name="Grid" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True">
+    <DataGrid x:Name="Grid" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
       <DataGrid.Columns>
         <DataGridTextColumn Header="문서번호" Binding="{Binding DocumentNo}" Width="150"/>
         <DataGridTextColumn Header="발주일" Binding="{Binding OrderDate, StringFormat=yyyy-MM-dd}" Width="120"/>

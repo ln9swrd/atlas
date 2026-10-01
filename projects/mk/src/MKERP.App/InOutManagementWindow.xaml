@@ -8,6 +8,8 @@
       <Button Content="신규" Width="80" Margin="0,0,6,0" Click="New_Click"/>
       <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click"/>
       <Button Content="재고조회" Width="90" Margin="0,0,6,0" Click="Inventory_Click"/>
+      <Button Content="Excel" Width="80" Margin="6,0,0,0" Click="Excel_Click"/>
+      <Button Content="인쇄" Width="80" Margin="6,0,0,0" Click="Print_Click"/>
       <TextBlock Text="문서번호" VerticalAlignment="Center" Margin="12,0,4,0"/>
       <TextBlock x:Name="DocumentNoText" VerticalAlignment="Center" FontWeight="Bold"/>
     </StackPanel>
@@ -25,7 +27,7 @@
       <TextBlock Text="수량" Grid.Column="6" VerticalAlignment="Center"/>
       <TextBox x:Name="QtyBox" Grid.Column="7" Margin="4" Text="1"/>
     </Grid>
-    <TabControl Grid.Row="2">
+    <TabControl x:Name="ResultsTabs" Grid.Row="2">
       <TabItem Header="입출고 내역">
         <DataGrid x:Name="MovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/>
       </TabItem>

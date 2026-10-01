@@ -18,6 +18,8 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
     public DbSet<SalesOrderDetail> SalesOrderDetails => Set<SalesOrderDetail>();
     public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
     public DbSet<PurchaseOrderDetail> PurchaseOrderDetails => Set<PurchaseOrderDetail>();
+    public DbSet<Production> Productions => Set<Production>();
+    public DbSet<ProductionDetail> ProductionDetails => Set<ProductionDetail>();
     public DbSet<InOut> InOuts => Set<InOut>();
     public DbSet<InOutDetail> InOutDetails => Set<InOutDetail>();
 
@@ -175,6 +177,32 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
             e.Property(x => x.Note).HasColumnName("NOTE");
             e.HasIndex(x => x.PriceId);
+        });
+
+        modelBuilder.Entity<Production>(e =>
+        {
+            e.ToTable("TB_PRODUCTION");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("PRODUCTION_ID");
+            e.Property(x => x.DocumentNo).HasColumnName("DOCUMENT_NO").IsRequired();
+            e.Property(x => x.ProductionDate).HasColumnName("PRODUCTION_DATE").IsRequired();
+            e.Property(x => x.StatusCode).HasColumnName("STATUS_CODE").IsRequired();
+            e.Property(x => x.Note).HasColumnName("NOTE");
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
+            e.HasIndex(x => x.DocumentNo).IsUnique();
+        });
+
+        modelBuilder.Entity<ProductionDetail>(e =>
+        {
+            e.ToTable("TB_PRODUCTION_DETAIL");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("PRODUCTION_DETAIL_ID");
+            e.Property(x => x.ProductionId).HasColumnName("PRODUCTION_ID").IsRequired();
+            e.Property(x => x.ItemId).HasColumnName("ITEM_ID").IsRequired();
+            e.Property(x => x.ProductionQty).HasColumnName("PRODUCTION_QTY").IsRequired();
+            e.Property(x => x.DefectQty).HasColumnName("DEFECT_QTY").IsRequired();
+            e.HasIndex(x => x.ItemId);
         });
 
         modelBuilder.Entity<InOut>(e =>

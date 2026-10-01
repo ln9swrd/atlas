@@ -55,7 +55,16 @@ public interface IPurchaseOrderRepository
 {
     Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);
     Task AddAsync(PurchaseOrder order, PurchaseOrderDetail detail, CancellationToken cancellationToken = default);
+    Task ConfirmAsync(long purchaseOrderId, CancellationToken cancellationToken = default);
+    Task CancelAsync(long purchaseOrderId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<PurchaseOrder>> GetRecentAsync(CancellationToken cancellationToken = default);
+}
+
+public interface IProductionRepository
+{
+    Task<string> GetNextDocumentNoAsync(DateTime productionDate, CancellationToken cancellationToken = default);
+    Task CompleteAsync(Production production, ProductionDetail detail, CancellationToken cancellationToken = default);
+    Task CancelAsync(long productionId, CancellationToken cancellationToken = default);
 }
 
 public interface IInOutRepository
@@ -81,5 +90,7 @@ public interface ISalesOrderRepository
 {
     Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);
     Task AddAsync(SalesOrder order, SalesOrderDetail detail, CancellationToken cancellationToken = default);
+    Task ConfirmAsync(long salesOrderId, CancellationToken cancellationToken = default);
+    Task CancelAsync(long salesOrderId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<SalesOrder>> GetRecentAsync(CancellationToken cancellationToken = default);
 }

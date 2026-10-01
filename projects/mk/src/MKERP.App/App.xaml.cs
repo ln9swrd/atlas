@@ -23,6 +23,14 @@ public partial class App : WpfApplication
                 .Options);
 
         await new DatabaseInitializer(databasePath).InitializeAsync();
+        try
+        {
+            await new BackupService(databasePath).BackupIfDueAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"주간 백업을 생성하지 못했습니다.\n{ex.Message}", "백업 경고", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
 
         var window = new MainWindow();
         window.Show();

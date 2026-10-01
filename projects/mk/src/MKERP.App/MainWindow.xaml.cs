@@ -51,6 +51,12 @@ public partial class MainWindow : Window
         window.ShowDialog();
     }
 
+    private void ProductionManagement_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new ProductionManagementWindow(_databasePath) { Owner = this };
+        window.ShowDialog();
+    }
+
     private void InOutManagement_Click(object sender, RoutedEventArgs e)
     {
         var window = new InOutManagementWindow(_databasePath) { Owner = this };
