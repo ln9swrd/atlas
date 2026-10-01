@@ -65,10 +65,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c01",
+			"asset_id": "asset.sf_military_terrain.r01_c01",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C01",
+			"display_name": "SF Atlas Ground R01 C01",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				0,
@@ -82,10 +82,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c02",
+			"asset_id": "asset.sf_military_terrain.r01_c02",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C02",
+			"display_name": "SF Atlas Ground R01 C02",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				128,
@@ -99,10 +99,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c03",
+			"asset_id": "asset.sf_military_terrain.r01_c03",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C03",
+			"display_name": "SF Atlas Ground R01 C03",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				256,
@@ -116,10 +116,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c04",
+			"asset_id": "asset.sf_military_terrain.r01_c04",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C04",
+			"display_name": "SF Atlas Ground R01 C04",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				384,
@@ -133,10 +133,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c05",
+			"asset_id": "asset.sf_military_terrain.r01_c05",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C05",
+			"display_name": "SF Atlas Ground R01 C05",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				512,
@@ -150,10 +150,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c06",
+			"asset_id": "asset.sf_military_terrain.r01_c06",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C06",
+			"display_name": "SF Atlas Ground R01 C06",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				640,
@@ -167,10 +167,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c07",
+			"asset_id": "asset.sf_military_terrain.r01_c07",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C07",
+			"display_name": "SF Atlas Ground R01 C07",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				768,
@@ -184,10 +184,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c08",
+			"asset_id": "asset.sf_military_terrain.r01_c08",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C08",
+			"display_name": "SF Atlas Ground R01 C08",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				896,
@@ -201,10 +201,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c09",
+			"asset_id": "asset.sf_military_terrain.r01_c09",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C09",
+			"display_name": "SF Atlas Ground R01 C09",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1024,
@@ -218,10 +218,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c10",
-			"kind": "tile",
-			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C10",
+			"asset_id": "asset.sf_military_terrain.r01_c10",
+			"kind": "object",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R01 C10",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1152,
@@ -235,10 +235,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c11",
-			"kind": "tile",
-			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C11",
+			"asset_id": "asset.sf_military_terrain.r01_c11",
+			"kind": "object",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R01 C11",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1280,
@@ -252,10 +252,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r01_c12",
-			"kind": "tile",
-			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R01 C12",
+			"asset_id": "asset.sf_military_terrain.r01_c12",
+			"kind": "object",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R01 C12",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1408,
@@ -269,10 +269,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c01",
+			"asset_id": "asset.sf_military_terrain.r02_c01",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C01",
+			"display_name": "SF Atlas Ground R02 C01",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				0,
@@ -286,10 +286,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c02",
+			"asset_id": "asset.sf_military_terrain.r02_c02",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C02",
+			"display_name": "SF Atlas Ground R02 C02",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				128,
@@ -303,10 +303,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c03",
+			"asset_id": "asset.sf_military_terrain.r02_c03",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C03",
+			"display_name": "SF Atlas Ground R02 C03",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				256,
@@ -320,10 +320,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c04",
+			"asset_id": "asset.sf_military_terrain.r02_c04",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C04",
+			"display_name": "SF Atlas Ground R02 C04",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				384,
@@ -337,10 +337,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c05",
+			"asset_id": "asset.sf_military_terrain.r02_c05",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C05",
+			"display_name": "SF Atlas Ground R02 C05",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				512,
@@ -354,10 +354,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c06",
+			"asset_id": "asset.sf_military_terrain.r02_c06",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C06",
+			"display_name": "SF Atlas Ground R02 C06",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				640,
@@ -371,10 +371,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c07",
+			"asset_id": "asset.sf_military_terrain.r02_c07",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C07",
+			"display_name": "SF Atlas Ground R02 C07",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				768,
@@ -388,10 +388,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c08",
+			"asset_id": "asset.sf_military_terrain.r02_c08",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C08",
+			"display_name": "SF Atlas Ground R02 C08",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				896,
@@ -405,10 +405,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c09",
+			"asset_id": "asset.sf_military_terrain.r02_c09",
 			"kind": "tile",
 			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C09",
+			"display_name": "SF Atlas Ground R02 C09",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1024,
@@ -422,10 +422,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c10",
-			"kind": "tile",
-			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C10",
+			"asset_id": "asset.sf_military_terrain.r02_c10",
+			"kind": "object",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R02 C10",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1152,
@@ -439,10 +439,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c11",
-			"kind": "tile",
-			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C11",
+			"asset_id": "asset.sf_military_terrain.r02_c11",
+			"kind": "object",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R02 C11",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1280,
@@ -456,10 +456,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r02_c12",
-			"kind": "tile",
-			"group": "Ground",
-			"display_name": "SF Atlas Ground surface R02 C12",
+			"asset_id": "asset.sf_military_terrain.r02_c12",
+			"kind": "object",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R02 C12",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1408,
@@ -473,10 +473,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c01",
+			"asset_id": "asset.sf_military_terrain.r03_c01",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C01",
+			"display_name": "SF Atlas Platform R03 C01",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				0,
@@ -490,10 +490,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c02",
+			"asset_id": "asset.sf_military_terrain.r03_c02",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C02",
+			"display_name": "SF Atlas Platform R03 C02",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				128,
@@ -507,10 +507,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c03",
+			"asset_id": "asset.sf_military_terrain.r03_c03",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C03",
+			"display_name": "SF Atlas Platform R03 C03",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				256,
@@ -524,10 +524,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c04",
+			"asset_id": "asset.sf_military_terrain.r03_c04",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C04",
+			"display_name": "SF Atlas Platform R03 C04",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				384,
@@ -541,10 +541,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c05",
+			"asset_id": "asset.sf_military_terrain.r03_c05",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C05",
+			"display_name": "SF Atlas Platform R03 C05",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				512,
@@ -558,10 +558,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c06",
+			"asset_id": "asset.sf_military_terrain.r03_c06",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C06",
+			"display_name": "SF Atlas Platform R03 C06",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				640,
@@ -575,10 +575,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c07",
+			"asset_id": "asset.sf_military_terrain.r03_c07",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C07",
+			"display_name": "SF Atlas Platform R03 C07",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				768,
@@ -592,10 +592,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c08",
+			"asset_id": "asset.sf_military_terrain.r03_c08",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C08",
+			"display_name": "SF Atlas Platform R03 C08",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				896,
@@ -609,10 +609,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c09",
+			"asset_id": "asset.sf_military_terrain.r03_c09",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C09",
+			"display_name": "SF Atlas Platform R03 C09",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1024,
@@ -626,10 +626,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c10",
+			"asset_id": "asset.sf_military_terrain.r03_c10",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C10",
+			"display_name": "SF Atlas Platform R03 C10",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1152,
@@ -643,10 +643,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c11",
+			"asset_id": "asset.sf_military_terrain.r03_c11",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C11",
+			"display_name": "SF Atlas Platform R03 C11",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1280,
@@ -660,10 +660,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r03_c12",
+			"asset_id": "asset.sf_military_terrain.r03_c12",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Platform edge R03 C12",
+			"display_name": "SF Atlas Platform R03 C12",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1408,
@@ -677,10 +677,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c01",
+			"asset_id": "asset.sf_military_terrain.r04_c01",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C01",
+			"display_name": "SF Atlas Cliff R04 C01",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				0,
@@ -694,10 +694,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c02",
+			"asset_id": "asset.sf_military_terrain.r04_c02",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C02",
+			"display_name": "SF Atlas Cliff R04 C02",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				128,
@@ -711,10 +711,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c03",
+			"asset_id": "asset.sf_military_terrain.r04_c03",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C03",
+			"display_name": "SF Atlas Cliff R04 C03",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				256,
@@ -728,10 +728,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c04",
+			"asset_id": "asset.sf_military_terrain.r04_c04",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C04",
+			"display_name": "SF Atlas Cliff R04 C04",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				384,
@@ -745,10 +745,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c05",
+			"asset_id": "asset.sf_military_terrain.r04_c05",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C05",
+			"display_name": "SF Atlas Cliff R04 C05",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				512,
@@ -762,10 +762,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c06",
+			"asset_id": "asset.sf_military_terrain.r04_c06",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C06",
+			"display_name": "SF Atlas Cliff R04 C06",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				640,
@@ -779,10 +779,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c07",
+			"asset_id": "asset.sf_military_terrain.r04_c07",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C07",
+			"display_name": "SF Atlas Cliff R04 C07",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				768,
@@ -796,10 +796,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c08",
+			"asset_id": "asset.sf_military_terrain.r04_c08",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C08",
+			"display_name": "SF Atlas Cliff R04 C08",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				896,
@@ -813,10 +813,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c09",
+			"asset_id": "asset.sf_military_terrain.r04_c09",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C09",
+			"display_name": "SF Atlas Cliff R04 C09",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1024,
@@ -830,10 +830,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c10",
+			"asset_id": "asset.sf_military_terrain.r04_c10",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C10",
+			"display_name": "SF Atlas Cliff R04 C10",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1152,
@@ -847,10 +847,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c11",
+			"asset_id": "asset.sf_military_terrain.r04_c11",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C11",
+			"display_name": "SF Atlas Cliff R04 C11",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1280,
@@ -864,10 +864,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r04_c12",
+			"asset_id": "asset.sf_military_terrain.r04_c12",
 			"kind": "tile",
 			"group": "Boundary",
-			"display_name": "SF Atlas Cliff edge R04 C12",
+			"display_name": "SF Atlas Cliff R04 C12",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1408,
@@ -881,10 +881,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c01",
+			"asset_id": "asset.sf_military_terrain.r05_c01",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C01",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C01",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				0,
@@ -898,10 +898,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c02",
+			"asset_id": "asset.sf_military_terrain.r05_c02",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C02",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C02",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				128,
@@ -915,10 +915,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c03",
+			"asset_id": "asset.sf_military_terrain.r05_c03",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C03",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C03",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				256,
@@ -932,10 +932,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c04",
+			"asset_id": "asset.sf_military_terrain.r05_c04",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C04",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C04",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				384,
@@ -949,10 +949,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c05",
+			"asset_id": "asset.sf_military_terrain.r05_c05",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C05",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C05",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				512,
@@ -966,10 +966,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c06",
+			"asset_id": "asset.sf_military_terrain.r05_c06",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C06",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C06",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				640,
@@ -983,10 +983,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c07",
+			"asset_id": "asset.sf_military_terrain.r05_c07",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C07",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C07",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				768,
@@ -1000,10 +1000,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c08",
+			"asset_id": "asset.sf_military_terrain.r05_c08",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C08",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C08",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				896,
@@ -1017,10 +1017,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c09",
+			"asset_id": "asset.sf_military_terrain.r05_c09",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C09",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C09",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1024,
@@ -1034,10 +1034,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c10",
+			"asset_id": "asset.sf_military_terrain.r05_c10",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C10",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C10",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1152,
@@ -1051,10 +1051,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c11",
+			"asset_id": "asset.sf_military_terrain.r05_c11",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C11",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C11",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1280,
@@ -1068,10 +1068,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r05_c12",
+			"asset_id": "asset.sf_military_terrain.r05_c12",
 			"kind": "tile",
-			"group": "Boundary",
-			"display_name": "SF Atlas Ramp and transition R05 C12",
+			"group": "Bridge",
+			"display_name": "SF Atlas Ramp R05 C12",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1408,
@@ -1085,10 +1085,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c01",
+			"asset_id": "asset.sf_military_terrain.r06_c01",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C01",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C01",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				0,
@@ -1102,10 +1102,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c02",
+			"asset_id": "asset.sf_military_terrain.r06_c02",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C02",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C02",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				128,
@@ -1119,10 +1119,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c03",
+			"asset_id": "asset.sf_military_terrain.r06_c03",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C03",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C03",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				256,
@@ -1136,10 +1136,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c04",
+			"asset_id": "asset.sf_military_terrain.r06_c04",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C04",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C04",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				384,
@@ -1153,10 +1153,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c05",
+			"asset_id": "asset.sf_military_terrain.r06_c05",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C05",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C05",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				512,
@@ -1170,10 +1170,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c06",
+			"asset_id": "asset.sf_military_terrain.r06_c06",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C06",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C06",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				640,
@@ -1187,10 +1187,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c07",
+			"asset_id": "asset.sf_military_terrain.r06_c07",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C07",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C07",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				768,
@@ -1204,10 +1204,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c08",
+			"asset_id": "asset.sf_military_terrain.r06_c08",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C08",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C08",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				896,
@@ -1221,10 +1221,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c09",
+			"asset_id": "asset.sf_military_terrain.r06_c09",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C09",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C09",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1024,
@@ -1238,10 +1238,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c10",
+			"asset_id": "asset.sf_military_terrain.r06_c10",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C10",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C10",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1152,
@@ -1255,10 +1255,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c11",
+			"asset_id": "asset.sf_military_terrain.r06_c11",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C11",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C11",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1280,
@@ -1272,10 +1272,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.sf_military_terrain.r06_c12",
+			"asset_id": "asset.sf_military_terrain.r06_c12",
 			"kind": "tile",
-			"group": "Bridge",
-			"display_name": "SF Atlas Ramp and transition R06 C12",
+			"group": "Boundary",
+			"display_name": "SF Atlas Cliff R06 C12",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1408,
@@ -1289,10 +1289,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c01",
+			"asset_id": "asset.sf_military_terrain.r07_c01",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C01",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C01",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				0,
@@ -1306,10 +1306,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c02",
+			"asset_id": "asset.sf_military_terrain.r07_c02",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C02",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C02",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				128,
@@ -1323,10 +1323,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c03",
+			"asset_id": "asset.sf_military_terrain.r07_c03",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C03",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C03",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				256,
@@ -1340,10 +1340,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c04",
+			"asset_id": "asset.sf_military_terrain.r07_c04",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C04",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C04",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				384,
@@ -1357,10 +1357,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c05",
+			"asset_id": "asset.sf_military_terrain.r07_c05",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C05",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C05",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				512,
@@ -1374,10 +1374,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c06",
+			"asset_id": "asset.sf_military_terrain.r07_c06",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C06",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C06",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				640,
@@ -1391,10 +1391,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c07",
+			"asset_id": "asset.sf_military_terrain.r07_c07",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C07",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C07",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				768,
@@ -1408,10 +1408,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c08",
+			"asset_id": "asset.sf_military_terrain.r07_c08",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C08",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C08",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				896,
@@ -1425,10 +1425,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c09",
+			"asset_id": "asset.sf_military_terrain.r07_c09",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C09",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C09",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1024,
@@ -1442,10 +1442,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c10",
+			"asset_id": "asset.sf_military_terrain.r07_c10",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C10",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C10",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1152,
@@ -1459,10 +1459,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c11",
+			"asset_id": "asset.sf_military_terrain.r07_c11",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C11",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C11",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1280,
@@ -1476,10 +1476,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r07_c12",
+			"asset_id": "asset.sf_military_terrain.r07_c12",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Terrain detail R07 C12",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R07 C12",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1408,
@@ -1493,10 +1493,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c01",
+			"asset_id": "asset.sf_military_terrain.r08_c01",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C01",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C01",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				0,
@@ -1510,10 +1510,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c02",
+			"asset_id": "asset.sf_military_terrain.r08_c02",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C02",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C02",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				128,
@@ -1527,10 +1527,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c03",
+			"asset_id": "asset.sf_military_terrain.r08_c03",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C03",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C03",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				256,
@@ -1544,10 +1544,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c04",
+			"asset_id": "asset.sf_military_terrain.r08_c04",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C04",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C04",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				384,
@@ -1561,10 +1561,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c05",
+			"asset_id": "asset.sf_military_terrain.r08_c05",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C05",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C05",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				512,
@@ -1578,10 +1578,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c06",
+			"asset_id": "asset.sf_military_terrain.r08_c06",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C06",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C06",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				640,
@@ -1595,10 +1595,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c07",
+			"asset_id": "asset.sf_military_terrain.r08_c07",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C07",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C07",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				768,
@@ -1612,10 +1612,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c08",
+			"asset_id": "asset.sf_military_terrain.r08_c08",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C08",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C08",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				896,
@@ -1629,10 +1629,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c09",
+			"asset_id": "asset.sf_military_terrain.r08_c09",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C09",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C09",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1024,
@@ -1646,10 +1646,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c10",
+			"asset_id": "asset.sf_military_terrain.r08_c10",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C10",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C10",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1152,
@@ -1663,10 +1663,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c11",
+			"asset_id": "asset.sf_military_terrain.r08_c11",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C11",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C11",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1280,
@@ -1680,10 +1680,10 @@
 			]
 		},
 		{
-			"asset_id": "asset.object.sf_military_terrain.r08_c12",
+			"asset_id": "asset.sf_military_terrain.r08_c12",
 			"kind": "object",
-			"group": "Military",
-			"display_name": "SF Atlas Military detail R08 C12",
+			"group": "Prop",
+			"display_name": "SF Atlas Prop R08 C12",
 			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
 			"source_rect_px": [
 				1408,
