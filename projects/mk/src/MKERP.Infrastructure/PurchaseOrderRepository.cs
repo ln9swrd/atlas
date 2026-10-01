@@ -30,9 +30,10 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
 
     public async Task UpdateAsync(PurchaseOrder order, IReadOnlyList<PurchaseOrderDetail> details, CancellationToken cancellationToken = default)
     {
+        var draftStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "DRAFT", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var current = await db.PurchaseOrders.SingleAsync(x => x.Id == order.Id, cancellationToken);
-        if (current.StatusId != "DRAFT") throw new InvalidOperationException("?묒꽦 ?곹깭??諛쒖＜留??섏젙?????덉뒿?덈떎.");
+        if (current.StatusId != draftStatusId) throw new InvalidOperationException("?묒꽦 ?곹깭??諛쒖＜留??섏젙?????덉뒿?덈떎.");
         var existing = await db.PurchaseOrderDetails.Where(x => x.PurchaseOrderId == order.Id).ToListAsync(cancellationToken);
         foreach (var row in existing)
             if (!details.Any(x => x.Id == row.Id)) row.IsActive = false;
@@ -63,10 +64,12 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
 
     public async Task ConfirmAsync(long purchaseOrderId, CancellationToken cancellationToken = default)
     {
+        var draftStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "DRAFT", cancellationToken);
+        var confirmedStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CONFIRMED", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var order = await db.PurchaseOrders.SingleAsync(x => x.Id == purchaseOrderId, cancellationToken);
-        if (order.StatusId != "DRAFT") throw new InvalidOperationException("?묒꽦以??곹깭??諛쒖＜留??뺤젙?????덉뒿?덈떎.");
-        var before = Snapshot(order); order.StatusId = "CONFIRMED"; order.UpdatedAt = DateTime.UtcNow;
+        if (order.StatusId != draftStatusId) throw new InvalidOperationException("?묒꽦以??곹깭??諛쒖＜留??뺤젙?????덉뒿?덈떎.");
+        var before = Snapshot(order); order.StatusId = confirmedStatusId; order.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER", order.Id, "CONFIRM", before, order, cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
@@ -80,22 +83,26 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
 
     public async Task ProcessDetailAsync(long purchaseOrderDetailId, decimal quantity, string mkLotNo, string partnerLotNo, CancellationToken cancellationToken = default)
     {
+        var confirmedStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CONFIRMED", cancellationToken);
+        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var purchaseSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PURCHASE_ORDER", cancellationToken);
+        var processActionId = await CodeResolver.GetRequiredIdAsync(db, "ORDER_PROCESS_ACTION", "PROCESS", cancellationToken);
         if (quantity <= 0) throw new InvalidOperationException("??껎??롮쎗?? 0癰귣????뚣끉鍮???몃빍??");
         if (string.IsNullOrWhiteSpace(mkLotNo) || string.IsNullOrWhiteSpace(partnerLotNo))
             throw new InvalidOperationException("??껎?筌ｌ꼶??癒?뮉 MK Lot No?? 椰꾧퀡?믭㎗?Lot No揶쎛 ?袁⑹뒄??몃빍??");
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var detail = await db.PurchaseOrderDetails.SingleAsync(x => x.Id == purchaseOrderDetailId, cancellationToken);
         var order = await db.PurchaseOrders.SingleAsync(x => x.Id == detail.PurchaseOrderId, cancellationToken);
-        if (order.StatusId != "CONFIRMED") throw new InvalidOperationException("?類ㅼ젟 ?怨밴묶??獄쏆뮇竊쒙쭕???껎?筌ｌ꼶???????됰뮸??덈뼄.");
+        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("?類ㅼ젟 ?怨밴묶??獄쏆뮇竊쒙쭕???껎?筌ｌ꼶???????됰뮸??덈뼄.");
         var remaining = detail.OrderQty - detail.ProcessedQty;
         if (quantity > remaining) throw new InvalidOperationException($"??껎??遺얠쎗???λ뜃???됰뮸??덈뼄. ?遺얠쎗: {remaining:N2}");
         var lotPair = await EnsureLotsAsync(order.PartnerId, mkLotNo, partnerLotNo, cancellationToken);
-        var movement = await CreateMovementAsync(order, detail, quantity, "IN", "PURCHASE_ORDER", cancellationToken);
+        var movement = await CreateMovementAsync(order, detail, quantity, inTypeId, purchaseSourceId, cancellationToken);
         var movementDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == movement.Id, cancellationToken);
         movementDetail.LotId = lotPair.LotId;
         movementDetail.PartnerLotId = lotPair.PartnerLotId;
         await db.SaveChangesAsync(cancellationToken);
-        await AddProcessHistoryAsync("PURCHASE_ORDER", detail.Id, movementDetail.Id, quantity, "PROCESS", null, cancellationToken);
+        await AddProcessHistoryAsync(purchaseSourceId, detail.Id, movementDetail.Id, quantity, processActionId, null, cancellationToken);
         detail.ProcessedQty += quantity;
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER_DETAIL", detail.Id, "PROCESS", null, detail, note: $"IN_QTY={quantity:N2},LOT={mkLotNo}", cancellationToken: cancellationToken);
@@ -118,63 +125,77 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
     }
     public async Task CancelAsync(long purchaseOrderId, CancellationToken cancellationToken = default)
     {
+        var confirmedStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CONFIRMED", cancellationToken);
+        var cancelledStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CANCELLED", cancellationToken);
+        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
+        var purchaseSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PURCHASE_ORDER", cancellationToken);
+        var cancelSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PURCHASE_ORDER_CANCEL", cancellationToken);
+        var processActionId = await CodeResolver.GetRequiredIdAsync(db, "ORDER_PROCESS_ACTION", "PROCESS", cancellationToken);
+        var reverseActionId = await CodeResolver.GetRequiredIdAsync(db, "ORDER_PROCESS_ACTION", "REVERSE", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var order = await db.PurchaseOrders.SingleAsync(x => x.Id == purchaseOrderId, cancellationToken);
-        if (order.StatusId != "CONFIRMED") throw new InvalidOperationException("?類ㅼ젟 ?怨밴묶??獄쏆뮇竊쒙쭕??띯뫁???????됰뮸??덈뼄.");
+        if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("?類ㅼ젟 ?怨밴묶??獄쏆뮇竊쒙쭕??띯뫁???????됰뮸??덈뼄.");
         var details = await db.PurchaseOrderDetails.Where(x => x.PurchaseOrderId == purchaseOrderId).ToListAsync(cancellationToken);
-        var movements = await db.InOuts.Where(x => x.SourceTypeId == "PURCHASE_ORDER" && x.SourceId == purchaseOrderId && x.StatusId != "CANCELLED").ToListAsync(cancellationToken);
+        var movements = await db.InOuts.Where(x => x.SourceTypeId == purchaseSourceId && x.SourceId == purchaseOrderId && x.StatusId != cancelledStatusId).ToListAsync(cancellationToken);
 
         foreach (var detail in details)
         {
-            var histories = await db.OrderProcessHistories.Where(x => x.SourceTypeId == "PURCHASE_ORDER" && x.SourceDetailId == detail.Id && x.ActionId == "PROCESS").OrderBy(x => x.Id).ToListAsync(cancellationToken);
+            var histories = await db.OrderProcessHistories.Where(x => x.SourceTypeId == purchaseSourceId && x.SourceDetailId == detail.Id && x.ActionId == processActionId).OrderBy(x => x.Id).ToListAsync(cancellationToken);
             var processed = histories.Sum(x => x.ProcessQty);
             if (processed <= 0) continue;
             var available = await GetAvailableAsync(detail.ItemId, cancellationToken);
             if (available < processed) throw new InvalidOperationException($"?띯뫁????袁⑹뒄?????у첎? ?봔鈺곌퉲鍮??덈뼄. ?袁⑹삺 ???? {available:N2}, ???땾 ??롮쎗: {processed:N2}");
         }
 
-        foreach (var movement in movements) { movement.StatusId = "CANCELLED"; movement.UpdatedAt = DateTime.UtcNow; }
+        foreach (var movement in movements) { movement.StatusId = cancelledStatusId; movement.UpdatedAt = DateTime.UtcNow; }
 
         foreach (var detail in details)
         {
-            var histories = await db.OrderProcessHistories.Where(x => x.SourceTypeId == "PURCHASE_ORDER" && x.SourceDetailId == detail.Id && x.ActionId == "PROCESS").OrderBy(x => x.Id).ToListAsync(cancellationToken);
+            var histories = await db.OrderProcessHistories.Where(x => x.SourceTypeId == purchaseSourceId && x.SourceDetailId == detail.Id && x.ActionId == processActionId).OrderBy(x => x.Id).ToListAsync(cancellationToken);
             foreach (var history in histories)
             {
                 var original = await db.InOutDetails.AsNoTracking().SingleAsync(x => x.Id == history.InOutDetailId, cancellationToken);
-                var movement = await CreateMovementAsync(order, detail, history.ProcessQty, "OUT", "PURCHASE_ORDER_CANCEL", cancellationToken);
+                var movement = await CreateMovementAsync(order, detail, history.ProcessQty, outTypeId, cancelSourceId, cancellationToken);
                 var reverseDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == movement.Id, cancellationToken);
                 reverseDetail.LotId = original.LotId;
                 reverseDetail.PartnerLotId = original.PartnerLotId;
                 await db.SaveChangesAsync(cancellationToken);
-                await AddProcessHistoryAsync("PURCHASE_ORDER", detail.Id, reverseDetail.Id, history.ProcessQty, "REVERSE", history.Id, cancellationToken);
+                await AddProcessHistoryAsync(purchaseSourceId, detail.Id, reverseDetail.Id, history.ProcessQty, reverseActionId, history.Id, cancellationToken);
             }
         }
 
         var before = Snapshot(order);
-        order.StatusId = "CANCELLED";
+        order.StatusId = cancelledStatusId;
         order.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER", order.Id, "CANCEL", before, order, note: $"REVERSE_OUT_QTY={details.Sum(x => x.ProcessedQty):N2}", cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
     }
-    private async Task AddProcessHistoryAsync(string sourceType, long sourceDetailId, long inOutDetailId, decimal quantity, string actionCode, long? reversesHistoryId, CancellationToken cancellationToken)
+    private async Task AddProcessHistoryAsync(long sourceTypeId, long sourceDetailId, long inOutDetailId, decimal quantity, long actionId, long? reversesHistoryId, CancellationToken cancellationToken)
     {
-        db.OrderProcessHistories.Add(new OrderProcessHistory { SourceTypeId=sourceType, SourceDetailId=sourceDetailId, InOutDetailId=inOutDetailId, ProcessQty=quantity, ActionId=actionCode, ReversesHistoryId=reversesHistoryId, CreatedAt=DateTime.UtcNow });
+        db.OrderProcessHistories.Add(new OrderProcessHistory { SourceTypeId=sourceTypeId, SourceDetailId=sourceDetailId, InOutDetailId=inOutDetailId, ProcessQty=quantity, ActionId=actionId, ReversesHistoryId=reversesHistoryId, CreatedAt=DateTime.UtcNow });
         await db.SaveChangesAsync(cancellationToken);
     }
 
     private static PurchaseOrder Snapshot(PurchaseOrder x) => new() { Id=x.Id, DocumentNo=x.DocumentNo, OrderDate=x.OrderDate, PartnerId=x.PartnerId, DueDate=x.DueDate, StatusId=x.StatusId, Note=x.Note, CreatedAt=x.CreatedAt, UpdatedAt=x.UpdatedAt };
 
-    private async Task<decimal> GetAvailableAsync(long itemId, CancellationToken cancellationToken) =>
-        (await db.InOuts.AsNoTracking().Where(x => x.StatusId != "CANCELLED").Join(db.InOutDetails, h => h.Id, d => d.InOutId, (h,d) => new {h,d}).Where(x => x.d.ItemId == itemId).ToListAsync(cancellationToken)).Sum(x => x.h.MovementTypeId is "IN" or "OPENING" or "ADJUST" ? x.d.Quantity : -x.d.Quantity);
+    private async Task<decimal> GetAvailableAsync(long itemId, CancellationToken cancellationToken)
+    {
+        var cancelledStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CANCELLED", cancellationToken);
+        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var openingTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OPENING", cancellationToken);
+        var adjustTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "ADJUST", cancellationToken);
+        return (await db.InOuts.AsNoTracking().Where(x => x.StatusId != cancelledStatusId).Join(db.InOutDetails, h => h.Id, d => d.InOutId, (h,d) => new {h,d}).Where(x => x.d.ItemId == itemId).ToListAsync(cancellationToken)).Sum(x => (x.h.MovementTypeId == inTypeId || x.h.MovementTypeId == openingTypeId || x.h.MovementTypeId == adjustTypeId) ? x.d.Quantity : -x.d.Quantity);
+    }
 
-    private async Task<InOut> CreateMovementAsync(PurchaseOrder order, PurchaseOrderDetail detail, decimal quantity, string type, string source, CancellationToken cancellationToken)
+    private async Task<InOut> CreateMovementAsync(PurchaseOrder order, PurchaseOrderDetail detail, decimal quantity, long typeId, long sourceTypeId, CancellationToken cancellationToken)
     {
         var pattern = await db.SystemSettings.AsNoTracking().Where(x => x.Key == "DOC_NO.INOUT").Select(x => x.Value).SingleAsync(cancellationToken);
         var prefix = pattern.Replace("{yyyyMM}", order.OrderDate.ToString("yyyyMM"));
         var prefixText = prefix[..prefix.IndexOf("{seq4}", StringComparison.Ordinal)];
         var count = await db.InOuts.CountAsync(x => x.DocumentNo.StartsWith(prefixText), cancellationToken);
-        var movement = new InOut { DocumentNo=pattern.Replace("{yyyyMM}", order.OrderDate.ToString("yyyyMM")).Replace("{seq4}", (count+1).ToString("D4")), MovementDate=order.OrderDate, MovementTypeId=type, PartnerId=order.PartnerId, SourceTypeId=source, SourceId=order.Id, StatusId="CONFIRMED", CreatedAt=DateTime.UtcNow, UpdatedAt=DateTime.UtcNow };
+        var movement = new InOut { DocumentNo=pattern.Replace("{yyyyMM}", order.OrderDate.ToString("yyyyMM")).Replace("{seq4}", (count+1).ToString("D4")), MovementDate=order.OrderDate, MovementTypeId=typeId, PartnerId=order.PartnerId, SourceTypeId=sourceTypeId, SourceId=order.Id, StatusId=await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CONFIRMED", cancellationToken), CreatedAt=DateTime.UtcNow, UpdatedAt=DateTime.UtcNow };
         db.InOuts.Add(movement); await db.SaveChangesAsync(cancellationToken);
         db.InOutDetails.Add(new InOutDetail { InOutId=movement.Id, ItemId=detail.ItemId, Quantity=quantity, UnitPrice=detail.AppliedUnitPrice, Amount=quantity * detail.AppliedUnitPrice });
         await db.SaveChangesAsync(cancellationToken);
