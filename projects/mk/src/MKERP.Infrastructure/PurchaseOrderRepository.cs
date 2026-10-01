@@ -15,13 +15,15 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         return pattern.Replace("{yyyyMM}", orderDate.ToString("yyyyMM")).Replace("{seq4}", (count + 1).ToString("D4"));
     }
 
-    public async Task AddAsync(PurchaseOrder order, PurchaseOrderDetail detail, CancellationToken cancellationToken = default)
+    public async Task AddAsync(PurchaseOrder order, IReadOnlyList<PurchaseOrderDetail> details, CancellationToken cancellationToken = default)
     {
+        if (details.Count == 0) throw new InvalidOperationException("발주 상세가 없습니다.");
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         db.PurchaseOrders.Add(order); await db.SaveChangesAsync(cancellationToken);
-        detail.PurchaseOrderId = order.Id; db.PurchaseOrderDetails.Add(detail); await db.SaveChangesAsync(cancellationToken);
-        await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER", order.Id, "CREATE", null, order, cancellationToken: cancellationToken);
-        await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER_DETAIL", detail.Id, "CREATE", null, detail, cancellationToken: cancellationToken);
+        foreach (var detail in details) { detail.PurchaseOrderId = order.Id; db.PurchaseOrderDetails.Add(detail); }
+        await db.SaveChangesAsync(cancellationToken);
+        await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER", order.Id, "CREATE", null, order, note: $"DETAIL_COUNT={details.Count}", cancellationToken: cancellationToken);
+        foreach (var detail in details) await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER_DETAIL", detail.Id, "CREATE", null, detail, cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
     }
 
