@@ -82,39 +82,60 @@ text = "Mode: Erase Tile"
 visible = false
 layout_mode = 2
 
-[node name="BtnGameplaySelect" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="AllyToolsTitle" type="Label" parent="MainLayout/Toolbox/VBox/GameplayTools"]
 layout_mode = 2
-text = "Select / Move"
+text = "아군"
 
-[node name="BtnSpawnArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="AllyTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayTools"]
 layout_mode = 2
-text = "Spawn Area"
 
-[node name="BtnTowerArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="BtnTowerArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/AllyTools"]
 layout_mode = 2
 text = "Tower Placement Area"
 
-[node name="BtnTowerPoint" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="BtnTowerPoint" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/AllyTools"]
 layout_mode = 2
 text = "Tower Placement Point"
 
-[node name="BtnRobotPoint" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="BtnRobotPoint" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/AllyTools"]
 layout_mode = 2
 text = "Robot Position Point"
 
-[node name="BtnGoalArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="EnemyToolsTitle" type="Label" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "적"
+
+[node name="EnemyTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+
+[node name="BtnSpawnArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/EnemyTools"]
+layout_mode = 2
+text = "Spawn Area"
+
+[node name="BtnGoalArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/EnemyTools"]
 layout_mode = 2
 text = "Goal Area"
 
-[node name="BtnObstacleArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="CommonToolsTitle" type="Label" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+text = "공통"
+
+[node name="CommonTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+layout_mode = 2
+
+[node name="BtnGameplaySelect" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/CommonTools"]
+layout_mode = 2
+text = "Select / Move"
+
+[node name="BtnObstacleArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/CommonTools"]
 layout_mode = 2
 text = "Obstacle Area"
 
-[node name="BtnMovementArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="BtnMovementArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/CommonTools"]
 layout_mode = 2
 text = "Movement Area"
 
-[node name="BtnBlockedArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools"]
+[node name="BtnBlockedArea" type="Button" parent="MainLayout/Toolbox/VBox/GameplayTools/CommonTools"]
 layout_mode = 2
 text = "Blocked Area"
 

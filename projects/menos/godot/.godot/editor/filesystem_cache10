@@ -54,8 +54,8 @@ tower_slot_selected.png::CompressedTexture2D::221656078746077824::1790251375::17
 allied_units.json::JSON::-1::1790760072::0::1::::<><><>0<>0<><>::
 ::res://content/campaign/::1790420733
 main_campaign.json::JSON::-1::1790420733::0::1::::<><><>0<>0<><>::
-::res://content/editor/::1790857328
-asset_catalog.json::JSON::-1::1790857339::0::1::::<><><>0<>0<><>::
+::res://content/editor/::1790857561
+asset_catalog.json::JSON::-1::1790857561::0::1::::<><><>0<>0<><>::
 ::res://content/editor/edited_assets/::1790614057
 asset_tile_a_7_edit_14449287.png::CompressedTexture2D::5229816135099783188::1790502881::1790503201::1::::<><><>0<>0<>a0b6f8e0adf9a2a54b7b68876a3edc7d<>res://.godot/imported/asset_tile_a_7_edit_14449287.png-820773d900f9f4bbf0312f2c716af71a.ctex::
 asset_tile_ground_1_edit_217984384.png::CompressedTexture2D::8252042925242212953::1790502881::1790503201::1::::<><><>0<>0<>89abfb100e51884b32cdccab74a3b533<>res://.godot/imported/asset_tile_ground_1_edit_217984384.png-4c2f0bb382b5fce0d2bbcff3777d7260.ctex::
@@ -112,8 +112,8 @@ image_editor.gd::GDScript::850829310022179836::1790613904::0::1::::<>Control<><>
 image_editor.tscn::PackedScene::-1::1790609468::0::1::::<><><>0<>0<><>::res://editor/image_editor.gd
 image_editor_state.gd::GDScript::302610657414012107::1790609058::0::1::::ImageEditorState<>RefCounted<><>0<>0<><>::
 image_texture_loader.gd::GDScript::2404187261731203358::1790511154::0::1::::<>RefCounted<><>0<>0<><>::
-map_editor.gd::GDScript::612161265932897584::1790686091::0::1::::MapEditorMain<>Control<><>0<>0<><>::
-map_editor.tscn::PackedScene::56458622543686955::1790609468::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
+map_editor.gd::GDScript::612161265932897584::1790857813::0::1::::MapEditorMain<>Control<><>0<>0<><>::
+map_editor.tscn::PackedScene::56458622543686955::1790857808::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
 robot_editor.gd::GDScript::1026590027043768138::1790771599::0::1::::RobotEditorMain<>Control<><>0<>0<><>::
 robot_editor.tscn::PackedScene::-1::1790683767::0::1::::<><><>0<>0<><>::res://editor/robot_editor.gd
 stage_editor.gd::GDScript::1845567455619979794::1790768391::0::1::::StageEditorMain<>Control<><>0<>0<><>::
