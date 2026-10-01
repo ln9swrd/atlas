@@ -1,9 +1,9 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790862228
+::res://::1790863273
 export_presets.cfg::TextFile::-1::1790684967::0::1::::<><><>0<>0<><>::
-game_controller.gd::GDScript::8692213070628158787::1790861971::0::1::::<>Node2D<><>0<>0<><>::
+game_controller.gd::GDScript::8692213070628158787::1790862508::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790760072::0::1::::<>Node2D<><>0<>0<><>::
-main.tscn::PackedScene::6409794179911717756::1790862094::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
+main.tscn::PackedScene::6409794179911717756::1790863010::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
 ::res://assets/::1790251375
 ::res://assets/menos/::1790274467
 ::res://assets/menos/environment/::1790503201
@@ -49,6 +49,7 @@ tower_gatling_anim.png::CompressedTexture2D::1251966726177335727::1790259875::17
 tower_slot_available.png::CompressedTexture2D::8325176799815910921::1790251375::1790503201::1::::<><><>0<>0<>c9fad6bada97dc17d87edad0fb6fd62f<>res://.godot/imported/tower_slot_available.png-62b4e514834f144dcf0d960efb0dc7be.ctex::
 tower_slot_empty.png::CompressedTexture2D::4713943064399739930::1790251375::1790503201::1::::<><><>0<>0<>3028e3caf0006ed6b7813f7f250e3e97<>res://.godot/imported/tower_slot_empty.png-5424ed95c460d3d456f2d3da15179f94.ctex::
 tower_slot_selected.png::CompressedTexture2D::221656078746077824::1790251375::1790503201::1::::<><><>0<>0<>69a09399b652dfd2858f6bab8d1ef743<>res://.godot/imported/tower_slot_selected.png-5b8b5d8cf2bd58e3a0afc4753f268472.ctex::
+::res://build/::1790863273
 ::res://content/::1790760072
 ::res://content/allied_units/::1790760072
 allied_units.json::JSON::-1::1790760072::0::1::::<><><>0<>0<><>::
@@ -80,8 +81,8 @@ tower_gatling_anim_edit_42698469_edit_79165238_edit_109592238.png::CompressedTex
 enemies.json::JSON::-1::1790760072::0::1::::<><><>0<>0<><>::
 ::res://content/items/::1790683767
 items.json::JSON::-1::1790683767::0::1::::<><><>0<>0<><>::
-::res://content/maps/::1790861789
-map_01.json::JSON::-1::1790861789::0::1::::<><><>0<>0<><>::
+::res://content/maps/::1790863003
+map_01.json::JSON::-1::1790863044::0::1::::<><><>0<>0<><>::
 map_01_src.json::JSON::-1::1790410256::0::1::::<><><>0<>0<><>::
 map_02.json::JSON::-1::1790791939::0::1::::<><><>0<>0<><>::
 map_03.json::JSON::-1::1790791939::0::1::::<><><>0<>0<><>::
@@ -112,7 +113,7 @@ image_editor.gd::GDScript::850829310022179836::1790613904::0::1::::<>Control<><>
 image_editor.tscn::PackedScene::-1::1790609468::0::1::::<><><>0<>0<><>::res://editor/image_editor.gd
 image_editor_state.gd::GDScript::302610657414012107::1790609058::0::1::::ImageEditorState<>RefCounted<><>0<>0<><>::
 image_texture_loader.gd::GDScript::2404187261731203358::1790511154::0::1::::<>RefCounted<><>0<>0<><>::
-map_editor.gd::GDScript::612161265932897584::1790860152::0::1::::MapEditorMain<>Control<><>0<>0<><>::
+map_editor.gd::GDScript::612161265932897584::1790862609::0::1::::MapEditorMain<>Control<><>0<>0<><>::
 map_editor.tscn::PackedScene::56458622543686955::1790860119::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
 robot_editor.gd::GDScript::1026590027043768138::1790771599::0::1::::RobotEditorMain<>Control<><>0<>0<><>::
 robot_editor.tscn::PackedScene::-1::1790683767::0::1::::<><><>0<>0<><>::res://editor/robot_editor.gd
