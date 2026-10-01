@@ -68,8 +68,7 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         var processed = movements.Join(db.InOutDetails, h => h.Id, d => d.InOutId, (h,d) => d.Quantity).Sum();
         if (processed > 0)
         {
-            var available = await GetAvailableAsync(detail.ItemId, cancellationToken);
-            if (available < processed) throw new InvalidOperationException($"취소에 필요한 재고가 부족합니다. 현재 재고: {available:N2}, 복원 수량: {processed:N2}");
+            // 출고 취소는 기존 OUT을 취소하고 동일 수량을 IN으로 복원하므로 현재 재고 부족을 이유로 취소를 막지 않는다.
             foreach (var movement in movements) { movement.StatusCode = "CANCELLED"; movement.UpdatedAt = DateTime.UtcNow; }
             await CreateMovementAsync(order, detail, processed, "IN", "SALES_ORDER_CANCEL", cancellationToken);
         }

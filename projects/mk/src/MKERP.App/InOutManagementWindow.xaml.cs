@@ -116,14 +116,7 @@ public partial class InOutManagementWindow : UserControl
                 return;
             }
 
-            var lots = await new InOutRepository(_db).EnsureLotsAsync(partner.Id, row.MkLotNo.Trim(), row.PartnerLotNo.Trim());
-            details.Add(new InOutDetail
-            {
-                ItemId = row.ItemId,
-                LotId = lots.LotId,
-                PartnerLotId = lots.PartnerLotId,
-                Quantity = row.Quantity
-            });
+            details.Add(new InOutDetail { ItemId = row.ItemId, Quantity = row.Quantity });
         }
 
         if (type.Key is "OUT" or "LOSS")
@@ -139,6 +132,14 @@ public partial class InOutManagementWindow : UserControl
                     return;
                 }
             }
+        }
+
+        for (var index = 0; index < details.Count; index++)
+        {
+            var row = _entries[index];
+            var lots = await new InOutRepository(_db).EnsureLotsAsync(partner.Id, row.MkLotNo.Trim(), row.PartnerLotNo.Trim());
+            details[index].LotId = lots.LotId;
+            details[index].PartnerLotId = lots.PartnerLotId;
         }
 
         await new InOutRepository(_db).AddAsync(

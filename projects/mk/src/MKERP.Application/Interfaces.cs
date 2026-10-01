@@ -1,4 +1,4 @@
-using MKERP.Domain;
+﻿using MKERP.Domain;
 
 namespace MKERP.Application;
 
@@ -54,7 +54,7 @@ public interface IPriceRepository
 public interface IPurchaseOrderRepository
 {
     Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);
-    Task AddAsync(PurchaseOrder order, PurchaseOrderDetail detail, CancellationToken cancellationToken = default);
+    Task AddAsync(PurchaseOrder order, IReadOnlyList<PurchaseOrderDetail> details, CancellationToken cancellationToken = default);
     Task ConfirmAsync(long purchaseOrderId, CancellationToken cancellationToken = default);
     Task ProcessAsync(long purchaseOrderId, decimal quantity, CancellationToken cancellationToken = default);
     Task CancelAsync(long purchaseOrderId, CancellationToken cancellationToken = default);
@@ -103,9 +103,10 @@ public sealed class InventoryRow
 public interface ISalesOrderRepository
 {
     Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);
-    Task AddAsync(SalesOrder order, SalesOrderDetail detail, CancellationToken cancellationToken = default);
+    Task AddAsync(SalesOrder order, IReadOnlyList<SalesOrderDetail> details, CancellationToken cancellationToken = default);
     Task ConfirmAsync(long salesOrderId, CancellationToken cancellationToken = default);
     Task ProcessAsync(long salesOrderId, decimal quantity, CancellationToken cancellationToken = default);
     Task CancelAsync(long salesOrderId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<SalesOrder>> GetRecentAsync(CancellationToken cancellationToken = default);
 }
+
