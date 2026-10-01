@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790863273
+::res://::1790863487
 export_presets.cfg::TextFile::-1::1790684967::0::1::::<><><>0<>0<><>::
 game_controller.gd::GDScript::8692213070628158787::1790862508::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790760072::0::1::::<>Node2D<><>0<>0<><>::
@@ -49,7 +49,7 @@ tower_gatling_anim.png::CompressedTexture2D::1251966726177335727::1790259875::17
 tower_slot_available.png::CompressedTexture2D::8325176799815910921::1790251375::1790503201::1::::<><><>0<>0<>c9fad6bada97dc17d87edad0fb6fd62f<>res://.godot/imported/tower_slot_available.png-62b4e514834f144dcf0d960efb0dc7be.ctex::
 tower_slot_empty.png::CompressedTexture2D::4713943064399739930::1790251375::1790503201::1::::<><><>0<>0<>3028e3caf0006ed6b7813f7f250e3e97<>res://.godot/imported/tower_slot_empty.png-5424ed95c460d3d456f2d3da15179f94.ctex::
 tower_slot_selected.png::CompressedTexture2D::221656078746077824::1790251375::1790503201::1::::<><><>0<>0<>69a09399b652dfd2858f6bab8d1ef743<>res://.godot/imported/tower_slot_selected.png-5b8b5d8cf2bd58e3a0afc4753f268472.ctex::
-::res://build/::1790863273
+::res://build/::1790863318
 ::res://content/::1790760072
 ::res://content/allied_units/::1790760072
 allied_units.json::JSON::-1::1790760072::0::1::::<><><>0<>0<><>::
