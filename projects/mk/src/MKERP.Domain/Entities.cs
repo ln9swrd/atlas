@@ -107,6 +107,7 @@ public sealed class PurchaseOrderDetail
     public long ItemId { get; set; }
     public long? PriceId { get; set; }
     public decimal OrderQty { get; set; }
+    public decimal ProcessedQty { get; set; }
     public decimal AppliedUnitPrice { get; set; }
     public decimal Amount { get; set; }
     public DateTime? DueDate { get; set; }
@@ -181,6 +182,7 @@ public sealed class SalesOrderDetail
     public long? PartnerItemId { get; set; }
     public long? PriceId { get; set; }
     public decimal OrderQty { get; set; }
+    public decimal ProcessedQty { get; set; }
     public decimal AppliedUnitPrice { get; set; }
     public decimal Amount { get; set; }
     public DateTime? DueDate { get; set; }

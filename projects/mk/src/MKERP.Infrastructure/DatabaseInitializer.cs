@@ -34,6 +34,9 @@ public sealed class DatabaseInitializer(string databasePath) : IDatabaseInitiali
             await ExecuteNonQueryAsync(connection, "ALTER TABLE TB_PURCHASE_ORDER_DETAIL ADD COLUMN PRICE_ID INTEGER;", cancellationToken);
         }
 
+        await EnsureOrderProcessedQtyAsync(connection, "TB_SALES_ORDER_DETAIL", "SALES_ORDER_ID", "SALES_ORDER");
+        await EnsureOrderProcessedQtyAsync(connection, "TB_PURCHASE_ORDER_DETAIL", "PURCHASE_ORDER_ID", "PURCHASE_ORDER");
+
         await ExecuteNonQueryAsync(connection,
             "CREATE INDEX IF NOT EXISTS IX_PRICE_PARTNER_ITEM_DATE ON TB_PRICE(PARTNER_ID, ITEM_ID, EFFECTIVE_FROM, PRIORITY, IS_ACTIVE);",
             cancellationToken);
