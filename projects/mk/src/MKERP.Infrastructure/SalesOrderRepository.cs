@@ -51,7 +51,9 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         if (quantity > remaining) throw new InvalidOperationException($"출고 잔량을 초과했습니다. 잔량: {remaining:N2}");
         var available = await GetAvailableAsync(detail.ItemId, cancellationToken);
         if (available < quantity) throw new InvalidOperationException($"재고가 부족합니다. 현재 재고: {available:N2}, 출고 요청: {quantity:N2}");
-        await CreateMovementAsync(order, detail, quantity, "OUT", "SALES_ORDER", cancellationToken);
+        var movement = await CreateMovementAsync(order, detail, quantity, "OUT", "SALES_ORDER", cancellationToken);
+        var movementDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == movement.Id, cancellationToken);
+        await AddProcessHistoryAsync("SALES_ORDER", detail.Id, movementDetail.Id, quantity, "PROCESS", null, cancellationToken);
         detail.ProcessedQty += quantity;
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_SALES_ORDER_DETAIL", detail.Id, "PROCESS", null, detail, note: $"OUT_QTY={quantity:N2}", cancellationToken: cancellationToken);
