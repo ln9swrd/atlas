@@ -72,7 +72,7 @@ corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit_hover"]
 bg_color = Color(0.82, 0.87, 0.82, 1)
-border_color = Color(0.38, 0.56, 0.58, 1)
+border_color = Color(0.45, 0.61, 0.57, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -99,7 +99,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="MainPanel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(920, 700)
+custom_minimum_size = Vector2(1040, 700)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
@@ -116,7 +116,7 @@ horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="CenterContainer/MainPanel/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.88, 0.96, 0.93, 1)
+theme_override_colors/font_color = Color(0.12, 0.18, 0.18, 1)
 theme_override_font_sizes/font_size = 66
 text = "MENOS"
 horizontal_alignment = 1
@@ -195,7 +195,7 @@ horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="CenterContainer/MainPanel/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.43, 0.56, 0.57, 1)
+theme_override_colors/font_color = Color(0.42, 0.50, 0.47, 1)
 theme_override_font_sizes/font_size = 12
 text = "ENTER  캠페인 또는 싱글 플레이 선택 / 싱글 플레이는 맵 선택 후 시작"
 horizontal_alignment = 1

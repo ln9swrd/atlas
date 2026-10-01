@@ -32,15 +32,15 @@ func _ready() -> void:
 	start_button.grab_focus()
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color("081318"))
-	var spacing := 32.0
-	var grid_color := Color(0.18, 0.38, 0.41, 0.18)
+	draw_rect(Rect2(Vector2.ZERO, size), Color("e8ede7"))
+	var spacing := 40.0
+	var grid_color := Color(0.28, 0.43, 0.39, 0.07)
 	for x in range(0, int(size.x) + 1, int(spacing)):
 		draw_line(Vector2(x, 0), Vector2(x, size.y), grid_color, 1.0)
 	for y in range(0, int(size.y) + 1, int(spacing)):
 		draw_line(Vector2(0, y), Vector2(size.x, y), grid_color, 1.0)
-	draw_rect(Rect2(0, size.y * 0.5 - 1.0, size.x, 2.0), Color(0.35, 0.68, 0.67, 0.08))
-	draw_arc(size * 0.5, minf(size.x, size.y) * 0.38, 0.0, TAU, 72, Color(0.35, 0.68, 0.67, 0.08), 1.0)
+	draw_rect(Rect2(0, size.y * 0.5 - 1.0, size.x, 2.0), Color(0.12, 0.39, 0.37, 0.10))
+	draw_arc(size * 0.5, minf(size.x, size.y) * 0.38, 0.0, TAU, 72, Color(0.12, 0.39, 0.37, 0.08), 1.0)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_RESIZED:
