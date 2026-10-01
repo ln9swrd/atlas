@@ -1,856 +1,946 @@
 {
-	"asset_footprint_defaults": {
-		"asset.sf_military_terrain.r01_c01": [
-			4,
-			4
-		],
-		"asset.sf_military_terrain.r01_c02": [
-			4,
-			4
-		],
-		"asset.sf_military_terrain.r01_c05": [
-			4,
-			4
-		],
-		"asset.sf_military_terrain.r02_c01": [
-			4,
-			4
-		],
-		"asset.sf_military_terrain.r03_c01": [
-			4,
-			4
-		],
-		"asset.sf_military_terrain.r04_c01": [
-			4,
-			4
-		],
-		"asset.sf_military_terrain.r05_c02": [
-			4,
-			4
-		],
-		"asset.sf_military_terrain.r05_c05": [
-			4,
-			4
-		]
-	},
-	"gameplay_areas": [
-		{
-			"enabled": true,
-			"id": "gameplay.spawn_area.49646098",
-			"name": "Spawn Area",
-			"position": [
-				1.0,
-				505.0
-			],
-			"size": [
-				320.0,
-				320.0
-			],
-			"type": "spawn_area"
-		},
-		{
-			"enabled": true,
-			"id": "gameplay.tower_placement_area.151259551",
-			"name": "Tower Placement Area",
-			"position": [
-				640.0,
-				58.0
-			],
-			"size": [
-				512.0,
-				352.0
-			],
-			"type": "tower_placement_area"
-		},
-		{
-			"enabled": true,
-			"id": "gameplay.blocked_area.221665056",
-			"name": "Blocked Area",
-			"position": [
-				448.0,
-				346.0
-			],
-			"size": [
-				64.0,
-				288.0
-			],
-			"type": "blocked_area"
-		}
+  "asset_footprint_defaults": {
+	"asset.tile.terrain_atlas_001": [
+	  4,
+	  4
 	],
-	"gameplay_points": [
-		{
-			"area_id": "",
-			"enabled": true,
-			"id": "gameplay.robot_position_point.192742199",
-			"name": "Robot Position Point",
-			"position": [
-				1008.0,
-				170.0
-			],
-			"type": "robot_position_point"
-		}
+	"asset.tile.terrain_atlas_002": [
+	  4,
+	  4
 	],
-	"goal": {
-		"id": "base_hq",
-		"position": [
-			1082.0,
-			113.0
-		]
+	"asset.tile.terrain_atlas_007": [
+	  4,
+	  4
+	],
+	"asset.tile.terrain_atlas_031": [
+	  4,
+	  4
+	],
+	"asset.tile.terrain_atlas_034": [
+	  4,
+	  4
+	],
+	"asset.tile.terrain_atlas_055": [
+	  4,
+	  4
+	],
+	"asset.tile.terrain_atlas_058": [
+	  4,
+	  4
+	],
+	"asset.tile.terrain_atlas_060": [
+	  4,
+	  4
+	]
+  },
+  "gameplay_areas": [
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.northbridge",
+	  "name": "Enemy Spawn",
+	  "position": [
+		32.0,
+		250.0
+	  ],
+	  "size": [
+		288.0,
+		384.0
+	  ],
+	  "type": "spawn_area"
 	},
-	"map_id": "northbridge_sector_01",
-	"map_origin": [
-		0.0,
+	{
+	  "enabled": true,
+	  "id": "gameplay.movement_area.northbridge",
+	  "name": "Main Movement Corridor",
+	  "position": [
+		320.0,
+		90.0
+	  ],
+	  "size": [
+		320.0,
+		640.0
+	  ],
+	  "type": "movement_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.blocked_area.northbridge",
+	  "name": "Central Blocked Sector",
+	  "position": [
+		448.0,
+		314.0
+	  ],
+	  "size": [
+		128.0,
+		256.0
+	  ],
+	  "type": "blocked_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.obstacle_area.northbridge",
+	  "name": "Northbridge Structure",
+	  "position": [
+		576.0,
+		282.0
+	  ],
+	  "size": [
+		192.0,
+		224.0
+	  ],
+	  "type": "obstacle_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_area.northbridge",
+	  "name": "Tower Placement Zone",
+	  "position": [
+		768.0,
+		90.0
+	  ],
+	  "size": [
+		256.0,
+		256.0
+	  ],
+	  "type": "tower_placement_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.goal_area.northbridge",
+	  "name": "Base HQ Goal",
+	  "position": [
+		960.0,
 		58.0
-	],
-	"map_pixel_size": [
-		1152.0,
-		768.0
-	],
-	"map_size": [
-		36,
-		24
-	],
-	"name": "Northbridge Sector 01",
-	"objects": [],
-	"robot_spots": {},
-	"spawns": {},
-	"tile_size": [
-		32,
-		32
-	],
-	"tiles": {
-		"Ground": {
-			"0,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c02",
-				"anchor": [
-					0,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"4,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					4,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"8,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					8,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"12,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					12,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"16,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					16,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"20,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					20,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"24,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					24,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"28,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c02",
-				"anchor": [
-					28,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"32,0": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					32,
-					0
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"0,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					0,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"4,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					4,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"8,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					8,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"12,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					12,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"16,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					16,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"20,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					20,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"24,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c02",
-				"anchor": [
-					24,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"28,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					28,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"32,4": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					32,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"0,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c05",
-				"anchor": [
-					0,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"4,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					4,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"8,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					8,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"12,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					12,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"16,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					16,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"20,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c02",
-				"anchor": [
-					20,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"24,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					24,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"28,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					28,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"32,8": {
-				"asset_id": "asset.sf_military_terrain.r01_c05",
-				"anchor": [
-					32,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"0,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c05",
-				"anchor": [
-					0,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"4,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					4,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"8,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					8,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"12,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					12,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"16,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c02",
-				"anchor": [
-					16,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"20,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					20,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"24,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					24,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"28,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					28,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"32,12": {
-				"asset_id": "asset.sf_military_terrain.r01_c05",
-				"anchor": [
-					32,
-					12
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"0,16": {
-				"asset_id": "asset.sf_military_terrain.r02_c01",
-				"anchor": [
-					0,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"4,16": {
-				"asset_id": "asset.sf_military_terrain.r02_c01",
-				"anchor": [
-					4,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"8,16": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					8,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"12,16": {
-				"asset_id": "asset.sf_military_terrain.r01_c02",
-				"anchor": [
-					12,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"16,16": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					16,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"20,16": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					20,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"24,16": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					24,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"28,16": {
-				"asset_id": "asset.sf_military_terrain.r02_c01",
-				"anchor": [
-					28,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"32,16": {
-				"asset_id": "asset.sf_military_terrain.r02_c01",
-				"anchor": [
-					32,
-					16
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"0,20": {
-				"asset_id": "asset.sf_military_terrain.r02_c01",
-				"anchor": [
-					0,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"4,20": {
-				"asset_id": "asset.sf_military_terrain.r02_c01",
-				"anchor": [
-					4,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"8,20": {
-				"asset_id": "asset.sf_military_terrain.r01_c02",
-				"anchor": [
-					8,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"12,20": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					12,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"16,20": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					16,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"20,20": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					20,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"24,20": {
-				"asset_id": "asset.sf_military_terrain.r01_c01",
-				"anchor": [
-					24,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"28,20": {
-				"asset_id": "asset.sf_military_terrain.r02_c01",
-				"anchor": [
-					28,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"32,20": {
-				"asset_id": "asset.sf_military_terrain.r02_c01",
-				"anchor": [
-					32,
-					20
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			}
-		},
-		"Vegetation": {},
-		"Boundary": {
-			"8,4": {
-				"asset_id": "asset.sf_military_terrain.r03_c01",
-				"anchor": [
-					8,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"8,8": {
-				"asset_id": "asset.sf_military_terrain.r04_c01",
-				"anchor": [
-					8,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"12,4": {
-				"asset_id": "asset.sf_military_terrain.r03_c02",
-				"anchor": [
-					12,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"12,8": {
-				"asset_id": "asset.sf_military_terrain.r04_c02",
-				"anchor": [
-					12,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"16,4": {
-				"asset_id": "asset.sf_military_terrain.r03_c03",
-				"anchor": [
-					16,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"16,8": {
-				"asset_id": "asset.sf_military_terrain.r04_c03",
-				"anchor": [
-					16,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"20,4": {
-				"asset_id": "asset.sf_military_terrain.r03_c04",
-				"anchor": [
-					20,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"20,8": {
-				"asset_id": "asset.sf_military_terrain.r04_c04",
-				"anchor": [
-					20,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"24,4": {
-				"asset_id": "asset.sf_military_terrain.r03_c05",
-				"anchor": [
-					24,
-					4
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"24,8": {
-				"asset_id": "asset.sf_military_terrain.r04_c05",
-				"anchor": [
-					24,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"4,8": {
-				"asset_id": "asset.sf_military_terrain.r05_c02",
-				"anchor": [
-					4,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			},
-			"28,8": {
-				"asset_id": "asset.sf_military_terrain.r05_c05",
-				"anchor": [
-					28,
-					8
-				],
-				"footprint_tiles": [
-					4,
-					4
-				]
-			}
-		}
+	  ],
+	  "size": [
+		192.0,
+		224.0
+	  ],
+	  "type": "goal_area"
+	}
+  ],
+  "gameplay_points": [
+	{
+	  "area_id": "gameplay.tower_placement_area.northbridge",
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_point.northbridge_01",
+	  "name": "Tower Slot 01",
+	  "position": [
+		816.0,
+		138.0
+	  ],
+	  "type": "tower_placement_point"
 	},
-	"tower_slots": {},
-	"version": 1.0
+	{
+	  "area_id": "gameplay.tower_placement_area.northbridge",
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_point.northbridge_02",
+	  "name": "Tower Slot 02",
+	  "position": [
+		944.0,
+		138.0
+	  ],
+	  "type": "tower_placement_point"
+	},
+	{
+	  "area_id": "gameplay.tower_placement_area.northbridge",
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_point.northbridge_03",
+	  "name": "Tower Slot 03",
+	  "position": [
+		816.0,
+		266.0
+	  ],
+	  "type": "tower_placement_point"
+	},
+	{
+	  "area_id": "gameplay.tower_placement_area.northbridge",
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_point.northbridge_04",
+	  "name": "Tower Slot 04",
+	  "position": [
+		944.0,
+		266.0
+	  ],
+	  "type": "tower_placement_point"
+	},
+	{
+	  "area_id": "",
+	  "enabled": true,
+	  "id": "gameplay.robot_position_point.northbridge",
+	  "name": "Robot Position Point",
+	  "position": [
+		1008.0,
+		378.0
+	  ],
+	  "type": "robot_position_point"
+	}
+  ],
+  "goal": {
+	"id": "base_hq",
+	"position": [
+	  1088.0,
+	  122.0
+	]
+  },
+  "map_id": "northbridge_sector_01",
+  "map_origin": [
+	0.0,
+	58.0
+  ],
+  "map_pixel_size": [
+	1152,
+	768
+  ],
+  "map_size": [
+	36,
+	24
+  ],
+  "name": "Northbridge Sector 01",
+  "objects": [],
+  "robot_spots": {},
+  "spawns": {},
+  "tile_size": [
+	32,
+	32
+  ],
+  "tiles": {
+	"Ground": {
+	  "0,0": {
+		"asset_id": "asset.tile.terrain_atlas_002",
+		"anchor": [
+		  0,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "4,0": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  4,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "8,0": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  8,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "12,0": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  12,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "16,0": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  16,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "20,0": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  20,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "24,0": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  24,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "28,0": {
+		"asset_id": "asset.tile.terrain_atlas_002",
+		"anchor": [
+		  28,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "32,0": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  32,
+		  0
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "0,4": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  0,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "4,4": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  4,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "8,4": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  8,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "12,4": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  12,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "16,4": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  16,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "20,4": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  20,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "24,4": {
+		"asset_id": "asset.tile.terrain_atlas_002",
+		"anchor": [
+		  24,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "28,4": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  28,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "32,4": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  32,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "0,8": {
+		"asset_id": "asset.tile.terrain_atlas_007",
+		"anchor": [
+		  0,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "4,8": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  4,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "8,8": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  8,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "12,8": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  12,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "16,8": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  16,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "20,8": {
+		"asset_id": "asset.tile.terrain_atlas_002",
+		"anchor": [
+		  20,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "24,8": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  24,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "28,8": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  28,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "32,8": {
+		"asset_id": "asset.tile.terrain_atlas_007",
+		"anchor": [
+		  32,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "0,12": {
+		"asset_id": "asset.tile.terrain_atlas_007",
+		"anchor": [
+		  0,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "4,12": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  4,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "8,12": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  8,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "12,12": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  12,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "16,12": {
+		"asset_id": "asset.tile.terrain_atlas_002",
+		"anchor": [
+		  16,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "20,12": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  20,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "24,12": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  24,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "28,12": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  28,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "32,12": {
+		"asset_id": "asset.tile.terrain_atlas_007",
+		"anchor": [
+		  32,
+		  12
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "0,16": {
+		"asset_id": "asset.tile.terrain_atlas_031",
+		"anchor": [
+		  0,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "4,16": {
+		"asset_id": "asset.tile.terrain_atlas_031",
+		"anchor": [
+		  4,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "8,16": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  8,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "12,16": {
+		"asset_id": "asset.tile.terrain_atlas_002",
+		"anchor": [
+		  12,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "16,16": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  16,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "20,16": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  20,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "24,16": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  24,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "28,16": {
+		"asset_id": "asset.tile.terrain_atlas_031",
+		"anchor": [
+		  28,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "32,16": {
+		"asset_id": "asset.tile.terrain_atlas_031",
+		"anchor": [
+		  32,
+		  16
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "0,20": {
+		"asset_id": "asset.tile.terrain_atlas_031",
+		"anchor": [
+		  0,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "4,20": {
+		"asset_id": "asset.tile.terrain_atlas_031",
+		"anchor": [
+		  4,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "8,20": {
+		"asset_id": "asset.tile.terrain_atlas_002",
+		"anchor": [
+		  8,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "12,20": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  12,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "16,20": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  16,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "20,20": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  20,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "24,20": {
+		"asset_id": "asset.tile.terrain_atlas_001",
+		"anchor": [
+		  24,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "28,20": {
+		"asset_id": "asset.tile.terrain_atlas_031",
+		"anchor": [
+		  28,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "32,20": {
+		"asset_id": "asset.tile.terrain_atlas_031",
+		"anchor": [
+		  32,
+		  20
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  }
+	},
+	"Vegetation": {},
+	"Boundary": {
+	  "8,4": {
+		"asset_id": "asset.tile.terrain_atlas_034",
+		"anchor": [
+		  8,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "8,8": {
+		"asset_id": "asset.tile.terrain_atlas_055",
+		"anchor": [
+		  8,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "12,4": {
+		"asset_id": "asset.sf_military_terrain.r03_c02",
+		"anchor": [
+		  12,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "12,8": {
+		"asset_id": "asset.sf_military_terrain.r04_c02",
+		"anchor": [
+		  12,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "16,4": {
+		"asset_id": "asset.sf_military_terrain.r03_c03",
+		"anchor": [
+		  16,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "16,8": {
+		"asset_id": "asset.sf_military_terrain.r04_c03",
+		"anchor": [
+		  16,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "20,4": {
+		"asset_id": "asset.sf_military_terrain.r03_c04",
+		"anchor": [
+		  20,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "20,8": {
+		"asset_id": "asset.sf_military_terrain.r04_c04",
+		"anchor": [
+		  20,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "24,4": {
+		"asset_id": "asset.sf_military_terrain.r03_c05",
+		"anchor": [
+		  24,
+		  4
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "24,8": {
+		"asset_id": "asset.sf_military_terrain.r04_c05",
+		"anchor": [
+		  24,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "4,8": {
+		"asset_id": "asset.tile.terrain_atlas_058",
+		"anchor": [
+		  4,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  },
+	  "28,8": {
+		"asset_id": "asset.tile.terrain_atlas_060",
+		"anchor": [
+		  28,
+		  8
+		],
+		"footprint_tiles": [
+		  4,
+		  4
+		]
+	  }
+	}
+  },
+  "tower_slots": {},
+  "version": 1.0,
+  "map_tiles": [
+	36,
+	24
+  ]
 }

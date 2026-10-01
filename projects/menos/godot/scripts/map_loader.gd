@@ -154,7 +154,7 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 		"map_pixel_size": [map_pixel_vec.x, map_pixel_vec.y],
 		"spawns": {},
 		"robot_spots": {},
-		"tower_slots": {},
+		"tower_slots": raw_data.get("tower_slots", {}).duplicate(true) if raw_data.get("tower_slots", {}) is Dictionary else {},
 		"tiles": map_data.get("tiles", {}),
 		"objects": map_data.get("objects", []),
 		"asset_footprint_defaults": map_data.get("asset_footprint_defaults", {}),
