@@ -1,11 +1,12 @@
 using System.IO;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using WpfApplication = System.Windows.Application;
 using MKERP.Infrastructure;
 
 namespace MKERP.App;
 
-public partial class App : Application
+public partial class App : WpfApplication
 {
     protected override async void OnStartup(StartupEventArgs e)
     {
