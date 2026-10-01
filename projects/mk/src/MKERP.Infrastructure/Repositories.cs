@@ -21,3 +21,32 @@ public sealed class CodeRepository(ERPDbContext db) : ICodeRepository
             .OrderBy(x => x.SortOrder)
             .ToListAsync(cancellationToken);
 }
+
+public sealed class ItemRepository(ERPDbContext db) : IItemRepository
+{
+    public async Task<IReadOnlyList<Item>> GetActiveAsync(CancellationToken cancellationToken = default) =>
+        await db.Items.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<ItemGrade>> GetGradesAsync(CancellationToken cancellationToken = default) =>
+        await db.ItemGrades.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
+
+    public async Task AddAsync(Item item, CancellationToken cancellationToken = default)
+    {
+        db.Items.Add(item);
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(Item item, CancellationToken cancellationToken = default)
+    {
+        db.Items.Update(item);
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeactivateAsync(long id, CancellationToken cancellationToken = default)
+    {
+        var item = await db.Items.SingleAsync(x => x.Id == id, cancellationToken);
+        item.IsActive = false;
+        item.UpdatedAt = DateTime.UtcNow;
+        await db.SaveChangesAsync(cancellationToken);
+    }
+}
