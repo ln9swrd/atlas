@@ -10,6 +10,13 @@ const IMAGE_EDITOR_SCENE := "res://editor/image_editor.tscn"
 var current_editor: Node = null
 var content_host: Control
 
+func _draw() -> void:
+	draw_rect(Rect2(Vector2.ZERO, size), Color("#202a28"), true)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED:
+		queue_redraw()
+
 func _ready() -> void:
 	_apply_editor_theme()
 	content_host = $MainLayout/Content
