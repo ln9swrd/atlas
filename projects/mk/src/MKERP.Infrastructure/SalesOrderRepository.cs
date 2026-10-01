@@ -15,16 +15,17 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         return pattern.Replace("{yyyyMM}", orderDate.ToString("yyyyMM")).Replace("{seq4}", (count + 1).ToString("D4"));
     }
 
-    public async Task AddAsync(SalesOrder order, SalesOrderDetail detail, CancellationToken cancellationToken = default)
+    public async Task AddAsync(SalesOrder order, IReadOnlyList<SalesOrderDetail> details, CancellationToken cancellationToken = default)
     {
+        if (details.Count == 0) throw new ArgumentException("수주 상세가 없습니다.", nameof(details));
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         db.SalesOrders.Add(order);
         await db.SaveChangesAsync(cancellationToken);
-        detail.SalesOrderId = order.Id;
-        db.SalesOrderDetails.Add(detail);
+        foreach (var detail in details) { detail.SalesOrderId = order.Id; db.SalesOrderDetails.Add(detail); }
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_SALES_ORDER", order.Id, "CREATE", null, order, cancellationToken: cancellationToken);
-        await AuditLogger.WriteAsync(db, "TB_SALES_ORDER_DETAIL", detail.Id, "CREATE", null, detail, cancellationToken: cancellationToken);
+        foreach (var detail in details)
+            await AuditLogger.WriteAsync(db, "TB_SALES_ORDER_DETAIL", detail.Id, "CREATE", null, detail, cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
     }
 
