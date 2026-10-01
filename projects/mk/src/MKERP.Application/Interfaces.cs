@@ -84,7 +84,7 @@ public sealed class InOutLotRow
 {
     public string DocumentNo { get; init; } = string.Empty;
     public DateTime MovementDate { get; init; }
-    public string MovementTypeId { get; init; } = string.Empty;
+    public long MovementTypeId { get; init; }
     public string ItemCode { get; init; } = string.Empty;
     public string ItemName { get; init; } = string.Empty;
     public string MkLotNo { get; init; } = string.Empty;

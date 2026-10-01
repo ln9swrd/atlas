@@ -57,19 +57,19 @@ public sealed class InOutRepository(ERPDbContext db) : IInOutRepository
     public async Task<IReadOnlyList<InventoryRow>> GetInventoryAsync(DateTime asOfDate, CancellationToken cancellationToken = default)
     {
         var items = await db.Items.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
-        var movements = await db.InOuts.AsNoTracking().Where(x => x.MovementDate <= asOfDate && x.StatusId != "CANCELLED")
+        var movements = await db.InOuts.AsNoTracking().Where(x => x.MovementDate <= asOfDate && x.StatusId != cancelledStatusId)
             .Join(db.InOutDetails.AsNoTracking(), h => h.Id, d => d.InOutId, (h, d) => new { h, d }).ToListAsync(cancellationToken);
         return items.Select(item =>
         {
             var rows = movements.Where(x => x.d.ItemId == item.Id);
-            var inbound = rows.Where(x => x.h.MovementTypeId is "IN" or "OPENING" or "ADJUST").Sum(x => x.d.Quantity);
-            var outbound = rows.Where(x => x.h.MovementTypeId is "OUT" or "LOSS").Sum(x => x.d.Quantity);
+            var inbound = rows.Where(x => x.h.MovementTypeId == inTypeId || x.h.MovementTypeId == openingTypeId || x.h.MovementTypeId == adjustTypeId).Sum(x => x.d.Quantity);
+            var outbound = rows.Where(x => x.h.MovementTypeId == outTypeId || x.h.MovementTypeId == lossTypeId).Sum(x => x.d.Quantity);
             var before = rows.Where(x => x.h.MovementDate < asOfDate);
-            var opening = before.Where(x => x.h.MovementTypeId is "IN" or "OPENING" or "ADJUST").Sum(x => x.d.Quantity)
-                - before.Where(x => x.h.MovementTypeId is "OUT" or "LOSS").Sum(x => x.d.Quantity);
+            var opening = before.Where(x => x.h.MovementTypeId == inTypeId || x.h.MovementTypeId == openingTypeId || x.h.MovementTypeId == adjustTypeId).Sum(x => x.d.Quantity)
+                - before.Where(x => x.h.MovementTypeId == outTypeId || x.h.MovementTypeId == lossTypeId).Sum(x => x.d.Quantity);
             var today = rows.Where(x => x.h.MovementDate == asOfDate);
-            var dayIn = today.Where(x => x.h.MovementTypeId is "IN" or "OPENING" or "ADJUST").Sum(x => x.d.Quantity);
-            var dayOut = today.Where(x => x.h.MovementTypeId is "OUT" or "LOSS").Sum(x => x.d.Quantity);
+            var dayIn = today.Where(x => x.h.MovementTypeId == inTypeId || x.h.MovementTypeId == openingTypeId || x.h.MovementTypeId == adjustTypeId).Sum(x => x.d.Quantity);
+            var dayOut = today.Where(x => x.h.MovementTypeId == outTypeId || x.h.MovementTypeId == lossTypeId).Sum(x => x.d.Quantity);
             return new InventoryRow { ItemId = item.Id, ItemCode = item.Code, ItemName = item.Name, Opening = opening, Inbound = dayIn, Outbound = dayOut };
         }).ToList();
     }
@@ -94,8 +94,8 @@ public sealed class InOutRepository(ERPDbContext db) : IInOutRepository
                 PartnerLotNo = g.Key.PartnerLotNo,
                 ItemCode = g.Key.Code,
                 ItemName = g.Key.Name,
-                Inbound = g.Where(x => x.h.MovementTypeId is "IN" or "OPENING" or "ADJUST").Sum(x => x.d.Quantity),
-                Outbound = g.Where(x => x.h.MovementTypeId is "OUT" or "LOSS").Sum(x => x.d.Quantity)
+                Inbound = g.Where(x => x.h.MovementTypeId == inTypeId || x.h.MovementTypeId == openingTypeId || x.h.MovementTypeId == adjustTypeId).Sum(x => x.d.Quantity),
+                Outbound = g.Where(x => x.h.MovementTypeId == outTypeId || x.h.MovementTypeId == lossTypeId).Sum(x => x.d.Quantity)
             }).OrderBy(x => x.ItemCode).ThenBy(x => x.MkLotNo).ThenBy(x => x.PartnerLotNo).ToList();
     }
     public async Task<(long LotId, long PartnerLotId)> EnsureLotsAsync(long partnerId, string mkLotNo, string partnerLotNo, CancellationToken cancellationToken = default)
