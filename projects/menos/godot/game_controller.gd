@@ -729,8 +729,7 @@ func update_giant_boss_attack(delta: float, enemy: EnemyRuntimeState) -> bool:
 		event.position = robot.position
 		match enemy.boss_pattern_index:
 			0:
-				effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type})
-				event.damage = weapon.damage
+				effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "target_actor": robot, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type, "source": "enemy", "weapon": enemy.type, "damage": weapon.damage})
 				log_event("GIANT: CANNON SHOT.")
 			1:
 				event.damage = weapon.damage * 1.55
@@ -743,7 +742,8 @@ func update_giant_boss_attack(delta: float, enemy: EnemyRuntimeState) -> bool:
 				log_event("GIANT: CHARGE.")
 				effects.append({"type": "giantHit", "position": enemy.position, "life": 0.45})
 		event.payload = {"source": enemy.type}
-		_handle_gameplay_event(event)
+		if enemy.boss_pattern_index != 0:
+			_handle_gameplay_event(event)
 		enemy.boss_pattern_timer = 1.4
 		enemy.boss_pattern_index = (enemy.boss_pattern_index + 1) % 3
 		enemy.boss_pattern_active = false

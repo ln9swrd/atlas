@@ -75,17 +75,23 @@
 
 ### GAP-04 — 전투 연출의 공격-피격 인과성 완성
 
-상태: PARTIAL / MEDIUM PRIORITY
+상태: CODE IMPLEMENTED / RUNTIME UNVERIFIED
 
 현재 확인:
-- 투사체 시각 효과와 피해 처리는 별도 경로로 존재한다.
-- Special 피해에는 이미 지연을 연결했고 Heavy Pierce의 임팩트 위치도 대상 위치로 보정했다.
-- 그러나 일반 기본 공격의 시각적 투사체 도착과 실제 피해 적용이 동일한 시간축으로 완전히 결합된 구조는 아니다.
+- `game_controller.gd`의 `_process()`에서 `proj_defender` 및 `proj_threat` 진행률이 완료되면 `damage_requested` 이벤트를 발생시키는 공통 경로가 있다.
+- Robot / Tower 발사 경로는 투사체 효과에 대상·피해량을 전달한다.
+- 일반 Enemy 원거리 공격도 투사체 효과에 대상·피해량·source를 전달하고, 근접 공격은 짧은 `damage_delay` 후 피해를 적용한다.
+- 조사 중 Giant CANNON SHOT은 투사체를 생성하면서도 피해를 즉시 적용하는 예외를 확인했다. 이를 투사체 도착 시 피해가 적용되도록 수정했다. 효과에는 `target_actor`, `source`, `weapon`, `damage`를 전달하고 즉시 피해 처리를 생략한다.
+- Giant CRUSHING BLAST / CHARGE는 해당 공격 효과를 발생시키는 시점에 피해 이벤트를 처리하는 구조로 유지했다.
 
-필요 구현:
-- 기본 공격 투사체가 실제 목표에 도달하는 시점과 피해 판정을 연결.
-- 필요 시 적 피격 반응과 피해 숫자 발생 시점을 피격 프레임에 맞춘다.
-- 동일 원칙을 Robot/Tower/Enemy 공격에 일관되게 적용할지 범위를 정한다.
+판정:
+- Robot / Tower / Enemy의 기본 공격 피해 적용을 시각적 투사체 도착 또는 근접 타격 시점에 연결하는 코드 경로를 확인·수정했다.
+- Godot headless editor 실행은 종료 코드 0으로 완료했다.
+- 실제 화면에서 발사 → 도착 → 피격 → 피해가 자연스럽게 인식되는지는 PIE 검증 전까지 UNVERIFIED다.
+
+남은 검증:
+- Robot / Tower / Enemy 원거리 / Enemy 근접 / Giant CANNON SHOT의 실제 전투 동작을 PIE에서 확인한다.
+- 피격 반응과 피해 숫자의 시각적 타이밍은 PIE에서 확인한다.
 
 성공 조건:
 - 화면에서 발사 → 도착 → 피격 → 피해가 자연스럽게 인식된다.
@@ -153,9 +159,9 @@
 2. GAP-02 — Pilot HUD: IMPLEMENTED.
 3. GAP-01 — Giant 보스 행동: IMPLEMENTED.
 4. GAP-03 — 고정형 Tower 지원 역할: IMPLEMENTED.
-5. GAP-04 — 공격-피격 연출 동기화: IMPLEMENTED.
+5. GAP-04 — 공격-피격 연출 동기화: CODE IMPLEMENTED / PIE VERIFICATION REQUIRED.
 
-GAP-04는 Robot·Tower·Enemy 전체 공격 경로에 적용 완료했다. 실제 타격감과 화면 가독성은 PIE에서 별도 검증한다.
+2026-10-01 코드 대조에서 Robot·Tower·Enemy 공격 경로를 확인했고, Giant CANNON SHOT의 즉시 피해 예외를 투사체 완료 시점 처리로 수정했다. Godot headless editor 검증은 통과했으나 실제 발사-도착-피해 연출은 PIE에서 확인해야 한다.
 
 ## 8. 최소 완료 기준
 
