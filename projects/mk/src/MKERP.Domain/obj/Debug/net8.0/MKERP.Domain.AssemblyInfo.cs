@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MKERP.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b5245c201cb31e71fe87c8ed7d3bbd89aebe6ebf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38fdf87469fe88f18d0fe3f53830ca6be780aaa4")]
 [assembly: System.Reflection.AssemblyProductAttribute("MKERP.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MKERP.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -82,6 +82,12 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         await tx.CommitAsync(cancellationToken);
     }
 
+    private async Task AddProcessHistoryAsync(string sourceType, long sourceDetailId, long inOutDetailId, decimal quantity, string actionCode, long? reversesHistoryId, CancellationToken cancellationToken)
+    {
+        db.OrderProcessHistories.Add(new OrderProcessHistory { SourceTypeCode=sourceType, SourceDetailId=sourceDetailId, InOutDetailId=inOutDetailId, ProcessQty=quantity, ActionCode=actionCode, ReversesHistoryId=reversesHistoryId, CreatedAt=DateTime.UtcNow });
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
     private static PurchaseOrder Snapshot(PurchaseOrder x) => new() { Id=x.Id, DocumentNo=x.DocumentNo, OrderDate=x.OrderDate, PartnerId=x.PartnerId, DueDate=x.DueDate, StatusCode=x.StatusCode, Note=x.Note, CreatedAt=x.CreatedAt, UpdatedAt=x.UpdatedAt };
 
     private async Task<decimal> GetAvailableAsync(long itemId, CancellationToken cancellationToken) =>
