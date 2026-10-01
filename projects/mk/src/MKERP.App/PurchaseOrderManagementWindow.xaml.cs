@@ -156,17 +156,17 @@ public partial class PurchaseOrderManagementWindow : UserControl
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-        var detail = new PurchaseOrderDetail
+        var details = _draftRows.Select(row => new PurchaseOrderDetail
         {
-            ItemId = item.Id,
-            PriceId = _applicablePrice.Id,
-            OrderQty = qty,
-            AppliedUnitPrice = unitPrice,
-            Amount = qty * unitPrice,
-            DueDate = DueDateBox.SelectedDate?.Date
-        };
+            ItemId = row.ItemId,
+            PriceId = row.PriceId,
+            OrderQty = row.Quantity,
+            AppliedUnitPrice = row.UnitPrice,
+            Amount = row.Quantity * row.UnitPrice,
+            DueDate = row.DueDate
+        }).ToList();
 
-        await new PurchaseOrderRepository(_db).AddAsync(order, detail);
+        await new PurchaseOrderRepository(_db).AddAsync(order, details);
         await LoadGridAsync();
         await NewAsync();
     }
