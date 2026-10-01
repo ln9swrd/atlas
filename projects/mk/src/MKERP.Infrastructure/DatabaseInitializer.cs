@@ -55,6 +55,7 @@ public sealed class DatabaseInitializer(string databasePath) : IDatabaseInitiali
             "CREATE INDEX IF NOT EXISTS IX_PURCHASE_ORDER_DETAIL_PRICE ON TB_PURCHASE_ORDER_DETAIL(PRICE_ID);",
             cancellationToken);
         await EnsureOrderProcessHistoryAsync(connection, cancellationToken);
+        await CodePkMigration.EnsureAsync(connection, cancellationToken);
     }
 
     private static async Task EnsureDetailActiveAsync(SqliteConnection connection, string table)
