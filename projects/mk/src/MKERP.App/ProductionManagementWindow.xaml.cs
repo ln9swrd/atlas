@@ -1,12 +1,13 @@
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using MKERP.Domain;
 using MKERP.Infrastructure;
 
 namespace MKERP.App;
 
-public partial class ProductionManagementWindow : Window
+public partial class ProductionManagementWindow : UserControl
 {
     private readonly ERPDbContext _db;
     private IReadOnlyList<Item> _items = [];
@@ -17,7 +18,7 @@ public partial class ProductionManagementWindow : Window
         _db = DbContextFactory.Create(databasePath);
         ProductionDateBox.SelectedDate = DateTime.Today;
         Loaded += async (_, _) => await LoadAsync();
-        Closed += (_, _) => _db.Dispose();
+        Unloaded += (_, _) => _db.Dispose();
     }
 
     private async Task LoadAsync()

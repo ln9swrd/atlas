@@ -1,7 +1,7 @@
-<Window x:Class="MKERP.App.PartnerItemManagementWindow"
+<UserControl x:Class="MKERP.App.PartnerItemManagementWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="거래처별 품목관리" Width="1100" Height="680">
+Width="1100" Height="680">
   <Grid Margin="16">
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
     <StackPanel Orientation="Horizontal">
@@ -27,4 +27,4 @@
       </DataGrid.Columns>
     </DataGrid>
   </Grid>
-</Window>
+</UserControl>

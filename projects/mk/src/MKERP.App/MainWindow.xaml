@@ -1,25 +1,39 @@
 <Window x:Class="MKERP.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MK ERP" Width="1200" Height="720">
-  <Grid Margin="20">
+        Title="MK ERP" Width="1400" Height="850"
+        MinWidth="1000" MinHeight="650">
+  <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <StackPanel>
-      <TextBlock Text="MK ERP" FontSize="28" FontWeight="Bold" />
-      <TextBlock Text="기준정보 · 영업 · 구매 · 생산 · 재고" Margin="0,4,0,18" />
-    </StackPanel>
-    <UniformGrid Grid.Row="1" Columns="3" Rows="2" Margin="0,8,0,0">
-      <Button Content="품목관리" Margin="6" Click="ItemManagement_Click" />
-      <Button Content="거래처관리" Margin="6" Click="PartnerManagement_Click" />
-      <Button Content="거래처별 품목관리" Margin="6" Click="PartnerItemManagement_Click" />
-      <Button Content="단가관리" Margin="6" Click="PriceManagement_Click" />
-      <Button Content="수주관리" Margin="6" Click="SalesOrderManagement_Click" />
-      <Button Content="발주관리" Margin="6" Click="PurchaseOrderManagement_Click" />
-      <Button Content="생산관리" Margin="6" Click="ProductionManagement_Click" />
-      <Button Content="입출고 / 재고" Margin="6" Click="InOutManagement_Click" />
-    </UniformGrid>
+    <Border Padding="16,10" BorderBrush="#DDD" BorderThickness="0,0,0,1">
+      <DockPanel LastChildFill="True">
+        <TextBlock DockPanel.Dock="Left" Text="MK ERP" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,24,0"/>
+        <WrapPanel VerticalAlignment="Center">
+          <Button Content="품목관리" Tag="품목관리" Click="ItemManagement_Click" Margin="3" Padding="12,6"/>
+          <Button Content="거래처관리" Tag="거래처관리" Click="PartnerManagement_Click" Margin="3" Padding="12,6"/>
+          <Button Content="거래처별 품목" Tag="거래처별 품목관리" Click="PartnerItemManagement_Click" Margin="3" Padding="12,6"/>
+          <Button Content="단가관리" Tag="단가관리" Click="PriceManagement_Click" Margin="3" Padding="12,6"/>
+          <Button Content="수주관리" Tag="수주관리" Click="SalesOrderManagement_Click" Margin="3" Padding="12,6"/>
+          <Button Content="발주관리" Tag="발주관리" Click="PurchaseOrderManagement_Click" Margin="3" Padding="12,6"/>
+          <Button Content="생산관리" Tag="생산관리" Click="ProductionManagement_Click" Margin="3" Padding="12,6"/>
+          <Button Content="입출고 / 재고" Tag="입출고 / 재고" Click="InOutManagement_Click" Margin="3" Padding="12,6"/>
+        </WrapPanel>
+      </DockPanel>
+    </Border>
+    <Border Grid.Row="1" Margin="8" Background="#F5F5F5" BorderBrush="#CCC" BorderThickness="1">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Canvas x:Name="MdiCanvas" Grid.Row="0" ClipToBounds="True" Background="#F5F5F5"/>
+        <Border Grid.Row="1" Background="#E8E8E8" BorderBrush="#CCC" BorderThickness="0,1,0,0" Padding="4">
+          <WrapPanel x:Name="MinimizedWindowsPanel"/>
+        </Border>
+      </Grid>
+    </Border>
   </Grid>
 </Window>

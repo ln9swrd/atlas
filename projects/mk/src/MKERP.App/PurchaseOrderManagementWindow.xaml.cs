@@ -1,12 +1,13 @@
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using MKERP.Domain;
 using MKERP.Infrastructure;
 
 namespace MKERP.App;
 
-public partial class PurchaseOrderManagementWindow : Window
+public partial class PurchaseOrderManagementWindow : UserControl
 {
     private readonly ERPDbContext _db;
     private IReadOnlyList<Partner> _partners = [];
@@ -20,7 +21,7 @@ public partial class PurchaseOrderManagementWindow : Window
         _db = DbContextFactory.Create(databasePath);
         OrderDateBox.SelectedDate = DateTime.Today;
         Loaded += async (_, _) => await LoadAsync();
-        Closed += (_, _) => _db.Dispose();
+        Unloaded += (_, _) => _db.Dispose();
     }
 
     private async Task LoadAsync()
@@ -42,6 +43,7 @@ public partial class PurchaseOrderManagementWindow : Window
         PartnerBox.SelectedIndex = -1;
         ItemBox.SelectedIndex = -1;
         QtyBox.Text = "1";
+        ProcessQtyBox.Text = "1";
         DueDateBox.SelectedDate = null;
         AppliedPriceBox.Text = string.Empty;
         _applicablePrice = null;
@@ -151,6 +153,14 @@ public partial class PurchaseOrderManagementWindow : Window
         await NewAsync();
     }
 
+    private async void Process_Click(object sender, RoutedEventArgs e)
+    {
+        if (Grid.SelectedItem is not PurchaseOrder order) { MessageBox.Show("입고할 발주를 목록에서 선택하세요."); return; }
+        if (!decimal.TryParse(ProcessQtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0) { MessageBox.Show("입고수량을 올바르게 입력하세요."); return; }
+        try { await new PurchaseOrderRepository(_db).ProcessAsync(order.Id, qty); await LoadGridAsync(); MessageBox.Show($"입고 {qty:N2}가 재고에 반영되었습니다."); }
+        catch (InvalidOperationException ex) { MessageBox.Show(ex.Message); }
+    }
+
     private async void Confirm_Click(object sender, RoutedEventArgs e)
     {
         if (Grid.SelectedItem is not PurchaseOrder order)
@@ -163,7 +173,7 @@ public partial class PurchaseOrderManagementWindow : Window
         {
             await new PurchaseOrderRepository(_db).ConfirmAsync(order.Id);
             await LoadGridAsync();
-            MessageBox.Show("발주가 확정되고 입고(IN)가 재고에 반영되었습니다.");
+            MessageBox.Show("발주가 확정되었습니다. 실제 입고는 입고 버튼으로 처리합니다.");
         }
         catch (InvalidOperationException ex)
         {

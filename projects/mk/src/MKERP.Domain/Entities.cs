@@ -147,6 +147,30 @@ public sealed class ProductionDetail
     public decimal DefectQty { get; set; }
 }
 
+public sealed class Lot
+{
+    public long Id { get; set; }
+    public string MkLotNo { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+public sealed class PartnerLot
+{
+    public long Id { get; set; }
+    public long PartnerId { get; set; }
+    public string PartnerLotNo { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+public sealed class LotPartnerLot
+{
+    public long LotId { get; set; }
+    public long PartnerLotId { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+
 public sealed class InOut
 {
     public long Id { get; set; }

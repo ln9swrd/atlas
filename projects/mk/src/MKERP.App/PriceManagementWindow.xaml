@@ -1,7 +1,7 @@
-<Window x:Class="MKERP.App.PriceManagementWindow"
+<UserControl x:Class="MKERP.App.PriceManagementWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="단가관리" Width="1100" Height="700">
+Width="1100" Height="700">
   <Grid Margin="16">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
@@ -47,4 +47,4 @@
       </DataGrid.Columns>
     </DataGrid>
   </Grid>
-</Window>
+</UserControl>

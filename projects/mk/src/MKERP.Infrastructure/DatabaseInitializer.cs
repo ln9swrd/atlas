@@ -38,6 +38,12 @@ public sealed class DatabaseInitializer(string databasePath) : IDatabaseInitiali
         await EnsureOrderProcessedQtyAsync(connection, "TB_PURCHASE_ORDER_DETAIL", "PURCHASE_ORDER_ID", "PURCHASE_ORDER");
 
         await ExecuteNonQueryAsync(connection,
+            "CREATE UNIQUE INDEX IF NOT EXISTS UX_LOT_MK_LOT_NO ON TB_LOT(MK_LOT_NO);",
+            cancellationToken);
+        await ExecuteNonQueryAsync(connection,
+            "CREATE UNIQUE INDEX IF NOT EXISTS UX_PARTNER_LOT_NO ON TB_PARTNER_LOT(PARTNER_ID, PARTNER_LOT_NO);",
+            cancellationToken);
+        await ExecuteNonQueryAsync(connection,
             "CREATE INDEX IF NOT EXISTS IX_PRICE_PARTNER_ITEM_DATE ON TB_PRICE(PARTNER_ID, ITEM_ID, EFFECTIVE_FROM, PRIORITY, IS_ACTIVE);",
             cancellationToken);
         await ExecuteNonQueryAsync(connection,

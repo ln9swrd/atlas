@@ -1,10 +1,11 @@
 using System.Windows;
+using System.Windows.Controls;
 using MKERP.Domain;
 using MKERP.Infrastructure;
 
 namespace MKERP.App;
 
-public partial class PartnerItemManagementWindow : Window
+public partial class PartnerItemManagementWindow : UserControl
 {
     private readonly ERPDbContext _db;
     private PartnerItem? _selected;
@@ -16,7 +17,7 @@ public partial class PartnerItemManagementWindow : Window
         InitializeComponent();
         _db = DbContextFactory.Create(databasePath);
         Loaded += async (_, _) => await LoadAsync();
-        Closed += (_, _) => _db.Dispose();
+        Unloaded += (_, _) => _db.Dispose();
     }
 
     private async Task LoadAsync()

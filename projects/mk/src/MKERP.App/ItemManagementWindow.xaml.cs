@@ -1,10 +1,11 @@
 using System.Windows;
+using System.Windows.Controls;
 using MKERP.Domain;
 using MKERP.Infrastructure;
 
 namespace MKERP.App;
 
-public partial class ItemManagementWindow : Window
+public partial class ItemManagementWindow : UserControl
 {
     private readonly string _databasePath;
     private readonly ERPDbContext _db;
@@ -16,7 +17,7 @@ public partial class ItemManagementWindow : Window
         _databasePath = databasePath;
         _db = DbContextFactory.Create(databasePath);
         Loaded += async (_, _) => await LoadAsync();
-        Closed += (_, _) => _db.Dispose();
+        Unloaded += (_, _) => _db.Dispose();
     }
 
     private async Task LoadAsync()

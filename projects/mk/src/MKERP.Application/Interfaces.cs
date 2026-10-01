@@ -56,6 +56,7 @@ public interface IPurchaseOrderRepository
     Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);
     Task AddAsync(PurchaseOrder order, PurchaseOrderDetail detail, CancellationToken cancellationToken = default);
     Task ConfirmAsync(long purchaseOrderId, CancellationToken cancellationToken = default);
+    Task ProcessAsync(long purchaseOrderId, decimal quantity, CancellationToken cancellationToken = default);
     Task CancelAsync(long purchaseOrderId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<PurchaseOrder>> GetRecentAsync(CancellationToken cancellationToken = default);
 }
@@ -70,9 +71,22 @@ public interface IProductionRepository
 public interface IInOutRepository
 {
     Task<string> GetNextDocumentNoAsync(DateTime movementDate, CancellationToken cancellationToken = default);
-    Task AddAsync(InOut header, InOutDetail detail, CancellationToken cancellationToken = default);
+    Task AddAsync(InOut header, IReadOnlyList<InOutDetail> details, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<InOut>> GetRecentAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<InOutLotRow>> GetRecentLotDetailsAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyList<InventoryRow>> GetInventoryAsync(DateTime asOfDate, CancellationToken cancellationToken = default);
+}
+
+public sealed class InOutLotRow
+{
+    public string DocumentNo { get; init; } = string.Empty;
+    public DateTime MovementDate { get; init; }
+    public string MovementTypeCode { get; init; } = string.Empty;
+    public string ItemCode { get; init; } = string.Empty;
+    public string ItemName { get; init; } = string.Empty;
+    public string MkLotNo { get; init; } = string.Empty;
+    public string PartnerLotNo { get; init; } = string.Empty;
+    public decimal Quantity { get; init; }
 }
 
 public sealed class InventoryRow
@@ -91,6 +105,7 @@ public interface ISalesOrderRepository
     Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);
     Task AddAsync(SalesOrder order, SalesOrderDetail detail, CancellationToken cancellationToken = default);
     Task ConfirmAsync(long salesOrderId, CancellationToken cancellationToken = default);
+    Task ProcessAsync(long salesOrderId, decimal quantity, CancellationToken cancellationToken = default);
     Task CancelAsync(long salesOrderId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<SalesOrder>> GetRecentAsync(CancellationToken cancellationToken = default);
 }

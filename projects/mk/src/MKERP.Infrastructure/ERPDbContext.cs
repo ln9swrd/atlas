@@ -20,6 +20,9 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
     public DbSet<PurchaseOrderDetail> PurchaseOrderDetails => Set<PurchaseOrderDetail>();
     public DbSet<Production> Productions => Set<Production>();
     public DbSet<ProductionDetail> ProductionDetails => Set<ProductionDetail>();
+    public DbSet<Lot> Lots => Set<Lot>();
+    public DbSet<PartnerLot> PartnerLots => Set<PartnerLot>();
+    public DbSet<LotPartnerLot> LotPartnerLots => Set<LotPartnerLot>();
     public DbSet<InOut> InOuts => Set<InOut>();
     public DbSet<InOutDetail> InOutDetails => Set<InOutDetail>();
 
@@ -204,6 +207,38 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.ProductionQty).HasColumnName("PRODUCTION_QTY").IsRequired();
             e.Property(x => x.DefectQty).HasColumnName("DEFECT_QTY").IsRequired();
             e.HasIndex(x => x.ItemId);
+        });
+
+        modelBuilder.Entity<Lot>(e =>
+        {
+            e.ToTable("TB_LOT");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("LOT_ID");
+            e.Property(x => x.MkLotNo).HasColumnName("MK_LOT_NO").IsRequired();
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
+            e.HasIndex(x => x.MkLotNo).IsUnique();
+        });
+
+        modelBuilder.Entity<PartnerLot>(e =>
+        {
+            e.ToTable("TB_PARTNER_LOT");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("PARTNER_LOT_ID");
+            e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
+            e.Property(x => x.PartnerLotNo).HasColumnName("PARTNER_LOT_NO").IsRequired();
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
+            e.HasIndex(x => new { x.PartnerId, x.PartnerLotNo }).IsUnique();
+        });
+
+        modelBuilder.Entity<LotPartnerLot>(e =>
+        {
+            e.ToTable("TB_LOT_PARTNER_LOT");
+            e.HasKey(x => new { x.LotId, x.PartnerLotId });
+            e.Property(x => x.LotId).HasColumnName("LOT_ID");
+            e.Property(x => x.PartnerLotId).HasColumnName("PARTNER_LOT_ID");
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
         });
 
         modelBuilder.Entity<InOut>(e =>

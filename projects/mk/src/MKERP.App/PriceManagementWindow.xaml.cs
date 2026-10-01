@@ -1,11 +1,12 @@
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using MKERP.Domain;
 using MKERP.Infrastructure;
 
 namespace MKERP.App;
 
-public partial class PriceManagementWindow : Window
+public partial class PriceManagementWindow : UserControl
 {
     private readonly ERPDbContext _db;
     private IReadOnlyList<Partner> _partners = [];
@@ -19,7 +20,7 @@ public partial class PriceManagementWindow : Window
         _db = DbContextFactory.Create(databasePath);
         EffectiveFromBox.SelectedDate = DateTime.Today;
         Loaded += async (_, _) => await LoadAsync();
-        Closed += (_, _) => _db.Dispose();
+        Unloaded += (_, _) => _db.Dispose();
     }
 
     private async Task LoadAsync()
