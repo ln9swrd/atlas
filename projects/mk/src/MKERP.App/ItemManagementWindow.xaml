@@ -28,7 +28,7 @@
       <TextBlock Text="구분" Grid.Column="4" VerticalAlignment="Center" />
       <ComboBox x:Name="CategoryBox" Grid.Column="5" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Key" />
       <TextBlock Text="등급" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
-      <ComboBox x:Name="GradeBox" Grid.Row="1" Grid.Column="1" Margin="4" DisplayMemberPath="Name" />
+      <ComboBox x:Name="GradeBox" Grid.Row="1" Grid.Column="1" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Id" />
       <TextBlock Text="단위" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" />
       <TextBox x:Name="UnitBox" Grid.Row="1" Grid.Column="3" Margin="4" />
     </Grid>
