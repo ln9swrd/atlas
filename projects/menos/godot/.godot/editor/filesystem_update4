@@ -1,2 +1,3 @@
 res://game_controller.gd
 res://editor/content_editor.gd
+res://content/editor/asset_catalog.json
