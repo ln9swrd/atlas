@@ -45,7 +45,9 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         var detail = await db.PurchaseOrderDetails.SingleAsync(x => x.PurchaseOrderId == purchaseOrderId, cancellationToken);
         var remaining = detail.OrderQty - detail.ProcessedQty;
         if (quantity > remaining) throw new InvalidOperationException($"입고 잔량을 초과했습니다. 잔량: {remaining:N2}");
-        await CreateMovementAsync(order, detail, quantity, "IN", "PURCHASE_ORDER", cancellationToken);
+        var movement = await CreateMovementAsync(order, detail, quantity, "IN", "PURCHASE_ORDER", cancellationToken);
+        var movementDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == movement.Id, cancellationToken);
+        await AddProcessHistoryAsync("PURCHASE_ORDER", detail.Id, movementDetail.Id, quantity, "PROCESS", null, cancellationToken);
         detail.ProcessedQty += quantity;
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER_DETAIL", detail.Id, "PROCESS", null, detail, note: $"IN_QTY={quantity:N2}", cancellationToken: cancellationToken);
@@ -59,13 +61,20 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         if (order.StatusCode != "CONFIRMED") throw new InvalidOperationException("확정 상태의 발주만 취소할 수 있습니다.");
         var detail = await db.PurchaseOrderDetails.SingleAsync(x => x.PurchaseOrderId == purchaseOrderId, cancellationToken);
         var movements = await db.InOuts.Where(x => x.SourceTypeCode == "PURCHASE_ORDER" && x.SourceId == purchaseOrderId && x.StatusCode != "CANCELLED").ToListAsync(cancellationToken);
+        var originalHistories = await db.OrderProcessHistories.Where(x => x.SourceTypeCode == "PURCHASE_ORDER" && x.SourceDetailId == detail.Id && x.ActionCode == "PROCESS").OrderBy(x => x.Id).ToListAsync(cancellationToken);
         var processed = movements.Join(db.InOutDetails, h => h.Id, d => d.InOutId, (h,d) => d.Quantity).Sum();
         if (processed > 0)
         {
             var available = await GetAvailableAsync(detail.ItemId, cancellationToken);
             if (available < processed) throw new InvalidOperationException($"취소에 필요한 재고가 부족합니다. 현재 재고: {available:N2}, 회수 수량: {processed:N2}");
             foreach (var movement in movements) { movement.StatusCode = "CANCELLED"; movement.UpdatedAt = DateTime.UtcNow; }
-            await CreateMovementAsync(order, detail, processed, "OUT", "PURCHASE_ORDER_CANCEL", cancellationToken);
+            var reverseMovement = await CreateMovementAsync(order, detail, processed, "OUT", "PURCHASE_ORDER_CANCEL", cancellationToken);
+            var reverseDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == reverseMovement.Id, cancellationToken);
+            if (originalHistories.Count == 0)
+                await AddProcessHistoryAsync("PURCHASE_ORDER", detail.Id, reverseDetail.Id, processed, "REVERSE", null, cancellationToken);
+            else
+                foreach (var history in originalHistories)
+                    await AddProcessHistoryAsync("PURCHASE_ORDER", detail.Id, reverseDetail.Id, history.ProcessQty, "REVERSE", history.Id, cancellationToken);
         }
         var before = Snapshot(order); order.StatusCode = "CANCELLED"; order.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
