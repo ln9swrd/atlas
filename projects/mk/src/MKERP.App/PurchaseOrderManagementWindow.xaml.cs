@@ -50,6 +50,33 @@ public partial class PurchaseOrderManagementWindow : UserControl
         DueDateBox.SelectedDate = null;
         AppliedPriceBox.Text = string.Empty;
         _applicablePrice = null;
+        _draftRows.Clear();
+        DetailGrid.ItemsSource = null;
+    }
+
+    private void AddDetail_Click(object sender, RoutedEventArgs e)
+    {
+        if (ItemBox.SelectedItem is not Item item || _applicablePrice is null)
+        {
+            MessageBox.Show("품목과 적용단가를 먼저 선택하세요.");
+            return;
+        }
+        if (!decimal.TryParse(QtyBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var qty) || qty <= 0)
+        {
+            MessageBox.Show("수량을 올바르게 입력하세요.");
+            return;
+        }
+        if (!decimal.TryParse(AppliedPriceBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var price) || price < 0)
+        {
+            MessageBox.Show("적용단가를 올바르게 입력하세요.");
+            return;
+        }
+        _draftRows.Add(new PurchaseDraftRow(item.Id, item.Name, _applicablePrice.Id, qty, price, DueDateBox.SelectedDate?.Date));
+    }
+
+    private void RemoveDetail_Click(object sender, RoutedEventArgs e)
+    {
+        if (DraftGrid.SelectedItem is PurchaseDraftRow row) _draftRows.Remove(row);
     }
 
     private async Task LoadGridAsync()
@@ -92,9 +119,15 @@ public partial class PurchaseOrderManagementWindow : UserControl
 
     private async void Save_Click(object sender, RoutedEventArgs e)
     {
-        if (PartnerBox.SelectedItem is not Partner partner || ItemBox.SelectedItem is not Item item)
+        if (PartnerBox.SelectedItem is not Partner partner)
         {
-            MessageBox.Show("거래처와 품목은 필수입니다.");
+            MessageBox.Show("거래처는 필수입니다.");
+            return;
+        }
+
+        if (_draftRows.Count == 0)
+        {
+            MessageBox.Show("저장할 상세행을 하나 이상 추가하세요.");
             return;
         }
 
