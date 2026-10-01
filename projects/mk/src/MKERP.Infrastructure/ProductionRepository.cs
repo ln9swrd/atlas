@@ -46,6 +46,8 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         var defectSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PRODUCTION_DEFECT", cancellationToken);
         var cancelSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PRODUCTION_CANCEL", cancellationToken);
         var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var openingTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OPENING", cancellationToken);
+        var adjustTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "ADJUST", cancellationToken);
         var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var production = await db.Productions.SingleOrDefaultAsync(x => x.Id == productionId, cancellationToken)
@@ -73,7 +75,7 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         }
 
         var now = DateTime.UtcNow;
-        foreach (var movement in movements.OrderBy(x => x.MovementTypeId == "IN" ? 1 : 0))
+        foreach (var movement in movements.OrderBy(x => x.MovementTypeId == inTypeId ? 1 : 0))
         {
             movement.StatusId = cancelledStatusId;
             movement.UpdatedAt = now;
