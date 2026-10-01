@@ -51,6 +51,13 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         current.PartnerId = order.PartnerId; current.OrderDate = order.OrderDate; current.DueDate = order.DueDate;
         current.Note = order.Note; current.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
+        foreach (var row in existing)
+        {
+            var action = row.IsActive ? "UPDATE" : "LOGICAL_DELETE";
+            await AuditLogger.WriteAsync(db, "TB_SALES_ORDER_DETAIL", row.Id, action, null, row, cancellationToken: cancellationToken);
+        }
+        foreach (var row in details.Where(x => existing.All(e => e.Id != x.Id)))
+            await AuditLogger.WriteAsync(db, "TB_SALES_ORDER_DETAIL", row.Id, "CREATE", null, row, cancellationToken: cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_SALES_ORDER", current.Id, "UPDATE", null, current, cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
     }
