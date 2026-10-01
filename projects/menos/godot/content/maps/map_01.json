@@ -941,39 +941,6 @@
 	},
 	"Vegetation": {}
   },
-  "tower_slots": {
-	"T01": {
-	  "type": "cannon",
-	  "position": [
-		816.0,
-		138.0
-	  ],
-	  "level": 1
-	},
-	"T02": {
-	  "type": "cannon",
-	  "position": [
-		944.0,
-		138.0
-	  ],
-	  "level": 1
-	},
-	"T03": {
-	  "type": "gatling",
-	  "position": [
-		816.0,
-		266.0
-	  ],
-	  "level": 1
-	},
-	"T04": {
-	  "type": "gatling",
-	  "position": [
-		944.0,
-		266.0
-	  ],
-	  "level": 1
-	}
-  },
+  "tower_slots": {},
   "version": 1.0
 }

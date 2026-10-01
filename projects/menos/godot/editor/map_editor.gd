@@ -51,10 +51,13 @@ var current_map_data := {}
 var catalog_entries: Array[Dictionary] = []
 var preview_texture_cache: Dictionary = {}
 var selected_asset_id := ""
+const FILE_DIALOG_FAVORITES_PATH := "user://map_editor_file_dialog_favorites.json"
 
 func _ready() -> void:
 	asset_catalog_window.close_requested.connect(_on_asset_catalog_closed)
 	asset_catalog_window.connect("catalog_saved", _on_asset_catalog_saved)
+	open_map_dialog.visibility_changed.connect(_on_file_dialog_visibility_changed)
+	save_map_dialog.visibility_changed.connect(_on_file_dialog_visibility_changed)
 	if canvas:
 		canvas.object_selected.connect(_on_object_selected)
 		canvas.map_data_changed.connect(_on_map_data_changed)
@@ -89,6 +92,7 @@ func _ready() -> void:
 
 	setup_layer_options()
 	load_asset_catalog()
+	_load_file_dialog_favorites()
 	load_map(current_map_path)
 
 func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: bool = false) -> void:
@@ -407,7 +411,42 @@ func save_map() -> void:
 	else:
 		update_status("FAILED to save map to: " + current_map_path)
 
+func _on_file_dialog_visibility_changed() -> void:
+	if not open_map_dialog.visible and not save_map_dialog.visible:
+		_save_file_dialog_favorites()
+
+func _load_file_dialog_favorites() -> void:
+	if not FileAccess.file_exists(FILE_DIALOG_FAVORITES_PATH):
+		return
+	var file := FileAccess.open(FILE_DIALOG_FAVORITES_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Array:
+		return
+	for favorite in parsed:
+		var path := str(favorite)
+		if not path.is_empty() and not open_map_dialog.is_favorite(path):
+			open_map_dialog.add_favorite(path)
+		if not path.is_empty() and not save_map_dialog.is_favorite(path):
+			save_map_dialog.add_favorite(path)
+
+func _save_file_dialog_favorites() -> void:
+	var favorites: Array[String] = []
+	for dialog in [open_map_dialog, save_map_dialog]:
+		for favorite in dialog.get_favorites():
+			var path := str(favorite)
+			if not path.is_empty() and not favorites.has(path):
+				favorites.append(path)
+	var file := FileAccess.open(FILE_DIALOG_FAVORITES_PATH, FileAccess.WRITE)
+	if file == null:
+		return
+	file.store_string(JSON.stringify(favorites, "  "))
+	file.close()
+
 func set_dialog_path(dialog: FileDialog) -> void:
+	_save_file_dialog_favorites()
 	var global_map_path := current_map_path
 	if global_map_path.begins_with("res://") or global_map_path.begins_with("user://"):
 		global_map_path = ProjectSettings.globalize_path(global_map_path)

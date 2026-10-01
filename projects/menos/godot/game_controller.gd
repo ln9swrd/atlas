@@ -1,6 +1,8 @@
 extends Node2D
 
 var _catalog_tile_cache: Dictionary = {}
+var _map_catalog_assets: Dictionary = {}
+var _runtime_map_data: Dictionary = {}
 
 
 const VISUALS := {
@@ -263,6 +265,7 @@ func load_stage_map(stage_id: String) -> bool:
 	var loaded_map := MapLoader.load_map_data(StageManager.get_map_file())
 	if loaded_map.is_empty():
 		return false
+	_runtime_map_data = loaded_map.duplicate(true)
 	apply_map_spatial_data(loaded_map)
 	if get_parent().has_node("Camera2D"):
 		_setup_camera()
@@ -340,6 +343,61 @@ func apply_map_spatial_data(loaded_map: Dictionary) -> void:
 	if loaded_map.has("slots"):
 		SLOTS = loaded_map["slots"].duplicate(true)
 
+func _load_map_catalog_assets() -> void:
+	if not _map_catalog_assets.is_empty():
+		return
+	var file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
+	if file == null:
+		return
+	var data: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary:
+		return
+	var assets: Variant = data.get("assets", [])
+	if not assets is Array:
+		return
+	for entry in assets:
+		if entry is Dictionary:
+			var asset_id := str(entry.get("asset_id", ""))
+			if not asset_id.is_empty():
+				_map_catalog_assets[asset_id] = entry.duplicate(true)
+
+func _draw_catalog_map_tiles(map_data: Dictionary) -> void:
+	_load_map_catalog_assets()
+	var tiles: Variant = map_data.get("tiles", {})
+	if not tiles is Dictionary:
+		return
+	var origin: Vector2 = map_data.get("map_origin", Vector2.ZERO)
+	var defaults: Variant = map_data.get("asset_footprint_defaults", {})
+	for layer_name in ["Ground", "RoadComposition", "Vegetation", "Boundary"]:
+		if not tiles.has(layer_name) or not tiles[layer_name] is Dictionary:
+			continue
+		for key in tiles[layer_name]:
+			var tile_data: Variant = tiles[layer_name][key]
+			if not tile_data is Dictionary or not tile_data.has("asset_id"):
+				continue
+			var asset_id := str(tile_data.get("asset_id", ""))
+			var asset: Dictionary = _map_catalog_assets.get(asset_id, {})
+			if asset.is_empty():
+				continue
+			var source_path := str(asset.get("source_path", ""))
+			var texture := load(source_path) as Texture2D
+			if texture == null:
+				continue
+			var rect_values: Variant = asset.get("source_rect_px", [0, 0, 32, 32])
+			if not rect_values is Array or rect_values.size() < 4:
+				continue
+			var footprint_values: Variant = tile_data.get("footprint_tiles", defaults.get(asset_id, asset.get("footprint_tiles", [1, 1])))
+			if not footprint_values is Array or footprint_values.size() < 2:
+				continue
+			var parts := str(key).split(",")
+			if parts.size() < 2:
+				continue
+			var cell := Vector2(float(parts[0].to_int()), float(parts[1].to_int()))
+			var destination := Rect2(origin + cell * 32.0, Vector2(float(footprint_values[0]) * 32.0, float(footprint_values[1]) * 32.0))
+			var source_rect := Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+			draw_texture_rect_region(texture, destination, source_rect)
+
 func build_map_from_data(map_data: Dictionary) -> bool:
 	if not map_data.has("tiles") or map_data["tiles"].is_empty():
 		return false
@@ -391,11 +449,10 @@ func build_map_from_data(map_data: Dictionary) -> bool:
 			if tile_data is Array:
 				tile_values = tile_data
 			elif tile_data is Dictionary:
-				var asset_id := str(tile_data.get("asset_id", ""))
-				var resolved := _resolve_catalog_tile(layer_node, asset_id)
-				if resolved.is_empty():
-					continue
-				tile_values = resolved
+				# Catalog assets are rendered from their full source_rect_px in _draw().
+				# Do not reduce a multi-tile asset to a single 32x32 atlas cell.
+				continue
+
 			if tile_values.size() < 3:
 				continue
 			var source_id := int(tile_values[0])
@@ -1614,6 +1671,9 @@ func draw_oval(center: Vector2, rx: float, ry: float, color: Color) -> void:
 func _draw() -> void:
 	# Tactical Grid Background & Field Control Sidebar
 	# Battle HUD is rendered over the battlefield; it is not a separate sidebar.
+
+	# Catalog terrain assets use the same full source rectangles as Map Editor.
+	_draw_catalog_map_tiles(_runtime_map_data)
 
 	# Tactical Field Boundary
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
