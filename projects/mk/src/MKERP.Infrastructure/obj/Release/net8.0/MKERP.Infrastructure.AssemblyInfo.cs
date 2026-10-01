@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MKERP.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aa7b1769f2ef91427554209cc3bbcb9846bf272d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8dd8b23f070f0e3a84c344c80b5de10f6cb74b4d")]
 [assembly: System.Reflection.AssemblyProductAttribute("MKERP.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MKERP.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

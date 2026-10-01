@@ -3,6 +3,7 @@ using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using WpfApplication = System.Windows.Application;
 using MKERP.Infrastructure;
+using MKERP.Licensing;
 
 namespace MKERP.App;
 
@@ -11,6 +12,18 @@ public partial class App : WpfApplication
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        var license = new LicenseService();
+        var validation = license.ValidateInstalledLicense();
+        if (!validation.IsValid)
+        {
+            var machine = LicenseService.GetMachineFingerprint();
+            MessageBox.Show(
+                $"MK ERP 라이선스가 유효하지 않습니다.\n\n{validation.Message}\n\n이 PC의 활성화 코드:\n{machine}\n\n발급받은 license.json을 프로그램 폴더에 넣고 다시 실행하십시오.",
+                "MK ERP 라이선스", MessageBoxButton.OK, MessageBoxImage.Stop);
+            Shutdown(2);
+            return;
+        }
 
         var dataDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

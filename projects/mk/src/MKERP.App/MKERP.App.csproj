@@ -6,5 +6,6 @@
     <ProjectReference Include="..\MKERP.Application\MKERP.Application.csproj" />
     <ProjectReference Include="..\MKERP.Infrastructure\MKERP.Infrastructure.csproj" />
     <ProjectReference Include="..\MKERP.Reporting\MKERP.Reporting.csproj" />
+    <ProjectReference Include="..\MKERP.Licensing\MKERP.Licensing.csproj" />
   </ItemGroup>
 </Project>
