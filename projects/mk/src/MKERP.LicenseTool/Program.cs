@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text.Json;
 using MKERP.Licensing;
 
@@ -8,11 +8,26 @@ if (args.Length == 1 && string.Equals(args[0], "machine", StringComparison.Ordin
     return 0;
 }
 
+if (args.Length == 2 && string.Equals(args[0], "verify", StringComparison.OrdinalIgnoreCase))
+{
+    var verifyDocument = JsonSerializer.Deserialize<LicenseDocument>(File.ReadAllText(args[1]));
+    if (verifyDocument is null) return 3;
+    using var rsa = RSA.Create();
+    var publicKey = File.ReadAllText(@"D:\Atlas\license-keys\mkerp\public-key.pem");
+    rsa.ImportFromPem(publicKey);
+    var result = LicenseVerifier.Validate(
+        verifyDocument, rsa, LicenseService.ProductName,
+        LicenseService.GetMachineFingerprint(), DateTime.UtcNow);
+    Console.WriteLine(result.IsValid ? "VALID" : "INVALID");
+    Console.WriteLine(result.Message);
+    return result.IsValid ? 0 : 4;
+}
+
 if (args.Length < 3)
 {
-    Console.WriteLine("사용법: MKERP.LicenseTool machine");
-    Console.WriteLine("또는: MKERP.LicenseTool <private-key.pem> <customer-id> <machine-fingerprint> [days] [license-id]");
-    Console.WriteLine("days를 생략하면 영구 라이선스입니다.");
+    Console.WriteLine("?ъ슜踰? MKERP.LicenseTool machine");
+    Console.WriteLine("?ъ슜踰? MKERP.LicenseTool verify <license.json>");
+    Console.WriteLine("?ъ슜踰? MKERP.LicenseTool <private-key.pem> <customer-id> <machine-fingerprint> [days] [license-id]");
     return 2;
 }
 
@@ -22,8 +37,8 @@ var machine = args[2];
 var days = args.Length >= 4 && int.TryParse(args[3], out var d) ? d : 0;
 var licenseId = args.Length >= 5 ? args[4] : Guid.NewGuid().ToString("N");
 
-using var rsa = RSA.Create();
-rsa.ImportFromPem(File.ReadAllText(keyPath));
+using var privateKey = RSA.Create();
+privateKey.ImportFromPem(File.ReadAllText(keyPath));
 
 var issued = DateTime.UtcNow;
 var payload = new LicensePayload
@@ -39,7 +54,7 @@ var payload = new LicensePayload
 var document = new LicenseDocument
 {
     Payload = payload,
-    Signature = LicenseVerifier.Sign(payload, rsa)
+    Signature = LicenseVerifier.Sign(payload, privateKey)
 };
 
 var output = Path.Combine(Environment.CurrentDirectory, $"license-{licenseId}.json");
