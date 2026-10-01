@@ -84,7 +84,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.Id).HasColumnName("ITEM_ID");
             e.Property(x => x.Code).HasColumnName("ITEM_CODE").IsRequired();
             e.Property(x => x.Name).HasColumnName("ITEM_NAME").IsRequired();
-            e.Property(x => x.CategoryId).HasColumnName("ITEM_CATEGORY_CODE").IsRequired();
+            e.Property(x => x.CategoryId).HasColumnName("ITEM_CATEGORY_ID").IsRequired();
             e.Property(x => x.GradeId).HasColumnName("GRADE_ID");
             e.Property(x => x.UnitCode).HasColumnName("UNIT_CODE").IsRequired();
             e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
@@ -100,7 +100,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.Id).HasColumnName("AUDIT_LOG_ID");
             e.Property(x => x.EntityName).HasColumnName("ENTITY_NAME").IsRequired();
             e.Property(x => x.EntityId).HasColumnName("ENTITY_ID");
-            e.Property(x => x.ActionId).HasColumnName("ACTION_CODE").IsRequired();
+            e.Property(x => x.ActionId).HasColumnName("ACTION_ID").IsRequired();
             e.Property(x => x.Actor).HasColumnName("ACTOR");
             e.Property(x => x.OccurredAt).HasColumnName("OCCURRED_AT").IsRequired();
             e.Property(x => x.BeforeJson).HasColumnName("BEFORE_JSON");
@@ -115,7 +115,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.Id).HasColumnName("PARTNER_ID");
             e.Property(x => x.Code).HasColumnName("PARTNER_CODE").IsRequired();
             e.Property(x => x.Name).HasColumnName("PARTNER_NAME").IsRequired();
-            e.Property(x => x.TypeId).HasColumnName("PARTNER_TYPE_CODE").IsRequired();
+            e.Property(x => x.TypeId).HasColumnName("PARTNER_TYPE_ID").IsRequired();
             e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
@@ -160,7 +160,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.OrderDate).HasColumnName("ORDER_DATE").IsRequired();
             e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
             e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
-            e.Property(x => x.StatusId).HasColumnName("STATUS_CODE").IsRequired();
+            e.Property(x => x.StatusId).HasColumnName("STATUS_ID").IsRequired();
             e.Property(x => x.Note).HasColumnName("NOTE");
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
@@ -192,7 +192,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.Id).HasColumnName("PRODUCTION_ID");
             e.Property(x => x.DocumentNo).HasColumnName("DOCUMENT_NO").IsRequired();
             e.Property(x => x.ProductionDate).HasColumnName("PRODUCTION_DATE").IsRequired();
-            e.Property(x => x.StatusId).HasColumnName("STATUS_CODE").IsRequired();
+            e.Property(x => x.StatusId).HasColumnName("STATUS_ID").IsRequired();
             e.Property(x => x.Note).HasColumnName("NOTE");
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
@@ -250,11 +250,11 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.Id).HasColumnName("INOUT_ID");
             e.Property(x => x.DocumentNo).HasColumnName("DOCUMENT_NO").IsRequired();
             e.Property(x => x.MovementDate).HasColumnName("MOVEMENT_DATE").IsRequired();
-            e.Property(x => x.MovementTypeId).HasColumnName("MOVEMENT_TYPE_CODE").IsRequired();
+            e.Property(x => x.MovementTypeId).HasColumnName("MOVEMENT_TYPE_ID").IsRequired();
             e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID");
-            e.Property(x => x.SourceTypeId).HasColumnName("SOURCE_TYPE_CODE");
+            e.Property(x => x.SourceTypeId).HasColumnName("SOURCE_TYPE_ID");
             e.Property(x => x.SourceId).HasColumnName("SOURCE_ID");
-            e.Property(x => x.StatusId).HasColumnName("STATUS_CODE").IsRequired();
+            e.Property(x => x.StatusId).HasColumnName("STATUS_ID").IsRequired();
             e.Property(x => x.Note).HasColumnName("NOTE");
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
@@ -281,11 +281,11 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.ToTable("TB_ORDER_PROCESS_HISTORY");
             e.HasKey(x => x.Id);
             e.Property(x => x.Id).HasColumnName("ORDER_PROCESS_HISTORY_ID");
-            e.Property(x => x.SourceTypeId).HasColumnName("SOURCE_TYPE_CODE").IsRequired();
+            e.Property(x => x.SourceTypeId).HasColumnName("SOURCE_TYPE_ID").IsRequired();
             e.Property(x => x.SourceDetailId).HasColumnName("SOURCE_DETAIL_ID").IsRequired();
             e.Property(x => x.InOutDetailId).HasColumnName("INOUT_DETAIL_ID").IsRequired();
             e.Property(x => x.ProcessQty).HasColumnName("PROCESS_QTY").IsRequired();
-            e.Property(x => x.ActionId).HasColumnName("ACTION_CODE").IsRequired();
+            e.Property(x => x.ActionId).HasColumnName("ACTION_ID").IsRequired();
             e.Property(x => x.ReversesHistoryId).HasColumnName("REVERSES_HISTORY_ID");
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.HasIndex(x => new { x.SourceTypeId, x.SourceDetailId, x.CreatedAt });
@@ -301,7 +301,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.OrderDate).HasColumnName("ORDER_DATE").IsRequired();
             e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
             e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
-            e.Property(x => x.StatusId).HasColumnName("STATUS_CODE").IsRequired();
+            e.Property(x => x.StatusId).HasColumnName("STATUS_ID").IsRequired();
             e.Property(x => x.Note).HasColumnName("NOTE");
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
