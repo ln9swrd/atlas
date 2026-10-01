@@ -198,6 +198,18 @@ public sealed class InOutDetail
     public decimal? Amount { get; set; }
 }
 
+public sealed class OrderProcessHistory
+{
+    public long Id { get; set; }
+    public string SourceTypeCode { get; set; } = string.Empty;
+    public long SourceDetailId { get; set; }
+    public long InOutDetailId { get; set; }
+    public decimal ProcessQty { get; set; }
+    public string ActionCode { get; set; } = string.Empty;
+    public long? ReversesHistoryId { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+
 public sealed class SalesOrderDetail
 {
     public long Id { get; set; }

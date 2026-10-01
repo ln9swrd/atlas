@@ -25,6 +25,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
     public DbSet<LotPartnerLot> LotPartnerLots => Set<LotPartnerLot>();
     public DbSet<InOut> InOuts => Set<InOut>();
     public DbSet<InOutDetail> InOutDetails => Set<InOutDetail>();
+    public DbSet<OrderProcessHistory> OrderProcessHistories => Set<OrderProcessHistory>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -272,6 +273,22 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.UnitPrice).HasColumnName("UNIT_PRICE");
             e.Property(x => x.Amount).HasColumnName("AMOUNT");
             e.HasIndex(x => x.ItemId);
+        });
+
+        modelBuilder.Entity<OrderProcessHistory>(e =>
+        {
+            e.ToTable("TB_ORDER_PROCESS_HISTORY");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("ORDER_PROCESS_HISTORY_ID");
+            e.Property(x => x.SourceTypeCode).HasColumnName("SOURCE_TYPE_CODE").IsRequired();
+            e.Property(x => x.SourceDetailId).HasColumnName("SOURCE_DETAIL_ID").IsRequired();
+            e.Property(x => x.InOutDetailId).HasColumnName("INOUT_DETAIL_ID").IsRequired();
+            e.Property(x => x.ProcessQty).HasColumnName("PROCESS_QTY").IsRequired();
+            e.Property(x => x.ActionCode).HasColumnName("ACTION_CODE").IsRequired();
+            e.Property(x => x.ReversesHistoryId).HasColumnName("REVERSES_HISTORY_ID");
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.HasIndex(x => new { x.SourceTypeCode, x.SourceDetailId, x.CreatedAt });
+            e.HasIndex(x => x.InOutDetailId);
         });
 
         modelBuilder.Entity<SalesOrder>(e =>
