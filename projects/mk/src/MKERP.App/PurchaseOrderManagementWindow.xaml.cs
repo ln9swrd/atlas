@@ -15,12 +15,14 @@ public partial class PurchaseOrderManagementWindow : UserControl
     private IReadOnlyList<Item> _items = [];
     private Price? _applicablePrice;
     private bool _loading;
+    private readonly ObservableCollection<PurchaseDraftRow> _draftRows = [];
 
     public PurchaseOrderManagementWindow(string databasePath)
     {
         InitializeComponent();
         _db = DbContextFactory.Create(databasePath);
         OrderDateBox.SelectedDate = DateTime.Today;
+        DraftGrid.ItemsSource = _draftRows;
         Loaded += async (_, _) => await LoadAsync();
         Unloaded += (_, _) => _db.Dispose();
     }
