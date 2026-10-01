@@ -13,6 +13,11 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Partner> Partners => Set<Partner>();
     public DbSet<PartnerItem> PartnerItems => Set<PartnerItem>();
+    public DbSet<Price> Prices => Set<Price>();
+    public DbSet<SalesOrder> SalesOrders => Set<SalesOrder>();
+    public DbSet<SalesOrderDetail> SalesOrderDetails => Set<SalesOrderDetail>();
+    public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+    public DbSet<PurchaseOrderDetail> PurchaseOrderDetails => Set<PurchaseOrderDetail>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -120,6 +125,87 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.PartnerItemName).HasColumnName("PARTNER_ITEM_NAME");
             e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
             e.HasIndex(x => new { x.PartnerId, x.ItemId });
+        });
+
+        modelBuilder.Entity<Price>(e =>
+        {
+            e.ToTable("TB_PRICE");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("PRICE_ID");
+            e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
+            e.Property(x => x.ItemId).HasColumnName("ITEM_ID").IsRequired();
+            e.Property(x => x.UnitPrice).HasColumnName("UNIT_PRICE").IsRequired();
+            e.Property(x => x.EffectiveFrom).HasColumnName("EFFECTIVE_FROM").IsRequired();
+            e.Property(x => x.Priority).HasColumnName("PRIORITY").IsRequired();
+            e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
+            e.HasIndex(x => new { x.PartnerId, x.ItemId, x.EffectiveFrom, x.Priority });
+        });
+
+        modelBuilder.Entity<PurchaseOrder>(e =>
+        {
+            e.ToTable("TB_PURCHASE_ORDER");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("PURCHASE_ORDER_ID");
+            e.Property(x => x.DocumentNo).HasColumnName("DOCUMENT_NO").IsRequired();
+            e.Property(x => x.OrderDate).HasColumnName("ORDER_DATE").IsRequired();
+            e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
+            e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
+            e.Property(x => x.StatusCode).HasColumnName("STATUS_CODE").IsRequired();
+            e.Property(x => x.Note).HasColumnName("NOTE");
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
+            e.HasIndex(x => x.DocumentNo).IsUnique();
+        });
+
+        modelBuilder.Entity<PurchaseOrderDetail>(e =>
+        {
+            e.ToTable("TB_PURCHASE_ORDER_DETAIL");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("PURCHASE_ORDER_DETAIL_ID");
+            e.Property(x => x.PurchaseOrderId).HasColumnName("PURCHASE_ORDER_ID").IsRequired();
+            e.Property(x => x.ItemId).HasColumnName("ITEM_ID").IsRequired();
+            e.Property(x => x.PriceId).HasColumnName("PRICE_ID");
+            e.Property(x => x.OrderQty).HasColumnName("ORDER_QTY").IsRequired();
+            e.Property(x => x.AppliedUnitPrice).HasColumnName("APPLIED_UNIT_PRICE").IsRequired();
+            e.Property(x => x.Amount).HasColumnName("AMOUNT").IsRequired();
+            e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
+            e.Property(x => x.Note).HasColumnName("NOTE");
+            e.HasIndex(x => x.PriceId);
+        });
+
+        modelBuilder.Entity<SalesOrder>(e =>
+        {
+            e.ToTable("TB_SALES_ORDER");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("SALES_ORDER_ID");
+            e.Property(x => x.DocumentNo).HasColumnName("DOCUMENT_NO").IsRequired();
+            e.Property(x => x.OrderDate).HasColumnName("ORDER_DATE").IsRequired();
+            e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
+            e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
+            e.Property(x => x.StatusCode).HasColumnName("STATUS_CODE").IsRequired();
+            e.Property(x => x.Note).HasColumnName("NOTE");
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
+            e.HasIndex(x => x.DocumentNo).IsUnique();
+        });
+
+        modelBuilder.Entity<SalesOrderDetail>(e =>
+        {
+            e.ToTable("TB_SALES_ORDER_DETAIL");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("SALES_ORDER_DETAIL_ID");
+            e.Property(x => x.SalesOrderId).HasColumnName("SALES_ORDER_ID").IsRequired();
+            e.Property(x => x.ItemId).HasColumnName("ITEM_ID").IsRequired();
+            e.Property(x => x.PartnerItemId).HasColumnName("PARTNER_ITEM_ID");
+            e.Property(x => x.PriceId).HasColumnName("PRICE_ID");
+            e.Property(x => x.OrderQty).HasColumnName("ORDER_QTY").IsRequired();
+            e.Property(x => x.AppliedUnitPrice).HasColumnName("APPLIED_UNIT_PRICE").IsRequired();
+            e.Property(x => x.Amount).HasColumnName("AMOUNT").IsRequired();
+            e.Property(x => x.DueDate).HasColumnName("DUE_DATE");
+            e.Property(x => x.Note).HasColumnName("NOTE");
+            e.HasIndex(x => x.PriceId);
         });
     }
 }

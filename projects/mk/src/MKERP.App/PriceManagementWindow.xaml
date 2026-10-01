@@ -1,0 +1,48 @@
+<Window x:Class="MKERP.App.PriceManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="단가관리" Width="1100" Height="700">
+  <Grid Margin="16">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <StackPanel Orientation="Horizontal">
+      <Button Content="조회" Width="80" Margin="0,0,6,0" Click="Search_Click"/>
+      <Button Content="신규 단가" Width="90" Margin="0,0,6,0" Click="New_Click"/>
+      <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click"/>
+      <Button Content="비활성" Width="80" Click="Deactivate_Click"/>
+    </StackPanel>
+    <Grid Grid.Row="1" Margin="0,12">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="80"/><ColumnDefinition Width="210"/>
+        <ColumnDefinition Width="80"/><ColumnDefinition Width="210"/>
+        <ColumnDefinition Width="90"/><ColumnDefinition Width="150"/>
+        <ColumnDefinition Width="70"/><ColumnDefinition Width="100"/>
+        <ColumnDefinition Width="50"/><ColumnDefinition Width="100"/>
+      </Grid.ColumnDefinitions>
+      <TextBlock Text="거래처" VerticalAlignment="Center"/>
+      <ComboBox x:Name="PartnerBox" Grid.Column="1" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+      <TextBlock Text="MK 품목" Grid.Column="2" VerticalAlignment="Center"/>
+      <ComboBox x:Name="ItemBox" Grid.Column="3" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+      <TextBlock Text="적용 시작일" Grid.Column="4" VerticalAlignment="Center"/>
+      <DatePicker x:Name="EffectiveFromBox" Grid.Column="5" Margin="4"/>
+      <TextBlock Text="우선순위" Grid.Column="6" VerticalAlignment="Center"/>
+      <TextBox x:Name="PriorityBox" Grid.Column="7" Margin="4" Text="0"/>
+      <TextBlock Text="단가" Grid.Column="8" VerticalAlignment="Center" Margin="8,0,0,0"/>
+      <TextBox x:Name="UnitPriceBox" Grid.Column="9" Margin="4"/>
+    </Grid>
+    <DataGrid x:Name="Grid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True"
+              SelectionChanged="Grid_SelectionChanged">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="거래처" Binding="{Binding PartnerName}" Width="180"/>
+        <DataGridTextColumn Header="MK 품목" Binding="{Binding ItemName}" Width="220"/>
+        <DataGridTextColumn Header="단가" Binding="{Binding UnitPrice}" Width="120"/>
+        <DataGridTextColumn Header="적용 시작일" Binding="{Binding EffectiveFrom, StringFormat=yyyy-MM-dd}" Width="130"/>
+        <DataGridTextColumn Header="우선순위" Binding="{Binding Priority}" Width="90"/>
+        <DataGridTextColumn Header="PRICE_ID" Binding="{Binding Id}" Width="90"/>
+      </DataGrid.Columns>
+    </DataGrid>
+  </Grid>
+</Window>

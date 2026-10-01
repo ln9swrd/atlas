@@ -73,3 +73,69 @@ public sealed class Partner
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
+
+public sealed class Price
+{
+    public long Id { get; set; }
+    public long PartnerId { get; set; }
+    public long ItemId { get; set; }
+    public decimal UnitPrice { get; set; }
+    public DateTime EffectiveFrom { get; set; }
+    public int Priority { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+public sealed class PurchaseOrder
+{
+    public long Id { get; set; }
+    public string DocumentNo { get; set; } = string.Empty;
+    public DateTime OrderDate { get; set; }
+    public long PartnerId { get; set; }
+    public DateTime? DueDate { get; set; }
+    public string StatusCode { get; set; } = string.Empty;
+    public string? Note { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+public sealed class PurchaseOrderDetail
+{
+    public long Id { get; set; }
+    public long PurchaseOrderId { get; set; }
+    public long ItemId { get; set; }
+    public long? PriceId { get; set; }
+    public decimal OrderQty { get; set; }
+    public decimal AppliedUnitPrice { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime? DueDate { get; set; }
+    public string? Note { get; set; }
+}
+
+public sealed class SalesOrder
+{
+    public long Id { get; set; }
+    public string DocumentNo { get; set; } = string.Empty;
+    public DateTime OrderDate { get; set; }
+    public long PartnerId { get; set; }
+    public DateTime? DueDate { get; set; }
+    public string StatusCode { get; set; } = string.Empty;
+    public string? Note { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+public sealed class SalesOrderDetail
+{
+    public long Id { get; set; }
+    public long SalesOrderId { get; set; }
+    public long ItemId { get; set; }
+    public long? PartnerItemId { get; set; }
+    public long? PriceId { get; set; }
+    public decimal OrderQty { get; set; }
+    public decimal AppliedUnitPrice { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime? DueDate { get; set; }
+    public string? Note { get; set; }
+}

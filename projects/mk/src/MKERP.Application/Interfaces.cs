@@ -42,3 +42,25 @@ public interface IPartnerItemRepository
     Task UpdateAsync(PartnerItem partnerItem, CancellationToken cancellationToken = default);
     Task DeactivateAsync(long id, CancellationToken cancellationToken = default);
 }
+
+public interface IPriceRepository
+{
+    Task<IReadOnlyList<Price>> GetActiveAsync(long? partnerId = null, long? itemId = null, CancellationToken cancellationToken = default);
+    Task<Price?> GetApplicableAsync(long partnerId, long itemId, DateTime orderDate, CancellationToken cancellationToken = default);
+    Task AddAsync(Price price, CancellationToken cancellationToken = default);
+    Task DeactivateAsync(long id, CancellationToken cancellationToken = default);
+}
+
+public interface IPurchaseOrderRepository
+{
+    Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);
+    Task AddAsync(PurchaseOrder order, PurchaseOrderDetail detail, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<PurchaseOrder>> GetRecentAsync(CancellationToken cancellationToken = default);
+}
+
+public interface ISalesOrderRepository
+{
+    Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);
+    Task AddAsync(SalesOrder order, SalesOrderDetail detail, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<SalesOrder>> GetRecentAsync(CancellationToken cancellationToken = default);
+}

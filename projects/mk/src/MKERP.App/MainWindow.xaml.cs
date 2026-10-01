@@ -32,4 +32,22 @@ public partial class MainWindow : Window
         var window = new PartnerItemManagementWindow(_databasePath) { Owner = this };
         window.ShowDialog();
     }
+
+    private void PriceManagement_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new PriceManagementWindow(_databasePath) { Owner = this };
+        window.ShowDialog();
+    }
+
+    private void SalesOrderManagement_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new SalesOrderManagementWindow(_databasePath) { Owner = this };
+        window.ShowDialog();
+    }
+
+    private void PurchaseOrderManagement_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new PurchaseOrderManagementWindow(_databasePath) { Owner = this };
+        window.ShowDialog();
+    }
 }
