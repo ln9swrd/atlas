@@ -10,11 +10,12 @@ public static class AuditLogger
         object? before, object? after, string? note = null,
         CancellationToken cancellationToken = default)
     {
+        var actionId = await CodeResolver.GetRequiredIdAsync(db, "AUDIT_ACTION", action, cancellationToken);
         db.Set<AuditLog>().Add(new AuditLog
         {
             EntityName = entityName,
             EntityId = entityId,
-            ActionId = action,
+            ActionId = actionId,
             Actor = Environment.UserName,
             OccurredAt = DateTime.UtcNow,
             BeforeJson = before is null ? null : JsonSerializer.Serialize(before),
