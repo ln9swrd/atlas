@@ -34,3 +34,11 @@ public interface IPartnerRepository
     Task UpdateAsync(Partner partner, CancellationToken cancellationToken = default);
     Task DeactivateAsync(long id, CancellationToken cancellationToken = default);
 }
+
+public interface IPartnerItemRepository
+{
+    Task<IReadOnlyList<PartnerItem>> GetActiveAsync(long? partnerId = null, CancellationToken cancellationToken = default);
+    Task AddAsync(PartnerItem partnerItem, CancellationToken cancellationToken = default);
+    Task UpdateAsync(PartnerItem partnerItem, CancellationToken cancellationToken = default);
+    Task DeactivateAsync(long id, CancellationToken cancellationToken = default);
+}

@@ -1,0 +1,28 @@
+<Window x:Class="MKERP.App.PartnerItemManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="거래처별 품목관리" Width="1100" Height="680">
+  <Grid Margin="16">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <StackPanel Orientation="Horizontal">
+      <Button Content="조회" Width="80" Margin="0,0,6,0" Click="Search_Click"/>
+      <Button Content="신규" Width="80" Margin="0,0,6,0" Click="New_Click"/>
+      <Button Content="저장" Width="80" Margin="0,0,6,0" Click="Save_Click"/>
+      <Button Content="비활성" Width="80" Click="Deactivate_Click"/>
+    </StackPanel>
+    <Grid Grid.Row="1" Margin="0,12">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="90"/><ColumnDefinition Width="220"/><ColumnDefinition Width="90"/><ColumnDefinition Width="220"/><ColumnDefinition Width="90"/><ColumnDefinition Width="220"/></Grid.ColumnDefinitions>
+      <TextBlock Text="거래처" VerticalAlignment="Center"/><ComboBox x:Name="PartnerBox" Grid.Column="1" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="PartnerBox_SelectionChanged"/>
+      <TextBlock Text="MK 품목" Grid.Column="2" VerticalAlignment="Center"/><ComboBox x:Name="ItemBox" Grid.Column="3" Margin="4" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+      <TextBlock Text="거래처 품목코드" Grid.Column="4" VerticalAlignment="Center"/><TextBox x:Name="PartnerItemCodeBox" Grid.Column="5" Margin="4"/>
+    </Grid>
+    <DataGrid x:Name="Grid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" SelectionChanged="Grid_SelectionChanged">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="거래처" Binding="{Binding PartnerId}" Width="120"/>
+        <DataGridTextColumn Header="MK 품목" Binding="{Binding ItemId}" Width="120"/>
+        <DataGridTextColumn Header="거래처 품목코드" Binding="{Binding PartnerItemCode}" Width="180"/>
+        <DataGridTextColumn Header="거래처 품목명" Binding="{Binding PartnerItemName}" Width="*"/>
+      </DataGrid.Columns>
+    </DataGrid>
+  </Grid>
+</Window>

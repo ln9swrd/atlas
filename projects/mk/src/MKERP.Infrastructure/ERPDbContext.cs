@@ -12,6 +12,7 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
     public DbSet<ItemGrade> ItemGrades => Set<ItemGrade>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Partner> Partners => Set<Partner>();
+    public DbSet<PartnerItem> PartnerItems => Set<PartnerItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -106,6 +107,19 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
             e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
             e.HasIndex(x => x.Code).IsUnique();
+        });
+
+        modelBuilder.Entity<PartnerItem>(e =>
+        {
+            e.ToTable("TB_PARTNER_ITEM");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("PARTNER_ITEM_ID");
+            e.Property(x => x.PartnerId).HasColumnName("PARTNER_ID").IsRequired();
+            e.Property(x => x.ItemId).HasColumnName("ITEM_ID").IsRequired();
+            e.Property(x => x.PartnerItemCode).HasColumnName("PARTNER_ITEM_CODE");
+            e.Property(x => x.PartnerItemName).HasColumnName("PARTNER_ITEM_NAME");
+            e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
+            e.HasIndex(x => new { x.PartnerId, x.ItemId });
         });
     }
 }
