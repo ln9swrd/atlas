@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MKERP.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2dfcc32aa4c69700bb05ed6d1e9412490e6c217c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47673344e04d78dcc2a2e6adf712625a60053f2a")]
 [assembly: System.Reflection.AssemblyProductAttribute("MKERP.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MKERP.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
