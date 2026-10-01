@@ -225,4 +225,14 @@ public partial class SalesOrderManagementWindow : UserControl
 
     private void Excel_Click(object sender, RoutedEventArgs e) => ExcelExportHelper.Export(Grid, $"수주_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx", "수주");
     private void Print_Click(object sender, RoutedEventArgs e) => PrintHelper.Print(Grid, "수주관리");
+
+    private sealed record SalesDraftRow(long ItemId, string ItemName, long? PartnerItemId, long PriceId, decimal Quantity, decimal UnitPrice, DateTime? DueDate);
+    private sealed class SalesDetailRow
+    {
+        public long Id { get; init; }
+        public string ItemName { get; init; } = string.Empty;
+        public decimal OrderQty { get; init; }
+        public decimal ProcessedQty { get; init; }
+        public decimal RemainingQty { get; init; }
+    }
 }
