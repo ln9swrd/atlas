@@ -72,26 +72,24 @@ public sealed class SalesOrderRepository(ERPDbContext db) : ISalesOrderRepositor
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var order = await db.SalesOrders.SingleAsync(x => x.Id == salesOrderId, cancellationToken);
         if (order.StatusCode != "CONFIRMED") throw new InvalidOperationException("확정 상태의 수주만 취소할 수 있습니다.");
-        var detail = await db.SalesOrderDetails.SingleAsync(x => x.SalesOrderId == salesOrderId, cancellationToken);
+        var details = await db.SalesOrderDetails.Where(x => x.SalesOrderId == salesOrderId).ToListAsync(cancellationToken);
         var movements = await db.InOuts.Where(x => x.SourceTypeCode == "SALES_ORDER" && x.SourceId == salesOrderId && x.StatusCode != "CANCELLED").ToListAsync(cancellationToken);
-        var originalHistories = await db.OrderProcessHistories.Where(x => x.SourceTypeCode == "SALES_ORDER" && x.SourceDetailId == detail.Id && x.ActionCode == "PROCESS").OrderBy(x => x.Id).ToListAsync(cancellationToken);
-        var processed = movements.Join(db.InOutDetails, h => h.Id, d => d.InOutId, (h,d) => d.Quantity).Sum();
-        if (processed > 0)
+        foreach (var movement in movements) { movement.StatusCode = "CANCELLED"; movement.UpdatedAt = DateTime.UtcNow; }
+        foreach (var detail in details)
         {
+            var originalHistories = await db.OrderProcessHistories.Where(x => x.SourceTypeCode == "SALES_ORDER" && x.SourceDetailId == detail.Id && x.ActionCode == "PROCESS").OrderBy(x => x.Id).ToListAsync(cancellationToken);
+            var processed = originalHistories.Sum(x => x.ProcessQty);
+            if (processed <= 0) continue;
             // 출고 취소는 기존 OUT을 취소하고 동일 수량을 IN으로 복원하므로 현재 재고 부족을 이유로 취소를 막지 않는다.
-            foreach (var movement in movements) { movement.StatusCode = "CANCELLED"; movement.UpdatedAt = DateTime.UtcNow; }
             var reverseMovement = await CreateMovementAsync(order, detail, processed, "IN", "SALES_ORDER_CANCEL", cancellationToken);
             var reverseDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == reverseMovement.Id, cancellationToken);
-            if (originalHistories.Count == 0)
-                await AddProcessHistoryAsync("SALES_ORDER", detail.Id, reverseDetail.Id, processed, "REVERSE", null, cancellationToken);
-            else
-                foreach (var history in originalHistories)
-                    await AddProcessHistoryAsync("SALES_ORDER", detail.Id, reverseDetail.Id, history.ProcessQty, "REVERSE", history.Id, cancellationToken);
+            foreach (var history in originalHistories)
+                await AddProcessHistoryAsync("SALES_ORDER", detail.Id, reverseDetail.Id, history.ProcessQty, "REVERSE", history.Id, cancellationToken);
         }
         var before = Snapshot(order);
         order.StatusCode = "CANCELLED"; order.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
-        await AuditLogger.WriteAsync(db, "TB_SALES_ORDER", order.Id, "CANCEL", before, order, note: $"REVERSE_IN_QTY={processed:N2}", cancellationToken: cancellationToken);
+        await AuditLogger.WriteAsync(db, "TB_SALES_ORDER", order.Id, "CANCEL", before, order, note: $"REVERSE_IN_QTY={details.Sum(x => x.ProcessedQty):N2}", cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
     }
 
