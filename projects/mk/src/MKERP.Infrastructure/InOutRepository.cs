@@ -56,6 +56,12 @@ public sealed class InOutRepository(ERPDbContext db) : IInOutRepository
 
     public async Task<IReadOnlyList<InventoryRow>> GetInventoryAsync(DateTime asOfDate, CancellationToken cancellationToken = default)
     {
+        var cancelledStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CANCELLED", cancellationToken);
+        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var openingTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OPENING", cancellationToken);
+        var adjustTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "ADJUST", cancellationToken);
+        var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
+        var lossTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "LOSS", cancellationToken);
         var items = await db.Items.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync(cancellationToken);
         var movements = await db.InOuts.AsNoTracking().Where(x => x.MovementDate <= asOfDate && x.StatusId != cancelledStatusId)
             .Join(db.InOutDetails.AsNoTracking(), h => h.Id, d => d.InOutId, (h, d) => new { h, d }).ToListAsync(cancellationToken);
@@ -76,13 +82,19 @@ public sealed class InOutRepository(ERPDbContext db) : IInOutRepository
 
     public async Task<IReadOnlyList<LotInventoryRow>> GetLotInventoryAsync(DateTime asOfDate, CancellationToken cancellationToken = default)
     {
+        var cancelledStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CANCELLED", cancellationToken);
+        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
+        var openingTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OPENING", cancellationToken);
+        var adjustTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "ADJUST", cancellationToken);
+        var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
+        var lossTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "LOSS", cancellationToken);
         var rows = await (from h in db.InOuts.AsNoTracking()
                           join d in db.InOutDetails.AsNoTracking() on h.Id equals d.InOutId
                           join i in db.Items.AsNoTracking() on d.ItemId equals i.Id
                           join l in db.Lots.AsNoTracking() on d.LotId equals l.Id
                           join pl0 in db.PartnerLots.AsNoTracking() on d.PartnerLotId equals pl0.Id into pls
                           from pl in pls.DefaultIfEmpty()
-                          where h.MovementDate <= asOfDate && h.StatusId != "CANCELLED"
+                          where h.MovementDate <= asOfDate && h.StatusId != cancelledStatusId
                           select new { h, d, i, l, pl }).ToListAsync(cancellationToken);
 
         return rows.GroupBy(x => new { x.d.LotId, x.d.PartnerLotId, x.l.MkLotNo, PartnerLotNo = x.pl == null ? "" : x.pl.PartnerLotNo, x.i.Code, x.i.Name })
