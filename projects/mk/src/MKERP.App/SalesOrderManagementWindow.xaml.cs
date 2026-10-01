@@ -125,7 +125,7 @@ public partial class SalesOrderManagementWindow : UserControl
 
     private async void Edit_Click(object sender, RoutedEventArgs e)
     {
-        if (Grid.SelectedItem is not SalesOrder order || order.StatusCode != "DRAFT") { MessageBox.Show("작성 상태의 수주만 수정할 수 있습니다."); return; }
+        if (Grid.SelectedItem is not SalesOrder order || order.StatusId != "DRAFT") { MessageBox.Show("작성 상태의 수주만 수정할 수 있습니다."); return; }
         _editingOrderId = order.Id;
         DocumentNoText.Text = order.DocumentNo;
         OrderDateBox.SelectedDate = order.OrderDate;
@@ -171,7 +171,7 @@ public partial class SalesOrderManagementWindow : UserControl
             OrderDate = orderDate,
             PartnerId = partner.Id,
             DueDate = DueDateBox.SelectedDate?.Date,
-            StatusCode = draftCode.Key,
+            StatusId = draftCode.Key,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };

@@ -1,4 +1,4 @@
-﻿namespace MKERP.Domain;
+namespace MKERP.Domain;
 
 public sealed class SystemSetting
 {
@@ -34,7 +34,7 @@ public sealed class Item
     public long Id { get; set; }
     public string Code { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
-    public string CategoryCode { get; set; } = string.Empty;
+    public long CategoryId { get; set; }
     public long? GradeId { get; set; }
     public string UnitCode { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
@@ -55,7 +55,7 @@ public sealed class AuditLog
     public long Id { get; set; }
     public string EntityName { get; set; } = string.Empty;
     public long? EntityId { get; set; }
-    public string ActionCode { get; set; } = string.Empty;
+    public long ActionId { get; set; }
     public string? Actor { get; set; }
     public DateTime OccurredAt { get; set; }
     public string? BeforeJson { get; set; }
@@ -68,7 +68,7 @@ public sealed class Partner
     public long Id { get; set; }
     public string Code { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
-    public string TypeCode { get; set; } = string.Empty;
+    public long TypeId { get; set; }
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -94,7 +94,7 @@ public sealed class PurchaseOrder
     public DateTime OrderDate { get; set; }
     public long PartnerId { get; set; }
     public DateTime? DueDate { get; set; }
-    public string StatusCode { get; set; } = string.Empty;
+    public long StatusId { get; set; }
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -122,7 +122,7 @@ public sealed class SalesOrder
     public DateTime OrderDate { get; set; }
     public long PartnerId { get; set; }
     public DateTime? DueDate { get; set; }
-    public string StatusCode { get; set; } = string.Empty;
+    public long StatusId { get; set; }
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -133,7 +133,7 @@ public sealed class Production
     public long Id { get; set; }
     public string DocumentNo { get; set; } = string.Empty;
     public DateTime ProductionDate { get; set; }
-    public string StatusCode { get; set; } = string.Empty;
+    public long StatusId { get; set; }
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -177,11 +177,11 @@ public sealed class InOut
     public long Id { get; set; }
     public string DocumentNo { get; set; } = string.Empty;
     public DateTime MovementDate { get; set; }
-    public string MovementTypeCode { get; set; } = string.Empty;
+    public long MovementTypeId { get; set; }
     public long? PartnerId { get; set; }
-    public string? SourceTypeCode { get; set; }
+    public long? SourceTypeId { get; set; }
     public long? SourceId { get; set; }
-    public string StatusCode { get; set; } = string.Empty;
+    public long StatusId { get; set; }
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -202,11 +202,11 @@ public sealed class InOutDetail
 public sealed class OrderProcessHistory
 {
     public long Id { get; set; }
-    public string SourceTypeCode { get; set; } = string.Empty;
+    public long SourceTypeId { get; set; }
     public long SourceDetailId { get; set; }
     public long InOutDetailId { get; set; }
     public decimal ProcessQty { get; set; }
-    public string ActionCode { get; set; } = string.Empty;
+    public long ActionId { get; set; }
     public long? ReversesHistoryId { get; set; }
     public DateTime CreatedAt { get; set; }
 }

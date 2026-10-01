@@ -48,7 +48,7 @@ public sealed class ItemRepository(ERPDbContext db) : IItemRepository
     public async Task DeactivateAsync(long id, CancellationToken cancellationToken = default)
     {
         var item = await db.Items.SingleAsync(x => x.Id == id, cancellationToken);
-        var before = new Item { Id = item.Id, Code = item.Code, Name = item.Name, CategoryCode = item.CategoryCode, GradeId = item.GradeId, UnitCode = item.UnitCode, IsActive = item.IsActive, CreatedAt = item.CreatedAt, UpdatedAt = item.UpdatedAt };
+        var before = new Item { Id = item.Id, Code = item.Code, Name = item.Name, CategoryId = item.CategoryId, GradeId = item.GradeId, UnitCode = item.UnitCode, IsActive = item.IsActive, CreatedAt = item.CreatedAt, UpdatedAt = item.UpdatedAt };
         item.IsActive = false;
         item.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
@@ -79,7 +79,7 @@ public sealed class PartnerRepository(ERPDbContext db) : IPartnerRepository
     public async Task DeactivateAsync(long id, CancellationToken cancellationToken = default)
     {
         var partner = await db.Partners.SingleAsync(x => x.Id == id, cancellationToken);
-        var before = new Partner { Id = partner.Id, Code = partner.Code, Name = partner.Name, TypeCode = partner.TypeCode, IsActive = partner.IsActive, CreatedAt = partner.CreatedAt, UpdatedAt = partner.UpdatedAt };
+        var before = new Partner { Id = partner.Id, Code = partner.Code, Name = partner.Name, TypeId = partner.TypeId, IsActive = partner.IsActive, CreatedAt = partner.CreatedAt, UpdatedAt = partner.UpdatedAt };
         partner.IsActive = false;
         partner.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);

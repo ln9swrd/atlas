@@ -41,7 +41,7 @@ public partial class PartnerManagementWindow : UserControl
         if (_selected is null) return;
         CodeBox.Text = _selected.Code;
         NameBox.Text = _selected.Name;
-        TypeBox.SelectedValue = _selected.TypeCode;
+        TypeBox.SelectedValue = _selected.TypeId;
     }
 
     private async void Save_Click(object sender, RoutedEventArgs e)
@@ -58,7 +58,7 @@ public partial class PartnerManagementWindow : UserControl
         {
             await repo.AddAsync(new Partner
             {
-                Code = CodeBox.Text.Trim(), Name = NameBox.Text.Trim(), TypeCode = type.Key,
+                Code = CodeBox.Text.Trim(), Name = NameBox.Text.Trim(), TypeId = type.Key,
                 CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
             });
         }
@@ -66,7 +66,7 @@ public partial class PartnerManagementWindow : UserControl
         {
             _selected.Code = CodeBox.Text.Trim();
             _selected.Name = NameBox.Text.Trim();
-            _selected.TypeCode = type.Key;
+            _selected.TypeId = type.Key;
             _selected.UpdatedAt = DateTime.UtcNow;
             await repo.UpdateAsync(_selected);
         }

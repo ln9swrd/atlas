@@ -40,12 +40,12 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
         var production = await db.Productions.SingleOrDefaultAsync(x => x.Id == productionId, cancellationToken)
             ?? throw new InvalidOperationException("생산 문서를 찾을 수 없습니다.");
-        if (production.StatusCode == "CANCELLED")
+        if (production.StatusId == "CANCELLED")
             throw new InvalidOperationException("이미 취소된 생산 문서입니다.");
 
         var movements = await db.InOuts.Where(x => x.SourceId == productionId &&
-            (x.SourceTypeCode == "PRODUCTION" || x.SourceTypeCode == "PRODUCTION_DEFECT") &&
-            x.StatusCode != "CANCELLED").ToListAsync(cancellationToken);
+            (x.SourceTypeId == "PRODUCTION" || x.SourceTypeId == "PRODUCTION_DEFECT") &&
+            x.StatusId != "CANCELLED").ToListAsync(cancellationToken);
         if (movements.Count == 0)
             throw new InvalidOperationException("생산에 연결된 입출고 내역이 없습니다.");
 
@@ -53,7 +53,7 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         var details = await db.InOutDetails.Where(x => movementIds.Contains(x.InOutId)).ToListAsync(cancellationToken);
         var netProduced = details.Join(movements, d => d.InOutId, h => h.Id, (d, h) => new { d, h })
             .GroupBy(x => x.d.ItemId)
-            .ToDictionary(x => x.Key, x => x.Sum(v => v.h.MovementTypeCode is "IN" or "OPENING" or "ADJUST" ? v.d.Quantity : -v.d.Quantity));
+            .ToDictionary(x => x.Key, x => x.Sum(v => v.h.MovementTypeId is "IN" or "OPENING" or "ADJUST" ? v.d.Quantity : -v.d.Quantity));
 
         foreach (var pair in netProduced)
         {
@@ -63,18 +63,18 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         }
 
         var now = DateTime.UtcNow;
-        foreach (var movement in movements.OrderBy(x => x.MovementTypeCode == "IN" ? 1 : 0))
+        foreach (var movement in movements.OrderBy(x => x.MovementTypeId == "IN" ? 1 : 0))
         {
-            movement.StatusCode = "CANCELLED";
+            movement.StatusId = "CANCELLED";
             movement.UpdatedAt = now;
             foreach (var originalDetail in details.Where(x => x.InOutId == movement.Id))
             {
-                var reverseType = movement.MovementTypeCode == "IN" ? "OUT" : "IN";
+                var reverseType = movement.MovementTypeId == "IN" ? "OUT" : "IN";
                 await AddMovementAsync(reverseType, originalDetail.Quantity, "PRODUCTION_CANCEL", production.Id, movement.MovementDate, originalDetail.ItemId, originalDetail.LotId, originalDetail.PartnerLotId, cancellationToken);
             }
         }
 
-        production.StatusCode = "CANCELLED";
+        production.StatusId = "CANCELLED";
         production.UpdatedAt = now;
         await db.SaveChangesAsync(cancellationToken);
         await AuditLogger.WriteAsync(db, "TB_PRODUCTION", production.Id, "CANCEL", null, production, cancellationToken: cancellationToken);
@@ -84,11 +84,11 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
     private async Task<decimal> GetAvailableAsync(long itemId, CancellationToken cancellationToken)
     {
         var rows = await db.InOuts.AsNoTracking()
-            .Where(x => x.StatusCode != "CANCELLED")
-            .Join(db.InOutDetails.AsNoTracking().Where(x => x.ItemId == itemId), h => h.Id, d => d.InOutId, (h, d) => new { h.MovementTypeCode, d.Quantity })
+            .Where(x => x.StatusId != "CANCELLED")
+            .Join(db.InOutDetails.AsNoTracking().Where(x => x.ItemId == itemId), h => h.Id, d => d.InOutId, (h, d) => new { h.MovementTypeId, d.Quantity })
             .ToListAsync(cancellationToken);
-        return rows.Where(x => x.MovementTypeCode is "IN" or "OPENING" or "ADJUST").Sum(x => x.Quantity)
-            - rows.Where(x => x.MovementTypeCode is "OUT" or "LOSS").Sum(x => x.Quantity);
+        return rows.Where(x => x.MovementTypeId is "IN" or "OPENING" or "ADJUST").Sum(x => x.Quantity)
+            - rows.Where(x => x.MovementTypeId is "OUT" or "LOSS").Sum(x => x.Quantity);
     }
 
     private async Task AddMovementAsync(string type, decimal quantity, string sourceType, long sourceId, DateTime date, long itemId, long? lotId, long? partnerLotId, CancellationToken cancellationToken)
@@ -99,7 +99,7 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         var count = await db.InOuts.CountAsync(x => x.DocumentNo.StartsWith(prefixText), cancellationToken);
         var documentNo = pattern.Replace("{yyyyMM}", date.ToString("yyyyMM")).Replace("{seq4}", (count + 1).ToString("D4"));
         var now = DateTime.UtcNow;
-        var header = new InOut { DocumentNo = documentNo, MovementDate = date, MovementTypeCode = type, SourceTypeCode = sourceType, SourceId = sourceId, StatusCode = "CONFIRMED", CreatedAt = now, UpdatedAt = now };
+        var header = new InOut { DocumentNo = documentNo, MovementDate = date, MovementTypeId = type, SourceTypeId = sourceType, SourceId = sourceId, StatusId = "CONFIRMED", CreatedAt = now, UpdatedAt = now };
         db.InOuts.Add(header);
         await db.SaveChangesAsync(cancellationToken);
         db.InOutDetails.Add(new InOutDetail { InOutId = header.Id, ItemId = itemId, LotId = lotId, PartnerLotId = partnerLotId, Quantity = quantity });

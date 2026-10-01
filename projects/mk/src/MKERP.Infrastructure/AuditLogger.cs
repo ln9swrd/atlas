@@ -14,7 +14,7 @@ public static class AuditLogger
         {
             EntityName = entityName,
             EntityId = entityId,
-            ActionCode = action,
+            ActionId = action,
             Actor = Environment.UserName,
             OccurredAt = DateTime.UtcNow,
             BeforeJson = before is null ? null : JsonSerializer.Serialize(before),

@@ -47,7 +47,7 @@ public partial class ItemManagementWindow : UserControl
         CodeBox.Text = _selected.Code;
         NameBox.Text = _selected.Name;
         UnitBox.Text = _selected.UnitCode;
-        CategoryBox.SelectedValue = _selected.CategoryCode;
+        CategoryBox.SelectedValue = _selected.CategoryId;
         GradeBox.SelectedValue = _selected.GradeId;
     }
 
@@ -66,7 +66,7 @@ public partial class ItemManagementWindow : UserControl
             await repo.AddAsync(new Item
             {
                 Code = CodeBox.Text.Trim(), Name = NameBox.Text.Trim(),
-                CategoryCode = category.Key, GradeId = (GradeBox.SelectedItem as ItemGrade)?.Id,
+                CategoryId = category.Key, GradeId = (GradeBox.SelectedItem as ItemGrade)?.Id,
                 UnitCode = UnitBox.Text.Trim(), CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
             });
         }
@@ -74,7 +74,7 @@ public partial class ItemManagementWindow : UserControl
         {
             _selected.Code = CodeBox.Text.Trim();
             _selected.Name = NameBox.Text.Trim();
-            _selected.CategoryCode = category.Key;
+            _selected.CategoryId = category.Key;
             _selected.GradeId = (GradeBox.SelectedItem as ItemGrade)?.Id;
             _selected.UnitCode = UnitBox.Text.Trim();
             _selected.UpdatedAt = DateTime.UtcNow;
