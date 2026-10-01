@@ -122,7 +122,7 @@ func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: 
 		selected_asset_id = ""
 		if canvas:
 			canvas.set_catalog_asset({})
-		lbl_asset_details.text = "Select an asset, then use Place Selected to paint it."
+		lbl_asset_details.text = "Select an asset, then click the canvas to place it."
 
 func _find_catalog_asset_index(asset_id: String) -> int:
 	if asset_id.is_empty():
@@ -212,7 +212,14 @@ func _select_catalog_asset(index: int) -> void:
 	var footprint := canvas.catalog_asset_footprint(entry)
 	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
 	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
-	update_selected_tile_label("Use Place Selected, then click canvas")
+	var asset_kind := str(entry.get("kind", "tile"))
+	var asset_group := str(entry.get("group", ""))
+	if asset_kind == "tile":
+		var layer_by_group := {"Ground": "Ground", "Vegetation": "Vegetation", "RoadComposition": "RoadComposition"}
+		if layer_by_group.has(asset_group):
+			canvas.set_active_layer(str(layer_by_group[asset_group]))
+	canvas.set_edit_mode("PAINT")
+	update_selected_tile_label("Click canvas to place selected catalog asset")
 
 func _on_catalog_image_pressed(index: int) -> void:
 	_select_catalog_asset(index)
@@ -545,21 +552,6 @@ func _on_delete_gameplay_element_pressed() -> void:
 		update_status("Selected gameplay element deleted.")
 	else:
 		update_status("Select a gameplay Area or Point first.")
-
-func _on_place_catalog_asset_pressed() -> void:
-	if canvas.selected_catalog_asset.is_empty():
-		update_status("Select a catalog asset first.")
-		return
-	var asset_kind := str(canvas.selected_catalog_asset.get("kind", "tile"))
-	var asset_group := str(canvas.selected_catalog_asset.get("group", ""))
-	if asset_kind == "tile":
-		var layer_by_group := {"Ground": "Ground", "Vegetation": "Vegetation", "RoadComposition": "RoadComposition"}
-		if layer_by_group.has(asset_group):
-			canvas.set_active_layer(str(layer_by_group[asset_group]))
-	canvas.set_edit_mode("PAINT")
-	_set_mode_ui("ASSET")
-	update_tool_label("CATALOG: PLACE " + str(canvas.selected_catalog_asset.get("display_name", canvas.selected_catalog_asset.get("asset_id", ""))))
-	update_selected_tile_label("Click canvas to place selected catalog asset")
 
 func _on_resize_placement_pressed() -> void:
 	var width_tiles := int(spin_placement_width.value)
