@@ -58,6 +58,25 @@ public interface IPurchaseOrderRepository
     Task<IReadOnlyList<PurchaseOrder>> GetRecentAsync(CancellationToken cancellationToken = default);
 }
 
+public interface IInOutRepository
+{
+    Task<string> GetNextDocumentNoAsync(DateTime movementDate, CancellationToken cancellationToken = default);
+    Task AddAsync(InOut header, InOutDetail detail, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<InOut>> GetRecentAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<InventoryRow>> GetInventoryAsync(DateTime asOfDate, CancellationToken cancellationToken = default);
+}
+
+public sealed class InventoryRow
+{
+    public long ItemId { get; init; }
+    public string ItemCode { get; init; } = string.Empty;
+    public string ItemName { get; init; } = string.Empty;
+    public decimal Opening { get; init; }
+    public decimal Inbound { get; init; }
+    public decimal Outbound { get; init; }
+    public decimal Ending => Opening + Inbound - Outbound;
+}
+
 public interface ISalesOrderRepository
 {
     Task<string> GetNextDocumentNoAsync(DateTime orderDate, CancellationToken cancellationToken = default);

@@ -18,7 +18,7 @@
       <Button Content="단가관리" Margin="6" Click="PriceManagement_Click" />
       <Button Content="수주관리" Margin="6" Click="SalesOrderManagement_Click" />
       <Button Content="발주관리" Margin="6" Click="PurchaseOrderManagement_Click" />
-      <Button Content="입출고 / 재고" Margin="6" IsEnabled="False" />
+      <Button Content="입출고 / 재고" Margin="6" Click="InOutManagement_Click" />
     </UniformGrid>
   </Grid>
 </Window>

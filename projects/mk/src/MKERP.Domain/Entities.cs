@@ -126,6 +126,33 @@ public sealed class SalesOrder
     public DateTime UpdatedAt { get; set; }
 }
 
+public sealed class InOut
+{
+    public long Id { get; set; }
+    public string DocumentNo { get; set; } = string.Empty;
+    public DateTime MovementDate { get; set; }
+    public string MovementTypeCode { get; set; } = string.Empty;
+    public long? PartnerId { get; set; }
+    public string? SourceTypeCode { get; set; }
+    public long? SourceId { get; set; }
+    public string StatusCode { get; set; } = string.Empty;
+    public string? Note { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+public sealed class InOutDetail
+{
+    public long Id { get; set; }
+    public long InOutId { get; set; }
+    public long ItemId { get; set; }
+    public long? LotId { get; set; }
+    public long? PartnerLotId { get; set; }
+    public decimal Quantity { get; set; }
+    public decimal? UnitPrice { get; set; }
+    public decimal? Amount { get; set; }
+}
+
 public sealed class SalesOrderDetail
 {
     public long Id { get; set; }

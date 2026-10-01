@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\Atlas\projects\mk\src\MKERP.App\App.xaml
-41056491349
+8-1669569417
 
-6-859436430
+10-1007769616
 22058397085
-ItemManagementWindow.xaml;MainWindow.xaml;PartnerItemManagementWindow.xaml;PartnerManagementWindow.xaml;
+InOutManagementWindow.xaml;ItemManagementWindow.xaml;MainWindow.xaml;PartnerItemManagementWindow.xaml;PartnerManagementWindow.xaml;PriceManagementWindow.xaml;PurchaseOrderManagementWindow.xaml;SalesOrderManagementWindow.xaml;
 
 False
 
