@@ -17,3 +17,12 @@ public interface IDatabaseInitializer
 {
     Task InitializeAsync(CancellationToken cancellationToken = default);
 }
+
+public interface IItemRepository
+{
+    Task<IReadOnlyList<Item>> GetActiveAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<ItemGrade>> GetGradesAsync(CancellationToken cancellationToken = default);
+    Task AddAsync(Item item, CancellationToken cancellationToken = default);
+    Task UpdateAsync(Item item, CancellationToken cancellationToken = default);
+    Task DeactivateAsync(long id, CancellationToken cancellationToken = default);
+}

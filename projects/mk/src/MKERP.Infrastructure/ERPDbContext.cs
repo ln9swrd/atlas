@@ -49,5 +49,32 @@ public sealed class ERPDbContext(DbContextOptions<ERPDbContext> options) : DbCon
             e.Property(x => x.Description).HasColumnName("DESCRIPTION");
             e.HasIndex(x => new { x.CodeGroupId, x.Key }).IsUnique();
         });
+
+        modelBuilder.Entity<ItemGrade>(e =>
+        {
+            e.ToTable("TB_ITEM_GRADE");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("ITEM_GRADE_ID");
+            e.Property(x => x.Code).HasColumnName("GRADE_CODE").IsRequired();
+            e.Property(x => x.Name).HasColumnName("GRADE_NAME").IsRequired();
+            e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
+            e.HasIndex(x => x.Code).IsUnique();
+        });
+
+        modelBuilder.Entity<Item>(e =>
+        {
+            e.ToTable("TB_ITEM");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("ITEM_ID");
+            e.Property(x => x.Code).HasColumnName("ITEM_CODE").IsRequired();
+            e.Property(x => x.Name).HasColumnName("ITEM_NAME").IsRequired();
+            e.Property(x => x.CategoryCode).HasColumnName("ITEM_CATEGORY_CODE").IsRequired();
+            e.Property(x => x.GradeId).HasColumnName("GRADE_ID");
+            e.Property(x => x.UnitCode).HasColumnName("UNIT_CODE").IsRequired();
+            e.Property(x => x.IsActive).HasColumnName("IS_ACTIVE").IsRequired();
+            e.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
+            e.Property(x => x.UpdatedAt).HasColumnName("UPDATED_AT").IsRequired();
+            e.HasIndex(x => x.Code).IsUnique();
+        });
     }
 }
