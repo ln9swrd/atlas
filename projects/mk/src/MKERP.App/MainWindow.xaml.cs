@@ -26,4 +26,10 @@ public partial class MainWindow : Window
         var window = new PartnerManagementWindow(_databasePath) { Owner = this };
         window.ShowDialog();
     }
+
+    private void PartnerItemManagement_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new PartnerItemManagementWindow(_databasePath) { Owner = this };
+        window.ShowDialog();
+    }
 }
