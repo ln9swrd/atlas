@@ -20,7 +20,7 @@ content_margin_bottom = 28.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
 bg_color = Color(0.91, 0.94, 0.90, 1)
-border_color = Color(0.15, 0.32, 0.35, 1)
+border_color = Color(0.78, 0.83, 0.78, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -59,8 +59,8 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit"]
-bg_color = Color(0.09, 0.14, 0.16, 1)
-border_color = Color(0.25, 0.38, 0.4, 1)
+bg_color = Color(0.88, 0.91, 0.87, 1)
+border_color = Color(0.69, 0.76, 0.71, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -71,7 +71,7 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit_hover"]
-bg_color = Color(0.15, 0.23, 0.25, 1)
+bg_color = Color(0.82, 0.87, 0.82, 1)
 border_color = Color(0.38, 0.56, 0.58, 1)
 border_width_left = 1
 border_width_top = 1
