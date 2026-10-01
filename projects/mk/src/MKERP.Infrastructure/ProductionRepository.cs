@@ -63,7 +63,7 @@ public sealed class ProductionRepository(ERPDbContext db) : IProductionRepositor
         var details = await db.InOutDetails.Where(x => movementIds.Contains(x.InOutId)).ToListAsync(cancellationToken);
         var netProduced = details.Join(movements, d => d.InOutId, h => h.Id, (d, h) => new { d, h })
             .GroupBy(x => x.d.ItemId)
-            .ToDictionary(x => x.Key, x => x.Sum(v => v.h.MovementTypeId is "IN" or "OPENING" or "ADJUST" ? v.d.Quantity : -v.d.Quantity));
+            .ToDictionary(x => x.Key, x => x.Sum(v => v.h.MovementTypeId == inTypeId || v.h.MovementTypeId == openingTypeId || v.h.MovementTypeId == adjustTypeId ? v.d.Quantity : -v.d.Quantity));
 
         foreach (var pair in netProduced)
         {
