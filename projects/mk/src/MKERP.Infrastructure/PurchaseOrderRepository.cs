@@ -141,8 +141,6 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         decimal totalReverse = 0m;
         decimal totalShortage = 0m;
 
-        foreach (var movement in movements) { movement.StatusId = cancelledStatusId; movement.UpdatedAt = DateTime.UtcNow; }
-
         foreach (var detail in details)
         {
             var histories = await db.OrderProcessHistories.Where(x => x.SourceTypeId == purchaseSourceId && x.SourceDetailId == detail.Id && x.ActionId == processActionId).OrderBy(x => x.Id).ToListAsync(cancellationToken);
