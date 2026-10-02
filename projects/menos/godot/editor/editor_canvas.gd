@@ -17,6 +17,7 @@ var editor_mode := "ASSET"
 var edit_mode := "SELECT" # SELECT, PAINT, ERASE
 var active_layer := "Ground" # Ground, Vegetation, RoadComposition
 var visible_layer := "ALL" # ALL, Ground, Vegetation, RoadComposition
+var gameplay_visible := true
 var gameplay_tool := "SELECT"
 var selected_tile_source_id := 0
 var selected_tile_atlas_coords := Vector2i.ZERO
@@ -76,6 +77,7 @@ var edit_stroke_active := false
 var edit_stroke_changed := false
 
 func _ready() -> void:
+	_update_mouse_cursor()
 	queue_redraw()
 
 func set_map_data(data: Dictionary) -> void:
@@ -104,6 +106,7 @@ func set_editor_mode(mode: String) -> void:
 	is_resizing_gameplay_area = false
 	is_creating_gameplay_area = false
 	select_object({})
+	_update_mouse_cursor()
 
 func set_gameplay_tool(tool: String) -> void:
 	editor_mode = "GAMEPLAY"
@@ -114,11 +117,19 @@ func set_gameplay_tool(tool: String) -> void:
 	is_resizing_gameplay_area = false
 	is_creating_gameplay_area = false
 	select_object({})
+	_update_mouse_cursor()
 
 func set_edit_mode(mode: String) -> void:
 	edit_mode = mode
 	select_object({})
+	_update_mouse_cursor()
 	_update_eraser_preview(last_pointer_local)
+
+func _update_mouse_cursor() -> void:
+	if edit_mode == "ERASE":
+		Input.set_default_cursor_shape(Input.CURSOR_CROSS)
+	else:
+		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 func set_active_layer(layer_name: String) -> void:
 	var normalized := _normalize_layer_name(layer_name)
@@ -132,6 +143,12 @@ func set_active_layer(layer_name: String) -> void:
 func set_visible_layer(layer_name: String) -> void:
 	visible_layer = _normalize_layer_name(layer_name, true)
 	select_object({})
+	queue_redraw()
+
+func set_gameplay_visible(visible: bool) -> void:
+	gameplay_visible = visible
+	if not gameplay_visible:
+		select_object({})
 	queue_redraw()
 
 func _normalize_layer_name(layer_name: String, allow_all: bool = false) -> String:
@@ -177,6 +194,7 @@ func set_selected_tile(source_id: int, atlas_coords: Vector2i) -> void:
 	selected_tile_atlas_coords = atlas_coords
 	edit_mode = "PAINT"
 	select_object({})
+	_update_mouse_cursor()
 	queue_redraw()
 
 func set_catalog_assets(entries: Array[Dictionary]) -> void:
@@ -193,6 +211,7 @@ func set_catalog_asset(entry: Dictionary) -> void:
 	selected_catalog_asset = entry.duplicate(true)
 	editor_mode = "ASSET"
 	select_object({})
+	_update_mouse_cursor()
 	queue_redraw()
 
 func get_catalog_texture(asset_id: String) -> Texture2D:
@@ -702,8 +721,14 @@ func paint_tile_at(world_pos: Vector2) -> void:
 
 	if not selected_catalog_asset.is_empty():
 		if str(selected_catalog_asset.get("kind", "tile")) == "object":
+			if active_layer == "Ground":
+				placement_rejected.emit("Ground 레이어에는 Object를 배치할 수 없습니다. 타일만 배치할 수 있습니다.")
+				return
 			place_catalog_object(cell)
 		elif _catalog_asset_has_transparency(selected_catalog_asset):
+			if active_layer == "Ground":
+				placement_rejected.emit("Ground 레이어에는 Object Overlay를 배치할 수 없습니다. 타일만 배치할 수 있습니다.")
+				return
 			place_catalog_tile_overlay(cell)
 		else:
 			paint_catalog_tile(cell)
@@ -758,6 +783,61 @@ func paint_catalog_tile(cell: Vector2i) -> void:
 			layer_tiles["%d,%d" % [occupied_cell.x, occupied_cell.y]] = tile_info
 	_mark_map_data_changed()
 	_select_catalog_tile(asset_id, cell, footprint)
+
+func fill_ground_empty_with_selected_tile() -> int:
+	if active_layer != "Ground":
+		return 0
+	if selected_catalog_asset.is_empty():
+		return 0
+	if str(selected_catalog_asset.get("kind", "tile")) != "tile":
+		return 0
+	if _catalog_asset_has_transparency(selected_catalog_asset):
+		placement_rejected.emit("Ground 전체 채우기는 불투명 타일만 사용할 수 있습니다.")
+		return 0
+
+	var footprint := catalog_asset_footprint(selected_catalog_asset)
+	var map_tiles := _map_tiles_size()
+	if footprint.x <= 0 or footprint.y <= 0:
+		return 0
+	if not map_data.has("tiles"):
+		map_data["tiles"] = {}
+	if not map_data["tiles"].has("Ground"):
+		map_data["tiles"]["Ground"] = {}
+	var layer_tiles: Dictionary = map_data["tiles"]["Ground"]
+	var asset_id := str(selected_catalog_asset.get("asset_id", ""))
+	var placed := 0
+
+	# Non-destructive fill: existing Ground cells are preserved.
+	# Placement is repeated by the selected tile footprint.
+	var y := 0
+	while y + footprint.y <= map_tiles.y:
+		var x := 0
+		while x + footprint.x <= map_tiles.x:
+			var can_place := true
+			for offset_y in range(footprint.y):
+				for offset_x in range(footprint.x):
+					var key := "%d,%d" % [x + offset_x, y + offset_y]
+					if layer_tiles.has(key):
+						can_place = false
+						break
+				if not can_place:
+					break
+			if can_place:
+				for offset_y in range(footprint.y):
+					for offset_x in range(footprint.x):
+						var tile_info := {"asset_id": asset_id}
+						if footprint != Vector2i.ONE:
+							tile_info["anchor"] = [x, y]
+							tile_info["footprint_tiles"] = [footprint.x, footprint.y]
+						layer_tiles["%d,%d" % [x + offset_x, y + offset_y]] = tile_info
+				placed += 1
+			x += footprint.x
+		y += footprint.y
+
+	if placed > 0:
+		_mark_map_data_changed()
+		queue_redraw()
+	return placed
 
 func _select_catalog_tile(asset_id: String, anchor: Vector2i, footprint: Vector2i) -> void:
 	var origin: Vector2 = _map_origin()
@@ -852,6 +932,9 @@ func _remove_catalog_tile_at(layer_tiles: Dictionary, target_cell: Vector2i) -> 
 	var target_key := "%d,%d" % [target_cell.x, target_cell.y]
 	var matched_anchor := Vector2i.ZERO
 	var found_catalog_placement := false
+
+	# A catalog placement is stored across footprint cells. Find the placement
+	# containing the clicked cell, even when that cell is not the anchor key.
 	for key in layer_tiles.keys():
 		var parts := str(key).split(",")
 		if parts.size() < 2:
@@ -862,28 +945,36 @@ func _remove_catalog_tile_at(layer_tiles: Dictionary, target_cell: Vector2i) -> 
 			matched_anchor = _catalog_tile_anchor(tile_info, tile_cell)
 			found_catalog_placement = true
 			break
+
 	if not found_catalog_placement:
 		if layer_tiles.has(target_key):
 			layer_tiles.erase(target_key)
 			return true
 		return false
-	var anchor_key := "%d,%d" % [matched_anchor.x, matched_anchor.y]
-	var anchor_value: Variant = layer_tiles.get(anchor_key)
-	if not anchor_value is Dictionary or not anchor_value.has("anchor"):
-		if layer_tiles.has(anchor_key):
-			layer_tiles.erase(anchor_key)
-			return true
-		return false
+
+	# Remove every stored footprint cell belonging to this catalog placement.
+	# Do not depend on the presence/type of the anchor entry itself.
 	var keys_to_remove: Array = []
 	for key in layer_tiles.keys():
+		var parts := str(key).split(",")
+		if parts.size() < 2:
+			continue
+		var tile_cell := Vector2i(parts[0].to_int(), parts[1].to_int())
 		var value: Variant = layer_tiles[key]
-		if value is Dictionary and value.get("anchor", []) == [matched_anchor.x, matched_anchor.y]:
-			keys_to_remove.append(key)
+		if value is Dictionary and value.has("asset_id"):
+			var value_anchor := _catalog_tile_anchor(value, tile_cell)
+			if value_anchor == matched_anchor:
+				keys_to_remove.append(key)
+
 	for key in keys_to_remove:
 		layer_tiles.erase(key)
+
 	return not keys_to_remove.is_empty()
 
 func place_catalog_object(cell: Vector2i) -> void:
+	if active_layer == "Ground":
+		placement_rejected.emit("Ground 레이어에는 Object를 배치할 수 없습니다. 타일만 배치할 수 있습니다.")
+		return
 	var footprint := catalog_asset_footprint(selected_catalog_asset)
 	var width := footprint.x
 	var height := footprint.y
@@ -1380,11 +1471,11 @@ func object_position(object_data: Dictionary) -> Vector2:
 	return Vector2.ZERO
 
 func pick_object_at(point: Vector2) -> void:
-	if editor_mode == "GAMEPLAY" and _pick_gameplay_element_at(point):
+	if gameplay_visible and editor_mode == "GAMEPLAY" and _pick_gameplay_element_at(point):
 		return
 	if _pick_visual_asset_at(point):
 		return
-	if editor_mode != "GAMEPLAY" and _pick_gameplay_element_at(point):
+	if gameplay_visible and editor_mode != "GAMEPLAY" and _pick_gameplay_element_at(point):
 		return
 	select_object({})
 
@@ -1562,15 +1653,16 @@ func _draw() -> void:
 	var mode_str := "MODE: " + edit_mode + " (Layer: " + active_layer + ")"
 	draw_string(ThemeDB.fallback_font, origin + Vector2(12, -8), mode_str, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d7fff7"))
 
+	# Gameplay overlays are independently gated; editor previews below remain active.
 	# Render Goal Base HQ
-	if map_data.has("base"):
+	if gameplay_visible and map_data.has("base"):
 		var base_pos: Vector2 = map_data["base"]
 		draw_rect(Rect2(base_pos - Vector2(36, 24), Vector2(72, 48)), Color("1c4852", 0.85))
 		draw_rect(Rect2(base_pos - Vector2(36, 24), Vector2(72, 48)), Color("7ed6ce"), false, 2.0)
 		draw_string(ThemeDB.fallback_font, base_pos + Vector2(-28, 6), "BASE HQ", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("7ed6ce"))
 
 	# Render Spawn Points
-	if map_data.has("lanes"):
+	if gameplay_visible and map_data.has("lanes"):
 		for key in map_data["lanes"]:
 			var pos: Vector2 = map_data["lanes"][key]
 			draw_circle(pos, 16.0, Color("ef7068", 0.7))
@@ -1578,7 +1670,7 @@ func _draw() -> void:
 			draw_string(ThemeDB.fallback_font, pos + Vector2(-24, 32), "SPAWN: " + str(key), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("ef7068"))
 
 	# Render Tower Slots
-	if map_data.has("slots"):
+	if gameplay_visible and map_data.has("slots"):
 		for key in map_data["slots"]:
 			var pos := _slot_position(map_data["slots"][key])
 			draw_circle(pos, 14.0, Color("f0a35a", 0.6))
@@ -1586,14 +1678,15 @@ func _draw() -> void:
 			draw_string(ThemeDB.fallback_font, pos + Vector2(-16, 28), "SLOT: " + str(key), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("f0a35a"))
 
 	# Render Robot Spots
-	if map_data.has("robot_spots"):
+	if gameplay_visible and map_data.has("robot_spots"):
 		for key in map_data["robot_spots"]:
 			var pos: Vector2 = map_data["robot_spots"][key]
 			draw_circle(pos, 18.0, Color("7ed6ce", 0.4))
 			draw_arc(pos, 20.0, 0, TAU, 16, Color("7ed6ce"), 2.0)
 			draw_string(ThemeDB.fallback_font, pos + Vector2(-24, 34), "SPOT: " + str(key), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("7ed6ce"))
 
-	_draw_gameplay_elements()
+	if gameplay_visible:
+		_draw_gameplay_elements()
 
 	# Render Catalog Placement Preview
 	if edit_mode == "PAINT" and not selected_catalog_asset.is_empty() and pointer_is_inside_canvas(last_pointer_local):

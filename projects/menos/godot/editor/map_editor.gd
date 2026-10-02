@@ -40,12 +40,14 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var lbl_selected_tile: Label = $MainLayout/Toolbox/VBox/LblSelectedTile
 @onready var option_layer: OptionButton = $MainLayout/Toolbox/VBox/OptionLayer
 @onready var spin_eraser_size: SpinBox = $MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize
+@onready var btn_fill_ground: Button = $MainLayout/Toolbox/VBox/BtnFillGround
 @onready var asset_catalog_window: Window = $AssetCatalogWindow
 
 var map_size_panel: PanelContainer
 var map_width_spin: SpinBox
 var map_height_spin: SpinBox
 var option_layer_view: OptionButton
+var gameplay_visibility_toggle: CheckButton
 
 var current_map_path := "res://map_data/northbridge_sector_01.json"
 var current_map_data := {}
@@ -67,6 +69,8 @@ func _ready() -> void:
 		canvas.set_eraser_size(int(spin_eraser_size.value))
 	btn_resize_placement.pressed.connect(_on_resize_placement_pressed)
 	btn_delete_placement.pressed.connect(_on_delete_placement_pressed)
+	btn_fill_ground.pressed.connect(_on_fill_ground_pressed)
+	btn_fill_ground.visible = true
 	btn_open_asset_catalog.pressed.connect(_on_open_asset_catalog_pressed)
 	btn_asset_mode.pressed.connect(_on_asset_mode_pressed)
 	btn_gameplay_mode.pressed.connect(_on_gameplay_mode_pressed)
@@ -222,6 +226,7 @@ func _select_catalog_asset(index: int) -> void:
 		var layer_by_group := {"Ground": "Ground", "Vegetation": "Vegetation", "RoadComposition": "RoadComposition"}
 		if layer_by_group.has(asset_group):
 			canvas.set_active_layer(str(layer_by_group[asset_group]))
+	btn_fill_ground.visible = canvas.active_layer == "Ground"
 	canvas.set_edit_mode("PAINT")
 	update_selected_tile_label(str(entry.get("display_name", entry.get("asset_id", "Selected asset"))))
 
@@ -268,7 +273,7 @@ func _on_asset_catalog_closed() -> void:
 
 func _build_map_size_controls() -> void:
 	map_size_panel = PanelContainer.new()
-	map_size_panel.custom_minimum_size.y = 86
+	map_size_panel.custom_minimum_size.y = 64
 	var box := VBoxContainer.new()
 	map_size_panel.add_child(box)
 	var title := Label.new()
@@ -430,6 +435,14 @@ func setup_layer_options() -> void:
 			parent.move_child(view_label, index)
 			parent.add_child(option_layer_view)
 			parent.move_child(option_layer_view, index + 1)
+			gameplay_visibility_toggle = CheckButton.new()
+			gameplay_visibility_toggle.name = "GameplayVisibilityToggle"
+			gameplay_visibility_toggle.text = "게임플레이 요소"
+			gameplay_visibility_toggle.tooltip_text = "게임플레이 요소의 화면 표시/숨김을 전환합니다."
+			gameplay_visibility_toggle.button_pressed = true
+			gameplay_visibility_toggle.toggled.connect(_on_gameplay_visibility_toggled)
+			parent.add_child(gameplay_visibility_toggle)
+			parent.move_child(gameplay_visibility_toggle, index + 2)
 
 func _on_edit_layer_selected(index: int) -> void:
 	var layer_names := ["Ground", "Vegetation", "RoadComposition"]
@@ -441,6 +454,11 @@ func _on_layer_view_selected(index: int) -> void:
 	if index >= 0 and index < layer_names.size() and canvas:
 		canvas.set_visible_layer(layer_names[index])
 		update_status("표시 레이어: %s" % ("전체" if index == 0 else layer_names[index]))
+
+func _on_gameplay_visibility_toggled(visible: bool) -> void:
+	if canvas:
+		canvas.set_gameplay_visible(visible)
+	update_status("게임플레이 요소: %s" % ("표시" if visible else "숨김"))
 
 func load_map(path: String) -> void:
 	current_map_path = path
@@ -571,8 +589,9 @@ func _set_mode_ui(mode: String) -> void:
 	btn_asset_mode.button_pressed = not is_gameplay_mode
 	btn_gameplay_mode.button_pressed = is_gameplay_mode
 	gameplay_tools.visible = is_gameplay_mode
-	for node in [lbl_layer_title, option_layer, $MainLayout/Toolbox/VBox/BtnSelect, $MainLayout/Toolbox/VBox/BtnErase, eraser_size_row]:
+	for node in [lbl_layer_title, option_layer, $MainLayout/Toolbox/VBox/BtnSelect, $MainLayout/Toolbox/VBox/BtnErase, eraser_size_row, btn_fill_ground]:
 		node.visible = not is_gameplay_mode
+	btn_fill_ground.visible = not is_gameplay_mode and canvas != null and canvas.active_layer == "Ground"
 	var asset_nodes = [lbl_placement_size, spin_placement_width.get_parent(), btn_resize_placement, btn_delete_placement, $MainLayout/Toolbox/VBox/AssetCatalogSection, asset_preview, lbl_asset_preview_status, lbl_asset_details]
 	for node in asset_nodes:
 		node.visible = not is_gameplay_mode
@@ -691,8 +710,25 @@ func _on_option_layer_item_selected(index: int) -> void:
 	var layers: Array[String] = ["Ground", "Vegetation", "RoadComposition"]
 	if index >= 0 and index < layers.size():
 		var selected_layer: String = layers[index]
-		if canvas: canvas.set_active_layer(selected_layer)
+		if canvas:
+			canvas.set_active_layer(selected_layer)
+		btn_fill_ground.visible = selected_layer == "Ground"
 		update_status("Active Layer: " + selected_layer)
+
+func _on_fill_ground_pressed() -> void:
+	if canvas == null:
+		return
+	if canvas.active_layer != "Ground":
+		update_status("Ground 레이어에서만 사용할 수 있습니다.")
+		return
+	if canvas.selected_catalog_asset.is_empty():
+		update_status("먼저 Ground 타일을 선택하십시오.")
+		return
+	if str(canvas.selected_catalog_asset.get("kind", "tile")) != "tile":
+		update_status("Ground 전체 채우기는 타일만 사용할 수 있습니다.")
+		return
+	var filled := canvas.fill_ground_empty_with_selected_tile()
+	update_status("Ground 빈 영역 채우기: %d개 배치" % filled)
 
 func set_asset_preview(entry: Dictionary) -> void:
 	asset_preview.texture = null

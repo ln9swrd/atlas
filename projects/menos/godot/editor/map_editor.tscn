@@ -15,6 +15,7 @@ script = ExtResource("1_editor")
 
 [node name="MainLayout" type="HBoxContainer" parent="." unique_id=762659856]
 layout_mode = 1
+theme_override_constants/separation = 6
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -23,11 +24,12 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Toolbox" type="PanelContainer" parent="MainLayout" unique_id=1038340238]
-custom_minimum_size = Vector2(320, 0)
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="MainLayout/Toolbox" unique_id=1701830802]
 layout_mode = 2
+theme_override_constants/separation = 4
 
 [node name="LblTitle" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1839842246]
 layout_mode = 2
@@ -41,8 +43,9 @@ text = "Active Tool: [SELECT]"
 layout_mode = 2
 text = "Selected: None"
 
-[node name="ModeBar" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
+[node name="ModeBar" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
+theme_override_constants/separation = 4
 
 [node name="BtnAssetMode" type="Button" parent="MainLayout/Toolbox/VBox/ModeBar"]
 layout_mode = 2
@@ -70,7 +73,7 @@ layout_mode = 2
 text = "Asset Data Authoring"
 
 [node name="AssetScroll" type="ScrollContainer" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
-custom_minimum_size = Vector2(0, 260)
+custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -79,7 +82,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="AssetPreview" type="TextureRect" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
-custom_minimum_size = Vector2(0, 120)
+custom_minimum_size = Vector2(0, 86)
 layout_mode = 2
 size_flags_horizontal = 3
 expand_mode = 1
@@ -92,7 +95,7 @@ text = ""
 autowrap_mode = 2
 
 [node name="LblAssetDetails" type="Label" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 text = ""
 autowrap_mode = 2
@@ -117,6 +120,11 @@ text = "Mode: Select"
 [node name="BtnErase" type="Button" parent="MainLayout/Toolbox/VBox" unique_id=1688282520]
 layout_mode = 2
 text = "Mode: Erase Tile"
+
+[node name="BtnFillGround" type="Button" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "Ground 전체 채우기"
+tooltip_text = "선택한 Ground 타일로 비어 있는 영역을 맵 전체에 반복 배치합니다. 기존 배치는 보존합니다."
 
 [node name="GameplayTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
 visible = false
@@ -206,11 +214,12 @@ size_flags_horizontal = 3
 script = ExtResource("2_canvas")
 
 [node name="Inspector" type="PanelContainer" parent="MainLayout" unique_id=1856458715]
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(270, 0)
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="MainLayout/Inspector" unique_id=2011114957]
 layout_mode = 2
+theme_override_constants/separation = 4
 
 [node name="LblTitle" type="Label" parent="MainLayout/Inspector/VBox" unique_id=1930421330]
 layout_mode = 2
