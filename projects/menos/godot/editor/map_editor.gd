@@ -284,6 +284,7 @@ func _build_map_size_controls() -> void:
 	map_width_spin.max_value = 256
 	map_width_spin.step = 1
 	map_width_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_width_spin.value_changed.connect(_on_map_size_spin_changed)
 	row.add_child(map_width_spin)
 	var height_label := Label.new()
 	height_label.text = "H"
@@ -293,6 +294,7 @@ func _build_map_size_controls() -> void:
 	map_height_spin.max_value = 256
 	map_height_spin.step = 1
 	map_height_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_height_spin.value_changed.connect(_on_map_size_spin_changed)
 	row.add_child(map_height_spin)
 	var apply := Button.new()
 	apply.text = "적용"
@@ -308,6 +310,23 @@ func _sync_map_size_controls() -> void:
 	var tiles := Vector2i(int(tile_value[0]), int(tile_value[1])) if tile_value is Array and tile_value.size() >= 2 else Vector2i(36, 24)
 	map_width_spin.value = tiles.x
 	map_height_spin.value = tiles.y
+
+func _on_map_size_spin_changed(_value: float) -> void:
+	if current_map_data.is_empty() or canvas == null or map_width_spin == null or map_height_spin == null:
+		return
+	var new_size := Vector2i(maxi(1, int(map_width_spin.value)), maxi(1, int(map_height_spin.value)))
+	var old_value: Variant = current_map_data.get("map_tiles", [36, 24])
+	var old_size := Vector2i(int(old_value[0]), int(old_value[1])) if old_value is Array and old_value.size() >= 2 else Vector2i(36, 24)
+	if new_size == old_size:
+		return
+	if not _map_size_can_contain(new_size):
+		_sync_map_size_controls()
+		update_status("Resize rejected: existing content is outside the new map bounds.")
+		return
+	current_map_data["map_tiles"] = [new_size.x, new_size.y]
+	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
+	canvas.set_map_data(current_map_data)
+	update_status("Map preview resized to %d × %d tiles. Save JSON to keep the change." % [new_size.x, new_size.y])
 
 func _on_map_size_apply_pressed() -> void:
 	if current_map_data.is_empty() or canvas == null:
