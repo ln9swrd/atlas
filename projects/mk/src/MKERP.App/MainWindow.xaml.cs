@@ -2,6 +2,8 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Win32;
+using MKERP.Infrastructure;
 
 namespace MKERP.App;
 
@@ -187,5 +189,31 @@ public partial class MainWindow : Window
         };
 
         MdiCanvas.Children.Add(child);
+    }
+    private async void RestoreDatabase_Click(object sender, RoutedEventArgs e)
+    {
+        var backupDirectory = Path.Combine(Path.GetDirectoryName(_databasePath)!, "backup");
+        var dialog = new OpenFileDialog
+        {
+            Title = "Select backup to restore",
+            Filter = "MK ERP backup (*.db)|*.db",
+            InitialDirectory = Directory.Exists(backupDirectory) ? backupDirectory : Path.GetDirectoryName(_databasePath),
+            CheckFileExists = true
+        };
+        if (dialog.ShowDialog() != true) return;
+        var confirm = MessageBox.Show(
+            "The current database will be backed up before replacement. The program will close after restore. Continue?",
+            "Database Restore", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (confirm != MessageBoxResult.Yes) return;
+        try
+        {
+            await new BackupService(_databasePath).RestoreAsync(dialog.FileName);
+            MessageBox.Show("Restore completed. Restart the program to use the restored data.", "Database Restore", MessageBoxButton.OK, MessageBoxImage.Information);
+            System.Windows.Application.Current.Shutdown();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Database restore failed."+Environment.NewLine+ex.Message, "Database Restore Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

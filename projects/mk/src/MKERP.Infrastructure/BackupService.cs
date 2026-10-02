@@ -34,4 +34,29 @@ public sealed class BackupService(string databasePath)
 
         return destination;
     }
-}
+    public async Task<string> RestoreAsync(string backupPath, CancellationToken cancellationToken = default)
+    {
+        if (!File.Exists(backupPath)) throw new FileNotFoundException("Backup file not found.", backupPath);
+        var fullBackupPath = Path.GetFullPath(backupPath);
+        var fullDatabasePath = Path.GetFullPath(databasePath);
+        if (string.Equals(fullBackupPath, fullDatabasePath, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("The current database cannot be used as the restore source.");
+        var directory = Path.GetDirectoryName(fullDatabasePath)!;
+        Directory.CreateDirectory(directory);
+        await using (var connection = new SqliteConnection("Data Source=" + fullBackupPath + ";Mode=ReadOnly"))
+        {
+            await connection.OpenAsync(cancellationToken);
+            await using var command = connection.CreateCommand();
+            command.CommandText = "PRAGMA integrity_check;";
+            var result = Convert.ToString(await command.ExecuteScalarAsync(cancellationToken));
+            if (!string.Equals(result, "ok", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("Backup integrity check failed: " + result);
+        }
+        if (File.Exists(fullDatabasePath))
+        {
+            var safetyCopy = Path.Combine(directory, "MKERP_pre_restore_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".db");
+            File.Copy(fullDatabasePath, safetyCopy, false);
+        }
+        File.Copy(fullBackupPath, fullDatabasePath, true);
+        return fullDatabasePath;
+    }}

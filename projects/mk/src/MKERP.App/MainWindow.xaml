@@ -20,6 +20,7 @@
           <Button Content="발주관리" Tag="발주관리" Click="PurchaseOrderManagement_Click" Margin="3" Padding="12,6"/>
           <Button Content="생산관리" Tag="생산관리" Click="ProductionManagement_Click" Margin="3" Padding="12,6"/>
           <Button Content="입출고 / 재고" Tag="입출고 / 재고" Click="InOutManagement_Click" Margin="3" Padding="12,6"/>
+          <Button Content="DB Restore" Click="RestoreDatabase_Click" Margin="3" Padding="12,6"/>
         </WrapPanel>
       </DockPanel>
     </Border>
