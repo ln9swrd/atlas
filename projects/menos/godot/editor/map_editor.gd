@@ -298,7 +298,8 @@ func _build_map_size_controls() -> void:
 	row.add_child(map_height_spin)
 	var apply := Button.new()
 	apply.text = "적용"
-	apply.pressed.connect(_on_map_size_apply_pressed)
+	apply.disabled = true
+	apply.tooltip_text = "W/H 스피너 변경 시 실시간으로 적용됩니다."
 	row.add_child(apply)
 	$MainLayout/Inspector/VBox.add_child(map_size_panel)
 	$MainLayout/Inspector/VBox.move_child(map_size_panel, 0)
@@ -319,7 +320,7 @@ func _on_map_size_spin_changed(_value: float) -> void:
 	var old_size := Vector2i(int(old_value[0]), int(old_value[1])) if old_value is Array and old_value.size() >= 2 else Vector2i(36, 24)
 	if new_size == old_size:
 		return
-	if not _map_size_can_contain(new_size):
+	if (new_size.x < old_size.x or new_size.y < old_size.y) and not _map_size_can_contain(new_size):
 		_sync_map_size_controls()
 		update_status("Resize rejected: existing content is outside the new map bounds.")
 		return
@@ -337,7 +338,7 @@ func _on_map_size_apply_pressed() -> void:
 	if new_size == old_size:
 		update_status("Map size unchanged: %d × %d." % [new_size.x, new_size.y])
 		return
-	if not _map_size_can_contain(new_size):
+	if (new_size.x < old_size.x or new_size.y < old_size.y) and not _map_size_can_contain(new_size):
 		_sync_map_size_controls()
 		update_status("Resize rejected: existing content is outside the new map bounds.")
 		return
@@ -498,7 +499,7 @@ func _on_object_selected(info: Dictionary) -> void:
 		return
 
 	var pos: Vector2 = info.get("position", Vector2.ZERO)
-	var origin: Vector2 = current_map_data.get("map_origin", Vector2(0, 58))
+	var origin := _map_data_position(current_map_data.get("map_origin", [0, 58]), Vector2(0, 58))
 	var tile_x := int((pos.x - origin.x) / 32.0)
 	var tile_y := int((pos.y - origin.y) / 32.0)
 
