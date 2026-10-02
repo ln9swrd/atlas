@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790911406
+::res://::1790914354
 export_presets.cfg::TextFile::-1::1790727483::0::1::::<><><>0<>0<><>::
 game_controller.gd::GDScript::8692213070628158787::1790907000::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790729661::0::1::::<>Node2D<><>0<>0<><>::
@@ -104,7 +104,7 @@ towers.json::JSON::-1::1790640781::0::1::::<><><>0<>0<><>::
 issues_2026-10-01.md::TextFile::-1::1790899069::0::1::::<><><>0<>0<><>::
 ::res://editor/::1790899069
 asset_catalog_editor.gd::GDScript::199735142467977770::1790640781::0::1::::<>Window<><>0<>0<><>::
-asset_catalog_editor.tscn::PackedScene::-1::1790553661::0::1::::<><><>0<>0<><>::res://editor/asset_catalog_editor.gd
+asset_catalog_editor.tscn::PackedScene::-1::1790913626::0::1::::<><><>0<>0<><>::res://editor/asset_catalog_editor.gd
 asset_region_view.gd::GDScript::7416892912445805548::1790553661::0::1::::AssetRegionView<>Control<><>0<>0<><>::
 content_editor.gd::GDScript::1241770450234517523::1790899069::0::1::::<>Control<><>0<>0<><>::
 content_editor.tscn::PackedScene::-1::1790644817::0::1::::<><><>0<>0<><>::res://editor/content_editor.gd

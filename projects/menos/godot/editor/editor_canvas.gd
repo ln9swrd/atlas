@@ -80,6 +80,7 @@ func _ready() -> void:
 func set_map_data(data: Dictionary) -> void:
 	map_data = data.duplicate(true)
 	undo_history.clear()
+	_fit_map_to_viewport.call_deferred()
 	edit_stroke_snapshot.clear()
 	edit_stroke_active = false
 	edit_stroke_changed = false
@@ -113,6 +114,22 @@ func set_edit_mode(mode: String) -> void:
 
 func set_active_layer(layer_name: String) -> void:
 	active_layer = layer_name
+
+func _fit_map_to_viewport() -> void:
+	var viewport_control := get_parent() as Control
+	if viewport_control == null:
+		return
+	var view_size := viewport_control.size
+	var map_size := _map_pixel_size()
+	if view_size.x <= 1.0 or view_size.y <= 1.0 or map_size.x <= 1.0 or map_size.y <= 1.0:
+		return
+	var margin := 48.0
+	var available := Vector2(maxf(1.0, view_size.x - margin), maxf(1.0, view_size.y - margin))
+	camera_zoom = clampf(minf(available.x / map_size.x, available.y / map_size.y), 0.25, 2.0)
+	var origin := _map_origin()
+	var map_center := origin + map_size * 0.5
+	camera_offset = view_size * 0.5 - map_center * camera_zoom
+	queue_redraw()
 	queue_redraw()
 
 func set_eraser_size(size_in_tiles: int) -> void:

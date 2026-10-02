@@ -1973,695 +1973,695 @@
 	  },
 	  "36,1": {
 		"anchor": [
-		  36,
-		  1
+		  36.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "36,2": {
 		"anchor": [
-		  36,
-		  1
+		  36.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "36,21": {
 		"anchor": [
-		  36,
-		  21
+		  36.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "36,22": {
 		"anchor": [
-		  36,
-		  21
+		  36.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "36,23": {
 		"anchor": [
-		  36,
-		  21
+		  36.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "36,3": {
 		"anchor": [
-		  36,
-		  1
+		  36.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,1": {
 		"anchor": [
-		  36,
-		  1
+		  36.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,15": {
 		"anchor": [
-		  37,
-		  15
+		  37.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,16": {
 		"anchor": [
-		  37,
-		  15
+		  37.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,17": {
 		"anchor": [
-		  37,
-		  15
+		  37.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,18": {
 		"anchor": [
-		  37,
-		  18
+		  37.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,19": {
 		"anchor": [
-		  37,
-		  18
+		  37.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,2": {
 		"anchor": [
-		  36,
-		  1
+		  36.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,20": {
 		"anchor": [
-		  37,
-		  18
+		  37.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,21": {
 		"anchor": [
-		  36,
-		  21
+		  36.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,22": {
 		"anchor": [
-		  36,
-		  21
+		  36.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,23": {
 		"anchor": [
-		  36,
-		  21
+		  36.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,3": {
 		"anchor": [
-		  36,
-		  1
+		  36.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,5": {
 		"anchor": [
-		  37,
-		  5
+		  37.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,6": {
 		"anchor": [
-		  37,
-		  5
+		  37.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "37,7": {
 		"anchor": [
-		  37,
-		  5
+		  37.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,10": {
 		"anchor": [
-		  38,
-		  8
+		  38.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,12": {
 		"anchor": [
-		  38,
-		  12
+		  38.0,
+		  12.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,13": {
 		"anchor": [
-		  38,
-		  12
+		  38.0,
+		  12.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,14": {
 		"anchor": [
-		  38,
-		  12
+		  38.0,
+		  12.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,15": {
 		"anchor": [
-		  37,
-		  15
+		  37.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,16": {
 		"anchor": [
-		  37,
-		  15
+		  37.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,17": {
 		"anchor": [
-		  37,
-		  15
+		  37.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,18": {
 		"anchor": [
-		  37,
-		  18
+		  37.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,19": {
 		"anchor": [
-		  37,
-		  18
+		  37.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,2": {
 		"anchor": [
-		  38,
-		  2
+		  38.0,
+		  2.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,20": {
 		"anchor": [
-		  37,
-		  18
+		  37.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,21": {
 		"anchor": [
-		  38,
-		  21
+		  38.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,22": {
 		"anchor": [
-		  38,
-		  21
+		  38.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,23": {
 		"anchor": [
-		  38,
-		  21
+		  38.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,3": {
 		"anchor": [
-		  38,
-		  2
+		  38.0,
+		  2.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,4": {
 		"anchor": [
-		  38,
-		  2
+		  38.0,
+		  2.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,5": {
 		"anchor": [
-		  37,
-		  5
+		  37.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,6": {
 		"anchor": [
-		  37,
-		  5
+		  37.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,7": {
 		"anchor": [
-		  37,
-		  5
+		  37.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,8": {
 		"anchor": [
-		  38,
-		  8
+		  38.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "38,9": {
 		"anchor": [
-		  38,
-		  8
+		  38.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,10": {
 		"anchor": [
-		  38,
-		  8
+		  38.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,12": {
 		"anchor": [
-		  38,
-		  12
+		  38.0,
+		  12.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,13": {
 		"anchor": [
-		  38,
-		  12
+		  38.0,
+		  12.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,14": {
 		"anchor": [
-		  38,
-		  12
+		  38.0,
+		  12.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,15": {
 		"anchor": [
-		  39,
-		  15
+		  39.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,16": {
 		"anchor": [
-		  39,
-		  15
+		  39.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,17": {
 		"anchor": [
-		  39,
-		  15
+		  39.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,18": {
 		"anchor": [
-		  39,
-		  18
+		  39.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,19": {
 		"anchor": [
-		  39,
-		  18
+		  39.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,2": {
 		"anchor": [
-		  38,
-		  2
+		  38.0,
+		  2.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,20": {
 		"anchor": [
-		  39,
-		  18
+		  39.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,21": {
 		"anchor": [
-		  38,
-		  21
+		  38.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,22": {
 		"anchor": [
-		  38,
-		  21
+		  38.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,23": {
 		"anchor": [
-		  38,
-		  21
+		  38.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,3": {
 		"anchor": [
-		  38,
-		  2
+		  38.0,
+		  2.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,4": {
 		"anchor": [
-		  38,
-		  2
+		  38.0,
+		  2.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,5": {
 		"anchor": [
-		  39,
-		  5
+		  39.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,6": {
 		"anchor": [
-		  39,
-		  5
+		  39.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,7": {
 		"anchor": [
-		  39,
-		  5
+		  39.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,8": {
 		"anchor": [
-		  38,
-		  8
+		  38.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "39,9": {
 		"anchor": [
-		  38,
-		  8
+		  38.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "4,0": {
@@ -2732,959 +2732,959 @@
 	  },
 	  "40,1": {
 		"anchor": [
-		  40,
-		  1
+		  40.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,10": {
 		"anchor": [
-		  40,
-		  10
+		  40.0,
+		  10.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,11": {
 		"anchor": [
-		  40,
-		  10
+		  40.0,
+		  10.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,12": {
 		"anchor": [
-		  40,
-		  10
+		  40.0,
+		  10.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,15": {
 		"anchor": [
-		  39,
-		  15
+		  39.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,16": {
 		"anchor": [
-		  39,
-		  15
+		  39.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,17": {
 		"anchor": [
-		  39,
-		  15
+		  39.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,18": {
 		"anchor": [
-		  39,
-		  18
+		  39.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,19": {
 		"anchor": [
-		  39,
-		  18
+		  39.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,2": {
 		"anchor": [
-		  40,
-		  1
+		  40.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,20": {
 		"anchor": [
-		  39,
-		  18
+		  39.0,
+		  18.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,21": {
 		"anchor": [
-		  40,
-		  21
+		  40.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,22": {
 		"anchor": [
-		  40,
-		  21
+		  40.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,23": {
 		"anchor": [
-		  40,
-		  21
+		  40.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,3": {
 		"anchor": [
-		  40,
-		  1
+		  40.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,5": {
 		"anchor": [
-		  39,
-		  5
+		  39.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,6": {
 		"anchor": [
-		  39,
-		  5
+		  39.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "40,7": {
 		"anchor": [
-		  39,
-		  5
+		  39.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,1": {
 		"anchor": [
-		  40,
-		  1
+		  40.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,10": {
 		"anchor": [
-		  40,
-		  10
+		  40.0,
+		  10.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,11": {
 		"anchor": [
-		  40,
-		  10
+		  40.0,
+		  10.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,12": {
 		"anchor": [
-		  40,
-		  10
+		  40.0,
+		  10.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,17": {
 		"anchor": [
-		  41,
-		  17
+		  41.0,
+		  17.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,18": {
 		"anchor": [
-		  41,
-		  17
+		  41.0,
+		  17.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,19": {
 		"anchor": [
-		  41,
-		  17
+		  41.0,
+		  17.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,2": {
 		"anchor": [
-		  40,
-		  1
+		  40.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,21": {
 		"anchor": [
-		  40,
-		  21
+		  40.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,22": {
 		"anchor": [
-		  40,
-		  21
+		  40.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,23": {
 		"anchor": [
-		  40,
-		  21
+		  40.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,3": {
 		"anchor": [
-		  40,
-		  1
+		  40.0,
+		  1.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,4": {
 		"anchor": [
-		  41,
-		  4
+		  41.0,
+		  4.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,5": {
 		"anchor": [
-		  41,
-		  4
+		  41.0,
+		  4.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "41,6": {
 		"anchor": [
-		  41,
-		  4
+		  41.0,
+		  4.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,0": {
 		"anchor": [
-		  42,
-		  0
+		  42.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,1": {
 		"anchor": [
-		  42,
-		  0
+		  42.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,10": {
 		"anchor": [
-		  42,
-		  9
+		  42.0,
+		  9.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,11": {
 		"anchor": [
-		  42,
-		  9
+		  42.0,
+		  9.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,17": {
 		"anchor": [
-		  41,
-		  17
+		  41.0,
+		  17.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,18": {
 		"anchor": [
-		  41,
-		  17
+		  41.0,
+		  17.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,19": {
 		"anchor": [
-		  41,
-		  17
+		  41.0,
+		  17.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,2": {
 		"anchor": [
-		  42,
-		  0
+		  42.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,20": {
 		"anchor": [
-		  42,
-		  20
+		  42.0,
+		  20.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,21": {
 		"anchor": [
-		  42,
-		  20
+		  42.0,
+		  20.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,22": {
 		"anchor": [
-		  42,
-		  20
+		  42.0,
+		  20.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,4": {
 		"anchor": [
-		  41,
-		  4
+		  41.0,
+		  4.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,5": {
 		"anchor": [
-		  41,
-		  4
+		  41.0,
+		  4.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,6": {
 		"anchor": [
-		  41,
-		  4
+		  41.0,
+		  4.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "42,9": {
 		"anchor": [
-		  42,
-		  9
+		  42.0,
+		  9.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,0": {
 		"anchor": [
-		  42,
-		  0
+		  42.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,1": {
 		"anchor": [
-		  42,
-		  0
+		  42.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,10": {
 		"anchor": [
-		  42,
-		  9
+		  42.0,
+		  9.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,11": {
 		"anchor": [
-		  42,
-		  9
+		  42.0,
+		  9.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,15": {
 		"anchor": [
-		  43,
-		  15
+		  43.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,16": {
 		"anchor": [
-		  43,
-		  15
+		  43.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,17": {
 		"anchor": [
-		  43,
-		  15
+		  43.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,2": {
 		"anchor": [
-		  42,
-		  0
+		  42.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,20": {
 		"anchor": [
-		  42,
-		  20
+		  42.0,
+		  20.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,21": {
 		"anchor": [
-		  42,
-		  20
+		  42.0,
+		  20.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,22": {
 		"anchor": [
-		  42,
-		  20
+		  42.0,
+		  20.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,5": {
 		"anchor": [
-		  43,
-		  5
+		  43.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,6": {
 		"anchor": [
-		  43,
-		  5
+		  43.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,7": {
 		"anchor": [
-		  43,
-		  5
+		  43.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "43,9": {
 		"anchor": [
-		  42,
-		  9
+		  42.0,
+		  9.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,0": {
 		"anchor": [
-		  44,
-		  0
+		  44.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,1": {
 		"anchor": [
-		  44,
-		  0
+		  44.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,10": {
 		"anchor": [
-		  44,
-		  8
+		  44.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,15": {
 		"anchor": [
-		  43,
-		  15
+		  43.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,16": {
 		"anchor": [
-		  43,
-		  15
+		  43.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,17": {
 		"anchor": [
-		  43,
-		  15
+		  43.0,
+		  15.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,2": {
 		"anchor": [
-		  44,
-		  0
+		  44.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,21": {
 		"anchor": [
-		  44,
-		  21
+		  44.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,22": {
 		"anchor": [
-		  44,
-		  21
+		  44.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,23": {
 		"anchor": [
-		  44,
-		  21
+		  44.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,5": {
 		"anchor": [
-		  43,
-		  5
+		  43.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,6": {
 		"anchor": [
-		  43,
-		  5
+		  43.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,7": {
 		"anchor": [
-		  43,
-		  5
+		  43.0,
+		  5.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,8": {
 		"anchor": [
-		  44,
-		  8
+		  44.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "44,9": {
 		"anchor": [
-		  44,
-		  8
+		  44.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,0": {
 		"anchor": [
-		  44,
-		  0
+		  44.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,1": {
 		"anchor": [
-		  44,
-		  0
+		  44.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,10": {
 		"anchor": [
-		  44,
-		  8
+		  44.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,2": {
 		"anchor": [
-		  44,
-		  0
+		  44.0,
+		  0.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,21": {
 		"anchor": [
-		  44,
-		  21
+		  44.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,22": {
 		"anchor": [
-		  44,
-		  21
+		  44.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,23": {
 		"anchor": [
-		  44,
-		  21
+		  44.0,
+		  21.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,8": {
 		"anchor": [
-		  44,
-		  8
+		  44.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "45,9": {
 		"anchor": [
-		  44,
-		  8
+		  44.0,
+		  8.0
 		],
 		"asset_id": "asset.tile.ground_2",
 		"footprint_tiles": [
-		  2,
-		  3
+		  2.0,
+		  3.0
 		]
 	  },
 	  "8,0": {
