@@ -28,6 +28,14 @@ var catalog_texture_cache: Dictionary = {}
 var catalog_alpha_cache: Dictionary = {}
 var eraser_size := 1
 
+func _map_tiles_size() -> Vector2i:
+	var value: Variant = map_data.get("map_tiles", [36, 24])
+	if value is Vector2i:
+		return value
+	if value is Array and value.size() >= 2:
+		return Vector2i(int(value[0]), int(value[1]))
+	return Vector2i(36, 24)
+
 var camera_zoom := 1.0
 var camera_offset := Vector2.ZERO
 var is_panning := false
