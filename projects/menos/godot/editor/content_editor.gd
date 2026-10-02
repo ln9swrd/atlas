@@ -13,13 +13,13 @@ var content_host: Control
 func _ready() -> void:
 	_apply_editor_theme()
 	content_host = $MainLayout/Content
-	$MainLayout/Sidebar/Buttons/BtnMap.pressed.connect(_open_map_editor)
-	$MainLayout/Sidebar/Buttons/BtnStage.pressed.connect(_open_stage_editor)
-	$MainLayout/Sidebar/Buttons/BtnEnemy.pressed.connect(_open_enemy_editor)
-	$MainLayout/Sidebar/Buttons/BtnTower.pressed.connect(_open_tower_editor)
-	$MainLayout/Sidebar/Buttons/BtnRobot.pressed.connect(_open_robot_editor)
-	$MainLayout/Sidebar/Buttons/BtnImage.pressed.connect(_open_image_editor)
-	$MainLayout/Sidebar/Buttons/BtnQuit.pressed.connect(_quit)
+	$MainLayout/TopMenu/Buttons/BtnMap.pressed.connect(_open_map_editor)
+	$MainLayout/TopMenu/Buttons/BtnStage.pressed.connect(_open_stage_editor)
+	$MainLayout/TopMenu/Buttons/BtnEnemy.pressed.connect(_open_enemy_editor)
+	$MainLayout/TopMenu/Buttons/BtnTower.pressed.connect(_open_tower_editor)
+	$MainLayout/TopMenu/Buttons/BtnRobot.pressed.connect(_open_robot_editor)
+	$MainLayout/TopMenu/Buttons/BtnImage.pressed.connect(_open_image_editor)
+	$MainLayout/TopMenu/Buttons/BtnQuit.pressed.connect(_quit)
 	_open_map_editor()
 
 func _apply_editor_theme() -> void:
@@ -77,27 +77,27 @@ func _make_editor_style(fill: Color, border: Color, border_width: int, radius: i
 
 func _open_map_editor() -> void:
 	_load_editor(MAP_EDITOR_SCENE)
-	_set_active_button($MainLayout/Sidebar/Buttons/BtnMap)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnMap)
 
 func _open_stage_editor() -> void:
 	_load_editor(STAGE_EDITOR_SCENE)
-	_set_active_button($MainLayout/Sidebar/Buttons/BtnStage)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnStage)
 
 func _open_enemy_editor() -> void:
 	_load_editor(ENEMY_EDITOR_SCENE)
-	_set_active_button($MainLayout/Sidebar/Buttons/BtnEnemy)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnEnemy)
 
 func _open_tower_editor() -> void:
 	_load_editor(TOWER_EDITOR_SCENE)
-	_set_active_button($MainLayout/Sidebar/Buttons/BtnTower)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnTower)
 
 func _open_robot_editor() -> void:
 	_load_editor(ROBOT_EDITOR_SCENE)
-	_set_active_button($MainLayout/Sidebar/Buttons/BtnRobot)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnRobot)
 
 func _open_image_editor() -> void:
 	_load_editor(IMAGE_EDITOR_SCENE)
-	_set_active_button($MainLayout/Sidebar/Buttons/BtnImage)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnImage)
 
 func _load_editor(scene_path: String) -> void:
 	if current_editor:
@@ -117,7 +117,7 @@ func _load_editor(scene_path: String) -> void:
 
 func _open_content_editor_from_child() -> void:
 	_load_editor(MAP_EDITOR_SCENE)
-	_set_active_button($MainLayout/Sidebar/Buttons/BtnMap)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnMap)
 
 func _open_map_editor_for_path(map_path: String) -> void:
 	var editor := load(MAP_EDITOR_SCENE) as PackedScene
@@ -134,15 +134,15 @@ func _open_map_editor_for_path(map_path: String) -> void:
 	current_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	if current_editor.has_signal("request_content_editor"):
 		current_editor.request_content_editor.connect(_open_content_editor_from_child)
-	_set_active_button($MainLayout/Sidebar/Buttons/BtnMap)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnMap)
 
 func _set_active_button(active: Button) -> void:
-	$MainLayout/Sidebar/Buttons/BtnMap.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnMap
-	$MainLayout/Sidebar/Buttons/BtnStage.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnStage
-	$MainLayout/Sidebar/Buttons/BtnEnemy.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnEnemy
-	$MainLayout/Sidebar/Buttons/BtnTower.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnTower
-	$MainLayout/Sidebar/Buttons/BtnRobot.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnRobot
-	$MainLayout/Sidebar/Buttons/BtnImage.button_pressed = active == $MainLayout/Sidebar/Buttons/BtnImage
+	$MainLayout/TopMenu/Buttons/BtnMap.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMap
+	$MainLayout/TopMenu/Buttons/BtnStage.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnStage
+	$MainLayout/TopMenu/Buttons/BtnEnemy.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnEnemy
+	$MainLayout/TopMenu/Buttons/BtnTower.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnTower
+	$MainLayout/TopMenu/Buttons/BtnRobot.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnRobot
+	$MainLayout/TopMenu/Buttons/BtnImage.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnImage
 
 func _quit() -> void:
 	get_tree().quit()
