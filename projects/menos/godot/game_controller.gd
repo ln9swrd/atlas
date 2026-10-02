@@ -1714,10 +1714,8 @@ func _draw() -> void:
 
 	# Tactical Field Boundary
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
-	# Tower placement areas are always shown as a subtle translucent build zone.
-	for area in TOWER_PLACEMENT_AREAS:
-		draw_rect(area, Color(0.25, 0.85, 0.72, 0.10), true)
-		draw_rect(area, Color(0.45, 0.92, 0.82, 0.32), false, 1.5)
+	# Tower placement areas are gameplay-editor metadata, not map artwork.
+	# They are not rendered in the gameplay view.
 	# Spawn location labels are intentionally hidden.
 
 	# Base Facility is rendered only when the map explicitly defines a base.
