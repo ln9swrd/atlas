@@ -245,9 +245,12 @@ size_flags_horizontal = 3
 [node name="CanvasRoot" type="Node2D" parent="MainLayout/CanvasContainer" unique_id=1675596003]
 script = ExtResource("2_canvas")
 
-[node name="Inspector" type="PanelContainer" parent="MainLayout" unique_id=1856458715]
+[node name="Inspector" type="ScrollContainer" parent="MainLayout" unique_id=1856458715]
 custom_minimum_size = Vector2(270, 0)
 layout_mode = 2
+vertical_scroll_mode = 2
+horizontal_scroll_mode = 0
+follow_focus = true
 
 [node name="VBox" type="VBoxContainer" parent="MainLayout/Inspector" unique_id=2011114957]
 layout_mode = 2

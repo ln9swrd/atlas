@@ -1,6 +1,0 @@
-res://editor/editor_canvas.gd
-res://editor/map_editor.gd
-res://scripts/map_loader.gd
-res://content/stages/stage_01.json
-res://content/editor/asset_catalog.json
-res://content/maps/map_01.json
