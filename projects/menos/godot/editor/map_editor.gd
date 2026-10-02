@@ -406,7 +406,7 @@ func setup_layer_options() -> void:
 		option_layer.clear()
 		option_layer.add_item("Ground Layer", 0)
 		option_layer.add_item("Vegetation Layer", 1)
-		option_layer.add_item("RoadComposition Layer", 2)
+		option_layer.add_item("로드 레이어", 2)
 		option_layer.select(0)
 		option_layer.item_selected.connect(_on_edit_layer_selected)
 
@@ -422,7 +422,7 @@ func setup_layer_options() -> void:
 			option_layer_view.add_item("전체 레이어", 0)
 			option_layer_view.add_item("Ground Layer", 1)
 			option_layer_view.add_item("Vegetation Layer", 2)
-			option_layer_view.add_item("RoadComposition Layer", 3)
+			option_layer_view.add_item("로드 레이어", 3)
 			option_layer_view.select(0)
 			option_layer_view.item_selected.connect(_on_layer_view_selected)
 			var index := parent.get_children().find(option_layer)

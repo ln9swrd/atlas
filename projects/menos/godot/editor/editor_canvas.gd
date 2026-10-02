@@ -121,14 +121,35 @@ func set_edit_mode(mode: String) -> void:
 	_update_eraser_preview(last_pointer_local)
 
 func set_active_layer(layer_name: String) -> void:
-	active_layer = layer_name
+	var normalized := _normalize_layer_name(layer_name)
+	if active_layer == normalized:
+		return
+	active_layer = normalized
+	select_object({})
+	_update_eraser_preview(last_pointer_local)
+	queue_redraw()
 
 func set_visible_layer(layer_name: String) -> void:
-	visible_layer = "ALL" if layer_name.is_empty() else layer_name
+	visible_layer = _normalize_layer_name(layer_name, true)
+	select_object({})
 	queue_redraw()
+
+func _normalize_layer_name(layer_name: String, allow_all: bool = false) -> String:
+	if allow_all and (layer_name.is_empty() or layer_name == "ALL"):
+		return "ALL"
+	if layer_name in ["Ground", "Vegetation", "RoadComposition"]:
+		return layer_name
+	return "Ground"
 
 func is_layer_visible(layer_name: String) -> bool:
 	return visible_layer == "ALL" or visible_layer == layer_name
+
+func _object_layer(object_data: Dictionary) -> String:
+	var layer := str(object_data.get("placement_layer", ""))
+	return _normalize_layer_name(layer) if not layer.is_empty() else "Ground"
+
+func _is_object_visible(object_data: Dictionary) -> bool:
+	return visible_layer == "ALL" or _object_layer(object_data) == visible_layer
 
 func _fit_map_to_viewport() -> void:
 	var viewport_control := get_parent() as Control
@@ -876,7 +897,8 @@ func place_catalog_object(cell: Vector2i) -> void:
 	map_data["objects"].append({
 		"asset_id": str(selected_catalog_asset.get("asset_id", "")),
 		"position": [object_pixel_pos.x, object_pixel_pos.y],
-		"footprint_tiles": [width, height]
+		"footprint_tiles": [width, height],
+		"placement_layer": active_layer
 	})
 	_mark_map_data_changed()
 	select_object({
@@ -884,6 +906,7 @@ func place_catalog_object(cell: Vector2i) -> void:
 		"id": str(selected_catalog_asset.get("asset_id", "")),
 		"position": object_pixel_pos,
 		"object_index": map_data["objects"].size() - 1,
+		"layer": active_layer,
 		"footprint": [width, height]
 	})
 
@@ -1369,6 +1392,8 @@ func _pick_visual_asset_at(point: Vector2) -> bool:
 	var objects: Array = map_data.get("objects", [])
 	for object_index in range(objects.size() - 1, -1, -1):
 		var object_data: Dictionary = objects[object_index]
+		if not _is_object_visible(object_data):
+			continue
 		var asset_id := str(object_data.get("asset_id", ""))
 		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
 		var footprint := catalog_asset_footprint(asset, object_data)
@@ -1512,7 +1537,7 @@ func _draw() -> void:
 				draw_tile_cell(dest_pos, source_id, Vector2i(atlas_x, atlas_y), layer_name)
 
 	for object_data in map_data.get("objects", []):
-		if not object_data is Dictionary:
+		if not object_data is Dictionary or not _is_object_visible(object_data):
 			continue
 		var asset_id := str(object_data.get("asset_id", ""))
 		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
