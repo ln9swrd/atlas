@@ -127,8 +127,8 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
     {
         var confirmedStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CONFIRMED", cancellationToken);
         var cancelledStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CANCELLED", cancellationToken);
-        var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
         var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
+        var adjustTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "ADJUST", cancellationToken);
         var purchaseSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PURCHASE_ORDER", cancellationToken);
         var cancelSourceId = await CodeResolver.GetRequiredIdAsync(db, "SOURCE_TYPE", "PURCHASE_ORDER_CANCEL", cancellationToken);
         var processActionId = await CodeResolver.GetRequiredIdAsync(db, "ORDER_PROCESS_ACTION", "PROCESS", cancellationToken);
@@ -138,15 +138,8 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         if (order.StatusId != confirmedStatusId) throw new InvalidOperationException("확정 상태의 발주만 취소할 수 있습니다.");
         var details = await db.PurchaseOrderDetails.Where(x => x.PurchaseOrderId == purchaseOrderId).ToListAsync(cancellationToken);
         var movements = await db.InOuts.Where(x => x.SourceTypeId == purchaseSourceId && x.SourceId == purchaseOrderId && x.StatusId != cancelledStatusId).ToListAsync(cancellationToken);
-
-        foreach (var detail in details)
-        {
-            var histories = await db.OrderProcessHistories.Where(x => x.SourceTypeId == purchaseSourceId && x.SourceDetailId == detail.Id && x.ActionId == processActionId).OrderBy(x => x.Id).ToListAsync(cancellationToken);
-            var processed = histories.Sum(x => x.ProcessQty);
-            if (processed <= 0) continue;
-            var available = await GetAvailableAsync(detail.ItemId, cancellationToken);
-            if (available < processed) throw new InvalidOperationException($"취소할 수 없습니다. 재고가 부족합니다. 현재 재고: {available:N2}, 필요 수량: {processed:N2}");
-        }
+        decimal totalReverse = 0m;
+        decimal totalShortage = 0m;
 
         foreach (var movement in movements) { movement.StatusId = cancelledStatusId; movement.UpdatedAt = DateTime.UtcNow; }
 
@@ -156,12 +149,34 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
             foreach (var history in histories)
             {
                 var original = await db.InOutDetails.AsNoTracking().SingleAsync(x => x.Id == history.InOutDetailId, cancellationToken);
-                var movement = await CreateMovementAsync(order, detail, history.ProcessQty, outTypeId, cancelSourceId, cancellationToken);
-                var reverseDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == movement.Id, cancellationToken);
-                reverseDetail.LotId = original.LotId;
-                reverseDetail.PartnerLotId = original.PartnerLotId;
-                await db.SaveChangesAsync(cancellationToken);
-                await AddProcessHistoryAsync(purchaseSourceId, detail.Id, reverseDetail.Id, history.ProcessQty, reverseActionId, history.Id, cancellationToken);
+                var available = await GetAvailableAsync(detail.ItemId, original.LotId, original.PartnerLotId, cancellationToken);
+                var reverseQty = Math.Min(history.ProcessQty, Math.Max(available, 0m));
+                var shortageQty = history.ProcessQty - reverseQty;
+
+                if (reverseQty > 0)
+                {
+                    var movement = await CreateMovementAsync(order, detail, reverseQty, outTypeId, cancelSourceId, cancellationToken);
+                    var reverseDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == movement.Id, cancellationToken);
+                    reverseDetail.LotId = original.LotId;
+                    reverseDetail.PartnerLotId = original.PartnerLotId;
+                    await db.SaveChangesAsync(cancellationToken);
+                    await AddProcessHistoryAsync(purchaseSourceId, detail.Id, reverseDetail.Id, reverseQty, reverseActionId, history.Id, cancellationToken);
+                    totalReverse += reverseQty;
+                }
+
+                if (shortageQty > 0)
+                {
+                    var adjustment = await CreateMovementAsync(
+                        order, detail, decimal.Negate(shortageQty), adjustTypeId, cancelSourceId, cancellationToken,
+                        note: $"발주취소 재고부족 조정 / 원처리={history.ProcessQty:N2}, 역거래={reverseQty:N2}, 부족={shortageQty:N2}");
+                    var adjustmentDetail = await db.InOutDetails.SingleAsync(x => x.InOutId == adjustment.Id, cancellationToken);
+                    adjustmentDetail.LotId = original.LotId;
+                    adjustmentDetail.PartnerLotId = original.PartnerLotId;
+                    await db.SaveChangesAsync(cancellationToken);
+                    await AuditLogger.WriteAsync(db, "TB_INOUT", adjustment.Id, "CANCEL", null, adjustment,
+                        note: $"PURCHASE_CANCEL_SHORTAGE={shortageQty:N2}", cancellationToken: cancellationToken);
+                    totalShortage += shortageQty;
+                }
             }
         }
 
@@ -169,7 +184,8 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
         order.StatusId = cancelledStatusId;
         order.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(cancellationToken);
-        await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER", order.Id, "CANCEL", before, order, note: $"REVERSE_OUT_QTY={details.Sum(x => x.ProcessedQty):N2}", cancellationToken: cancellationToken);
+        await AuditLogger.WriteAsync(db, "TB_PURCHASE_ORDER", order.Id, "CANCEL", before, order,
+            note: $"REVERSE_OUT_QTY={totalReverse:N2},SHORTAGE_ADJUST_QTY={totalShortage:N2}", cancellationToken: cancellationToken);
         await tx.CommitAsync(cancellationToken);
     }
     private async Task AddProcessHistoryAsync(long sourceTypeId, long sourceDetailId, long inOutDetailId, decimal quantity, long actionId, long? reversesHistoryId, CancellationToken cancellationToken)
@@ -180,22 +196,38 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
 
     private static PurchaseOrder Snapshot(PurchaseOrder x) => new() { Id=x.Id, DocumentNo=x.DocumentNo, OrderDate=x.OrderDate, PartnerId=x.PartnerId, DueDate=x.DueDate, StatusId=x.StatusId, Note=x.Note, CreatedAt=x.CreatedAt, UpdatedAt=x.UpdatedAt };
 
-    private async Task<decimal> GetAvailableAsync(long itemId, CancellationToken cancellationToken)
+    private async Task<decimal> GetAvailableAsync(long itemId, long? lotId, long? partnerLotId, CancellationToken cancellationToken)
     {
         var cancelledStatusId = await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CANCELLED", cancellationToken);
         var inTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "IN", cancellationToken);
         var openingTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OPENING", cancellationToken);
         var adjustTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "ADJUST", cancellationToken);
-        return (await db.InOuts.AsNoTracking().Where(x => x.StatusId != cancelledStatusId).Join(db.InOutDetails, h => h.Id, d => d.InOutId, (h,d) => new {h,d}).Where(x => x.d.ItemId == itemId).ToListAsync(cancellationToken)).Sum(x => (x.h.MovementTypeId == inTypeId || x.h.MovementTypeId == openingTypeId || x.h.MovementTypeId == adjustTypeId) ? x.d.Quantity : -x.d.Quantity);
+        var outTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "OUT", cancellationToken);
+        var lossTypeId = await CodeResolver.GetRequiredIdAsync(db, "INOUT_TYPE", "LOSS", cancellationToken);
+
+        var rows = await db.InOuts.AsNoTracking()
+            .Where(x => x.StatusId != cancelledStatusId)
+            .Join(db.InOutDetails.AsNoTracking(), h => h.Id, d => d.InOutId, (h, d) => new { h, d })
+            .Where(x => x.d.ItemId == itemId && x.d.LotId == lotId && x.d.PartnerLotId == partnerLotId)
+            .ToListAsync(cancellationToken);
+
+        return rows.Sum(x =>
+            x.h.MovementTypeId == inTypeId || x.h.MovementTypeId == openingTypeId
+                ? x.d.Quantity
+                : x.h.MovementTypeId == adjustTypeId
+                    ? x.d.Quantity
+                    : x.h.MovementTypeId == outTypeId || x.h.MovementTypeId == lossTypeId
+                        ? -x.d.Quantity
+                        : 0m);
     }
 
-    private async Task<InOut> CreateMovementAsync(PurchaseOrder order, PurchaseOrderDetail detail, decimal quantity, long typeId, long sourceTypeId, CancellationToken cancellationToken)
+    private async Task<InOut> CreateMovementAsync(PurchaseOrder order, PurchaseOrderDetail detail, decimal quantity, long typeId, long sourceTypeId, CancellationToken cancellationToken, string? note = null)
     {
         var pattern = await db.SystemSettings.AsNoTracking().Where(x => x.Key == "DOC_NO.INOUT").Select(x => x.Value).SingleAsync(cancellationToken);
         var prefix = pattern.Replace("{yyyyMM}", order.OrderDate.ToString("yyyyMM"));
         var prefixText = prefix[..prefix.IndexOf("{seq4}", StringComparison.Ordinal)];
         var count = await db.InOuts.CountAsync(x => x.DocumentNo.StartsWith(prefixText), cancellationToken);
-        var movement = new InOut { DocumentNo=pattern.Replace("{yyyyMM}", order.OrderDate.ToString("yyyyMM")).Replace("{seq4}", (count+1).ToString("D4")), MovementDate=order.OrderDate, MovementTypeId=typeId, PartnerId=order.PartnerId, SourceTypeId=sourceTypeId, SourceId=order.Id, StatusId=await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CONFIRMED", cancellationToken), CreatedAt=DateTime.UtcNow, UpdatedAt=DateTime.UtcNow };
+        var movement = new InOut { DocumentNo=pattern.Replace("{yyyyMM}", order.OrderDate.ToString("yyyyMM")).Replace("{seq4}", (count+1).ToString("D4")), MovementDate=order.OrderDate, MovementTypeId=typeId, PartnerId=order.PartnerId, SourceTypeId=sourceTypeId, SourceId=order.Id, StatusId=await CodeResolver.GetRequiredIdAsync(db, "DOCUMENT_STATUS", "CONFIRMED", cancellationToken), Note=note, CreatedAt=DateTime.UtcNow, UpdatedAt=DateTime.UtcNow };
         db.InOuts.Add(movement); await db.SaveChangesAsync(cancellationToken);
         db.InOutDetails.Add(new InOutDetail { InOutId=movement.Id, ItemId=detail.ItemId, Quantity=quantity, UnitPrice=detail.AppliedUnitPrice, Amount=quantity * detail.AppliedUnitPrice });
         await db.SaveChangesAsync(cancellationToken);
