@@ -387,7 +387,7 @@ func _update_eraser_preview(local_position: Vector2) -> void:
 	if eraser_preview_visible:
 		var world_pos := (local_position - camera_offset) / camera_zoom
 		eraser_preview_cell = get_cell_coords(world_pos)
-		var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+		var map_tiles: Vector2i = _map_tiles_size()
 		eraser_preview_visible = eraser_preview_cell.x >= 0 and eraser_preview_cell.y >= 0 and eraser_preview_cell.x < map_tiles.x and eraser_preview_cell.y < map_tiles.y
 	if was_visible != eraser_preview_visible or (eraser_preview_visible and old_cell != eraser_preview_cell):
 		queue_redraw()
@@ -483,7 +483,7 @@ func _move_catalog_tile_to(target_position: Vector2) -> bool:
 		return false
 	var footprint_values: Array = selected_object.get("footprint", [1, 1])
 	var footprint := Vector2i(int(footprint_values[0]), int(footprint_values[1]))
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	if new_anchor.x < 0 or new_anchor.y < 0 or new_anchor.x + footprint.x > map_tiles.x or new_anchor.y + footprint.y > map_tiles.y:
 		return false
 	var layer_tiles: Dictionary = map_data["tiles"][layer_name]
@@ -615,7 +615,7 @@ func get_cell_coords(world_pos: Vector2) -> Vector2i:
 	return Vector2i(cell_x, cell_y)
 
 func paint_tile_at(world_pos: Vector2) -> void:
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	var cell := get_cell_coords(world_pos)
 
 	if cell.x < 0 or cell.x >= map_tiles.x or cell.y < 0 or cell.y >= map_tiles.y:
@@ -649,7 +649,7 @@ func paint_tile_at(world_pos: Vector2) -> void:
 
 func paint_catalog_tile(cell: Vector2i) -> void:
 	var footprint := catalog_asset_footprint(selected_catalog_asset)
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	if cell.x + footprint.x > map_tiles.x or cell.y + footprint.y > map_tiles.y:
 		return
 	if not map_data.has("tiles"):
@@ -693,7 +693,7 @@ func _select_catalog_tile(asset_id: String, anchor: Vector2i, footprint: Vector2
 
 func place_catalog_tile_overlay(cell: Vector2i) -> void:
 	var footprint := catalog_asset_footprint(selected_catalog_asset)
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	if cell.x + footprint.x > map_tiles.x or cell.y + footprint.y > map_tiles.y:
 		return
 	if not map_data.has("objects"):
@@ -808,7 +808,7 @@ func place_catalog_object(cell: Vector2i) -> void:
 	var footprint := catalog_asset_footprint(selected_catalog_asset)
 	var width := footprint.x
 	var height := footprint.y
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	if cell.x + width > map_tiles.x or cell.y + height > map_tiles.y:
 		return
 	if not map_data.has("objects"):
@@ -831,7 +831,7 @@ func place_catalog_object(cell: Vector2i) -> void:
 
 func resize_selected_catalog_placement(width_tiles: int, height_tiles: int) -> bool:
 	var footprint := Vector2i(maxi(1, width_tiles), maxi(1, height_tiles))
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	var selection_type := str(selected_object.get("type", ""))
 	var asset_id := str(selected_object.get("id", ""))
 	if asset_id.is_empty():
@@ -952,7 +952,7 @@ func delete_selected_catalog_placement() -> bool:
 	return true
 
 func create_gameplay_area(element_type: String, start_world: Vector2, end_world: Vector2) -> bool:
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	var start_cell := get_cell_coords(start_world)
 	var end_cell := get_cell_coords(end_world)
 	start_cell.x = clampi(start_cell.x, 0, map_tiles.x - 1)
@@ -982,7 +982,7 @@ func create_gameplay_area(element_type: String, start_world: Vector2, end_world:
 	return true
 
 func create_gameplay_point(element_type: String, world_pos: Vector2) -> bool:
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	var cell := get_cell_coords(world_pos)
 	if cell.x < 0 or cell.y < 0 or cell.x >= map_tiles.x or cell.y >= map_tiles.y:
 		return false
@@ -1246,7 +1246,7 @@ func delete_selected_editor_object() -> bool:
 	return true
 
 func erase_tile_at(world_pos: Vector2) -> void:
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	var cell := get_cell_coords(world_pos)
 
 	if cell.x < 0 or cell.x >= map_tiles.x or cell.y < 0 or cell.y >= map_tiles.y:
@@ -1423,7 +1423,7 @@ func _slot_position(slot_data: Variant) -> Vector2:
 func _draw() -> void:
 	draw_set_transform(camera_offset, 0.0, Vector2(camera_zoom, camera_zoom))
 
-	var map_tiles: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
+	var map_tiles: Vector2i = _map_tiles_size()
 	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
 	var pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
 
