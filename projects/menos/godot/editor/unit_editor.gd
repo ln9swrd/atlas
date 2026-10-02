@@ -314,7 +314,10 @@ func _on_unit_selected(index: int) -> void:
 	var data: Dictionary = unit_data.get(selected_type, {})
 	if selected_type.is_empty():
 		return
-	name_edit.text = str(data.get("name", selected_type.to_upper()))
+	var unit_name := str(data.get("name", selected_type.to_upper()))
+	unit_preview_name.text = unit_name
+	unit_preview_description.text = str(data.get("description", UNIT_DESCRIPTIONS.get(selected_type, "사용자 등록 유닛입니다.")))
+	name_edit.text = unit_name
 	hp_spin.value = float(data.get("hp", 1.0))
 	speed_spin.value = float(data.get("speed", 0.0))
 	damage_spin.value = float(data.get("damage", 0.0))
@@ -381,7 +384,7 @@ func _save_data() -> void:
 	file.store_string(JSON.stringify(unit_data, "  "))
 	file.close()
 	_refresh_unit_list()
-	var selected_index := UNIT_TYPES.find(selected_type)
+	var selected_index := _find_unit_index(selected_type)
 	if selected_index >= 0:
 		unit_list.select(selected_index)
 		_on_unit_selected(selected_index)

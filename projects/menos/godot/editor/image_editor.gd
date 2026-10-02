@@ -18,6 +18,7 @@ var source_image: Image
 var source_dialog: FileDialog
 var source_thumbnail_cache: Dictionary = {}
 var editing := false
+var usage_label: Label
 
 signal request_content_editor
 
@@ -110,6 +111,11 @@ func _build_ui() -> void:
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
+	usage_label = Label.new()
+	usage_label.text = "용도: 선택된 이미지 없음"
+	usage_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	usage_label.add_theme_font_size_override("font_size", 16)
+	right.add_child(usage_label)
 	view = REGION_VIEW_SCRIPT.new()
 	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_child(view)
@@ -157,20 +163,22 @@ func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) 
 func _scan_connected_images() -> void:
 	entries.clear()
 	var seen := {}
-	_scan_json_images("res://content/enemies/enemies.json", "ENEMY", "sprite_anim", seen)
-	_scan_json_images("res://content/towers/towers.json", "TOWER", "sprite_anim", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "적", "sprite_anim", "적 유닛 이미지", seen)
+	_scan_json_images("res://content/towers/towers.json", "타워", "sprite_anim", "방어 시설 이미지", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "아군 유닛", "visuals.sprite", "플레이어 유닛 이미지", seen)
+	_scan_robot_images(seen)
 	_scan_catalog(seen)
 	_scan_main_preloads(seen)
 	list.clear()
 	source_list.clear()
 	for entry in entries:
 		var icon: Texture2D = load(str(entry.path)) as Texture2D
-		var label_text := "%s | %s" % [entry.label, entry.path]
+		var label_text := "[%s] %s | %s" % [str(entry.get("usage", "용도 미지정")), entry.label, entry.path]
 		list.add_item(label_text, icon)
 		source_list.add_item(label_text, icon)
 	status.text = "%d connected images found." % entries.size()
 
-func _scan_json_images(path: String, kind: String, field: String, seen: Dictionary) -> void:
+func _scan_json_images(path: String, kind: String, field: String, usage: String, seen: Dictionary) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null: return
 	var data = JSON.parse_string(file.get_as_text())
@@ -178,10 +186,38 @@ func _scan_json_images(path: String, kind: String, field: String, seen: Dictiona
 	if not data is Dictionary: return
 	for key in data:
 		if not data[key] is Dictionary: continue
-		var image_path := str(data[key].get(field, ""))
+		var value: Variant = data[key]
+		for part in field.split("."):
+			if value is Dictionary:
+				value = value.get(part, "")
+			else:
+				value = ""
+		var image_path := str(value)
 		if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "%s / %s" % [kind, str(data[key].get("name", key))], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field})
+		entries.append({"label": "%s / %s" % [kind, str(data[key].get("name", key))], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage})
+
+func _scan_robot_images(seen: Dictionary) -> void:
+	var path := "res://content/robots/robots.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null: return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary: return
+	for key in data:
+		if not data[key] is Dictionary: continue
+		var robot_name := str(data[key].get("name", key))
+		for field in ["sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "projectile_anim"]:
+			var image_path := str(data[key].get(field, ""))
+			if image_path.is_empty() or seen.has(image_path): continue
+			seen[image_path] = true
+			var usage := "로봇 기본 대기 이미지"
+			match field:
+				"sprite_attack": usage = "로봇 공격 이미지"
+				"sprite_move": usage = "로봇 이동 이미지"
+				"sprite_skill": usage = "로봇 스킬 이미지"
+				"projectile_anim": usage = "로봇 투사체 이미지"
+			entries.append({"label": "로봇 / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage})
 
 func _scan_catalog(seen: Dictionary) -> void:
 	var path := "res://content/editor/asset_catalog.json"
@@ -196,7 +232,7 @@ func _scan_catalog(seen: Dictionary) -> void:
 		var image_path := str(asset.get("source_path", ""))
 		if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "CATALOG / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path"})
+		entries.append({"label": "카탈로그 / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "카탈로그")), str(asset.get("kind", "asset"))]})
 func _scan_main_preloads(seen: Dictionary) -> void:
 	var path := "res://main.gd"
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -210,7 +246,7 @@ func _scan_main_preloads(seen: Dictionary) -> void:
 		var image_path := str(match_data.get_string(1))
 		if seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "RUNTIME / %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload"})
+		entries.append({"label": "런타임 / %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload", "usage": "게임 런타임 이미지"})
 
 func _select_path(path: String) -> void:
 	for index in range(entries.size()):
@@ -226,8 +262,10 @@ func _select_entry(index: int) -> void:
 	IMAGE_STATE.open_image(current_path)
 	current_image = LOADER.load_image(current_path)
 	if current_image == null:
+		usage_label.text = "용도: %s" % str(entries[index].get("usage", "용도 미지정"))
 		status.text = "Could not load: %s" % current_path
 		return
+	usage_label.text = "용도: %s" % str(entries[index].get("usage", "용도 미지정"))
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
 	status.text = "대상: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
 
@@ -489,9 +527,34 @@ func _replace_json_reference(path: String, key: String, field: String, source_pa
 	var data = JSON.parse_string(file.get_as_text())
 	file.close()
 	if not data is Dictionary or not data.has(key): return false
-	data[key][field] = source_path_value
-	data[key][field + "_rect"] = [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+	_set_nested_value(data[key], field, source_path_value)
+	_set_nested_value(data[key], _field_suffix(field, "_rect"), [rect.position.x, rect.position.y, rect.size.x, rect.size.y])
 	return _write_json(path, data)
+
+func _field_suffix(field: String, suffix: String) -> String:
+	var parts := field.split(".")
+	parts[parts.size() - 1] = str(parts[parts.size() - 1]) + suffix
+	return ".".join(parts)
+
+func _set_nested_value(root: Dictionary, field: String, value: Variant) -> void:
+	var parts := field.split(".")
+	var target := root
+	for i in range(parts.size() - 1):
+		var part := str(parts[i])
+		if not target.has(part) or not target[part] is Dictionary:
+			target[part] = {}
+		target = target[part]
+	target[str(parts[parts.size() - 1])] = value
+
+func _erase_nested_value(root: Dictionary, field: String) -> void:
+	var parts := field.split(".")
+	var target := root
+	for i in range(parts.size() - 1):
+		var part := str(parts[i])
+		if not target.has(part) or not target[part] is Dictionary:
+			return
+		target = target[part]
+	target.erase(str(parts[parts.size() - 1]))
 
 func _replace_catalog_reference(asset_id: String, source_path_value: String, rect: Rect2i) -> bool:
 	var path := "res://content/editor/asset_catalog.json"
@@ -526,10 +589,10 @@ func _replace_json_value(path: String, key: String, field: String, new_path: Str
 	var data = JSON.parse_string(file.get_as_text())
 	file.close()
 	if not data is Dictionary or not data.has(key): return false
-	data[key][field] = new_path
+	_set_nested_value(data[key], field, new_path)
 	# 저장 + 연결 변경으로 새 편집 PNG에 연결할 때는 이전 참조 영역을 제거한다.
 	# 새 PNG 자체가 교체 결과물이므로 전체 이미지를 사용해야 한다.
-	data[key].erase(field + "_rect")
+	_erase_nested_value(data[key], _field_suffix(field, "_rect"))
 	return _write_json(path, data)
 
 func _replace_catalog_value(asset_id: String, new_path: String) -> bool:

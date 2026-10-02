@@ -1,6 +1,7 @@
 {
-  "vanguard": {
-    "name": "VANGUARD",
+  "basic": {
+    "name": "기본",
+    "description": "기본 전투형 유닛. 공격과 생존의 균형을 갖춘 표준형입니다.",
     "hp": 180.0,
     "speed": 105.0,
     "damage": 18.0,
@@ -12,11 +13,31 @@
       "engagement_range": 72.0
     },
     "visuals": {
-      "sprite": "res://assets/menos/sprites/robot_atlas01.png"
+      "sprite": "res://images/Unit/basic.png",
+      "sprite_rect": [160, 40, 130, 160]
     }
   },
-  "ranger": {
-    "name": "RANGER",
+  "light": {
+    "name": "경량",
+    "description": "경량 기동형 유닛. 빠른 이동과 전개에 특화됩니다.",
+    "hp": 100.0,
+    "speed": 130.0,
+    "damage": 12.0,
+    "cooldown": 0.7,
+    "range": 90.0,
+    "radius": 17.0,
+    "ai": {
+      "target_preference": "fast",
+      "engagement_range": 90.0
+    },
+    "visuals": {
+      "sprite": "res://images/Unit/light.png",
+      "sprite_rect": [24, 30, 112, 135]
+    }
+  },
+  "ranged": {
+    "name": "원거리",
+    "description": "원거리 공격형 유닛. 긴 사거리에서 지속적으로 화력을 투사합니다.",
     "hp": 95.0,
     "speed": 82.0,
     "damage": 14.0,
@@ -28,11 +49,31 @@
       "engagement_range": 260.0
     },
     "visuals": {
-      "sprite": "res://assets/menos/sprites/robot_atlas01.png"
+      "sprite": "res://images/Unit/range.png",
+      "sprite_rect": [20, 30, 110, 135]
+    }
+  },
+  "heavy": {
+    "name": "헤비",
+    "description": "헤비 전투형 유닛. 높은 내구도와 강한 화력을 갖습니다.",
+    "hp": 320.0,
+    "speed": 55.0,
+    "damage": 30.0,
+    "cooldown": 1.5,
+    "range": 90.0,
+    "radius": 28.0,
+    "ai": {
+      "target_preference": "front",
+      "engagement_range": 90.0
+    },
+    "visuals": {
+      "sprite": "res://images/Unit/heavy.png",
+      "sprite_rect": [20, 30, 115, 140]
     }
   },
   "support": {
-    "name": "SUPPORT",
+    "name": "지원",
+    "description": "지원형 유닛. 아군의 전투를 보조하고 회복합니다.",
     "hp": 80.0,
     "speed": 78.0,
     "damage": 6.0,
@@ -47,7 +88,7 @@
     },
     "visuals": {
       "sprite": "res://images/Unit/support.png",
-      "sprite_rect": [0, 0, 256, 205]
+      "sprite_rect": [48, 0, 144, 192]
     }
   }
 }

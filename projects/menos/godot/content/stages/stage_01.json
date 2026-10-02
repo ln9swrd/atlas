@@ -16,12 +16,12 @@
   },
   "allied_units": [
 	{
-	  "id": "vanguard",
+	  "id": "basic",
 	  "count": 1,
 	  "spawn": "robot"
 	},
 	{
-	  "id": "ranger",
+	  "id": "ranged",
 	  "count": 1,
 	  "spawn": "robot"
 	},
