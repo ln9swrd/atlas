@@ -262,10 +262,14 @@ func _select_path(path: String) -> void:
 func _clear_image_selection() -> void:
 	if editing:
 		_finish_erase()
-	list.deselect_all()
 	current_index = -1
 	current_path = ""
 	current_image = null
+	source_index = -1
+	source_path = ""
+	source_image = null
+	list.deselect_all()
+	source_list.deselect_all()
 	IMAGE_STATE.selected_path = ""
 	usage_label.text = "용도: 선택된 이미지 없음"
 	view.set_source_texture(null)
