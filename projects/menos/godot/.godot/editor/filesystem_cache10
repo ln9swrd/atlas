@@ -1,7 +1,7 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790905869
+::res://::1790911406
 export_presets.cfg::TextFile::-1::1790727483::0::1::::<><><>0<>0<><>::
-game_controller.gd::GDScript::8692213070628158787::1790899069::0::1::::<>Node2D<><>0<>0<><>::
+game_controller.gd::GDScript::8692213070628158787::1790907000::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790729661::0::1::::<>Node2D<><>0<>0<><>::
 main.tscn::PackedScene::6409794179911717756::1790899069::0::1::::<><><>0<>0<><>::uid://burwxnadd1d0v::::res://main.gd<>uid://o1vv0mxnjaq6::::res://assets/menos/maps/northbridge_tileset.tres
 road_candidates2.png::CompressedTexture2D::7621466090416210344::1790905011::1790905642::1::::<><><>0<>0<>c76b2c6368865f0cca8d1ddfe9c27ae5<>res://.godot/imported/road_candidates2.png-d38643b5d64f68e2a80490cbadee619a.ctex::
@@ -82,8 +82,8 @@ tower_gatling_anim_edit_42698469_edit_79165238_edit_109592238.png::CompressedTex
 enemies.json::JSON::-1::1790736056::0::1::::<><><>0<>0<><>::
 ::res://content/items/::1790671549
 items.json::JSON::-1::1790671549::0::1::::<><><>0<>0<><>::
-::res://content/maps/::1790904766
-map_01.json::JSON::-1::1790905742::0::1::::<><><>0<>0<><>::
+::res://content/maps/::1790906739
+map_01.json::JSON::-1::1790906990::0::1::::<><><>0<>0<><>::
 map_01_src.json::JSON::-1::1790553661::0::1::::<><><>0<>0<><>::
 map_02.json::JSON::-1::1790815522::0::1::::<><><>0<>0<><>::
 map_03.json::JSON::-1::1790815522::0::1::::<><><>0<>0<><>::
@@ -109,7 +109,7 @@ asset_region_view.gd::GDScript::7416892912445805548::1790553661::0::1::::AssetRe
 content_editor.gd::GDScript::1241770450234517523::1790899069::0::1::::<>Control<><>0<>0<><>::
 content_editor.tscn::PackedScene::-1::1790644817::0::1::::<><><>0<>0<><>::res://editor/content_editor.gd
 content_validator.gd::GDScript::6950182015049002367::1790903149::0::1::::<>Node<><>0<>0<><>::
-editor_canvas.gd::GDScript::8515960973698181157::1790905926::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
+editor_canvas.gd::GDScript::8515960973698181157::1790906367::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
 enemy_editor.gd::GDScript::3049928235990941448::1790815522::0::1::::EnemyEditorMain<>Control<><>0<>0<><>::
 enemy_editor.tscn::PackedScene::-1::1790640781::0::1::::<><><>0<>0<><>::res://editor/enemy_editor.gd
 image_editor.gd::GDScript::850829310022179836::1790640781::0::1::::<>Control<><>0<>0<><>::
@@ -262,7 +262,7 @@ enemy_definition.gd::GDScript::4489008293599925243::1790739150::0::1::::EnemyDef
 enemy_runtime_state.gd::GDScript::4607749758043695608::1790815523::0::1::::EnemyRuntimeState<>RefCounted<><>0<>0<><>::
 gameplay_event.gd::GDScript::926430162106858445::1790753174::0::1::::GameplayEvent<>RefCounted<><>0<>0<><>::
 game_settings_loader.gd::GDScript::1546060166810696311::1790736077::0::1::::GameSettingsLoader<>RefCounted<><>0<>0<><>::
-map_loader.gd::GDScript::6280192720105538762::1790899069::0::1::::MapLoader<>RefCounted<><>0<>0<><>::
+map_loader.gd::GDScript::6280192720105538762::1790906377::0::1::::MapLoader<>RefCounted<><>0<>0<><>::
 player_profile_state.gd::GDScript::1914138135504776925::1790744931::0::1::::PlayerProfileState<>RefCounted<><>0<>0<><>::
 robot_definition.gd::GDScript::6318363844063980673::1790815523::0::1::::RobotDefinition<>RefCounted<><>0<>0<><>::
 robot_progression_state.gd::GDScript::2833143088869246316::1790743277::0::1::::RobotProgressionState<>RefCounted<><>0<>0<><>::

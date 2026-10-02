@@ -189,15 +189,15 @@
 	58.0
   ],
   "map_pixel_size": [
-	1344.0,
+	1472.0,
 	768.0
   ],
   "map_size": [
-	42,
+	46,
 	24
   ],
   "map_tiles": [
-	36.0,
+	46.0,
 	24.0
   ],
   "name": "Northbridge Sector 01",
@@ -205,8 +205,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -217,8 +217,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -229,8 +229,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -241,8 +241,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -253,8 +253,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -265,8 +265,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -277,8 +277,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -289,8 +289,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -301,8 +301,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -313,8 +313,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -325,8 +325,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -337,8 +337,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -349,8 +349,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -361,8 +361,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -373,8 +373,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -385,8 +385,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -397,8 +397,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -409,8 +409,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -421,8 +421,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -433,8 +433,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -445,8 +445,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -457,8 +457,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -469,8 +469,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -481,8 +481,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -493,8 +493,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -505,8 +505,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -517,8 +517,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -529,8 +529,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -541,8 +541,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -553,8 +553,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -565,8 +565,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -577,8 +577,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -589,8 +589,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -601,8 +601,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -613,8 +613,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -625,8 +625,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -637,8 +637,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -649,8 +649,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -661,8 +661,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -673,8 +673,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -685,8 +685,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -697,8 +697,8 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
@@ -709,13 +709,661 @@
 	{
 	  "asset_id": "asset.tile.terrain_atlas_001",
 	  "footprint_tiles": [
-		4,
-		4
+		4.0,
+		4.0
 	  ],
 	  "placement_layer": "Ground",
 	  "position": [
 		1216.0,
 		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		122.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1344.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1312.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1312.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1280.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1248.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		122.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1248.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1280.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1280.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1248.0,
+		698.0
 	  ]
 	}
   ],
@@ -1323,6 +1971,699 @@
 		  4.0
 		]
 	  },
+	  "36,1": {
+		"anchor": [
+		  36,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "36,2": {
+		"anchor": [
+		  36,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "36,21": {
+		"anchor": [
+		  36,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "36,22": {
+		"anchor": [
+		  36,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "36,23": {
+		"anchor": [
+		  36,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "36,3": {
+		"anchor": [
+		  36,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,1": {
+		"anchor": [
+		  36,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,15": {
+		"anchor": [
+		  37,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,16": {
+		"anchor": [
+		  37,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,17": {
+		"anchor": [
+		  37,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,18": {
+		"anchor": [
+		  37,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,19": {
+		"anchor": [
+		  37,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,2": {
+		"anchor": [
+		  36,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,20": {
+		"anchor": [
+		  37,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,21": {
+		"anchor": [
+		  36,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,22": {
+		"anchor": [
+		  36,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,23": {
+		"anchor": [
+		  36,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,3": {
+		"anchor": [
+		  36,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,5": {
+		"anchor": [
+		  37,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,6": {
+		"anchor": [
+		  37,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "37,7": {
+		"anchor": [
+		  37,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,10": {
+		"anchor": [
+		  38,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,12": {
+		"anchor": [
+		  38,
+		  12
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,13": {
+		"anchor": [
+		  38,
+		  12
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,14": {
+		"anchor": [
+		  38,
+		  12
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,15": {
+		"anchor": [
+		  37,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,16": {
+		"anchor": [
+		  37,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,17": {
+		"anchor": [
+		  37,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,18": {
+		"anchor": [
+		  37,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,19": {
+		"anchor": [
+		  37,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,2": {
+		"anchor": [
+		  38,
+		  2
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,20": {
+		"anchor": [
+		  37,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,21": {
+		"anchor": [
+		  38,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,22": {
+		"anchor": [
+		  38,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,23": {
+		"anchor": [
+		  38,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,3": {
+		"anchor": [
+		  38,
+		  2
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,4": {
+		"anchor": [
+		  38,
+		  2
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,5": {
+		"anchor": [
+		  37,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,6": {
+		"anchor": [
+		  37,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,7": {
+		"anchor": [
+		  37,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,8": {
+		"anchor": [
+		  38,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "38,9": {
+		"anchor": [
+		  38,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,10": {
+		"anchor": [
+		  38,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,12": {
+		"anchor": [
+		  38,
+		  12
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,13": {
+		"anchor": [
+		  38,
+		  12
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,14": {
+		"anchor": [
+		  38,
+		  12
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,15": {
+		"anchor": [
+		  39,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,16": {
+		"anchor": [
+		  39,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,17": {
+		"anchor": [
+		  39,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,18": {
+		"anchor": [
+		  39,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,19": {
+		"anchor": [
+		  39,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,2": {
+		"anchor": [
+		  38,
+		  2
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,20": {
+		"anchor": [
+		  39,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,21": {
+		"anchor": [
+		  38,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,22": {
+		"anchor": [
+		  38,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,23": {
+		"anchor": [
+		  38,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,3": {
+		"anchor": [
+		  38,
+		  2
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,4": {
+		"anchor": [
+		  38,
+		  2
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,5": {
+		"anchor": [
+		  39,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,6": {
+		"anchor": [
+		  39,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,7": {
+		"anchor": [
+		  39,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,8": {
+		"anchor": [
+		  38,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "39,9": {
+		"anchor": [
+		  38,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
 	  "4,0": {
 		"anchor": [
 		  4.0,
@@ -1387,6 +2728,963 @@
 		"footprint_tiles": [
 		  4.0,
 		  4.0
+		]
+	  },
+	  "40,1": {
+		"anchor": [
+		  40,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,10": {
+		"anchor": [
+		  40,
+		  10
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,11": {
+		"anchor": [
+		  40,
+		  10
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,12": {
+		"anchor": [
+		  40,
+		  10
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,15": {
+		"anchor": [
+		  39,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,16": {
+		"anchor": [
+		  39,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,17": {
+		"anchor": [
+		  39,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,18": {
+		"anchor": [
+		  39,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,19": {
+		"anchor": [
+		  39,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,2": {
+		"anchor": [
+		  40,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,20": {
+		"anchor": [
+		  39,
+		  18
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,21": {
+		"anchor": [
+		  40,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,22": {
+		"anchor": [
+		  40,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,23": {
+		"anchor": [
+		  40,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,3": {
+		"anchor": [
+		  40,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,5": {
+		"anchor": [
+		  39,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,6": {
+		"anchor": [
+		  39,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "40,7": {
+		"anchor": [
+		  39,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,1": {
+		"anchor": [
+		  40,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,10": {
+		"anchor": [
+		  40,
+		  10
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,11": {
+		"anchor": [
+		  40,
+		  10
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,12": {
+		"anchor": [
+		  40,
+		  10
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,17": {
+		"anchor": [
+		  41,
+		  17
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,18": {
+		"anchor": [
+		  41,
+		  17
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,19": {
+		"anchor": [
+		  41,
+		  17
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,2": {
+		"anchor": [
+		  40,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,21": {
+		"anchor": [
+		  40,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,22": {
+		"anchor": [
+		  40,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,23": {
+		"anchor": [
+		  40,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,3": {
+		"anchor": [
+		  40,
+		  1
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,4": {
+		"anchor": [
+		  41,
+		  4
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,5": {
+		"anchor": [
+		  41,
+		  4
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "41,6": {
+		"anchor": [
+		  41,
+		  4
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,0": {
+		"anchor": [
+		  42,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,1": {
+		"anchor": [
+		  42,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,10": {
+		"anchor": [
+		  42,
+		  9
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,11": {
+		"anchor": [
+		  42,
+		  9
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,17": {
+		"anchor": [
+		  41,
+		  17
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,18": {
+		"anchor": [
+		  41,
+		  17
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,19": {
+		"anchor": [
+		  41,
+		  17
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,2": {
+		"anchor": [
+		  42,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,20": {
+		"anchor": [
+		  42,
+		  20
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,21": {
+		"anchor": [
+		  42,
+		  20
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,22": {
+		"anchor": [
+		  42,
+		  20
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,4": {
+		"anchor": [
+		  41,
+		  4
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,5": {
+		"anchor": [
+		  41,
+		  4
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,6": {
+		"anchor": [
+		  41,
+		  4
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "42,9": {
+		"anchor": [
+		  42,
+		  9
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,0": {
+		"anchor": [
+		  42,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,1": {
+		"anchor": [
+		  42,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,10": {
+		"anchor": [
+		  42,
+		  9
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,11": {
+		"anchor": [
+		  42,
+		  9
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,15": {
+		"anchor": [
+		  43,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,16": {
+		"anchor": [
+		  43,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,17": {
+		"anchor": [
+		  43,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,2": {
+		"anchor": [
+		  42,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,20": {
+		"anchor": [
+		  42,
+		  20
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,21": {
+		"anchor": [
+		  42,
+		  20
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,22": {
+		"anchor": [
+		  42,
+		  20
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,5": {
+		"anchor": [
+		  43,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,6": {
+		"anchor": [
+		  43,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,7": {
+		"anchor": [
+		  43,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "43,9": {
+		"anchor": [
+		  42,
+		  9
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,0": {
+		"anchor": [
+		  44,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,1": {
+		"anchor": [
+		  44,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,10": {
+		"anchor": [
+		  44,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,15": {
+		"anchor": [
+		  43,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,16": {
+		"anchor": [
+		  43,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,17": {
+		"anchor": [
+		  43,
+		  15
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,2": {
+		"anchor": [
+		  44,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,21": {
+		"anchor": [
+		  44,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,22": {
+		"anchor": [
+		  44,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,23": {
+		"anchor": [
+		  44,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,5": {
+		"anchor": [
+		  43,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,6": {
+		"anchor": [
+		  43,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,7": {
+		"anchor": [
+		  43,
+		  5
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,8": {
+		"anchor": [
+		  44,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "44,9": {
+		"anchor": [
+		  44,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,0": {
+		"anchor": [
+		  44,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,1": {
+		"anchor": [
+		  44,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,10": {
+		"anchor": [
+		  44,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,2": {
+		"anchor": [
+		  44,
+		  0
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,21": {
+		"anchor": [
+		  44,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,22": {
+		"anchor": [
+		  44,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,23": {
+		"anchor": [
+		  44,
+		  21
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,8": {
+		"anchor": [
+		  44,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
+		]
+	  },
+	  "45,9": {
+		"anchor": [
+		  44,
+		  8
+		],
+		"asset_id": "asset.tile.ground_2",
+		"footprint_tiles": [
+		  2,
+		  3
 		]
 	  },
 	  "8,0": {

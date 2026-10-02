@@ -165,6 +165,14 @@ func _setup_camera() -> void:
 	camera.limit_top = int(MAP_ORIGIN.y)
 	camera.limit_right = int(MAP_ORIGIN.x + MAP_PIXEL_SIZE.x)
 	camera.limit_bottom = int(MAP_ORIGIN.y + MAP_PIXEL_SIZE.y)
+	var background := get_parent().get_node_or_null("MapBackground") as Polygon2D
+	if background != null:
+		background.polygon = PackedVector2Array([
+			MAP_ORIGIN.x, MAP_ORIGIN.y,
+			MAP_ORIGIN.x + MAP_PIXEL_SIZE.x, MAP_ORIGIN.y,
+			MAP_ORIGIN.x + MAP_PIXEL_SIZE.x, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y,
+			MAP_ORIGIN.x, MAP_ORIGIN.y + MAP_PIXEL_SIZE.y
+		])
 	camera.position_smoothing_enabled = true
 	camera.position_smoothing_speed = 8.0
 
@@ -396,6 +404,32 @@ func _draw_catalog_map_tiles(map_data: Dictionary) -> void:
 				continue
 			var cell := Vector2(float(parts[0].to_int()), float(parts[1].to_int()))
 			var destination := Rect2(origin + cell * 32.0, Vector2(float(footprint_values[0]) * 32.0, float(footprint_values[1]) * 32.0))
+			var source_rect := Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+			draw_texture_rect_region(texture, destination, source_rect)
+
+	var objects: Variant = map_data.get("objects", [])
+	if objects is Array:
+		for object_data in objects:
+			if not object_data is Dictionary:
+				continue
+			var asset_id := str(object_data.get("asset_id", ""))
+			var asset: Dictionary = _map_catalog_assets.get(asset_id, {})
+			if asset.is_empty():
+				continue
+			var source_path := str(asset.get("source_path", ""))
+			var texture := load(source_path) as Texture2D
+			if texture == null:
+				continue
+			var rect_values: Variant = asset.get("source_rect_px", [0, 0, 32, 32])
+			if not rect_values is Array or rect_values.size() < 4:
+				continue
+			var footprint_values: Variant = object_data.get("footprint_tiles", asset.get("footprint_tiles", [1, 1]))
+			if not footprint_values is Array or footprint_values.size() < 2:
+				continue
+			var position_values: Variant = object_data.get("position", [0, 0])
+			if not position_values is Array or position_values.size() < 2:
+				continue
+			var destination := Rect2(Vector2(float(position_values[0]), float(position_values[1])), Vector2(float(footprint_values[0]) * 32.0, float(footprint_values[1]) * 32.0))
 			var source_rect := Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
 			draw_texture_rect_region(texture, destination, source_rect)
 
