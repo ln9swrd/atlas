@@ -88,6 +88,13 @@ func set_map_data(data: Dictionary) -> void:
 		map_data["tiles"] = {}
 	queue_redraw()
 
+func set_map_size_preview(new_size: Vector2i) -> void:
+	var safe_size := Vector2i(maxi(1, new_size.x), maxi(1, new_size.y))
+	map_data["map_tiles"] = [safe_size.x, safe_size.y]
+	map_data["map_pixel_size"] = [safe_size.x * 32, safe_size.y * 32]
+	_fit_map_to_viewport()
+	queue_redraw()
+
 func set_editor_mode(mode: String) -> void:
 	editor_mode = "GAMEPLAY" if mode == "GAMEPLAY" else "ASSET"
 	gameplay_tool = "SELECT"

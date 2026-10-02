@@ -326,7 +326,8 @@ func _on_map_size_spin_changed(_value: float) -> void:
 		return
 	current_map_data["map_tiles"] = [new_size.x, new_size.y]
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
-	canvas.set_map_data(current_map_data)
+	canvas.set_map_size_preview(new_size)
+	current_map_data = canvas.map_data
 	update_status("Map preview resized to %d × %d tiles. Save JSON to keep the change." % [new_size.x, new_size.y])
 
 func _on_map_size_apply_pressed() -> void:
