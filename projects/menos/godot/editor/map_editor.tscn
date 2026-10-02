@@ -108,7 +108,7 @@ tooltip_text = "????????藥????裕?ID???곸궠??戮れ뿉?蹂μ쟽???롪틵????�
 clear_button_enabled = true
 
 [node name="AssetScroll" type="ScrollContainer" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
-custom_minimum_size = Vector2(0, 190)
+custom_minimum_size = Vector2(0, 450)
 layout_mode = 2
 size_flags_vertical = 3
 
