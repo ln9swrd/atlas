@@ -298,8 +298,9 @@ func _build_map_size_controls() -> void:
 	row.add_child(map_height_spin)
 	var apply := Button.new()
 	apply.text = "적용"
-	apply.disabled = true
-	apply.tooltip_text = "W/H 스피너 변경 시 실시간으로 적용됩니다."
+	apply.disabled = false
+	apply.tooltip_text = "현재 W/H 값을 다시 적용합니다."
+	apply.pressed.connect(_on_map_size_apply_pressed)
 	row.add_child(apply)
 	$MainLayout/Inspector/VBox.add_child(map_size_panel)
 	$MainLayout/Inspector/VBox.move_child(map_size_panel, 0)

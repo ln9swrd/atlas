@@ -16,6 +16,7 @@ var selected_object: Dictionary = {}
 var editor_mode := "ASSET"
 var edit_mode := "SELECT" # SELECT, PAINT, ERASE
 var active_layer := "Ground" # Ground, Vegetation, RoadComposition
+var visible_layer := "ALL" # ALL, Ground, Vegetation, RoadComposition
 var gameplay_tool := "SELECT"
 var selected_tile_source_id := 0
 var selected_tile_atlas_coords := Vector2i.ZERO
@@ -121,6 +122,13 @@ func set_edit_mode(mode: String) -> void:
 
 func set_active_layer(layer_name: String) -> void:
 	active_layer = layer_name
+
+func set_visible_layer(layer_name: String) -> void:
+	visible_layer = "ALL" if layer_name.is_empty() else layer_name
+	queue_redraw()
+
+func is_layer_visible(layer_name: String) -> bool:
+	return visible_layer == "ALL" or visible_layer == layer_name
 
 func _fit_map_to_viewport() -> void:
 	var viewport_control := get_parent() as Control
