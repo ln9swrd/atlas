@@ -241,12 +241,8 @@ func _refresh_unit_list() -> void:
 		var data: Dictionary = unit_data.get(unit_type, {})
 		unit_list.add_item(str(data.get("name", unit_type.to_upper())))
 		unit_list.set_item_metadata(unit_list.item_count - 1, unit_type)
-		var visuals: Dictionary = data.get("visuals", {})
-		var sprite_path := str(visuals.get("sprite", ""))
-		if not sprite_path.is_empty():
-			var texture := _texture_from_sprite_data(sprite_path, visuals.get("sprite_rect", []))
-			if texture != null:
-				unit_list.set_item_icon(unit_list.item_count - 1, texture)
+		# TEMP: hide unit list icons while sprite-region UI is being stabilized.
+		unit_list.set_item_icon(unit_list.item_count - 1, null)
 
 func _on_unit_selected(index: int) -> void:
 	if index < 0 or index >= unit_list.item_count:
