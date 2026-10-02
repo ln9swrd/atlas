@@ -15,6 +15,8 @@ var cooldown_spin: SpinBox
 var range_spin: SpinBox
 var preference_edit: LineEdit
 var sprite_edit: LineEdit
+var default_image_edit: LineEdit
+var animation_edits: Dictionary = {}
 var projectile_edit: LineEdit
 var file_dialog_target := "sprite"
 var level2_cost_spin: SpinBox
@@ -100,6 +102,13 @@ func _build_properties(parent: VBoxContainer) -> void:
 	browse.text = "Browse"
 	browse.pressed.connect(func(): _open_sprite_dialog("sprite"))
 	sprite_row.add_child(browse)
+	var animation_title := Label.new()
+	animation_title.text = "SPRITE ANIMATIONS"
+	animation_title.add_theme_font_size_override("font_size", 16)
+	parent.add_child(animation_title)
+	for animation_name in ["idle", "attack", "hit", "death"]:
+		animation_edits[animation_name] = _image_row(parent, animation_name.to_upper() + " Animation", "animation:" + animation_name)
+	default_image_edit = _image_row(parent, "Basic Image", "default_image")
 	var projectile_row := HBoxContainer.new()
 	parent.add_child(projectile_row)
 	var projectile_label := Label.new()
@@ -144,6 +153,22 @@ func _build_properties(parent: VBoxContainer) -> void:
 	level2_damage_spin = _spin_row(parent, "LV2 Damage", 0, 99999, 0.1, 10)
 	level2_cooldown_spin = _spin_row(parent, "Level 2 Cooldown", 0.01, 9999, 0.01, 1)
 	level2_range_spin = _spin_row(parent, "LV2 Range", 0, 99999, 1, 150)
+
+func _image_row(parent: VBoxContainer, label_text: String, target: String) -> LineEdit:
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 130
+	row.add_child(label)
+	var edit := LineEdit.new()
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(edit)
+	var browse := Button.new()
+	browse.text = "Browse"
+	browse.pressed.connect(func(): _open_sprite_dialog(target))
+	row.add_child(browse)
+	return edit
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -206,6 +231,10 @@ func _on_tower_selected(index: int) -> void:
 	range_spin.value = float(data.get("range", 0.0))
 	preference_edit.text = str(data.get("preference", ""))
 	sprite_edit.text = str(data.get("sprite_anim", "res://assets/menos/sprites/tower_%s_anim.png" % selected_type))
+	default_image_edit.text = str(data.get("default_image", sprite_edit.text))
+	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
+	for animation_name in animation_edits.keys():
+		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, sprite_edit.text))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
 	_refresh_animation_previews()
 	level2_cost_spin.value = float(level2.get("upgrade_cost", 0.0))
@@ -228,6 +257,11 @@ func _save_data() -> void:
 	data["range"] = float(range_spin.value)
 	data["preference"] = preference_edit.text.strip_edges()
 	data["sprite_anim"] = sprite_edit.text.strip_edges()
+	data["default_image"] = default_image_edit.text.strip_edges()
+	var animations: Dictionary = data.get("animations", {}).duplicate(true)
+	for animation_name in animation_edits.keys():
+		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+	data["animations"] = animations
 	data["projectile_anim"] = projectile_edit.text.strip_edges()
 	data["level2"] = {
 		"upgrade_cost": int(level2_cost_spin.value),
@@ -304,6 +338,12 @@ func _open_sprite_dialog(target: String = "sprite") -> void:
 func _on_file_selected(path: String) -> void:
 	if file_dialog_target == "projectile":
 		projectile_edit.text = path
+	elif file_dialog_target == "default_image":
+		default_image_edit.text = path
+	elif file_dialog_target.begins_with("animation:"):
+		var animation_name := file_dialog_target.trim_prefix("animation:")
+		if animation_edits.has(animation_name):
+			(animation_edits[animation_name] as LineEdit).text = path
 	else:
 		sprite_edit.text = path
 	_refresh_animation_previews()

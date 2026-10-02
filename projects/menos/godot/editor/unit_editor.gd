@@ -29,6 +29,8 @@ var melee_check: CheckButton
 var melee_cooldown_spin: SpinBox
 var color_edit: ColorPickerButton
 var sprite_edit: LineEdit
+var default_image_edit: LineEdit
+var animation_edits: Dictionary = {}
 var projectile_edit: LineEdit
 var file_dialog: FileDialog
 var file_dialog_target := "sprite"
@@ -171,6 +173,13 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_rect_h_spin = _spin_row_inline(sprite_rect_row, "H", 0, 100000, 1, 0)
 	for rect_spin in [sprite_rect_x_spin, sprite_rect_y_spin, sprite_rect_w_spin, sprite_rect_h_spin]:
 		rect_spin.value_changed.connect(func(_value): _refresh_sprite_preview(sprite_edit.text.strip_edges()))
+	var animation_title := Label.new()
+	animation_title.text = "SPRITE ANIMATIONS"
+	animation_title.add_theme_font_size_override("font_size", 16)
+	parent.add_child(animation_title)
+	for animation_name in ["idle", "attack", "hit", "death", "move"]:
+		animation_edits[animation_name] = _image_row(parent, animation_name.to_upper() + " Animation", "animation:" + animation_name)
+	default_image_edit = _image_row(parent, "Basic Image", "default_image")
 	var projectile_row := HBoxContainer.new()
 	parent.add_child(projectile_row)
 	var projectile_label := Label.new()
@@ -206,6 +215,22 @@ func _build_properties(parent: VBoxContainer) -> void:
 	robot_damage_spin = _spin_row(parent, "Robot Damage", 0, 9999, 0.1, 0)
 	robot_range_spin = _spin_row(parent, "Robot Range", 0, 9999, 0.1, 0)
 	robot_cooldown_spin = _spin_row(parent, "Robot Cooldown", 0, 9999, 0.05, 0)
+
+func _image_row(parent: VBoxContainer, label_text: String, target: String) -> LineEdit:
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 130
+	row.add_child(label)
+	var edit := LineEdit.new()
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(edit)
+	var browse := Button.new()
+	browse.text = "Browse"
+	browse.pressed.connect(func(): _open_sprite_dialog(target))
+	row.add_child(browse)
+	return edit
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -326,6 +351,10 @@ func _on_unit_selected(index: int) -> void:
 	color_edit.color = Color(str(data.get("color", "#ffffff")))
 	var visuals: Dictionary = data.get("visuals", {})
 	sprite_edit.text = str(visuals.get("sprite", ""))
+	default_image_edit.text = str(visuals.get("default_image", visuals.get("sprite", "")))
+	var animations: Dictionary = visuals.get("animations", {}) if visuals.get("animations", {}) is Dictionary else {}
+	for animation_name in animation_edits.keys():
+		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, visuals.get("sprite", "")))
 	var sprite_rect: Array = visuals.get("sprite_rect", [])
 	_set_sprite_rect_controls(sprite_rect)
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_threat.png"))
@@ -365,6 +394,11 @@ func _save_data() -> void:
 	data["range"] = float(attack_range_spin.value)
 	var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
 	visuals["sprite"] = sprite_edit.text.strip_edges()
+	visuals["default_image"] = default_image_edit.text.strip_edges()
+	var animations: Dictionary = visuals.get("animations", {}).duplicate(true)
+	for animation_name in animation_edits.keys():
+		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+	visuals["animations"] = animations
 	var sprite_rect := _get_sprite_rect_from_controls()
 	if sprite_rect.is_empty():
 		visuals.erase("sprite_rect")
@@ -445,6 +479,12 @@ func _open_sprite_dialog(target: String = "sprite") -> void:
 func _on_file_selected(path: String) -> void:
 	if file_dialog_target == "projectile":
 		projectile_edit.text = path
+	elif file_dialog_target == "default_image":
+		default_image_edit.text = path
+	elif file_dialog_target.begins_with("animation:"):
+		var animation_name := file_dialog_target.trim_prefix("animation:")
+		if animation_edits.has(animation_name):
+			(animation_edits[animation_name] as LineEdit).text = path
 	else:
 		sprite_edit.text = path
 		_refresh_sprite_preview(path)

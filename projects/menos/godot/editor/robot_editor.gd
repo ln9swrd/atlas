@@ -17,7 +17,18 @@ var idle_edit: LineEdit
 var attack_edit: LineEdit
 var move_edit: LineEdit
 var skill_edit: LineEdit
+var hit_edit: LineEdit
+var death_edit: LineEdit
+var skill1_edit: LineEdit
+var skill2_edit: LineEdit
+var skill3_edit: LineEdit
+var special_edit: LineEdit
+var finisher_edit: LineEdit
+var default_image_edit: LineEdit
+var animation_edits: Dictionary = {}
 var projectile_edit: LineEdit
+var file_dialog: FileDialog
+var file_dialog_target := "sprite"
 var status_label: Label
 var animation_previews: Dictionary = {}
 var animation_timer: Timer
@@ -82,11 +93,14 @@ func _build_ui() -> void:
 	visual_title.text = "VISUAL / PROJECTILE"
 	visual_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(visual_title)
-	idle_edit = _line_row(content, "Idle Animation")
-	attack_edit = _line_row(content, "Attack Animation")
-	move_edit = _line_row(content, "Move Animation")
-	skill_edit = _line_row(content, "Skill Animation")
-	projectile_edit = _line_row(content, "Projectile Animation")
+	idle_edit = _image_row(content, "Idle Animation", "animation:idle")
+	attack_edit = _image_row(content, "Attack Animation", "animation:attack")
+	move_edit = _image_row(content, "Move Animation", "animation:move")
+	skill_edit = _image_row(content, "Skill Animation", "animation:skill")
+	for animation_name in ["hit", "death", "skill1", "skill2", "skill3", "special", "finisher"]:
+		animation_edits[animation_name] = _image_row(content, animation_name.to_upper() + " Animation", "animation:" + animation_name)
+	default_image_edit = _image_row(content, "Basic Image", "default_image")
+	projectile_edit = _image_row(content, "Projectile Animation", "projectile")
 	var animation_preview_title := Label.new()
 	animation_preview_title.text = "ANIMATION PREVIEW"
 	animation_preview_title.add_theme_font_size_override("font_size", 14)
@@ -103,6 +117,22 @@ func _build_ui() -> void:
 	ability_note.text = "SPECIAL ABILITIES: managed by content/skills/skills.json"
 	ability_note.add_theme_font_size_override("font_size", 13)
 	content.add_child(ability_note)
+
+func _image_row(parent: VBoxContainer, label_text: String, target: String) -> LineEdit:
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 150
+	row.add_child(label)
+	var edit := LineEdit.new()
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(edit)
+	var browse := Button.new()
+	browse.text = "Browse"
+	browse.pressed.connect(func(): _open_sprite_dialog(target))
+	row.add_child(browse)
+	return edit
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -170,6 +200,10 @@ func _on_robot_selected(index: int) -> void:
 	move_edit.text = str(data.get("sprite_move", "res://assets/menos/sprites/atlas_move.png"))
 	skill_edit.text = str(data.get("sprite_skill", "res://assets/menos/sprites/atlas_skill.png"))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
+	default_image_edit.text = str(data.get("default_image", data.get("sprite_idle", "")))
+	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
+	for animation_name in animation_edits.keys():
+		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, data.get("sprite_skill", "")))
 	_refresh_animation_previews()
 
 func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
@@ -234,6 +268,11 @@ func _save_data() -> void:
 	data["sprite_attack"] = attack_edit.text.strip_edges()
 	data["sprite_move"] = move_edit.text.strip_edges()
 	data["sprite_skill"] = skill_edit.text.strip_edges()
+	data["default_image"] = default_image_edit.text.strip_edges()
+	var animations: Dictionary = data.get("animations", {}).duplicate(true)
+	for animation_name in animation_edits.keys():
+		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+	data["animations"] = animations
 	data["projectile_anim"] = projectile_edit.text.strip_edges()
 	robot_data[selected_type] = data
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/robots"))
@@ -249,6 +288,36 @@ func _save_data() -> void:
 			robot_list.select(i)
 			break
 	_set_status("SAVED: " + ROBOT_FILE)
+
+func _open_sprite_dialog(target: String = "sprite") -> void:
+	file_dialog_target = target
+	if file_dialog == null:
+		file_dialog = FileDialog.new()
+		file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+		file_dialog.access = FileDialog.ACCESS_RESOURCES
+		file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Images"]
+		file_dialog.file_selected.connect(_on_file_selected)
+		add_child(file_dialog)
+	file_dialog.popup_centered_ratio(0.75)
+
+func _on_file_selected(path: String) -> void:
+	if file_dialog_target == "projectile":
+		projectile_edit.text = path
+	elif file_dialog_target == "default_image":
+		default_image_edit.text = path
+	elif file_dialog_target.begins_with("animation:"):
+		var animation_name := file_dialog_target.trim_prefix("animation:")
+		if animation_name == "idle":
+			idle_edit.text = path
+		elif animation_name == "attack":
+			attack_edit.text = path
+		elif animation_name == "move":
+			move_edit.text = path
+		elif animation_name == "skill":
+			skill_edit.text = path
+		elif animation_edits.has(animation_name):
+			(animation_edits[animation_name] as LineEdit).text = path
+	_refresh_animation_previews()
 
 func _set_status(message: String) -> void:
 	if status_label:
