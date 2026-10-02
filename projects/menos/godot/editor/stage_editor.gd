@@ -239,7 +239,46 @@ func _refresh_map_options(selected_path: String) -> void:
 		map_option.add_item(f)
 		map_option.set_item_metadata(map_option.item_count - 1, path)
 		if path == selected_path: selected = map_option.item_count - 1
-	if map_option.item_count > 0: map_option.select(selected)
+	if map_option.item_count > 0:
+		map_option.select(selected)
+	_refresh_map_preview(selected_path)
+
+func _on_map_option_selected(index: int) -> void:
+	if index < 0 or index >= map_option.item_count:
+		_refresh_map_preview("")
+		return
+	_refresh_map_preview(str(map_option.get_item_metadata(index)))
+
+func _load_map_preview_assets() -> void:
+	map_preview_assets.clear()
+	var file := FileAccess.open(ASSET_CATALOG_FILE, FileAccess.READ)
+	if file == null:
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary or not parsed.get("assets", []) is Array:
+		return
+	for value in parsed.get("assets", []):
+		if value is Dictionary:
+			map_preview_assets.append(value.duplicate(true))
+
+func _refresh_map_preview(map_path: String) -> void:
+	if map_preview_canvas == null:
+		return
+	if map_path.is_empty():
+		map_preview_status.text = "연결된 맵 없음"
+		map_preview_canvas.set_map_data({})
+		return
+	var data := MapLoader.load_map_data(map_path)
+	if data.is_empty():
+		map_preview_status.text = "맵을 불러올 수 없습니다: " + map_path
+		map_preview_canvas.set_map_data({})
+		return
+	_load_map_preview_assets()
+	map_preview_canvas.set_catalog_assets(map_preview_assets)
+	map_preview_canvas.set_editor_mode("ASSET")
+	map_preview_canvas.set_gameplay_visible(false)
+	map_preview_canvas.set_map_data(data)
+	map_preview_status.text = "%s  |  %s" % [str(data.get("name", map_path.get_file())), map_path]
 
 func _on_stage_selected(_index: int) -> void:
 	_load_selected_stage()
