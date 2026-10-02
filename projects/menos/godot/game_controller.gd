@@ -201,8 +201,7 @@ func _load_allied_unit_catalog() -> void:
 	for unit_id in allied_unit_catalog.keys():
 		var definition := AlliedUnitDefinition.from_catalog(str(unit_id), allied_unit_catalog[unit_id])
 		allied_unit_definitions[unit_id] = definition
-		var sprite_path := str(definition.visuals.get("sprite", ""))
-		allied_sprite_catalog[unit_id] = load(sprite_path) as Texture2D if not sprite_path.is_empty() else null
+		allied_sprite_catalog[unit_id] = _texture_from_catalog_entry(definition.visuals, "sprite")
 
 func _load_enemy_catalog() -> void:
 	enemy_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json")

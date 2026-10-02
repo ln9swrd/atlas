@@ -46,7 +46,8 @@
       "support_range": 220.0
     },
     "visuals": {
-      "sprite": "res://images/Unit/support.png"
+      "sprite": "res://images/Unit/support.png",
+      "sprite_rect": [0, 0, 256, 205]
     }
   }
 }
