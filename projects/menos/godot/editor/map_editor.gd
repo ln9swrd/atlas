@@ -45,6 +45,7 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 var map_size_panel: PanelContainer
 var map_width_spin: SpinBox
 var map_height_spin: SpinBox
+var option_layer_view: OptionButton
 
 var current_map_path := "res://map_data/northbridge_sector_01.json"
 var current_map_data := {}
@@ -407,6 +408,39 @@ func setup_layer_options() -> void:
 		option_layer.add_item("Vegetation Layer", 1)
 		option_layer.add_item("RoadComposition Layer", 2)
 		option_layer.select(0)
+		option_layer.item_selected.connect(_on_edit_layer_selected)
+
+	if option_layer_view == null:
+		var parent := option_layer.get_parent() as Container
+		if parent != null:
+			var view_label := Label.new()
+			view_label.text = "표시 레이어"
+			view_label.tooltip_text = "중앙 맵에 표시할 레이어를 선택합니다."
+			option_layer_view = OptionButton.new()
+			option_layer_view.name = "OptionLayerView"
+			option_layer_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			option_layer_view.add_item("전체 레이어", 0)
+			option_layer_view.add_item("Ground Layer", 1)
+			option_layer_view.add_item("Vegetation Layer", 2)
+			option_layer_view.add_item("RoadComposition Layer", 3)
+			option_layer_view.select(0)
+			option_layer_view.item_selected.connect(_on_layer_view_selected)
+			var index := parent.get_children().find(option_layer)
+			parent.add_child(view_label)
+			parent.move_child(view_label, index)
+			parent.add_child(option_layer_view)
+			parent.move_child(option_layer_view, index + 1)
+
+func _on_edit_layer_selected(index: int) -> void:
+	var layer_names := ["Ground", "Vegetation", "RoadComposition"]
+	if index >= 0 and index < layer_names.size() and canvas:
+		canvas.set_active_layer(layer_names[index])
+
+func _on_layer_view_selected(index: int) -> void:
+	var layer_names := ["ALL", "Ground", "Vegetation", "RoadComposition"]
+	if index >= 0 and index < layer_names.size() and canvas:
+		canvas.set_visible_layer(layer_names[index])
+		update_status("표시 레이어: %s" % ("전체" if index == 0 else layer_names[index]))
 
 func load_map(path: String) -> void:
 	current_map_path = path
