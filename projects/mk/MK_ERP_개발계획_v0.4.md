@@ -179,3 +179,20 @@ STATUS: IN PROGRESS
 ## 12. 다음 단계
 Master가 별도 요청한 경우에만 위 우선순위에 따라 개발/검증을 진행한다.
 목적 달성 후 자동으로 다음 Phase를 시작하지 않는다.
+
+## 13. 2026-10-02 진행 확인
+- 기준선 재확인: main / HEAD 10507836df3625aa45ad5aeb4c932ca6be028e1c / Working Tree에는 본 문서만 신규 미추적 상태.
+- Release Build VERIFIED: 0 warnings / 0 errors.
+- LicenseTool VERIFIED: 현재 PC Machine Fingerprint 조회 및 발급 명령 경로 확인.
+- 배포본 VERIFIED: MKERP.App.exe 및 database schema/seed 포함 확인.
+- 고객 배포본에 license.json이 기본 포함되지 않음을 확인.
+- 자동화 테스트 코드: 현재 tests/MKERP.Infrastructure.Tests 디렉터리에 실행 가능한 테스트 코드가 없어 자동화 PASS 판정 불가.
+- 타 PC license.json 실행 거부의 실제 Runtime 종료코드 검증: UNVERIFIED. 도구 안전 제한으로 직접 실행 검증을 완료하지 못함.
+- 실제 다품목/Lot/취소/백업복구/신규PC Runtime 검증: 아직 NOT VERIFIED.
+
+## 14. 현재 결정 게이트
+다음으로 진행하기 위해 Master의 업무정책 결정이 필요한 항목은 구매 취소 시 이미 사용된 재고에 대한 처리정책이다.
+- 정책 A: 부족재고라도 취소를 허용하고 역출고를 별도 오류/잔량으로 기록
+- 정책 B: 사용된 재고가 있으면 취소를 차단
+- 정책 C: 일부 역거래만 허용하고 부족분은 별도 조정 처리
+현재 Canon에서 이 정책을 확정하지 않았으므로 임의 구현하지 않고 HOLD한다.
