@@ -456,7 +456,7 @@ func setup_layer_options() -> void:
 			option_layer_view.add_item("All Layers", 0)
 			option_layer_view.add_item("Ground Layer", 1)
 			option_layer_view.add_item("Vegetation Layer", 2)
-			option_layer_view.add_item("濡쒕뱶 ?덉씠??, 3)
+			option_layer_view.add_item("Road Layer", 3)
 			option_layer_view.select(0)
 			option_layer_view.item_selected.connect(_on_layer_view_selected)
 			var index := parent.get_children().find(option_layer)
@@ -851,7 +851,7 @@ func _on_fill_ground_pressed() -> void:
 		update_status("Ground ?꾩껜 梨꾩슦湲곕뒗 ??쇰쭔 ?ъ슜?????덉뒿?덈떎.")
 		return
 	var filled := canvas.fill_ground_empty_with_selected_tile()
-	update_status("Ground 鍮??곸뿭 梨꾩슦湲? %d媛?諛곗튂" % filled)
+	update_status("Ground fill: %d placed" % filled)
 
 func set_asset_preview(entry: Dictionary) -> void:
 	asset_preview.texture = null
