@@ -178,6 +178,12 @@ public sealed class PurchaseOrderRepository(ERPDbContext db) : IPurchaseOrderRep
             }
         }
 
+        foreach (var movement in movements)
+        {
+            movement.StatusId = cancelledStatusId;
+            movement.UpdatedAt = DateTime.UtcNow;
+        }
+
         var before = Snapshot(order);
         order.StatusId = cancelledStatusId;
         order.UpdatedAt = DateTime.UtcNow;
