@@ -1,6 +1,7 @@
 {
     "atlas.model": "qwen3:8b",
     "atlas.provider": "ollama",
+    "extensions.ignoreRecommendations": true,
     "files.associations": {
         "*.usf": "hlsl",
         "*.ush": "hlsl"
