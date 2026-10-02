@@ -1486,7 +1486,7 @@ func _draw() -> void:
 	if map_data.has("tiles"):
 		var layers: Dictionary = map_data["tiles"]
 		for layer_name in ["Ground", "RoadComposition", "Vegetation"]:
-			if not layers.has(layer_name):
+			if not is_layer_visible(layer_name) or not layers.has(layer_name):
 				continue
 			var layer_tiles: Dictionary = layers[layer_name]
 			for key in layer_tiles:
