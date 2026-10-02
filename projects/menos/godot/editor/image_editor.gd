@@ -62,6 +62,10 @@ func _build_ui() -> void:
 	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	list.item_selected.connect(_select_entry)
 	left.add_child(list)
+	var clear_selection := Button.new()
+	clear_selection.text = "선택 이미지 해제"
+	clear_selection.pressed.connect(_clear_image_selection)
+	left.add_child(clear_selection)
 	var source_panel := VBoxContainer.new()
 	source_panel.custom_minimum_size.x = 280
 	body.add_child(source_panel)
@@ -254,6 +258,18 @@ func _select_path(path: String) -> void:
 			list.select(index)
 			_select_entry(index)
 			return
+
+func _clear_image_selection() -> void:
+	if editing:
+		_finish_erase()
+	list.deselect_all()
+	current_index = -1
+	current_path = ""
+	current_image = null
+	IMAGE_STATE.selected_path = ""
+	usage_label.text = "용도: 선택된 이미지 없음"
+	view.set_source_texture(null)
+	status.text = "이미지 선택을 해제했습니다."
 
 func _select_entry(index: int) -> void:
 	if editing: return
