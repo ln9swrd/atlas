@@ -130,7 +130,6 @@ func _fit_map_to_viewport() -> void:
 	var map_center := origin + map_size * 0.5
 	camera_offset = view_size * 0.5 - map_center * camera_zoom
 	queue_redraw()
-	queue_redraw()
 
 func set_eraser_size(size_in_tiles: int) -> void:
 	eraser_size = clampi(size_in_tiles, 1, 10)
