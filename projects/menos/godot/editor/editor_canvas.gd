@@ -425,7 +425,11 @@ func viewport_to_canvas_position(viewport_position: Vector2) -> Vector2:
 
 func pointer_is_inside_canvas(local_position: Vector2) -> bool:
 	var canvas_container := get_parent() as Control
-	return canvas_container != null and Rect2(Vector2.ZERO, canvas_container.size).has_point(local_position)
+	if canvas_container == null:
+		return false
+	var viewport_position := get_global_transform_with_canvas() * local_position
+	var container_position := canvas_container.get_global_transform_with_canvas().affine_inverse() * viewport_position
+	return Rect2(Vector2.ZERO, canvas_container.size).has_point(container_position)
 
 func _update_eraser_preview(local_position: Vector2) -> void:
 	var was_visible := eraser_preview_visible
