@@ -1,0 +1,9 @@
+D:\Atlas\projects\mk\dist\MKERP-win-x64\MKERP.App.pdb
+D:\Atlas\projects\mk\dist\MKERP-win-x64\database\schema.sql
+D:\Atlas\projects\mk\dist\MKERP-win-x64\database\seed.sql
+D:\Atlas\projects\mk\dist\MKERP-win-x64\MKERP.Application.pdb
+D:\Atlas\projects\mk\dist\MKERP-win-x64\MKERP.Infrastructure.pdb
+D:\Atlas\projects\mk\dist\MKERP-win-x64\MKERP.Reporting.pdb
+D:\Atlas\projects\mk\dist\MKERP-win-x64\MKERP.Licensing.pdb
+D:\Atlas\projects\mk\dist\MKERP-win-x64\MKERP.Domain.pdb
+D:\Atlas\projects\mk\dist\MKERP-win-x64\MKERP.App.exe

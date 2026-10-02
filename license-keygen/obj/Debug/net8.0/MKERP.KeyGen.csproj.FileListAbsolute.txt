@@ -1,0 +1,15 @@
+D:\Atlas\license-keygen\bin\Debug\net8.0\MKERP.KeyGen.exe
+D:\Atlas\license-keygen\bin\Debug\net8.0\MKERP.KeyGen.deps.json
+D:\Atlas\license-keygen\bin\Debug\net8.0\MKERP.KeyGen.runtimeconfig.json
+D:\Atlas\license-keygen\bin\Debug\net8.0\MKERP.KeyGen.dll
+D:\Atlas\license-keygen\bin\Debug\net8.0\MKERP.KeyGen.pdb
+D:\Atlas\license-keygen\obj\Debug\net8.0\MKERP.KeyGen.GeneratedMSBuildEditorConfig.editorconfig
+D:\Atlas\license-keygen\obj\Debug\net8.0\MKERP.KeyGen.AssemblyInfoInputs.cache
+D:\Atlas\license-keygen\obj\Debug\net8.0\MKERP.KeyGen.AssemblyInfo.cs
+D:\Atlas\license-keygen\obj\Debug\net8.0\MKERP.KeyGen.csproj.CoreCompileInputs.cache
+D:\Atlas\license-keygen\obj\Debug\net8.0\MKERP.KeyGen.sourcelink.json
+D:\Atlas\license-keygen\obj\Debug\net8.0\MKERP.KeyGen.dll
+D:\Atlas\license-keygen\obj\Debug\net8.0\refint\MKERP.KeyGen.dll
+D:\Atlas\license-keygen\obj\Debug\net8.0\MKERP.KeyGen.pdb
+D:\Atlas\license-keygen\obj\Debug\net8.0\MKERP.KeyGen.genruntimeconfig.cache
+D:\Atlas\license-keygen\obj\Debug\net8.0\ref\MKERP.KeyGen.dll

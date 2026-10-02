@@ -1,0 +1,13 @@
+D:\Atlas\projects\mk\src\MKERP.Reporting\bin\Release\net8.0\MKERP.Reporting.deps.json
+D:\Atlas\projects\mk\src\MKERP.Reporting\bin\Release\net8.0\MKERP.Reporting.dll
+D:\Atlas\projects\mk\src\MKERP.Reporting\bin\Release\net8.0\MKERP.Application.dll
+D:\Atlas\projects\mk\src\MKERP.Reporting\bin\Release\net8.0\MKERP.Domain.dll
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\MKERP.Reporting.csproj.AssemblyReference.cache
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\MKERP.Reporting.GeneratedMSBuildEditorConfig.editorconfig
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\MKERP.Reporting.AssemblyInfoInputs.cache
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\MKERP.Reporting.AssemblyInfo.cs
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\MKERP.Reporting.csproj.CoreCompileInputs.cache
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\MKERP.Re.26E9488E.Up2Date
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\MKERP.Reporting.dll
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\refint\MKERP.Reporting.dll
+D:\Atlas\projects\mk\src\MKERP.Reporting\obj\Release\net8.0\ref\MKERP.Reporting.dll

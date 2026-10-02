@@ -1,8 +1,185 @@
 {
+  "asset_footprint_defaults": {
+	"asset.tile.terrain_atlas_001": [
+	  4.0,
+	  4.0
+	],
+	"asset.tile.terrain_atlas_002": [
+	  4.0,
+	  4.0
+	],
+	"asset.tile.terrain_atlas_007": [
+	  4.0,
+	  4.0
+	],
+	"asset.tile.terrain_atlas_031": [
+	  4.0,
+	  4.0
+	],
+	"asset.tile.terrain_atlas_034": [
+	  4.0,
+	  4.0
+	],
+	"asset.tile.terrain_atlas_055": [
+	  4.0,
+	  4.0
+	],
+	"asset.tile.terrain_atlas_058": [
+	  4.0,
+	  4.0
+	],
+	"asset.tile.terrain_atlas_060": [
+	  4.0,
+	  4.0
+	]
+  },
+  "gameplay_areas": [
+	{
+	  "enabled": true,
+	  "id": "gameplay.spawn_area.northbridge",
+	  "name": "Enemy Spawn",
+	  "position": [
+		32.0,
+		250.0
+	  ],
+	  "size": [
+		288.0,
+		384.0
+	  ],
+	  "type": "spawn_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.movement_area.northbridge",
+	  "name": "Main Movement Corridor",
+	  "position": [
+		320.0,
+		90.0
+	  ],
+	  "size": [
+		320.0,
+		640.0
+	  ],
+	  "type": "movement_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.blocked_area.northbridge",
+	  "name": "Central Blocked Sector",
+	  "position": [
+		448.0,
+		314.0
+	  ],
+	  "size": [
+		128.0,
+		256.0
+	  ],
+	  "type": "blocked_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.obstacle_area.northbridge",
+	  "name": "Northbridge Structure",
+	  "position": [
+		576.0,
+		282.0
+	  ],
+	  "size": [
+		192.0,
+		224.0
+	  ],
+	  "type": "obstacle_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_area.northbridge",
+	  "name": "Tower Placement Zone",
+	  "position": [
+		768.0,
+		90.0
+	  ],
+	  "size": [
+		256.0,
+		256.0
+	  ],
+	  "type": "tower_placement_area"
+	},
+	{
+	  "enabled": true,
+	  "id": "gameplay.goal_area.northbridge",
+	  "name": "Base HQ Goal",
+	  "position": [
+		960.0,
+		58.0
+	  ],
+	  "size": [
+		192.0,
+		224.0
+	  ],
+	  "type": "goal_area"
+	}
+  ],
+  "gameplay_points": [
+	{
+	  "area_id": "gameplay.tower_placement_area.northbridge",
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_point.northbridge_01",
+	  "name": "Tower Slot 01",
+	  "position": [
+		816.0,
+		138.0
+	  ],
+	  "type": "tower_placement_point"
+	},
+	{
+	  "area_id": "gameplay.tower_placement_area.northbridge",
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_point.northbridge_02",
+	  "name": "Tower Slot 02",
+	  "position": [
+		944.0,
+		138.0
+	  ],
+	  "type": "tower_placement_point"
+	},
+	{
+	  "area_id": "gameplay.tower_placement_area.northbridge",
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_point.northbridge_03",
+	  "name": "Tower Slot 03",
+	  "position": [
+		816.0,
+		266.0
+	  ],
+	  "type": "tower_placement_point"
+	},
+	{
+	  "area_id": "gameplay.tower_placement_area.northbridge",
+	  "enabled": true,
+	  "id": "gameplay.tower_placement_point.northbridge_04",
+	  "name": "Tower Slot 04",
+	  "position": [
+		944.0,
+		266.0
+	  ],
+	  "type": "tower_placement_point"
+	},
+	{
+	  "area_id": "",
+	  "enabled": true,
+	  "id": "gameplay.robot_position_point.northbridge",
+	  "name": "Robot Position Point",
+	  "position": [
+		1008.0,
+		378.0
+	  ],
+	  "type": "robot_position_point"
+	}
+  ],
   "goal": {
 	"id": "base_hq",
 	"position": [
-	  1080.0,
+	  1088.0,
 	  122.0
 	]
   },
@@ -12,4391 +189,6935 @@
 	58.0
   ],
   "map_pixel_size": [
-	1152.0,
+	1600.0,
 	768.0
   ],
   "map_size": [
-	36,
+	50,
 	24
   ],
+  "map_tiles": [
+	36.0,
+	24.0
+  ],
+  "multiplayer": {
+	"alliances": [
+	  {
+		"controller": "ai",
+		"id": "ally",
+		"name": "아군 동맹"
+	  },
+	  {
+		"controller": "ai",
+		"id": "enemy",
+		"name": "적 동맹"
+	  },
+	  {
+		"controller": "ai",
+		"id": "third",
+		"name": "제3동맹"
+	  }
+	],
+	"relations": {
+	  "ally": {
+		"enemy": "hostile",
+		"third": "hostile"
+	  },
+	  "enemy": {
+		"ally": "hostile",
+		"third": "hostile"
+	  },
+	  "third": {
+		"ally": "hostile",
+		"enemy": "hostile"
+	  }
+	}
+  },
   "name": "Northbridge Sector 01",
-  "robot_spots": {
-	"CENTER": [
-	  720.0,
-	  250.0
-	],
-	"LEFT": [
-	  480.0,
-	  300.0
-	],
-	"RIGHT": [
-	  480.0,
-	  540.0
-	]
-  },
-  "spawns": {
-	"left": [
-	  70.0,
-	  346.0
-	],
-	"right": [
-	  288.0,
-	  794.0
-	]
-  },
+  "objects": [
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		32.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		64.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		160.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		160.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		160.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		64.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		32.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		32.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		64.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		160.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_05",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		448.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_22",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		928.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_23",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		96.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_39",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		1120.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_32",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		576.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_31",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		160.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_24",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		192.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_23",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		512.0,
+		122.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_18",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		1408.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_17",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		800.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_11",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		1312.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_10",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		1408.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_09",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		1184.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_05",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		512.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_03",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "placement_layer": "RoadComposition",
+	  "position": [
+		800.0,
+		666.0
+	  ]
+	}
+  ],
+  "play_modes": [
+	"campaign",
+	"single",
+    "multiplayer"
+  ],
+  "robot_spots": {},
+  "spawns": {},
   "tile_size": [
 	32,
 	32
   ],
   "tiles": {
-	"Vegetation": {
-	  "0,0": [
-		8,
-		1,
-		3
-	  ],
-	  "0,1": [
-		8,
-		1,
-		3
-	  ],
-	  "0,10": [
-		8,
-		1,
-		3
-	  ],
-	  "0,11": [
-		8,
-		1,
-		3
-	  ],
-	  "0,12": [
-		8,
-		1,
-		3
-	  ],
-	  "0,13": [
-		8,
-		1,
-		3
-	  ],
-	  "0,14": [
-		8,
-		1,
-		3
-	  ],
-	  "0,15": [
-		8,
-		1,
-		3
-	  ],
-	  "0,16": [
-		8,
-		1,
-		3
-	  ],
-	  "0,17": [
-		8,
-		1,
-		3
-	  ],
-	  "0,18": [
-		8,
-		1,
-		3
-	  ],
-	  "0,19": [
-		8,
-		1,
-		3
-	  ],
-	  "0,2": [
-		8,
-		1,
-		3
-	  ],
-	  "0,20": [
-		8,
-		1,
-		3
-	  ],
-	  "0,21": [
-		8,
-		1,
-		3
-	  ],
-	  "0,22": [
-		8,
-		1,
-		3
-	  ],
-	  "0,23": [
-		8,
-		1,
-		3
-	  ],
-	  "0,3": [
-		8,
-		1,
-		3
-	  ],
-	  "0,4": [
-		8,
-		1,
-		3
-	  ],
-	  "0,5": [
-		8,
-		1,
-		3
-	  ],
-	  "0,6": [
-		8,
-		1,
-		3
-	  ],
-	  "0,7": [
-		8,
-		1,
-		3
-	  ],
-	  "0,8": [
-		8,
-		1,
-		3
-	  ],
-	  "0,9": [
-		8,
-		1,
-		3
-	  ],
-	  "1,0": [
-		8,
-		1,
-		3
-	  ],
-	  "1,1": [
-		8,
-		1,
-		3
-	  ],
-	  "1,10": [
-		8,
-		1,
-		3
-	  ],
-	  "1,11": [
-		8,
-		1,
-		3
-	  ],
-	  "1,12": [
-		8,
-		1,
-		3
-	  ],
-	  "1,13": [
-		8,
-		1,
-		3
-	  ],
-	  "1,14": [
-		8,
-		1,
-		3
-	  ],
-	  "1,15": [
-		8,
-		1,
-		3
-	  ],
-	  "1,16": [
-		8,
-		1,
-		3
-	  ],
-	  "1,17": [
-		8,
-		1,
-		3
-	  ],
-	  "1,18": [
-		8,
-		1,
-		3
-	  ],
-	  "1,19": [
-		8,
-		1,
-		3
-	  ],
-	  "1,2": [
-		8,
-		1,
-		3
-	  ],
-	  "1,20": [
-		8,
-		1,
-		3
-	  ],
-	  "1,21": [
-		8,
-		1,
-		3
-	  ],
-	  "1,22": [
-		8,
-		1,
-		3
-	  ],
-	  "1,23": [
-		8,
-		1,
-		3
-	  ],
-	  "1,3": [
-		8,
-		1,
-		3
-	  ],
-	  "1,4": [
-		8,
-		1,
-		3
-	  ],
-	  "1,5": [
-		8,
-		1,
-		3
-	  ],
-	  "1,6": [
-		8,
-		1,
-		3
-	  ],
-	  "1,7": [
-		8,
-		1,
-		3
-	  ],
-	  "1,8": [
-		8,
-		1,
-		3
-	  ],
-	  "1,9": [
-		8,
-		1,
-		3
-	  ],
-	  "10,0": [
-		8,
-		1,
-		3
-	  ],
-	  "10,1": [
-		8,
-		1,
-		3
-	  ],
-	  "10,10": [
-		8,
-		1,
-		3
-	  ],
-	  "10,11": [
-		3,
-		0,
-		0
-	  ],
-	  "10,12": [
-		8,
-		1,
-		3
-	  ],
-	  "10,13": [
-		8,
-		1,
-		3
-	  ],
-	  "10,14": [
-		8,
-		1,
-		3
-	  ],
-	  "10,15": [
-		8,
-		1,
-		3
-	  ],
-	  "10,16": [
-		8,
-		1,
-		3
-	  ],
-	  "10,17": [
-		8,
-		1,
-		3
-	  ],
-	  "10,18": [
-		3,
-		0,
-		0
-	  ],
-	  "10,19": [
-		8,
-		1,
-		3
-	  ],
-	  "10,2": [
-		8,
-		1,
-		3
-	  ],
-	  "10,20": [
-		8,
-		1,
-		3
-	  ],
-	  "10,21": [
-		8,
-		1,
-		3
-	  ],
-	  "10,22": [
-		8,
-		1,
-		3
-	  ],
-	  "10,23": [
-		8,
-		1,
-		3
-	  ],
-	  "10,3": [
-		8,
-		1,
-		3
-	  ],
-	  "10,4": [
-		8,
-		1,
-		3
-	  ],
-	  "10,5": [
-		8,
-		1,
-		3
-	  ],
-	  "10,6": [
-		8,
-		1,
-		3
-	  ],
-	  "10,7": [
-		8,
-		1,
-		3
-	  ],
-	  "10,8": [
-		8,
-		1,
-		3
-	  ],
-	  "10,9": [
-		8,
-		1,
-		3
-	  ],
-	  "11,0": [
-		8,
-		1,
-		3
-	  ],
-	  "11,1": [
-		8,
-		1,
-		3
-	  ],
-	  "11,10": [
-		8,
-		1,
-		3
-	  ],
-	  "11,11": [
-		3,
-		0,
-		0
-	  ],
-	  "11,12": [
-		8,
-		1,
-		3
-	  ],
-	  "11,13": [
-		8,
-		1,
-		3
-	  ],
-	  "11,14": [
-		8,
-		1,
-		3
-	  ],
-	  "11,15": [
-		8,
-		1,
-		3
-	  ],
-	  "11,16": [
-		8,
-		1,
-		3
-	  ],
-	  "11,17": [
-		8,
-		1,
-		3
-	  ],
-	  "11,18": [
-		3,
-		0,
-		0
-	  ],
-	  "11,19": [
-		8,
-		1,
-		3
-	  ],
-	  "11,2": [
-		8,
-		1,
-		3
-	  ],
-	  "11,20": [
-		8,
-		1,
-		3
-	  ],
-	  "11,21": [
-		8,
-		1,
-		3
-	  ],
-	  "11,22": [
-		8,
-		1,
-		3
-	  ],
-	  "11,23": [
-		8,
-		1,
-		3
-	  ],
-	  "11,3": [
-		8,
-		1,
-		3
-	  ],
-	  "11,4": [
-		8,
-		1,
-		3
-	  ],
-	  "11,5": [
-		8,
-		1,
-		3
-	  ],
-	  "11,6": [
-		8,
-		1,
-		3
-	  ],
-	  "11,7": [
-		8,
-		1,
-		3
-	  ],
-	  "11,8": [
-		8,
-		1,
-		3
-	  ],
-	  "11,9": [
-		8,
-		1,
-		3
-	  ],
-	  "12,0": [
-		8,
-		1,
-		3
-	  ],
-	  "12,1": [
-		8,
-		1,
-		3
-	  ],
-	  "12,10": [
-		8,
-		1,
-		3
-	  ],
-	  "12,11": [
-		3,
-		0,
-		0
-	  ],
-	  "12,12": [
-		8,
-		1,
-		3
-	  ],
-	  "12,13": [
-		8,
-		1,
-		3
-	  ],
-	  "12,14": [
-		8,
-		1,
-		3
-	  ],
-	  "12,15": [
-		8,
-		1,
-		3
-	  ],
-	  "12,16": [
-		8,
-		1,
-		3
-	  ],
-	  "12,17": [
-		3,
-		0,
-		0
-	  ],
-	  "12,18": [
-		8,
-		1,
-		3
-	  ],
-	  "12,19": [
-		8,
-		1,
-		3
-	  ],
-	  "12,2": [
-		8,
-		1,
-		3
-	  ],
-	  "12,20": [
-		8,
-		1,
-		3
-	  ],
-	  "12,21": [
-		8,
-		1,
-		3
-	  ],
-	  "12,22": [
-		8,
-		1,
-		3
-	  ],
-	  "12,23": [
-		8,
-		1,
-		3
-	  ],
-	  "12,3": [
-		8,
-		1,
-		3
-	  ],
-	  "12,4": [
-		8,
-		1,
-		3
-	  ],
-	  "12,5": [
-		8,
-		1,
-		3
-	  ],
-	  "12,6": [
-		8,
-		1,
-		3
-	  ],
-	  "12,7": [
-		8,
-		1,
-		3
-	  ],
-	  "12,8": [
-		8,
-		1,
-		3
-	  ],
-	  "12,9": [
-		8,
-		1,
-		3
-	  ],
-	  "13,0": [
-		8,
-		1,
-		3
-	  ],
-	  "13,1": [
-		8,
-		1,
-		3
-	  ],
-	  "13,10": [
-		8,
-		1,
-		3
-	  ],
-	  "13,11": [
-		3,
-		0,
-		0
-	  ],
-	  "13,12": [
-		8,
-		1,
-		3
-	  ],
-	  "13,13": [
-		8,
-		1,
-		3
-	  ],
-	  "13,14": [
-		8,
-		1,
-		3
-	  ],
-	  "13,15": [
-		8,
-		1,
-		3
-	  ],
-	  "13,16": [
-		8,
-		1,
-		3
-	  ],
-	  "13,17": [
-		3,
-		0,
-		0
-	  ],
-	  "13,18": [
-		8,
-		1,
-		3
-	  ],
-	  "13,19": [
-		8,
-		1,
-		3
-	  ],
-	  "13,2": [
-		8,
-		1,
-		3
-	  ],
-	  "13,20": [
-		8,
-		1,
-		3
-	  ],
-	  "13,21": [
-		8,
-		1,
-		3
-	  ],
-	  "13,22": [
-		8,
-		1,
-		3
-	  ],
-	  "13,23": [
-		8,
-		1,
-		3
-	  ],
-	  "13,3": [
-		8,
-		1,
-		3
-	  ],
-	  "13,4": [
-		8,
-		1,
-		3
-	  ],
-	  "13,5": [
-		8,
-		1,
-		3
-	  ],
-	  "13,6": [
-		8,
-		1,
-		3
-	  ],
-	  "13,7": [
-		8,
-		1,
-		3
-	  ],
-	  "13,8": [
-		8,
-		1,
-		3
-	  ],
-	  "13,9": [
-		8,
-		1,
-		3
-	  ],
-	  "14,0": [
-		8,
-		1,
-		3
-	  ],
-	  "14,1": [
-		8,
-		1,
-		3
-	  ],
-	  "14,10": [
-		8,
-		1,
-		3
-	  ],
-	  "14,11": [
-		3,
-		0,
-		0
-	  ],
-	  "14,12": [
-		8,
-		1,
-		3
-	  ],
-	  "14,13": [
-		8,
-		1,
-		3
-	  ],
-	  "14,14": [
-		8,
-		1,
-		3
-	  ],
-	  "14,15": [
-		8,
-		1,
-		3
-	  ],
-	  "14,16": [
-		8,
-		1,
-		3
-	  ],
-	  "14,17": [
-		3,
-		0,
-		0
-	  ],
-	  "14,18": [
-		8,
-		1,
-		3
-	  ],
-	  "14,19": [
-		8,
-		1,
-		3
-	  ],
-	  "14,2": [
-		8,
-		1,
-		3
-	  ],
-	  "14,20": [
-		8,
-		1,
-		3
-	  ],
-	  "14,21": [
-		8,
-		1,
-		3
-	  ],
-	  "14,22": [
-		8,
-		1,
-		3
-	  ],
-	  "14,23": [
-		8,
-		1,
-		3
-	  ],
-	  "14,3": [
-		8,
-		1,
-		3
-	  ],
-	  "14,4": [
-		8,
-		1,
-		3
-	  ],
-	  "14,5": [
-		8,
-		1,
-		3
-	  ],
-	  "14,6": [
-		8,
-		1,
-		3
-	  ],
-	  "14,7": [
-		8,
-		1,
-		3
-	  ],
-	  "14,8": [
-		8,
-		1,
-		3
-	  ],
-	  "14,9": [
-		8,
-		1,
-		3
-	  ],
-	  "15,0": [
-		8,
-		1,
-		3
-	  ],
-	  "15,1": [
-		8,
-		1,
-		3
-	  ],
-	  "15,10": [
-		8,
-		1,
-		3
-	  ],
-	  "15,11": [
-		3,
-		0,
-		0
-	  ],
-	  "15,12": [
-		8,
-		1,
-		3
-	  ],
-	  "15,13": [
-		8,
-		1,
-		3
-	  ],
-	  "15,14": [
-		8,
-		1,
-		3
-	  ],
-	  "15,15": [
-		8,
-		1,
-		3
-	  ],
-	  "15,16": [
-		8,
-		1,
-		3
-	  ],
-	  "15,17": [
-		3,
-		0,
-		0
-	  ],
-	  "15,18": [
-		8,
-		1,
-		3
-	  ],
-	  "15,19": [
-		8,
-		1,
-		3
-	  ],
-	  "15,2": [
-		8,
-		1,
-		3
-	  ],
-	  "15,20": [
-		8,
-		1,
-		3
-	  ],
-	  "15,21": [
-		8,
-		1,
-		3
-	  ],
-	  "15,22": [
-		8,
-		1,
-		3
-	  ],
-	  "15,23": [
-		8,
-		1,
-		3
-	  ],
-	  "15,3": [
-		8,
-		1,
-		3
-	  ],
-	  "15,4": [
-		8,
-		1,
-		3
-	  ],
-	  "15,5": [
-		8,
-		1,
-		3
-	  ],
-	  "15,6": [
-		8,
-		1,
-		3
-	  ],
-	  "15,7": [
-		8,
-		1,
-		3
-	  ],
-	  "15,8": [
-		8,
-		1,
-		3
-	  ],
-	  "15,9": [
-		8,
-		1,
-		3
-	  ],
-	  "16,0": [
-		8,
-		1,
-		3
-	  ],
-	  "16,1": [
-		8,
-		1,
-		3
-	  ],
-	  "16,10": [
-		3,
-		0,
-		0
-	  ],
-	  "16,11": [
-		3,
-		0,
-		0
-	  ],
-	  "16,12": [
-		8,
-		1,
-		3
-	  ],
-	  "16,13": [
-		8,
-		1,
-		3
-	  ],
-	  "16,14": [
-		8,
-		1,
-		3
-	  ],
-	  "16,15": [
-		8,
-		1,
-		3
-	  ],
-	  "16,16": [
-		8,
-		1,
-		3
-	  ],
-	  "16,17": [
-		3,
-		0,
-		0
-	  ],
-	  "16,18": [
-		8,
-		1,
-		3
-	  ],
-	  "16,19": [
-		8,
-		1,
-		3
-	  ],
-	  "16,2": [
-		8,
-		1,
-		3
-	  ],
-	  "16,20": [
-		8,
-		1,
-		3
-	  ],
-	  "16,21": [
-		8,
-		1,
-		3
-	  ],
-	  "16,22": [
-		8,
-		1,
-		3
-	  ],
-	  "16,23": [
-		8,
-		1,
-		3
-	  ],
-	  "16,3": [
-		8,
-		1,
-		3
-	  ],
-	  "16,4": [
-		8,
-		1,
-		3
-	  ],
-	  "16,5": [
-		8,
-		1,
-		3
-	  ],
-	  "16,6": [
-		8,
-		1,
-		3
-	  ],
-	  "16,7": [
-		8,
-		1,
-		3
-	  ],
-	  "16,8": [
-		8,
-		1,
-		3
-	  ],
-	  "16,9": [
-		8,
-		1,
-		3
-	  ],
-	  "17,0": [
-		8,
-		1,
-		3
-	  ],
-	  "17,1": [
-		8,
-		1,
-		3
-	  ],
-	  "17,10": [
-		3,
-		0,
-		0
-	  ],
-	  "17,11": [
-		3,
-		0,
-		0
-	  ],
-	  "17,12": [
-		8,
-		1,
-		3
-	  ],
-	  "17,13": [
-		8,
-		1,
-		3
-	  ],
-	  "17,14": [
-		8,
-		1,
-		3
-	  ],
-	  "17,15": [
-		8,
-		1,
-		3
-	  ],
-	  "17,16": [
-		3,
-		0,
-		0
-	  ],
-	  "17,17": [
-		3,
-		0,
-		0
-	  ],
-	  "17,18": [
-		8,
-		1,
-		3
-	  ],
-	  "17,19": [
-		8,
-		1,
-		3
-	  ],
-	  "17,2": [
-		8,
-		1,
-		3
-	  ],
-	  "17,20": [
-		8,
-		1,
-		3
-	  ],
-	  "17,21": [
-		8,
-		1,
-		3
-	  ],
-	  "17,22": [
-		8,
-		1,
-		3
-	  ],
-	  "17,23": [
-		8,
-		1,
-		3
-	  ],
-	  "17,3": [
-		8,
-		1,
-		3
-	  ],
-	  "17,4": [
-		8,
-		1,
-		3
-	  ],
-	  "17,5": [
-		8,
-		1,
-		3
-	  ],
-	  "17,6": [
-		8,
-		1,
-		3
-	  ],
-	  "17,7": [
-		8,
-		1,
-		3
-	  ],
-	  "17,8": [
-		8,
-		1,
-		3
-	  ],
-	  "17,9": [
-		8,
-		1,
-		3
-	  ],
-	  "18,0": [
-		8,
-		1,
-		3
-	  ],
-	  "18,1": [
-		8,
-		1,
-		3
-	  ],
-	  "18,10": [
-		3,
-		0,
-		0
-	  ],
-	  "18,11": [
-		3,
-		0,
-		0
-	  ],
-	  "18,12": [
-		8,
-		1,
-		3
-	  ],
-	  "18,13": [
-		8,
-		1,
-		3
-	  ],
-	  "18,14": [
-		8,
-		1,
-		3
-	  ],
-	  "18,15": [
-		8,
-		1,
-		3
-	  ],
-	  "18,16": [
-		3,
-		0,
-		0
-	  ],
-	  "18,17": [
-		8,
-		1,
-		3
-	  ],
-	  "18,18": [
-		8,
-		1,
-		3
-	  ],
-	  "18,19": [
-		8,
-		1,
-		3
-	  ],
-	  "18,2": [
-		8,
-		1,
-		3
-	  ],
-	  "18,20": [
-		8,
-		1,
-		3
-	  ],
-	  "18,21": [
-		8,
-		1,
-		3
-	  ],
-	  "18,22": [
-		8,
-		1,
-		3
-	  ],
-	  "18,23": [
-		8,
-		1,
-		3
-	  ],
-	  "18,3": [
-		8,
-		1,
-		3
-	  ],
-	  "18,4": [
-		8,
-		1,
-		3
-	  ],
-	  "18,5": [
-		8,
-		1,
-		3
-	  ],
-	  "18,6": [
-		8,
-		1,
-		3
-	  ],
-	  "18,7": [
-		8,
-		1,
-		3
-	  ],
-	  "18,8": [
-		8,
-		1,
-		3
-	  ],
-	  "18,9": [
-		3,
-		0,
-		0
-	  ],
-	  "19,0": [
-		8,
-		1,
-		3
-	  ],
-	  "19,1": [
-		8,
-		1,
-		3
-	  ],
-	  "19,10": [
-		8,
-		1,
-		3
-	  ],
-	  "19,11": [
-		3,
-		0,
-		0
-	  ],
-	  "19,12": [
-		8,
-		1,
-		3
-	  ],
-	  "19,13": [
-		8,
-		1,
-		3
-	  ],
-	  "19,14": [
-		8,
-		1,
-		3
-	  ],
-	  "19,15": [
-		3,
-		0,
-		0
-	  ],
-	  "19,16": [
-		3,
-		0,
-		0
-	  ],
-	  "19,17": [
-		8,
-		1,
-		3
-	  ],
-	  "19,18": [
-		8,
-		1,
-		3
-	  ],
-	  "19,19": [
-		8,
-		1,
-		3
-	  ],
-	  "19,2": [
-		8,
-		1,
-		3
-	  ],
-	  "19,20": [
-		8,
-		1,
-		3
-	  ],
-	  "19,21": [
-		8,
-		1,
-		3
-	  ],
-	  "19,22": [
-		8,
-		1,
-		3
-	  ],
-	  "19,23": [
-		8,
-		1,
-		3
-	  ],
-	  "19,3": [
-		8,
-		1,
-		3
-	  ],
-	  "19,4": [
-		8,
-		1,
-		3
-	  ],
-	  "19,5": [
-		8,
-		1,
-		3
-	  ],
-	  "19,6": [
-		8,
-		1,
-		3
-	  ],
-	  "19,7": [
-		8,
-		1,
-		3
-	  ],
-	  "19,8": [
-		8,
-		1,
-		3
-	  ],
-	  "19,9": [
-		3,
-		0,
-		0
-	  ],
-	  "2,0": [
-		8,
-		1,
-		3
-	  ],
-	  "2,1": [
-		8,
-		1,
-		3
-	  ],
-	  "2,10": [
-		8,
-		1,
-		3
-	  ],
-	  "2,11": [
-		8,
-		1,
-		3
-	  ],
-	  "2,12": [
-		8,
-		1,
-		3
-	  ],
-	  "2,13": [
-		8,
-		1,
-		3
-	  ],
-	  "2,14": [
-		8,
-		1,
-		3
-	  ],
-	  "2,15": [
-		8,
-		1,
-		3
-	  ],
-	  "2,16": [
-		8,
-		1,
-		3
-	  ],
-	  "2,17": [
-		8,
-		1,
-		3
-	  ],
-	  "2,18": [
-		8,
-		1,
-		3
-	  ],
-	  "2,19": [
-		8,
-		1,
-		3
-	  ],
-	  "2,2": [
-		8,
-		1,
-		3
-	  ],
-	  "2,20": [
-		8,
-		1,
-		3
-	  ],
-	  "2,21": [
-		8,
-		1,
-		3
-	  ],
-	  "2,22": [
-		8,
-		1,
-		3
-	  ],
-	  "2,23": [
-		8,
-		1,
-		3
-	  ],
-	  "2,3": [
-		8,
-		1,
-		3
-	  ],
-	  "2,4": [
-		8,
-		1,
-		3
-	  ],
-	  "2,5": [
-		8,
-		1,
-		3
-	  ],
-	  "2,6": [
-		8,
-		1,
-		3
-	  ],
-	  "2,7": [
-		8,
-		1,
-		3
-	  ],
-	  "2,8": [
-		8,
-		1,
-		3
-	  ],
-	  "2,9": [
-		3,
-		0,
-		0
-	  ],
-	  "20,0": [
-		8,
-		1,
-		3
-	  ],
-	  "20,1": [
-		8,
-		1,
-		3
-	  ],
-	  "20,10": [
-		8,
-		1,
-		3
-	  ],
-	  "20,11": [
-		3,
-		0,
-		0
-	  ],
-	  "20,12": [
-		8,
-		1,
-		3
-	  ],
-	  "20,13": [
-		8,
-		1,
-		3
-	  ],
-	  "20,14": [
-		8,
-		1,
-		3
-	  ],
-	  "20,15": [
-		3,
-		0,
-		0
-	  ],
-	  "20,16": [
-		8,
-		1,
-		1
-	  ],
-	  "20,17": [
-		8,
-		1,
-		1
-	  ],
-	  "20,18": [
-		8,
-		1,
-		1
-	  ],
-	  "20,19": [
-		8,
-		1,
-		1
-	  ],
-	  "20,2": [
-		8,
-		1,
-		3
-	  ],
-	  "20,20": [
-		8,
-		1,
-		1
-	  ],
-	  "20,21": [
-		8,
-		1,
-		1
-	  ],
-	  "20,22": [
-		8,
-		1,
-		1
-	  ],
-	  "20,23": [
-		8,
-		1,
-		1
-	  ],
-	  "20,3": [
-		8,
-		1,
-		3
-	  ],
-	  "20,4": [
-		8,
-		1,
-		3
-	  ],
-	  "20,5": [
-		8,
-		1,
-		3
-	  ],
-	  "20,6": [
-		8,
-		1,
-		3
-	  ],
-	  "20,7": [
-		8,
-		1,
-		3
-	  ],
-	  "20,8": [
-		3,
-		0,
-		0
-	  ],
-	  "20,9": [
-		3,
-		0,
-		0
-	  ],
-	  "21,0": [
-		8,
-		1,
-		3
-	  ],
-	  "21,1": [
-		8,
-		1,
-		3
-	  ],
-	  "21,10": [
-		8,
-		1,
-		3
-	  ],
-	  "21,11": [
-		3,
-		0,
-		0
-	  ],
-	  "21,12": [
-		8,
-		1,
-		3
-	  ],
-	  "21,13": [
-		8,
-		1,
-		3
-	  ],
-	  "21,14": [
-		8,
-		1,
-		3
-	  ],
-	  "21,15": [
-		3,
-		0,
-		0
-	  ],
-	  "21,16": [
-		8,
-		1,
-		1
-	  ],
-	  "21,17": [
-		8,
-		1,
-		1
-	  ],
-	  "21,18": [
-		8,
-		1,
-		1
-	  ],
-	  "21,19": [
-		8,
-		1,
-		1
-	  ],
-	  "21,2": [
-		8,
-		1,
-		3
-	  ],
-	  "21,20": [
-		8,
-		1,
-		1
-	  ],
-	  "21,21": [
-		8,
-		1,
-		1
-	  ],
-	  "21,22": [
-		8,
-		1,
-		1
-	  ],
-	  "21,23": [
-		8,
-		1,
-		1
-	  ],
-	  "21,3": [
-		8,
-		1,
-		3
-	  ],
-	  "21,4": [
-		8,
-		1,
-		3
-	  ],
-	  "21,5": [
-		8,
-		1,
-		3
-	  ],
-	  "21,6": [
-		8,
-		1,
-		3
-	  ],
-	  "21,7": [
-		8,
-		1,
-		3
-	  ],
-	  "21,8": [
-		3,
-		0,
-		0
-	  ],
-	  "21,9": [
-		8,
-		1,
-		3
-	  ],
-	  "22,0": [
-		8,
-		1,
-		3
-	  ],
-	  "22,1": [
-		8,
-		1,
-		3
-	  ],
-	  "22,10": [
-		8,
-		1,
-		3
-	  ],
-	  "22,11": [
-		3,
-		0,
-		0
-	  ],
-	  "22,12": [
-		8,
-		1,
-		3
-	  ],
-	  "22,13": [
-		3,
-		0,
-		0
-	  ],
-	  "22,14": [
-		3,
-		0,
-		0
-	  ],
-	  "22,15": [
-		3,
-		0,
-		0
-	  ],
-	  "22,16": [
-		8,
-		1,
-		3
-	  ],
-	  "22,17": [
-		8,
-		1,
-		3
-	  ],
-	  "22,18": [
-		8,
-		1,
-		3
-	  ],
-	  "22,19": [
-		8,
-		1,
-		1
-	  ],
-	  "22,2": [
-		8,
-		1,
-		3
-	  ],
-	  "22,20": [
-		8,
-		1,
-		1
-	  ],
-	  "22,21": [
-		8,
-		1,
-		3
-	  ],
-	  "22,22": [
-		8,
-		1,
-		3
-	  ],
-	  "22,23": [
-		8,
-		1,
-		1
-	  ],
-	  "22,3": [
-		8,
-		1,
-		3
-	  ],
-	  "22,4": [
-		8,
-		1,
-		3
-	  ],
-	  "22,5": [
-		8,
-		1,
-		3
-	  ],
-	  "22,6": [
-		8,
-		1,
-		3
-	  ],
-	  "22,7": [
-		3,
-		0,
-		0
-	  ],
-	  "22,8": [
-		3,
-		0,
-		0
-	  ],
-	  "22,9": [
-		8,
-		1,
-		3
-	  ],
-	  "23,0": [
-		8,
-		1,
-		3
-	  ],
-	  "23,1": [
-		8,
-		1,
-		3
-	  ],
-	  "23,10": [
-		8,
-		1,
-		3
-	  ],
-	  "23,11": [
-		3,
-		0,
-		0
-	  ],
-	  "23,12": [
-		8,
-		1,
-		3
-	  ],
-	  "23,13": [
-		3,
-		0,
-		0
-	  ],
-	  "23,14": [
-		3,
-		0,
-		0
-	  ],
-	  "23,15": [
-		8,
-		1,
-		3
-	  ],
-	  "23,16": [
-		8,
-		1,
-		3
-	  ],
-	  "23,17": [
-		8,
-		1,
-		3
-	  ],
-	  "23,18": [
-		8,
-		1,
-		3
-	  ],
-	  "23,19": [
-		8,
-		1,
-		3
-	  ],
-	  "23,2": [
-		8,
-		1,
-		3
-	  ],
-	  "23,20": [
-		8,
-		1,
-		3
-	  ],
-	  "23,21": [
-		8,
-		1,
-		3
-	  ],
-	  "23,22": [
-		8,
-		1,
-		3
-	  ],
-	  "23,23": [
-		8,
-		1,
-		3
-	  ],
-	  "23,3": [
-		8,
-		1,
-		3
-	  ],
-	  "23,4": [
-		8,
-		1,
-		3
-	  ],
-	  "23,5": [
-		8,
-		1,
-		3
-	  ],
-	  "23,6": [
-		8,
-		1,
-		3
-	  ],
-	  "23,7": [
-		3,
-		0,
-		0
-	  ],
-	  "23,8": [
-		8,
-		1,
-		3
-	  ],
-	  "23,9": [
-		8,
-		1,
-		3
-	  ],
-	  "24,0": [
-		8,
-		1,
-		3
-	  ],
-	  "24,1": [
-		8,
-		1,
-		3
-	  ],
-	  "24,10": [
-		8,
-		1,
-		3
-	  ],
-	  "24,11": [
-		3,
-		0,
-		0
-	  ],
-	  "24,12": [
-		3,
-		0,
-		0
-	  ],
-	  "24,13": [
-		3,
-		0,
-		0
-	  ],
-	  "24,14": [
-		8,
-		1,
-		3
-	  ],
-	  "24,15": [
-		8,
-		1,
-		3
-	  ],
-	  "24,16": [
-		8,
-		1,
-		3
-	  ],
-	  "24,17": [
-		8,
-		1,
-		3
-	  ],
-	  "24,18": [
-		8,
-		1,
-		3
-	  ],
-	  "24,19": [
-		8,
-		1,
-		3
-	  ],
-	  "24,2": [
-		8,
-		1,
-		3
-	  ],
-	  "24,20": [
-		8,
-		1,
-		3
-	  ],
-	  "24,21": [
-		8,
-		1,
-		3
-	  ],
-	  "24,22": [
-		8,
-		1,
-		3
-	  ],
-	  "24,23": [
-		8,
-		1,
-		3
-	  ],
-	  "24,3": [
-		8,
-		1,
-		3
-	  ],
-	  "24,4": [
-		8,
-		1,
-		3
-	  ],
-	  "24,5": [
-		8,
-		1,
-		3
-	  ],
-	  "24,6": [
-		3,
-		0,
-		0
-	  ],
-	  "24,7": [
-		3,
-		0,
-		0
-	  ],
-	  "24,8": [
-		8,
-		1,
-		3
-	  ],
-	  "24,9": [
-		8,
-		1,
-		3
-	  ],
-	  "25,0": [
-		8,
-		1,
-		3
-	  ],
-	  "25,1": [
-		8,
-		1,
-		3
-	  ],
-	  "25,10": [
-		8,
-		1,
-		3
-	  ],
-	  "25,11": [
-		3,
-		0,
-		0
-	  ],
-	  "25,12": [
-		3,
-		0,
-		0
-	  ],
-	  "25,13": [
-		8,
-		1,
-		3
-	  ],
-	  "25,14": [
-		8,
-		1,
-		3
-	  ],
-	  "25,15": [
-		8,
-		1,
-		3
-	  ],
-	  "25,16": [
-		8,
-		1,
-		3
-	  ],
-	  "25,17": [
-		8,
-		1,
-		3
-	  ],
-	  "25,18": [
-		8,
-		1,
-		3
-	  ],
-	  "25,19": [
-		8,
-		1,
-		3
-	  ],
-	  "25,2": [
-		8,
-		1,
-		3
-	  ],
-	  "25,20": [
-		8,
-		1,
-		3
-	  ],
-	  "25,21": [
-		8,
-		1,
-		3
-	  ],
-	  "25,22": [
-		8,
-		1,
-		3
-	  ],
-	  "25,23": [
-		8,
-		1,
-		3
-	  ],
-	  "25,3": [
-		8,
-		1,
-		3
-	  ],
-	  "25,4": [
-		8,
-		1,
-		3
-	  ],
-	  "25,5": [
-		8,
-		1,
-		3
-	  ],
-	  "25,6": [
-		3,
-		0,
-		0
-	  ],
-	  "25,7": [
-		8,
-		1,
-		3
-	  ],
-	  "25,8": [
-		8,
-		1,
-		3
-	  ],
-	  "25,9": [
-		8,
-		1,
-		3
-	  ],
-	  "26,0": [
-		8,
-		1,
-		3
-	  ],
-	  "26,1": [
-		8,
-		1,
-		3
-	  ],
-	  "26,10": [
-		3,
-		0,
-		0
-	  ],
-	  "26,11": [
-		3,
-		0,
-		0
-	  ],
-	  "26,12": [
-		8,
-		1,
-		3
-	  ],
-	  "26,13": [
-		8,
-		1,
-		3
-	  ],
-	  "26,14": [
-		8,
-		1,
-		3
-	  ],
-	  "26,15": [
-		8,
-		1,
-		3
-	  ],
-	  "26,16": [
-		8,
-		1,
-		3
-	  ],
-	  "26,17": [
-		8,
-		1,
-		3
-	  ],
-	  "26,18": [
-		8,
-		1,
-		3
-	  ],
-	  "26,19": [
-		8,
-		1,
-		3
-	  ],
-	  "26,2": [
-		8,
-		1,
-		3
-	  ],
-	  "26,20": [
-		8,
-		1,
-		3
-	  ],
-	  "26,21": [
-		8,
-		1,
-		3
-	  ],
-	  "26,22": [
-		8,
-		1,
-		3
-	  ],
-	  "26,23": [
-		8,
-		1,
-		3
-	  ],
-	  "26,3": [
-		8,
-		1,
-		3
-	  ],
-	  "26,4": [
-		8,
-		1,
-		3
-	  ],
-	  "26,5": [
-		3,
-		0,
-		0
-	  ],
-	  "26,6": [
-		3,
-		0,
-		0
-	  ],
-	  "26,7": [
-		8,
-		1,
-		3
-	  ],
-	  "26,8": [
-		8,
-		1,
-		3
-	  ],
-	  "26,9": [
-		8,
-		1,
-		3
-	  ],
-	  "27,0": [
-		8,
-		1,
-		3
-	  ],
-	  "27,1": [
-		8,
-		1,
-		3
-	  ],
-	  "27,10": [
-		3,
-		0,
-		0
-	  ],
-	  "27,11": [
-		8,
-		1,
-		3
-	  ],
-	  "27,12": [
-		8,
-		1,
-		3
-	  ],
-	  "27,13": [
-		8,
-		1,
-		3
-	  ],
-	  "27,14": [
-		8,
-		1,
-		3
-	  ],
-	  "27,15": [
-		8,
-		1,
-		3
-	  ],
-	  "27,16": [
-		8,
-		1,
-		3
-	  ],
-	  "27,17": [
-		8,
-		1,
-		3
-	  ],
-	  "27,18": [
-		8,
-		1,
-		3
-	  ],
-	  "27,19": [
-		8,
-		1,
-		3
-	  ],
-	  "27,2": [
-		8,
-		1,
-		3
-	  ],
-	  "27,20": [
-		8,
-		1,
-		3
-	  ],
-	  "27,21": [
-		8,
-		1,
-		3
-	  ],
-	  "27,22": [
-		8,
-		1,
-		3
-	  ],
-	  "27,23": [
-		8,
-		1,
-		3
-	  ],
-	  "27,3": [
-		8,
-		1,
-		3
-	  ],
-	  "27,4": [
-		8,
-		1,
-		3
-	  ],
-	  "27,5": [
-		3,
-		0,
-		0
-	  ],
-	  "27,6": [
-		8,
-		1,
-		3
-	  ],
-	  "27,7": [
-		8,
-		1,
-		3
-	  ],
-	  "27,8": [
-		8,
-		1,
-		3
-	  ],
-	  "27,9": [
-		3,
-		0,
-		0
-	  ],
-	  "28,0": [
-		8,
-		1,
-		3
-	  ],
-	  "28,1": [
-		8,
-		1,
-		3
-	  ],
-	  "28,10": [
-		8,
-		1,
-		3
-	  ],
-	  "28,11": [
-		8,
-		1,
-		3
-	  ],
-	  "28,12": [
-		8,
-		1,
-		3
-	  ],
-	  "28,13": [
-		8,
-		1,
-		3
-	  ],
-	  "28,14": [
-		8,
-		1,
-		3
-	  ],
-	  "28,15": [
-		8,
-		1,
-		3
-	  ],
-	  "28,16": [
-		8,
-		1,
-		3
-	  ],
-	  "28,17": [
-		8,
-		1,
-		3
-	  ],
-	  "28,18": [
-		8,
-		1,
-		3
-	  ],
-	  "28,19": [
-		8,
-		1,
-		3
-	  ],
-	  "28,2": [
-		8,
-		1,
-		3
-	  ],
-	  "28,20": [
-		8,
-		1,
-		3
-	  ],
-	  "28,21": [
-		8,
-		1,
-		3
-	  ],
-	  "28,22": [
-		8,
-		1,
-		3
-	  ],
-	  "28,23": [
-		8,
-		1,
-		3
-	  ],
-	  "28,3": [
-		8,
-		1,
-		3
-	  ],
-	  "28,4": [
-		8,
-		1,
-		3
-	  ],
-	  "28,5": [
-		3,
-		0,
-		0
-	  ],
-	  "28,6": [
-		8,
-		1,
-		3
-	  ],
-	  "28,7": [
-		8,
-		1,
-		3
-	  ],
-	  "28,8": [
-		8,
-		1,
-		3
-	  ],
-	  "28,9": [
-		3,
-		0,
-		0
-	  ],
-	  "29,0": [
-		8,
-		1,
-		3
-	  ],
-	  "29,1": [
-		8,
-		1,
-		3
-	  ],
-	  "29,10": [
-		8,
-		1,
-		3
-	  ],
-	  "29,11": [
-		8,
-		1,
-		3
-	  ],
-	  "29,12": [
-		8,
-		1,
-		3
-	  ],
-	  "29,13": [
-		8,
-		1,
-		3
-	  ],
-	  "29,14": [
-		8,
-		1,
-		3
-	  ],
-	  "29,15": [
-		8,
-		1,
-		3
-	  ],
-	  "29,16": [
-		8,
-		1,
-		3
-	  ],
-	  "29,17": [
-		8,
-		1,
-		3
-	  ],
-	  "29,18": [
-		8,
-		1,
-		3
-	  ],
-	  "29,19": [
-		8,
-		1,
-		3
-	  ],
-	  "29,2": [
-		8,
-		1,
-		3
-	  ],
-	  "29,20": [
-		8,
-		1,
-		3
-	  ],
-	  "29,21": [
-		8,
-		1,
-		3
-	  ],
-	  "29,22": [
-		8,
-		1,
-		3
-	  ],
-	  "29,23": [
-		8,
-		1,
-		3
-	  ],
-	  "29,3": [
-		8,
-		1,
-		3
-	  ],
-	  "29,4": [
-		3,
-		0,
-		0
-	  ],
-	  "29,5": [
-		8,
-		1,
-		3
-	  ],
-	  "29,6": [
-		8,
-		1,
-		3
-	  ],
-	  "29,7": [
-		8,
-		1,
-		3
-	  ],
-	  "29,8": [
-		8,
-		1,
-		3
-	  ],
-	  "29,9": [
-		8,
-		1,
-		3
-	  ],
-	  "3,0": [
-		8,
-		1,
-		3
-	  ],
-	  "3,1": [
-		8,
-		1,
-		3
-	  ],
-	  "3,10": [
-		3,
-		0,
-		0
-	  ],
-	  "3,11": [
-		8,
-		1,
-		3
-	  ],
-	  "3,12": [
-		8,
-		1,
-		3
-	  ],
-	  "3,13": [
-		8,
-		1,
-		3
-	  ],
-	  "3,14": [
-		8,
-		1,
-		3
-	  ],
-	  "3,15": [
-		8,
-		1,
-		3
-	  ],
-	  "3,16": [
-		8,
-		1,
-		3
-	  ],
-	  "3,17": [
-		8,
-		1,
-		3
-	  ],
-	  "3,18": [
-		8,
-		1,
-		3
-	  ],
-	  "3,19": [
-		8,
-		1,
-		3
-	  ],
-	  "3,2": [
-		8,
-		1,
-		3
-	  ],
-	  "3,20": [
-		8,
-		1,
-		3
-	  ],
-	  "3,21": [
-		8,
-		1,
-		3
-	  ],
-	  "3,22": [
-		8,
-		1,
-		3
-	  ],
-	  "3,23": [
-		8,
-		1,
-		3
-	  ],
-	  "3,3": [
-		8,
-		1,
-		3
-	  ],
-	  "3,4": [
-		8,
-		1,
-		3
-	  ],
-	  "3,5": [
-		8,
-		1,
-		3
-	  ],
-	  "3,6": [
-		8,
-		1,
-		3
-	  ],
-	  "3,7": [
-		8,
-		1,
-		3
-	  ],
-	  "3,8": [
-		8,
-		1,
-		3
-	  ],
-	  "3,9": [
-		3,
-		0,
-		0
-	  ],
-	  "30,0": [
-		8,
-		1,
-		3
-	  ],
-	  "30,1": [
-		8,
-		1,
-		3
-	  ],
-	  "30,10": [
-		8,
-		1,
-		3
-	  ],
-	  "30,11": [
-		8,
-		1,
-		3
-	  ],
-	  "30,12": [
-		8,
-		1,
-		3
-	  ],
-	  "30,13": [
-		8,
-		1,
-		3
-	  ],
-	  "30,14": [
-		8,
-		1,
-		3
-	  ],
-	  "30,15": [
-		8,
-		1,
-		3
-	  ],
-	  "30,16": [
-		8,
-		1,
-		3
-	  ],
-	  "30,17": [
-		8,
-		1,
-		3
-	  ],
-	  "30,18": [
-		8,
-		1,
-		3
-	  ],
-	  "30,19": [
-		8,
-		1,
-		3
-	  ],
-	  "30,2": [
-		8,
-		1,
-		3
-	  ],
-	  "30,20": [
-		8,
-		1,
-		3
-	  ],
-	  "30,21": [
-		8,
-		1,
-		3
-	  ],
-	  "30,22": [
-		8,
-		1,
-		3
-	  ],
-	  "30,23": [
-		8,
-		1,
-		3
-	  ],
-	  "30,3": [
-		3,
-		0,
-		0
-	  ],
-	  "30,4": [
-		3,
-		0,
-		0
-	  ],
-	  "30,5": [
-		8,
-		1,
-		3
-	  ],
-	  "30,6": [
-		8,
-		1,
-		3
-	  ],
-	  "30,7": [
-		8,
-		1,
-		3
-	  ],
-	  "30,8": [
-		8,
-		1,
-		3
-	  ],
-	  "30,9": [
-		8,
-		1,
-		3
-	  ],
-	  "31,0": [
-		8,
-		1,
-		3
-	  ],
-	  "31,1": [
-		8,
-		1,
-		3
-	  ],
-	  "31,10": [
-		8,
-		1,
-		3
-	  ],
-	  "31,11": [
-		8,
-		1,
-		3
-	  ],
-	  "31,12": [
-		8,
-		1,
-		3
-	  ],
-	  "31,13": [
-		8,
-		1,
-		3
-	  ],
-	  "31,14": [
-		8,
-		1,
-		3
-	  ],
-	  "31,15": [
-		8,
-		1,
-		3
-	  ],
-	  "31,16": [
-		8,
-		1,
-		3
-	  ],
-	  "31,17": [
-		8,
-		1,
-		3
-	  ],
-	  "31,18": [
-		8,
-		1,
-		3
-	  ],
-	  "31,19": [
-		8,
-		1,
-		3
-	  ],
-	  "31,2": [
-		8,
-		1,
-		3
-	  ],
-	  "31,20": [
-		8,
-		1,
-		3
-	  ],
-	  "31,21": [
-		8,
-		1,
-		3
-	  ],
-	  "31,22": [
-		8,
-		1,
-		3
-	  ],
-	  "31,23": [
-		8,
-		1,
-		3
-	  ],
-	  "31,3": [
-		3,
-		0,
-		0
-	  ],
-	  "31,4": [
-		8,
-		1,
-		3
-	  ],
-	  "31,5": [
-		8,
-		1,
-		3
-	  ],
-	  "31,6": [
-		8,
-		1,
-		3
-	  ],
-	  "31,7": [
-		8,
-		1,
-		3
-	  ],
-	  "31,8": [
-		8,
-		1,
-		3
-	  ],
-	  "31,9": [
-		8,
-		1,
-		3
-	  ],
-	  "32,0": [
-		8,
-		1,
-		3
-	  ],
-	  "32,1": [
-		8,
-		1,
-		3
-	  ],
-	  "32,10": [
-		8,
-		1,
-		3
-	  ],
-	  "32,11": [
-		8,
-		1,
-		3
-	  ],
-	  "32,12": [
-		8,
-		1,
-		3
-	  ],
-	  "32,13": [
-		8,
-		1,
-		3
-	  ],
-	  "32,14": [
-		8,
-		1,
-		3
-	  ],
-	  "32,15": [
-		8,
-		1,
-		3
-	  ],
-	  "32,16": [
-		8,
-		1,
-		3
-	  ],
-	  "32,17": [
-		8,
-		1,
-		3
-	  ],
-	  "32,18": [
-		8,
-		1,
-		3
-	  ],
-	  "32,19": [
-		8,
-		1,
-		3
-	  ],
-	  "32,2": [
-		3,
-		0,
-		0
-	  ],
-	  "32,20": [
-		8,
-		1,
-		3
-	  ],
-	  "32,21": [
-		8,
-		1,
-		3
-	  ],
-	  "32,22": [
-		8,
-		1,
-		3
-	  ],
-	  "32,23": [
-		8,
-		1,
-		3
-	  ],
-	  "32,3": [
-		3,
-		0,
-		0
-	  ],
-	  "32,4": [
-		8,
-		1,
-		3
-	  ],
-	  "32,5": [
-		8,
-		1,
-		3
-	  ],
-	  "32,6": [
-		8,
-		1,
-		3
-	  ],
-	  "32,7": [
-		8,
-		1,
-		3
-	  ],
-	  "32,8": [
-		8,
-		1,
-		3
-	  ],
-	  "32,9": [
-		8,
-		1,
-		3
-	  ],
-	  "33,0": [
-		8,
-		1,
-		3
-	  ],
-	  "33,1": [
-		8,
-		1,
-		3
-	  ],
-	  "33,10": [
-		8,
-		1,
-		3
-	  ],
-	  "33,11": [
-		8,
-		1,
-		3
-	  ],
-	  "33,12": [
-		8,
-		1,
-		3
-	  ],
-	  "33,13": [
-		8,
-		1,
-		3
-	  ],
-	  "33,14": [
-		8,
-		1,
-		3
-	  ],
-	  "33,15": [
-		8,
-		1,
-		3
-	  ],
-	  "33,16": [
-		8,
-		1,
-		3
-	  ],
-	  "33,17": [
-		8,
-		1,
-		3
-	  ],
-	  "33,18": [
-		8,
-		1,
-		3
-	  ],
-	  "33,19": [
-		8,
-		1,
-		3
-	  ],
-	  "33,2": [
-		8,
-		1,
-		3
-	  ],
-	  "33,20": [
-		8,
-		1,
-		3
-	  ],
-	  "33,21": [
-		8,
-		1,
-		3
-	  ],
-	  "33,22": [
-		8,
-		1,
-		3
-	  ],
-	  "33,23": [
-		8,
-		1,
-		3
-	  ],
-	  "33,3": [
-		8,
-		1,
-		3
-	  ],
-	  "33,4": [
-		8,
-		1,
-		3
-	  ],
-	  "33,5": [
-		8,
-		1,
-		3
-	  ],
-	  "33,6": [
-		8,
-		1,
-		3
-	  ],
-	  "33,7": [
-		8,
-		1,
-		3
-	  ],
-	  "33,8": [
-		8,
-		1,
-		3
-	  ],
-	  "33,9": [
-		8,
-		1,
-		3
-	  ],
-	  "34,0": [
-		8,
-		1,
-		3
-	  ],
-	  "34,1": [
-		8,
-		1,
-		3
-	  ],
-	  "34,10": [
-		8,
-		1,
-		3
-	  ],
-	  "34,11": [
-		8,
-		1,
-		3
-	  ],
-	  "34,12": [
-		8,
-		1,
-		3
-	  ],
-	  "34,13": [
-		8,
-		1,
-		3
-	  ],
-	  "34,14": [
-		8,
-		1,
-		3
-	  ],
-	  "34,15": [
-		8,
-		1,
-		3
-	  ],
-	  "34,16": [
-		8,
-		1,
-		3
-	  ],
-	  "34,17": [
-		8,
-		1,
-		3
-	  ],
-	  "34,18": [
-		8,
-		1,
-		3
-	  ],
-	  "34,19": [
-		8,
-		1,
-		3
-	  ],
-	  "34,2": [
-		8,
-		1,
-		3
-	  ],
-	  "34,20": [
-		8,
-		1,
-		3
-	  ],
-	  "34,21": [
-		8,
-		1,
-		3
-	  ],
-	  "34,22": [
-		8,
-		1,
-		3
-	  ],
-	  "34,23": [
-		8,
-		1,
-		3
-	  ],
-	  "34,3": [
-		8,
-		1,
-		3
-	  ],
-	  "34,4": [
-		8,
-		1,
-		3
-	  ],
-	  "34,5": [
-		8,
-		1,
-		3
-	  ],
-	  "34,6": [
-		8,
-		1,
-		3
-	  ],
-	  "34,7": [
-		8,
-		1,
-		3
-	  ],
-	  "34,8": [
-		8,
-		1,
-		3
-	  ],
-	  "34,9": [
-		8,
-		1,
-		3
-	  ],
-	  "35,0": [
-		8,
-		1,
-		3
-	  ],
-	  "35,1": [
-		8,
-		1,
-		3
-	  ],
-	  "35,10": [
-		8,
-		1,
-		3
-	  ],
-	  "35,11": [
-		8,
-		1,
-		3
-	  ],
-	  "35,12": [
-		8,
-		1,
-		3
-	  ],
-	  "35,13": [
-		8,
-		1,
-		3
-	  ],
-	  "35,14": [
-		8,
-		1,
-		3
-	  ],
-	  "35,15": [
-		8,
-		1,
-		3
-	  ],
-	  "35,16": [
-		8,
-		1,
-		3
-	  ],
-	  "35,17": [
-		8,
-		1,
-		3
-	  ],
-	  "35,18": [
-		8,
-		1,
-		3
-	  ],
-	  "35,19": [
-		8,
-		1,
-		3
-	  ],
-	  "35,2": [
-		8,
-		1,
-		3
-	  ],
-	  "35,20": [
-		8,
-		1,
-		3
-	  ],
-	  "35,21": [
-		8,
-		1,
-		3
-	  ],
-	  "35,22": [
-		8,
-		1,
-		3
-	  ],
-	  "35,23": [
-		8,
-		1,
-		3
-	  ],
-	  "35,3": [
-		8,
-		1,
-		3
-	  ],
-	  "35,4": [
-		8,
-		1,
-		3
-	  ],
-	  "35,5": [
-		8,
-		1,
-		3
-	  ],
-	  "35,6": [
-		8,
-		1,
-		3
-	  ],
-	  "35,7": [
-		8,
-		1,
-		3
-	  ],
-	  "35,8": [
-		8,
-		1,
-		3
-	  ],
-	  "35,9": [
-		8,
-		1,
-		3
-	  ],
-	  "4,0": [
-		8,
-		1,
-		3
-	  ],
-	  "4,1": [
-		8,
-		1,
-		3
-	  ],
-	  "4,10": [
-		3,
-		0,
-		0
-	  ],
-	  "4,11": [
-		3,
-		0,
-		0
-	  ],
-	  "4,12": [
-		8,
-		1,
-		3
-	  ],
-	  "4,13": [
-		8,
-		1,
-		3
-	  ],
-	  "4,14": [
-		8,
-		1,
-		3
-	  ],
-	  "4,15": [
-		8,
-		1,
-		3
-	  ],
-	  "4,16": [
-		8,
-		1,
-		3
-	  ],
-	  "4,17": [
-		8,
-		1,
-		3
-	  ],
-	  "4,18": [
-		8,
-		1,
-		3
-	  ],
-	  "4,19": [
-		8,
-		1,
-		3
-	  ],
-	  "4,2": [
-		8,
-		1,
-		3
-	  ],
-	  "4,20": [
-		8,
-		1,
-		3
-	  ],
-	  "4,21": [
-		8,
-		1,
-		3
-	  ],
-	  "4,22": [
-		8,
-		1,
-		3
-	  ],
-	  "4,23": [
-		8,
-		1,
-		3
-	  ],
-	  "4,3": [
-		8,
-		1,
-		3
-	  ],
-	  "4,4": [
-		8,
-		1,
-		3
-	  ],
-	  "4,5": [
-		8,
-		1,
-		3
-	  ],
-	  "4,6": [
-		8,
-		1,
-		3
-	  ],
-	  "4,7": [
-		8,
-		1,
-		3
-	  ],
-	  "4,8": [
-		8,
-		1,
-		3
-	  ],
-	  "4,9": [
-		8,
-		1,
-		3
-	  ],
-	  "5,0": [
-		8,
-		1,
-		3
-	  ],
-	  "5,1": [
-		8,
-		1,
-		3
-	  ],
-	  "5,10": [
-		8,
-		1,
-		3
-	  ],
-	  "5,11": [
-		3,
-		0,
-		0
-	  ],
-	  "5,12": [
-		3,
-		0,
-		0
-	  ],
-	  "5,13": [
-		8,
-		1,
-		3
-	  ],
-	  "5,14": [
-		8,
-		1,
-		3
-	  ],
-	  "5,15": [
-		8,
-		1,
-		3
-	  ],
-	  "5,16": [
-		8,
-		1,
-		3
-	  ],
-	  "5,17": [
-		8,
-		1,
-		3
-	  ],
-	  "5,18": [
-		8,
-		1,
-		3
-	  ],
-	  "5,19": [
-		8,
-		1,
-		3
-	  ],
-	  "5,2": [
-		8,
-		1,
-		3
-	  ],
-	  "5,20": [
-		8,
-		1,
-		3
-	  ],
-	  "5,21": [
-		8,
-		1,
-		3
-	  ],
-	  "5,22": [
-		8,
-		1,
-		3
-	  ],
-	  "5,23": [
-		8,
-		1,
-		3
-	  ],
-	  "5,3": [
-		8,
-		1,
-		3
-	  ],
-	  "5,4": [
-		8,
-		1,
-		3
-	  ],
-	  "5,5": [
-		8,
-		1,
-		3
-	  ],
-	  "5,6": [
-		8,
-		1,
-		3
-	  ],
-	  "5,7": [
-		8,
-		1,
-		3
-	  ],
-	  "5,8": [
-		8,
-		1,
-		3
-	  ],
-	  "5,9": [
-		8,
-		1,
-		3
-	  ],
-	  "6,0": [
-		8,
-		1,
-		3
-	  ],
-	  "6,1": [
-		8,
-		1,
-		3
-	  ],
-	  "6,10": [
-		8,
-		1,
-		3
-	  ],
-	  "6,11": [
-		8,
-		1,
-		3
-	  ],
-	  "6,12": [
-		3,
-		0,
-		0
-	  ],
-	  "6,13": [
-		8,
-		1,
-		3
-	  ],
-	  "6,14": [
-		8,
-		1,
-		3
-	  ],
-	  "6,15": [
-		8,
-		1,
-		3
-	  ],
-	  "6,16": [
-		8,
-		1,
-		3
-	  ],
-	  "6,17": [
-		8,
-		1,
-		3
-	  ],
-	  "6,18": [
-		8,
-		1,
-		3
-	  ],
-	  "6,19": [
-		8,
-		1,
-		3
-	  ],
-	  "6,2": [
-		8,
-		1,
-		3
-	  ],
-	  "6,20": [
-		8,
-		1,
-		3
-	  ],
-	  "6,21": [
-		8,
-		1,
-		3
-	  ],
-	  "6,22": [
-		8,
-		1,
-		3
-	  ],
-	  "6,23": [
-		8,
-		1,
-		3
-	  ],
-	  "6,3": [
-		8,
-		1,
-		3
-	  ],
-	  "6,4": [
-		8,
-		1,
-		3
-	  ],
-	  "6,5": [
-		8,
-		1,
-		3
-	  ],
-	  "6,6": [
-		8,
-		1,
-		3
-	  ],
-	  "6,7": [
-		8,
-		1,
-		3
-	  ],
-	  "6,8": [
-		8,
-		1,
-		3
-	  ],
-	  "6,9": [
-		8,
-		1,
-		3
-	  ],
-	  "7,0": [
-		8,
-		1,
-		3
-	  ],
-	  "7,1": [
-		8,
-		1,
-		3
-	  ],
-	  "7,10": [
-		8,
-		1,
-		3
-	  ],
-	  "7,11": [
-		3,
-		0,
-		0
-	  ],
-	  "7,12": [
-		3,
-		0,
-		0
-	  ],
-	  "7,13": [
-		8,
-		1,
-		3
-	  ],
-	  "7,14": [
-		8,
-		1,
-		3
-	  ],
-	  "7,15": [
-		8,
-		1,
-		3
-	  ],
-	  "7,16": [
-		8,
-		1,
-		3
-	  ],
-	  "7,17": [
-		8,
-		1,
-		3
-	  ],
-	  "7,18": [
-		8,
-		1,
-		3
-	  ],
-	  "7,19": [
-		8,
-		1,
-		3
-	  ],
-	  "7,2": [
-		8,
-		1,
-		3
-	  ],
-	  "7,20": [
-		8,
-		1,
-		3
-	  ],
-	  "7,21": [
-		8,
-		1,
-		3
-	  ],
-	  "7,22": [
-		8,
-		1,
-		3
-	  ],
-	  "7,23": [
-		8,
-		1,
-		3
-	  ],
-	  "7,3": [
-		8,
-		1,
-		3
-	  ],
-	  "7,4": [
-		8,
-		1,
-		3
-	  ],
-	  "7,5": [
-		8,
-		1,
-		3
-	  ],
-	  "7,6": [
-		8,
-		1,
-		3
-	  ],
-	  "7,7": [
-		8,
-		1,
-		3
-	  ],
-	  "7,8": [
-		8,
-		1,
-		3
-	  ],
-	  "7,9": [
-		8,
-		1,
-		3
-	  ],
-	  "8,0": [
-		8,
-		1,
-		3
-	  ],
-	  "8,1": [
-		8,
-		1,
-		3
-	  ],
-	  "8,10": [
-		8,
-		1,
-		3
-	  ],
-	  "8,11": [
-		3,
-		0,
-		0
-	  ],
-	  "8,12": [
-		8,
-		1,
-		3
-	  ],
-	  "8,13": [
-		8,
-		1,
-		3
-	  ],
-	  "8,14": [
-		8,
-		1,
-		3
-	  ],
-	  "8,15": [
-		8,
-		1,
-		3
-	  ],
-	  "8,16": [
-		8,
-		1,
-		3
-	  ],
-	  "8,17": [
-		8,
-		1,
-		3
-	  ],
-	  "8,18": [
-		8,
-		1,
-		3
-	  ],
-	  "8,19": [
-		8,
-		1,
-		3
-	  ],
-	  "8,2": [
-		8,
-		1,
-		3
-	  ],
-	  "8,20": [
-		8,
-		1,
-		3
-	  ],
-	  "8,21": [
-		8,
-		1,
-		3
-	  ],
-	  "8,22": [
-		3,
-		0,
-		0
-	  ],
-	  "8,23": [
-		3,
-		0,
-		0
-	  ],
-	  "8,3": [
-		8,
-		1,
-		3
-	  ],
-	  "8,4": [
-		8,
-		1,
-		3
-	  ],
-	  "8,5": [
-		8,
-		1,
-		3
-	  ],
-	  "8,6": [
-		8,
-		1,
-		3
-	  ],
-	  "8,7": [
-		8,
-		1,
-		3
-	  ],
-	  "8,8": [
-		8,
-		1,
-		3
-	  ],
-	  "8,9": [
-		8,
-		1,
-		3
-	  ],
-	  "9,0": [
-		8,
-		1,
-		3
-	  ],
-	  "9,1": [
-		8,
-		1,
-		3
-	  ],
-	  "9,10": [
-		8,
-		1,
-		3
-	  ],
-	  "9,11": [
-		3,
-		0,
-		0
-	  ],
-	  "9,12": [
-		8,
-		1,
-		3
-	  ],
-	  "9,13": [
-		8,
-		1,
-		3
-	  ],
-	  "9,14": [
-		8,
-		1,
-		3
-	  ],
-	  "9,15": [
-		8,
-		1,
-		3
-	  ],
-	  "9,16": [
-		8,
-		1,
-		3
-	  ],
-	  "9,17": [
-		8,
-		1,
-		3
-	  ],
-	  "9,18": [
-		3,
-		0,
-		0
-	  ],
-	  "9,19": [
-		3,
-		0,
-		0
-	  ],
-	  "9,2": [
-		8,
-		1,
-		3
-	  ],
-	  "9,20": [
-		3,
-		0,
-		0
-	  ],
-	  "9,21": [
-		3,
-		0,
-		0
-	  ],
-	  "9,22": [
-		3,
-		0,
-		0
-	  ],
-	  "9,23": [
-		8,
-		1,
-		3
-	  ],
-	  "9,3": [
-		8,
-		1,
-		3
-	  ],
-	  "9,4": [
-		8,
-		1,
-		3
-	  ],
-	  "9,5": [
-		8,
-		1,
-		3
-	  ],
-	  "9,6": [
-		8,
-		1,
-		3
-	  ],
-	  "9,7": [
-		8,
-		1,
-		3
-	  ],
-	  "9,8": [
-		8,
-		1,
-		3
-	  ],
-	  "9,9": [
-		8,
-		1,
-		3
-	  ]
-	}
+	"Boundary": {
+	  "12,4": {
+		"anchor": [
+		  12.0,
+		  4.0
+		],
+		"asset_id": "asset.sf_military_terrain.r03_c02",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "12,8": {
+		"anchor": [
+		  12.0,
+		  8.0
+		],
+		"asset_id": "asset.sf_military_terrain.r04_c02",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "16,4": {
+		"anchor": [
+		  16.0,
+		  4.0
+		],
+		"asset_id": "asset.sf_military_terrain.r03_c03",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "16,8": {
+		"anchor": [
+		  16.0,
+		  8.0
+		],
+		"asset_id": "asset.sf_military_terrain.r04_c03",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "20,4": {
+		"anchor": [
+		  20.0,
+		  4.0
+		],
+		"asset_id": "asset.sf_military_terrain.r03_c04",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "20,8": {
+		"anchor": [
+		  20.0,
+		  8.0
+		],
+		"asset_id": "asset.sf_military_terrain.r04_c04",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "24,4": {
+		"anchor": [
+		  24.0,
+		  4.0
+		],
+		"asset_id": "asset.sf_military_terrain.r03_c05",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "24,8": {
+		"anchor": [
+		  24.0,
+		  8.0
+		],
+		"asset_id": "asset.sf_military_terrain.r04_c05",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "28,8": {
+		"anchor": [
+		  28.0,
+		  8.0
+		],
+		"asset_id": "asset.tile.terrain_atlas_060",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "4,8": {
+		"anchor": [
+		  4.0,
+		  8.0
+		],
+		"asset_id": "asset.tile.terrain_atlas_058",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "8,4": {
+		"anchor": [
+		  8.0,
+		  4.0
+		],
+		"asset_id": "asset.tile.terrain_atlas_034",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  },
+	  "8,8": {
+		"anchor": [
+		  8.0,
+		  8.0
+		],
+		"asset_id": "asset.tile.terrain_atlas_055",
+		"footprint_tiles": [
+		  4.0,
+		  4.0
+		]
+	  }
+	},
+	"Ground": {
+	  "0,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "0,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "1,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "10,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "11,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "12,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "13,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "14,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "15,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "16,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "17,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "18,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "19,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "2,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "20,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "21,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "22,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "23,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "24,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "25,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "26,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "27,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "28,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "29,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "3,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "30,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "31,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "32,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "33,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "34,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "35,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "36,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "37,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "38,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "39,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "4,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "40,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "41,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "5,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "6,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "7,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "8,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,0": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,1": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,10": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,11": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,12": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,13": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,14": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,15": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,16": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,17": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,18": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,19": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,2": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,20": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,21": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,22": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,23": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,3": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,4": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,5": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,6": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,7": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,8": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  },
+	  "9,9": {
+		"asset_id": "asset.tile.ground.basic_meadow"
+	  }
+	},
+	"Vegetation": {}
   },
-  "tower_slots": {
-	"L1": [
-	  220.0,
-	  310.0
-	],
-	"L2": [
-	  450.0,
-	  270.0
-	],
-	"L3": [
-	  720.0,
-	  210.0
-	],
-	"R1": [
-	  300.0,
-	  650.0
-	],
-	"R2": [
-	  520.0,
-	  500.0
-	],
-	"R3": [
-	  760.0,
-	  340.0
-	]
-  },
-  "version": 1
+  "tower_slots": {},
+  "version": 1.0
 }

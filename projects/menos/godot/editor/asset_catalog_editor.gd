@@ -3,8 +3,8 @@ extends Window
 signal catalog_saved(selected_asset_id: String)
 
 const CATALOG_PATH := "res://content/editor/asset_catalog.json"
-const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facility", "Forest", "Ground", "Military", "River", "Sea"]
-const OBJECT_GROUPS := ["Combat", "Industrial", "Terrain"]
+const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facility", "Forest", "Ground", "Military", "Obstacle", "Other", "Prop", "River", "Sea", "Structure"]
+const OBJECT_GROUPS := ["Combat", "Decoration", "Ground", "Industrial", "Obstacle", "Other", "Prop", "Structure", "Terrain"]
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 const EDITED_ASSET_DIR := "res://content/editor/edited_assets"
@@ -18,7 +18,7 @@ var selected_index := -1
 var editing_asset_index := -1
 var source_dialog: FileDialog
 var asset_list: ItemList
-var region_view: Control
+var region_view: AssetRegionView
 var source_label: Label
 var source_preview_panel: PanelContainer
 var source_preview: TextureRect
@@ -40,6 +40,7 @@ var windowed_position := Vector2i.ZERO
 
 func _ready() -> void:
 	close_requested.connect(hide)
+	min_size = Vector2i(960, 640)
 	windowed_size = size
 	windowed_position = position
 	_build_interface()
@@ -87,7 +88,7 @@ func _build_interface() -> void:
 	heading.add_theme_font_size_override("font_size", 22)
 	vertical.add_child(heading)
 	var intro := Label.new()
-	intro.text = "Register image regions and edit asset crops safely. Source sheets remain unchanged; edited crops are saved as separate project PNGs."
+	intro.text = "Register image regions and edit asset crops safely. Double-click a registered asset to erase alpha inside its catalog region on the full source image. Edited crops save as separate project PNGs; original sheets stay unchanged."
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vertical.add_child(intro)
 	var toolbar := HBoxContainer.new()
@@ -156,7 +157,7 @@ func _build_interface() -> void:
 	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(details)
 	var list_title := Label.new()
-	list_title.text = "REGISTERED ASSETS"
+	list_title.text = "REGISTERED ASSETS (double-click row to edit crop)"
 	details.add_child(list_title)
 	asset_list = ItemList.new()
 	asset_list.custom_minimum_size.y = 170
@@ -173,7 +174,7 @@ func _build_interface() -> void:
 	id_edit = LineEdit.new()
 	id_edit.placeholder_text = "asset.tile.ground.001"
 	form.add_child(id_edit)
-	_add_form_label(form, "Display Name")
+	_add_form_label(form, "Display 이름")
 	name_edit = LineEdit.new()
 	name_edit.placeholder_text = "Meadow tile"
 	form.add_child(name_edit)
@@ -307,18 +308,20 @@ func _on_asset_activated(index: int) -> void:
 	if rect.size.x <= 0 or rect.size.y <= 0:
 		status_label.text = "Cannot edit image: source pixel rectangle is empty."
 		return
-	var source_image := source_texture.get_image() if source_texture != null else null
-	if source_image == null or rect.position.x < 0 or rect.position.y < 0 or rect.end.x > source_image.get_width() or rect.end.y > source_image.get_height():
+	var entry_path := str(entries[index].get("source_path", ""))
+	var full_image := IMAGE_TEXTURE_LOADER.load_image(entry_path)
+	if full_image == null:
+		status_label.text = "Cannot edit image: could not load source file %s." % entry_path
+		return
+	if rect.position.x < 0 or rect.position.y < 0 or rect.end.x > full_image.get_width() or rect.end.y > full_image.get_height():
 		status_label.text = "Cannot edit image: source region is outside the image bounds."
 		return
-	var crop := source_image.get_region(rect)
-	crop.convert(Image.FORMAT_RGBA8)
-	region_view.begin_image_edit(crop, int(brush_size_spin.value))
+	region_view.begin_image_edit_clipped(full_image, rect, int(brush_size_spin.value))
 	editing_asset_index = index
 	asset_list.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	save_edited_button.disabled = false
 	cancel_edit_button.disabled = false
-	status_label.text = "Erase brush edits only this asset crop. Wheel zooms, middle/right drag pans, left drag erases alpha. Save Edited Image writes a separate PNG."
+	status_label.text = "Editing catalog region on the full source image. Wheel zooms; Space/Alt/middle/right drag pans; left drag erases alpha inside the red outline. Save Edited Image writes a separate PNG."
 
 func _cancel_image_edit() -> void:
 	if editing_asset_index < 0 or editing_asset_index >= entries.size():

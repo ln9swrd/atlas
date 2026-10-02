@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><LangVersion>latest</LangVersion></PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\database\schema.sql" Link="database\schema.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\database\seed.sql" Link="database\seed.sql" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectReference Include="..\MKERP.Application\MKERP.Application.csproj" />
+    <ProjectReference Include="..\MKERP.Infrastructure\MKERP.Infrastructure.csproj" />
+    <ProjectReference Include="..\MKERP.Reporting\MKERP.Reporting.csproj" />
+    <ProjectReference Include="..\MKERP.Licensing\MKERP.Licensing.csproj" />
+  </ItemGroup>
+</Project>

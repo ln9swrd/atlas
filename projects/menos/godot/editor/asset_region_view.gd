@@ -1,4 +1,7 @@
+class_name AssetRegionView
 extends Control
+
+const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 
 signal region_changed(rect: Rect2i)
 
@@ -16,34 +19,53 @@ var _edit_image: Image
 var _edit_texture: ImageTexture
 var _brush_size_px := 12
 var _last_pointer := Vector2(-1, -1)
+var _clip_erase_to_region := false
+var _edit_clip_rect := Rect2i()
 
 func set_source_texture(value: Texture2D) -> void:
 	texture = value
 	_editing_pixels = false
 	_edit_image = null
 	_edit_texture = null
+	_clip_erase_to_region = false
+	_edit_clip_rect = Rect2i()
 	selected_region = Rect2i()
 	_zoom = 1.0
 	_pan_offset = Vector2.ZERO
 	queue_redraw()
 
 func begin_image_edit(source_crop: Image, brush_size_px: int = 12) -> void:
+	_clip_erase_to_region = false
+	_edit_clip_rect = Rect2i()
 	_edit_image = source_crop.duplicate()
-	if _edit_image.detect_alpha() == Image.ALPHA_NONE:
-		_edit_image.convert(Image.FORMAT_RGBA8)
+	IMAGE_TEXTURE_LOADER.prepare_for_pixel_edit(_edit_image)
 	_edit_texture = ImageTexture.create_from_image(_edit_image)
 	texture = _edit_texture
 	selected_region = Rect2i()
 	_brush_size_px = maxi(1, brush_size_px)
-	_zoom = 1.0
-	_pan_offset = Vector2.ZERO
 	_editing_pixels = true
+	_fit_view_to_pixel_rect(Rect2i(0, 0, _edit_image.get_width(), _edit_image.get_height()))
+	queue_redraw()
+
+func begin_image_edit_clipped(full_source: Image, clip_rect: Rect2i, brush_size_px: int = 12) -> void:
+	_clip_erase_to_region = true
+	_edit_clip_rect = clip_rect
+	_edit_image = full_source.duplicate()
+	IMAGE_TEXTURE_LOADER.prepare_for_pixel_edit(_edit_image)
+	_edit_texture = ImageTexture.create_from_image(_edit_image)
+	texture = _edit_texture
+	selected_region = clip_rect
+	_brush_size_px = maxi(1, brush_size_px)
+	_editing_pixels = true
+	_fit_view_to_pixel_rect(clip_rect)
 	queue_redraw()
 
 func cancel_image_edit() -> void:
 	_editing_pixels = false
 	_edit_image = null
 	_edit_texture = null
+	_clip_erase_to_region = false
+	_edit_clip_rect = Rect2i()
 	queue_redraw()
 
 func is_editing_pixels() -> bool:
@@ -56,7 +78,12 @@ func set_erase_brush_size(size_px: int) -> void:
 func get_edited_image() -> Image:
 	if not _editing_pixels or _edit_image == null:
 		return null
+	if _clip_erase_to_region and _edit_clip_rect.size.x > 0 and _edit_clip_rect.size.y > 0:
+		return _edit_image.get_region(_edit_clip_rect)
 	return _edit_image.duplicate()
+
+func _pan_input_active() -> bool:
+	return Input.is_physical_key_pressed(KEY_SPACE) or Input.is_physical_key_pressed(KEY_ALT)
 
 func _get_base_scale() -> float:
 	if texture == null or size.x <= 0.0 or size.y <= 0.0:
@@ -72,6 +99,28 @@ func _get_image_rect() -> Rect2:
 	var draw_size := Vector2(texture.get_size()) * _get_base_scale() * _zoom
 	return Rect2((size - draw_size) * 0.5 + _pan_offset, draw_size)
 
+func _fit_view_to_pixel_rect(pixel_rect: Rect2i) -> void:
+	if texture == null or pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0:
+		return
+	var base := _get_base_scale()
+	var margin := 0.88
+	_zoom = 1.0
+	_pan_offset = Vector2.ZERO
+	var zoom_x := (size.x * margin) / (float(pixel_rect.size.x) * base)
+	var zoom_y := (size.y * margin) / (float(pixel_rect.size.y) * base)
+	_zoom = clampf(minf(zoom_x, zoom_y), 0.1, 16.0)
+	_center_view_on_pixel(Vector2(pixel_rect.get_center()))
+
+func _center_view_on_pixel(pixel: Vector2) -> void:
+	if texture == null:
+		return
+	var image_size := Vector2(texture.get_size())
+	var draw_size := image_size * _get_base_scale() * _zoom
+	var centered := (size - draw_size) * 0.5
+	var fraction := pixel / image_size
+	var point := centered + fraction * draw_size
+	_pan_offset = size * 0.5 - point
+
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("151d26"), true)
 	if texture == null:
@@ -80,11 +129,16 @@ func _draw() -> void:
 	var image_rect := _get_image_rect()
 	draw_texture_rect(texture, image_rect, false)
 	draw_rect(image_rect, Color("61717e"), false, 1.0)
-	if not _editing_pixels and selected_region.size.x > 0 and selected_region.size.y > 0:
+	var highlight_rect := selected_region
+	if _editing_pixels and _clip_erase_to_region:
+		highlight_rect = _edit_clip_rect
+	if highlight_rect.size.x > 0 and highlight_rect.size.y > 0:
 		var pixel_size := Vector2(texture.get_size())
-		var selected_rect := Rect2(image_rect.position + Vector2(selected_region.position) / pixel_size * image_rect.size, Vector2(selected_region.size) / pixel_size * image_rect.size)
-		draw_rect(selected_rect, Color(0.15, 0.88, 0.78, 0.2), true)
-		draw_rect(selected_rect, Color("38e0c3"), false, 2.0)
+		var selected_rect := Rect2(image_rect.position + Vector2(highlight_rect.position) / pixel_size * image_rect.size, Vector2(highlight_rect.size) / pixel_size * image_rect.size)
+		var fill := Color(0.95, 0.35, 0.35, 0.12) if _editing_pixels else Color(0.15, 0.88, 0.78, 0.2)
+		var border := Color("ff6b6b") if _editing_pixels else Color("38e0c3")
+		draw_rect(selected_rect, fill, true)
+		draw_rect(selected_rect, border, false, 2.0)
 	if _dragging_region:
 		var drag_rect := Rect2(_drag_start, _drag_end - _drag_start).abs().intersection(image_rect)
 		draw_rect(drag_rect, Color(0.95, 0.75, 0.28, 0.2), true)
@@ -93,11 +147,12 @@ func _draw() -> void:
 		var brush_rect := _brush_rect_at(_last_pointer, image_rect)
 		draw_rect(brush_rect, Color(0.95, 0.3, 0.3, 0.25), true)
 		draw_rect(brush_rect, Color("ff6b6b"), false, 1.0)
+	var edit_hint := " · left drag erases alpha" if _editing_pixels else " · left drag selects region"
 	var drag_status := ""
 	if _dragging_region:
 		var preview_region := _region_for_drag(_drag_start, _drag_end)
 		drag_status = " · Selection %d × %d px" % [preview_region.size.x, preview_region.size.y]
-	draw_string(ThemeDB.fallback_font, Vector2(10, size.y - 10), "Zoom %.0f%% · wheel zoom · middle/right drag pan%s%s" % [_zoom * 100.0, " · left drag erases alpha" if _editing_pixels else " · left drag selects region", drag_status], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("c2cbd4"))
+	draw_string(ThemeDB.fallback_font, Vector2(10, size.y - 10), "Zoom %.0f%% · wheel zoom · Space/Alt/middle/right drag pan%s%s" % [_zoom * 100.0, edit_hint, drag_status], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("c2cbd4"))
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -118,7 +173,10 @@ func _gui_input(event: InputEvent) -> void:
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			if mouse_event.pressed and _get_image_rect().has_point(mouse_event.position):
 				_last_pointer = mouse_event.position
-				if _editing_pixels:
+				if _pan_input_active():
+					_panning = true
+					_last_pan_position = mouse_event.position
+				elif _editing_pixels:
 					_erase_at(mouse_event.position)
 				else:
 					_dragging_region = true
@@ -127,6 +185,8 @@ func _gui_input(event: InputEvent) -> void:
 				accept_event()
 				queue_redraw()
 			elif not mouse_event.pressed:
+				if _panning and not Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE) and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+					_panning = false
 				if _editing_pixels:
 					accept_event()
 				elif _dragging_region:
@@ -139,11 +199,12 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var motion := event as InputEventMouseMotion
 		_last_pointer = motion.position
-		if _panning:
+		var pan_active := _panning or (_pan_input_active() and bool(motion.button_mask & MOUSE_BUTTON_MASK_LEFT))
+		if pan_active:
 			_pan_offset += motion.position - _last_pan_position
 			_last_pan_position = motion.position
 			accept_event()
-		elif _editing_pixels and motion.button_mask & MOUSE_BUTTON_MASK_LEFT:
+		elif _editing_pixels and motion.button_mask & MOUSE_BUTTON_MASK_LEFT and not _pan_input_active():
 			_erase_at(motion.position)
 			accept_event()
 		elif _dragging_region:
@@ -244,7 +305,10 @@ func _erase_at(view_position: Vector2) -> void:
 	for offset_y in range(_brush_size_px):
 		for offset_x in range(_brush_size_px):
 			var target := start + Vector2i(offset_x, offset_y)
-			if target.x >= 0 and target.y >= 0 and target.x < image_size.x and target.y < image_size.y:
-				_edit_image.set_pixel(target.x, target.y, Color(0, 0, 0, 0))
+			if target.x < 0 or target.y < 0 or target.x >= image_size.x or target.y >= image_size.y:
+				continue
+			if _clip_erase_to_region and not _edit_clip_rect.has_point(target):
+				continue
+			_edit_image.set_pixel(target.x, target.y, Color(0, 0, 0, 0))
 	_edit_texture.update(_edit_image)
 	queue_redraw()

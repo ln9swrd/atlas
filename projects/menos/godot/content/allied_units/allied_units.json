@@ -1,0 +1,52 @@
+{
+  "vanguard": {
+    "name": "VANGUARD",
+    "hp": 180.0,
+    "speed": 105.0,
+    "damage": 18.0,
+    "cooldown": 0.8,
+    "range": 72.0,
+    "radius": 22.0,
+    "ai": {
+      "target_preference": "front",
+      "engagement_range": 72.0
+    },
+    "visuals": {
+      "sprite": "res://assets/menos/sprites/robot_atlas01.png"
+    }
+  },
+  "ranger": {
+    "name": "RANGER",
+    "hp": 95.0,
+    "speed": 82.0,
+    "damage": 14.0,
+    "cooldown": 1.1,
+    "range": 260.0,
+    "radius": 18.0,
+    "ai": {
+      "target_preference": "fast",
+      "engagement_range": 260.0
+    },
+    "visuals": {
+      "sprite": "res://assets/menos/sprites/robot_atlas01.png"
+    }
+  },
+  "support": {
+    "name": "SUPPORT",
+    "hp": 80.0,
+    "speed": 78.0,
+    "damage": 6.0,
+    "cooldown": 1.6,
+    "range": 220.0,
+    "radius": 18.0,
+    "heal": 24.0,
+    "support_cooldown": 2.0,
+    "ai": {
+      "role": "support",
+      "support_range": 220.0
+    },
+    "visuals": {
+      "sprite": "res://assets/menos/sprites/robot_atlas01.png"
+    }
+  }
+}

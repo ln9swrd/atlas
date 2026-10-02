@@ -1,6 +1,9 @@
 # MENOS 상업용 게임 설계 기준선
 
 상태: `CONFIRMED` 설계 기준선 / 일부 Runtime 검증 반영
+
+> **2026-09-29 Master Canon Override:** 전투의 핵심 정체성과 플레이어 조작은 `MENOS_COMBAT_CANON.md`를 우선 기준으로 한다. 기존 본문의 Tower Defense/지휘관 중심 설명과 충돌하는 부분은 해당 Canon이 우선한다.
+> Canon 확정은 구현 완료를 의미하지 않으며, 기존 코드/Asset/UI는 자동 변경하지 않는다.
 목적: 소규모 상업용 싱글플레이 PC/Steam 게임으로서의 MENOS 설계를 고정하고, 이후 구현 범위가 불필요하게 확장되지 않도록 한다.
 
 ## 1. 문서 상태 표기

@@ -1,0 +1,13 @@
+D:\Atlas\projects\mk\src\MKERP.Domain\bin\Debug\net8.0\MKERP.Domain.deps.json
+D:\Atlas\projects\mk\src\MKERP.Domain\bin\Debug\net8.0\MKERP.Domain.dll
+D:\Atlas\projects\mk\src\MKERP.Domain\bin\Debug\net8.0\MKERP.Domain.pdb
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.AssemblyInfoInputs.cache
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.AssemblyInfo.cs
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.csproj.CoreCompileInputs.cache
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.sourcelink.json
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.dll
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\refint\MKERP.Domain.dll
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.pdb
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\ref\MKERP.Domain.dll
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Do.BB333CE6.Up2Date

@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://ui/title_screen.gd" id="1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.035, 0.075, 0.09, 0.97)
-border_color = Color(0.18, 0.42, 0.44, 1)
+bg_color = Color(0.96, 0.97, 0.94, 0.99)
+border_color = Color(0.68, 0.76, 0.72, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -19,8 +19,8 @@ content_margin_right = 40.0
 content_margin_bottom = 28.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
-bg_color = Color(0.055, 0.12, 0.14, 0.95)
-border_color = Color(0.15, 0.32, 0.35, 1)
+bg_color = Color(0.91, 0.94, 0.90, 1)
+border_color = Color(0.78, 0.83, 0.78, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -59,8 +59,8 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit"]
-bg_color = Color(0.09, 0.14, 0.16, 1)
-border_color = Color(0.25, 0.38, 0.4, 1)
+bg_color = Color(0.88, 0.91, 0.87, 1)
+border_color = Color(0.69, 0.76, 0.71, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -71,8 +71,8 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit_hover"]
-bg_color = Color(0.15, 0.23, 0.25, 1)
-border_color = Color(0.38, 0.56, 0.58, 1)
+bg_color = Color(0.82, 0.87, 0.82, 1)
+border_color = Color(0.45, 0.61, 0.57, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -99,7 +99,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="MainPanel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(920, 700)
+custom_minimum_size = Vector2(1040, 700)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
@@ -111,12 +111,12 @@ theme_override_constants/separation = 12
 layout_mode = 2
 theme_override_colors/font_color = Color(0.48, 0.8, 0.75, 1)
 theme_override_font_sizes/font_size = 14
-text = "MENOS  //  CAMPAIGN COMMAND"
+text = "MENOS  //  COMMAND"
 horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="CenterContainer/MainPanel/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.88, 0.96, 0.93, 1)
+theme_override_colors/font_color = Color(0.12, 0.18, 0.18, 1)
 theme_override_font_sizes/font_size = 66
 text = "MENOS"
 horizontal_alignment = 1
@@ -132,100 +132,11 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.74, 0.74, 1)
 theme_override_font_sizes/font_size = 15
-text = "Three stages. Four waves per stage. Defend Northbridge."
+text = "Campaign progression and single-stage deployment."
 horizontal_alignment = 1
 
 [node name="Separator" type="HSeparator" parent="CenterContainer/MainPanel/Content"]
 layout_mode = 2
-
-[node name="StageCards" type="HBoxContainer" parent="CenterContainer/MainPanel/Content"]
-custom_minimum_size = Vector2(0, 158)
-layout_mode = 2
-theme_override_constants/separation = 14
-
-[node name="Stage01" type="PanelContainer" parent="CenterContainer/MainPanel/Content/StageCards"]
-custom_minimum_size = Vector2(260, 158)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_card")
-
-[node name="Details" type="VBoxContainer" parent="CenterContainer/MainPanel/Content/StageCards/Stage01"]
-layout_mode = 2
-theme_override_constants/separation = 7
-
-[node name="Number" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage01/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.48, 0.8, 0.75, 1)
-theme_override_font_sizes/font_size = 13
-text = "STAGE 01"
-
-[node name="Name" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage01/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 0.91, 1)
-theme_override_font_sizes/font_size = 18
-text = "Northbridge 01"
-
-[node name="Waves" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage01/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.74, 0.74, 1)
-theme_override_font_sizes/font_size = 13
-text = "Waves 1–4"
-
-[node name="Stage02" type="PanelContainer" parent="CenterContainer/MainPanel/Content/StageCards"]
-custom_minimum_size = Vector2(260, 158)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_card")
-
-[node name="Details" type="VBoxContainer" parent="CenterContainer/MainPanel/Content/StageCards/Stage02"]
-layout_mode = 2
-theme_override_constants/separation = 7
-
-[node name="Number" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage02/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.48, 0.8, 0.75, 1)
-theme_override_font_sizes/font_size = 13
-text = "STAGE 02"
-
-[node name="Name" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage02/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 0.91, 1)
-theme_override_font_sizes/font_size = 18
-text = "Northbridge 02"
-
-[node name="Waves" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage02/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.74, 0.74, 1)
-theme_override_font_sizes/font_size = 13
-text = "Waves 1–4"
-
-[node name="Stage03" type="PanelContainer" parent="CenterContainer/MainPanel/Content/StageCards"]
-custom_minimum_size = Vector2(260, 158)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_card")
-
-[node name="Details" type="VBoxContainer" parent="CenterContainer/MainPanel/Content/StageCards/Stage03"]
-layout_mode = 2
-theme_override_constants/separation = 7
-
-[node name="Number" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage03/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.48, 0.8, 0.75, 1)
-theme_override_font_sizes/font_size = 13
-text = "STAGE 03"
-
-[node name="Name" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage03/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 0.91, 1)
-theme_override_font_sizes/font_size = 18
-text = "Northbridge 03"
-
-[node name="Waves" type="Label" parent="CenterContainer/MainPanel/Content/StageCards/Stage03/Details"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.74, 0.74, 1)
-theme_override_font_sizes/font_size = 13
-text = "Waves 1–4"
 
 [node name="Actions" type="HBoxContainer" parent="CenterContainer/MainPanel/Content"]
 layout_mode = 2
@@ -239,8 +150,25 @@ theme_override_colors/font_color = Color(0.91, 0.98, 0.94, 1)
 theme_override_font_sizes/font_size = 17
 theme_override_styles/normal = SubResource("StyleBoxFlat_start")
 theme_override_styles/hover = SubResource("StyleBoxFlat_start_hover")
-text = "START CAMPAIGN"
+text = "캠페인 시작"
 focus_neighbor_right = NodePath("../Quit")
+
+[node name="SinglePlay" type="Button" parent="CenterContainer/MainPanel/Content/Actions"]
+custom_minimum_size = Vector2(190, 58)
+layout_mode = 2
+text = "싱글 플레이"
+
+[node name="MapSelect" type="OptionButton" parent="CenterContainer/MainPanel/Content/Actions"]
+custom_minimum_size = Vector2(190, 58)
+layout_mode = 2
+text = "맵 선택"
+tooltip_text = "싱글 플레이에서 사용할 맵을 선택합니다."
+
+[node name="StageSelect" type="OptionButton" parent="CenterContainer/MainPanel/Content/Actions"]
+custom_minimum_size = Vector2(210, 58)
+layout_mode = 2
+text = "미션 선택"
+tooltip_text = "선택한 맵에서 플레이할 미션을 선택합니다."
 
 [node name="Quit" type="Button" parent="CenterContainer/MainPanel/Content/Actions"]
 custom_minimum_size = Vector2(170, 58)
@@ -249,12 +177,32 @@ theme_override_colors/font_color = Color(0.78, 0.86, 0.85, 1)
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxFlat_quit")
 theme_override_styles/hover = SubResource("StyleBoxFlat_quit_hover")
-text = "QUIT"
+text = "종료"
 focus_neighbor_left = NodePath("../StartCampaign")
+
+[node name="StageInfo" type="PanelContainer" parent="CenterContainer/MainPanel/Content"]
+custom_minimum_size = Vector2(0, 74)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+visible = false
+
+[node name="Details" type="Label" parent="CenterContainer/MainPanel/Content/StageInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.74, 0.74, 1)
+theme_override_font_sizes/font_size = 13
+text = "STAGE_01  /  NORTHBRIDGE SECTOR 01  /  1 ENCOUNTER  /  4 WAVE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Settings" type="Button" parent="CenterContainer/MainPanel/Content"]
+custom_minimum_size = Vector2(180, 46)
+layout_mode = 2
+text = "설정"
+horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="CenterContainer/MainPanel/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.43, 0.56, 0.57, 1)
+theme_override_colors/font_color = Color(0.42, 0.50, 0.47, 1)
 theme_override_font_sizes/font_size = 12
-text = "ENTER  START CAMPAIGN"
+text = "캠페인: 스토리 순서대로 진행 / 싱글 플레이: 맵과 미션을 선택하여 시작"
 horizontal_alignment = 1
