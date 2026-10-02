@@ -291,7 +291,9 @@ func restart_run() -> void:
 	reset_game()
 
 func apply_map_spatial_data(loaded_map: Dictionary) -> void:
-	BASE = Vector2.ZERO
+	# Map data is authoritative. Runtime must not synthesize map gameplay visuals
+	# when the corresponding element is absent from the map.
+	BASE = Vector2(-100000.0, -100000.0)
 	LANES.clear()
 	SPAWN_AREAS.clear()
 	SPAWN_AREA_SEQUENCE.clear()
@@ -1718,12 +1720,13 @@ func _draw() -> void:
 		draw_rect(area, Color(0.45, 0.92, 0.82, 0.32), false, 1.5)
 	# Spawn location labels are intentionally hidden.
 
-	# Base Facility (Strategic HQ Node)
-	var base_feet := BASE + Vector2(0, 30)
-	draw_oval(base_feet, 54.0, 16.0, Color(0, 0, 0, 0.5))
-	draw_arc(base_feet, 56, 0, TAU, 32, Color("7ed6ce"), 2.5)
-	draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92))
-	# Base HQ label is intentionally hidden.
+	# Base Facility is rendered only when the map explicitly defines a base.
+	if _runtime_map_data.has("base"):
+		var base_feet := BASE + Vector2(0, 30)
+		draw_oval(base_feet, 54.0, 16.0, Color(0, 0, 0, 0.5))
+		draw_arc(base_feet, 56, 0, TAU, 32, Color("7ed6ce"), 2.5)
+		draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92))
+		# Base HQ label is intentionally hidden.
 
 	# Placed towers
 	for tower in towers:
