@@ -140,6 +140,8 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_rect_y_spin = _spin_row_inline(sprite_rect_row, "Y", 0, 100000, 1, 0)
 	sprite_rect_w_spin = _spin_row_inline(sprite_rect_row, "W", 0, 100000, 1, 0)
 	sprite_rect_h_spin = _spin_row_inline(sprite_rect_row, "H", 0, 100000, 1, 0)
+	for rect_spin in [sprite_rect_x_spin, sprite_rect_y_spin, sprite_rect_w_spin, sprite_rect_h_spin]:
+		rect_spin.value_changed.connect(func(_value): _refresh_sprite_preview(sprite_edit.text.strip_edges()))
 	var projectile_row := HBoxContainer.new()
 	parent.add_child(projectile_row)
 	var projectile_label := Label.new()
@@ -239,9 +241,10 @@ func _refresh_unit_list() -> void:
 		var data: Dictionary = unit_data.get(unit_type, {})
 		unit_list.add_item(str(data.get("name", unit_type.to_upper())))
 		unit_list.set_item_metadata(unit_list.item_count - 1, unit_type)
-		var sprite_path := str(data.get("visuals", {}).get("sprite", ""))
+		var visuals: Dictionary = data.get("visuals", {})
+		var sprite_path := str(visuals.get("sprite", ""))
 		if not sprite_path.is_empty():
-			var texture := load(sprite_path) as Texture2D
+			var texture := _texture_from_sprite_data(sprite_path, visuals.get("sprite_rect", []))
 			if texture != null:
 				unit_list.set_item_icon(unit_list.item_count - 1, texture)
 
@@ -356,8 +359,7 @@ func _texture_from_sprite_data(path: String, rect_values: Array) -> Texture2D:
 
 func _refresh_sprite_preview(path: String) -> void:
 	if sprite_preview:
-		var visuals: Dictionary = unit_data.get(selected_type, {}).get("visuals", {})
-		sprite_preview.texture = _texture_from_sprite_data(path, visuals.get("sprite_rect", []))
+		sprite_preview.texture = _texture_from_sprite_data(path, _get_sprite_rect_from_controls())
 
 func _open_image_editor() -> void:
 	IMAGE_STATE.open_image(sprite_edit.text.strip_edges())
