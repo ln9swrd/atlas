@@ -2,7 +2,14 @@
 extends Control
 
 const UNIT_FILE := "res://content/allied_units/allied_units.json"
-const UNIT_TYPES := ["vanguard", "ranger", "support"]
+const BASE_UNIT_TYPES := ["basic", "light", "ranged", "heavy", "support"]
+const UNIT_DESCRIPTIONS := {
+	"basic": "기본 전투형 유닛. 공격과 생존의 균형을 갖춘 표준형입니다.",
+	"light": "경량 기동형 유닛. 빠른 이동과 전개에 특화됩니다.",
+	"ranged": "원거리 공격형 유닛. 긴 사거리에서 지속적으로 화력을 투사합니다.",
+	"heavy": "헤비 전투형 유닛. 높은 내구도와 강한 화력을 갖습니다.",
+	"support": "지원형 유닛. 아군의 전투를 보조하고 회복합니다."
+}
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var unit_data: Dictionary = {}
@@ -30,6 +37,8 @@ var robot_damage_spin: SpinBox
 var robot_range_spin: SpinBox
 var robot_cooldown_spin: SpinBox
 var status_label: Label
+var unit_preview_name: Label
+var unit_preview_description: Label
 var sprite_preview: TextureRect
 var sprite_rect_x_spin: SpinBox
 var sprite_rect_y_spin: SpinBox
@@ -65,6 +74,10 @@ func _build_ui() -> void:
 	save_btn.text = "SAVE JSON"
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
+	var new_btn := Button.new()
+	new_btn.text = "NEW UNIT"
+	new_btn.pressed.connect(_create_new_unit)
+	top.add_child(new_btn)
 	status_label = Label.new()
 	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(status_label)
@@ -78,9 +91,25 @@ func _build_ui() -> void:
 
 func _build_properties(parent: VBoxContainer) -> void:
 	var title := Label.new()
-	title.text = "UNIT PROPERTIES"
+	title.text = "UNIT PREVIEW"
 	title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(title)
+	unit_preview_name = Label.new()
+	unit_preview_name.add_theme_font_size_override("font_size", 22)
+	parent.add_child(unit_preview_name)
+	unit_preview_description = Label.new()
+	unit_preview_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	unit_preview_description.custom_minimum_size.y = 42
+	parent.add_child(unit_preview_description)
+	sprite_preview = TextureRect.new()
+	sprite_preview.custom_minimum_size = Vector2(220, 180)
+	sprite_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	parent.add_child(sprite_preview)
+	var properties_title := Label.new()
+	properties_title.text = "UNIT PROPERTIES"
+	properties_title.add_theme_font_size_override("font_size", 16)
+	parent.add_child(properties_title)
 	name_edit = _line_row(parent, "Name")
 	hp_spin = _spin_row(parent, "HP", 1, 999999, 1, 100)
 	speed_spin = _spin_row(parent, "Speed", 0, 9999, 0.1, 10)
@@ -163,11 +192,6 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(_on_file_selected)
-	sprite_preview = TextureRect.new()
-	sprite_preview.custom_minimum_size = Vector2(96, 96)
-	sprite_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	sprite_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	parent.add_child(sprite_preview)
 	var edit_image := Button.new()
 	edit_image.text = "Edit Image / Browse Image Reference"
 	edit_image.pressed.connect(_open_image_editor)
@@ -235,14 +259,53 @@ func _load_data() -> void:
 	_refresh_unit_list()
 	_set_status("Loaded: " + UNIT_FILE if file else "Failed to load JSON")
 
+func _get_unit_types() -> Array:
+	var types: Array = BASE_UNIT_TYPES.duplicate()
+	for key in unit_data.keys():
+		var unit_type := str(key)
+		if not types.has(unit_type):
+			types.append(unit_type)
+	return types
+
 func _refresh_unit_list() -> void:
 	unit_list.clear()
-	for unit_type in UNIT_TYPES:
+	for unit_type in _get_unit_types():
 		var data: Dictionary = unit_data.get(unit_type, {})
 		unit_list.add_item(str(data.get("name", unit_type.to_upper())))
 		unit_list.set_item_metadata(unit_list.item_count - 1, unit_type)
-		# TEMP: hide unit list icons while sprite-region UI is being stabilized.
+		# Combo list is text-only. The selected unit thumbnail is shown separately below.
 		unit_list.set_item_icon(unit_list.item_count - 1, null)
+
+func _find_unit_index(unit_type: String) -> int:
+	for index in unit_list.item_count:
+		if str(unit_list.get_item_metadata(index)) == unit_type:
+			return index
+	return -1
+
+func _create_new_unit() -> void:
+	var sequence := 1
+	var new_id := "unit_%02d" % sequence
+	while unit_data.has(new_id):
+		sequence += 1
+		new_id = "unit_%02d" % sequence
+	unit_data[new_id] = {
+		"name": "새 유닛",
+		"description": "새로 등록한 사용자 유닛입니다.",
+		"hp": 100.0,
+		"speed": 80.0,
+		"damage": 10.0,
+		"cooldown": 1.0,
+		"range": 120.0,
+		"radius": 18.0,
+		"ai": {},
+		"visuals": {}
+	}
+	_refresh_unit_list()
+	var new_index := _find_unit_index(new_id)
+	if new_index >= 0:
+		unit_list.select(new_index)
+		_on_unit_selected(new_index)
+	_set_status("New unit created: %s. Edit and SAVE JSON." % new_id)
 
 func _on_unit_selected(index: int) -> void:
 	if index < 0 or index >= unit_list.item_count:
