@@ -23,7 +23,10 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Toolbox" type="PanelContainer" parent="MainLayout" unique_id=1038340238]
+[node name="Toolbox" type="ScrollContainer" parent="MainLayout" unique_id=1038340238]
+vertical_scroll_mode = 2
+horizontal_scroll_mode = 0
+follow_focus = true
 custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 
@@ -45,28 +48,28 @@ text = "Selected: None"
 
 [node name="MapModeTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "맵 사용 모드"
+text = "嶺?????嶺뚮ㅄ維獄?
 
 [node name="MapModeCampaign" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "캠페인"
+text = "嶺?伊???
 
 [node name="MapModeSingle" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "싱글플레이"
+text = "?繹???????
 
 [node name="MapModeMultiplayer" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "멀티플레이 (AI 동맹)"
+text = "嶺뚮졋???⑥쥓????깅턄 (AI ???롫짂)"
 
 [node name="ThirdAlliance" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "제3동맹 사용"
-tooltip_text = "아군 동맹과 적 동맹 모두를 적으로 취급하는 AI 동맹입니다."
+text = "?????롫짂 ????
+tooltip_text = "?熬곥룗?????롫짂???????롫짂 嶺뚮ㅄ維筌뤒?ご???⑤챷紐드슖????た???濡ル츎 AI ???롫짂???낅퉵??"
 
 [node name="MapModeHint" type="Label" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "멀티플레이 동맹은 현재 모두 AI가 제어합니다."
+text = "嶺뚮졋???⑥쥓????깅턄 ???롫짂?? ?熬곣뫗??嶺뚮ㅄ維筌?AI?띠럾? ??戮?꽑??紐껊퉵??"
 autowrap_mode = 2
 
 [node name="ModeBar" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
@@ -78,13 +81,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 button_pressed = true
-text = "에셋"
+text = "?????
 
 [node name="BtnGameplayMode" type="Button" parent="MainLayout/Toolbox/VBox/ModeBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
-text = "게임플레이"
+text = "?롪퍓????????
 
 [node name="AssetCatalogSection" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
@@ -100,8 +103,8 @@ text = "Asset Data Authoring"
 
 [node name="AssetSearch" type="LineEdit" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
 layout_mode = 2
-placeholder_text = "카달로그 이름 검색"
-tooltip_text = "에셋 이름 또는 ID로 카달로그를 검색합니다."
+placeholder_text = "?곸궠??戮れ뿉?蹂μ쟽 ???藥??롪틵???
+tooltip_text = "????????藥????裕?ID???곸궠??戮れ뿉?蹂μ쟽???롪틵????????덈펲."
 clear_button_enabled = true
 
 [node name="AssetScroll" type="ScrollContainer" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
@@ -155,8 +158,8 @@ text = "Mode: Erase Tile"
 
 [node name="BtnFillGround" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "Ground 전체 채우기"
-tooltip_text = "선택한 Ground 타일로 비어 있는 영역을 맵 전체에 반복 배치합니다. 기존 배치는 보존합니다."
+text = "Ground ?熬곣뫕??嶺????臾?
+tooltip_text = "??ルㅎ臾??Ground ????怨쀬Ŧ ???닷젆????덈츎 ??⑤챶???嶺??熬곣뫕????꾩룇瑗???꾩룄????紐껊퉵?? ?リ옇????꾩룄?????곌랜????紐껊퉵??"
 
 [node name="GameplayTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
 visible = false
@@ -164,7 +167,7 @@ layout_mode = 2
 
 [node name="AllyToolsTitle" type="Label" parent="MainLayout/Toolbox/VBox/GameplayTools"]
 layout_mode = 2
-text = "아군"
+text = "?熬곥룗??
 
 [node name="AllyTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayTools"]
 layout_mode = 2
@@ -183,7 +186,7 @@ text = "Robot Position Point"
 
 [node name="EnemyToolsTitle" type="Label" parent="MainLayout/Toolbox/VBox/GameplayTools"]
 layout_mode = 2
-text = "적"
+text = "??
 
 [node name="EnemyTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayTools"]
 layout_mode = 2
@@ -198,7 +201,7 @@ text = "Goal Area"
 
 [node name="CommonToolsTitle" type="Label" parent="MainLayout/Toolbox/VBox/GameplayTools"]
 layout_mode = 2
-text = "공통"
+text = "??ㅻ쾹??
 
 [node name="CommonTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayTools"]
 layout_mode = 2
@@ -245,85 +248,74 @@ size_flags_horizontal = 3
 [node name="CanvasRoot" type="Node2D" parent="MainLayout/CanvasContainer" unique_id=1675596003]
 script = ExtResource("2_canvas")
 
-[node name="Inspector" type="ScrollContainer" parent="MainLayout" unique_id=1856458715]
-custom_minimum_size = Vector2(270, 0)
-layout_mode = 2
-vertical_scroll_mode = 2
-horizontal_scroll_mode = 0
-follow_focus = true
-
-[node name="VBox" type="VBoxContainer" parent="MainLayout/Inspector" unique_id=2011114957]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="LblTitle" type="Label" parent="MainLayout/Inspector/VBox" unique_id=1930421330]
+[node name="LblInspectorTitle" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1930421330]
 layout_mode = 2
 text = " INSPECTOR"
 
-[node name="HSeparator" type="HSeparator" parent="MainLayout/Inspector/VBox" unique_id=1937577341]
+[node name="HSeparator" type="HSeparator" parent="MainLayout/Toolbox/VBox" unique_id=1937577341]
 layout_mode = 2
 
-[node name="LblSelectedID" type="Label" parent="MainLayout/Inspector/VBox" unique_id=1112535480]
+[node name="LblSelectedID" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1112535480]
 layout_mode = 2
 text = "ID: None"
 
-[node name="LblSelectedType" type="Label" parent="MainLayout/Inspector/VBox" unique_id=1262776783]
+[node name="LblSelectedType" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=1262776783]
 layout_mode = 2
 text = "Type: -"
 
-[node name="LblPosition" type="Label" parent="MainLayout/Inspector/VBox" unique_id=359931232]
+[node name="LblPosition" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=359931232]
 layout_mode = 2
 text = "Position: -"
 
-[node name="LblTileCoords" type="Label" parent="MainLayout/Inspector/VBox" unique_id=934902042]
+[node name="LblTileCoords" type="Label" parent="MainLayout/Toolbox/VBox" unique_id=934902042]
 layout_mode = 2
 text = "Tile: -"
 
-[node name="GameplayProperties" type="VBoxContainer" parent="MainLayout/Inspector/VBox"]
+[node name="GameplayProperties" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
 visible = false
 layout_mode = 2
 
-[node name="LblGameplayProperties" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="LblGameplayProperties" type="Label" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 text = "GAMEPLAY PROPERTIES"
 
-[node name="EditGameplayID" type="LineEdit" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="EditGameplayID" type="LineEdit" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 placeholder_text = "Element ID"
 
-[node name="EditGameplayName" type="LineEdit" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="EditGameplayName" type="LineEdit" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 placeholder_text = "Display name"
 
-[node name="GameplayPositionRow" type="HBoxContainer" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="GameplayPositionRow" type="HBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 
-[node name="LblGameplayX" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow"]
+[node name="LblGameplayX" type="Label" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplayPositionRow"]
 layout_mode = 2
 text = "X"
 
-[node name="SpinGameplayX" type="SpinBox" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow"]
+[node name="SpinGameplayX" type="SpinBox" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplayPositionRow"]
 size_flags_horizontal = 3
 layout_mode = 2
 max_value = 100000.0
 
-[node name="LblGameplayY" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow"]
+[node name="LblGameplayY" type="Label" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplayPositionRow"]
 layout_mode = 2
 text = "Y"
 
-[node name="SpinGameplayY" type="SpinBox" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow"]
+[node name="SpinGameplayY" type="SpinBox" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplayPositionRow"]
 size_flags_horizontal = 3
 layout_mode = 2
 max_value = 100000.0
 
-[node name="GameplaySizeRow" type="HBoxContainer" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="GameplaySizeRow" type="HBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 
-[node name="LblGameplayWidth" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow"]
+[node name="LblGameplayWidth" type="Label" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplaySizeRow"]
 layout_mode = 2
 text = "W"
 
-[node name="SpinGameplayWidth" type="SpinBox" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow"]
+[node name="SpinGameplayWidth" type="SpinBox" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplaySizeRow"]
 size_flags_horizontal = 3
 layout_mode = 2
 min_value = 32.0
@@ -331,11 +323,11 @@ max_value = 100000.0
 step = 32.0
 value = 32.0
 
-[node name="LblGameplayHeight" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow"]
+[node name="LblGameplayHeight" type="Label" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplaySizeRow"]
 layout_mode = 2
 text = "H"
 
-[node name="SpinGameplayHeight" type="SpinBox" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow"]
+[node name="SpinGameplayHeight" type="SpinBox" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplaySizeRow"]
 size_flags_horizontal = 3
 layout_mode = 2
 min_value = 32.0
@@ -343,47 +335,47 @@ max_value = 100000.0
 step = 32.0
 value = 32.0
 
-[node name="GameplayEnabled" type="CheckButton" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="GameplayEnabled" type="CheckButton" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 text = "Enabled"
 
-[node name="GameplayAreaRow" type="HBoxContainer" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="GameplayAreaRow" type="HBoxContainer" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 
-[node name="LblGameplayArea" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow"]
+[node name="LblGameplayArea" type="Label" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplayAreaRow"]
 layout_mode = 2
 text = "Area"
 
-[node name="OptionGameplayArea" type="OptionButton" parent="MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow"]
+[node name="OptionGameplayArea" type="OptionButton" parent="MainLayout/Toolbox/VBox/GameplayProperties/GameplayAreaRow"]
 size_flags_horizontal = 3
 layout_mode = 2
 
-[node name="BtnApplyGameplayProperties" type="Button" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="BtnApplyGameplayProperties" type="Button" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 text = "Apply Properties"
 
-[node name="BtnDeleteGameplayElement" type="Button" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="BtnDeleteGameplayElement" type="Button" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 layout_mode = 2
 text = "Delete Selected Element"
 
-[node name="LblGameplayDeleteStatus" type="Label" parent="MainLayout/Inspector/VBox/GameplayProperties"]
+[node name="LblGameplayDeleteStatus" type="Label" parent="MainLayout/Toolbox/VBox/GameplayProperties"]
 visible = false
 layout_mode = 2
 text = ""
 autowrap_mode = 2
 
-[node name="LblPlacementSize" type="Label" parent="MainLayout/Inspector/VBox"]
+[node name="LblPlacementSize" type="Label" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "Placed grid size (W × H); drag corner to resize"
+text = "Placed grid size (W ??H); drag corner to resize"
 
-[node name="PlacementSizeRow" type="HBoxContainer" parent="MainLayout/Inspector/VBox"]
+[node name="PlacementSizeRow" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 
-[node name="LblPlacementWidth" type="Label" parent="MainLayout/Inspector/VBox/PlacementSizeRow"]
+[node name="LblPlacementWidth" type="Label" parent="MainLayout/Toolbox/VBox/PlacementSizeRow"]
 layout_mode = 2
 text = "W"
 
-[node name="SpinPlacementWidth" type="SpinBox" parent="MainLayout/Inspector/VBox/PlacementSizeRow"]
+[node name="SpinPlacementWidth" type="SpinBox" parent="MainLayout/Toolbox/VBox/PlacementSizeRow"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 min_value = 1.0
@@ -391,11 +383,11 @@ max_value = 128.0
 step = 1.0
 value = 1.0
 
-[node name="LblPlacementHeight" type="Label" parent="MainLayout/Inspector/VBox/PlacementSizeRow"]
+[node name="LblPlacementHeight" type="Label" parent="MainLayout/Toolbox/VBox/PlacementSizeRow"]
 layout_mode = 2
 text = "H"
 
-[node name="SpinPlacementHeight" type="SpinBox" parent="MainLayout/Inspector/VBox/PlacementSizeRow"]
+[node name="SpinPlacementHeight" type="SpinBox" parent="MainLayout/Toolbox/VBox/PlacementSizeRow"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 min_value = 1.0
@@ -403,12 +395,12 @@ max_value = 128.0
 step = 1.0
 value = 1.0
 
-[node name="BtnResizePlacement" type="Button" parent="MainLayout/Inspector/VBox"]
+[node name="BtnResizePlacement" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 text = "Apply Size"
 disabled = true
 
-[node name="BtnDeletePlacement" type="Button" parent="MainLayout/Inspector/VBox"]
+[node name="BtnDeletePlacement" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 text = "Delete Placement"
 disabled = true

@@ -7,15 +7,15 @@ var initial_map_path := ""
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 
 @onready var canvas: EditorCanvas = $MainLayout/CanvasContainer/CanvasRoot
-@onready var lbl_selected_id: Label = $MainLayout/Inspector/VBox/LblSelectedID
-@onready var lbl_selected_type: Label = $MainLayout/Inspector/VBox/LblSelectedType
-@onready var lbl_position: Label = $MainLayout/Inspector/VBox/LblPosition
-@onready var lbl_tile_coords: Label = $MainLayout/Inspector/VBox/LblTileCoords
-@onready var lbl_placement_size: Label = $MainLayout/Inspector/VBox/LblPlacementSize
-@onready var spin_placement_width: SpinBox = $MainLayout/Inspector/VBox/PlacementSizeRow/SpinPlacementWidth
-@onready var spin_placement_height: SpinBox = $MainLayout/Inspector/VBox/PlacementSizeRow/SpinPlacementHeight
-@onready var btn_resize_placement: Button = $MainLayout/Inspector/VBox/BtnResizePlacement
-@onready var btn_delete_placement: Button = $MainLayout/Inspector/VBox/BtnDeletePlacement
+@onready var lbl_selected_id: Label = $MainLayout/Toolbox/VBox/LblSelectedID
+@onready var lbl_selected_type: Label = $MainLayout/Toolbox/VBox/LblSelectedType
+@onready var lbl_position: Label = $MainLayout/Toolbox/VBox/LblPosition
+@onready var lbl_tile_coords: Label = $MainLayout/Toolbox/VBox/LblTileCoords
+@onready var lbl_placement_size: Label = $MainLayout/Toolbox/VBox/LblPlacementSize
+@onready var spin_placement_width: SpinBox = $MainLayout/Toolbox/VBox/PlacementSizeRow/SpinPlacementWidth
+@onready var spin_placement_height: SpinBox = $MainLayout/Toolbox/VBox/PlacementSizeRow/SpinPlacementHeight
+@onready var btn_resize_placement: Button = $MainLayout/Toolbox/VBox/BtnResizePlacement
+@onready var btn_delete_placement: Button = $MainLayout/Toolbox/VBox/BtnDeletePlacement
 @onready var asset_rows: VBoxContainer = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetScroll/AssetRows
 @onready var asset_search: LineEdit = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetSearch
 @onready var btn_open_asset_catalog: Button = $MainLayout/Toolbox/VBox/AssetCatalogSection/BtnOpenAssetCatalog
@@ -27,16 +27,16 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var gameplay_tools: VBoxContainer = $MainLayout/Toolbox/VBox/GameplayTools
 @onready var lbl_layer_title: Label = $MainLayout/Toolbox/VBox/LblLayerTitle
 @onready var eraser_size_row: HBoxContainer = $MainLayout/Toolbox/VBox/EraserSize
-@onready var gameplay_properties: VBoxContainer = $MainLayout/Inspector/VBox/GameplayProperties
-@onready var edit_gameplay_id: LineEdit = $MainLayout/Inspector/VBox/GameplayProperties/EditGameplayID
-@onready var edit_gameplay_name: LineEdit = $MainLayout/Inspector/VBox/GameplayProperties/EditGameplayName
-@onready var spin_gameplay_x: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayX
-@onready var spin_gameplay_y: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayY
-@onready var spin_gameplay_width: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow/SpinGameplayWidth
-@onready var spin_gameplay_height: SpinBox = $MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow/SpinGameplayHeight
-@onready var check_gameplay_enabled: CheckButton = $MainLayout/Inspector/VBox/GameplayProperties/GameplayEnabled
-@onready var option_gameplay_area: OptionButton = $MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow/OptionGameplayArea
-@onready var lbl_gameplay_delete_status: Label = $MainLayout/Inspector/VBox/GameplayProperties/LblGameplayDeleteStatus
+@onready var gameplay_properties: VBoxContainer = $MainLayout/Toolbox/VBox/GameplayProperties
+@onready var edit_gameplay_id: LineEdit = $MainLayout/Toolbox/VBox/GameplayProperties/EditGameplayID
+@onready var edit_gameplay_name: LineEdit = $MainLayout/Toolbox/VBox/GameplayProperties/EditGameplayName
+@onready var spin_gameplay_x: SpinBox = $MainLayout/Toolbox/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayX
+@onready var spin_gameplay_y: SpinBox = $MainLayout/Toolbox/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayY
+@onready var spin_gameplay_width: SpinBox = $MainLayout/Toolbox/VBox/GameplayProperties/GameplaySizeRow/SpinGameplayWidth
+@onready var spin_gameplay_height: SpinBox = $MainLayout/Toolbox/VBox/GameplayProperties/GameplaySizeRow/SpinGameplayHeight
+@onready var check_gameplay_enabled: CheckButton = $MainLayout/Toolbox/VBox/GameplayProperties/GameplayEnabled
+@onready var option_gameplay_area: OptionButton = $MainLayout/Toolbox/VBox/GameplayProperties/GameplayAreaRow/OptionGameplayArea
+@onready var lbl_gameplay_delete_status: Label = $MainLayout/Toolbox/VBox/GameplayProperties/LblGameplayDeleteStatus
 @onready var lbl_status: Label = $BottomBar/HBox/LblStatus
 @onready var open_map_dialog: FileDialog = $OpenMapDialog
 @onready var save_map_dialog: FileDialog = $SaveMapDialog
@@ -99,8 +99,8 @@ func _ready() -> void:
 	$MainLayout/Toolbox/VBox/GameplayTools/CommonTools/BtnObstacleArea.pressed.connect(_on_gameplay_tool_pressed.bind("OBSTACLE_AREA"))
 	$MainLayout/Toolbox/VBox/GameplayTools/CommonTools/BtnMovementArea.pressed.connect(_on_gameplay_tool_pressed.bind("MOVEMENT_AREA"))
 	$MainLayout/Toolbox/VBox/GameplayTools/CommonTools/BtnBlockedArea.pressed.connect(_on_gameplay_tool_pressed.bind("BLOCKED_AREA"))
-	$MainLayout/Inspector/VBox/GameplayProperties/BtnApplyGameplayProperties.pressed.connect(_on_apply_gameplay_properties_pressed)
-	$MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement.pressed.connect(_on_delete_gameplay_element_pressed)
+	$MainLayout/Toolbox/VBox/GameplayProperties/BtnApplyGameplayProperties.pressed.connect(_on_apply_gameplay_properties_pressed)
+	$MainLayout/Toolbox/VBox/GameplayProperties/BtnDeleteGameplayElement.pressed.connect(_on_delete_gameplay_element_pressed)
 	lbl_placement_size.hide()
 	spin_placement_width.get_parent().hide()
 	btn_resize_placement.hide()
@@ -176,7 +176,7 @@ func _rebuild_asset_rows() -> void:
 	group_names.sort()
 	if group_names.is_empty():
 		var empty_label := Label.new()
-		empty_label.text = "검색 결과가 없습니다."
+		empty_label.text = "寃??寃곌낵媛 ?놁뒿?덈떎."
 		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		asset_rows.add_child(empty_label)
 		return
@@ -247,7 +247,7 @@ func _select_catalog_asset(index: int) -> void:
 	set_asset_preview(entry)
 	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
 	var footprint := canvas.catalog_asset_footprint(entry)
-	lbl_asset_details.text = "%s\n%s · %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s × %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
+	lbl_asset_details.text = "%s\n%s 쨌 %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s 횞 %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
 	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
 	var asset_kind := str(entry.get("kind", "tile"))
 	var asset_group := str(entry.get("group", ""))
@@ -332,13 +332,13 @@ func _build_map_size_controls() -> void:
 	map_height_spin.value_changed.connect(_on_map_size_spin_changed)
 	row.add_child(map_height_spin)
 	var apply := Button.new()
-	apply.text = "적용"
+	apply.text = "?곸슜"
 	apply.disabled = false
-	apply.tooltip_text = "현재 W/H 값을 다시 적용합니다."
+	apply.tooltip_text = "?꾩옱 W/H 媛믪쓣 ?ㅼ떆 ?곸슜?⑸땲??"
 	apply.pressed.connect(_on_map_size_apply_pressed)
 	row.add_child(apply)
-	$MainLayout/Inspector/VBox.add_child(map_size_panel)
-	$MainLayout/Inspector/VBox.move_child(map_size_panel, 0)
+	$MainLayout/Toolbox/VBox.add_child(map_size_panel)
+	$MainLayout/Toolbox/VBox.move_child(map_size_panel, 0)
 
 func _sync_map_size_controls() -> void:
 	if map_width_spin == null or current_map_data.is_empty():
@@ -364,7 +364,7 @@ func _on_map_size_spin_changed(_value: float) -> void:
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
 	canvas.set_map_size_preview(new_size)
 	current_map_data = canvas.map_data
-	update_status("Map preview resized to %d × %d tiles. Save JSON to keep the change." % [new_size.x, new_size.y])
+	update_status("Map preview resized to %d 횞 %d tiles. Save JSON to keep the change." % [new_size.x, new_size.y])
 
 func _on_map_size_apply_pressed() -> void:
 	if current_map_data.is_empty() or canvas == null:
@@ -373,7 +373,7 @@ func _on_map_size_apply_pressed() -> void:
 	var old_value: Variant = current_map_data.get("map_tiles", [36, 24])
 	var old_size := Vector2i(int(old_value[0]), int(old_value[1])) if old_value is Array and old_value.size() >= 2 else Vector2i(36, 24)
 	if new_size == old_size:
-		update_status("Map size unchanged: %d × %d." % [new_size.x, new_size.y])
+		update_status("Map size unchanged: %d 횞 %d." % [new_size.x, new_size.y])
 		return
 	if (new_size.x < old_size.x or new_size.y < old_size.y) and not _map_size_can_contain(new_size):
 		_sync_map_size_controls()
@@ -383,7 +383,7 @@ func _on_map_size_apply_pressed() -> void:
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
 	canvas.set_map_data(current_map_data)
 	_sync_map_size_controls()
-	update_status("Map resized to %d × %d tiles (%d × %d px). Save JSON to keep the change." % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
+	update_status("Map resized to %d 횞 %d tiles (%d 횞 %d px). Save JSON to keep the change." % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
 
 func _map_size_can_contain(new_size: Vector2i) -> bool:
 	var pixel_size := Vector2(new_size) * 32.0
@@ -440,7 +440,7 @@ func setup_layer_options() -> void:
 		option_layer.clear()
 		option_layer.add_item("Ground Layer", 0)
 		option_layer.add_item("Vegetation Layer", 1)
-		option_layer.add_item("로드 레이어", 2)
+		option_layer.add_item("濡쒕뱶 ?덉씠??, 2)
 		option_layer.select(0)
 		option_layer.item_selected.connect(_on_edit_layer_selected)
 
@@ -448,15 +448,15 @@ func setup_layer_options() -> void:
 		var parent := option_layer.get_parent() as Container
 		if parent != null:
 			var view_label := Label.new()
-			view_label.text = "표시 레이어"
-			view_label.tooltip_text = "중앙 맵에 표시할 레이어를 선택합니다."
+			view_label.text = "?쒖떆 ?덉씠??
+			view_label.tooltip_text = "以묒븰 留듭뿉 ?쒖떆???덉씠?대? ?좏깮?⑸땲??"
 			option_layer_view = OptionButton.new()
 			option_layer_view.name = "OptionLayerView"
 			option_layer_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			option_layer_view.add_item("전체 레이어", 0)
+			option_layer_view.add_item("?꾩껜 ?덉씠??, 0)
 			option_layer_view.add_item("Ground Layer", 1)
 			option_layer_view.add_item("Vegetation Layer", 2)
-			option_layer_view.add_item("로드 레이어", 3)
+			option_layer_view.add_item("濡쒕뱶 ?덉씠??, 3)
 			option_layer_view.select(0)
 			option_layer_view.item_selected.connect(_on_layer_view_selected)
 			var index := parent.get_children().find(option_layer)
@@ -466,8 +466,8 @@ func setup_layer_options() -> void:
 			parent.move_child(option_layer_view, index + 1)
 			gameplay_visibility_toggle = CheckButton.new()
 			gameplay_visibility_toggle.name = "GameplayVisibilityToggle"
-			gameplay_visibility_toggle.text = "게임플레이 요소"
-			gameplay_visibility_toggle.tooltip_text = "게임플레이 요소의 화면 표시/숨김을 전환합니다."
+			gameplay_visibility_toggle.text = "寃뚯엫?뚮젅???붿냼"
+			gameplay_visibility_toggle.tooltip_text = "寃뚯엫?뚮젅???붿냼???붾㈃ ?쒖떆/?④????꾪솚?⑸땲??"
 			gameplay_visibility_toggle.button_pressed = true
 			gameplay_visibility_toggle.toggled.connect(_on_gameplay_visibility_toggled)
 			parent.add_child(gameplay_visibility_toggle)
@@ -482,12 +482,12 @@ func _on_layer_view_selected(index: int) -> void:
 	var layer_names := ["ALL", "Ground", "Vegetation", "RoadComposition"]
 	if index >= 0 and index < layer_names.size() and canvas:
 		canvas.set_visible_layer(layer_names[index])
-		update_status("표시 레이어: %s" % ("전체" if index == 0 else layer_names[index]))
+		update_status("?쒖떆 ?덉씠?? %s" % ("?꾩껜" if index == 0 else layer_names[index]))
 
 func _on_gameplay_visibility_toggled(visible: bool) -> void:
 	if canvas:
 		canvas.set_gameplay_visible(visible)
-	update_status("게임플레이 요소: %s" % ("표시" if visible else "숨김"))
+	update_status("寃뚯엫?뚮젅???붿냼: %s" % ("?쒖떆" if visible else "?④?"))
 
 func _sync_map_play_mode_controls() -> void:
 	var modes: Array = canvas.map_data.get("play_modes", ["campaign", "single", "multiplayer"]) if canvas and canvas.map_data.get("play_modes", []) is Array else ["campaign", "single", "multiplayer"]
@@ -498,7 +498,7 @@ func _sync_map_play_mode_controls() -> void:
 	third_alliance.set_pressed_no_signal(bool(multiplayer.get("third_alliance_enabled", false)))
 	third_alliance.visible = map_mode_multiplayer.button_pressed
 	map_mode_hint.visible = map_mode_multiplayer.button_pressed
-	map_mode_hint.text = "멀티플레이: 아군 동맹 / 적 동맹은 모두 AI가 제어합니다. 제3동맹도 AI이며 아군·적 동맹 모두와 적대합니다."
+	map_mode_hint.text = "硫?고뵆?덉씠: ?꾧뎔 ?숇㏏ / ???숇㏏? 紐⑤몢 AI媛 ?쒖뼱?⑸땲?? ???숇㏏??AI?대ŉ ?꾧뎔쨌???숇㏏ 紐⑤몢? ?곷??⑸땲??"
 
 func _on_map_mode_toggled(_pressed: bool) -> void:
 	if not canvas:
@@ -537,9 +537,9 @@ func _ensure_multiplayer_config() -> void:
 	if not multiplayer.has("third_alliance_enabled"):
 		multiplayer["third_alliance_enabled"] = false
 	multiplayer["alliances"] = [
-		{"id": "ally", "name": "아군 동맹", "controller": "ai"},
-		{"id": "enemy", "name": "적 동맹", "controller": "ai"},
-		{"id": "third", "name": "제3동맹", "controller": "ai"}
+		{"id": "ally", "name": "?꾧뎔 ?숇㏏", "controller": "ai"},
+		{"id": "enemy", "name": "???숇㏏", "controller": "ai"},
+		{"id": "third", "name": "???숇㏏", "controller": "ai"}
 	]
 	multiplayer["relations"] = {
 		"ally": {"enemy": "hostile", "third": "hostile"},
@@ -550,13 +550,13 @@ func _ensure_multiplayer_config() -> void:
 func _update_map_mode_status() -> void:
 	var modes: Array[String] = []
 	if map_mode_campaign.button_pressed:
-		modes.append("캠페인")
+		modes.append("罹좏럹??)
 	if map_mode_single.button_pressed:
-		modes.append("싱글")
+		modes.append("?깃?")
 	if map_mode_multiplayer.button_pressed:
-		modes.append("멀티")
+		modes.append("硫??)
 	var mode_text := ", ".join(modes)
-	update_status("맵 사용 모드: %s" % mode_text)
+	update_status("留??ъ슜 紐⑤뱶: %s" % mode_text)
 
 func load_map(path: String) -> void:
 	current_map_path = path
@@ -571,9 +571,9 @@ func load_map(path: String) -> void:
 	_sync_map_play_mode_controls()
 	var linked_stages := _find_linked_stages(path)
 	if linked_stages.is_empty():
-		update_status("Loaded map: %s | 연결 스테이지: 없음" % path)
+		update_status("Loaded map: %s | ?곌껐 ?ㅽ뀒?댁?: ?놁쓬" % path)
 	else:
-		update_status("Loaded map: %s | 연결 스테이지: %s" % [path, ", ".join(linked_stages)])
+		update_status("Loaded map: %s | ?곌껐 ?ㅽ뀒?댁?: %s" % [path, ", ".join(linked_stages)])
 
 func _find_linked_stages(map_path: String) -> Array[String]:
 	var result: Array[String] = []
@@ -664,7 +664,7 @@ func _on_object_selected(info: Dictionary) -> void:
 	btn_delete_placement.visible = can_resize
 	btn_delete_placement.disabled = not can_resize
 	gameplay_properties.visible = is_gameplay
-	$MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement.disabled = is_required_base
+	$MainLayout/Toolbox/VBox/GameplayProperties/BtnDeleteGameplayElement.disabled = is_required_base
 	lbl_gameplay_delete_status.visible = is_required_base
 	if is_required_base:
 		lbl_gameplay_delete_status.text = "Required runtime Base; deletion is disabled."
@@ -693,8 +693,8 @@ func _on_object_selected(info: Dictionary) -> void:
 		spin_gameplay_y.value = pos.y
 		check_gameplay_enabled.button_pressed = bool(info.get("enabled", true))
 		check_gameplay_enabled.disabled = is_legacy_gameplay_point
-		$MainLayout/Inspector/VBox/GameplayProperties/GameplaySizeRow.visible = is_gameplay_area
-		$MainLayout/Inspector/VBox/GameplayProperties/GameplayAreaRow.visible = placement_type == "Gameplay Point"
+		$MainLayout/Toolbox/VBox/GameplayProperties/GameplaySizeRow.visible = is_gameplay_area
+		$MainLayout/Toolbox/VBox/GameplayProperties/GameplayAreaRow.visible = placement_type == "Gameplay Point"
 		if is_gameplay_area:
 			var area_size: Vector2 = info.get("size", Vector2(32, 32))
 			spin_gameplay_width.value = area_size.x
@@ -792,7 +792,7 @@ func _on_resize_placement_pressed() -> void:
 	var width_tiles := int(spin_placement_width.value)
 	var height_tiles := int(spin_placement_height.value)
 	if canvas.resize_selected_catalog_placement(width_tiles, height_tiles):
-		update_status("Placed asset resized to %d × %d cells." % [width_tiles, height_tiles])
+		update_status("Placed asset resized to %d 횞 %d cells." % [width_tiles, height_tiles])
 	else:
 		update_status("Resize failed: target bounds are outside the map or overlap another tile.")
 
@@ -800,7 +800,7 @@ func _on_delete_placement_pressed() -> void:
 	if canvas.delete_selected_catalog_placement():
 		update_status("Selected asset placement deleted.")
 	else:
-		update_status("삭제 failed: select a placed catalog asset first.")
+		update_status("??젣 failed: select a placed catalog asset first.")
 
 func _on_map_data_changed() -> void:
 	if canvas:
@@ -842,16 +842,16 @@ func _on_fill_ground_pressed() -> void:
 	if canvas == null:
 		return
 	if canvas.active_layer != "Ground":
-		update_status("Ground 레이어에서만 사용할 수 있습니다.")
+		update_status("Ground ?덉씠?댁뿉?쒕쭔 ?ъ슜?????덉뒿?덈떎.")
 		return
 	if canvas.selected_catalog_asset.is_empty():
-		update_status("먼저 Ground 타일을 선택하십시오.")
+		update_status("癒쇱? Ground ??쇱쓣 ?좏깮?섏떗?쒖삤.")
 		return
 	if str(canvas.selected_catalog_asset.get("kind", "tile")) != "tile":
-		update_status("Ground 전체 채우기는 타일만 사용할 수 있습니다.")
+		update_status("Ground ?꾩껜 梨꾩슦湲곕뒗 ??쇰쭔 ?ъ슜?????덉뒿?덈떎.")
 		return
 	var filled := canvas.fill_ground_empty_with_selected_tile()
-	update_status("Ground 빈 영역 채우기: %d개 배치" % filled)
+	update_status("Ground 鍮??곸뿭 梨꾩슦湲? %d媛?諛곗튂" % filled)
 
 func set_asset_preview(entry: Dictionary) -> void:
 	asset_preview.texture = null
@@ -877,7 +877,7 @@ func set_asset_preview(entry: Dictionary) -> void:
 	cropped_preview.atlas = source_texture
 	cropped_preview.region = rect
 	asset_preview.texture = cropped_preview
-	lbl_asset_preview_status.text = "Source region: %d × %d px · original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
+	lbl_asset_preview_status.text = "Source region: %d 횞 %d px 쨌 original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
 
 
 func _on_btn_load_pressed() -> void:

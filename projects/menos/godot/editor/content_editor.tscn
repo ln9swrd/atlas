@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://cm1pyokcijk"]
 
-[ext_resource type="Script" path="res://editor/content_editor.gd" id="1_content"]
+[ext_resource type="Script" uid="uid://rxr1pig8qgbj" path="res://editor/content_editor.gd" id="1_content"]
 
-[node name="ContentEditor" type="Control"]
+[node name="ContentEditor" type="Control" unique_id=272558360]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_content")
 
-[node name="MainLayout" type="VBoxContainer" parent="."]
+[node name="MainLayout" type="VBoxContainer" parent="." unique_id=1252868980]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,63 +19,62 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TopMenu" type="PanelContainer" parent="MainLayout"]
+[node name="TopMenu" type="PanelContainer" parent="MainLayout" unique_id=1663422672]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 
-[node name="Buttons" type="HBoxContainer" parent="MainLayout/TopMenu"]
+[node name="Buttons" type="HBoxContainer" parent="MainLayout/TopMenu" unique_id=1342007169]
 layout_mode = 2
 
-
-[node name="Title" type="Label" parent="MainLayout/TopMenu/Buttons"]
+[node name="Title" type="Label" parent="MainLayout/TopMenu/Buttons" unique_id=957360317]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-vertical_alignment = 1
 text = "MENOS 콘텐츠"
+vertical_alignment = 1
 
-[node name="Separator" type="VSeparator" parent="MainLayout/TopMenu/Buttons"]
+[node name="Separator" type="VSeparator" parent="MainLayout/TopMenu/Buttons" unique_id=1157000197]
 layout_mode = 2
 
-[node name="BtnMap" type="Button" parent="MainLayout/TopMenu/Buttons"]
+[node name="BtnMap" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=561051811]
 layout_mode = 2
 toggle_mode = true
 text = "맵 에디터"
 
-[node name="BtnStage" type="Button" parent="MainLayout/TopMenu/Buttons"]
+[node name="BtnStage" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=288277843]
 layout_mode = 2
 toggle_mode = true
 text = "스테이지 에디터"
 
-[node name="BtnEnemy" type="Button" parent="MainLayout/TopMenu/Buttons"]
+[node name="BtnEnemy" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1479768450]
 layout_mode = 2
 toggle_mode = true
 text = "적 에디터"
 
-[node name="BtnTower" type="Button" parent="MainLayout/TopMenu/Buttons"]
+[node name="BtnTower" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2002715580]
 layout_mode = 2
 toggle_mode = true
 text = "타워 에디터"
 
-[node name="BtnRobot" type="Button" parent="MainLayout/TopMenu/Buttons"]
+[node name="BtnRobot" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2066593495]
 layout_mode = 2
 toggle_mode = true
 text = "로봇 에디터"
 
-[node name="BtnImage" type="Button" parent="MainLayout/TopMenu/Buttons"]
+[node name="BtnImage" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1846618544]
 layout_mode = 2
 toggle_mode = true
 text = "이미지 에디터"
 
-[node name="Spacer" type="Control" parent="MainLayout/TopMenu/Buttons"]
+[node name="Spacer" type="Control" parent="MainLayout/TopMenu/Buttons" unique_id=1447405296]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BtnQuit" type="Button" parent="MainLayout/TopMenu/Buttons"]
+[node name="BtnQuit" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1357660297]
 layout_mode = 2
 text = "종료"
 
-[node name="Content" type="Control" parent="MainLayout"]
+[node name="Content" type="Control" parent="MainLayout" unique_id=1915151087]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-clip_contents = true

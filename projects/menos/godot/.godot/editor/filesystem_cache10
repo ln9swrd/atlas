@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790924105
+::res://::1790925509
 export_presets.cfg::TextFile::-1::1790727483::0::1::::<><><>0<>0<><>::
 game_controller.gd::GDScript::8692213070628158787::1790919324::0::1::::<>Node2D<><>0<>0<><>::
 main.gd::GDScript::3826669508318333139::1790729661::0::1::::<>Node2D<><>0<>0<><>::
@@ -12,14 +12,14 @@ road_candidates.png::CompressedTexture2D::5617105457303263493::1790904989::17909
 test_terrain_sheet.png::CompressedTexture2D::7377908154946531028::1790553661::1790557162::1::::<><><>0<>0<>f6990f13f98e8e377b1b10870aab804c<>res://.godot/imported/test_terrain_sheet.png-c14b8c9699a62aca901cd9ef2e7a72ff.ctex::
 tile_bask_floor.tres::AtlasTexture::-1::1790553661::0::1::::<><><>0<>0<><>::res://assets/menos/environment/test_terrain_sheet.png
 tile_dark_floor.tres::AtlasTexture::-1::1790553661::0::1::::<><><>0<>0<><>::res://assets/menos/environment/test_terrain_sheet.png
-::res://assets/menos/maps/::1790899069
+::res://assets/menos/maps/::1790925503
 a7.png::CompressedTexture2D::4214750965409308716::1790553661::1790557163::1::::<><><>0<>0<>03e74188bdb6344bdd78e458faf9ae89<>res://.godot/imported/a7.png-2098404f0b9928097bf4389ea5897fd2.ctex::
 forest.png::CompressedTexture2D::7271396624408163879::1790553661::1790557163::1::::<><><>0<>0<>632b427208992c22b6acb3309bbe0bf4<>res://.godot/imported/forest.png-171143161b01072368f691b912939ff7.ctex::
 ground4.png::CompressedTexture2D::2454201290405000494::1790553661::1790557164::1::::<><><>0<>0<>bd3e96bed755c51243fb4506d2245f82<>res://.godot/imported/ground4.png-f219fa4a2d03dcef348a3cd0376d4740.ctex::
 ground.png::CompressedTexture2D::5993783051308976416::1790553661::1790557164::1::::<><><>0<>0<>f5a92f3085c9446487d21f9c041c1ce6<>res://.godot/imported/ground.png-6a1ead9ba4b2e09759f90d97b2a463cc.ctex::
 ground_basic_32.svg::CompressedTexture2D::1624442912138883870::1790553661::1790557164::1::::<><><>0<>0<>a802c495a2eeff7633ff502f8899c3c1<>res://.godot/imported/ground_basic_32.svg-a85e55b09a2ee0bb2769d3b2fbab8df7.ctex::
 map boundary.png::CompressedTexture2D::755254466062359743::1790553661::1790557164::1::::<><><>0<>0<>581150f22aff74af7163071a336f6d26<>res://.godot/imported/map boundary.png-99916eacee4cb8249c3008634144394c.ctex::
-northbridge_tileset.tres::TileSet::1037631523742254135::1790899069::0::1::::<><><>0<>0<><>::uid://crnoy4hhjdr5y::::res://assets/menos/maps/ground.png<>uid://dqvle15alh37p::::res://assets/menos/maps/road3.png<>uid://k036v5x63blv::::res://assets/menos/maps/map boundary.png<>uid://dbuk3tc6ieukd::::res://assets/menos/maps/forest.png<>uid://xe5lqckk1bkw::::res://assets/menos/maps/ground_basic_32.svg<>uid://b1bwlkrgxys25::::res://assets/menos/maps/a7.png<>uid://ba73lphisd33o::::res://assets/menos/maps/ground4.png<>res://images/active/SF 군사 지형 타일셋 아틀라스.png
+northbridge_tileset.tres::TileSet::1037631523742254135::1790925503::0::1::::<><><>0<>0<><>::uid://crnoy4hhjdr5y::::res://assets/menos/maps/ground.png<>uid://dqvle15alh37p::::res://assets/menos/maps/road3.png<>uid://k036v5x63blv::::res://assets/menos/maps/map boundary.png<>uid://dbuk3tc6ieukd::::res://assets/menos/maps/forest.png<>uid://xe5lqckk1bkw::::res://assets/menos/maps/ground_basic_32.svg<>uid://b1bwlkrgxys25::::res://assets/menos/maps/a7.png<>uid://ba73lphisd33o::::res://assets/menos/maps/ground4.png<>uid://dk2pjc7eu6ocw::::res://images/active/SF 군사 지형 타일셋 아틀라스.png
 road2.png::CompressedTexture2D::1400819897129809030::1790553661::1790557164::1::::<><><>0<>0<>9516afa86d28536fa6eeb7e89cbd2b79<>res://.godot/imported/road2.png-23966a4445f51a2f3a0ee0499f9d1118.ctex::
 road3.png::CompressedTexture2D::8326311924185371815::1790553661::1790557165::1::::<><><>0<>0<>ee644ed9a21244c3f45cab5d0e6a0c49<>res://.godot/imported/road3.png-d2931a5d11bbea8120fdbf9d38ca245a.ctex::
 road.png::CompressedTexture2D::8888889670474614793::1790553661::1790557165::1::::<><><>0<>0<>ab460dd8648d92714cb3f7edcc5e04d8<>res://.godot/imported/road.png-a12f3e71831a7d56f91c43fa3b7a3192.ctex::
@@ -102,12 +102,12 @@ stage_catalog.json::JSON::-1::1790815522::0::1::::<><><>0<>0<><>::
 towers.json::JSON::-1::1790640781::0::1::::<><><>0<>0<><>::
 ::res://docs/::1790899069
 issues_2026-10-01.md::TextFile::-1::1790899069::0::1::::<><><>0<>0<><>::
-::res://editor/::1790899069
+::res://editor/::1790925503
 asset_catalog_editor.gd::GDScript::199735142467977770::1790640781::0::1::::<>Window<><>0<>0<><>::
 asset_catalog_editor.tscn::PackedScene::-1::1790913626::0::1::::<><><>0<>0<><>::res://editor/asset_catalog_editor.gd
 asset_region_view.gd::GDScript::7416892912445805548::1790553661::0::1::::AssetRegionView<>Control<><>0<>0<><>::
 content_editor.gd::GDScript::1241770450234517523::1790924117::0::1::::<>Control<><>0<>0<><>::
-content_editor.tscn::PackedScene::-1::1790924100::0::1::::<><><>0<>0<><>::res://editor/content_editor.gd
+content_editor.tscn::PackedScene::4904615637950028::1790925503::0::1::::<><><>0<>0<><>::uid://rxr1pig8qgbj::::res://editor/content_editor.gd
 content_validator.gd::GDScript::6950182015049002367::1790903149::0::1::::<>Node<><>0<>0<><>::
 editor_canvas.gd::GDScript::8515960973698181157::1790920541::0::1::::EditorCanvas<>Node2D<><>0<>0<><>::
 enemy_editor.gd::GDScript::3049928235990941448::1790815522::0::1::::EnemyEditorMain<>Control<><>0<>0<><>::
@@ -116,8 +116,8 @@ image_editor.gd::GDScript::850829310022179836::1790640781::0::1::::<>Control<><>
 image_editor.tscn::PackedScene::-1::1790640781::0::1::::<><><>0<>0<><>::res://editor/image_editor.gd
 image_editor_state.gd::GDScript::302610657414012107::1790640781::0::1::::ImageEditorState<>RefCounted<><>0<>0<><>::
 image_texture_loader.gd::GDScript::2404187261731203358::1790553661::0::1::::<>RefCounted<><>0<>0<><>::
-map_editor.gd::GDScript::612161265932897584::1790922059::0::1::::MapEditorMain<>Control<><>0<>0<><>::
-map_editor.tscn::PackedScene::56458622543686955::1790923330::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
+map_editor.gd::GDScript::612161265932897584::1790925391::0::1::::MapEditorMain<>Control<><>0<>0<><>::
+map_editor.tscn::PackedScene::56458622543686955::1790925417::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
 robot_editor.gd::GDScript::1026590027043768138::1790815522::0::1::::RobotEditorMain<>Control<><>0<>0<><>::
 robot_editor.tscn::PackedScene::-1::1790644771::0::1::::<><><>0<>0<><>::res://editor/robot_editor.gd
 stage_editor.gd::GDScript::1845567455619979794::1790919966::0::1::::StageEditorMain<>Control<><>0<>0<><>::
