@@ -32,7 +32,7 @@ func _ready() -> void:
 		print("WARNING: ", warning)
 	for error in errors:
 		push_error(error)
-	quit(1 if not errors.is_empty() else 0)
+	get_tree().quit(1 if not errors.is_empty() else 0)
 
 func _validate_catalog(label: String, path: String, required: Array[String]) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
