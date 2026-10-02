@@ -45,10 +45,10 @@ layout_mode = 2
 toggle_mode = true
 text = "스테이지 에디터"
 
-[node name="BtnEnemy" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1479768450]
+[node name="BtnUnit" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1479768450]
 layout_mode = 2
 toggle_mode = true
-text = "적 에디터"
+text = "유닛 에디터"
 
 [node name="BtnTower" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2002715580]
 layout_mode = 2

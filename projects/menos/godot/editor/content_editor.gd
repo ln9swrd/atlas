@@ -2,7 +2,7 @@ extends Control
 
 const MAP_EDITOR_SCENE := "res://editor/map_editor.tscn"
 const STAGE_EDITOR_SCENE := "res://editor/stage_editor.tscn"
-const ENEMY_EDITOR_SCENE := "res://editor/enemy_editor.tscn"
+const UNIT_EDITOR_SCENE := "res://editor/unit_editor.tscn"
 const TOWER_EDITOR_SCENE := "res://editor/tower_editor.tscn"
 const ROBOT_EDITOR_SCENE := "res://editor/robot_editor.tscn"
 const IMAGE_EDITOR_SCENE := "res://editor/image_editor.tscn"
@@ -15,7 +15,7 @@ func _ready() -> void:
 	content_host = $MainLayout/Content
 	$MainLayout/TopMenu/Buttons/BtnMap.pressed.connect(_open_map_editor)
 	$MainLayout/TopMenu/Buttons/BtnStage.pressed.connect(_open_stage_editor)
-	$MainLayout/TopMenu/Buttons/BtnEnemy.pressed.connect(_open_enemy_editor)
+	$MainLayout/TopMenu/Buttons/BtnUnit.pressed.connect(_open_unit_editor)
 	$MainLayout/TopMenu/Buttons/BtnTower.pressed.connect(_open_tower_editor)
 	$MainLayout/TopMenu/Buttons/BtnRobot.pressed.connect(_open_robot_editor)
 	$MainLayout/TopMenu/Buttons/BtnImage.pressed.connect(_open_image_editor)
@@ -83,9 +83,9 @@ func _open_stage_editor() -> void:
 	_load_editor(STAGE_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnStage)
 
-func _open_enemy_editor() -> void:
-	_load_editor(ENEMY_EDITOR_SCENE)
-	_set_active_button($MainLayout/TopMenu/Buttons/BtnEnemy)
+func _open_unit_editor() -> void:
+	_load_editor(UNIT_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnUnit)
 
 func _open_tower_editor() -> void:
 	_load_editor(TOWER_EDITOR_SCENE)
@@ -139,7 +139,7 @@ func _open_map_editor_for_path(map_path: String) -> void:
 func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnMap.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMap
 	$MainLayout/TopMenu/Buttons/BtnStage.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnStage
-	$MainLayout/TopMenu/Buttons/BtnEnemy.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnEnemy
+	$MainLayout/TopMenu/Buttons/BtnUnit.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnUnit
 	$MainLayout/TopMenu/Buttons/BtnTower.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnTower
 	$MainLayout/TopMenu/Buttons/BtnRobot.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnRobot
 	$MainLayout/TopMenu/Buttons/BtnImage.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnImage

@@ -1,13 +1,13 @@
-﻿class_name EnemyEditorMain
+﻿class_name UnitEditorMain
 extends Control
 
-const ENEMY_FILE := "res://content/enemies/enemies.json"
+const UNIT_FILE := "res://content/enemies/enemies.json"
 const ENEMY_TYPES := ["normal", "rusher", "heavy", "giant"]
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
-var enemy_data: Dictionary = {}
+var unit_data: Dictionary = {}
 var selected_type := ""
-var enemy_list: OptionButton
+var unit_list: OptionButton
 var name_edit: LineEdit
 var hp_spin: SpinBox
 var speed_spin: SpinBox
@@ -35,24 +35,24 @@ var sprite_preview: TextureRect
 func _ready() -> void:
 	_build_ui()
 	_load_data()
-	if enemy_list.item_count > 0:
-		enemy_list.select(0)
-		_on_enemy_selected(0)
+	if unit_list.item_count > 0:
+		unit_list.select(0)
+		_on_unit_selected(0)
 
 func _build_ui() -> void:
 	var root := VBoxContainer.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
 	add_child(root)
 	var title := Label.new()
-	title.text = "MENOS // ENEMY EDITOR"
+	title.text = "MENOS // UNIT EDITOR"
 	title.add_theme_font_size_override("font_size", 20)
 	root.add_child(title)
 	var top := HBoxContainer.new()
 	root.add_child(top)
-	enemy_list = OptionButton.new()
-	enemy_list.custom_minimum_size.x = 220
-	enemy_list.item_selected.connect(_on_enemy_selected)
-	top.add_child(enemy_list)
+	unit_list = OptionButton.new()
+	unit_list.custom_minimum_size.x = 220
+	unit_list.item_selected.connect(_on_unit_selected)
+	top.add_child(unit_list)
 	var reload_btn := Button.new()
 	reload_btn.text = "RELOAD"
 	reload_btn.pressed.connect(_load_data)
@@ -74,7 +74,7 @@ func _build_ui() -> void:
 
 func _build_properties(parent: VBoxContainer) -> void:
 	var title := Label.new()
-	title.text = "ENEMY PROPERTIES"
+	title.text = "UNIT PROPERTIES"
 	title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(title)
 	name_edit = _line_row(parent, "Name")
@@ -196,32 +196,32 @@ func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximu
 	return spin
 
 func _load_data() -> void:
-	enemy_data.clear()
-	var file := FileAccess.open(ENEMY_FILE, FileAccess.READ)
+	unit_data.clear()
+	var file := FileAccess.open(UNIT_FILE, FileAccess.READ)
 	if file:
 		var parsed = JSON.parse_string(file.get_as_text())
 		file.close()
 		if parsed is Dictionary:
-			enemy_data = parsed
-	if enemy_data.is_empty():
+			unit_data = parsed
+	if unit_data.is_empty():
 		_refresh_enemy_list()
-	_set_status("Loaded: " + ENEMY_FILE if file else "Failed to load JSON")
+	_set_status("Loaded: " + UNIT_FILE if file else "Failed to load JSON")
 
-func _refresh_enemy_list() -> void:
-	enemy_list.clear()
+func _refresh_unit_list() -> void:
+	unit_list.clear()
 	for enemy_type in ENEMY_TYPES:
-		if enemy_data.has(enemy_type):
-			enemy_list.add_item(str(enemy_data[enemy_type].get("name", enemy_type.to_upper())))
-			enemy_list.set_item_icon(enemy_list.item_count - 1, load(str(enemy_data[enemy_type].get("sprite_anim", ""))) as Texture2D)
+		if unit_data.has(enemy_type):
+			unit_list.add_item(str(unit_data[enemy_type].get("name", enemy_type.to_upper())))
+			unit_list.set_item_icon(unit_list.item_count - 1, load(str(unit_data[enemy_type].get("sprite_anim", ""))) as Texture2D)
 		else:
-			enemy_list.add_item(enemy_type.to_upper())
-		enemy_list.set_item_metadata(enemy_list.item_count - 1, enemy_type)
+			unit_list.add_item(enemy_type.to_upper())
+		unit_list.set_item_metadata(unit_list.item_count - 1, enemy_type)
 
-func _on_enemy_selected(index: int) -> void:
-	if index < 0 or index >= enemy_list.item_count:
+func _on_unit_selected(index: int) -> void:
+	if index < 0 or index >= unit_list.item_count:
 		return
-	selected_type = str(enemy_list.get_item_metadata(index))
-	var data: Dictionary = enemy_data.get(selected_type, {})
+	selected_type = str(unit_list.get_item_metadata(index))
+	var data: Dictionary = unit_data.get(selected_type, {})
 	name_edit.text = str(data.get("name", selected_type.to_upper()))
 	hp_spin.value = float(data.get("hp", 1.0))
 	speed_spin.value = float(data.get("speed", 0.0))
@@ -255,12 +255,12 @@ func _on_enemy_selected(index: int) -> void:
 
 func _save_data() -> void:
 	if selected_type.is_empty():
-		_set_status("No enemy selected.")
+		_set_status("No unit selected.")
 		return
 	if name_edit.text.strip_edges().is_empty():
 		_set_status("Name is required.")
 		return
-	var data: Dictionary = enemy_data.get(selected_type, {}).duplicate(true)
+	var data: Dictionary = unit_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()
 	data["hp"] = float(hp_spin.value)
 	data["speed"] = float(speed_spin.value)
@@ -286,21 +286,21 @@ func _save_data() -> void:
 		data.erase("robot_damage")
 		data.erase("robot_range")
 		data.erase("robot_cooldown")
-	enemy_data[selected_type] = data
+	unit_data[selected_type] = data
 	var dir := DirAccess.open("res://content")
 	if dir == null:
 		_set_status("FAILED: content directory unavailable.")
 		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/enemies"))
-	var file := FileAccess.open(ENEMY_FILE, FileAccess.WRITE)
+	var file := FileAccess.open(UNIT_FILE, FileAccess.WRITE)
 	if file == null:
 		_set_status("FAILED to open JSON for writing.")
 		return
-	file.store_string(JSON.stringify(enemy_data, "  "))
+	file.store_string(JSON.stringify(unit_data, "  "))
 	file.close()
 	_refresh_enemy_list()
-	enemy_list.select(ENEMY_TYPES.find(selected_type))
-	_set_status("SAVED: " + ENEMY_FILE)
+	unit_list.select(ENEMY_TYPES.find(selected_type))
+	_set_status("SAVED: " + UNIT_FILE)
 
 func _refresh_sprite_preview(path: String) -> void:
 	if sprite_preview:
