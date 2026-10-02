@@ -449,8 +449,10 @@ func _gameplay_point_hit_contains(element_type: String, hit_position: Vector2, p
 
 func _preview_gameplay_area_size(world_pos: Vector2) -> Vector2:
 	var delta := world_pos - operation_start_world
-	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var map_pixel_size_value: Variant = map_data.get("map_pixel_size", [1152, 768])
+	var map_pixel_size: Vector2 = map_pixel_size_value if map_pixel_size_value is Vector2 else Vector2(float(map_pixel_size_value[0]), float(map_pixel_size_value[1])) if map_pixel_size_value is Array and map_pixel_size_value.size() >= 2 else Vector2(1152, 768)
+	var origin_value: Variant = map_data.get("map_origin", [0, 58])
+	var origin: Vector2 = origin_value if origin_value is Vector2 else Vector2(float(origin_value[0]), float(origin_value[1])) if origin_value is Array and origin_value.size() >= 2 else Vector2(0, 58)
 	var area_position := Vector2(selected_object.get("position", Vector2.ZERO))
 	var max_size := map_pixel_size - (area_position - origin)
 	return Vector2(
@@ -530,8 +532,10 @@ func _apply_selected_move(world_pos: Vector2) -> bool:
 	var selection_type := str(selected_object.get("type", ""))
 	if selection_type == "Catalog Tile":
 		return _move_catalog_tile_to(target_position)
-	var map_origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
-	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
+	var map_origin_value: Variant = map_data.get("map_origin", [0, 58])
+	var map_origin: Vector2 = map_origin_value if map_origin_value is Vector2 else Vector2(float(map_origin_value[0]), float(map_origin_value[1])) if map_origin_value is Array and map_origin_value.size() >= 2 else Vector2(0, 58)
+	var map_pixel_size_value: Variant = map_data.get("map_pixel_size", [1152, 768])
+	var map_pixel_size: Vector2 = map_pixel_size_value if map_pixel_size_value is Vector2 else Vector2(float(map_pixel_size_value[0]), float(map_pixel_size_value[1])) if map_pixel_size_value is Array and map_pixel_size_value.size() >= 2 else Vector2(1152, 768)
 	var bounds := Rect2(map_origin, map_pixel_size)
 	if selection_type == "Gameplay Area":
 		var area_index := int(selected_object.get("element_index", -1))
