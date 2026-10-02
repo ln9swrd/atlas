@@ -349,7 +349,8 @@ func _on_map_size_apply_pressed() -> void:
 
 func _map_size_can_contain(new_size: Vector2i) -> bool:
 	var pixel_size := Vector2(new_size) * 32.0
-	var origin: Vector2 = current_map_data.get("map_origin", Vector2(0, 58))
+	var origin_value: Variant = current_map_data.get("map_origin", [0, 58])
+	var origin := _map_data_position(origin_value, Vector2(0, 58))
 	var bounds := Rect2(origin, pixel_size)
 	if current_map_data.has("tiles"):
 		var layers: Dictionary = current_map_data["tiles"]
