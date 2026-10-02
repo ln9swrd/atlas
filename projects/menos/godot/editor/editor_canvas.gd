@@ -435,7 +435,10 @@ func _update_eraser_preview(local_position: Vector2) -> void:
 		var world_pos := (local_position - camera_offset) / camera_zoom
 		eraser_preview_cell = get_cell_coords(world_pos)
 		var map_tiles: Vector2i = _map_tiles_size()
-		eraser_preview_visible = eraser_preview_cell.x >= 0 and eraser_preview_cell.y >= 0 and eraser_preview_cell.x < map_tiles.x and eraser_preview_cell.y < map_tiles.y
+		var half_size := int(floor(float(eraser_size) / 2.0))
+		var start_cell := eraser_preview_cell - Vector2i(half_size, half_size)
+		var end_cell := start_cell + Vector2i(eraser_size, eraser_size)
+		eraser_preview_visible = end_cell.x > 0 and end_cell.y > 0 and start_cell.x < map_tiles.x and start_cell.y < map_tiles.y
 	if was_visible != eraser_preview_visible or (eraser_preview_visible and old_cell != eraser_preview_cell):
 		queue_redraw()
 
@@ -1308,24 +1311,14 @@ func erase_tile_at(world_pos: Vector2) -> void:
 	var origin: Vector2 = _map_origin()
 	var erase_rect := Rect2(origin + Vector2(start_cell) * 32.0, Vector2.ONE * float(eraser_size * 32))
 	var changed := false
-	var objects: Array = map_data.get("objects", [])
-	for index in range(objects.size() - 1, -1, -1):
-		var object_data: Dictionary = objects[index]
-		var asset_id := str(object_data.get("asset_id", ""))
-		var asset: Dictionary = catalog_assets_by_id.get(asset_id, {})
-		var footprint := catalog_asset_footprint(asset, object_data)
-		var object_rect := Rect2(object_position(object_data), Vector2(footprint) * 32.0)
-		if erase_rect.intersects(object_rect):
-			objects.remove_at(index)
-			changed = true
-	if changed:
-		map_data["objects"] = objects
 	if not map_data.has("tiles"):
 		if changed:
 			_mark_map_data_changed()
 		return
 	var tiles: Dictionary = map_data["tiles"]
 	for layer_name in tiles.keys():
+		if str(layer_name) != active_layer:
+			continue
 		var layer_tiles: Dictionary = tiles[layer_name]
 		var layer_changed := false
 		for offset_y in range(eraser_size):
@@ -1334,14 +1327,17 @@ func erase_tile_at(world_pos: Vector2) -> void:
 				if target_cell.x < 0 or target_cell.x >= map_tiles.x or target_cell.y < 0 or target_cell.y >= map_tiles.y:
 					continue
 				var target_key := "%d,%d" % [target_cell.x, target_cell.y]
-				if not layer_tiles.has(target_key):
-					continue
-				var tile_info: Variant = layer_tiles[target_key]
-				if tile_info is Dictionary and tile_info.has("asset_id"):
-					layer_changed = _remove_catalog_tile_at(layer_tiles, target_cell) or layer_changed
+				if layer_tiles.has(target_key):
+					var tile_info: Variant = layer_tiles[target_key]
+					if tile_info is Dictionary and tile_info.has("asset_id"):
+						layer_changed = _remove_catalog_tile_at(layer_tiles, target_cell) or layer_changed
+					else:
+						layer_tiles.erase(target_key)
+						layer_changed = true
 				else:
-					layer_tiles.erase(target_key)
-					layer_changed = true
+					# Catalog placements may store only their anchor cell plus footprint.
+					# Resolve the placement from the clicked interior cell as well.
+					layer_changed = _remove_catalog_tile_at(layer_tiles, target_cell) or layer_changed
 		changed = layer_changed or changed
 	if changed:
 		map_data["tiles"] = tiles

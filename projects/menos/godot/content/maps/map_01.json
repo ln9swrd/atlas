@@ -189,11 +189,11 @@
 	58.0
   ],
   "map_pixel_size": [
-	1376.0,
+	1152.0,
 	768.0
   ],
   "map_size": [
-	43,
+	36,
 	24
   ],
   "map_tiles": [
@@ -201,7 +201,1064 @@
 	24.0
   ],
   "name": "Northbridge Sector 01",
-  "objects": [],
+  "objects": [
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		448.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		416.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		384.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		384.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		352.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		320.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		288.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		288.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		256.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		256.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		256.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		256.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		256.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		256.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		256.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		288.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		320.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		352.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		384.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		416.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		448.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		480.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		512.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		686.954406738281,
+		685.556579589844
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		608.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		640.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		672.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		704.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		736.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		736.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		768.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		768.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		800.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		832.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		864.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		864.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		896.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		896.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		896.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		896.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		864.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		864.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		832.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		832.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		800.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		768.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		736.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		736.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		704.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		672.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		640.0,
+		122.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		608.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		576.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		544.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		512.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		512.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		480.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		448.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		416.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		224.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		192.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		160.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		160.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		128.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		96.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		96.0,
+		122.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		96.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		64.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		96.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		96.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		96.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		128.0,
+		730.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.ground_1",
+	  "footprint_tiles": [
+		5,
+		3
+	  ],
+	  "placement_layer": "Ground",
+	  "position": [
+		992.0,
+		730.0
+	  ]
+	}
+  ],
   "robot_spots": {},
   "spawns": {},
   "tile_size": [
