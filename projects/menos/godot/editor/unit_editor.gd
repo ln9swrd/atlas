@@ -261,6 +261,8 @@ func _on_unit_selected(index: int) -> void:
 	color_edit.color = Color(str(data.get("color", "#ffffff")))
 	var visuals: Dictionary = data.get("visuals", {})
 	sprite_edit.text = str(visuals.get("sprite", ""))
+	var sprite_rect: Array = visuals.get("sprite_rect", [])
+	_set_sprite_rect_controls(sprite_rect)
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_threat.png"))
 	var attack_type := str(data.get("attack_type", ""))
 	if attack_type == "melee":
@@ -298,6 +300,11 @@ func _save_data() -> void:
 	data["range"] = float(attack_range_spin.value)
 	var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
 	visuals["sprite"] = sprite_edit.text.strip_edges()
+	var sprite_rect := _get_sprite_rect_from_controls()
+	if sprite_rect.is_empty():
+		visuals.erase("sprite_rect")
+	else:
+		visuals["sprite_rect"] = sprite_rect
 	data["visuals"] = visuals
 	unit_data[selected_type] = data
 	var dir := DirAccess.open("res://content")
@@ -318,9 +325,39 @@ func _save_data() -> void:
 		_on_unit_selected(selected_index)
 	_set_status("SAVED: " + UNIT_FILE)
 
+func _set_sprite_rect_controls(rect_values: Array) -> void:
+	var values := rect_values if rect_values.size() >= 4 else [0, 0, 0, 0]
+	sprite_rect_x_spin.value = float(values[0])
+	sprite_rect_y_spin.value = float(values[1])
+	sprite_rect_w_spin.value = float(values[2])
+	sprite_rect_h_spin.value = float(values[3])
+
+func _get_sprite_rect_from_controls() -> Array:
+	var width := int(sprite_rect_w_spin.value)
+	var height := int(sprite_rect_h_spin.value)
+	if width <= 0 or height <= 0:
+		return []
+	return [int(sprite_rect_x_spin.value), int(sprite_rect_y_spin.value), width, height]
+
+func _texture_from_sprite_data(path: String, rect_values: Array) -> Texture2D:
+	var base_texture := load(path) as Texture2D
+	if base_texture == null:
+		return null
+	if rect_values.size() < 4:
+		return base_texture
+	var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+	var image_size := Vector2i(base_texture.get_width(), base_texture.get_height())
+	if rect.size.x <= 0 or rect.size.y <= 0 or rect.position.x < 0 or rect.position.y < 0 or rect.end.x > image_size.x or rect.end.y > image_size.y:
+		return base_texture
+	var atlas := AtlasTexture.new()
+	atlas.atlas = base_texture
+	atlas.region = Rect2(rect.position, rect.size)
+	return atlas
+
 func _refresh_sprite_preview(path: String) -> void:
 	if sprite_preview:
-		sprite_preview.texture = load(path) as Texture2D
+		var visuals: Dictionary = unit_data.get(selected_type, {}).get("visuals", {})
+		sprite_preview.texture = _texture_from_sprite_data(path, visuals.get("sprite_rect", []))
 
 func _open_image_editor() -> void:
 	IMAGE_STATE.open_image(sprite_edit.text.strip_edges())
