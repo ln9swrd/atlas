@@ -425,20 +425,15 @@ func _load_file_dialog_favorites() -> void:
 	file.close()
 	if not parsed is Array:
 		return
+	var favorites := PackedStringArray()
 	for favorite in parsed:
 		var path := str(favorite)
-		if not path.is_empty() and not open_map_dialog.is_favorite(path):
-			open_map_dialog.add_favorite(path)
-		if not path.is_empty() and not save_map_dialog.is_favorite(path):
-			save_map_dialog.add_favorite(path)
+		if not path.is_empty() and not favorites.has(path):
+			favorites.append(path)
+	FileDialog.set_favorite_list(favorites)
 
 func _save_file_dialog_favorites() -> void:
-	var favorites: Array[String] = []
-	for dialog in [open_map_dialog, save_map_dialog]:
-		for favorite in dialog.get_favorites():
-			var path := str(favorite)
-			if not path.is_empty() and not favorites.has(path):
-				favorites.append(path)
+	var favorites := FileDialog.get_favorite_list()
 	var file := FileAccess.open(FILE_DIALOG_FAVORITES_PATH, FileAccess.WRITE)
 	if file == null:
 		return
