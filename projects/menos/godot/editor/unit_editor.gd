@@ -204,7 +204,7 @@ func _load_data() -> void:
 		if parsed is Dictionary:
 			unit_data = parsed
 	if unit_data.is_empty():
-		_refresh_enemy_list()
+		_refresh_unit_list()
 	_set_status("Loaded: " + UNIT_FILE if file else "Failed to load JSON")
 
 func _refresh_unit_list() -> void:
