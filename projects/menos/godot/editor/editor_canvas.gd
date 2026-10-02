@@ -36,6 +36,22 @@ func _map_tiles_size() -> Vector2i:
 		return Vector2i(int(value[0]), int(value[1]))
 	return Vector2i(36, 24)
 
+func _map_origin() -> Vector2:
+	var value: Variant = map_data.get("map_origin", [0, 58])
+	if value is Vector2:
+		return value
+	if value is Array and value.size() >= 2:
+		return Vector2(float(value[0]), float(value[1]))
+	return Vector2(0, 58)
+
+func _map_pixel_size() -> Vector2:
+	var value: Variant = map_data.get("map_pixel_size", [1152, 768])
+	if value is Vector2:
+		return value
+	if value is Array and value.size() >= 2:
+		return Vector2(float(value[0]), float(value[1]))
+	return Vector2(1152, 768)
+
 var camera_zoom := 1.0
 var camera_offset := Vector2.ZERO
 var is_panning := false
@@ -395,7 +411,7 @@ func _update_eraser_preview(local_position: Vector2) -> void:
 func _eraser_preview_rect() -> Rect2:
 	var half_size := int(floor(float(eraser_size) / 2.0))
 	var start_cell := eraser_preview_cell - Vector2i(half_size, half_size)
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	return Rect2(origin + Vector2(start_cell) * 32.0, Vector2.ONE * float(eraser_size * 32))
 
 func _selected_catalog_placement_rect() -> Rect2:
@@ -479,7 +495,7 @@ func _move_catalog_tile_to(target_position: Vector2) -> bool:
 	if not anchor_value is Vector2i or not map_data.has("tiles") or not map_data["tiles"].has(layer_name):
 		return false
 	var old_anchor: Vector2i = anchor_value
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	var new_anchor := get_cell_coords(target_position)
 	if new_anchor == old_anchor:
 		return false
@@ -613,7 +629,7 @@ func handle_canvas_click(world_pos: Vector2) -> void:
 		erase_tile_at(world_pos)
 
 func get_cell_coords(world_pos: Vector2) -> Vector2i:
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	var cell_x := int(floor((world_pos.x - origin.x) / 32.0))
 	var cell_y := int(floor((world_pos.y - origin.y) / 32.0))
 	return Vector2i(cell_x, cell_y)
@@ -685,7 +701,7 @@ func paint_catalog_tile(cell: Vector2i) -> void:
 	_select_catalog_tile(asset_id, cell, footprint)
 
 func _select_catalog_tile(asset_id: String, anchor: Vector2i, footprint: Vector2i) -> void:
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	select_object({
 		"type": "Catalog Tile",
 		"id": asset_id,
@@ -703,7 +719,7 @@ func place_catalog_tile_overlay(cell: Vector2i) -> void:
 	if not map_data.has("objects"):
 		map_data["objects"] = []
 	var asset_id := str(selected_catalog_asset.get("asset_id", ""))
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	var tile_position := origin + Vector2(cell) * 32.0
 	var objects: Array = map_data["objects"]
 	for index in range(objects.size()):
@@ -817,7 +833,7 @@ func place_catalog_object(cell: Vector2i) -> void:
 		return
 	if not map_data.has("objects"):
 		map_data["objects"] = []
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	var object_pixel_pos := origin + Vector2(cell.x * 32, cell.y * 32)
 	map_data["objects"].append({
 		"asset_id": str(selected_catalog_asset.get("asset_id", "")),
@@ -965,7 +981,7 @@ func create_gameplay_area(element_type: String, start_world: Vector2, end_world:
 	end_cell.y = clampi(end_cell.y, 0, map_tiles.y - 1)
 	var first_cell := Vector2i(mini(start_cell.x, end_cell.x), mini(start_cell.y, end_cell.y))
 	var last_cell := Vector2i(maxi(start_cell.x, end_cell.x), maxi(start_cell.y, end_cell.y))
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	var area_position := origin + Vector2(first_cell) * 32.0
 	var area_size := Vector2(last_cell - first_cell + Vector2i.ONE) * 32.0
 	var element_id := _new_gameplay_id(element_type)
@@ -990,7 +1006,7 @@ func create_gameplay_point(element_type: String, world_pos: Vector2) -> bool:
 	var cell := get_cell_coords(world_pos)
 	if cell.x < 0 or cell.y < 0 or cell.x >= map_tiles.x or cell.y >= map_tiles.y:
 		return false
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	var point_position := origin + Vector2(cell) * 32.0 + Vector2.ONE * 16.0
 	var element_id := _new_gameplay_id(element_type)
 	var points: Array = map_data.get("gameplay_points", [])
@@ -1127,11 +1143,11 @@ func update_selected_gameplay_area_size(new_size: Vector2) -> bool:
 	if index < 0 or index >= areas.size() or not areas[index] is Dictionary:
 		return false
 	var area: Dictionary = areas[index].duplicate(true)
-	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
+	var map_pixel_size: Vector2 = _map_pixel_size()
 	var area_position := object_position(area)
 	var bounded_size := Vector2(
-		clampf(new_size.x, 32.0, map_pixel_size.x - (area_position.x - float(map_data.get("map_origin", Vector2(0, 58)).x))),
-		clampf(new_size.y, 32.0, map_pixel_size.y - (area_position.y - float(map_data.get("map_origin", Vector2(0, 58)).y)))
+		clampf(new_size.x, 32.0, map_pixel_size.x - (area_position.x - float(_map_origin().x))),
+		clampf(new_size.y, 32.0, map_pixel_size.y - (area_position.y - float(_map_origin().y)))
 	)
 	area["size"] = [bounded_size.x, bounded_size.y]
 	_begin_edit_stroke()
@@ -1146,8 +1162,8 @@ func update_selected_gameplay_position(new_position: Vector2) -> bool:
 	var selection_type := str(selected_object.get("type", ""))
 	if selection_type not in ["Gameplay Area", "Gameplay Point", "Goal", "Spawn", "Tower Slot", "Robot Spot"]:
 		return false
-	var map_origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
-	var map_pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
+	var map_origin: Vector2 = _map_origin()
+	var map_pixel_size: Vector2 = _map_pixel_size()
 	var bounds := Rect2(map_origin, map_pixel_size)
 	var bounded_position := new_position
 	if selection_type == "Gameplay Area":
@@ -1258,7 +1274,7 @@ func erase_tile_at(world_pos: Vector2) -> void:
 
 	var half_size := int(floor(float(eraser_size) / 2.0))
 	var start_cell := cell - Vector2i(half_size, half_size)
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+	var origin: Vector2 = _map_origin()
 	var erase_rect := Rect2(origin + Vector2(start_cell) * 32.0, Vector2.ONE * float(eraser_size * 32))
 	var changed := false
 	var objects: Array = map_data.get("objects", [])
@@ -1428,8 +1444,8 @@ func _draw() -> void:
 	draw_set_transform(camera_offset, 0.0, Vector2(camera_zoom, camera_zoom))
 
 	var map_tiles: Vector2i = _map_tiles_size()
-	var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
-	var pixel_size: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
+	var origin: Vector2 = _map_origin()
+	var pixel_size: Vector2 = _map_pixel_size()
 
 	# Canvas Background
 	draw_rect(Rect2(origin - Vector2(20, 20), pixel_size + Vector2(40, 40)), Color("0b1519"))
@@ -1527,7 +1543,7 @@ func _draw() -> void:
 	if edit_mode == "PAINT" and not selected_catalog_asset.is_empty() and pointer_is_inside_canvas(last_pointer_local):
 		var preview_world := (last_pointer_local - camera_offset) / camera_zoom
 		var preview_cell := get_cell_coords(preview_world)
-		var preview_origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+		var preview_origin: Vector2 = _map_origin()
 		var preview_position := preview_origin + Vector2(preview_cell) * 32.0
 		var preview_footprint := catalog_asset_footprint(selected_catalog_asset)
 		var preview_rect := Rect2(preview_position, Vector2(preview_footprint) * 32.0)
@@ -1596,7 +1612,7 @@ func _draw_gameplay_elements() -> void:
 		var end_cell := get_cell_coords(gameplay_area_drag_end)
 		var first_cell := Vector2i(mini(start_cell.x, end_cell.x), mini(start_cell.y, end_cell.y))
 		var last_cell := Vector2i(maxi(start_cell.x, end_cell.x), maxi(start_cell.y, end_cell.y))
-		var origin: Vector2 = map_data.get("map_origin", Vector2(0, 58))
+		var origin: Vector2 = _map_origin()
 		var preview_rect := Rect2(origin + Vector2(first_cell) * 32.0, Vector2(last_cell - first_cell + Vector2i.ONE) * 32.0)
 		draw_rect(preview_rect, Color("ffe066", 0.18), true)
 		draw_rect(preview_rect, Color("ffe066"), false, 2.0 / camera_zoom)

@@ -1,2 +1,4 @@
 res://editor/editor_canvas.gd
 res://content/maps/map_01.json
+res://game_controller.gd
+res://scripts/map_loader.gd

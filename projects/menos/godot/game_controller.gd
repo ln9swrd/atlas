@@ -367,7 +367,8 @@ func _draw_catalog_map_tiles(map_data: Dictionary) -> void:
 	var tiles: Variant = map_data.get("tiles", {})
 	if not tiles is Dictionary:
 		return
-	var origin: Vector2 = map_data.get("map_origin", Vector2.ZERO)
+	var origin_value: Variant = map_data.get("map_origin", [0, 0])
+	var origin: Vector2 = origin_value if origin_value is Vector2 else Vector2(float(origin_value[0]), float(origin_value[1])) if origin_value is Array and origin_value.size() >= 2 else Vector2.ZERO
 	var defaults: Variant = map_data.get("asset_footprint_defaults", {})
 	for layer_name in ["Ground", "RoadComposition", "Vegetation", "Boundary"]:
 		if not tiles.has(layer_name) or not tiles[layer_name] is Dictionary:

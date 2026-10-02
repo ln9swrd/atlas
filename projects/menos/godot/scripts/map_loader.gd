@@ -137,11 +137,25 @@ static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 static func _is_vector_array(value: Variant) -> bool:
 	return value is Array and value.size() >= 2
 
+static func _vector2_from_value(value: Variant, fallback: Vector2) -> Vector2:
+	if value is Vector2:
+		return value
+	if value is Array and value.size() >= 2:
+		return Vector2(float(value[0]), float(value[1]))
+	return fallback
+
+static func _vector2i_from_value(value: Variant, fallback: Vector2i) -> Vector2i:
+	if value is Vector2i:
+		return value
+	if value is Array and value.size() >= 2:
+		return Vector2i(int(value[0]), int(value[1]))
+	return fallback
+
 static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
-	var map_tiles_vec: Vector2i = map_data.get("map_tiles", Vector2i(36, 24))
-	var map_origin_vec: Vector2 = map_data.get("map_origin", Vector2(0, 58))
-	var map_pixel_vec: Vector2 = map_data.get("map_pixel_size", Vector2(1152, 768))
-	var base_vec: Vector2 = map_data.get("base", Vector2(1080, 122))
+	var map_tiles_vec: Vector2i = _vector2i_from_value(map_data.get("map_tiles", [36, 24]), Vector2i(36, 24))
+	var map_origin_vec: Vector2 = _vector2_from_value(map_data.get("map_origin", [0, 58]), Vector2(0, 58))
+	var map_pixel_vec: Vector2 = _vector2_from_value(map_data.get("map_pixel_size", [1152, 768]), Vector2(1152, 768))
+	var base_vec: Vector2 = _vector2_from_value(map_data.get("base", [1080, 122]), Vector2(1080, 122))
 	var source_data: Variant = map_data.get("_source_map_data", {})
 	var raw_data: Dictionary = source_data.duplicate(true) if source_data is Dictionary else {}
 	raw_data.merge({
