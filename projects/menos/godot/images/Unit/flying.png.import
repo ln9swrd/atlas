@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vwlsjmurdxbd"
-path="res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_10_57.png-f6d24b3a0815755321066cebc94d02f0.ctex"
+uid="uid://dthrbuiwj7au6"
+path="res://.godot/imported/flying.png-46115ed6d90dfde9bcf1bc2c1dd417e4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/Unit/ChatGPT Image 2026년 9월 29일 오후 10_10_57.png"
-dest_files=["res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_10_57.png-f6d24b3a0815755321066cebc94d02f0.ctex"]
+source_file="res://images/Unit/flying.png"
+dest_files=["res://.godot/imported/flying.png-46115ed6d90dfde9bcf1bc2c1dd417e4.ctex"]
 
 [params]
 

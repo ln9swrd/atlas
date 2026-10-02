@@ -118,7 +118,7 @@ image_editor.tscn::PackedScene::-1::1790640781::0::1::::<><><>0<>0<><>::res://ed
 image_editor_state.gd::GDScript::302610657414012107::1790640781::0::1::::ImageEditorState<>RefCounted<><>0<>0<><>::
 image_texture_loader.gd::GDScript::2404187261731203358::1790553661::0::1::::<>RefCounted<><>0<>0<><>::
 map_editor.gd::GDScript::612161265932897584::1790928358::0::1::::MapEditorMain<>Control<><>0<>0<><>::
-map_editor.tscn::PackedScene::56458622543686955::1790928649::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
+map_editor.tscn::PackedScene::56458622543686955::1790928900::0::1::::<><><>0<>0<><>::uid://iysha3xdnm5m::::res://editor/map_editor.gd<>uid://dtlgvr18i2nld::::res://editor/editor_canvas.gd<>res://editor/asset_catalog_editor.tscn
 robot_editor.gd::GDScript::1026590027043768138::1790815522::0::1::::RobotEditorMain<>Control<><>0<>0<><>::
 robot_editor.tscn::PackedScene::-1::1790644771::0::1::::<><><>0<>0<><>::res://editor/robot_editor.gd
 stage_editor.gd::GDScript::1845567455619979794::1790919966::0::1::::StageEditorMain<>Control<><>0<>0<><>::
@@ -237,20 +237,20 @@ ChatGPT 이미지 2026년 9월 29일 오후 11_24_40.png::CompressedTexture2D::6
 tower.png::CompressedTexture2D::723506748070863213::1790553664::1790557157::1::::<><><>0<>0<>2b8c737a769aed2bcd786659091d09d8<>res://.godot/imported/tower.png-19d78631e85f8159b51ff5841fa6b1b9.ctex::
 ::res://images/ui/::1790557157
 a8.png::CompressedTexture2D::4703023999282690026::1790553664::1790557157::1::::<><><>0<>0<>c8bc6ede00707483ccf28caf7e3e43fb<>res://.godot/imported/a8.png-399692b160229280dda19b18d2f7b7da.ctex::
-::res://images/Unit/::1790730068
-ChatGPT Image 2026년 9월 29일 오후 10_10_57.png::CompressedTexture2D::1520082550378089385::1790727483::1790730068::1::::<><><>0<>0<>28dd40af49878df34491a193c53233c9<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_10_57.png-f6d24b3a0815755321066cebc94d02f0.ctex::
-ChatGPT Image 2026년 9월 29일 오후 10_14_29.png::CompressedTexture2D::1679072833290984339::1790727483::1790730067::1::::<><><>0<>0<>15ed72dcd99258848dfea2f566146f3a<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_14_29.png-925eceb99fae296472e3d1be45c5133c.ctex::
+::res://images/Unit/::1790929208
+basic.png::CompressedTexture2D::1797986439890672210::1790727483::1790929425::1::::<><><>0<>0<>b6dc814255e91bbd836ad7f9e764592d<>res://.godot/imported/basic.png-ac09f391f58d6f52838a13ac5eee122e.ctex::
+basic_bk.png::CompressedTexture2D::8634765452919566704::1790727483::1790929425::1::::<><><>0<>0<>6b30086ae61c7c6c3c30d1ea5652c050<>res://.godot/imported/basic_bk.png-389e91a07125879ffeae3fb0d24b3920.ctex::
+boss.png::CompressedTexture2D::6390488328147157411::1790727483::1790929425::1::::<><><>0<>0<>37564259d451b2d99ac53e01aaeb1f28<>res://.godot/imported/boss.png-4d6cca222c4b7323156196684ab6570a.ctex::
 ChatGPT Image 2026년 9월 29일 오후 10_16_37.png::CompressedTexture2D::9072455385272859956::1790727483::1790730067::1::::<><><>0<>0<>128415cf2ea26a8b5077b36f2e8f11c0<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_16_37.png-5b948941391a3bce56292b04d22c50c1.ctex::
-ChatGPT Image 2026년 9월 29일 오후 10_19_13.png::CompressedTexture2D::8832811958550477616::1790727483::1790730067::1::::<><><>0<>0<>609800ef284715a08b567a80f672b771<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_19_13.png-e8d61b68b1b64b6468f0608c8e94eb6e.ctex::
-ChatGPT Image 2026년 9월 29일 오후 10_20_27.png::CompressedTexture2D::6877563981433010997::1790727483::1790730066::1::::<><><>0<>0<>6f3256cea7415514782ac1978fd8aa45<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_20_27.png-641e58205e1bdc4a920518b9c0b164bb.ctex::
-ChatGPT Image 2026년 9월 29일 오후 10_22_50.png::CompressedTexture2D::8371866985351828970::1790727483::1790730066::1::::<><><>0<>0<>503c593588b4dd1ba067ce2f35acd061<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_22_50.png-730ddd7fe819629f59d01cd70466a2e2.ctex::
-ChatGPT Image 2026년 9월 29일 오후 10_25_26.png::CompressedTexture2D::8220409425706391812::1790727483::1790730066::1::::<><><>0<>0<>7485e228bad847491f050484e1350938<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_25_26.png-345dcfa997bfde2a115024941a1fb144.ctex::
-ChatGPT Image 2026년 9월 29일 오후 10_26_49.png::CompressedTexture2D::5748249303571104594::1790727483::1790730065::1::::<><><>0<>0<>bee50624a9db02c19c3c6eb7f1f1df7e<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_26_49.png-a4d14d09ee9c030ef7cc4332cca444fe.ctex::
 ChatGPT Image 2026년 9월 29일 오후 10_29_20.png::CompressedTexture2D::3156162546821987006::1790727483::1790730065::1::::<><><>0<>0<>3b718fa8aa688e5638a440c8fbaefde2<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_29_20.png-5c0c05443e4386f6616f575f77e8a3fc.ctex::
 ChatGPT Image 2026년 9월 29일 오후 10_30_35.png::CompressedTexture2D::3925178232370694761::1790727483::1790730065::1::::<><><>0<>0<>889cf699a05ea794f0c992aecd190d4a<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_30_35.png-be3e4035e299cc56e1d1c0f5c2d1ca84.ctex::
 ChatGPT Image 2026년 9월 29일 오후 10_32_33.png::CompressedTexture2D::5037378606102020905::1790727483::1790730064::1::::<><><>0<>0<>21159be195478124aac1d754ae82181f<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_32_33.png-fbbe27fb37b0ec70b55cb9a9b5791a2d.ctex::
 ChatGPT Image 2026년 9월 29일 오후 10_33_51.png::CompressedTexture2D::7498427597230104811::1790727483::1790730064::1::::<><><>0<>0<>f47a6ac5703b5e507f86f3837c12cf91<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_33_51.png-7da6ccf90c096000c28b2e1b1d731b8d.ctex::
 ChatGPT Image 2026년 9월 29일 오후 10_35_14.png::CompressedTexture2D::8386656307422546696::1790727483::1790730064::1::::<><><>0<>0<>cec300d01a2b00b92e69b1ebe2e11818<>res://.godot/imported/ChatGPT Image 2026년 9월 29일 오후 10_35_14.png-f4c049a8936feb4f95debd5195ed0807.ctex::
+flying.png::CompressedTexture2D::8508335762989574679::1790727483::1790929426::1::::<><><>0<>0<>b1ae1375cd2bca899db0db07a549a964<>res://.godot/imported/flying.png-46115ed6d90dfde9bcf1bc2c1dd417e4.ctex::
+heavy.png::CompressedTexture2D::657011943942538544::1790727483::1790929426::1::::<><><>0<>0<>af4910eaa3bbf4b4ce319a77b89e1331<>res://.godot/imported/heavy.png-f4cb29adc45a5072446382300035c6bf.ctex::
+light.png::CompressedTexture2D::1742559837484589555::1790727483::1790929426::1::::<><><>0<>0<>e2eb2b54bf2f8f68cef1d5f572a4460b<>res://.godot/imported/light.png-5139616492c5697728e2d5918b931991.ctex::
+range.png::CompressedTexture2D::7847964797479045496::1790727483::1790929427::1::::<><><>0<>0<>98035d41eca68928bf3d97a30464446c<>res://.godot/imported/range.png-f9805bacb2a32c8c71b6c7022b2a7f73.ctex::
 ::res://map_data/::1790919492
 northbridge_sector_01.json::JSON::-1::1790919492::0::1::::<><><>0<>0<><>::
 ::res://scripts/::1790899069
