@@ -19,6 +19,7 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var asset_rows: VBoxContainer = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetScroll/AssetRows
 @onready var asset_search: LineEdit = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetSearch
 @onready var btn_open_asset_catalog: Button = $MainLayout/Toolbox/VBox/AssetCatalogSection/BtnOpenAssetCatalog
+@onready var btn_clear_catalog_selection: Button = $MainLayout/Toolbox/VBox/AssetCatalogSection/BtnClearCatalogSelection
 @onready var asset_preview: TextureRect = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetPreview
 @onready var lbl_asset_preview_status: Label = $MainLayout/Toolbox/VBox/AssetCatalogSection/LblAssetPreviewStatus
 @onready var lbl_asset_details: Label = $MainLayout/Toolbox/VBox/AssetCatalogSection/LblAssetDetails
@@ -85,6 +86,7 @@ func _ready() -> void:
 	map_mode_multiplayer.toggled.connect(_on_map_mode_toggled)
 	third_alliance.toggled.connect(_on_third_alliance_toggled)
 	btn_open_asset_catalog.pressed.connect(_on_open_asset_catalog_pressed)
+	btn_clear_catalog_selection.pressed.connect(_clear_catalog_selection)
 	asset_search.text_changed.connect(_on_asset_search_changed)
 	btn_asset_mode.pressed.connect(_on_asset_mode_pressed)
 	btn_gameplay_mode.pressed.connect(_on_gameplay_mode_pressed)
@@ -147,6 +149,17 @@ func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: 
 		if canvas:
 			canvas.set_catalog_asset({})
 		lbl_asset_details.text = ""
+
+func _clear_catalog_selection() -> void:
+	selected_asset_id = ""
+	if canvas:
+		canvas.set_catalog_asset({})
+	asset_preview.texture = null
+	lbl_asset_preview_status.text = ""
+	lbl_asset_details.text = ""
+	update_selected_tile_label("None")
+	update_tool_label("CATALOG: None")
+	update_status("카달로그 선택을 해제했습니다.")
 
 func _find_catalog_asset_index(asset_id: String) -> int:
 	if asset_id.is_empty():

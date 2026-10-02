@@ -107,6 +107,11 @@ placeholder_text = "Search asset catalog"
 tooltip_text = "????????藥????裕?ID???곸궠??戮れ뿉?蹂μ쟽???롪틵????????덈펲."
 clear_button_enabled = true
 
+[node name="BtnClearCatalogSelection" type="Button" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
+layout_mode = 2
+text = "카달로그 선택 해제"
+tooltip_text = "현재 선택된 카달로그를 해제합니다."
+
 [node name="AssetScroll" type="ScrollContainer" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
 custom_minimum_size = Vector2(0, 450)
 layout_mode = 2

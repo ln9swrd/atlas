@@ -6,6 +6,7 @@ signal request_map_editor_for_path(map_path: String)
 const STAGE_DIR := "res://content/stages/"
 const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
 const MAP_DIR := "res://content/maps/"
+const ASSET_CATALOG_FILE := "res://content/editor/asset_catalog.json"
 const ENEMY_TYPES := ["normal", "rusher", "heavy", "giant"]
 const LANES := ["left", "right", "both"]
 var current_path := ""
@@ -24,6 +25,11 @@ var mission_type_option: OptionButton
 var mission_target_edit: LineEdit
 var mission_time_spin: SpinBox
 var map_open_button: Button
+var map_preview_container: SubViewportContainer
+var map_preview_viewport: SubViewport
+var map_preview_canvas: EditorCanvas
+var map_preview_status: Label
+var map_preview_assets: Array[Dictionary] = []
 var encounters_box: VBoxContainer
 var status_label: Label
 
@@ -98,6 +104,29 @@ func _build_stage_properties(parent: VBoxContainer) -> void:
 	map_open_button.tooltip_text = "현재 선택된 맵을 맵 에디터에서 엽니다."
 	map_open_button.pressed.connect(_open_selected_map)
 	map_row.add_child(map_open_button)
+	map_option.item_selected.connect(_on_map_option_selected)
+
+	var preview_label := Label.new()
+	preview_label.text = "연결된 맵 미리보기"
+	preview_label.add_theme_font_size_override("font_size", 14)
+	parent.add_child(preview_label)
+	map_preview_container = SubViewportContainer.new()
+	map_preview_container.custom_minimum_size = Vector2(0, 240)
+	map_preview_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_preview_container.stretch = true
+	parent.add_child(map_preview_container)
+	map_preview_viewport = SubViewport.new()
+	map_preview_viewport.size = Vector2i(480, 240)
+	map_preview_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	map_preview_viewport.transparent_bg = false
+	map_preview_container.add_child(map_preview_viewport)
+	map_preview_canvas = EditorCanvas.new()
+	map_preview_canvas.set_process_input(false)
+	map_preview_viewport.add_child(map_preview_canvas)
+	map_preview_status = Label.new()
+	map_preview_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	map_preview_status.modulate = Color("9fb2aa")
+	parent.add_child(map_preview_status)
 
 	var relation := Label.new()
 	relation.text = "Stage → Map: 스테이지가 이 맵을 사용합니다. 맵을 여러 스테이지에서 재사용할 수 있습니다."
