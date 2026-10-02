@@ -31,6 +31,10 @@ var robot_range_spin: SpinBox
 var robot_cooldown_spin: SpinBox
 var status_label: Label
 var sprite_preview: TextureRect
+var sprite_rect_x_spin: SpinBox
+var sprite_rect_y_spin: SpinBox
+var sprite_rect_w_spin: SpinBox
+var sprite_rect_h_spin: SpinBox
 
 func _ready() -> void:
 	_build_ui()
@@ -126,6 +130,16 @@ func _build_properties(parent: VBoxContainer) -> void:
 	browse.text = "Browse"
 	browse.pressed.connect(func(): _open_sprite_dialog("sprite"))
 	sprite_row.add_child(browse)
+	var sprite_rect_title := Label.new()
+	sprite_rect_title.text = "Sprite Region (X, Y, W, H)"
+	sprite_rect_title.custom_minimum_size.x = 130
+	var sprite_rect_row := HBoxContainer.new()
+	parent.add_child(sprite_rect_row)
+	sprite_rect_row.add_child(sprite_rect_title)
+	sprite_rect_x_spin = _spin_row_inline(sprite_rect_row, "X", 0, 100000, 1, 0)
+	sprite_rect_y_spin = _spin_row_inline(sprite_rect_row, "Y", 0, 100000, 1, 0)
+	sprite_rect_w_spin = _spin_row_inline(sprite_rect_row, "W", 0, 100000, 1, 0)
+	sprite_rect_h_spin = _spin_row_inline(sprite_rect_row, "H", 0, 100000, 1, 0)
 	var projectile_row := HBoxContainer.new()
 	parent.add_child(projectile_row)
 	var projectile_label := Label.new()
@@ -178,6 +192,19 @@ func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(edit)
 	return edit
+
+func _spin_row_inline(parent: HBoxContainer, label_text: String, minimum: float, maximum: float, step: float, value: float) -> SpinBox:
+	var label := Label.new()
+	label.text = label_text
+	parent.add_child(label)
+	var spin := SpinBox.new()
+	spin.min_value = minimum
+	spin.max_value = maximum
+	spin.step = step
+	spin.value = value
+	spin.custom_minimum_size.x = 90
+	parent.add_child(spin)
+	return spin
 
 func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximum: float, step: float, value: float) -> SpinBox:
 	var row := HBoxContainer.new()
