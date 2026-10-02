@@ -298,7 +298,7 @@ func _save_data() -> void:
 		return
 	file.store_string(JSON.stringify(unit_data, "  "))
 	file.close()
-	_refresh_enemy_list()
+	_refresh_unit_list()
 	unit_list.select(ENEMY_TYPES.find(selected_type))
 	_set_status("SAVED: " + UNIT_FILE)
 
