@@ -1,8 +1,8 @@
 ﻿class_name UnitEditorMain
 extends Control
 
-const UNIT_FILE := "res://content/enemies/enemies.json"
-const ENEMY_TYPES := ["normal", "rusher", "heavy", "giant"]
+const UNIT_FILE := "res://content/allied_units/allied_units.json"
+const UNIT_TYPES := ["vanguard", "ranger", "support"]
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var unit_data: Dictionary = {}
@@ -208,28 +208,32 @@ func _load_data() -> void:
 
 func _refresh_unit_list() -> void:
 	unit_list.clear()
-	for enemy_type in ENEMY_TYPES:
-		if unit_data.has(enemy_type):
-			unit_list.add_item(str(unit_data[enemy_type].get("name", enemy_type.to_upper())))
-			unit_list.set_item_icon(unit_list.item_count - 1, load(str(unit_data[enemy_type].get("sprite_anim", ""))) as Texture2D)
-		else:
-			unit_list.add_item(enemy_type.to_upper())
-		unit_list.set_item_metadata(unit_list.item_count - 1, enemy_type)
+	for unit_type in UNIT_TYPES:
+		var data: Dictionary = unit_data.get(unit_type, {})
+		unit_list.add_item(str(data.get("name", unit_type.to_upper())))
+		unit_list.set_item_metadata(unit_list.item_count - 1, unit_type)
+		var sprite_path := str(data.get("visuals", {}).get("sprite", ""))
+		if not sprite_path.is_empty():
+			var texture := load(sprite_path) as Texture2D
+			if texture != null:
+				unit_list.set_item_icon(unit_list.item_count - 1, texture)
 
 func _on_unit_selected(index: int) -> void:
 	if index < 0 or index >= unit_list.item_count:
 		return
 	selected_type = str(unit_list.get_item_metadata(index))
 	var data: Dictionary = unit_data.get(selected_type, {})
+	if selected_type.is_empty():
+		return
 	name_edit.text = str(data.get("name", selected_type.to_upper()))
 	hp_spin.value = float(data.get("hp", 1.0))
 	speed_spin.value = float(data.get("speed", 0.0))
-	armor_spin.value = float(data.get("armor", 0.0))
-	damage_spin.value = float(data.get("base_damage", 0.0))
-	reward_spin.value = float(data.get("reward", 0.0))
+	damage_spin.value = float(data.get("damage", 0.0))
+	reward_spin.value = 0.0
 	radius_spin.value = float(data.get("radius", 10.0))
 	color_edit.color = Color(str(data.get("color", "#ffffff")))
-	sprite_edit.text = str(data.get("sprite_anim", "res://assets/menos/sprites/enemy_%s_anim.png" % selected_type))
+	var visuals: Dictionary = data.get("visuals", {})
+	sprite_edit.text = str(visuals.get("sprite", ""))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_threat.png"))
 	var attack_type := str(data.get("attack_type", ""))
 	if attack_type == "melee":
@@ -238,8 +242,8 @@ func _on_unit_selected(index: int) -> void:
 		attack_type_list.select(2)
 	else:
 		attack_type_list.select(0)
-	attack_range_spin.value = float(data.get("attack_range", data.get("radius", 10.0)))
-	attack_cooldown_spin.value = float(data.get("attack_cooldown", data.get("melee_cooldown", 1.0)))
+	attack_range_spin.value = float(data.get("range", data.get("radius", 10.0)))
+	attack_cooldown_spin.value = float(data.get("cooldown", 1.0))
 	melee_check.button_pressed = bool(data.get("melee", false))
 	melee_cooldown_spin.value = float(data.get("melee_cooldown", 1.0))
 	melee_cooldown_spin.editable = melee_check.button_pressed
@@ -247,10 +251,9 @@ func _on_unit_selected(index: int) -> void:
 	robot_damage_spin.value = float(data.get("robot_damage", 0.0))
 	robot_range_spin.value = float(data.get("robot_range", 0.0))
 	robot_cooldown_spin.value = float(data.get("robot_cooldown", 0.0))
-	var giant := selected_type == "giant"
-	robot_damage_spin.editable = giant
-	robot_range_spin.editable = giant
-	robot_cooldown_spin.editable = giant
+	robot_damage_spin.editable = false
+	robot_range_spin.editable = false
+	robot_cooldown_spin.editable = false
 
 func _save_data() -> void:
 	if selected_type.is_empty():
@@ -263,34 +266,18 @@ func _save_data() -> void:
 	data["name"] = name_edit.text.strip_edges()
 	data["hp"] = float(hp_spin.value)
 	data["speed"] = float(speed_spin.value)
-	data["armor"] = float(armor_spin.value)
-	data["base_damage"] = float(damage_spin.value)
-	data["reward"] = int(reward_spin.value)
-	data["radius"] = float(radius_spin.value)
-	data["color"] = color_edit.color.to_html(false)
-	data["sprite_anim"] = sprite_edit.text.strip_edges()
-	data["projectile_anim"] = projectile_edit.text.strip_edges()
-	var attack_type_index := attack_type_list.selected
-	var attack_type: String = ["none", "melee", "ranged"][clampi(attack_type_index, 0, 2)]
-	data["attack_type"] = attack_type
-	data["attack_range"] = float(attack_range_spin.value)
-	data["attack_cooldown"] = float(attack_cooldown_spin.value)
-	data["melee"] = attack_type == "melee"
-	data["melee_cooldown"] = float(attack_cooldown_spin.value)
-	if selected_type == "giant":
-		data["robot_damage"] = float(robot_damage_spin.value)
-		data["robot_range"] = float(robot_range_spin.value)
-		data["robot_cooldown"] = float(robot_cooldown_spin.value)
-	else:
-		data.erase("robot_damage")
-		data.erase("robot_range")
-		data.erase("robot_cooldown")
+	data["damage"] = float(damage_spin.value)
+	data["cooldown"] = float(attack_cooldown_spin.value)
+	data["range"] = float(attack_range_spin.value)
+	var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
+	visuals["sprite"] = sprite_edit.text.strip_edges()
+	data["visuals"] = visuals
 	unit_data[selected_type] = data
 	var dir := DirAccess.open("res://content")
 	if dir == null:
 		_set_status("FAILED: content directory unavailable.")
 		return
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/enemies"))
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/allied_units"))
 	var file := FileAccess.open(UNIT_FILE, FileAccess.WRITE)
 	if file == null:
 		_set_status("FAILED to open JSON for writing.")
@@ -298,7 +285,10 @@ func _save_data() -> void:
 	file.store_string(JSON.stringify(unit_data, "  "))
 	file.close()
 	_refresh_unit_list()
-	unit_list.select(ENEMY_TYPES.find(selected_type))
+	var selected_index := UNIT_TYPES.find(selected_type)
+	if selected_index >= 0:
+		unit_list.select(selected_index)
+		_on_unit_selected(selected_index)
 	_set_status("SAVED: " + UNIT_FILE)
 
 func _refresh_sprite_preview(path: String) -> void:
