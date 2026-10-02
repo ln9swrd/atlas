@@ -46,7 +46,7 @@
       "support_range": 220.0
     },
     "visuals": {
-      "sprite": "res://assets/menos/sprites/robot_atlas01.png"
+      "sprite": "res://images/Unit/support.png"
     }
   }
 }
