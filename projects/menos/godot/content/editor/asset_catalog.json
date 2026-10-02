@@ -1,6 +1,682 @@
 {
   "assets": [
 	{
+	  "asset_id": "asset.facility.a7_01",
+	  "display_name": "A7 시설 01",
+	  "footprint_tiles": [
+		8,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1048.0,
+		78.0,
+		230.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_02",
+	  "display_name": "A7 시설 02",
+	  "footprint_tiles": [
+		6,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1348.0,
+		79.0,
+		171.0,
+		151.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_03",
+	  "display_name": "A7 시설 03",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		529.0,
+		89.0,
+		144.0,
+		110.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_04",
+	  "display_name": "A7 시설 04",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		700.0,
+		89.0,
+		133.0,
+		110.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_05",
+	  "display_name": "A7 시설 05",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		863.0,
+		89.0,
+		146.0,
+		110.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_06",
+	  "display_name": "A7 시설 06",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		21.0,
+		92.0,
+		148.0,
+		143.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_07",
+	  "display_name": "A7 시설 07",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		183.0,
+		92.0,
+		146.0,
+		143.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_08",
+	  "display_name": "A7 시설 08",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		343.0,
+		92.0,
+		144.0,
+		143.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_09",
+	  "display_name": "A7 시설 09",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		541.0,
+		249.0,
+		138.0,
+		108.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_10",
+	  "display_name": "A7 시설 10",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		702.0,
+		249.0,
+		130.0,
+		108.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_11",
+	  "display_name": "A7 시설 11",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		857.0,
+		249.0,
+		142.0,
+		108.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_12",
+	  "display_name": "A7 시설 12",
+	  "footprint_tiles": [
+		7,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1054.0,
+		253.0,
+		198.0,
+		151.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_13",
+	  "display_name": "A7 시설 13",
+	  "footprint_tiles": [
+		6,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1323.0,
+		265.0,
+		184.0,
+		143.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_14",
+	  "display_name": "A7 시설 14",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		24.0,
+		298.0,
+		146.0,
+		147.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_15",
+	  "display_name": "A7 시설 15",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		184.0,
+		298.0,
+		145.0,
+		147.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_16",
+	  "display_name": "A7 시설 16",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		344.0,
+		299.0,
+		145.0,
+		146.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_17",
+	  "display_name": "A7 시설 17",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		777.0,
+		404.0,
+		157.0,
+		129.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_18",
+	  "display_name": "A7 시설 18",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		539.0,
+		406.0,
+		170.0,
+		127.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_19",
+	  "display_name": "A7 시설 19",
+	  "footprint_tiles": [
+		7,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1043.0,
+		427.0,
+		198.0,
+		141.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_20",
+	  "display_name": "A7 시설 20",
+	  "footprint_tiles": [
+		8,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1272.0,
+		435.0,
+		229.0,
+		158.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_21",
+	  "display_name": "A7 시설 21",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1312.0,
+		634.0,
+		178.0,
+		118.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_22",
+	  "display_name": "A7 시설 22",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		534.0,
+		656.0,
+		163.0,
+		109.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_23",
+	  "display_name": "A7 시설 23",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		704.0,
+		656.0,
+		143.0,
+		103.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_24",
+	  "display_name": "A7 시설 24",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		870.0,
+		657.0,
+		131.0,
+		101.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_25",
+	  "display_name": "A7 시설 25",
+	  "footprint_tiles": [
+		7,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1054.0,
+		657.0,
+		208.0,
+		114.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_26",
+	  "display_name": "A7 시설 26",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		347.0,
+		664.0,
+		148.0,
+		108.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_27",
+	  "display_name": "A7 시설 27",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		25.0,
+		665.0,
+		148.0,
+		107.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_28",
+	  "display_name": "A7 시설 28",
+	  "footprint_tiles": [
+		5,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		189.0,
+		665.0,
+		146.0,
+		132.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_29",
+	  "display_name": "A7 시설 29",
+	  "footprint_tiles": [
+		6,
+		3
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1289.0,
+		767.0,
+		182.0,
+		96.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_30",
+	  "display_name": "A7 시설 30",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1066.0,
+		780.0,
+		174.0,
+		104.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_31",
+	  "display_name": "A7 시설 31",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		573.0,
+		781.0,
+		161.0,
+		109.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_32",
+	  "display_name": "A7 시설 32",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		794.0,
+		782.0,
+		157.0,
+		101.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_33",
+	  "display_name": "A7 시설 33",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		22.0,
+		818.0,
+		151.0,
+		109.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_34",
+	  "display_name": "A7 시설 34",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		191.0,
+		818.0,
+		146.0,
+		109.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_35",
+	  "display_name": "A7 시설 35",
+	  "footprint_tiles": [
+		5,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		354.0,
+		820.0,
+		143.0,
+		107.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_36",
+	  "display_name": "A7 시설 36",
+	  "footprint_tiles": [
+		7,
+		5
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1293.0,
+		877.0,
+		199.0,
+		130.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_37",
+	  "display_name": "A7 시설 37",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		560.0,
+		890.0,
+		163.0,
+		108.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_38",
+	  "display_name": "A7 시설 38",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		1047.0,
+		894.0,
+		182.0,
+		97.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.facility.a7_39",
+	  "display_name": "A7 시설 39",
+	  "footprint_tiles": [
+		6,
+		4
+	  ],
+	  "group": "Facility",
+	  "kind": "tile",
+	  "source_path": "res://images/map/tile/facility/a7.png",
+	  "source_rect_px": [
+		792.0,
+		908.0,
+		167.0,
+		101.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.a_7",
+	  "display_name": "Border Wall Tiles",
+	  "group": "Boundary",
+	  "kind": "tile",
+	  "source_path": "res://content/editor/edited_assets/asset_tile_a_7_edit_14449287.png",
+	  "source_rect_px": [
+		0.0,
+		0.0,
+		258.0,
+		151.0
+	  ]
+	},
+	{
 	  "asset_id": "asset.tile.ground.basic_meadow",
 	  "display_name": "Basic Meadow",
 	  "footprint_tiles": [
@@ -15,19 +691,6 @@
 		0,
 		32,
 		32
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.a_7",
-	  "display_name": "Border Wall Tiles",
-	  "group": "Boundary",
-	  "kind": "tile",
-	  "source_path": "res://content/editor/edited_assets/asset_tile_a_7_edit_14449287.png",
-	  "source_rect_px": [
-		0.0,
-		0.0,
-		258.0,
-		151.0
 	  ]
 	},
 	{

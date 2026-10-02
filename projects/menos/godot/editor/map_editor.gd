@@ -17,6 +17,7 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var btn_resize_placement: Button = $MainLayout/Inspector/VBox/BtnResizePlacement
 @onready var btn_delete_placement: Button = $MainLayout/Inspector/VBox/BtnDeletePlacement
 @onready var asset_rows: VBoxContainer = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetScroll/AssetRows
+@onready var asset_search: LineEdit = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetSearch
 @onready var btn_open_asset_catalog: Button = $MainLayout/Toolbox/VBox/AssetCatalogSection/BtnOpenAssetCatalog
 @onready var asset_preview: TextureRect = $MainLayout/Toolbox/VBox/AssetCatalogSection/AssetPreview
 @onready var lbl_asset_preview_status: Label = $MainLayout/Toolbox/VBox/AssetCatalogSection/LblAssetPreviewStatus
@@ -84,6 +85,7 @@ func _ready() -> void:
 	map_mode_multiplayer.toggled.connect(_on_map_mode_toggled)
 	third_alliance.toggled.connect(_on_third_alliance_toggled)
 	btn_open_asset_catalog.pressed.connect(_on_open_asset_catalog_pressed)
+	asset_search.text_changed.connect(_on_asset_search_changed)
 	btn_asset_mode.pressed.connect(_on_asset_mode_pressed)
 	btn_gameplay_mode.pressed.connect(_on_gameplay_mode_pressed)
 	btn_asset_mode.gui_input.connect(_on_mode_tab_gui_input.bind("ASSET"))
@@ -154,17 +156,30 @@ func _find_catalog_asset_index(asset_id: String) -> int:
 			return index
 	return -1
 
+func _on_asset_search_changed(_text: String) -> void:
+	_rebuild_asset_rows()
+
 func _rebuild_asset_rows() -> void:
 	for child in asset_rows.get_children():
 		child.queue_free()
 	var grouped_entries: Dictionary = {}
+	var query := asset_search.text.strip_edges().to_lower()
 	for index in range(catalog_entries.size()):
+		var entry_name := str(catalog_entries[index].get("display_name", catalog_entries[index].get("asset_id", "")))
+		if not query.is_empty() and not entry_name.to_lower().contains(query):
+			continue
 		var group_name := str(catalog_entries[index].get("group", "Other"))
 		var group_indices: Array = grouped_entries.get(group_name, [])
 		group_indices.append(index)
 		grouped_entries[group_name] = group_indices
 	var group_names: Array = grouped_entries.keys()
 	group_names.sort()
+	if group_names.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "검색 결과가 없습니다."
+		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		asset_rows.add_child(empty_label)
+		return
 	for group_name in group_names:
 		var heading := Label.new()
 		heading.text = str(group_name).to_upper()

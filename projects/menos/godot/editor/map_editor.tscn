@@ -98,6 +98,12 @@ text = " ASSET CATALOG"
 layout_mode = 2
 text = "Asset Data Authoring"
 
+[node name="AssetSearch" type="LineEdit" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
+layout_mode = 2
+placeholder_text = "카달로그 이름 검색"
+tooltip_text = "에셋 이름 또는 ID로 카달로그를 검색합니다."
+clear_button_enabled = true
+
 [node name="AssetScroll" type="ScrollContainer" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
 custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
