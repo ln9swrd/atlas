@@ -82,6 +82,36 @@ func _ready() -> void:
 
 func set_map_data(data: Dictionary) -> void:
 	map_data = data.duplicate(true)
+	if not map_data.has("play_modes") or not map_data["play_modes"] is Array:
+		map_data["play_modes"] = ["campaign", "single", "multiplayer"]
+	if not map_data.has("multiplayer") or not map_data["multiplayer"] is Dictionary:
+		map_data["multiplayer"] = {
+			"enabled": true,
+			"alliances": [
+				{"id": "ally", "name": "아군 동맹", "controller": "ai"},
+				{"id": "enemy", "name": "적 동맹", "controller": "ai"},
+				{"id": "third", "name": "제3동맹", "controller": "ai"}
+			],
+			"relations": {
+				"ally": {"enemy": "hostile", "third": "hostile"},
+				"enemy": {"ally": "hostile", "third": "hostile"},
+				"third": {"ally": "hostile", "enemy": "hostile"}
+			}
+		}
+	else:
+		var multiplayer: Dictionary = map_data["multiplayer"]
+		if not multiplayer.has("alliances") or not multiplayer["alliances"] is Array:
+			multiplayer["alliances"] = [
+				{"id": "ally", "name": "아군 동맹", "controller": "ai"},
+				{"id": "enemy", "name": "적 동맹", "controller": "ai"},
+				{"id": "third", "name": "제3동맹", "controller": "ai"}
+			]
+		if not multiplayer.has("relations") or not multiplayer["relations"] is Dictionary:
+			multiplayer["relations"] = {
+				"ally": {"enemy": "hostile", "third": "hostile"},
+				"enemy": {"ally": "hostile", "third": "hostile"},
+				"third": {"ally": "hostile", "enemy": "hostile"}
+			}
 	undo_history.clear()
 	_fit_map_to_viewport.call_deferred()
 	edit_stroke_snapshot.clear()

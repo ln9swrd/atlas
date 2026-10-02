@@ -32,6 +32,10 @@ static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 	parsed["version"] = raw_data.get("version", 1)
 	parsed["map_id"] = raw_data.get("map_id", "northbridge_sector_01")
 	parsed["name"] = raw_data.get("name", "Northbridge Sector 01")
+	var play_modes: Variant = raw_data.get("play_modes", ["campaign", "single", "multiplayer"])
+	parsed["play_modes"] = play_modes.duplicate(true) if play_modes is Array else ["campaign", "single", "multiplayer"]
+	var multiplayer: Variant = raw_data.get("multiplayer", {})
+	parsed["multiplayer"] = multiplayer.duplicate(true) if multiplayer is Dictionary else {}
 
 	if raw_data.has("map_size"):
 		var ms: Variant = raw_data["map_size"]
@@ -162,6 +166,8 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 		"version": map_data.get("version", 1),
 		"map_id": map_data.get("map_id", "northbridge_sector_01"),
 		"name": map_data.get("name", "Northbridge Sector 01"),
+		"play_modes": map_data.get("play_modes", ["campaign", "single", "multiplayer"]),
+		"multiplayer": map_data.get("multiplayer", {}).duplicate(true) if map_data.get("multiplayer", {}) is Dictionary else {},
 		"map_size": [map_tiles_vec.x, map_tiles_vec.y],
 		"tile_size": [32, 32],
 		"map_origin": [map_origin_vec.x, map_origin_vec.y],

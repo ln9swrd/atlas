@@ -43,6 +43,32 @@ text = "Active Tool: [SELECT]"
 layout_mode = 2
 text = "Selected: None"
 
+[node name="MapModeTitle" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "맵 사용 모드"
+
+[node name="MapModeCampaign" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "캠페인"
+
+[node name="MapModeSingle" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "싱글플레이"
+
+[node name="MapModeMultiplayer" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "멀티플레이 (AI 동맹)"
+
+[node name="ThirdAlliance" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "제3동맹 사용"
+tooltip_text = "아군 동맹과 적 동맹 모두를 적으로 취급하는 AI 동맹입니다."
+
+[node name="MapModeHint" type="Label" parent="MainLayout/Toolbox/VBox"]
+layout_mode = 2
+text = "멀티플레이 동맹은 현재 모두 AI가 제어합니다."
+autowrap_mode = 2
+
 [node name="ModeBar" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 4

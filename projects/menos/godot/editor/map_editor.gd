@@ -44,6 +44,11 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var option_layer: OptionButton = $MainLayout/Toolbox/VBox/OptionLayer
 @onready var spin_eraser_size: SpinBox = $MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize
 @onready var btn_fill_ground: Button = $MainLayout/Toolbox/VBox/BtnFillGround
+@onready var map_mode_campaign: CheckButton = $MainLayout/Toolbox/VBox/MapModeCampaign
+@onready var map_mode_single: CheckButton = $MainLayout/Toolbox/VBox/MapModeSingle
+@onready var map_mode_multiplayer: CheckButton = $MainLayout/Toolbox/VBox/MapModeMultiplayer
+@onready var third_alliance: CheckButton = $MainLayout/Toolbox/VBox/ThirdAlliance
+@onready var map_mode_hint: Label = $MainLayout/Toolbox/VBox/MapModeHint
 @onready var asset_catalog_window: Window = $AssetCatalogWindow
 
 var map_size_panel: PanelContainer
@@ -74,6 +79,10 @@ func _ready() -> void:
 	btn_delete_placement.pressed.connect(_on_delete_placement_pressed)
 	btn_fill_ground.pressed.connect(_on_fill_ground_pressed)
 	btn_fill_ground.visible = true
+	map_mode_campaign.toggled.connect(_on_map_mode_toggled)
+	map_mode_single.toggled.connect(_on_map_mode_toggled)
+	map_mode_multiplayer.toggled.connect(_on_map_mode_toggled)
+	third_alliance.toggled.connect(_on_third_alliance_toggled)
 	btn_open_asset_catalog.pressed.connect(_on_open_asset_catalog_pressed)
 	btn_asset_mode.pressed.connect(_on_asset_mode_pressed)
 	btn_gameplay_mode.pressed.connect(_on_gameplay_mode_pressed)
@@ -465,6 +474,75 @@ func _on_gameplay_visibility_toggled(visible: bool) -> void:
 		canvas.set_gameplay_visible(visible)
 	update_status("게임플레이 요소: %s" % ("표시" if visible else "숨김"))
 
+func _sync_map_play_mode_controls() -> void:
+	var modes: Array = canvas.map_data.get("play_modes", ["campaign", "single", "multiplayer"]) if canvas and canvas.map_data.get("play_modes", []) is Array else ["campaign", "single", "multiplayer"]
+	map_mode_campaign.set_pressed_no_signal("campaign" in modes)
+	map_mode_single.set_pressed_no_signal("single" in modes)
+	map_mode_multiplayer.set_pressed_no_signal("multiplayer" in modes)
+	var multiplayer: Dictionary = canvas.map_data.get("multiplayer", {}) if canvas and canvas.map_data.get("multiplayer", {}) is Dictionary else {}
+	third_alliance.set_pressed_no_signal(bool(multiplayer.get("third_alliance_enabled", false)))
+	third_alliance.visible = map_mode_multiplayer.button_pressed
+	map_mode_hint.visible = map_mode_multiplayer.button_pressed
+	map_mode_hint.text = "멀티플레이: 아군 동맹 / 적 동맹은 모두 AI가 제어합니다. 제3동맹도 AI이며 아군·적 동맹 모두와 적대합니다."
+
+func _on_map_mode_toggled(_pressed: bool) -> void:
+	if not canvas:
+		return
+	var modes: Array[String] = []
+	if map_mode_campaign.button_pressed:
+		modes.append("campaign")
+	if map_mode_single.button_pressed:
+		modes.append("single")
+	if map_mode_multiplayer.button_pressed:
+		modes.append("multiplayer")
+	if modes.is_empty():
+		map_mode_single.set_pressed_no_signal(true)
+		modes.append("single")
+	canvas.map_data["play_modes"] = modes
+	third_alliance.visible = map_mode_multiplayer.button_pressed
+	map_mode_hint.visible = map_mode_multiplayer.button_pressed
+	if map_mode_multiplayer.button_pressed:
+		_ensure_multiplayer_config()
+	_update_map_mode_status()
+
+func _on_third_alliance_toggled(enabled: bool) -> void:
+	if not canvas:
+		return
+	_ensure_multiplayer_config()
+	var multiplayer: Dictionary = canvas.map_data["multiplayer"]
+	multiplayer["third_alliance_enabled"] = enabled
+	_update_map_mode_status()
+
+func _ensure_multiplayer_config() -> void:
+	if not canvas.map_data.has("multiplayer") or not canvas.map_data["multiplayer"] is Dictionary:
+		canvas.map_data["multiplayer"] = {}
+	var multiplayer: Dictionary = canvas.map_data["multiplayer"]
+	multiplayer["enabled"] = true
+	multiplayer["alliance_controllers"] = {"ally": "ai", "enemy": "ai", "third": "ai"}
+	if not multiplayer.has("third_alliance_enabled"):
+		multiplayer["third_alliance_enabled"] = false
+	multiplayer["alliances"] = [
+		{"id": "ally", "name": "아군 동맹", "controller": "ai"},
+		{"id": "enemy", "name": "적 동맹", "controller": "ai"},
+		{"id": "third", "name": "제3동맹", "controller": "ai"}
+	]
+	multiplayer["relations"] = {
+		"ally": {"enemy": "hostile", "third": "hostile"},
+		"enemy": {"ally": "hostile", "third": "hostile"},
+		"third": {"ally": "hostile", "enemy": "hostile"}
+	}
+
+func _update_map_mode_status() -> void:
+	var modes: Array[String] = []
+	if map_mode_campaign.button_pressed:
+		modes.append("캠페인")
+	if map_mode_single.button_pressed:
+		modes.append("싱글")
+	if map_mode_multiplayer.button_pressed:
+		modes.append("멀티")
+	var mode_text := ", ".join(modes)
+	update_status("맵 사용 모드: %s" % mode_text)
+
 func load_map(path: String) -> void:
 	current_map_path = path
 	current_map_data = MapLoader.load_map_data(path)
@@ -475,6 +553,7 @@ func load_map(path: String) -> void:
 	if canvas:
 		canvas.set_map_data(current_map_data)
 	_sync_map_size_controls()
+	_sync_map_play_mode_controls()
 	var linked_stages := _find_linked_stages(path)
 	if linked_stages.is_empty():
 		update_status("Loaded map: %s | 연결 스테이지: 없음" % path)
