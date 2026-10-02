@@ -1,3 +1,4 @@
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -6,6 +7,7 @@ namespace MKERP.Licensing;
 
 public sealed record LicenseValidationResult(bool IsValid, string Message, LicensePayload? Payload);
 
+[SupportedOSPlatform("windows")]
 public static class LicenseVerifier
 {
     public static string SerializePayload(LicensePayload payload)
@@ -27,6 +29,7 @@ public static class LicenseVerifier
         }
         catch { return false; }
     }
+
     public static LicenseValidationResult Validate(
         LicenseDocument document,
         RSA publicKey,
@@ -41,7 +44,11 @@ public static class LicenseVerifier
         if (!string.Equals(p.Product, expectedProduct, StringComparison.Ordinal))
             return new(false, "다른 제품의 라이선스입니다.", p);
 
-        if (!string.Equals(p.MachineFingerprint, currentMachineFingerprint, StringComparison.OrdinalIgnoreCase))
+        var bindingValid = MachineFingerprint.IsV2(p.MachineFingerprint)
+            ? MachineFingerprint.Matches(p.MachineFingerprint, currentMachineFingerprint, 3)
+            : string.Equals(p.MachineFingerprint, MachineFingerprint.GetLegacy(), StringComparison.OrdinalIgnoreCase);
+
+        if (!bindingValid)
             return new(false, "이 PC에 등록된 라이선스가 아닙니다.", p);
 
         if (p.IssuedAtUtc > nowUtc.AddMinutes(5))

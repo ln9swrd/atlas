@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "PRLzfnkZs94=",
+  "dgSpecHash": "r3Um+t3ksmI=",
   "success": true,
   "projectFilePath": "D:\\Atlas\\projects\\mk\\src\\MKERP.LicenseTool\\MKERP.LicenseTool.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\user\\.nuget\\packages\\system.codedom\\8.0.0\\system.codedom.8.0.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\system.management\\8.0.0\\system.management.8.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

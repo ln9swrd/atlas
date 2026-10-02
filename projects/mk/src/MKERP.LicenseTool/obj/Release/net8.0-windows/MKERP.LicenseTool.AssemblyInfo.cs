@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MKERP.LicenseTool")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+10507836df3625aa45ad5aeb4c932ca6be028e1c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3072ba57a9af2850b7c3b4e648836333e47be640")]
 [assembly: System.Reflection.AssemblyProductAttribute("MKERP.LicenseTool")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MKERP.LicenseTool")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

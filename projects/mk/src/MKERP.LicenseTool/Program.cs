@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text.Json;
 using MKERP.Licensing;
 
@@ -25,15 +25,21 @@ if (args.Length == 2 && string.Equals(args[0], "verify", StringComparison.Ordina
 
 if (args.Length < 3)
 {
-    Console.WriteLine("?ъ슜踰? MKERP.LicenseTool machine");
-    Console.WriteLine("?ъ슜踰? MKERP.LicenseTool verify <license.json>");
-    Console.WriteLine("?ъ슜踰? MKERP.LicenseTool <private-key.pem> <customer-id> <machine-fingerprint> [days] [license-id]");
+    Console.WriteLine("Usage: MKERP.LicenseTool machine");
+    Console.WriteLine("Usage: MKERP.LicenseTool verify <license.json>");
+    Console.WriteLine("Usage: MKERP.LicenseTool <private-key.pem> <customer-id> <machine-fingerprint> [days] [license-id]");
     return 2;
 }
 
 var keyPath = args[0];
 var customerId = args[1];
 var machine = args[2];
+if (!MachineFingerprint.IsV2(machine))
+{
+    Console.WriteLine("INVALID_MACHINE_FINGERPRINT: v2 hardware binding is required.");
+    return 5;
+}
+
 var days = args.Length >= 4 && int.TryParse(args[3], out var d) ? d : 0;
 var licenseId = args.Length >= 5 ? args[4] : Guid.NewGuid().ToString("N");
 

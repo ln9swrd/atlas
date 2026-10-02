@@ -11,12 +11,12 @@
 
 ## 2. 현재 기준선
 - Branch: main
-- HEAD: 10507836df3625aa45ad5aeb4c932ca6be028e1c
-- Working Tree: CLEAN
+- HEAD: 3072ba57a9af2850b7c3b4e648836333e47be640
+- Working Tree: 라이선스 v2 구현 변경 + Release 생성물 변경
 - Target: net8.0-windows / WPF
 - DB: SQLite + EF Core
 - Release self-contained win-x64 Build: 기존 검증 완료
-- 라이선스: 오프라인 RSA 서명 + PC Machine Fingerprint 방식 구현
+- 라이선스: 오프라인 RSA 서명 + 다중 하드웨어 식별값 기반 PC 귀속 구현
 
 ## 3. 완료로 취급하는 핵심 범위
 - WPF 메인 화면 및 MDI 다중 인스턴스
@@ -34,7 +34,10 @@
 ## 4. 라이선스 정책 및 잔여 작업
 ### L-01 PC 귀속 정책
 목표: 라이선스 1개를 특정 PC 1대에 귀속하고 다른 PC로 license.json을 복사해 재사용하는 것을 차단한다.
-상태: IMPLEMENTED / 목적 충족.
+구현: MachineGuid, SMBIOS UUID, BaseBoard Serial, BIOS Serial, 시스템 물리 디스크 Serial의 5개 값을 개별 SHA-256 해시로 저장하고 3개 이상 일치하면 동일 PC로 인정한다.
+Windows 재설치·시스템 디스크 교체 등 일부 환경 변경은 나머지 식별값이 3개 이상 유지되면 동일 PC로 인정할 수 있다.
+기존 v1 MachineFingerprint 라이선스는 호환 검증 경로를 유지하고 신규 발급은 v2 하드웨어 바인딩만 허용한다.
+상태: IMPLEMENTED / BUILD VERIFIED / Runtime binding VERIFIED.
 
 ### L-02 라이선스 서버 도입
 현재 목적에는 필요하지 않다.
@@ -47,8 +50,9 @@ DEBUG 빌드는 고객 배포 금지, 고객 배포물은 Release만 사용한�
 상태: 운영 규칙으로 관리.
 
 ### L-04 라이선스 예외 시나리오
-Windows 재설치 등으로 Machine Fingerprint가 변경된 경우 재발급 절차를 문서화한다.
-상태: 미검증/운영 절차 정리 필요.
+Windows 재설치 등으로 일부 식별값이 변경되어도 5개 중 3개 이상이 유지되면 기존 라이선스를 계속 사용할 수 있다.
+3개 미만으로 일치하는 경우는 신규 PC 또는 중대한 하드웨어 변경으로 간주하여 재발급 절차를 적용한다.
+상태: 기술정책 구현 완료 / 고객 재발급 운영절차는 별도 문서화 필요.
 
 ## 5. 잔여 기능 개발 및 검증
 ### F-01 수주 다품목 Runtime 검증
@@ -175,25 +179,24 @@ Build 성공만으로 Production 전환으로 간주하지 않는다.
 STATUS: IN PROGRESS
 목적: Production 전 남은 구현 및 검증 범위를 명확히 정의한다.
 현재 핵심 잔여 작업: 실제 Runtime 통합 검증, 백업/복구, 신규 PC 배포 검증, 출력 검증, 라이선스 예외 절차 검증.
-라이선스 PC 귀속 기능 자체는 현재 목적을 충족하므로 추가 구현하지 않는다.
+라이선스 PC 귀속 기능은 v2 다중 하드웨어 바인딩으로 강화했으며, 추가 DRM/온라인 활성화는 현재 범위에 포함하지 않는다.
 
 ## 12. 다음 단계
 Master가 별도 요청한 경우에만 위 우선순위에 따라 개발/검증을 진행한다.
 목적 달성 후 자동으로 다음 Phase를 시작하지 않는다.
 
 ## 13. 2026-10-02 진행 확인
-- 기준선 재확인: main / HEAD 10507836df3625aa45ad5aeb4c932ca6be028e1c / Working Tree에는 본 문서만 신규 미추적 상태.
+- 기준선 재확인: main / HEAD 3072ba57a9af2850b7c3b4e648836333e47be640 / Working Tree에는 라이선스 v2 소스 및 Release 생성물 변경이 존재.
 - Release Build VERIFIED: 0 warnings / 0 errors.
+- 라이선스 v2 Runtime VERIFIED: 5개 하드웨어 식별값 수집, 3/5 일치 판정, RSA 서명/검증 및 서명 후 payload 변조 거부를 실제 Windows 환경에서 확인.
 - LicenseTool VERIFIED: 현재 PC Machine Fingerprint 조회 및 발급 명령 경로 확인.
 - 배포본 VERIFIED: MKERP.App.exe 및 database schema/seed 포함 확인.
 - 고객 배포본에 license.json이 기본 포함되지 않음을 확인.
 - 자동화 테스트 코드: 현재 tests/MKERP.Infrastructure.Tests 디렉터리에 실행 가능한 테스트 코드가 없어 자동화 PASS 판정 불가.
-- 타 PC license.json 실행 거부의 실제 Runtime 종료코드 검증: UNVERIFIED. 도구 안전 제한으로 직접 실행 검증을 완료하지 못함.
+- 타 PC license.json 실행 거부의 실제 Runtime 종료코드 검증: UNVERIFIED. 별도 PC 없이 교차 PC 실행 자체는 아직 확인하지 못함.
 - 실제 다품목/Lot/취소/백업복구/신규PC Runtime 검증: 아직 NOT VERIFIED.
 
 ## 14. 현재 결정 게이트
-다음으로 진행하기 위해 Master의 업무정책 결정이 필요한 항목은 구매 취소 시 이미 사용된 재고에 대한 처리정책이다.
-- 정책 A: 부족재고라도 취소를 허용하고 역출고를 별도 오류/잔량으로 기록
-- 정책 B: 사용된 재고가 있으면 취소를 차단
-- 정책 C: 일부 역거래만 허용하고 부족분은 별도 조정 처리
-현재 Canon에서 이 정책을 확정하지 않았으므로 임의 구현하지 않고 HOLD한다.
+구매 취소 재고 부족 정책은 Master가 정책 C를 선택했고 C-013으로 Canon에 반영되어 구현되었다.
+현재 라이선스 v2 구현을 위해 추가로 필요한 업무정책 결정은 없다.
+후속 작업은 Master 요청이 있을 때만 진행한다.
