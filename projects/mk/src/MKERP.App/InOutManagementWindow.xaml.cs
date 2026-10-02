@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using MKERP.Application;
 using MKERP.Domain;
 using MKERP.Infrastructure;
 
@@ -42,6 +43,37 @@ public partial class InOutManagementWindow : UserControl
         PartnerBox.SelectedIndex = -1;
         ItemBox.SelectedIndex = -1;
         _entries.Clear();
+    }
+
+    private void ResultsGrid_AutoGeneratingColumn(object? sender, DataGridAutoGeneratingColumnEventArgs e)
+    {
+        e.Column.Header = e.PropertyName switch
+        {
+            nameof(InOut.Id) => "식별번호",
+            nameof(InOut.DocumentNo) => "문서번호",
+            nameof(InOut.MovementDate) => "입출고일",
+            nameof(InOut.MovementTypeId) => "입출고유형번호",
+            nameof(InOut.PartnerId) => "거래처번호",
+            nameof(InOut.SourceTypeId) => "원천유형번호",
+            nameof(InOut.SourceId) => "원천번호",
+            nameof(InOut.StatusId) => "상태번호",
+            nameof(InOut.Note) => "비고",
+            nameof(InOut.CreatedAt) => "생성일시",
+            nameof(InOut.UpdatedAt) => "수정일시",
+            nameof(InOutLotRow.ItemCode) => "품목코드",
+            nameof(InOutLotRow.ItemName) => "품목명",
+            nameof(InOutLotRow.MkLotNo) => "MK Lot 번호",
+            nameof(InOutLotRow.PartnerLotNo) => "거래처 Lot 번호",
+            nameof(InOutLotRow.Quantity) => "수량",
+            nameof(InventoryRow.ItemId) => "품목번호",
+            nameof(InventoryRow.Opening) => "기초재고",
+            nameof(InventoryRow.Inbound) => "입고",
+            nameof(InventoryRow.Outbound) => "출고",
+            nameof(InventoryRow.Ending) => "기말재고",
+            nameof(LotInventoryRow.LotId) => "Lot 번호",
+            nameof(LotInventoryRow.PartnerLotId) => "거래처 Lot 번호",
+            _ => e.Column.Header
+        };
     }
 
     private async Task LoadResultsAsync()

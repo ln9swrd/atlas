@@ -39,6 +39,21 @@ public partial class ProductionManagementWindow : UserControl
         MkLotBox.Text = string.Empty;
     }
 
+    private void Grid_AutoGeneratingColumn(object? sender, DataGridAutoGeneratingColumnEventArgs e)
+    {
+        e.Column.Header = e.PropertyName switch
+        {
+            nameof(Production.Id) => "식별번호",
+            nameof(Production.DocumentNo) => "문서번호",
+            nameof(Production.ProductionDate) => "생산일",
+            nameof(Production.StatusId) => "상태번호",
+            nameof(Production.Note) => "비고",
+            nameof(Production.CreatedAt) => "생성일시",
+            nameof(Production.UpdatedAt) => "수정일시",
+            _ => e.Column.Header
+        };
+    }
+
     private async Task LoadGridAsync()
     {
         Grid.ItemsSource = await _db.Productions.AsNoTracking().OrderByDescending(x => x.ProductionDate).ThenByDescending(x => x.Id).Take(100).ToListAsync();

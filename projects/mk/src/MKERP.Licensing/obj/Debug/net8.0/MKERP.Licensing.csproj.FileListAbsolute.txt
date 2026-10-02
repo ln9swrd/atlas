@@ -10,3 +10,5 @@ D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Debug\net8.0\MKERP.Licensing.dll
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Debug\net8.0\refint\MKERP.Licensing.dll
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Debug\net8.0\MKERP.Licensing.pdb
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Debug\net8.0\ref\MKERP.Licensing.dll
+D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Debug\net8.0\MKERP.Licensing.csproj.AssemblyReference.cache
+D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Debug\net8.0\MKERP.Li.00A854BC.Up2Date

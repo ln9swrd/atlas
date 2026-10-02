@@ -24,6 +24,6 @@ Width="1000" Height="620">
       <TextBlock Text="불량수량" Grid.Column="6" VerticalAlignment="Center"/>
       <TextBox x:Name="DefectQtyBox" Grid.Column="7" Margin="4" Text="0"/><TextBlock Text="MK Lot" Grid.Column="8" VerticalAlignment="Center"/><TextBox x:Name="MkLotBox" Grid.Column="9" Margin="4"/>
     </Grid>
-    <DataGrid x:Name="Grid" Grid.Row="2" AutoGenerateColumns="True" IsReadOnly="True"/>
+    <DataGrid x:Name="Grid" AutoGeneratingColumn="Grid_AutoGeneratingColumn" Grid.Row="2" AutoGenerateColumns="True" IsReadOnly="True"/>
   </Grid>
 </UserControl>

@@ -4,7 +4,6 @@ D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.App.
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.App.deps.json
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.App.runtimeconfig.json
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.App.dll
-D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.App.pdb
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\Microsoft.Data.Sqlite.dll
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\Microsoft.EntityFrameworkCore.dll
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\Microsoft.EntityFrameworkCore.Abstractions.dll
@@ -487,10 +486,6 @@ D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Appl
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Domain.dll
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Infrastructure.dll
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Reporting.dll
-D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Application.pdb
-D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Infrastructure.pdb
-D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Reporting.pdb
-D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Domain.pdb
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.csproj.AssemblyReference.cache
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\InOutManagementWindow.baml
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\ItemManagementWindow.baml
@@ -517,12 +512,10 @@ D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.AssemblyInfoInputs.cache
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.AssemblyInfo.cs
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.csproj.CoreCompileInputs.cache
-D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.sourcelink.json
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.csproj.Up2Date
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.dll
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\refint\MKERP.App.dll
-D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.pdb
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\MKERP.App.genruntimeconfig.cache
 D:\Atlas\projects\mk\src\MKERP.App\obj\Release\net8.0-windows\win-x64\ref\MKERP.App.dll
 D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Licensing.dll
-D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\MKERP.Licensing.pdb
+D:\Atlas\projects\mk\src\MKERP.App\bin\Release\net8.0-windows\win-x64\System.Management.dll

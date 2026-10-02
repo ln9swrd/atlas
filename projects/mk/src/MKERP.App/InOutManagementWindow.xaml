@@ -40,6 +40,6 @@
         </DataGrid.Columns>
       </DataGrid>
     </Grid>
-    <TabControl x:Name="ResultsTabs" Grid.Row="3"><TabItem Header="입출고 문서"><DataGrid x:Name="MovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="Lot별 내역"><DataGrid x:Name="LotMovementGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="재고 현황"><DataGrid x:Name="InventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem><TabItem Header="Lot별 재고"><DataGrid x:Name="LotInventoryGrid" AutoGenerateColumns="True" IsReadOnly="True"/></TabItem></TabControl>
+    <TabControl x:Name="ResultsTabs" Grid.Row="3"><TabItem Header="입출고 문서"><DataGrid x:Name="MovementGrid" AutoGenerateColumns="True" AutoGeneratingColumn="ResultsGrid_AutoGeneratingColumn" IsReadOnly="True"/></TabItem><TabItem Header="Lot별 내역"><DataGrid x:Name="LotMovementGrid" AutoGenerateColumns="True" AutoGeneratingColumn="ResultsGrid_AutoGeneratingColumn" IsReadOnly="True"/></TabItem><TabItem Header="재고 현황"><DataGrid x:Name="InventoryGrid" AutoGenerateColumns="True" AutoGeneratingColumn="ResultsGrid_AutoGeneratingColumn" IsReadOnly="True"/></TabItem><TabItem Header="Lot별 재고"><DataGrid x:Name="LotInventoryGrid" AutoGenerateColumns="True" AutoGeneratingColumn="ResultsGrid_AutoGeneratingColumn" IsReadOnly="True"/></TabItem></TabControl>
   </Grid>
 </UserControl>

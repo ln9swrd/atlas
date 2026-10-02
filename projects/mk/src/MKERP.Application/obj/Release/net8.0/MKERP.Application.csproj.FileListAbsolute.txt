@@ -1,16 +1,12 @@
 D:\Atlas\projects\mk\src\MKERP.Application\bin\Release\net8.0\MKERP.Application.deps.json
 D:\Atlas\projects\mk\src\MKERP.Application\bin\Release\net8.0\MKERP.Application.dll
-D:\Atlas\projects\mk\src\MKERP.Application\bin\Release\net8.0\MKERP.Application.pdb
 D:\Atlas\projects\mk\src\MKERP.Application\bin\Release\net8.0\MKERP.Domain.dll
-D:\Atlas\projects\mk\src\MKERP.Application\bin\Release\net8.0\MKERP.Domain.pdb
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Application.csproj.AssemblyReference.cache
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Application.GeneratedMSBuildEditorConfig.editorconfig
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Application.AssemblyInfoInputs.cache
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Application.AssemblyInfo.cs
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Application.csproj.CoreCompileInputs.cache
-D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Application.sourcelink.json
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Ap.83DBCECA.Up2Date
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Application.dll
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\refint\MKERP.Application.dll
-D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\MKERP.Application.pdb
 D:\Atlas\projects\mk\src\MKERP.Application\obj\Release\net8.0\ref\MKERP.Application.dll

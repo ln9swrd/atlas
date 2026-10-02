@@ -10,3 +10,4 @@ D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.dll
 D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\refint\MKERP.Domain.dll
 D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Domain.pdb
 D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\ref\MKERP.Domain.dll
+D:\Atlas\projects\mk\src\MKERP.Domain\obj\Debug\net8.0\MKERP.Do.BB333CE6.Up2Date

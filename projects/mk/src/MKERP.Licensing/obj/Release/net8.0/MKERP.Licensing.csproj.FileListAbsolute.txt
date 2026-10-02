@@ -1,13 +1,10 @@
 D:\Atlas\projects\mk\src\MKERP.Licensing\bin\Release\net8.0\MKERP.Licensing.deps.json
 D:\Atlas\projects\mk\src\MKERP.Licensing\bin\Release\net8.0\MKERP.Licensing.dll
-D:\Atlas\projects\mk\src\MKERP.Licensing\bin\Release\net8.0\MKERP.Licensing.pdb
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\MKERP.Licensing.GeneratedMSBuildEditorConfig.editorconfig
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\MKERP.Licensing.AssemblyInfoInputs.cache
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\MKERP.Licensing.AssemblyInfo.cs
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\MKERP.Licensing.csproj.CoreCompileInputs.cache
-D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\MKERP.Licensing.sourcelink.json
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\MKERP.Licensing.dll
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\refint\MKERP.Licensing.dll
-D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\MKERP.Licensing.pdb
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\ref\MKERP.Licensing.dll
 D:\Atlas\projects\mk\src\MKERP.Licensing\obj\Release\net8.0\MKERP.Licensing.csproj.AssemblyReference.cache
