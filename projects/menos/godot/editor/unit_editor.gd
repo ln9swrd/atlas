@@ -177,7 +177,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	animation_title.text = "SPRITE ANIMATIONS"
 	animation_title.add_theme_font_size_override("font_size", 16)
 	parent.add_child(animation_title)
-	for animation_name in ["idle", "attack", "hit", "death", "move"]:
+	for animation_name in ["idle", "move", "attack", "hit", "death", "skill_1", "skill_2", "skill_3", "special", "finisher"]:
 		animation_edits[animation_name] = _image_row(parent, animation_name.to_upper() + " Animation", "animation:" + animation_name)
 	default_image_edit = _image_row(parent, "Basic Image", "default_image")
 	var projectile_row := HBoxContainer.new()

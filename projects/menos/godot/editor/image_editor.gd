@@ -66,6 +66,10 @@ func _build_ui() -> void:
 	clear_selection.text = "선택 이미지 해제"
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
+	var audit_button := Button.new()
+	audit_button.text = "이미지 참조 점검"
+	audit_button.pressed.connect(_audit_image_references)
+	left.add_child(audit_button)
 	var source_panel := VBoxContainer.new()
 	source_panel.custom_minimum_size.x = 280
 	body.add_child(source_panel)
@@ -170,6 +174,7 @@ func _scan_connected_images() -> void:
 	_scan_json_images("res://content/enemies/enemies.json", "적", "sprite_anim", "적 유닛 이미지", seen)
 	_scan_json_images("res://content/towers/towers.json", "타워", "sprite_anim", "방어 시설 이미지", seen)
 	_scan_json_images("res://content/allied_units/allied_units.json", "아군 유닛", "visuals.sprite", "플레이어 유닛 이미지", seen)
+	_scan_allied_animations(seen)
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
 	_scan_main_preloads(seen)
@@ -181,6 +186,35 @@ func _scan_connected_images() -> void:
 		list.add_item(label_text, icon)
 		source_list.add_item(label_text, icon)
 	status.text = "%d connected images found." % entries.size()
+
+func _audit_image_references() -> void:
+	var missing: Array[String] = []
+	var invalid: Array[String] = []
+	for entry in entries:
+		var image_path := str(entry.get("path", ""))
+		if image_path.is_empty():
+			continue
+		if not ResourceLoader.exists(image_path):
+			missing.append("%s | %s" % [str(entry.get("label", "이미지")), image_path])
+			continue
+		var texture := load(image_path) as Texture2D
+		if texture == null:
+			invalid.append("%s | %s" % [str(entry.get("label", "이미지")), image_path])
+	var report := "이미지 참조 점검 결과\n\n전체 참조: %d\n누락: %d\n로드 실패: %d" % [entries.size(), missing.size(), invalid.size()]
+	if not missing.is_empty():
+		report += "\n\n[누락된 이미지]\n" + "\n".join(missing)
+	if not invalid.is_empty():
+		report += "\n\n[로드 실패 이미지]\n" + "\n".join(invalid)
+	if missing.is_empty() and invalid.is_empty():
+		report += "\n\n모든 연결 이미지 참조가 정상입니다."
+	var dialog := AcceptDialog.new()
+	dialog.title = "이미지 참조 점검"
+	dialog.dialog_text = report
+	dialog.ok_button_text = "닫기"
+	add_child(dialog)
+	dialog.confirmed.connect(dialog.queue_free)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(760, 520))
 
 func _scan_json_images(path: String, kind: String, field: String, usage: String, seen: Dictionary) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -200,6 +234,25 @@ func _scan_json_images(path: String, kind: String, field: String, usage: String,
 		if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
 		entries.append({"label": "%s / %s" % [kind, str(data[key].get("name", key))], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage})
+
+func _scan_allied_animations(seen: Dictionary) -> void:
+	var path := "res://content/allied_units/allied_units.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null: return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary: return
+	for key in data:
+		if not data[key] is Dictionary: continue
+		var visuals: Dictionary = data[key].get("visuals", {})
+		if not visuals is Dictionary: continue
+		var animations: Dictionary = visuals.get("animations", {})
+		if not animations is Dictionary: continue
+		for animation_name in animations:
+			var image_path := str(animations[animation_name])
+			if image_path.is_empty() or seen.has(image_path): continue
+			seen[image_path] = true
+			entries.append({"label": "아군 유닛 / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "아군 유닛 %s 애니메이션" % str(animation_name)})
 
 func _scan_robot_images(seen: Dictionary) -> void:
 	var path := "res://content/robots/robots.json"

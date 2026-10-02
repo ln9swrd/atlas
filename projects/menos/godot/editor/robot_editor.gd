@@ -129,7 +129,7 @@ func _image_row(parent: VBoxContainer, label_text: String, target: String) -> Li
 	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(edit)
 	var browse := Button.new()
-	browse.text = "Browse"
+	browse.text = "Import"
 	browse.pressed.connect(func(): _open_sprite_dialog(target))
 	row.add_child(browse)
 	return edit
@@ -294,30 +294,64 @@ func _open_sprite_dialog(target: String = "sprite") -> void:
 	if file_dialog == null:
 		file_dialog = FileDialog.new()
 		file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-		file_dialog.access = FileDialog.ACCESS_RESOURCES
+		file_dialog.access = FileDialog.ACCESS_FILESYSTEM
 		file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Images"]
 		file_dialog.file_selected.connect(_on_file_selected)
 		add_child(file_dialog)
 	file_dialog.popup_centered_ratio(0.75)
 
 func _on_file_selected(path: String) -> void:
+	if selected_type.is_empty():
+		_set_status("Select a robot before importing an image.")
+		return
+	var source_path := ProjectSettings.globalize_path(path) if path.begins_with("res://") else path
+	if not FileAccess.file_exists(source_path):
+		_set_status("Image file does not exist: " + source_path)
+		return
+	var extension := source_path.get_extension().to_lower()
+	if extension not in ["png", "jpg", "jpeg", "webp", "bmp", "svg"]:
+		_set_status("Unsupported image format: " + extension)
+		return
+	var safe_id := selected_type.to_lower().validate_filename()
+	if safe_id.is_empty():
+		safe_id = "robot"
+	var target_name := file_dialog_target.replace(":", "_").to_lower().validate_filename()
+	var relative_dir := "res://assets/menos/robots/" + safe_id
+	var absolute_dir := ProjectSettings.globalize_path(relative_dir)
+	var dir_error := DirAccess.make_dir_recursive_absolute(absolute_dir)
+	if dir_error != OK:
+		_set_status("Failed to create image directory: " + error_string(dir_error))
+		return
+	var base_name := target_name + "." + extension
+	var destination := absolute_dir.path_join(base_name)
+	var suffix := 1
+	while FileAccess.file_exists(destination):
+		base_name = target_name + "_" + str(suffix) + "." + extension
+		destination = absolute_dir.path_join(base_name)
+		suffix += 1
+	var copy_error := DirAccess.copy_absolute(source_path, destination)
+	if copy_error != OK:
+		_set_status("Image import failed: " + error_string(copy_error))
+		return
+	var resource_path := relative_dir.path_join(base_name)
 	if file_dialog_target == "projectile":
-		projectile_edit.text = path
+		projectile_edit.text = resource_path
 	elif file_dialog_target == "default_image":
-		default_image_edit.text = path
+		default_image_edit.text = resource_path
 	elif file_dialog_target.begins_with("animation:"):
 		var animation_name := file_dialog_target.trim_prefix("animation:")
 		if animation_name == "idle":
-			idle_edit.text = path
+			idle_edit.text = resource_path
 		elif animation_name == "attack":
-			attack_edit.text = path
+			attack_edit.text = resource_path
 		elif animation_name == "move":
-			move_edit.text = path
+			move_edit.text = resource_path
 		elif animation_name == "skill":
-			skill_edit.text = path
+			skill_edit.text = resource_path
 		elif animation_edits.has(animation_name):
-			(animation_edits[animation_name] as LineEdit).text = path
+			(animation_edits[animation_name] as LineEdit).text = resource_path
 	_refresh_animation_previews()
+	_set_status("Imported image: " + resource_path)
 
 func _set_status(message: String) -> void:
 	if status_label:
