@@ -189,11 +189,11 @@
 	58.0
   ],
   "map_pixel_size": [
-	1344.0,
+	1600.0,
 	768.0
   ],
   "map_size": [
-	42,
+	50,
 	24
   ],
   "map_tiles": [
@@ -201,7 +201,3536 @@
 	24.0
   ],
   "name": "Northbridge Sector 01",
-  "objects": [],
+  "objects": [
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		32.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		64.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		160.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		90.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		160.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		58.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		160.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		64.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		32.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		698.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		666.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		0.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		32.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		64.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		96.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		128.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		160.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1216.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		634.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		602.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		570.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		538.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		506.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		474.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		442.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		410.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		378.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		346.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		192.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		224.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		256.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		448.0,
+		154.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		544.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		576.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		608.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		800.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		864.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1088.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		186.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		480.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		384.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		352.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		320.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		288.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		416.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		512.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		640.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		736.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		896.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		960.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1024.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		314.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1152.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1184.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1120.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		1056.0,
+		282.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		992.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		928.0,
+		250.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		832.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		768.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		704.0,
+		218.0
+	  ]
+	},
+	{
+	  "asset_id": "asset.tile.terrain_atlas_001",
+	  "footprint_tiles": [
+		4.0,
+		4.0
+	  ],
+	  "placement_layer": "Vegetation",
+	  "position": [
+		672.0,
+		218.0
+	  ]
+	}
+  ],
   "robot_spots": {},
   "spawns": {},
   "tile_size": [

@@ -1,5 +1,8 @@
 class_name StageEditorMain
 extends Control
+
+signal request_map_editor_for_path(map_path: String)
+
 const STAGE_DIR := "res://content/stages/"
 const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
 const MAP_DIR := "res://content/maps/"
@@ -15,6 +18,12 @@ var map_option: OptionButton
 var gold_spin: SpinBox
 var hp_spin: SpinBox
 var next_edit: LineEdit
+var mission_title_edit: LineEdit
+var mission_briefing_edit: TextEdit
+var mission_type_option: OptionButton
+var mission_target_edit: LineEdit
+var mission_time_spin: SpinBox
+var map_open_button: Button
 var encounters_box: VBoxContainer
 var status_label: Label
 
@@ -74,10 +83,60 @@ func _build_stage_properties(parent: VBoxContainer) -> void:
 	id_edit = _line_row(parent, "Stage ID")
 	order_spin = _spin_row(parent, "Order", 1, 999, 1, 1)
 	name_edit = _line_row(parent, "Name")
+
+	var map_row := HBoxContainer.new()
+	parent.add_child(map_row)
+	var map_label := Label.new()
+	map_label.text = "사용 맵"
+	map_label.custom_minimum_size.x = 130
+	map_row.add_child(map_label)
 	map_option = OptionButton.new()
-	_option_row(parent, "Map", map_option)
+	map_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_row.add_child(map_option)
+	map_open_button = Button.new()
+	map_open_button.text = "맵 편집"
+	map_open_button.tooltip_text = "현재 선택된 맵을 맵 에디터에서 엽니다."
+	map_open_button.pressed.connect(_open_selected_map)
+	map_row.add_child(map_open_button)
+
+	var relation := Label.new()
+	relation.text = "Stage → Map: 스테이지가 이 맵을 사용합니다. 맵을 여러 스테이지에서 재사용할 수 있습니다."
+	relation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	relation.modulate = Color("9fb2aa")
+	parent.add_child(relation)
+
 	gold_spin = _spin_row(parent, "Initial Gold", 0, 999999, 10, 180)
 	hp_spin = _spin_row(parent, "Base HP", 1, 999999, 10, 100)
+
+	parent.add_child(HSeparator.new())
+	var mission_header := Label.new()
+	mission_header.text = "Mission / 미션"
+	mission_header.add_theme_font_size_override("font_size", 16)
+	parent.add_child(mission_header)
+
+	mission_title_edit = _line_row(parent, "미션 제목")
+	var briefing_row := VBoxContainer.new()
+	parent.add_child(briefing_row)
+	var briefing_label := Label.new()
+	briefing_label.text = "미션 설명"
+	briefing_row.add_child(briefing_label)
+	mission_briefing_edit = TextEdit.new()
+	mission_briefing_edit.custom_minimum_size.y = 90
+	mission_briefing_edit.placeholder_text = "플레이어에게 표시할 임무 설명"
+	briefing_row.add_child(mission_briefing_edit)
+
+	mission_type_option = OptionButton.new()
+	for value in ["defend_base", "clear_encounters"]:
+		mission_type_option.add_item(value)
+	_option_row(parent, "주 임무 유형", mission_type_option)
+	mission_target_edit = _line_row(parent, "대상 ID")
+	mission_time_spin = _spin_row(parent, "제한 시간(초)", 0, 86400, 1, 0)
+
+	var mission_note := Label.new()
+	mission_note.text = "현재 Runtime이 실제 판정하는 기본 조건은 HQ 파괴 시 패배와 전체 Encounter 종료 시 클리어입니다. 위 설정은 Stage의 미션 정의를 저장합니다."
+	mission_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	mission_note.modulate = Color("9fb2aa")
+	parent.add_child(mission_note)
 
 func _line_row(parent: VBoxContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -167,9 +226,26 @@ func _load_selected_stage() -> void:
 	order_spin.value = int(stage_data.get("order", 1))
 	name_edit.text = str(stage_data.get("name", ""))
 	_refresh_map_options(str(stage_data.get("map_file", "")))
-	gold_spin.value = int(stage_data.get("initial_gold", 180))
-	hp_spin.value = float(stage_data.get("base_hp", 100.0))
+	var balance: Dictionary = stage_data.get("balance", {}) if stage_data.get("balance", {}) is Dictionary else {}
+	gold_spin.value = int(balance.get("initial_gold", 180))
+	hp_spin.value = float(balance.get("base_hp", 100.0))
+	_load_mission_fields()
 	_rebuild_encounters()
+
+func _load_mission_fields() -> void:
+	var mission: Dictionary = stage_data.get("mission", {}) if stage_data.get("mission", {}) is Dictionary else {}
+	mission_title_edit.text = str(mission.get("title", ""))
+	mission_briefing_edit.text = str(mission.get("briefing", ""))
+	var mission_type := str(mission.get("primary_type", "clear_encounters"))
+	mission_type_option.select(max(0, ["defend_base", "clear_encounters"].find(mission_type)))
+	mission_target_edit.text = str(mission.get("target_id", ""))
+	mission_time_spin.value = float(mission.get("time_limit", 0))
+
+func _open_selected_map() -> void:
+	if map_option == null or map_option.selected < 0:
+		_set_status("사용 맵이 선택되지 않았습니다.")
+		return
+	request_map_editor_for_path.emit(str(map_option.get_item_metadata(map_option.selected)))
 
 func _rebuild_encounters() -> void:
 	for child in encounters_box.get_children(): child.queue_free()
@@ -312,6 +388,13 @@ func _save_stage() -> void:
 	stage_data["name"] = name_edit.text
 	stage_data["map_file"] = str(map_option.get_item_metadata(map_option.selected))
 	stage_data["balance"] = {"initial_gold": int(gold_spin.value), "base_hp": float(hp_spin.value)}
+	stage_data["mission"] = {
+		"title": mission_title_edit.text.strip_edges(),
+		"briefing": mission_briefing_edit.text.strip_edges(),
+		"primary_type": str(mission_type_option.get_item_text(mission_type_option.selected)),
+		"target_id": mission_target_edit.text.strip_edges(),
+		"time_limit": int(mission_time_spin.value)
+	}
 	var file := FileAccess.open(current_path, FileAccess.WRITE)
 	if file == null: _set_status("FAILED to open file for writing."); return
 	file.store_string(JSON.stringify(stage_data, "  "))

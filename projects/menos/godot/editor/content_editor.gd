@@ -112,9 +112,28 @@ func _load_editor(scene_path: String) -> void:
 	current_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	if current_editor.has_signal("request_content_editor"):
 		current_editor.request_content_editor.connect(_open_content_editor_from_child)
+	if current_editor.has_signal("request_map_editor_for_path"):
+		current_editor.request_map_editor_for_path.connect(_open_map_editor_for_path)
 
 func _open_content_editor_from_child() -> void:
 	_load_editor(MAP_EDITOR_SCENE)
+	_set_active_button($MainLayout/Sidebar/Buttons/BtnMap)
+
+func _open_map_editor_for_path(map_path: String) -> void:
+	var editor := load(MAP_EDITOR_SCENE) as PackedScene
+	if editor == null:
+		push_error("Could not load map editor.")
+		return
+	if current_editor:
+		current_editor.queue_free()
+		current_editor = null
+	current_editor = editor.instantiate()
+	if current_editor is MapEditorMain:
+		current_editor.initial_map_path = map_path
+	content_host.add_child(current_editor)
+	current_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if current_editor.has_signal("request_content_editor"):
+		current_editor.request_content_editor.connect(_open_content_editor_from_child)
 	_set_active_button($MainLayout/Sidebar/Buttons/BtnMap)
 
 func _set_active_button(active: Button) -> void:

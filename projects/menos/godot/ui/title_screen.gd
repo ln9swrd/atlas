@@ -4,6 +4,7 @@ const GAME_SCENE := "res://main.tscn"
 
 @onready var start_button: Button = $CenterContainer/MainPanel/Content/Actions/StartCampaign
 @onready var single_button: Button = $CenterContainer/MainPanel/Content/Actions/SinglePlay
+@onready var map_select: OptionButton = $CenterContainer/MainPanel/Content/Actions/MapSelect
 @onready var stage_select: OptionButton = $CenterContainer/MainPanel/Content/Actions/StageSelect
 @onready var stage_info: Label = $CenterContainer/MainPanel/Content/StageInfo/Details
 @onready var quit_button: Button = $CenterContainer/MainPanel/Content/Actions/Quit
@@ -15,17 +16,15 @@ func _ready() -> void:
 	set_process_input(true)
 	start_button.pressed.connect(_on_start_campaign_pressed)
 	single_button.pressed.connect(_on_start_single_pressed)
-	for stage_id in StageManager.get_all_stage_ids():
-		var stage_data := StageLoader.load_stage_data(str(stage_id))
-		var stage_label := str(stage_data.get("name", stage_id)) if not stage_data.is_empty() else str(stage_id)
-		stage_select.add_item(stage_label)
-		stage_select.set_item_metadata(stage_select.item_count - 1, str(stage_id))
+	_populate_maps()
+	map_select.item_selected.connect(_on_map_selected)
 	stage_select.item_selected.connect(_on_stage_selected)
+	map_select.visible = false
 	stage_select.visible = false
 	stage_info.visible = false
-	if stage_select.item_count > 0:
-		stage_select.select(0)
-		_update_stage_info(0)
+	if map_select.item_count > 0:
+		map_select.select(0)
+		_populate_missions_for_selected_map()
 	quit_button.pressed.connect(_on_quit_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
 	_refresh_language()
@@ -48,11 +47,53 @@ func _notification(what: int) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_ENTER, KEY_KP_ENTER]:
-		if get_viewport().gui_get_focus_owner() == stage_select:
+		if get_viewport().gui_get_focus_owner() == map_select:
+			map_select.show_popup()
+		elif get_viewport().gui_get_focus_owner() == stage_select:
 			stage_select.show_popup()
 		else:
 			_on_start_campaign_pressed()
 		get_viewport().set_input_as_handled()
+
+func _populate_maps() -> void:
+	map_select.clear()
+	var dir := DirAccess.open("res://content/maps/")
+	if dir == null:
+		return
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+	while not file_name.is_empty():
+		if not dir.current_is_dir() and file_name.ends_with(".json") and file_name != "map_01_src.json":
+			var path := "res://content/maps/" + file_name
+			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			var map_id: String = file_name.get_basename()
+			var map_name: String = str(parsed.get("name", map_id)) if parsed is Dictionary else map_id
+			map_select.add_item(map_name)
+			map_select.set_item_metadata(map_select.item_count - 1, path)
+		file_name = dir.get_next()
+	dir.list_dir_end()
+
+func _on_map_selected(_index: int) -> void:
+	_populate_missions_for_selected_map()
+
+func _populate_missions_for_selected_map() -> void:
+	stage_select.clear()
+	if map_select.selected < 0:
+		return
+	var selected_map := str(map_select.get_item_metadata(map_select.selected))
+	for stage_id in StageManager.get_all_stage_ids():
+		var stage_data := StageLoader.load_stage_data(str(stage_id))
+		if stage_data.is_empty() or str(stage_data.get("map_file", "")) != selected_map:
+			continue
+		var mission: Dictionary = stage_data.get("mission", {}) if stage_data.get("mission", {}) is Dictionary else {}
+		var title: String = str(mission.get("title", stage_data.get("name", stage_id)))
+		stage_select.add_item(title)
+		stage_select.set_item_metadata(stage_select.item_count - 1, str(stage_id))
+	if stage_select.item_count > 0:
+		stage_select.select(0)
+		_update_stage_info(0)
+	else:
+		stage_info.text = "이 맵에 연결된 미션이 없습니다."
 
 func _on_stage_selected(index: int) -> void:
 	_update_stage_info(index)
@@ -73,11 +114,17 @@ func _update_stage_info(index: int) -> void:
 			var waves = encounter.get("waves", [])
 			if waves is Array:
 				wave_count += waves.size()
-	stage_info.text = "%s  /  %s  /  %d ENCOUNTER  /  %d WAVE" % [stage_id.to_upper(), str(stage_data.get("name", stage_id)), encounters.size(), wave_count]
+	var mission: Dictionary = stage_data.get("mission", {}) if stage_data.get("mission", {}) is Dictionary else {}
+	var mission_title := str(mission.get("title", stage_data.get("name", stage_id)))
+	var mission_type := str(mission.get("primary_type", "clear_encounters"))
+	var time_limit := int(mission.get("time_limit", 0))
+	var limit_text := "제한시간 %d초" % time_limit if time_limit > 0 else "제한시간 없음"
+	stage_info.text = "%s  /  %s  /  %s  /  %d ENCOUNTER  /  %d WAVE" % [stage_id.to_upper(), mission_title, mission_type, encounters.size(), wave_count]
 
 func _on_start_single_pressed() -> void:
 	if transition_started: return
 	single_mode_selected = not single_mode_selected
+	map_select.visible = single_mode_selected
 	stage_select.visible = single_mode_selected
 	stage_info.visible = single_mode_selected
 	if single_mode_selected:
@@ -87,7 +134,7 @@ func _on_start_single_pressed() -> void:
 		start_button.text = SettingsManager.text("\uCEA0\uD398\uC778 \uC2DC\uC791", "START CAMPAIGN")
 		single_button.text = SettingsManager.text("\uC2F1\uAE00 \uD50C\uB808\uC774", "SINGLE PLAY")
 	if single_mode_selected:
-		stage_select.grab_focus()
+		map_select.grab_focus()
 	else:
 		start_button.grab_focus()
 
@@ -95,6 +142,9 @@ func _on_start_campaign_pressed() -> void:
 	if transition_started: return
 	transition_started = true
 	var mode := "single" if single_mode_selected else "campaign"
+	if single_mode_selected and (map_select.selected < 0 or stage_select.selected < 0):
+		transition_started = false
+		return
 	var selected_stage := str(stage_select.get_item_metadata(stage_select.selected)) if single_mode_selected and stage_select.selected >= 0 else "stage_01"
 	StageManager.begin_run(mode, selected_stage)
 	var error := get_tree().change_scene_to_file(GAME_SCENE)

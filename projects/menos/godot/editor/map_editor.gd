@@ -1,6 +1,9 @@
 class_name MapEditorMain
 extends Control
 
+signal request_content_editor
+var initial_map_path := ""
+
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 
 @onready var canvas: EditorCanvas = $MainLayout/CanvasContainer/CanvasRoot
@@ -98,6 +101,8 @@ func _ready() -> void:
 	setup_layer_options()
 	load_asset_catalog()
 	_load_file_dialog_favorites()
+	if not initial_map_path.is_empty():
+		current_map_path = initial_map_path
 	load_map(current_map_path)
 
 func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: bool = false) -> void:
@@ -470,7 +475,31 @@ func load_map(path: String) -> void:
 	if canvas:
 		canvas.set_map_data(current_map_data)
 	_sync_map_size_controls()
-	update_status("Loaded map: " + path)
+	var linked_stages := _find_linked_stages(path)
+	if linked_stages.is_empty():
+		update_status("Loaded map: %s | 연결 스테이지: 없음" % path)
+	else:
+		update_status("Loaded map: %s | 연결 스테이지: %s" % [path, ", ".join(linked_stages)])
+
+func _find_linked_stages(map_path: String) -> Array[String]:
+	var result: Array[String] = []
+	var dir := DirAccess.open("res://content/stages/")
+	if dir == null:
+		return result
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+	while not file_name.is_empty():
+		if not dir.current_is_dir() and file_name.ends_with(".json") and file_name != "stage_catalog.json":
+			var file := FileAccess.open("res://content/stages/" + file_name, FileAccess.READ)
+			if file:
+				var parsed: Variant = JSON.parse_string(file.get_as_text())
+				file.close()
+				if parsed is Dictionary and str(parsed.get("map_file", "")) == map_path:
+					result.append(str(parsed.get("stage_id", file_name.get_basename())))
+		file_name = dir.get_next()
+	dir.list_dir_end()
+	result.sort()
+	return result
 
 func save_map() -> void:
 	if current_map_data.is_empty():
