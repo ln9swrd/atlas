@@ -440,7 +440,7 @@ func setup_layer_options() -> void:
 		option_layer.clear()
 		option_layer.add_item("Ground Layer", 0)
 		option_layer.add_item("Vegetation Layer", 1)
-		option_layer.add_item("濡쒕뱶 ?덉씠??, 2)
+		option_layer.add_item("Road Layer", 2)
 		option_layer.select(0)
 		option_layer.item_selected.connect(_on_edit_layer_selected)
 
@@ -448,12 +448,12 @@ func setup_layer_options() -> void:
 		var parent := option_layer.get_parent() as Container
 		if parent != null:
 			var view_label := Label.new()
-			view_label.text = "?쒖떆 ?덉씠??
+			view_label.text = "View Layer"
 			view_label.tooltip_text = "以묒븰 留듭뿉 ?쒖떆???덉씠?대? ?좏깮?⑸땲??"
 			option_layer_view = OptionButton.new()
 			option_layer_view.name = "OptionLayerView"
 			option_layer_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			option_layer_view.add_item("?꾩껜 ?덉씠??, 0)
+			option_layer_view.add_item("All Layers", 0)
 			option_layer_view.add_item("Ground Layer", 1)
 			option_layer_view.add_item("Vegetation Layer", 2)
 			option_layer_view.add_item("濡쒕뱶 ?덉씠??, 3)
@@ -550,11 +550,11 @@ func _ensure_multiplayer_config() -> void:
 func _update_map_mode_status() -> void:
 	var modes: Array[String] = []
 	if map_mode_campaign.button_pressed:
-		modes.append("罹좏럹??)
+		modes.append("Campaign")
 	if map_mode_single.button_pressed:
-		modes.append("?깃?")
+		modes.append("Single Play")
 	if map_mode_multiplayer.button_pressed:
-		modes.append("硫??)
+		modes.append("Multiplayer")
 	var mode_text := ", ".join(modes)
 	update_status("留??ъ슜 紐⑤뱶: %s" % mode_text)
 
