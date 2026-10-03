@@ -185,14 +185,29 @@ CONFIRMED
 성공 조건: 43개 파일 모두 inventory에 포함.
 
 ### Phase 1 — Repository Foundation
-ConfigRepository, JSON schema/version, default handling, validation, cache/reload, error reporting을 만든다.
 
-검증:
-- 잘못된 JSON
-- missing key
-- type mismatch
-- unknown key
-- Editor/Runtime load
+DONE / 최소 구현 완료.
+
+- scripts/config_repository.gd 추가
+- 기존 ContentCatalogLoader를 하부 로더로 재사용
+- dictionary cache / reload 제공
+- section/value 접근 제공
+- required section validation 제공
+- GameSettingsLoader는 기존 API를 유지하면서 content/settings/gameplay.json을 ConfigRepository를 통해 읽도록 전환
+
+검증 완료:
+- Godot 4.7.2 headless editor load: PASS
+- 실제 ConfigRepository smoke test: PASS
+- wave_auto_start.delay: 2.5 확인
+- wave_group_gap.delay: 0.3 확인
+- skill_slots.1: area_attack 확인
+
+미실시:
+- 새 JSON schema 강제
+- unknown key validation
+- 전체 GDScript migration
+
+이 단계에서는 기존 저장소의 권위를 변경하지 않았다.
 
 ### Phase 2 — Low-risk Shared Constants
 공통 경로, thumbnail/editor 크기, 공통 UI layout, animation display 정책, 반복되는 저위험 제한값부터 이동한다.
