@@ -484,7 +484,12 @@ func _refresh_robot_preview() -> void:
 	var path := default_image_edit.text.strip_edges()
 	if path.is_empty():
 		path = idle_edit.text.strip_edges()
-	robot_preview.texture = load(path) as Texture2D if not path.is_empty() else null
+	if path.is_empty():
+		robot_preview.texture = null
+		return
+	var data: Dictionary = robot_data.get(selected_type, {})
+	var rect_values: Variant = data.get("default_image_rect", [])
+	robot_preview.texture = _animated_texture(path, 0, 1, rect_values)
 
 func _refresh_all_image_thumbnails() -> void:
 	_refresh_robot_preview()

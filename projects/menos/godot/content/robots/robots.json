@@ -41,6 +41,7 @@
     "sprite_skill": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
     "sprite_skill_rect": [96, 200, 1360, 300],
     "default_image": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+    "default_image_rect": [0, 760, 330, 264],
     "animations": {
       "hit": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
       "death": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
