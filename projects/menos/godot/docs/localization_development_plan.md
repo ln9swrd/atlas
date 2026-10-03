@@ -456,11 +456,17 @@ ENGINE/API TEXT    → 코드 유지
 
 결정 전에는 대규모 메시지 치환을 진행하지 않는다.
 
-**STATUS — HOLD**
+**STATUS — IMPLEMENTATION IN PROGRESS**
 
-**현재 구현:** JSON 방식의 최소 PoC만 존재하며, 일부 UI에 적용되어 있다.
+**Master 결정:** B안 — Godot `TranslationServer` + gettext `.po`를 최종 localization authority로 사용한다.
 
-**미확정:** 최종 localization authority.
+**CONFIRMED:** `locale/en.po`와 `locale/ko.po`를 `project.godot`에 등록하고 실제 Godot 4.7.2 headless 실행에서 `TranslationServer.set_locale()` + `tr()`의 한국어/영어 결과를 확인했다.
 
-**다음 단계:** Master가 A 또는 B를 결정하면 해당 구조를 기준으로 전체 메시지 감사/외부화를 계속한다.
+**변경:** 초기 JSON + LocalizationRepository PoC는 최종 구조와의 이중 authority를 방지하기 위해 제거했다.
+
+**현재 구현:** Settings/Title 화면의 일부 메시지가 `tr()` 기반으로 전환되어 있다.
+
+**다음 단계:** 나머지 Editor/Runtime 사용자 메시지를 `tr()`/`tr_n()` 기반으로 단계적으로 외부화하고, POT 생성/검증 체계를 구축한다.
+
+**CANON:** B안은 Master가 결정한 프로젝트 방향이다. 세부 key/context 규칙은 구현 과정에서 검증 후 확정한다.
 
