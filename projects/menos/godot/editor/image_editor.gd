@@ -67,6 +67,7 @@ func _build_ui() -> void:
 	previous_button.text = "이전 화면"
 	previous_button.pressed.connect(_request_previous_editor)
 	title_row.add_child(previous_button)
+	previous_button.visible = false
 	var content_button := Button.new()
 	content_button.text = "콘텐츠 에디터"
 	content_button.pressed.connect(_request_content_editor)
@@ -94,6 +95,7 @@ func _build_ui() -> void:
 	filter_option = OptionButton.new()
 	for filter_name in ["전체", "카다로그", "Map", "Unit", "Robot", "Tower", "Enemy", "Runtime"]:
 		filter_option.add_item(filter_name)
+	filter_option.select(1)
 	filter_option.item_selected.connect(func(_index: int): _refresh_entry_list())
 	search_row.add_child(filter_option)
 	list = ItemList.new()
@@ -202,6 +204,7 @@ func _build_ui() -> void:
 	right.add_child(view)
 	var tools := HBoxContainer.new()
 	right.add_child(tools)
+	tools.visible = false
 	_add_button(tools, "알파 삭제", _start_erase)
 	_add_button(tools, "자르기", _crop_selection)
 	_add_button(tools, "좌우 반전", _flip_h)
@@ -212,6 +215,7 @@ func _build_ui() -> void:
 	_add_button(tools, "저장 + 연결 변경", _save_reconnect)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
+	resize_row.visible = false
 	var resize_label := Label.new()
 	resize_label.text = "크기 변경"
 	resize_row.add_child(resize_label)
@@ -272,7 +276,10 @@ func _refresh_entry_list() -> void:
 	for index in range(entries.size()):
 		var entry: Dictionary = entries[index]
 		var category := str(entry.get("category", "Other"))
-		if filter_name != "전체" and category != filter_name:
+		var is_catalog_entry := str(entry.get("owner_kind", "")) == "visual_asset"
+		if filter_name == "카다로그" and not is_catalog_entry:
+			continue
+		if filter_name != "전체" and filter_name != "카다로그" and category != filter_name:
 			continue
 		if not query.is_empty():
 			var haystack := (str(entry.get("label", "")) + " " + str(entry.get("path", "")) + " " + str(entry.get("usage", "")) + " " + str(entry.get("owner", ""))).to_lower()
@@ -280,7 +287,8 @@ func _refresh_entry_list() -> void:
 				continue
 		filtered_indices.append(index)
 		var icon: Texture2D = load(str(entry.get("path", ""))) as Texture2D
-		var label_text := "[%s] %s" % [category, str(entry.get("label", "Asset"))]
+		var display_category := "카다로그" if is_catalog_entry else category
+		var label_text := "[%s] %s" % [display_category, str(entry.get("label", "Asset"))]
 		list.add_item(label_text, icon)
 		list.set_item_metadata(list.item_count - 1, index)
 		source_list.add_item(label_text, icon)
@@ -420,6 +428,7 @@ func _scan_visual_assets(seen: Dictionary) -> void:
 		entries.append({
 			"label": "Visual Asset / %s" % str(asset.get("id", asset_id)),
 			"path": image_path,
+			"region": region_data,
 			"owner": path,
 			"owner_kind": "visual_asset",
 			"owner_key": str(asset_id),
@@ -491,12 +500,22 @@ func _select_entry(index: int) -> void:
 	IMAGE_STATE.open_image(current_path)
 	current_image = LOADER.load_image(current_path)
 	var entry: Dictionary = entries[entry_index]
+	var catalog_region: Rect2i = _entry_region(entry)
 	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "미지정")), current_path, str(entry.get("owner", "미지정")), str(entry.get("field", "미지정"))]
 	if current_image == null:
 		status.text = "이미지를 불러올 수 없습니다: %s" % current_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
-	status.text = "선택된 Source: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+	if catalog_region.size.x > 0 and catalog_region.size.y > 0:
+		view.selected_region = catalog_region
+		view.queue_redraw()
+	status.text = "선택된 카다로그: %s — 영역 %d × %d px" % [str(entry.get("label", "Asset")), catalog_region.size.x, catalog_region.size.y] if catalog_region.size.x > 0 else "선택된 Source: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+
+func _entry_region(entry: Dictionary) -> Rect2i:
+	var region_data: Array = entry.get("region", [])
+	if region_data.size() < 4:
+		return Rect2i()
+	return Rect2i(int(region_data[0]), int(region_data[1]), int(region_data[2]), int(region_data[3]))
 
 func _open_target_dialog() -> void:
 	if target_dialog == null:
