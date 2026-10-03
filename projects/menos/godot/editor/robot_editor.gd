@@ -215,8 +215,8 @@ func _build_ui() -> void:
 	skill_animation_grid.add_theme_constant_override("v_separation", 4)
 	content.add_child(skill_animation_grid)
 	for animation_name in SKILL_ANIMATIONS:
-		var edit := _image_grid_row(skill_animation_grid, animation_name.to_upper(), "animation:" + animation_name)
-		animation_edits[animation_name] = edit
+		var skill_edit_control := _image_grid_row(skill_animation_grid, _animation_display_name(animation_name), "animation:" + animation_name)
+		animation_edits[animation_name] = skill_edit_control
 
 	var animation_preview_title := Label.new()
 	animation_preview_title.text = "ANIMATION PREVIEW"
