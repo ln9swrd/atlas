@@ -1,9 +1,9 @@
 ﻿# MENOS — GDScript 하드코딩 값 외부 저장소 전환 개발계획
 
 - 작성일: 2026-10-04
-- 기준 HEAD: 57f13974
+- 기준 HEAD: 8498b495
 - 기준 Branch: main
-- 상태: PLAN ONLY / 구현 미착수
+- 상태: MIGRATION IN PROGRESS / Phase 1~3 일부 완료
 
 ## 1. 목적
 
@@ -210,7 +210,27 @@ DONE / 최소 구현 완료.
 이 단계에서는 기존 저장소의 권위를 변경하지 않았다.
 
 ### Phase 2 — Low-risk Shared Constants
-공통 경로, thumbnail/editor 크기, 공통 UI layout, animation display 정책, 반복되는 저위험 제한값부터 이동한다.
+진행 완료한 항목:
+- Editor thumbnail size → `content/settings/editor.json`
+- Undo history → `content/settings/editor.json`
+- Robot animation preview legacy frame defaults → `content/settings/editor.json`
+- Robot Visual Asset ID frame count → 기존 `content/editor/visual_assets.json` authority 사용
+- Tower sprite/projectile frame count → `content/towers/towers.json`
+- Stage enemy type 목록 → `content/enemies/enemies.json` key 기반
+- Tower type 목록 → `content/towers/towers.json` key 기반
+- Enemy render size → `content/enemies/enemies.json`
+
+검증:
+- Godot 4.7.2 headless Editor load: PASS
+- `git diff --check`: PASS
+- 기존 gameplay 설정 smoke test: PASS
+
+보류 후보:
+- `image_editor.gd`의 unit sheet 생성 frame size/count
+- `asset_region_view.gd`의 brush size / fit margin
+- `title_screen.gd`의 장식용 grid spacing/color
+
+이 후보들은 설정화 자체는 가능하지만 실제 프로젝트 정책인지 단순 구현/디자인 값인지 추가 Canon 판단이 필요하다. 무차별 외부화하지 않는다.
 
 ### Phase 3 — Runtime Gameplay Configuration
 camera tuning, inventory size, spawn/wave timing, gameplay limits, 기본 선택값을 이동한다.
@@ -266,7 +286,23 @@ migration 완료 후 사용되지 않는 const와 중복 값을 제거한다.
 - migration을 이유로 범위 밖 리팩터링을 하지 않는다.
 - Commit / Push하지 않는다.
 
-## 9. 검증 기준
+## 9. 현재 검증 상태
+
+CONFIRMED
+- 현재 HEAD: `8498b495`
+- Branch: `main`
+- Working Tree: clean
+- `upstream/main`과 HEAD가 일치한다.
+- Godot 4.7.2 headless Editor load: PASS / exit code 0
+- `git diff --check`: PASS
+- `ROBOT_ANIMATION_FRAMES`, `TOWER_ANIMATION_FRAMES`, `PROJECTILE_ANIMATION_FRAMES`, `ENEMY_SPRITE_SIZES`, `ENEMY_TYPES`, `TOWER_TYPES`의 기존 GDScript 상수 참조가 제거되었다.
+
+NOT VERIFIED
+- PIE 동작 동등성
+- 변경된 Editor 화면의 실제 조작 검증
+- `image_editor.gd` / `asset_region_view.gd` / `title_screen.gd` 후보의 최종 외부화 필요성
+
+## 10. 검증 기준
 
 CODE VERIFIED:
 모든 외부화 참조가 Config Repository에서 올바른 값을 얻는다.
@@ -282,7 +318,7 @@ Master가 실제 Runtime에서 기존 동작과 동등함을 확인한다.
 
 migration에서는 "값이 로드된다"보다 "기존 동작이 동일하다"를 핵심 검증으로 삼는다.
 
-## 10. 최종 성공 기준
+## 11. 최종 성공 기준
 
 - 외부화 대상 inventory에 미분류 항목이 없다.
 - 설정성 값은 명확한 단일 권위 저장소를 가진다.
@@ -291,7 +327,7 @@ migration에서는 "값이 로드된다"보다 "기존 동작이 동일하다"�
 - 누락/형식 오류가 검증 가능하다.
 - 기존 gameplay와 Editor 동작에 regression이 없다.
 
-## 11. 현실성 판단
+## 12. 현실성 판단
 
 TECHNICALLY POSSIBLE:
 기존 JSON loader/definition/resolver 계층이 있어 구현 가능하다.
