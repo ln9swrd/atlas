@@ -17,11 +17,11 @@ func _set_language(value: String) -> void:
 	_refresh_text()
 
 func _refresh_text() -> void:
-	title_label.text = LocalizationRepository.message("settings.title")
-	language_label.text = LocalizationRepository.message("settings.language")
-	korean_button.text = LocalizationRepository.message("settings.korean")
-	english_button.text = LocalizationRepository.message("settings.english")
-	back_button.text = LocalizationRepository.message("settings.back")
+	title_label.text = tr("SETTINGS")
+	language_label.text = tr("LANGUAGE")
+	korean_button.text = tr("KOREAN")
+	english_button.text = tr("ENGLISH")
+	back_button.text = tr("BACK")
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://ui/title_screen.tscn")
