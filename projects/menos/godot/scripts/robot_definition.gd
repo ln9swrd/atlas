@@ -26,12 +26,16 @@ static func from_catalog(data: Dictionary) -> RobotDefinition:
 	definition.progression = data.get("progression", {}).duplicate(true)
 	definition.energy = data.get("energy", {}).duplicate(true)
 	definition.color = Color(str(data.get("color", "ffffffff")))
+	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
 	definition.visuals = {
-		"sprite_idle": str(data.get("sprite_idle", "")),
-		"sprite_attack": str(data.get("sprite_attack", "")),
-		"sprite_move": str(data.get("sprite_move", "")),
-		"sprite_skill": str(data.get("sprite_skill", "")),
-		"projectile_anim": str(data.get("projectile_anim", ""))
+		"profile": str(data.get("default_image", "")),
+		"animations": animations.duplicate(true),
+		# Legacy aliases remain available to older runtime consumers.
+		"sprite_idle": str(animations.get("idle", data.get("sprite_idle", ""))),
+		"sprite_attack": str(animations.get("attack", data.get("sprite_attack", ""))),
+		"sprite_move": str(animations.get("move", data.get("sprite_move", ""))),
+		"sprite_skill": str(animations.get("skill1", data.get("sprite_skill", ""))),
+		"projectile_anim": str(animations.get("projectile", data.get("projectile_anim", "")))
 	}
 	return definition
 
