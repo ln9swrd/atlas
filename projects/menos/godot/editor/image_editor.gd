@@ -745,11 +745,21 @@ func _create_visual_asset(rect: Rect2i) -> void:
 			if source_definition != null:
 				inherited_frames = source_definition.frames
 				inherited_category = source_definition.category
+	var owner_kind := str(IMAGE_STATE.selection_owner_kind)
+	var owner_key := str(IMAGE_STATE.selection_owner_key)
+	var owner_usage := str(IMAGE_STATE.selection_usage)
+	var registered_frames := maxi(1, int(IMAGE_STATE.selection_frames))
 	var base_id := "image." + base_name
+	if owner_kind == "robot" and not owner_key.is_empty() and not owner_usage.is_empty():
+		base_id = "robot.%s.%s" % [owner_key, owner_usage]
+		inherited_category = "Robot"
+		registered_frames = maxi(registered_frames, inherited_frames)
 	var assets: Dictionary = data
 	var suffix := 1
 	var asset_id := base_id
 	while assets.has(asset_id):
+		if owner_kind == "robot" and asset_id == base_id:
+			break
 		asset_id = "%s.%02d" % [base_id, suffix]
 		suffix += 1
 	assets[asset_id] = {
@@ -757,9 +767,9 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		"category": inherited_category,
 		"source": current_path,
 		"region": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
-		"frames": inherited_frames,
-		"owner": "",
-		"usage": "visual_asset_catalog"
+		"frames": registered_frames,
+		"owner": ("%s.%s" % [owner_kind, owner_key]) if not owner_kind.is_empty() and not owner_key.is_empty() else "",
+		"usage": owner_usage if not owner_usage.is_empty() else "visual_asset_catalog"
 	}
 	if not _write_json(catalog_path, assets):
 		status.text = "Visual Asset Catalog 저장에 실패했습니다."
