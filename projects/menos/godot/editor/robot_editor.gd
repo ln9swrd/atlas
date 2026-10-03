@@ -3,6 +3,7 @@ extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
+const ROBOT_COLOR_SHADER = preload("res://shaders/allied_unit_color.gdshader")
 
 var robot_data: Dictionary = {}
 var selected_type := ""
@@ -14,6 +15,7 @@ var speed_spin: SpinBox
 var damage_spin: SpinBox
 var cooldown_spin: SpinBox
 var range_spin: SpinBox
+var color_edit: ColorPickerButton
 var idle_edit: LineEdit
 var attack_edit: LineEdit
 var move_edit: LineEdit
@@ -141,6 +143,17 @@ func _build_ui() -> void:
 	damage_spin = _spin_grid_row(properties_grid, "Damage", 0, 99999, 0.1, 28)
 	cooldown_spin = _spin_grid_row(properties_grid, "Cooldown", 0.01, 9999, 0.01, 0.65)
 	range_spin = _spin_grid_row(properties_grid, "Range", 0, 99999, 1, 180)
+	var color_row := HBoxContainer.new()
+	color_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var color_label := Label.new()
+	color_label.text = "Color"
+	color_label.custom_minimum_size.x = 105
+	color_row.add_child(color_label)
+	color_edit = ColorPickerButton.new()
+	color_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	color_edit.color_changed.connect(_on_preview_color_changed)
+	color_row.add_child(color_edit)
+	properties_grid.add_child(color_row)
 
 	var visual_title := Label.new()
 	visual_title.text = "VISUAL SOURCE"
@@ -344,6 +357,7 @@ func _on_robot_selected(index: int) -> void:
 	damage_spin.value = float(data.get("damage", 28.0))
 	cooldown_spin.value = float(data.get("cooldown", 0.65))
 	range_spin.value = float(data.get("range", 180.0))
+	color_edit.color = Color(str(data.get("color", "ffffffff")))
 	idle_edit.text = str(data.get("sprite_idle", "res://assets/menos/sprites/atlas_idle.png"))
 	attack_edit.text = str(data.get("sprite_attack", "res://assets/menos/sprites/atlas_attack.png"))
 	move_edit.text = str(data.get("sprite_move", "res://assets/menos/sprites/atlas_move.png"))
@@ -432,6 +446,7 @@ func _save_data() -> void:
 	data["damage"] = float(damage_spin.value)
 	data["cooldown"] = float(cooldown_spin.value)
 	data["range"] = float(range_spin.value)
+	data["color"] = color_edit.color.to_html(true)
 	data["sprite_idle"] = idle_edit.text.strip_edges()
 	data["sprite_attack"] = attack_edit.text.strip_edges()
 	data["sprite_move"] = move_edit.text.strip_edges()
@@ -478,6 +493,19 @@ func _refresh_image_thumbnail(target: String) -> void:
 	if target == "default_image" or target == "animation:idle":
 		_refresh_robot_preview()
 
+func _on_preview_color_changed(_color: Color) -> void:
+	_apply_preview_color()
+
+func _apply_preview_color() -> void:
+	if not robot_preview:
+		return
+	var material := robot_preview.material as ShaderMaterial
+	if material == null:
+		material = ShaderMaterial.new()
+		material.shader = ROBOT_COLOR_SHADER
+		robot_preview.material = material
+	material.set_shader_parameter("team_color", color_edit.color)
+
 func _refresh_robot_preview() -> void:
 	if not robot_preview:
 		return
@@ -490,6 +518,7 @@ func _refresh_robot_preview() -> void:
 	var data: Dictionary = robot_data.get(selected_type, {})
 	var rect_values: Variant = data.get("default_image_rect", [])
 	robot_preview.texture = _animated_texture(path, 0, 1, rect_values)
+	_apply_preview_color()
 
 func _refresh_all_image_thumbnails() -> void:
 	_refresh_robot_preview()

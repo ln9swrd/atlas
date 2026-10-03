@@ -6,6 +6,7 @@ var _runtime_map_data: Dictionary = {}
 
 
 const ALLIED_UNIT_COLOR_SHADER := preload("res://shaders/allied_unit_color.gdshader")
+const ROBOT_COLOR_SHADER := preload("res://shaders/allied_unit_color.gdshader")
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
 	"facility_base": preload("res://assets/menos/sprites/facility_base.png"),
@@ -107,6 +108,8 @@ var robot_definition: RobotDefinition
 var robot_weapon_definition: WeaponDefinition
 var robot_sprite_catalog: Dictionary = {}
 var robot_projectile_catalog: Dictionary = {}
+var robot_render_node: Sprite2D
+var robot_render_material: ShaderMaterial
 var towers: Array = []
 var robot: RobotRuntimeState
 var player_profile: PlayerProfileState = PlayerProfileState.new()
@@ -154,6 +157,7 @@ func _ready() -> void:
 		if not load_stage_map("stage_01"):
 			build_first_battle_map()
 	reset_game()
+	_create_robot_render_node()
 	_setup_camera()
 	queue_redraw()
 
@@ -204,9 +208,9 @@ func _load_allied_unit_catalog() -> void:
 		var definition := AlliedUnitDefinition.from_catalog(str(unit_id), allied_unit_catalog[unit_id])
 		allied_unit_definitions[unit_id] = definition
 		var profile_texture: Texture2D = _texture_from_catalog_entry(definition.visuals, "default_image")
-`t	if profile_texture == null:
-`t		profile_texture = _texture_from_catalog_entry(definition.visuals, "sprite")
-`t	allied_sprite_catalog[unit_id] = profile_texture
+		if profile_texture == null:
+			profile_texture = _texture_from_catalog_entry(definition.visuals, "sprite")
+		allied_sprite_catalog[unit_id] = profile_texture
 
 func _load_enemy_catalog() -> void:
 	enemy_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json")
@@ -626,6 +630,7 @@ func _process(delta: float) -> void:
 		wave_auto_start_timer -= delta
 		if wave_auto_start_timer <= 0.0:
 			start_wave()
+	_update_robot_render_node()
 	if wave_running:
 		spawn_clock += delta
 		spawn_enemies()
@@ -736,6 +741,57 @@ func spawn_enemies() -> void:
 			var segment_rect := Rect2(spawn_rect.position + Vector2(segment_width * segment_index, 0.0), Vector2(segment_width, spawn_rect.size.y))
 			spawn_position = Vector2(randf_range(segment_rect.position.x, segment_rect.end.x), randf_range(segment_rect.position.y, segment_rect.end.y))
 		enemies.append(EnemyRuntimeState.create(entry.type, lane, spawn_position, float(definition.get_combat_value("hp", 0.0))))
+
+func _create_robot_render_node() -> void:
+	if is_instance_valid(robot_render_node):
+		return
+	robot_render_node = Sprite2D.new()
+	robot_render_node.name = "RobotRender"
+	robot_render_node.z_index = 3
+	robot_render_material = ShaderMaterial.new()
+	robot_render_material.shader = ROBOT_COLOR_SHADER
+	robot_render_node.material = robot_render_material
+	add_child(robot_render_node)
+
+func _update_robot_render_node() -> void:
+	if not is_instance_valid(robot_render_node):
+		return
+	if not robot.active or robot_sprite_catalog.is_empty():
+		robot_render_node.visible = false
+		return
+	var anim_key := "idle"
+	var total_f := 6
+	var fps := 8.0
+	if float(robot.state_get("special", 0.0)) > 0.0:
+		anim_key = "skill"
+		total_f = 5
+		fps = 10.0
+	elif float(robot.state_get("attack", 0.0)) > 0.3:
+		anim_key = "attack"
+		total_f = 7
+		fps = 14.0
+	elif float(robot.state_get("area", 0.0)) > 5.0 or float(robot.state_get("pierce", 0.0)) > 6.0:
+		anim_key = "skill"
+		total_f = 5
+		fps = 10.0
+	elif bool(robot.state_get("is_moving", false)):
+		anim_key = "move"
+		total_f = 5
+		fps = 12.0
+	var texture := robot_sprite_catalog.get(anim_key, null) as Texture2D
+	if texture == null:
+		robot_render_node.visible = false
+		return
+	robot_render_node.visible = true
+	robot_render_node.texture = texture
+	robot_render_node.hframes = max(1, total_f)
+	robot_render_node.vframes = 1
+	robot_render_node.frame = int(elapsed * fps) % max(1, total_f)
+	robot_render_node.position = robot.position
+	var frame_size := texture.get_size() / Vector2(float(max(1, total_f)), 1.0)
+	if frame_size.x > 0.0 and frame_size.y > 0.0:
+		robot_render_node.scale = Vector2(78.0, 132.0) / frame_size
+	robot_render_material.set_shader_parameter("team_color", robot_definition.color if robot_definition != null else Color.WHITE)
 
 func _clear_allied_render_nodes() -> void:
 	for node in allied_render_nodes.values():
@@ -1942,7 +1998,7 @@ func _draw() -> void:
 			draw_arc(r_feet_pos, 47.0, elapsed * 2.5, elapsed * 2.5 + PI * 1.35, 24, Color("f0d28a", 0.85), 3.0)
 		elif float(robot.state_get("attack", 0.0)) > 0.3:
 			draw_arc(r_feet_pos, 46.0, elapsed * 4.0, elapsed * 4.0 + PI, 20, Color("7ed6ce", 0.9), 2.5)
-		draw_animated_sprite(robot_sprite_catalog.get(anim_key.replace("atlas_", ""), VISUALS[anim_key]) as Texture2D, robot.position, Vector2(78, 132), r_frame, total_f)
+		# Robot sprite is rendered by RobotRender Sprite2D so the team-color shader is applied.
 		
 		# Player Robot Unit HP Bar
 		var r_hp_pos: Vector2 = robot.position + Vector2(-39, -76)

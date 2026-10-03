@@ -2,6 +2,7 @@
 	"robot_main": {
 		"cooldown": 0.65,
 		"damage": 28.0,
+		"color": "ffffffff",
 		"energy": {
 			"max": 100.0,
 			"regen": 12.0
@@ -92,6 +93,7 @@
 		},
 		"cooldown": 0.65,
 		"damage": 28.0,
+		"color": "ffffffff",
 		"default_image": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
 		"default_image_rect": [
 			0.0,

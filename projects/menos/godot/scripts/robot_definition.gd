@@ -7,6 +7,7 @@ var base_stats: Dictionary = {}
 var progression: Dictionary = {}
 var energy: Dictionary = {}
 var visuals: Dictionary = {}
+var color: Color = Color.WHITE
 
 static func from_catalog(data: Dictionary) -> RobotDefinition:
 	var definition := RobotDefinition.new()
@@ -21,6 +22,7 @@ static func from_catalog(data: Dictionary) -> RobotDefinition:
 	}
 	definition.progression = data.get("progression", {}).duplicate(true)
 	definition.energy = data.get("energy", {}).duplicate(true)
+	definition.color = Color(str(data.get("color", "ffffffff")))
 	definition.visuals = {
 		"sprite_idle": str(data.get("sprite_idle", "")),
 		"sprite_attack": str(data.get("sprite_attack", "")),
