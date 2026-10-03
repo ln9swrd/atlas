@@ -648,6 +648,16 @@ func _create_visual_asset(rect: Rect2i) -> void:
 	var base_name := current_path.get_file().get_basename().to_snake_case()
 	if base_name.is_empty():
 		base_name = "image"
+	var inherited_frames := 1
+	var inherited_category := "Other"
+	if current_index >= 0 and current_index < entries.size():
+		var source_entry: Dictionary = entries[current_index]
+		if str(source_entry.get("owner_kind", "")) == "visual_asset":
+			var source_asset_id := str(source_entry.get("owner_key", ""))
+			var source_definition := VisualAssetResolver.get_asset(source_asset_id)
+			if source_definition != null:
+				inherited_frames = source_definition.frames
+				inherited_category = source_definition.category
 	var base_id := "image." + base_name
 	var assets: Dictionary = data
 	var suffix := 1
@@ -657,10 +667,10 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		suffix += 1
 	assets[asset_id] = {
 		"id": asset_id,
-		"category": "Other",
+		"category": inherited_category,
 		"source": current_path,
 		"region": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
-		"frames": 1,
+		"frames": inherited_frames,
 		"owner": "",
 		"usage": "visual_asset_catalog"
 	}
