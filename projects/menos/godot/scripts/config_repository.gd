@@ -26,6 +26,9 @@ static func get_section(path: String, section: String) -> Dictionary:
 		return {}
 	return data[section].duplicate(true)
 
+static func get_editor_value(section: String, key: String, default_value: Variant = null) -> Variant:
+	return get_value(EDITOR_SETTINGS_PATH, section, key, default_value)
+
 static func reload(path: String = "") -> void:
 	if path.is_empty():
 		_cache.clear()
