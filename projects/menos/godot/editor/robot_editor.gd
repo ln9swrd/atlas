@@ -1,7 +1,8 @@
-﻿class_name RobotEditorMain
+class_name RobotEditorMain
 extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
+const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var robot_data: Dictionary = {}
 var selected_type := ""
@@ -26,6 +27,7 @@ var special_edit: LineEdit
 var finisher_edit: LineEdit
 var default_image_edit: LineEdit
 var animation_edits: Dictionary = {}
+var image_thumbnail_controls: Dictionary = {}
 var projectile_edit: LineEdit
 var file_dialog: FileDialog
 var file_dialog_target := "sprite"
@@ -99,7 +101,7 @@ func _build_ui() -> void:
 	skill_edit = _image_row(content, "Skill Animation", "animation:skill")
 	for animation_name in ["hit", "death", "skill1", "skill2", "skill3", "special", "finisher"]:
 		animation_edits[animation_name] = _image_row(content, animation_name.to_upper() + " Animation", "animation:" + animation_name)
-	default_image_edit = _image_row(content, "Basic Image", "default_image")
+	default_image_edit = _image_row(content, "Profile Image", "default_image")
 	projectile_edit = _image_row(content, "Projectile Animation", "projectile")
 	var animation_preview_title := Label.new()
 	animation_preview_title.text = "ANIMATION PREVIEW"
@@ -125,9 +127,23 @@ func _image_row(parent: VBoxContainer, label_text: String, target: String) -> Li
 	label.text = label_text
 	label.custom_minimum_size.x = 150
 	row.add_child(label)
+	var thumbnail := TextureRect.new()
+	thumbnail.custom_minimum_size = Vector2(64, 64)
+	thumbnail.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	thumbnail.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	thumbnail.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	thumbnail.mouse_filter = Control.MOUSE_FILTER_STOP
+	thumbnail.gui_input.connect(func(event: InputEvent):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			_open_image_editor_for_target(target)
+	)
+	thumbnail.tooltip_text = "클릭하여 이미지 에디터에서 열기"
+	row.add_child(thumbnail)
+	image_thumbnail_controls[target] = thumbnail
 	var edit := LineEdit.new()
 	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(edit)
+	edit.text_changed.connect(func(_text: String): _refresh_image_thumbnail(target))
 	var browse := Button.new()
 	browse.text = "Browse"
 	browse.pressed.connect(func(): _open_sprite_dialog(target))
@@ -289,35 +305,115 @@ func _save_data() -> void:
 			break
 	_set_status("SAVED: " + ROBOT_FILE)
 
+func _refresh_image_thumbnail(target: String) -> void:
+	if not image_thumbnail_controls.has(target):
+		return
+	var thumbnail := image_thumbnail_controls[target] as TextureRect
+	var path := ""
+	if target == "default_image":
+		path = default_image_edit.text.strip_edges()
+	elif target == "projectile":
+		path = projectile_edit.text.strip_edges()
+	elif target.begins_with("animation:"):
+		var animation_name := target.trim_prefix("animation:")
+		if animation_name == "idle": path = idle_edit.text.strip_edges()
+		elif animation_name == "attack": path = attack_edit.text.strip_edges()
+		elif animation_name == "move": path = move_edit.text.strip_edges()
+		elif animation_name == "skill": path = skill_edit.text.strip_edges()
+		elif animation_edits.has(animation_name): path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+	thumbnail.texture = load(path) as Texture2D if not path.is_empty() else null
+
+func _refresh_all_image_thumbnails() -> void:
+	_refresh_image_thumbnail("default_image")
+	_refresh_image_thumbnail("projectile")
+	for animation_name in ["idle", "attack", "move", "skill"]:
+		_refresh_image_thumbnail("animation:" + animation_name)
+	for animation_name in animation_edits.keys():
+		_refresh_image_thumbnail("animation:" + str(animation_name))
+
+func _open_image_editor_for_target(target: String) -> void:
+	var path := ""
+	if target == "default_image":
+		path = default_image_edit.text.strip_edges()
+	elif target == "projectile":
+		path = projectile_edit.text.strip_edges()
+	elif target.begins_with("animation:"):
+		var animation_name := target.trim_prefix("animation:")
+		if animation_name == "idle": path = idle_edit.text.strip_edges()
+		elif animation_name == "attack": path = attack_edit.text.strip_edges()
+		elif animation_name == "move": path = move_edit.text.strip_edges()
+		elif animation_name == "skill": path = skill_edit.text.strip_edges()
+		elif animation_edits.has(animation_name): path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+	if path.is_empty():
+		_set_status("No image assigned for %s." % target)
+		return
+	IMAGE_STATE.open_image(path)
+	request_image_editor.emit()
+
+signal request_image_editor
 func _open_sprite_dialog(target: String = "sprite") -> void:
 	file_dialog_target = target
 	if file_dialog == null:
 		file_dialog = FileDialog.new()
 		file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-		file_dialog.access = FileDialog.ACCESS_RESOURCES
+		file_dialog.access = FileDialog.ACCESS_FILESYSTEM
 		file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Images"]
 		file_dialog.file_selected.connect(_on_file_selected)
 		add_child(file_dialog)
 	file_dialog.popup_centered_ratio(0.75)
 
 func _on_file_selected(path: String) -> void:
+	if selected_type.is_empty():
+		_set_status("Select a robot before importing an image.")
+		return
+	var source_path := ProjectSettings.globalize_path(path) if path.begins_with("res://") else path
+	if not FileAccess.file_exists(source_path):
+		_set_status("Image file does not exist: " + source_path)
+		return
+	var extension := source_path.get_extension().to_lower()
+	if extension not in ["png", "jpg", "jpeg", "webp", "bmp", "svg"]:
+		_set_status("Unsupported image format: " + extension)
+		return
+	var safe_id := selected_type.to_lower().validate_filename()
+	if safe_id.is_empty():
+		safe_id = "robot"
+	var target_name := file_dialog_target.replace(":", "_").to_lower().validate_filename()
+	var relative_dir := "res://assets/menos/robots/" + safe_id
+	var absolute_dir := ProjectSettings.globalize_path(relative_dir)
+	var dir_error := DirAccess.make_dir_recursive_absolute(absolute_dir)
+	if dir_error != OK:
+		_set_status("Failed to create image directory: " + error_string(dir_error))
+		return
+	var base_name := target_name + "." + extension
+	var destination := absolute_dir.path_join(base_name)
+	var suffix := 1
+	while FileAccess.file_exists(destination):
+		base_name = target_name + "_" + str(suffix) + "." + extension
+		destination = absolute_dir.path_join(base_name)
+		suffix += 1
+	var copy_error := DirAccess.copy_absolute(source_path, destination)
+	if copy_error != OK:
+		_set_status("Image import failed: " + error_string(copy_error))
+		return
+	var resource_path := relative_dir.path_join(base_name)
 	if file_dialog_target == "projectile":
-		projectile_edit.text = path
+		projectile_edit.text = resource_path
 	elif file_dialog_target == "default_image":
-		default_image_edit.text = path
+		default_image_edit.text = resource_path
 	elif file_dialog_target.begins_with("animation:"):
 		var animation_name := file_dialog_target.trim_prefix("animation:")
 		if animation_name == "idle":
-			idle_edit.text = path
+			idle_edit.text = resource_path
 		elif animation_name == "attack":
-			attack_edit.text = path
+			attack_edit.text = resource_path
 		elif animation_name == "move":
-			move_edit.text = path
+			move_edit.text = resource_path
 		elif animation_name == "skill":
-			skill_edit.text = path
+			skill_edit.text = resource_path
 		elif animation_edits.has(animation_name):
-			(animation_edits[animation_name] as LineEdit).text = path
+			(animation_edits[animation_name] as LineEdit).text = resource_path
 	_refresh_animation_previews()
+	_set_status("Imported image: " + resource_path)
 
 func _set_status(message: String) -> void:
 	if status_label:

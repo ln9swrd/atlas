@@ -28,6 +28,8 @@ var file_thumbnail_cache: Dictionary = {}
 var status_label: Label
 var sprite_preview: TextureRect
 var projectile_preview: TextureRect
+var image_inventory_box: VBoxContainer
+var image_inventory_status: Label
 var animation_timer: Timer
 var animation_frame := 0
 const TOWER_ANIMATION_FRAMES := 4
@@ -122,6 +124,27 @@ func _build_properties(parent: VBoxContainer) -> void:
 	projectile_browse.text = "Browse"
 	projectile_browse.pressed.connect(func(): _open_sprite_dialog("projectile"))
 	projectile_row.add_child(projectile_browse)
+	var image_management := VBoxContainer.new()
+	image_management.name = "ImageManagement"
+	image_management.add_theme_constant_override("separation", 4)
+	parent.add_child(image_management)
+	var image_management_title := Label.new()
+	image_management_title.text = "IMAGE ASSET MANAGEMENT"
+	image_management_title.add_theme_font_size_override("font_size", 16)
+	image_management.add_child(image_management_title)
+	var image_management_actions := HBoxContainer.new()
+	image_management.add_child(image_management_actions)
+	var validate_images := Button.new()
+	validate_images.text = "CHECK SELECTED TOWER"
+	validate_images.pressed.connect(_refresh_image_inventory)
+	image_management_actions.add_child(validate_images)
+	image_inventory_status = Label.new()
+	image_inventory_status.name = "ImageInventoryStatus"
+	image_inventory_status.text = "Select a tower to inspect its image assets."
+	image_management.add_child(image_inventory_status)
+	image_inventory_box = VBoxContainer.new()
+	image_inventory_box.name = "ImageInventory"
+	image_management.add_child(image_inventory_box)
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
@@ -237,6 +260,7 @@ func _on_tower_selected(index: int) -> void:
 		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, sprite_edit.text))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
 	_refresh_animation_previews()
+	_refresh_image_inventory()
 	level2_cost_spin.value = float(level2.get("upgrade_cost", 0.0))
 	level2_damage_spin.value = float(level2.get("damage", data.get("damage", 0.0)))
 	level2_cooldown_spin.value = float(level2.get("cooldown", data.get("cooldown", 1.0)))
@@ -347,7 +371,64 @@ func _on_file_selected(path: String) -> void:
 	else:
 		sprite_edit.text = path
 	_refresh_animation_previews()
+	_refresh_image_inventory()
 
 func _set_status(message: String) -> void:
 	if status_label:
 		status_label.text = "Status: " + message
+
+func _image_asset_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	entries.append({"name": "Sprite Animation", "path": sprite_edit.text.strip_edges(), "required": true})
+	entries.append({"name": "Basic Image", "path": default_image_edit.text.strip_edges(), "required": true})
+	for animation_name in ["idle", "attack", "hit", "death"]:
+		var edit: LineEdit = animation_edits[animation_name] as LineEdit
+		entries.append({"name": animation_name.to_upper() + " Animation", "path": edit.text.strip_edges(), "required": animation_name == "idle" or animation_name == "attack"})
+	entries.append({"name": "Projectile Animation", "path": projectile_edit.text.strip_edges(), "required": false})
+	return entries
+
+func _image_path_exists(path: String) -> bool:
+	if path.is_empty():
+		return false
+	if path.begins_with("res://") or path.begins_with("user://"):
+		return ResourceLoader.exists(path)
+	return FileAccess.file_exists(path)
+
+func _refresh_image_inventory() -> void:
+	if not is_instance_valid(image_inventory_box) or not is_instance_valid(image_inventory_status):
+		return
+	var inventory := image_inventory_box
+	var summary := image_inventory_status
+	for child in inventory.get_children():
+		child.queue_free()
+	var missing_required := 0
+	var missing_optional := 0
+	var entries := _image_asset_entries()
+	for entry in entries:
+		var path := str(entry.path)
+		var exists := _image_path_exists(path)
+		var required := bool(entry.required)
+		if not exists:
+			if required:
+				missing_required += 1
+			else:
+				missing_optional += 1
+		var row := HBoxContainer.new()
+		var name_label := Label.new()
+		name_label.text = str(entry.name) + (" *" if required else "")
+		name_label.custom_minimum_size.x = 190
+		row.add_child(name_label)
+		var path_label := Label.new()
+		path_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		path_label.text = path if not path.is_empty() else "(not assigned)"
+		path_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		row.add_child(path_label)
+		var state_label := Label.new()
+		state_label.text = "OK" if exists else ("MISSING" if not path.is_empty() else "EMPTY")
+		state_label.add_theme_color_override("font_color", Color(0.35, 0.85, 0.45) if exists else Color(1.0, 0.35, 0.3) if required else Color(1.0, 0.75, 0.25))
+		row.add_child(state_label)
+		inventory.add_child(row)
+	if missing_required == 0:
+		summary.text = "Required assets: OK | Optional missing: %d" % missing_optional
+	else:
+		summary.text = "Required assets missing: %d | Optional missing: %d" % [missing_required, missing_optional]

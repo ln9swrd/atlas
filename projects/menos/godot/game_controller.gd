@@ -5,6 +5,7 @@ var _map_catalog_assets: Dictionary = {}
 var _runtime_map_data: Dictionary = {}
 
 
+const ALLIED_UNIT_COLOR_SHADER := preload("res://shaders/allied_unit_color.gdshader")
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
 	"facility_base": preload("res://assets/menos/sprites/facility_base.png"),
@@ -90,6 +91,7 @@ var allied_units: Array[AlliedUnitRuntimeState] = []
 var allied_unit_catalog: Dictionary = {}
 var allied_unit_definitions: Dictionary = {}
 var allied_sprite_catalog: Dictionary = {}
+var allied_render_nodes: Dictionary = {}
 var enemy_catalog: Dictionary = {}
 var enemy_definitions: Dictionary = {}
 var enemy_weapon_definitions: Dictionary = {}
@@ -201,7 +203,10 @@ func _load_allied_unit_catalog() -> void:
 	for unit_id in allied_unit_catalog.keys():
 		var definition := AlliedUnitDefinition.from_catalog(str(unit_id), allied_unit_catalog[unit_id])
 		allied_unit_definitions[unit_id] = definition
-		allied_sprite_catalog[unit_id] = _texture_from_catalog_entry(definition.visuals, "sprite")
+		var profile_texture: Texture2D = _texture_from_catalog_entry(definition.visuals, "default_image")
+`t	if profile_texture == null:
+`t		profile_texture = _texture_from_catalog_entry(definition.visuals, "sprite")
+`t	allied_sprite_catalog[unit_id] = profile_texture
 
 func _load_enemy_catalog() -> void:
 	enemy_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json")
@@ -732,7 +737,39 @@ func spawn_enemies() -> void:
 			spawn_position = Vector2(randf_range(segment_rect.position.x, segment_rect.end.x), randf_range(segment_rect.position.y, segment_rect.end.y))
 		enemies.append(EnemyRuntimeState.create(entry.type, lane, spawn_position, float(definition.get_combat_value("hp", 0.0))))
 
+func _clear_allied_render_nodes() -> void:
+	for node in allied_render_nodes.values():
+		if is_instance_valid(node):
+			node.queue_free()
+	allied_render_nodes.clear()
+
+func _create_allied_render_node(unit: AlliedUnitRuntimeState) -> void:
+	var sprite := Sprite2D.new()
+	sprite.name = "AlliedUnit_%s" % unit.id
+	sprite.texture = allied_sprite_catalog.get(unit.type, null)
+	sprite.position = unit.position
+	sprite.z_index = 2
+	if sprite.texture != null:
+		var material := ShaderMaterial.new()
+		material.shader = ALLIED_UNIT_COLOR_SHADER
+		material.set_shader_parameter("team_color", unit.definition.color)
+		sprite.material = material
+		var source_size := sprite.texture.get_size()
+		if source_size.x > 0.0 and source_size.y > 0.0:
+			sprite.scale = Vector2(52.0, 72.0) / source_size
+	add_child(sprite)
+	allied_render_nodes[unit.id] = sprite
+
+func _sync_allied_render_nodes() -> void:
+	for unit in allied_units:
+		var sprite: Sprite2D = allied_render_nodes.get(unit.id, null)
+		if sprite == null:
+			continue
+		sprite.position = unit.position
+		sprite.visible = unit.hp > 0.0
+
 func spawn_allied_units() -> void:
+	_clear_allied_render_nodes()
 	allied_units.clear()
 	var stage_data := StageManager.get_current_stage()
 	var spawn_config: Variant = stage_data.get("allied_units", [])
@@ -750,12 +787,15 @@ func spawn_allied_units() -> void:
 		var definition: AlliedUnitDefinition = allied_unit_definitions[unit_type]
 		for index in range(count):
 			var offset := Vector2(-26.0 - index * 24.0, (index % 2) * 42.0 - 21.0)
-			allied_units.append(AlliedUnitRuntimeState.create(
+			var unit := AlliedUnitRuntimeState.create(
 				"%s_%d" % [unit_type, index],
 				unit_type,
 				spawn_position + offset,
 				definition
-			))
+			)
+			allied_units.append(unit)
+			_create_allied_render_node(unit)
+	_sync_allied_render_nodes()
 	log_event("Allied support deployed: %d." % allied_units.size())
 
 func _resolve_allied_spawn_position(spawn_id: String) -> Vector2:
@@ -779,6 +819,7 @@ func update_allied_units(delta: float) -> void:
 		var event := AlliedUnitAI.update(unit, enemies, delta, robot, allied_units)
 		if event != null:
 			_handle_gameplay_event(event)
+	_sync_allied_render_nodes()
 
 func damage_allied_unit(unit: AlliedUnitRuntimeState, amount: float) -> void:
 	if unit == null or unit.hp <= 0.0:
@@ -1746,16 +1787,12 @@ func _draw() -> void:
 	for unit in allied_units:
 		if unit.hp <= 0.0:
 			continue
-		var unit_size := Vector2(52, 72)
 		var unit_feet := unit.position + Vector2(0, 28)
 		draw_oval(unit_feet, 25.0, 8.0, Color(0, 0, 0, 0.45))
 		draw_arc(unit_feet, 27.0, 0, TAU, 20, Color("7ed6ce"), 2.0)
 		if unit.flash > 0.0:
 			draw_circle(unit.position, 24.0, Color.WHITE, false, 3.0)
-		var unit_texture: Texture2D = allied_sprite_catalog.get(unit.type, null)
-		if unit_texture != null:
-			draw_sprite(unit_texture, unit.position, unit_size)
-		else:
+		if allied_render_nodes.get(unit.id, null) == null:
 			draw_circle(unit.position, 20.0, Color("7ed6ce"))
 		var hp_position := unit.position + Vector2(-26, -42)
 		draw_rect(Rect2(hp_position - Vector2(1, 1), Vector2(54, 6)), Color("101f25"))

@@ -6,6 +6,7 @@ var name: String = ""
 var combat: Dictionary = {}
 var ai: Dictionary = {}
 var visuals: Dictionary = {}
+var color: Color = Color.WHITE
 var weapon: WeaponDefinition
 
 static func from_catalog(entry_id: String, data: Dictionary) -> AlliedUnitDefinition:
@@ -22,6 +23,7 @@ static func from_catalog(entry_id: String, data: Dictionary) -> AlliedUnitDefini
 	}
 	definition.ai = data.get("ai", {}).duplicate(true)
 	definition.visuals = data.get("visuals", {}).duplicate(true)
+	definition.color = Color(str(data.get("color", "ffffffff")))
 	definition.weapon = WeaponDefinition.from_actor("allied_unit", entry_id, definition.combat)
 	return definition
 

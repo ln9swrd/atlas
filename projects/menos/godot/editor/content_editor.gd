@@ -9,6 +9,8 @@ const IMAGE_EDITOR_SCENE := "res://editor/image_editor.tscn"
 
 var current_editor: Node = null
 var content_host: Control
+var current_editor_scene := ""
+var previous_editor_scene := MAP_EDITOR_SCENE
 
 func _ready() -> void:
 	_apply_editor_theme()
@@ -96,10 +98,13 @@ func _open_robot_editor() -> void:
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnRobot)
 
 func _open_image_editor() -> void:
+	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():
+		previous_editor_scene = current_editor_scene
 	_load_editor(IMAGE_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnImage)
 
 func _load_editor(scene_path: String) -> void:
+	current_editor_scene = scene_path
 	if current_editor:
 		current_editor.queue_free()
 		current_editor = null
@@ -112,12 +117,29 @@ func _load_editor(scene_path: String) -> void:
 	current_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	if current_editor.has_signal("request_content_editor"):
 		current_editor.request_content_editor.connect(_open_content_editor_from_child)
+	if current_editor.has_signal("request_image_editor"):
+		current_editor.request_image_editor.connect(_open_image_editor_from_child)
+	if current_editor.has_signal("request_previous_editor"):
+		current_editor.request_previous_editor.connect(_open_previous_editor_from_child)
 	if current_editor.has_signal("request_map_editor_for_path"):
 		current_editor.request_map_editor_for_path.connect(_open_map_editor_for_path)
 
 func _open_content_editor_from_child() -> void:
 	_load_editor(MAP_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnMap)
+
+func _open_image_editor_from_child() -> void:
+	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():
+		previous_editor_scene = current_editor_scene
+	_load_editor(IMAGE_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnImage)
+
+func _open_previous_editor_from_child() -> void:
+	var target_scene := previous_editor_scene
+	if target_scene.is_empty() or target_scene == IMAGE_EDITOR_SCENE:
+		target_scene = MAP_EDITOR_SCENE
+	_load_editor(target_scene)
+	_set_active_button_for_scene(target_scene)
 
 func _open_map_editor_for_path(map_path: String) -> void:
 	var editor := load(MAP_EDITOR_SCENE) as PackedScene
@@ -135,6 +157,20 @@ func _open_map_editor_for_path(map_path: String) -> void:
 	if current_editor.has_signal("request_content_editor"):
 		current_editor.request_content_editor.connect(_open_content_editor_from_child)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnMap)
+
+func _set_active_button_for_scene(scene_path: String) -> void:
+	if scene_path == MAP_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnMap)
+	elif scene_path == STAGE_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnStage)
+	elif scene_path == UNIT_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnUnit)
+	elif scene_path == TOWER_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnTower)
+	elif scene_path == ROBOT_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnRobot)
+	elif scene_path == IMAGE_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnImage)
 
 func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnMap.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMap
