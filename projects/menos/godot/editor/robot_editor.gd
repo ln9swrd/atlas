@@ -44,19 +44,17 @@ var animation_previews: Dictionary = {}
 var animation_rects: Dictionary = {}
 var animation_timer: Timer
 var animation_frame := 0
-const ROBOT_ANIMATION_FRAMES := {
-	"idle": 6,
-	"move": 8,
-	"attack": 8,
-	"hit": 8,
-	"death": 8,
-	"projectile": 6,
-	"skill1": 8,
-	"skill2": 10,
-	"skill3": 12,
-	"special": 14,
-	"finisher": 18
-}
+
+func _animation_frame_count(animation_name: String) -> int:
+	var asset_id := ""
+	if animation_name == "profile":
+		asset_id = "robot.%s.profile" % selected_type
+	else:
+		asset_id = "robot.%s.%s" % [selected_type, animation_name]
+	var resolved := VisualAssetResolver.resolve(asset_id)
+	if resolved != null and not resolved.id.begins_with("legacy:") and resolved.frames > 0:
+		return resolved.frames
+	return int(ConfigRepository.get_editor_value("animation_preview", "legacy_frame_counts", {}).get(animation_name, 1))
 
 func _ready() -> void:
 	_build_ui()
@@ -474,14 +472,14 @@ func _refresh_animation_previews() -> void:
 		var preview: TextureRect = animation_previews[key]
 		var edit: LineEdit = animation_edits.get(key)
 		var path := edit.text.strip_edges() if edit != null else ""
-		var frames := int(ROBOT_ANIMATION_FRAMES.get(key, 1))
+		var frames := _animation_frame_count(key)
 		var rect_values: Variant = animation_rects.get(key, [])
 		preview.texture = _animated_texture(path, animation_frame, frames, rect_values)
 
 func _on_animation_tick() -> void:
 	var max_frames := 1
 	for animation_name in animation_previews.keys():
-		max_frames = maxi(max_frames, int(ROBOT_ANIMATION_FRAMES.get(animation_name, 1)))
+		max_frames = maxi(max_frames, _animation_frame_count(animation_name))
 	animation_frame = (animation_frame + 1) % max_frames
 	_refresh_animation_previews()
 
@@ -639,7 +637,7 @@ func _open_image_editor_for_target(target: String) -> void:
 	var owner_frames := 1
 	if target.begins_with("animation:"):
 		owner_usage = target.trim_prefix("animation:")
-		owner_frames = int(ROBOT_ANIMATION_FRAMES.get(owner_usage, 1))
+		owner_frames = _animation_frame_count(owner_usage)
 	elif target == "default_image":
 		owner_usage = "default_image"
 	IMAGE_STATE.open_image(source_path, target, asset_id, "robot", selected_type, owner_usage, owner_frames, "res://editor/robot_editor.tscn")

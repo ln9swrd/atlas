@@ -4,5 +4,20 @@
   },
   "undo": {
     "max_history": 100
+  },
+  "animation_preview": {
+    "legacy_frame_counts": {
+      "idle": 6,
+      "move": 8,
+      "attack": 8,
+      "hit": 8,
+      "death": 8,
+      "projectile": 6,
+      "skill1": 8,
+      "skill2": 10,
+      "skill3": 12,
+      "special": 14,
+      "finisher": 18
+    }
   }
 }

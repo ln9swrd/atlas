@@ -7,7 +7,6 @@ const STAGE_DIR := "res://content/stages/"
 const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
 const MAP_DIR := "res://content/maps/"
 const ASSET_CATALOG_FILE := "res://content/editor/asset_catalog.json"
-const ENEMY_TYPES := ["normal", "rusher", "heavy", "giant"]
 const LANES := ["left", "right", "both"]
 var current_path := ""
 var stage_data: Dictionary = {}
@@ -29,11 +28,14 @@ var map_preview_container: SubViewportContainer
 var map_preview_viewport: SubViewport
 var map_preview_canvas: EditorCanvas
 var map_preview_status: Label
+var enemy_types: Array = []
 var map_preview_assets: Array[Dictionary] = []
 var encounters_box: VBoxContainer
 var status_label: Label
 
 func _ready() -> void:
+	enemy_types = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json").keys()
+	enemy_types.sort()
 	_build_ui()
 	_refresh_stage_list()
 	if stage_list.item_count > 0:
@@ -388,9 +390,9 @@ func _build_group_row(parent: VBoxContainer, ei: int, wi: int, gi: int) -> void:
 	var row := HBoxContainer.new()
 	parent.add_child(row)
 	var enemy := OptionButton.new()
-	for e in ENEMY_TYPES: enemy.add_item(e.to_upper())
-	enemy.select(max(0, ENEMY_TYPES.find(str(group[0]))))
-	enemy.item_selected.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["groups"][gi][0] = ENEMY_TYPES[v])
+	for e in enemy_types: enemy.add_item(str(e).to_upper())
+	enemy.select(max(0, enemy_types.find(str(group[0]))))
+	enemy.item_selected.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["groups"][gi][0] = str(enemy_types[v]))
 	row.add_child(enemy)
 	var count := SpinBox.new()
 	count.min_value = 1

@@ -36,12 +36,6 @@ const VISUALS := {
 	"enemy_heavy_anim": preload("res://assets/menos/sprites/enemy_heavy_anim.png"),
 	"enemy_giant_anim": preload("res://assets/menos/sprites/enemy_giant_anim.png")
 }
-const ENEMY_SPRITE_SIZES := {
-	"normal": Vector2(38, 52),
-	"rusher": Vector2(42, 54),
-	"heavy": Vector2(64, 72),
-	"giant": Vector2(112, 150)
-}
 const SFX_STREAMS := {
 	"ui_click": preload("res://sound/sfx_ui_click_1.mp3"),
 	"ui_confirm": preload("res://sound/Menu Choice.mp3"),
@@ -1192,7 +1186,8 @@ func select_robot_target_at(point: Vector2) -> bool:
 		var enemy: EnemyRuntimeState = enemies[index]
 		if enemy.hp <= 0.0:
 			continue
-		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES.get(enemy.type, Vector2(48, 56))
+		var enemy_definition: EnemyDefinition = enemy_definitions.get(enemy.type)
+		var enemy_size: Vector2 = enemy_definition.get_visual_value("render_size", Vector2(48, 56)) if enemy_definition != null else Vector2(48, 56)
 		var hit_radius: float = max(24.0, max(enemy_size.x, enemy_size.y) * 0.42)
 		var distance := point.distance_to(enemy.position)
 		if distance <= hit_radius and distance < best_distance:
@@ -1864,7 +1859,7 @@ func _draw() -> void:
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
 		var definition: EnemyDefinition = enemy_definitions[enemy.type]
-		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES[enemy.type] * 1.08
+		var enemy_size: Vector2 = definition.get_visual_value("render_size", Vector2(48, 56)) * 1.08
 		
 		# Presentation-only scale increase keeps battlefield combat as the primary visual focus.
 		# Enemy data, collision, targeting and movement are unchanged.

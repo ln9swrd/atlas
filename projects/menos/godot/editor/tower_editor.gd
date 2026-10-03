@@ -2,7 +2,6 @@
 extends Control
 
 const TOWER_FILE := "res://content/towers/towers.json"
-const TOWER_TYPES := ["cannon", "gatling"]
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var tower_data: Dictionary = {}
@@ -32,8 +31,6 @@ var image_inventory_box: VBoxContainer
 var image_inventory_status: Label
 var animation_timer: Timer
 var animation_frame := 0
-const TOWER_ANIMATION_FRAMES := 4
-const PROJECTILE_ANIMATION_FRAMES := 8
 
 func _ready() -> void:
 	_build_ui()
@@ -236,10 +233,14 @@ func _load_data() -> void:
 	_refresh_tower_list()
 	_set_status("Loaded: " + TOWER_FILE if file else "Failed to load JSON")
 
+func _get_tower_types() -> Array:
+	var types: Array = tower_data.keys()
+	types.sort()
+	return types
+
 func _refresh_tower_list() -> void:
 	tower_list.clear()
-	var keys: Array = tower_data.keys()
-	keys.sort()
+	var keys: Array = _get_tower_types()
 	for tower_type in keys:
 		var data: Dictionary = tower_data.get(tower_type, {})
 		if not data is Dictionary:
@@ -338,7 +339,9 @@ func _save_data() -> void:
 	file.store_string(JSON.stringify(tower_data, "  "))
 	file.close()
 	_refresh_tower_list()
-	tower_list.select(TOWER_TYPES.find(selected_type))
+	var selected_index := _get_tower_types().find(selected_type)
+	if selected_index >= 0:
+		tower_list.select(selected_index)
 	_set_status("SAVED: " + TOWER_FILE)
 
 func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
@@ -368,9 +371,9 @@ func _animated_texture(path: String, frame: int, total_frames: int) -> Texture2D
 
 func _refresh_animation_previews() -> void:
 	if sprite_preview:
-		sprite_preview.texture = _animated_texture(sprite_edit.text.strip_edges(), animation_frame, TOWER_ANIMATION_FRAMES)
+		sprite_preview.texture = _animated_texture(sprite_edit.text.strip_edges(), animation_frame, int(tower_data.get(selected_type, {}).get("sprite_frames", 4)))
 	if projectile_preview:
-		projectile_preview.texture = _animated_texture(projectile_edit.text.strip_edges(), animation_frame, PROJECTILE_ANIMATION_FRAMES)
+		projectile_preview.texture = _animated_texture(projectile_edit.text.strip_edges(), animation_frame, int(tower_data.get(selected_type, {}).get("projectile_frames", 8)))
 
 func _on_animation_tick() -> void:
 	animation_frame = (animation_frame + 1) % 8
