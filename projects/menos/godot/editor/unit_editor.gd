@@ -208,8 +208,6 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var animation_title := Label.new()
 	animation_title.text = "SPRITE ANIMATIONS"
 	animation_title.add_theme_font_size_override("font_size", 16)
-	var projectile_row := _image_grid_row(visuals_grid, "Projectile Animation", "projectile")
-
 	parent.add_child(animation_title)
 	var animation_grid := GridContainer.new()
 	animation_grid.columns = 2
@@ -217,6 +215,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	animation_grid.add_theme_constant_override("h_separation", 12)
 	animation_grid.add_theme_constant_override("v_separation", 4)
 	parent.add_child(animation_grid)
+	projectile_edit = _image_grid_row(animation_grid, "Projectile Animation", "projectile")
 	for animation_name in ["idle", "move", "attack", "hit", "death"]:
 		animation_edits[animation_name] = _image_grid_row(animation_grid, animation_name.to_upper(), "animation:" + animation_name)
 	file_dialog = FileDialog.new()
@@ -541,7 +540,6 @@ func _save_data() -> void:
 	data["robot_damage"] = float(robot_damage_spin.value)
 	data["robot_range"] = float(robot_range_spin.value)
 	data["robot_cooldown"] = float(robot_cooldown_spin.value)
-
 	data["projectile_anim"] = projectile_edit.text.strip_edges()
 	var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
 	visuals["sprite"] = sprite_edit.text.strip_edges()
@@ -559,7 +557,30 @@ func _save_data() -> void:
 		visuals["sprite_rect"] = sprite_rect
 	data["visuals"] = visuals
 	unit_data[selected_type] = data
-	var absolute_path := ProjectSettings.globalize_path(UNIT_FILE)
+	var source := str(unit_sources.get(selected_type, "unit"))
+	var target_file := ENEMY_FILE if source == "enemy" else UNIT_FILE
+	var catalog: Dictionary = {}
+	var target_read := FileAccess.open(target_file, FileAccess.READ)
+	if target_read:
+		var parsed_target = JSON.parse_string(target_read.get_as_text())
+		target_read.close()
+		if parsed_target is Dictionary:
+			catalog = parsed_target
+	if source == "enemy":
+		var enemy_data: Dictionary = data.duplicate(true)
+		var enemy_visuals: Dictionary = enemy_data.get("visuals", {}).duplicate(true)
+		enemy_data["base_damage"] = float(data.get("damage", 0.0))
+		enemy_data["attack_cooldown"] = float(data.get("cooldown", 1.0))
+		enemy_data["attack_range"] = float(data.get("range", 0.0))
+		enemy_data["sprite_anim"] = str(enemy_visuals.get("sprite", ""))
+		enemy_data.erase("visuals")
+		enemy_data.erase("damage")
+		enemy_data.erase("cooldown")
+		enemy_data.erase("range")
+		catalog[selected_type] = enemy_data
+	else:
+		catalog[selected_type] = data
+	var absolute_path := ProjectSettings.globalize_path(target_file)
 	var parent_dir := absolute_path.get_base_dir()
 	var dir_error := DirAccess.make_dir_recursive_absolute(parent_dir)
 	if dir_error != OK:
@@ -569,7 +590,7 @@ func _save_data() -> void:
 	if file == null:
 		_set_status("FAILED to open JSON for writing: %s." % error_string(FileAccess.get_open_error()))
 		return
-	var json_text := JSON.stringify(unit_data, "  ")
+	var json_text := JSON.stringify(catalog, "  ")
 	file.store_string(json_text)
 	file.flush()
 	var write_error := file.get_error()
@@ -577,7 +598,7 @@ func _save_data() -> void:
 	if write_error != OK:
 		_set_status("FAILED to write JSON: %s." % error_string(write_error))
 		return
-	var verify_file := FileAccess.open(UNIT_FILE, FileAccess.READ)
+	var verify_file := FileAccess.open(target_file, FileAccess.READ)
 	if verify_file == null:
 		_set_status("FAILED to verify saved JSON: %s." % error_string(FileAccess.get_open_error()))
 		return
@@ -586,13 +607,12 @@ func _save_data() -> void:
 	if verify_text.strip_edges() != json_text.strip_edges():
 		_set_status("FAILED: saved JSON verification mismatch.")
 		return
-	_refresh_unit_list()
+	unit_data[selected_type] = data
 	var selected_index := _find_unit_index(selected_type)
 	if selected_index >= 0:
 		unit_list.select(selected_index)
 		_on_unit_selected(selected_index)
 	_set_status("SAVED + VERIFIED: " + target_file)
-
 func _set_sprite_rect_controls(rect_values: Array) -> void:
 	var values := rect_values if rect_values.size() >= 4 else [0, 0, 0, 0]
 	sprite_rect_x_spin.value = float(values[0])
@@ -681,6 +701,8 @@ func _open_sprite_dialog(target: String = "sprite") -> void:
 func _on_file_selected(path: String) -> void:
 	if file_dialog_target == "default_image":
 		default_image_edit.text = path
+	elif file_dialog_target == "projectile":
+		projectile_edit.text = path
 	elif file_dialog_target.begins_with("animation:"):
 		var animation_name := file_dialog_target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):

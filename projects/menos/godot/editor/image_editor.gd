@@ -10,13 +10,16 @@ var source_list: ItemList
 var view: AssetRegionView
 var status: Label
 var current_index := -1
+var catalog_target_index := -1
 var current_path := ""
 var current_image: Image
 var source_index := -1
 var source_path := ""
 var source_image: Image
 var source_dialog: FileDialog
+var target_dialog: FileDialog
 var source_thumbnail_cache: Dictionary = {}
+var target_thumbnail_cache: Dictionary = {}
 var editing := false
 var usage_label: Label
 
@@ -74,6 +77,18 @@ func _build_ui() -> void:
 	clear_selection.text = "선택 이미지 해제"
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
+	var open_target_button := Button.new()
+	open_target_button.text = "다른 이미지 열기 (편집 대상)"
+	open_target_button.pressed.connect(_open_target_dialog)
+	left.add_child(open_target_button)
+	var reconnect_target_button := Button.new()
+	reconnect_target_button.text = "현재 이미지로 선택 카탈로그 교체"
+	reconnect_target_button.pressed.connect(_reconnect_current_to_selected_entry)
+	left.add_child(reconnect_target_button)
+	var new_catalog_button := Button.new()
+	new_catalog_button.text = "현재 이미지를 새 Asset Catalog로 등록"
+	new_catalog_button.pressed.connect(_add_current_image_to_asset_catalog)
+	left.add_child(new_catalog_button)
 	var audit_button := Button.new()
 	audit_button.text = "이미지 참조 점검"
 	audit_button.pressed.connect(_audit_image_references)
@@ -124,6 +139,17 @@ func _build_ui() -> void:
 	source_dialog.current_dir = "res://"
 	source_dialog.file_selected.connect(_on_source_file_selected)
 	add_child(source_dialog)
+	target_dialog = FileDialog.new()
+	target_dialog.title = "편집 대상 이미지 열기"
+	target_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	target_dialog.access = FileDialog.ACCESS_RESOURCES
+	target_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; 이미지"])
+	target_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
+	target_dialog.add_theme_constant_override("thumbnail_size", 112)
+	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_target_thumbnail"))
+	target_dialog.current_dir = "res://"
+	target_dialog.file_selected.connect(_on_target_file_selected)
+	add_child(target_dialog)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
@@ -181,7 +207,10 @@ func _scan_connected_images() -> void:
 	var seen := {}
 	_scan_json_images("res://content/towers/towers.json", "타워", "sprite_anim", "방어 시설 이미지", seen)
 	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.sprite", "플레이어 유닛 이미지", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.default_image", "유닛 Basic Image", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.default_image", "유닛 Profile Image", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "projectile_anim", "유닛 탄환 이미지", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "적 유닛", "sprite_anim", "적 유닛 이미지", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "적 유닛", "projectile_anim", "적 유닛 탄환 이미지", seen)
 	_scan_allied_animations(seen)
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
@@ -346,6 +375,7 @@ func _clear_image_selection() -> void:
 
 func _select_entry(index: int) -> void:
 	if editing: return
+	catalog_target_index = index
 	current_index = index
 	current_path = str(entries[index].path)
 	IMAGE_STATE.open_image(current_path)
@@ -357,6 +387,143 @@ func _select_entry(index: int) -> void:
 	usage_label.text = "용도: %s" % str(entries[index].get("usage", "용도 미지정"))
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
 	status.text = "대상: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+
+func _open_target_dialog() -> void:
+	if target_dialog == null:
+		return
+	target_thumbnail_cache.clear()
+	target_dialog.invalidate()
+	target_dialog.popup_centered(Vector2i(1000, 700))
+
+func _get_target_thumbnail(path: String) -> Texture2D:
+	var cached: Texture2D = target_thumbnail_cache.get(path) as Texture2D
+	if cached != null:
+		return cached
+	var loaded := load(path) as Texture2D
+	if loaded != null:
+		target_thumbnail_cache[path] = loaded
+	return loaded
+
+func _on_target_file_selected(path: String) -> void:
+	if editing:
+		_finish_erase()
+	var loaded := LOADER.load_image(path)
+	if loaded == null:
+		status.text = "편집 대상 이미지를 불러올 수 없습니다: %s" % path
+		return
+	current_index = -1
+	current_path = path
+	current_image = loaded
+	IMAGE_STATE.open_image(path)
+	list.deselect_all()
+	usage_label.text = "용도: 새 편집 대상 이미지"
+	_refresh_view()
+	status.text = "새 편집 대상: %s — 편집 후 기존 카탈로그를 선택해 교체할 수 있습니다." % path
+
+func _save_current_image_copy() -> String:
+	if not _require_image():
+		return ""
+	var dir := ProjectSettings.globalize_path(EDITED_DIR)
+	var err := DirAccess.make_dir_recursive_absolute(dir)
+	if err != OK:
+		return ""
+	var name := current_path.get_file().get_basename().to_snake_case()
+	if name.is_empty():
+		name = "image"
+	var output := "%s/%s_edit_%d.png" % [EDITED_DIR, name, Time.get_ticks_usec()]
+	err = current_image.save_png(ProjectSettings.globalize_path(output))
+	return output if err == OK else ""
+
+func _reconnect_current_to_selected_entry() -> void:
+	if not _require_image():
+		return
+	if catalog_target_index < 0 or catalog_target_index >= entries.size():
+		status.text = "왼쪽 연결 목록에서 교체할 카탈로그 항목을 먼저 선택하세요."
+		return
+	if str(entries[catalog_target_index].get("path", "")) == current_path:
+		status.text = "다른 이미지를 편집 대상으로 열어 주세요."
+		return
+	if source_path == current_path:
+		source_path = ""
+		source_image = null
+	var output := _save_current_image_copy()
+	if output.is_empty():
+		status.text = "편집 이미지를 저장하지 못해 카탈로그를 교체할 수 없습니다."
+		return
+	if catalog_target_index < 0 or catalog_target_index >= entries.size():
+		status.text = "왼쪽 연결 목록에서 교체할 카탈로그 항목을 먼저 선택하세요."
+		return
+	if not _replace_entry_reference(entries[catalog_target_index], output):
+		status.text = "이미지는 저장했지만 선택 카탈로그 참조 교체에 실패했습니다: %s" % output
+		return
+	current_path = output
+	IMAGE_STATE.open_image(output)
+	_refresh_view()
+	_scan_connected_images()
+	_select_path(output)
+	status.text = "선택 카탈로그 참조를 새 이미지로 교체했습니다: %s" % output
+
+func _replace_entry_reference(entry: Dictionary, new_path: String) -> bool:
+	var owner_kind := str(entry.get("owner_kind", ""))
+	if owner_kind == "json":
+		return _replace_json_value(str(entry.get("owner", "")), str(entry.get("owner_key", "")), str(entry.get("field", "")), new_path)
+	if owner_kind == "catalog":
+		return _replace_catalog_value(str(entry.get("owner_key", "")), new_path)
+	if owner_kind == "main":
+		return _replace_main_path(str(entry.get("owner_key", "")), new_path)
+	return false
+
+func _add_current_image_to_asset_catalog() -> void:
+	if not _require_image():
+		return
+	var output := _save_current_image_copy()
+	if output.is_empty():
+		status.text = "새 카탈로그용 PNG를 저장하지 못했습니다."
+		return
+	var catalog_path := "res://content/editor/asset_catalog.json"
+	var data: Variant = {}
+	if FileAccess.file_exists(catalog_path):
+		var file := FileAccess.open(catalog_path, FileAccess.READ)
+		if file != null:
+			data = JSON.parse_string(file.get_as_text())
+			file.close()
+	if not data is Dictionary:
+		data = {}
+	var assets: Array = data.get("assets", []) if data.get("assets", []) is Array else []
+	var base_id := "asset.image." + current_path.get_file().get_basename().to_snake_case()
+	if base_id == "asset.image.":
+		base_id = "asset.image.generated"
+	var asset_id := base_id
+	var suffix := 1
+	while _catalog_asset_id_exists(assets, asset_id):
+		asset_id = "%s.%02d" % [base_id, suffix]
+		suffix += 1
+	var display_name := current_path.get_file().get_basename().replace("_", " ").capitalize()
+	var width := current_image.get_width()
+	var height := current_image.get_height()
+	assets.append({
+		"asset_id": asset_id,
+		"kind": "object",
+		"group": "Other",
+		"display_name": display_name,
+		"source_path": output,
+		"source_rect_px": [0, 0, width, height],
+		"footprint_tiles": [maxi(1, ceili(float(width) / 32.0)), maxi(1, ceili(float(height) / 32.0))]
+	})
+	data["schema_version"] = int(data.get("schema_version", 1))
+	data["assets"] = assets
+	if not _write_json(catalog_path, data):
+		status.text = "PNG는 저장했지만 Asset Catalog 저장에 실패했습니다: %s" % output
+		return
+	_scan_connected_images()
+	_select_path(output)
+	status.text = "새 Asset Catalog 항목을 등록했습니다: %s" % asset_id
+
+func _catalog_asset_id_exists(assets: Array, asset_id: String) -> bool:
+	for asset in assets:
+		if asset is Dictionary and str(asset.get("asset_id", "")) == asset_id:
+			return true
+	return false
 
 func _get_source_thumbnail(path: String) -> Texture2D:
 	var cached: Texture2D = source_thumbnail_cache.get(path) as Texture2D
