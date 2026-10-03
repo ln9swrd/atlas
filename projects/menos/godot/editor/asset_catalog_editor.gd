@@ -250,7 +250,7 @@ func _build_interface() -> void:
 	source_dialog.access = FileDialog.ACCESS_RESOURCES
 	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Project Images"])
 	source_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
-	source_dialog.add_theme_constant_override("thumbnail_size", 112)
+	source_dialog.add_theme_constant_override("thumbnail_size", int(ConfigRepository.get_editor_value("ui", "file_dialog_thumbnail_size", 112)))
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_source_thumbnail"))
 	source_dialog.current_dir = "res://"
 	source_dialog.file_selected.connect(_on_source_file_selected)

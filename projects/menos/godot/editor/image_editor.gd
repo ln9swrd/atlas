@@ -240,7 +240,7 @@ func _build_ui() -> void:
 	source_dialog.access = FileDialog.ACCESS_RESOURCES
 	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; 이미지"])
 	source_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
-	source_dialog.add_theme_constant_override("thumbnail_size", 112)
+	source_dialog.add_theme_constant_override("thumbnail_size", int(ConfigRepository.get_editor_value("ui", "file_dialog_thumbnail_size", 112)))
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_source_thumbnail"))
 	source_dialog.current_dir = "res://"
 	source_dialog.file_selected.connect(_on_source_file_selected)
@@ -251,7 +251,7 @@ func _build_ui() -> void:
 	target_dialog.access = FileDialog.ACCESS_RESOURCES
 	target_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; 이미지"])
 	target_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
-	target_dialog.add_theme_constant_override("thumbnail_size", 112)
+	target_dialog.add_theme_constant_override("thumbnail_size", int(ConfigRepository.get_editor_value("ui", "file_dialog_thumbnail_size", 112)))
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_target_thumbnail"))
 	target_dialog.current_dir = "res://"
 	target_dialog.file_selected.connect(_on_target_file_selected)
