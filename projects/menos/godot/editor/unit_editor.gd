@@ -417,6 +417,50 @@ func _find_unit_index(unit_type: String) -> int:
 			return index
 	return -1
 
+func _confirm_delete_unit() -> void:
+	if selected_type.is_empty() or not unit_data.has(selected_type):
+		_set_status("No unit selected.")
+		return
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Delete Unit"
+	dialog.dialog_text = "Delete unit \"%s\" from its source JSON?" % str(unit_data[selected_type].get("name", selected_type))
+	add_child(dialog)
+	dialog.confirmed.connect(func(): _delete_unit(dialog))
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(480, 180))
+
+func _delete_unit(dialog: ConfirmationDialog) -> void:
+	var source := str(unit_sources.get(selected_type, "unit"))
+	var target_file := ENEMY_FILE if source == "enemy" else UNIT_FILE
+	var catalog: Dictionary = {}
+	var file := FileAccess.open(target_file, FileAccess.READ)
+	if file != null:
+		var parsed = JSON.parse_string(file.get_as_text())
+		file.close()
+		if parsed is Dictionary:
+			catalog = parsed
+	if not catalog.has(selected_type):
+		_set_status("FAILED: selected unit was not found in source JSON.")
+		dialog.queue_free()
+		return
+	catalog.erase(selected_type)
+	var out := FileAccess.open(target_file, FileAccess.WRITE)
+	if out == null:
+		_set_status("FAILED to write JSON.")
+		dialog.queue_free()
+		return
+	out.store_string(JSON.stringify(catalog, "  "))
+	out.close()
+	unit_data.erase(selected_type)
+	unit_sources.erase(selected_type)
+	selected_type = ""
+	_refresh_unit_list()
+	if unit_list.item_count > 0:
+		unit_list.select(0)
+		_on_unit_selected(0)
+	_set_status("DELETED unit from: " + target_file)
+	dialog.queue_free()
+
 func _create_new_unit() -> void:
 	var sequence := 1
 	var new_id := "unit_%02d" % sequence
