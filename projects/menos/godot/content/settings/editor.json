@@ -1,0 +1,8 @@
+{
+  "ui": {
+    "file_dialog_thumbnail_size": 112
+  },
+  "undo": {
+    "max_history": 100
+  }
+}

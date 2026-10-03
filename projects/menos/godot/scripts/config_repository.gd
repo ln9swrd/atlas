@@ -1,6 +1,8 @@
 class_name ConfigRepository
 extends RefCounted
 
+const EDITOR_SETTINGS_PATH := "res://content/settings/editor.json"
+
 static var _cache: Dictionary = {}
 
 static func load_dictionary(path: String, use_cache: bool = true) -> Dictionary:
