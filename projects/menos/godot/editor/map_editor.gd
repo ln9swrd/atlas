@@ -377,7 +377,7 @@ func _on_map_size_spin_changed(_value: float) -> void:
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
 	canvas.set_map_size_preview(new_size)
 	current_map_data = canvas.map_data
-	update_status("?????遺븍き?寃밸윿???????繹먮굟爰????? %d x %d ???? ???ㅼ뒧?????????쇨덧???????????브퀡???JSON??????μ떝?롳쭗???꿔꺂?????" % [new_size.x, new_size.y])
+	update_status("Map size changed: %d x %d. Preview updated." % [new_size.x, new_size.y])
 
 func _on_map_size_apply_pressed() -> void:
 	if current_map_data.is_empty() or canvas == null:
@@ -386,7 +386,7 @@ func _on_map_size_apply_pressed() -> void:
 	var old_value: Variant = current_map_data.get("map_tiles", [36, 24])
 	var old_size := Vector2i(int(old_value[0]), int(old_value[1])) if old_value is Array and old_value.size() >= 2 else Vector2i(36, 24)
 	if new_size == old_size:
-		update_status("?????濚밸Þ??猷⑥땡? ???ㅼ뒧????β뼯援??蒻멤넃??쒕???? ?????源낅돹?????? %d x %d." % [new_size.x, new_size.y])
+		update_status("Map size is already %d x %d." % [new_size.x, new_size.y])
 		return
 	if (new_size.x < old_size.x or new_size.y < old_size.y) and not _map_size_can_contain(new_size):
 		_sync_map_size_controls()
@@ -396,7 +396,7 @@ func _on_map_size_apply_pressed() -> void:
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
 	canvas.set_map_data(current_map_data)
 	_sync_map_size_controls()
-	update_status("?????????ㅼ뒧???? %d x %d ????(%d x %d px). ???ㅼ뒧?????????쇨덧???????????브퀡???JSON??????μ떝?롳쭗???꿔꺂?????" % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
+	update_status("Map size applied: %d x %d (%d x %d px)." % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
 
 func _map_size_can_contain(new_size: Vector2i) -> bool:
 	var pixel_size := Vector2(new_size) * 32.0
@@ -805,15 +805,15 @@ func _on_resize_placement_pressed() -> void:
 	var width_tiles := int(spin_placement_width.value)
 	var height_tiles := int(spin_placement_height.value)
 	if canvas.resize_selected_catalog_placement(width_tiles, height_tiles):
-		update_status("??ш끽維뽳쭩????????????????ㅼ뒧???? %d x %d ??." % [width_tiles, height_tiles])
+		update_status("Placement resized: %d x %d tiles." % [width_tiles, height_tiles])
 	else:
-		update_status("Resize failed: target bounds are outside the map or overlap another tile.")
+		update_status("Placement operation failed.")
 
 func _on_delete_placement_pressed() -> void:
 	if canvas.delete_selected_catalog_placement():
-		update_status("Selected asset placement deleted.")
+		update_status("Selected placement deleted.")
 	else:
-		update_status("???????ㅼ뒧?????????怨뚯댅: ?雅?퍔瑗ⓩ뤃?? ??ш끽維뽳쭩???????ㅳ늾????쒓랜堉????諭??怨뚮뼺?源놁벀 ??????????節떷???癲ル슢?ｅ젆???")
+		update_status("Placement operation failed.")
 
 func _on_map_data_changed() -> void:
 	if canvas:
