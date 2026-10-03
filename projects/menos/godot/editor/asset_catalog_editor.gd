@@ -732,8 +732,8 @@ func _select_asset_row(index: int) -> void:
 		return
 	selected_index = index
 	for row in asset_list.get_children():
-		if row.get_child_count() > 0 and row.get_child(0) is Button:
-			var row_button: Button = row.get_child(0)
+		if row.get_child_count() > 1 and row.get_child(1) is Button:
+			var row_button: Button = row.get_child(1)
 			row_button.button_pressed = row_button.get_meta("asset_index", -1) == index
 
 func _on_asset_row_gui_input(event: InputEvent, index: int) -> void:
