@@ -542,7 +542,7 @@ func _save_data() -> void:
 	data["robot_range"] = float(robot_range_spin.value)
 	data["robot_cooldown"] = float(robot_cooldown_spin.value)
 
-data["projectile_anim"] = projectile_edit.text.strip_edges()
+	data["projectile_anim"] = projectile_edit.text.strip_edges()
 	var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
 	visuals["sprite"] = sprite_edit.text.strip_edges()
 	visuals["default_image"] = default_image_edit.text.strip_edges()
