@@ -69,12 +69,12 @@ func _build_ui() -> void:
 	title_row.add_child(previous_button)
 	previous_button.visible = false
 	var content_button := Button.new()
-	content_button.text = "肄섑뀗痢??먮뵒??
+	content_button.text = "Content Editor"
 	content_button.pressed.connect(_request_content_editor)
 	title_row.add_child(content_button)
 	content_button.visible = false
 	var intro := Label.new()
-	intro.text = "?깅줉??移대떎濡쒓렇瑜?議고쉶?섍퀬, Source Image???쇰? ?곸뿭???좏깮???덈줈??移대떎濡쒓렇 ??ぉ?쇰줈 ?깅줉?⑸땲??"
+	intro.text = "Choose a Source Image, then drag to select a region or register it as a Visual Asset."
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(intro)
 	var body := HBoxContainer.new()
