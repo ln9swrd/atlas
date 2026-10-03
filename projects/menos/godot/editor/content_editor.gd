@@ -20,7 +20,7 @@ func _ready() -> void:
 	$MainLayout/TopMenu/Buttons/BtnUnit.pressed.connect(_open_unit_editor)
 	$MainLayout/TopMenu/Buttons/BtnTower.pressed.connect(_open_tower_editor)
 	$MainLayout/TopMenu/Buttons/BtnRobot.pressed.connect(_open_robot_editor)
-	$MainLayout/TopMenu/Buttons/BtnImage.pressed.connect(_open_image_editor)
+	$MainLayout/TopMenu/Buttons/BtnCatalog.pressed.connect(_open_image_editor)
 	$MainLayout/TopMenu/Buttons/BtnQuit.pressed.connect(_quit)
 	_open_map_editor()
 
@@ -101,7 +101,7 @@ func _open_image_editor() -> void:
 	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():
 		previous_editor_scene = current_editor_scene
 	_load_editor(IMAGE_EDITOR_SCENE)
-	_set_active_button($MainLayout/TopMenu/Buttons/BtnImage)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnCatalog)
 
 func _load_editor(scene_path: String) -> void:
 	current_editor_scene = scene_path
@@ -132,7 +132,7 @@ func _open_image_editor_from_child() -> void:
 	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():
 		previous_editor_scene = current_editor_scene
 	_load_editor(IMAGE_EDITOR_SCENE)
-	_set_active_button($MainLayout/TopMenu/Buttons/BtnImage)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnCatalog)
 
 func _open_previous_editor_from_child() -> void:
 	var target_scene := previous_editor_scene
@@ -170,7 +170,7 @@ func _set_active_button_for_scene(scene_path: String) -> void:
 	elif scene_path == ROBOT_EDITOR_SCENE:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnRobot)
 	elif scene_path == IMAGE_EDITOR_SCENE:
-		_set_active_button($MainLayout/TopMenu/Buttons/BtnImage)
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnCatalog)
 
 func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnMap.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMap
@@ -178,7 +178,7 @@ func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnUnit.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnUnit
 	$MainLayout/TopMenu/Buttons/BtnTower.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnTower
 	$MainLayout/TopMenu/Buttons/BtnRobot.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnRobot
-	$MainLayout/TopMenu/Buttons/BtnImage.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnImage
+	$MainLayout/TopMenu/Buttons/BtnCatalog.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnCatalog
 
 func _quit() -> void:
 	get_tree().quit()

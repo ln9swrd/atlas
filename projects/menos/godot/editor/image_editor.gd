@@ -59,7 +59,7 @@ func _build_ui() -> void:
 	var title_row := HBoxContainer.new()
 	root.add_child(title_row)
 	var title := Label.new()
-	title.text = "Visual Asset Catalog Editor"
+	title.text = "카다로그 에디터"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
@@ -72,7 +72,7 @@ func _build_ui() -> void:
 	content_button.pressed.connect(_request_content_editor)
 	title_row.add_child(content_button)
 	var intro := Label.new()
-	intro.text = "이미지를 열고 영역을 선택해 Visual Asset을 카탈로그로 등록합니다. 등록된 Asset은 유닛, 로봇, 타워 등의 Editor에서 참조할 수 있습니다."
+	intro.text = "등록된 카다로그를 조회하고, Source Image의 일부 영역을 선택해 새로운 카다로그 항목으로 등록합니다."
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(intro)
 	var body := HBoxContainer.new()
@@ -82,7 +82,7 @@ func _build_ui() -> void:
 	left.custom_minimum_size.x = 300
 	body.add_child(left)
 	var list_title := Label.new()
-	list_title.text = "Asset Browser"
+	list_title.text = "등록된 카다로그"
 	left.add_child(list_title)
 	var search_row := HBoxContainer.new()
 	left.add_child(search_row)
@@ -92,7 +92,7 @@ func _build_ui() -> void:
 	search_edit.text_changed.connect(func(_text: String): _refresh_entry_list())
 	search_row.add_child(search_edit)
 	filter_option = OptionButton.new()
-	for filter_name in ["전체", "Map", "Unit", "Robot", "Tower", "Enemy", "Runtime"]:
+	for filter_name in ["전체", "카다로그", "Map", "Unit", "Robot", "Tower", "Enemy", "Runtime"]:
 		filter_option.add_item(filter_name)
 	filter_option.item_selected.connect(func(_index: int): _refresh_entry_list())
 	search_row.add_child(filter_option)

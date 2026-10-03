@@ -45,6 +45,11 @@ layout_mode = 2
 toggle_mode = true
 text = "스테이지 에디터"
 
+[node name="BtnRobot" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2066593495]
+layout_mode = 2
+toggle_mode = true
+text = "로봇 에디터"
+
 [node name="BtnUnit" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1479768450]
 layout_mode = 2
 toggle_mode = true
@@ -55,15 +60,10 @@ layout_mode = 2
 toggle_mode = true
 text = "타워 에디터"
 
-[node name="BtnRobot" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2066593495]
+[node name="BtnCatalog" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1846618544]
 layout_mode = 2
 toggle_mode = true
-text = "로봇 에디터"
-
-[node name="BtnImage" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1846618544]
-layout_mode = 2
-toggle_mode = true
-text = "이미지 에디터"
+text = "카다로그 에디터"
 
 [node name="Spacer" type="Control" parent="MainLayout/TopMenu/Buttons" unique_id=1447405296]
 layout_mode = 2
