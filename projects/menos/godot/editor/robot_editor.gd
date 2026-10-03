@@ -94,6 +94,10 @@ func _build_ui() -> void:
 	save_btn.text = "SAVE JSON"
 	save_btn.pressed.connect(_save_data)
 	header.add_child(save_btn)
+	var delete_btn := Button.new()
+	delete_btn.text = "DELETE ROBOT"
+	delete_btn.pressed.connect(_confirm_delete_robot)
+	header.add_child(delete_btn)
 
 	var body := HSplitContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -479,6 +483,37 @@ func _on_animation_tick() -> void:
 		max_frames = maxi(max_frames, int(ROBOT_ANIMATION_FRAMES.get(animation_name, 1)))
 	animation_frame = (animation_frame + 1) % max_frames
 	_refresh_animation_previews()
+
+func _confirm_delete_robot() -> void:
+	if selected_type.is_empty() or not robot_data.has(selected_type):
+		_set_status("No robot selected.")
+		return
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Delete Robot"
+	dialog.dialog_text = "Delete robot \"%s\" from robots.json?" % str(robot_data[selected_type].get("name", selected_type))
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		_delete_robot(dialog)
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(480, 180))
+
+func _delete_robot(dialog: ConfirmationDialog) -> void:
+	robot_data.erase(selected_type)
+	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
+	if file == null:
+		_set_status("FAILED to write JSON.")
+		dialog.queue_free()
+		return
+	file.store_string(JSON.stringify(robot_data, "  "))
+	file.close()
+	selected_type = ""
+	_refresh_robot_list()
+	if robot_list.item_count > 0:
+		robot_list.select(0)
+		_on_robot_selected(0)
+	_set_status("DELETED robot from: " + ROBOT_FILE)
+	dialog.queue_free()
 
 func _save_data() -> void:
 	if selected_type.is_empty():

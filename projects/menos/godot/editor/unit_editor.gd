@@ -87,6 +87,10 @@ func _build_ui() -> void:
 	new_btn.text = "NEW UNIT"
 	new_btn.pressed.connect(_create_new_unit)
 	header.add_child(new_btn)
+	var delete_btn := Button.new()
+	delete_btn.text = "DELETE UNIT"
+	delete_btn.pressed.connect(_confirm_delete_unit)
+	header.add_child(delete_btn)
 	var body := HSplitContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.split_offset = 260
