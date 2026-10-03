@@ -1,67 +1,131 @@
 {
-  "robot_main": {
-    "id": "robot_main",
-    "name": "ATLAS-01",
-    "hp": 220.0,
-    "speed": 125.0,
-    "damage": 28.0,
-    "cooldown": 0.65,
-    "range": 180.0,
-    "sprite_idle": "res://assets/menos/sprites/atlas_idle.png",
-    "sprite_attack": "res://assets/menos/sprites/atlas_attack.png",
-    "sprite_move": "res://assets/menos/sprites/atlas_move.png",
-    "sprite_skill": "res://assets/menos/sprites/atlas_skill.png",
-    "projectile_anim": "res://assets/menos/sprites/bullet_defender.png",
-    "progression": {
-      "xp_per_level": 100,
-      "hp_growth": 0.05,
-      "damage_growth": 0.05,
-      "speed_growth": 0.02,
-      "range_growth": 0.02
-    },
-    "energy": {
-      "max": 100.0,
-      "regen": 12.0
-    }
-  },
-  "valkyrie": {
-    "id": "valkyrie",
-    "name": "VALKYRIE",
-    "hp": 220.0,
-    "speed": 125.0,
-    "damage": 28.0,
-    "cooldown": 0.65,
-    "range": 180.0,
-    "sprite_idle": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "sprite_idle_rect": [96, 0, 960, 200],
-    "sprite_attack": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "sprite_attack_rect": [96, 400, 1440, 220],
-    "sprite_move": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "sprite_move_rect": [96, 200, 1360, 200],
-    "sprite_skill": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-    "sprite_skill_rect": [96, 200, 1360, 300],
-    "default_image": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-    "default_image_rect": [0, 760, 330, 264],
-    "animations": {
-      "hit": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-      "death": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-      "skill1": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-      "skill2": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-      "skill3": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-      "special": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-      "finisher": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png"
-    },
-    "animation_rects": {
-      "hit": [96, 600, 760, 220],
-      "death": [96, 800, 1440, 224],
-      "skill1": [0, 200, 1536, 300],
-      "skill2": [0, 500, 1536, 250],
-      "skill3": [0, 750, 1536, 274],
-      "special": [0, 0, 1536, 300],
-      "finisher": [0, 300, 1536, 450],
-      "projectile": [0, 0, 1536, 200],
-      "profile": [0, 760, 330, 264]
-    },
-    "projectile_anim": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png"
-  }
+	"robot_main": {
+		"cooldown": 0.65,
+		"damage": 28.0,
+		"energy": {
+			"max": 100.0,
+			"regen": 12.0
+		},
+		"hp": 220.0,
+		"id": "robot_main",
+		"name": "ATLAS-01",
+		"progression": {
+			"damage_growth": 0.05,
+			"hp_growth": 0.05,
+			"range_growth": 0.02,
+			"speed_growth": 0.02,
+			"xp_per_level": 100.0
+		},
+		"projectile_anim": "res://assets/menos/sprites/bullet_defender.png",
+		"range": 180.0,
+		"speed": 125.0,
+		"sprite_attack": "res://assets/menos/sprites/atlas_attack.png",
+		"sprite_idle": "res://assets/menos/sprites/atlas_idle.png",
+		"sprite_move": "res://assets/menos/sprites/atlas_move.png",
+		"sprite_skill": "res://assets/menos/sprites/atlas_skill.png"
+	},
+	"valkyrie": {
+		"animation_rects": {
+			"death": [
+				96.0,
+				800.0,
+				1440.0,
+				224.0
+			],
+			"finisher": [
+				0.0,
+				300.0,
+				1536.0,
+				450.0
+			],
+			"hit": [
+				96.0,
+				600.0,
+				760.0,
+				220.0
+			],
+			"profile": [
+				0.0,
+				760.0,
+				330.0,
+				264.0
+			],
+			"projectile": [
+				0.0,
+				0.0,
+				1536.0,
+				200.0
+			],
+			"skill1": [
+				0.0,
+				200.0,
+				1536.0,
+				300.0
+			],
+			"skill2": [
+				0.0,
+				500.0,
+				1536.0,
+				250.0
+			],
+			"skill3": [
+				0.0,
+				750.0,
+				1536.0,
+				274.0
+			],
+			"special": [
+				0.0,
+				0.0,
+				1536.0,
+				300.0
+			]
+		},
+		"animations": {
+			"death": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+			"finisher": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+			"hit": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+			"skill1": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+			"skill2": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+			"skill3": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+			"special": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png"
+		},
+		"cooldown": 0.65,
+		"damage": 28.0,
+		"default_image": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+		"default_image_rect": [
+			0.0,
+			760.0,
+			330.0,
+			264.0
+		],
+		"hp": 220.0,
+		"id": "valkyrie",
+		"name": "VALKYRIE",
+		"projectile_anim": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+		"range": 180.0,
+		"speed": 125.0,
+		"sprite_attack": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"sprite_attack_rect": [
+			96.0,
+			400.0,
+			1440.0,
+			220.0
+		],
+		"sprite_idle": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.png",
+		"sprite_move": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"sprite_move_rect": [
+			96.0,
+			200.0,
+			1360.0,
+			200.0
+		],
+		"sprite_skill": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+		"sprite_skill_rect": [
+			96.0,
+			200.0,
+			1360.0,
+			300.0
+		]
+	}
 }
