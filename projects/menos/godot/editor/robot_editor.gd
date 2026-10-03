@@ -500,7 +500,7 @@ func _refresh_image_thumbnail(target: String) -> void:
 		elif animation_name == "move": path = move_edit.text.strip_edges()
 		elif animation_name == "skill": path = skill_edit.text.strip_edges()
 		elif animation_edits.has(animation_name): path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
-	thumbnail.texture = load(path) as Texture2D if not path.is_empty() else null
+	thumbnail.texture = _animated_texture(path, 0, 1) if not path.is_empty() else null
 	if target == "default_image" or target == "animation:idle":
 		_refresh_robot_preview()
 
