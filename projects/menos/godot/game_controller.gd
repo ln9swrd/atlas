@@ -1573,13 +1573,13 @@ func update_camera_edge_scroll(delta: float) -> void:
 	if get_minimap_screen_rect().has_point(mouse):
 		return
 	var direction := Vector2.ZERO
-	if mouse.x <= CAMERA_EDGE_MARGIN:
+	if mouse.x <= camera_edge_margin:
 		direction.x -= 1.0
-	elif mouse.x >= viewport_size.x - CAMERA_EDGE_MARGIN:
+	elif mouse.x >= viewport_size.x - camera_edge_margin:
 		direction.x += 1.0
-	if mouse.y <= CAMERA_EDGE_MARGIN:
+	if mouse.y <= camera_edge_margin:
 		direction.y -= 1.0
-	elif mouse.y < viewport_size.y - BOTTOM_HUD_HEIGHT and mouse.y >= viewport_size.y - BOTTOM_HUD_HEIGHT - CAMERA_EDGE_MARGIN:
+	elif mouse.y < viewport_size.y - BOTTOM_HUD_HEIGHT and mouse.y >= viewport_size.y - BOTTOM_HUD_HEIGHT - camera_edge_margin:
 		direction.y += 1.0
 	if direction == Vector2.ZERO:
 		return
@@ -1679,8 +1679,8 @@ func handle_click(point: Vector2) -> void:
 		if inventory_rect.has_point(point):
 			var grid_origin := inventory_rect.position + Vector2(24, 70)
 			var cell := Vector2i(floor((point.x - grid_origin.x) / 52.0), floor((point.y - grid_origin.y) / 52.0))
-			if cell.x >= 0 and cell.x < INVENTORY_COLS and cell.y >= 0 and cell.y < INVENTORY_ROWS:
-				var index := cell.y * INVENTORY_COLS + cell.x
+			if cell.x >= 0 and cell.x < inventory_cols and cell.y >= 0 and cell.y < inventory_rows:
+				var index := cell.y * inventory_cols + cell.x
 				if index < player_profile.inventory.size():
 					equip_item(str(player_profile.inventory[index].get("id", "")))
 					play_sfx("ui_confirm")
@@ -2052,15 +2052,15 @@ func draw_inventory() -> void:
 		draw_string(ThemeDB.fallback_font, slot_rect.position + Vector2(10, 39), equipped_name, HORIZONTAL_ALIGNMENT_LEFT, 220, 11, Color("f0d28a"))
 		slot_y += slot_rect.size.y + 10.0
 	var grid_origin := rect.position + Vector2(24, 70)
-	for y in range(INVENTORY_ROWS):
-		for x in range(INVENTORY_COLS):
+	for y in range(inventory_rows):
+		for x in range(inventory_cols):
 			var cell_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
 			draw_rect(cell_rect, Color("0b171b"), true)
 			draw_rect(cell_rect, Color("30484f"), false, 1.0)
-	for index in range(min(player_profile.inventory.size(), INVENTORY_COLS * INVENTORY_ROWS)):
+	for index in range(min(player_profile.inventory.size(), inventory_cols * inventory_rows)):
 		var item: Dictionary = player_profile.inventory[index]
-		var x := index % INVENTORY_COLS
-		var y := index / INVENTORY_COLS
+		var x := index % inventory_cols
+		var y := index / inventory_cols
 		var item_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
 		var slot := str(item.get("slot", ""))
 		var item_color := Color("f0d28a") if player_profile.equipped_items.get(slot, "") == item.get("id", "") else Color("7ed6ce")
