@@ -44,6 +44,14 @@ static func consume_selection(target: String) -> String:
 static func cancel_selection() -> void:
 	selection_target = ""
 	selection_asset_id = ""
+	selection_owner_kind = ""
+	selection_owner_key = ""
+	selection_usage = ""
+	selection_frames = 1
 	selection_pending = false
 
-static func clear() -> void
+static func clear() -> void:
+	selected_path = ""
+	selection_asset_id = ""
+	selection_target = ""
+	selection_pending = false
