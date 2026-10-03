@@ -552,13 +552,15 @@ func _select_entry(index: int) -> void:
 	if entry_index < 0 or entry_index >= entries.size(): return
 	catalog_target_index = entry_index
 	current_index = entry_index
-	current_path = str(entries[entry_index].get("path", ""))
+	var entry: Dictionary = entries[entry_index]
+	current_path = str(entry.get("path", ""))
 	if IMAGE_STATE.selection_pending:
 		IMAGE_STATE.selected_path = current_path
+		if str(entry.get("owner_kind", "")) == "visual_asset":
+			IMAGE_STATE.selection_asset_id = str(entry.get("owner_key", ""))
 	else:
 		IMAGE_STATE.open_image(current_path)
 	current_image = LOADER.load_image(current_path)
-	var entry: Dictionary = entries[entry_index]
 	var catalog_region: Rect2i = _entry_region(entry)
 	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "Unknown")), current_path, str(entry.get("owner", "Unknown")), str(entry.get("field", "Unknown"))]
 	if current_image == null:

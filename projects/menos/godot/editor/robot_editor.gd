@@ -619,17 +619,17 @@ func _open_image_editor_for_target(target: String) -> void:
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
-	if path.is_empty():
-		_set_status("No image assigned for %s." % target)
-		return
-
 	var source_path := path
 	var asset_id := ""
-	var resolved := VisualAssetResolver.resolve(path)
-	if resolved != null and not resolved.source.is_empty():
-		source_path = resolved.source
-		asset_id = resolved.id
+	if not path.is_empty():
+		var resolved := VisualAssetResolver.resolve(path)
+		if resolved != null and not resolved.source.is_empty():
+			source_path = resolved.source
+			asset_id = resolved.id
 
+	# Select Asset always opens the Catalog Editor, even when the slot is empty.
+	# When an existing Visual Asset is assigned, pass its ID so the Catalog Editor
+	# can select that exact catalog entry.
 	IMAGE_STATE.open_image(source_path, target, asset_id)
 	request_image_editor.emit()
 

@@ -29,14 +29,28 @@
 	},
 	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).02": {
 		"category": "Other",
-		"frames": 1,
+		"frames": 1.0,
 		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).02",
 		"owner": "",
 		"region": [
-			122,
-			10,
-			936,
-			176
+			122.0,
+			10.0,
+			936.0,
+			176.0
+		],
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "visual_asset_catalog"
+	},
+	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).03": {
+		"category": "Other",
+		"frames": 1,
+		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).03",
+		"owner": "",
+		"region": [
+			116,
+			8,
+			940,
+			182
 		],
 		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
 		"usage": "visual_asset_catalog"
