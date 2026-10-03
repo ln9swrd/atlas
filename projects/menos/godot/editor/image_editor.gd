@@ -114,7 +114,7 @@ func _build_ui() -> void:
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
 	var use_selected_button := Button.new()
-	use_selected_button.text = "?醫뤾문 Asset ????
+	use_selected_button.text = "Use Selected Asset"
 	use_selected_button.pressed.connect(_use_selected_asset)
 	left.add_child(use_selected_button)
 	var open_target_button := Button.new()
@@ -122,7 +122,7 @@ func _build_ui() -> void:
 	open_target_button.pressed.connect(_open_target_dialog)
 	left.add_child(open_target_button)
 	var reconnect_target_button := Button.new()
-	reconnect_target_button.text = "?紐꾩춿 野껉퀗?득에?筌〓챷?????筌왖 ?대Ŋ猿?
+	reconnect_target_button.text = "Reconnect to Previous Editor"
 	reconnect_target_button.pressed.connect(_reconnect_current_to_selected_entry)
 	left.add_child(reconnect_target_button)
 	reconnect_target_button.visible = false
@@ -156,7 +156,7 @@ func _build_ui() -> void:
 	source_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	source_panel.add_child(source_help)
 	var source_full := Button.new()
-	source_full.text = "Source ?袁⑷퍥嚥??대Ŋ猿?
+	source_full.text = "Use Full Source"
 	source_full.pressed.connect(_replace_from_source_full)
 	source_panel.add_child(source_full)
 	var source_open := Button.new()
@@ -164,12 +164,12 @@ func _build_ui() -> void:
 	source_open.pressed.connect(_open_source_dialog)
 	source_panel.add_child(source_open)
 	var source_region := Button.new()
-	source_region.text = "?醫뤾문 ?怨몃열??곗쨮 ?대Ŋ猿?
+	source_region.text = "Use Selected Region"
 	source_region.pressed.connect(_replace_from_source_region)
 	source_panel.add_child(source_region)
 	var normalize := Button.new()
 	normalize.name = "NormalizeUnitButton"
-	normalize.text = "?醫딅뻺 ??由경에?筌띿쉸???대Ŋ猿?
+	normalize.text = "Normalize Selection"
 	normalize.pressed.connect(_replace_source_region_as_unit)
 	source_panel.add_child(normalize)
 	var source_reference := Button.new()
@@ -212,19 +212,19 @@ func _build_ui() -> void:
 	var tools := HBoxContainer.new()
 	right.add_child(tools)
 	tools.visible = false
-	_add_button(tools, "??곕솁 ????, _start_erase)
-	_add_button(tools, "?癒?뀮疫?, _crop_selection)
-	_add_button(tools, "?ル슣??獄쏆꼷??, _flip_h)
-	_add_button(tools, "?怨밸릭 獄쏆꼷??, _flip_v)
+	_add_button(tools, "Erase", _start_erase)
+	_add_button(tools, "Crop Selection", _crop_selection)
+	_add_button(tools, "Flip Horizontal", _flip_h)
+	_add_button(tools, "Flip Vertical", _flip_v)
 	_add_button(tools, "??볧?獄쎻뫚堉????읈", _rotate_cw)
 	_add_button(tools, "獄쏆꼷?녷?獄쎻뫚堉????읈", _rotate_ccw)
 	_add_button(tools, "??梨??怨몃열 ??볤탢", _trim_alpha)
-	_add_button(tools, "????+ ?怨뚭퍙 癰궰野?, _save_reconnect)
+	_add_button(tools, "Save + Reconnect", _save_reconnect)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
 	resize_row.visible = false
 	var resize_label := Label.new()
-	resize_label.text = "??由?癰궰野?
+	resize_label.text = "Resize"
 	resize_row.add_child(resize_label)
 	var width_spin := SpinBox.new()
 	width_spin.name = "WidthSpin"
@@ -256,7 +256,7 @@ func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) 
 func _scan_connected_images() -> void:
 	entries.clear()
 	var seen := {}
-	_scan_json_images("res://content/towers/towers.json", "????, "sprite_anim", "獄쎻뫗堉???뽮퐬 ???筌왖", "Tower", seen)
+	_scan_json_images("res://content/towers/towers.json", "towers", "sprite_anim", "Tower sprite animation", "Tower", seen)
 	_scan_json_images("res://content/allied_units/allied_units.json", "?醫딅뻺", "visuals.sprite", "???쟿??곷선 ?醫딅뻺 ???筌왖", "Unit", seen)
 	_scan_json_images("res://content/allied_units/allied_units.json", "?醫딅뻺", "visuals.default_image", "?醫딅뻺 Profile Image", "Unit", seen)
 	_scan_json_images("res://content/allied_units/allied_units.json", "?醫딅뻺", "projectile_anim", "?醫딅뻺 ?袁れ넎 ???筌왖", "Unit", seen)
@@ -387,7 +387,7 @@ func _scan_allied_animations(seen: Dictionary) -> void:
 			var image_path := str(animations[animation_name])
 			if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
-			entries.append({"label": "?袁㏓럵 ?醫딅뻺 / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "?袁㏓럵 ?醫딅뻺 %s ?醫딅빍筌롫뗄??? % str(animation_name), "category": "Unit"})
+			entries.append({"label": "Unit / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "Unit animation %s" % str(animation_name), "category": "Unit"})
 
 func _scan_robot_images(seen: Dictionary) -> void:
 	var path := "res://content/robots/robots.json"
@@ -417,7 +417,7 @@ func _scan_robot_images(seen: Dictionary) -> void:
 				var animation_path := str(animations[animation_name])
 				if animation_path.is_empty() or seen.has(animation_path): continue
 				seen[animation_path] = true
-				entries.append({"label": "嚥≪뮆??/ %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "嚥≪뮆??%s ?醫딅빍筌롫뗄??? % str(animation_name), "category": "Robot"})
+				entries.append({"label": "Robot / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "Robot animation %s" % str(animation_name), "category": "Robot"})
 
 func _scan_catalog(seen: Dictionary) -> void:
 	var path := "res://content/editor/asset_catalog.json"
@@ -529,7 +529,7 @@ func _select_entry(index: int) -> void:
 	current_image = LOADER.load_image(current_path)
 	var entry: Dictionary = entries[entry_index]
 	var catalog_region: Rect2i = _entry_region(entry)
-	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "沃섎챷???)), current_path, str(entry.get("owner", "沃섎챷???)), str(entry.get("field", "沃섎챷???))]
+	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "Unknown")), current_path, str(entry.get("owner", "Unknown")), str(entry.get("field", "Unknown"))]
 	if current_image == null:
 		status.text = "???筌왖???븍뜄???????곷뮸??덈뼄: %s" % current_path
 		return
@@ -878,7 +878,7 @@ func _replace_source_region_as_unit() -> void:
 	var region := source_image.get_region(rect)
 	var frame_size := Vector2i(60, 90)
 	var frame_count := 4
-	var unit_label := "????
+	var unit_label := "Unit"
 	if owner_path == "res://content/allied_units/allied_units.json":
 		var sizes := {"basic": Vector2i(60, 90), "light": Vector2i(60, 90), "ranged": Vector2i(60, 90), "heavy": Vector2i(72, 96), "support": Vector2i(72, 96)}
 		frame_size = sizes.get(owner_key, Vector2i(60, 90))
