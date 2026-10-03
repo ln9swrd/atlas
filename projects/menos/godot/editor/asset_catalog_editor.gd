@@ -862,14 +862,13 @@ func _refresh_list() -> void:
 		_select_asset_row(selected_index)
 
 func _entry_preview_icon(entry: Dictionary) -> Texture2D:
-	var value := str(entry.get("asset_id", ""))
+	var is_visual_asset := str(entry.get("catalog_kind", "")) == "visual_asset"
+	var value := str(entry.get("asset_id", "")) if is_visual_asset else str(entry.get("source_path", ""))
 	var fallback_region := Rect2()
 	var rect_values: Variant = entry.get("source_rect_px", [])
 	if rect_values is Array and rect_values.size() == 4:
 		fallback_region = Rect2(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
 	var fallback_frames := maxi(1, int(entry.get("frames", 1)))
-	if value.is_empty():
-		value = str(entry.get("source_path", ""))
 	return EDITOR_THUMBNAIL_UTIL.create(value, fallback_region, fallback_frames)
 
 func _load_catalog() -> void:
