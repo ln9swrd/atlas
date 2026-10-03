@@ -72,6 +72,7 @@ func _build_ui() -> void:
 	content_button.text = "콘텐츠 에디터"
 	content_button.pressed.connect(_request_content_editor)
 	title_row.add_child(content_button)
+	content_button.visible = false
 	var intro := Label.new()
 	intro.text = "등록된 카다로그를 조회하고, Source Image의 일부 영역을 선택해 새로운 카다로그 항목으로 등록합니다."
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
