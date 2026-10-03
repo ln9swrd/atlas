@@ -394,11 +394,12 @@ func _load_unit_catalog_file(path: String, source: String) -> void:
 		unit_sources[id] = source
 
 func _get_unit_types() -> Array:
-	var types: Array = BASE_UNIT_TYPES.duplicate()
+	var types: Array = []
 	for key in unit_data.keys():
 		var unit_type := str(key)
 		if not types.has(unit_type):
 			types.append(unit_type)
+	types.sort()
 	return types
 
 func _refresh_unit_list() -> void:

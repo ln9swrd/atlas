@@ -145,6 +145,10 @@ func _build_ui() -> void:
 	new_catalog_button.text = "선택 영역을 Visual Asset으로 등록"
 	new_catalog_button.pressed.connect(_create_visual_asset_from_selection)
 	left.add_child(new_catalog_button)
+	var delete_visual_asset_button := Button.new()
+	delete_visual_asset_button.text = "선택 Visual Asset 삭제"
+	delete_visual_asset_button.pressed.connect(_confirm_delete_visual_asset)
+	left.add_child(delete_visual_asset_button)
 	var full_catalog_button := Button.new()
 	full_catalog_button.text = "?袁⑷퍥 ???筌왖??Visual Asset??곗쨮 ?源낆쨯"
 	full_catalog_button.pressed.connect(_create_visual_asset_from_full_image)
@@ -648,6 +652,43 @@ func _replace_entry_reference(entry: Dictionary, new_path: String) -> bool:
 	if owner_kind == "main":
 		return _replace_main_path(str(entry.get("owner_key", "")), new_path)
 	return false
+
+func _confirm_delete_visual_asset() -> void:
+	if current_index < 0 or current_index >= entries.size() or str(entries[current_index].get("owner_kind", "")) != "visual_asset":
+		status.text = "삭제할 Visual Asset을 선택하세요."
+		return
+	var asset_id := str(entries[current_index].get("owner_key", ""))
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Visual Asset 삭제"
+	dialog.dialog_text = "Visual Asset \"%s\"을(를) 삭제하시겠습니까? 기존 에디터 참조는 자동으로 변경하지 않습니다." % asset_id
+	add_child(dialog)
+	dialog.confirmed.connect(func(): _delete_visual_asset(asset_id, dialog))
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(560, 200))
+
+func _delete_visual_asset(asset_id: String, dialog: ConfirmationDialog) -> void:
+	var catalog_path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(catalog_path, FileAccess.READ)
+	if file == null:
+		status.text = "Visual Asset Catalog를 열 수 없습니다."
+		dialog.queue_free()
+		return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary or not data.has(asset_id):
+		status.text = "Visual Asset을 찾을 수 없습니다: " + asset_id
+		dialog.queue_free()
+		return
+	data.erase(asset_id)
+	if not _write_json(catalog_path, data):
+		status.text = "Visual Asset Catalog 저장에 실패했습니다."
+		dialog.queue_free()
+		return
+	VisualAssetResolver.reload()
+	_scan_connected_images()
+	current_index = -1
+	status.text = "Visual Asset 삭제 완료: " + asset_id
+	dialog.queue_free()
 
 func _create_visual_asset_from_selection() -> void:
 	if not _require_image():
