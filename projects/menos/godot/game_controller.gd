@@ -5,6 +5,7 @@ var _map_catalog_assets: Dictionary = {}
 var _runtime_map_data: Dictionary = {}
 
 
+const ALLIED_UNIT_COLOR_SHADER := preload("res://shaders/allied_unit_color.gdshader")
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
 	"facility_base": preload("res://assets/menos/sprites/facility_base.png"),
