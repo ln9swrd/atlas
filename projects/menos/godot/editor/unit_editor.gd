@@ -1,7 +1,7 @@
-﻿class_name UnitEditorMain
+class_name UnitEditorMain
 extends Control
 
-const UNIT_FILE := "res://content/allied_units/allied_units.json"
+const UNIT_FILE := "res://content/allied_units/allied_units.json"`nconst ENEMY_FILE := "res://content/enemies/enemies.json"
 const BASE_UNIT_TYPES := ["basic", "light", "ranged", "heavy", "support"]
 const UNIT_DESCRIPTIONS := {
 	"basic": "기본 전투형 유닛. 공격과 생존의 균형을 갖춘 표준형입니다.",
@@ -11,8 +11,9 @@ const UNIT_DESCRIPTIONS := {
 	"support": "지원형 유닛. 아군의 전투를 보조하고 회복합니다."
 }
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
+const UNIT_COLOR_SHADER = preload("res://shaders/allied_unit_color.gdshader")
 
-var unit_data: Dictionary = {}
+var unit_data: Dictionary = {}`nvar unit_sources: Dictionary = {}`nvar projectile_edit: LineEdit
 var selected_type := ""
 var unit_list: OptionButton
 var name_edit: LineEdit
@@ -167,6 +168,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	color_row.add_child(color_label)
 	color_edit = ColorPickerButton.new()
 	color_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	color_edit.color_changed.connect(_on_preview_color_changed)
 	color_row.add_child(color_edit)
 	properties_grid.add_child(color_row)
 	melee_check = CheckButton.new()
@@ -186,7 +188,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	visuals_grid.add_theme_constant_override("v_separation", 4)
 	parent.add_child(visuals_grid)
 	sprite_edit = _image_grid_row(visuals_grid, "Sprite Animation", "sprite")
-	default_image_edit = _image_grid_row(visuals_grid, "Basic Image", "default_image")
+	default_image_edit = _image_grid_row(visuals_grid, "Profile Image", "default_image")
 	var sprite_rect_row := HBoxContainer.new()
 	sprite_rect_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var sprite_rect_title := Label.new()
@@ -199,11 +201,11 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_rect_h_spin = _spin_row_inline(sprite_rect_row, "H", 0, 100000, 1, 0)
 	visuals_grid.add_child(sprite_rect_row)
 	for rect_spin in [sprite_rect_x_spin, sprite_rect_y_spin, sprite_rect_w_spin, sprite_rect_h_spin]:
-		rect_spin.value_changed.connect(func(_value): _refresh_sprite_preview(sprite_edit.text.strip_edges()))
+		rect_spin.value_changed.connect(func(_value): _refresh_sprite_preview(default_image_edit.text.strip_edges()))
 	var animation_title := Label.new()
 	animation_title.text = "SPRITE ANIMATIONS"
 	animation_title.add_theme_font_size_override("font_size", 16)
-	parent.add_child(animation_title)
+	var projectile_row := _image_grid_row(visuals_grid, "Projectile Animation", "projectile")`n`nparent.add_child(animation_title)
 	var animation_grid := GridContainer.new()
 	animation_grid.columns = 2
 	animation_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -212,14 +214,6 @@ func _build_properties(parent: VBoxContainer) -> void:
 	parent.add_child(animation_grid)
 	for animation_name in ["idle", "move", "attack", "hit", "death"]:
 		animation_edits[animation_name] = _image_grid_row(animation_grid, animation_name.to_upper(), "animation:" + animation_name)
-	var image_tools := HBoxContainer.new()
-	image_tools.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var edit_image := Button.new()
-	edit_image.text = "EDIT IMAGE / BROWSE REFERENCE"
-	edit_image.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	edit_image.pressed.connect(_open_image_editor)
-	image_tools.add_child(edit_image)
-	parent.add_child(image_tools)
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
@@ -285,6 +279,12 @@ func _image_grid_row(parent: GridContainer, label_text: String, target: String) 
 	thumbnail.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	thumbnail.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	thumbnail.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	thumbnail.mouse_filter = Control.MOUSE_FILTER_STOP
+	thumbnail.gui_input.connect(func(event: InputEvent):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			_open_image_editor_for_target(target)
+	)
+	thumbnail.tooltip_text = "클릭하여 이미지 에디터에서 열기"
 	row.add_child(thumbnail)
 	image_thumbnail_controls[target] = thumbnail
 	var edit := LineEdit.new()
@@ -366,7 +366,7 @@ func _load_data() -> void:
 	_refresh_unit_list()
 	_set_status("Loaded: " + UNIT_FILE if file else "Failed to load JSON")
 
-func _get_unit_types() -> Array:
+func _load_unit_catalog_file(path: String, source: String) -> void:\n\tvar file := FileAccess.open(path, FileAccess.READ)\n\tif file == null:\n\t\treturn\n\tvar parsed = JSON.parse_string(file.get_as_text())\n\tfile.close()\n\tif not parsed is Dictionary:\n\t\treturn\n\tfor key in parsed.keys():\n\t\tvar id := str(key)\n\t\tvar data: Dictionary = parsed[key].duplicate(true)\n\t\tif source == "enemy":\n\t\t\tvar visuals: Dictionary = data.get("visuals", {}).duplicate(true)\n\t\t\tvar sprite_path := str(data.get("sprite_anim", ""))\n\t\t\tif not sprite_path.is_empty():\n\t\t\t\tvisuals["sprite"] = sprite_path\n\t\t\t\tvisuals["default_image"] = str(visuals.get("default_image", sprite_path))\n\t\t\tdata["visuals"] = visuals\n\t\tunit_data[id] = data\n\t\tunit_sources[id] = source\n\nfunc _get_unit_types() -> Array:
 	var types: Array = BASE_UNIT_TYPES.duplicate()
 	for key in unit_data.keys():
 		var unit_type := str(key)
@@ -378,7 +378,7 @@ func _refresh_unit_list() -> void:
 	unit_list.clear()
 	for unit_type in _get_unit_types():
 		var data: Dictionary = unit_data.get(unit_type, {})
-		unit_list.add_item(str(data.get("name", unit_type.to_upper())))
+		var source_label := "ENEMY / " if unit_sources.get(unit_type, "unit") == "enemy" else ""\n\t\tunit_list.add_item(source_label + str(data.get("name", unit_type.to_upper())))
 		unit_list.set_item_metadata(unit_list.item_count - 1, unit_type)
 		# Combo list is text-only. The selected unit thumbnail is shown separately below.
 		unit_list.set_item_icon(unit_list.item_count - 1, null)
@@ -423,7 +423,7 @@ func _refresh_image_thumbnail(target: String) -> void:
 		path = sprite_edit.text.strip_edges()
 	elif target == "default_image":
 		path = default_image_edit.text.strip_edges()
-	elif target.begins_with("animation:"):
+	elif target == "projectile":\n\t\tpath = projectile_edit.text.strip_edges()\n\telif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
@@ -431,7 +431,7 @@ func _refresh_image_thumbnail(target: String) -> void:
 
 func _refresh_all_image_thumbnails() -> void:
 	_refresh_image_thumbnail("sprite")
-	_refresh_image_thumbnail("default_image")
+	_refresh_image_thumbnail("default_image")\n\t_refresh_image_thumbnail("projectile")
 	for animation_name in animation_edits.keys():
 		_refresh_image_thumbnail("animation:" + str(animation_name))
 
@@ -455,8 +455,8 @@ func _on_unit_selected(index: int) -> void:
 	color_edit.color = Color(str(data.get("color", "#ffffff")))
 	var visuals: Dictionary = data.get("visuals", {})
 	sprite_edit.text = str(visuals.get("sprite", ""))
-	default_image_edit.text = str(visuals.get("default_image", visuals.get("sprite", "")))
-	var animations: Dictionary = visuals.get("animations", {}) if visuals.get("animations", {}) is Dictionary else {}
+	default_image_edit.text = str(visuals.get("default_image", ""))
+	projectile_edit.text = str(data.get("projectile_anim", ""))`n`n`tvar animations: Dictionary = visuals.get("animations", {}) if visuals.get("animations", {}) is Dictionary else {}
 	for animation_name in animation_edits.keys():
 		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, ""))
 	var sprite_rect: Array = visuals.get("sprite_rect", [])
@@ -473,7 +473,7 @@ func _on_unit_selected(index: int) -> void:
 	melee_check.button_pressed = bool(data.get("melee", false))
 	melee_cooldown_spin.value = float(data.get("melee_cooldown", 1.0))
 	melee_cooldown_spin.editable = melee_check.button_pressed
-	_refresh_sprite_preview(sprite_edit.text)
+	_refresh_sprite_preview(default_image_edit.text)
 	_refresh_all_image_thumbnails()
 	robot_damage_spin.value = float(data.get("robot_damage", 0.0))
 	robot_range_spin.value = float(data.get("robot_range", 0.0))
@@ -511,7 +511,7 @@ func _save_data() -> void:
 	data["melee_cooldown"] = float(melee_cooldown_spin.value)
 	data["robot_damage"] = float(robot_damage_spin.value)
 	data["robot_range"] = float(robot_range_spin.value)
-	data["robot_cooldown"] = float(robot_cooldown_spin.value)
+	data["robot_cooldown"] = float(robot_cooldown_spin.value)`n`ndata["projectile_anim"] = projectile_edit.text.strip_edges()
 	var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
 	visuals["sprite"] = sprite_edit.text.strip_edges()
 	visuals["default_image"] = default_image_edit.text.strip_edges()
@@ -534,7 +534,7 @@ func _save_data() -> void:
 	if dir_error != OK:
 		_set_status("FAILED: cannot create JSON directory (%s)." % error_string(dir_error))
 		return
-	var file := FileAccess.open(UNIT_FILE, FileAccess.WRITE)
+	var file := FileAccess.open(target_file, FileAccess.WRITE)
 	if file == null:
 		_set_status("FAILED to open JSON for writing: %s." % error_string(FileAccess.get_open_error()))
 		return
@@ -560,7 +560,7 @@ func _save_data() -> void:
 	if selected_index >= 0:
 		unit_list.select(selected_index)
 		_on_unit_selected(selected_index)
-	_set_status("SAVED + VERIFIED: " + UNIT_FILE)
+	_set_status("SAVED + VERIFIED: " + target_file)
 
 func _set_sprite_rect_controls(rect_values: Array) -> void:
 	var values := rect_values if rect_values.size() >= 4 else [0, 0, 0, 0]
@@ -594,12 +594,41 @@ func _texture_from_sprite_data(path: String, rect_values: Array) -> Texture2D:
 	return atlas
 
 func _refresh_sprite_preview(path: String) -> void:
-	if sprite_preview:
-		sprite_preview.texture = _texture_from_sprite_data(path, _get_sprite_rect_from_controls())
+	if not sprite_preview:
+		return
+	sprite_preview.texture = _texture_from_sprite_data(path, _get_sprite_rect_from_controls())
+	_apply_preview_color()
 
-func _open_image_editor() -> void:
-	IMAGE_STATE.open_image(sprite_edit.text.strip_edges())
-	get_tree().change_scene_to_file("res://editor/image_editor.tscn")
+func _on_preview_color_changed(_color: Color) -> void:
+	_apply_preview_color()
+
+func _apply_preview_color() -> void:
+	if not sprite_preview:
+		return
+	var material := sprite_preview.material as ShaderMaterial
+	if material == null:
+		material = ShaderMaterial.new()
+		material.shader = UNIT_COLOR_SHADER
+		sprite_preview.material = material
+	material.set_shader_parameter("team_color", color_edit.color)
+
+signal request_image_editor
+
+func _open_image_editor_for_target(target: String) -> void:
+	var path := ""
+	if target == "sprite":
+		path = sprite_edit.text.strip_edges()
+	elif target == "default_image":
+		path = default_image_edit.text.strip_edges()
+	elif target == "projectile":\n\t\tpath = projectile_edit.text.strip_edges()\n\telif target.begins_with("animation:"):
+		var animation_name := target.trim_prefix("animation:")
+		if animation_edits.has(animation_name):
+			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+	if path.is_empty():
+		_set_status("No image assigned for %s." % target)
+		return
+	IMAGE_STATE.open_image(path)
+	request_image_editor.emit()
 
 func _get_file_thumbnail(path: String) -> Texture2D:
 	var cached: Texture2D = file_thumbnail_cache.get(path) as Texture2D
@@ -623,11 +652,11 @@ func _on_file_selected(path: String) -> void:
 		var animation_name := file_dialog_target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			(animation_edits[animation_name] as LineEdit).text = path
-		_refresh_image_thumbnail(file_dialog_target)
 	else:
 		sprite_edit.text = path
-		_refresh_sprite_preview(path)
 	_refresh_image_thumbnail(file_dialog_target)
+	if file_dialog_target == "default_image":
+		_refresh_sprite_preview(path)
 
 func _set_status(message: String) -> void:
 	if status_label:

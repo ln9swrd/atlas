@@ -179,9 +179,9 @@ func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) 
 func _scan_connected_images() -> void:
 	entries.clear()
 	var seen := {}
-	_scan_json_images("res://content/enemies/enemies.json", "적", "sprite_anim", "적 유닛 이미지", seen)
 	_scan_json_images("res://content/towers/towers.json", "타워", "sprite_anim", "방어 시설 이미지", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "아군 유닛", "visuals.sprite", "플레이어 유닛 이미지", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.sprite", "플레이어 유닛 이미지", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.default_image", "유닛 Basic Image", seen)
 	_scan_allied_animations(seen)
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
@@ -272,17 +272,25 @@ func _scan_robot_images(seen: Dictionary) -> void:
 	for key in data:
 		if not data[key] is Dictionary: continue
 		var robot_name := str(data[key].get("name", key))
-		for field in ["sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "projectile_anim"]:
+		for field in ["sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "default_image", "projectile_anim"]:
 			var image_path := str(data[key].get(field, ""))
 			if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
-			var usage := "로봇 기본 대기 이미지"
+			var usage := "로봇 대기 이미지"
 			match field:
 				"sprite_attack": usage = "로봇 공격 이미지"
+				"default_image": usage = "로봇 Profile Image"
 				"sprite_move": usage = "로봇 이동 이미지"
 				"sprite_skill": usage = "로봇 스킬 이미지"
 				"projectile_anim": usage = "로봇 투사체 이미지"
 			entries.append({"label": "로봇 / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage})
+		var animations: Dictionary = data[key].get("animations", {})
+		if animations is Dictionary:
+			for animation_name in animations:
+				var animation_path := str(animations[animation_name])
+				if animation_path.is_empty() or seen.has(animation_path): continue
+				seen[animation_path] = true
+				entries.append({"label": "로봇 / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "로봇 %s 애니메이션" % str(animation_name)})
 
 func _scan_catalog(seen: Dictionary) -> void:
 	var path := "res://content/editor/asset_catalog.json"
@@ -437,13 +445,13 @@ func _replace_from_source_region() -> void:
 func _replace_source_region_as_unit() -> void:
 	if not _require_image(): return
 	if current_index < 0 or current_index >= entries.size():
-		status.text = "먼저 적 또는 타워 이미지를 선택하세요."
+		status.text = "먼저 유닛 또는 타워 이미지를 선택하세요."
 		return
 	var entry: Dictionary = entries[current_index]
 	var owner_path := str(entry.get("owner", ""))
 	var owner_key := str(entry.get("owner_key", ""))
-	if str(entry.get("owner_kind", "")) != "json" or (owner_path != "res://content/towers/towers.json" and owner_path != "res://content/enemies/enemies.json"):
-		status.text = "적 또는 타워에 연결된 이미지에서 사용할 수 있습니다."
+	if str(entry.get("owner_kind", "")) != "json" or (owner_path != "res://content/towers/towers.json" and owner_path != "res://content/allied_units/allied_units.json"):
+		status.text = "유닛 또는 타워에 연결된 이미지에서 사용할 수 있습니다."
 		return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
@@ -459,11 +467,11 @@ func _replace_source_region_as_unit() -> void:
 	var frame_size := Vector2i(60, 90)
 	var frame_count := 4
 	var unit_label := "타워"
-	if owner_path == "res://content/enemies/enemies.json":
-		var sizes := {"normal": Vector2i(38, 52), "rusher": Vector2i(42, 54), "heavy": Vector2i(64, 72), "giant": Vector2i(112, 150)}
-		frame_size = sizes.get(owner_key, Vector2i(42, 54))
+	if owner_path == "res://content/allied_units/allied_units.json":
+		var sizes := {"basic": Vector2i(60, 90), "light": Vector2i(60, 90), "ranged": Vector2i(60, 90), "heavy": Vector2i(72, 96), "support": Vector2i(72, 96)}
+		frame_size = sizes.get(owner_key, Vector2i(60, 90))
 		frame_count = 8
-		unit_label = "적"
+		unit_label = "유닛"
 	var frame := Image.create(frame_size.x, frame_size.y, false, Image.FORMAT_RGBA8)
 	frame.fill(Color(0, 0, 0, 0))
 	var scale := minf(float(frame_size.x) / float(region.get_width()), float(frame_size.y) / float(region.get_height()))

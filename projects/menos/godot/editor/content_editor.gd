@@ -117,6 +117,8 @@ func _load_editor(scene_path: String) -> void:
 	current_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	if current_editor.has_signal("request_content_editor"):
 		current_editor.request_content_editor.connect(_open_content_editor_from_child)
+	if current_editor.has_signal("request_image_editor"):
+		current_editor.request_image_editor.connect(_open_image_editor_from_child)
 	if current_editor.has_signal("request_previous_editor"):
 		current_editor.request_previous_editor.connect(_open_previous_editor_from_child)
 	if current_editor.has_signal("request_map_editor_for_path"):
@@ -125,6 +127,12 @@ func _load_editor(scene_path: String) -> void:
 func _open_content_editor_from_child() -> void:
 	_load_editor(MAP_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnMap)
+
+func _open_image_editor_from_child() -> void:
+	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():
+		previous_editor_scene = current_editor_scene
+	_load_editor(IMAGE_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnImage)
 
 func _open_previous_editor_from_child() -> void:
 	var target_scene := previous_editor_scene
