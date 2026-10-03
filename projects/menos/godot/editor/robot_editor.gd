@@ -232,10 +232,20 @@ func _build_ui() -> void:
 	content.add_child(skill_preview_row)
 	for animation_name in SKILL_ANIMATIONS:
 		animation_previews[animation_name] = _create_animation_preview(skill_preview_row, animation_name.capitalize(), Vector2(90, 120))
-	var ability_note := Label.new()
-	ability_note.text = "SPECIAL ABILITIES: managed by content/skills/skills.json"
-	ability_note.add_theme_font_size_override("font_size", 13)
-	content.add_child(ability_note)
+func _animation_display_name(animation_name: String) -> String:
+	match animation_name:
+		"skill1":
+			return "스킬1"
+		"skill2":
+			return "스킬2"
+		"skill3":
+			return "스킬3"
+		"special":
+			return "스킬(스페셜)"
+		"finisher":
+			return "스킬(피니셔)"
+		_:
+			return animation_name.to_upper()
 
 func _line_grid_row(parent: GridContainer, label_text: String) -> LineEdit:
 	var row := HBoxContainer.new()
