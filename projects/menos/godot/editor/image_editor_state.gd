@@ -12,15 +12,18 @@ static func open_image(path: String, target: String = "", asset_id: String = "")
 	selection_target = target
 	selection_pending = not target.is_empty()
 
-static func apply_selection(path: String = "") -> void:
-	if not path.is_empty():
-		selected_path = path
+static func apply_selection(value: String = "") -> void:
+	if not value.is_empty():
+		selection_asset_id = value
+		selected_path = value
 	selection_pending = true
 
 static func consume_selection(target: String) -> String:
 	if not selection_pending or selection_target != target:
 		return ""
-	var result := selected_path
+	var result := selection_asset_id
+	if result.is_empty():
+		result = selected_path
 	selection_pending = false
 	selection_target = ""
 	selection_asset_id = ""

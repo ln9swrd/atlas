@@ -43,7 +43,15 @@ func _use_selected_asset() -> void:
 	if not IMAGE_STATE.selection_pending:
 		status.text = "?袁⑹삺 Editor?癒?퐣 Asset ?醫뤾문???遺욧퍕???怨밴묶揶쎛 ?袁⑤뻸??덈뼄."
 		return
-	IMAGE_STATE.apply_selection(current_path)
+	var asset_id := IMAGE_STATE.selection_asset_id
+	if asset_id.is_empty():
+		var resolved := VisualAssetResolver.resolve(current_path)
+		if resolved != null:
+			asset_id = resolved.id
+	if asset_id.is_empty():
+		status.text = "No Visual Asset is selected."
+		return
+	IMAGE_STATE.apply_selection(asset_id)
 	request_previous_editor.emit()
 
 func _ready() -> void:

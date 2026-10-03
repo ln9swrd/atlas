@@ -17,7 +17,7 @@ var source_thumbnail_cache: Dictionary = {}
 var selected_index := -1
 var editing_asset_index := -1
 var source_dialog: FileDialog
-var asset_list: ItemList
+var asset_list: VBoxContainer
 var region_view: AssetRegionView
 var source_label: Label
 var source_preview_panel: PanelContainer
@@ -159,14 +159,14 @@ func _build_interface() -> void:
 	var list_title := Label.new()
 	list_title.text = "REGISTERED ASSETS (double-click row to edit crop)"
 	details.add_child(list_title)
-	asset_list = ItemList.new()
-	asset_list.custom_minimum_size.y = 170
-	asset_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	asset_list.icon_mode = ItemList.ICON_MODE_LEFT
-	asset_list.fixed_icon_size = Vector2i(48, 48)
-	asset_list.item_selected.connect(_on_asset_selected)
-	asset_list.item_activated.connect(_on_asset_activated)
-	details.add_child(asset_list)
+	var list_scroll := ScrollContainer.new()
+	list_scroll.custom_minimum_size.y = 170
+	list_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	asset_list = VBoxContainer.new()
+	asset_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	asset_list.mouse_filter = Control.MOUSE_FILTER_STOP
+	list_scroll.add_child(asset_list)
+	details.add_child(list_scroll)
 	var form := GridContainer.new()
 	form.columns = 2
 	details.add_child(form)
@@ -212,6 +212,7 @@ func _build_interface() -> void:
 	var buttons := HBoxContainer.new()
 	details.add_child(buttons)
 	_add_button(buttons, "항목 추가", _add_entry)
+	_add_button(buttons, "이름 변경", _rename_entry)
 	_add_button(buttons, "선택 항목 업데이트", _update_entry)
 	_add_button(buttons, "선택 항목 삭제", _remove_entry)
 	_add_button(buttons, "카탈로그 저장", _on_save_catalog_pressed)
@@ -385,7 +386,7 @@ func _save_edited_image() -> void:
 	_finish_image_edit()
 	status_label.text = "Saved edited crop %s and updated asset %s." % [output_path, asset_id]
 	_refresh_list()
-	asset_list.select(completed_index)
+	_select_asset_row(completed_index)
 
 func _safe_asset_filename(asset_id: String) -> String:
 	var result := ""
@@ -495,6 +496,18 @@ func _add_entry() -> void:
 	_refresh_list()
 	status_label.text = "Added %s. Save Catalog to persist changes." % entry.asset_id
 
+func _rename_entry() -> void:
+	if selected_index < 0 or selected_index >= entries.size():
+		status_label.text = "Select a catalog entry before changing its name."
+		return
+	var new_name := name_edit.text.strip_edges()
+	if new_name.is_empty():
+		status_label.text = "Enter a display name first."
+		return
+	entries[selected_index]["display_name"] = new_name
+	_refresh_list()
+	status_label.text = "Name changed. Save Catalog to persist the change."
+
 func _update_entry() -> void:
 	if selected_index < 0 or selected_index >= entries.size():
 		status_label.text = "Select a catalog entry to update."
@@ -507,7 +520,7 @@ func _update_entry() -> void:
 		return
 	entries[selected_index] = entry
 	_refresh_list()
-	asset_list.select(selected_index)
+	_select_asset_row(selected_index)
 	status_label.text = "Updated entry. Save Catalog to persist changes."
 
 func _remove_entry() -> void:
@@ -564,15 +577,76 @@ func _clear_form() -> void:
 	_update_rect_label(Rect2i())
 	_update_footprint_display(Rect2i())
 
+func _sort_entries_by_name() -> void:
+	entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_name := str(a.get("display_name", "")).strip_edges().to_lower()
+		var b_name := str(b.get("display_name", "")).strip_edges().to_lower()
+		if a_name == b_name:
+			return str(a.get("asset_id", "")) < str(b.get("asset_id", ""))
+		return a_name < b_name
+	)
+
+func _select_asset_row(index: int) -> void:
+	if index < 0 or index >= entries.size():
+		return
+	selected_index = index
+	for row in asset_list.get_children():
+		if row.get_child_count() > 0 and row.get_child(0) is Button:
+			var row_button: Button = row.get_child(0)
+			row_button.button_pressed = row_button.get_meta("asset_index", -1) == index
+
+func _on_asset_row_gui_input(event: InputEvent, index: int) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.double_click:
+		_on_asset_activated(index)
+
+func _build_asset_row(entry: Dictionary, index: int) -> void:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size.y = 58
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	asset_list.add_child(row)
+
+	var text_button := Button.new()
+	text_button.text = "%s\n%s  / %s" % [entry.get("display_name", "?"), str(entry.get("kind", "tile")).capitalize(), str(entry.get("group", "?"))]
+	text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_button.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	text_button.toggle_mode = true
+	text_button.set_meta("asset_index", index)
+	text_button.pressed.connect(func() -> void:
+		_on_asset_selected(index)
+		_select_asset_row(index)
+	)
+	text_button.gui_input.connect(func(event: InputEvent) -> void:
+		_on_asset_row_gui_input(event, index)
+	)
+	row.add_child(text_button)
+
+	var preview := TextureRect.new()
+	preview.custom_minimum_size = Vector2(48, 48)
+	preview.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview.texture = _entry_preview_icon(entry)
+	row.add_child(preview)
+
 func _refresh_list() -> void:
-	asset_list.clear()
-	for entry in entries:
-		var kind_text := str(entry.get("kind", "tile")).capitalize()
-		var group_text := str(entry.get("group", "?"))
-		var display_text := "%s\n%s  / %s" % [entry.get("display_name", "?"), kind_text, group_text]
-		asset_list.add_item(display_text, _entry_preview_icon(entry))
+	var selected_asset_id := ""
 	if selected_index >= 0 and selected_index < entries.size():
-		asset_list.select(selected_index)
+		selected_asset_id = str(entries[selected_index].get("asset_id", ""))
+	_sort_entries_by_name()
+	selected_index = -1
+	if not selected_asset_id.is_empty():
+		for index in range(entries.size()):
+			if str(entries[index].get("asset_id", "")) == selected_asset_id:
+				selected_index = index
+				break
+	for child in asset_list.get_children():
+		child.queue_free()
+	for index in range(entries.size()):
+		_build_asset_row(entries[index], index)
+	if selected_index >= 0 and selected_index < entries.size():
+		_select_asset_row(selected_index)
 
 func _entry_preview_icon(entry: Dictionary) -> Texture2D:
 	var rect_values: Variant = entry.get("source_rect_px", [])

@@ -719,21 +719,21 @@ func _apply_pending_asset_selection() -> void:
 	var target := IMAGE_STATE.selection_target
 	if target.is_empty() or not IMAGE_STATE.selection_pending:
 		return
-	var path := IMAGE_STATE.consume_selection(target)
-	if path.is_empty():
+	var asset_id := IMAGE_STATE.consume_selection(target)
+	if asset_id.is_empty():
 		return
 	if target == "sprite":
-		sprite_edit.text = path
+		sprite_edit.text = asset_id
 	elif target == "default_image":
-		default_image_edit.text = path
+		default_image_edit.text = asset_id
 	elif target == "projectile":
-		projectile_edit.text = path
+		projectile_edit.text = asset_id
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
-			(animation_edits[animation_name] as LineEdit).text = path
+			(animation_edits[animation_name] as LineEdit).text = asset_id
 	_refresh_all_image_thumbnails()
-	_set_status("Asset selected: " + path)
+	_set_status("Asset selected: " + asset_id)
 
 func _open_image_editor_for_target(target: String) -> void:
 	var path := ""
