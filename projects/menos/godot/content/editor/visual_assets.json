@@ -29,8 +29,50 @@
 	},
 	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.02": {
 		"category": "Other",
-		"frames": 1,
+		"frames": 1.0,
 		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.02",
+		"owner": "",
+		"region": [
+			114.0,
+			8.0,
+			950.0,
+			176.0
+		],
+		"source": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.png",
+		"usage": "visual_asset_catalog"
+	},
+	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.03": {
+		"category": "Other",
+		"frames": 1.0,
+		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.03",
+		"owner": "",
+		"region": [
+			114.0,
+			8.0,
+			950.0,
+			176.0
+		],
+		"source": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.png",
+		"usage": "visual_asset_catalog"
+	},
+	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.04": {
+		"category": "Other",
+		"frames": 1.0,
+		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.04",
+		"owner": "",
+		"region": [
+			114.0,
+			8.0,
+			950.0,
+			176.0
+		],
+		"source": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.png",
+		"usage": "visual_asset_catalog"
+	},
+	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.05": {
+		"category": "Other",
+		"frames": 1,
+		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.05",
 		"owner": "",
 		"region": [
 			114,

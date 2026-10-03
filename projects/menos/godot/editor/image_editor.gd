@@ -678,7 +678,20 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		status.text = "Visual Asset Catalog 저장에 실패했습니다."
 		return
 	_scan_connected_images()
-	_select_path(current_path)
+	var created_index := -1
+	for index in range(entries.size()):
+		var entry: Dictionary = entries[index]
+		if str(entry.get("owner_kind", "")) == "visual_asset" and str(entry.get("owner_key", "")) == asset_id:
+			created_index = index
+			break
+	if created_index >= 0:
+		for list_index in range(filtered_indices.size()):
+			if filtered_indices[list_index] == created_index:
+				list.select(list_index)
+				_select_entry(list_index)
+				break
+	else:
+		_select_path(current_path)
 	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_target.is_empty():
 		IMAGE_STATE.apply_selection(asset_id)
 		status.text = "Visual Asset 등록 완료 및 원래 Editor에 적용 준비: %s | 영역 %d × %d px" % [asset_id, rect.size.x, rect.size.y]
