@@ -1784,16 +1784,12 @@ func _draw() -> void:
 	for unit in allied_units:
 		if unit.hp <= 0.0:
 			continue
-		var unit_size := Vector2(52, 72)
 		var unit_feet := unit.position + Vector2(0, 28)
 		draw_oval(unit_feet, 25.0, 8.0, Color(0, 0, 0, 0.45))
 		draw_arc(unit_feet, 27.0, 0, TAU, 20, Color("7ed6ce"), 2.0)
 		if unit.flash > 0.0:
 			draw_circle(unit.position, 24.0, Color.WHITE, false, 3.0)
-		var unit_texture: Texture2D = allied_sprite_catalog.get(unit.type, null)
-		if unit_texture != null:
-			draw_sprite(unit_texture, unit.position, unit_size)
-		else:
+		if allied_render_nodes.get(unit.id, null) == null:
 			draw_circle(unit.position, 20.0, Color("7ed6ce"))
 		var hp_position := unit.position + Vector2(-26, -42)
 		draw_rect(Rect2(hp_position - Vector2(1, 1), Vector2(54, 6)), Color("101f25"))
