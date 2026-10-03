@@ -350,6 +350,7 @@ func _on_robot_selected(index: int) -> void:
 	skill_edit.text = str(data.get("sprite_skill", "res://assets/menos/sprites/atlas_skill.png"))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
 	default_image_edit.text = str(data.get("default_image", data.get("sprite_idle", "")))
+	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
 	animation_rects = data.get("animation_rects", {}) if data.get("animation_rects", {}) is Dictionary else {}
 	for animation_name in animation_edits.keys():
 		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, data.get("sprite_skill", "")))

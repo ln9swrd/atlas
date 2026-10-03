@@ -33,19 +33,34 @@
     "cooldown": 0.65,
     "range": 180.0,
     "sprite_idle": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "sprite_attack": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+    "sprite_idle_rect": [96, 0, 960, 200],
+    "sprite_attack": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+    "sprite_attack_rect": [96, 400, 1440, 220],
     "sprite_move": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+    "sprite_move_rect": [96, 200, 1360, 200],
     "sprite_skill": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-    "default_image": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+    "sprite_skill_rect": [96, 200, 1360, 300],
+    "default_image": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
     "animations": {
-      "hit": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-      "death": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+      "hit": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+      "death": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
       "skill1": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
       "skill2": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
       "skill3": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-      "special": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-      "finisher": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png"
+      "special": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+      "finisher": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png"
     },
-    "projectile_anim": ""
+    "animation_rects": {
+      "hit": [96, 600, 760, 220],
+      "death": [96, 800, 1440, 224],
+      "skill1": [0, 200, 1536, 300],
+      "skill2": [0, 500, 1536, 250],
+      "skill3": [0, 750, 1536, 274],
+      "special": [0, 0, 1536, 300],
+      "finisher": [0, 300, 1536, 450],
+      "projectile": [0, 0, 1536, 200],
+      "profile": [0, 760, 330, 264]
+    },
+    "projectile_anim": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png"
   }
 }
