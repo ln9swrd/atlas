@@ -471,7 +471,7 @@ func _begin_edit_stroke() -> void:
 func _finish_edit_stroke() -> void:
 	if edit_stroke_active and edit_stroke_changed:
 		undo_history.append(edit_stroke_snapshot)
-		if undo_history.size() > MAX_UNDO_HISTORY:
+		if undo_history.size() > max_undo_history:
 			undo_history.pop_front()
 	edit_stroke_snapshot = {}
 	edit_stroke_active = false
