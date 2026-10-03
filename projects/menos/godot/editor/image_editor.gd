@@ -617,6 +617,14 @@ func _create_visual_asset_from_selection() -> void:
 	if not _require_image():
 		return
 	var rect := view.selected_region
+	# When arriving from Robot/Unit/Tower Editor, the selected Visual Asset already
+	# defines the intended region. Keep that region as the default registration area.
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		var selected_entry: Dictionary = entries[current_index] if current_index >= 0 and current_index < entries.size() else {}
+		rect = _entry_region(selected_entry)
+		if rect.size.x > 0 and rect.size.y > 0:
+			view.selected_region = rect
+			view.queue_redraw()
 	if rect.size.x <= 0 or rect.size.y <= 0:
 		status.text = "먼저 이미지에서 카탈로그로 만들 영역을 드래그해서 선택하세요."
 		return
