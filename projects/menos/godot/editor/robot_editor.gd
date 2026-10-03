@@ -558,8 +558,6 @@ func _refresh_all_image_thumbnails() -> void:
 	_refresh_robot_preview()
 	_refresh_image_thumbnail("default_image")
 	_refresh_image_thumbnail("projectile")
-	for animation_name in ["idle", "attack", "move", "skill"]:
-		_refresh_image_thumbnail("animation:" + animation_name)
 	for animation_name in animation_edits.keys():
 		_refresh_image_thumbnail("animation:" + str(animation_name))
 
@@ -643,15 +641,7 @@ func _on_file_selected(path: String) -> void:
 		default_image_edit.text = resource_path
 	elif file_dialog_target.begins_with("animation:"):
 		var animation_name := file_dialog_target.trim_prefix("animation:")
-		if animation_name == "idle":
-			idle_edit.text = resource_path
-		elif animation_name == "attack":
-			attack_edit.text = resource_path
-		elif animation_name == "move":
-			move_edit.text = resource_path
-		elif animation_name == "skill":
-			skill_edit.text = resource_path
-		elif animation_edits.has(animation_name):
+		if animation_edits.has(animation_name):
 			(animation_edits[animation_name] as LineEdit).text = resource_path
 	_refresh_animation_previews()
 	_set_status("Imported image: " + resource_path)
