@@ -43,7 +43,7 @@
 	},
 	"robot.valkyrie.hit": {
 		"category": "Robot",
-		"frames": 1.0,
+		"frames": 4.0,
 		"id": "robot.valkyrie.hit",
 		"owner": "",
 		"region": [
@@ -56,8 +56,8 @@
 		"usage": "visual_asset_catalog"
 	},
 	"robot.valkyrie.idle": {
-		"category": "Other",
-		"frames": 1.0,
+		"category": "Robot",
+		"frames": 8.0,
 		"id": "robot.valkyrie.idle",
 		"owner": "",
 		"region": [

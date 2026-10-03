@@ -64,9 +64,16 @@ func _ready() -> void:
 	animation_timer.timeout.connect(_on_animation_tick)
 	add_child(animation_timer)
 	_load_data()
+	var pending_robot := IMAGE_STATE.selection_owner_key if IMAGE_STATE.selection_pending and IMAGE_STATE.selection_owner_kind == "robot" else ""
+	var initial_index := 0
+	if not pending_robot.is_empty():
+		for i in range(robot_list.item_count):
+			if str(robot_list.get_item_metadata(i)) == pending_robot:
+				initial_index = i
+				break
 	if robot_list.item_count > 0:
-		robot_list.select(0)
-		_on_robot_selected(0)
+		robot_list.select(initial_index)
+		_on_robot_selected(initial_index)
 	_apply_pending_asset_selection()
 
 func _build_ui() -> void:
@@ -564,19 +571,36 @@ func _refresh_image_thumbnail(target: String) -> void:
 		return
 	var thumbnail := image_thumbnail_controls[target] as TextureRect
 	var path := ""
+	var fallback_region := Rect2()
+	var fallback_frames := 1
 	if target == "default_image":
 		path = default_image_edit.text.strip_edges()
+		fallback_region = _rect_from_values(robot_data.get(selected_type, {}).get("default_image_rect", []))
 	elif target == "projectile":
 		path = projectile_edit.text.strip_edges()
+		fallback_region = _rect_from_values(animation_rects.get("projectile", []))
+		fallback_frames = _animation_frame_count("projectile")
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
-	var texture := EDITOR_THUMBNAIL_UTIL.create(path) if not path.is_empty() else null
+		fallback_region = _rect_from_values(animation_rects.get(animation_name, []))
+		fallback_frames = _animation_frame_count(animation_name)
+	var texture := EDITOR_THUMBNAIL_UTIL.create(path, fallback_region, fallback_frames) if not path.is_empty() else null
 	thumbnail.texture = texture
 	thumbnail.scale = Vector2.ONE
 	if target == "default_image" or target == "animation:idle":
 		_refresh_robot_preview()
+
+func _rect_from_values(values: Variant) -> Rect2:
+	if values is Array and values.size() >= 4:
+		return Rect2(
+			float(values[0]),
+			float(values[1]),
+			float(values[2]),
+			float(values[3])
+		)
+	return Rect2()
 
 func _on_preview_color_changed(_color: Color) -> void:
 	_apply_preview_color()
