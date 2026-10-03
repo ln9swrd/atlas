@@ -136,7 +136,9 @@ func _open_image_editor_from_child() -> void:
 
 func _open_previous_editor_from_child() -> void:
 	var target_scene := previous_editor_scene
-	if target_scene.is_empty() or target_scene == IMAGE_EDITOR_SCENE:
+	if ImageEditorState.selection_owner_kind == "robot":
+		target_scene = ROBOT_EDITOR_SCENE
+	elif target_scene.is_empty() or target_scene == IMAGE_EDITOR_SCENE:
 		target_scene = MAP_EDITOR_SCENE
 	_load_editor(target_scene)
 	_set_active_button_for_scene(target_scene)
