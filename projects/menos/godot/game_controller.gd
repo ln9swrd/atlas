@@ -203,7 +203,10 @@ func _load_allied_unit_catalog() -> void:
 	for unit_id in allied_unit_catalog.keys():
 		var definition := AlliedUnitDefinition.from_catalog(str(unit_id), allied_unit_catalog[unit_id])
 		allied_unit_definitions[unit_id] = definition
-		allied_sprite_catalog[unit_id] = _texture_from_catalog_entry(definition.visuals, "sprite")
+		var profile_texture: Texture2D = _texture_from_catalog_entry(definition.visuals, "default_image")
+`t	if profile_texture == null:
+`t		profile_texture = _texture_from_catalog_entry(definition.visuals, "sprite")
+`t	allied_sprite_catalog[unit_id] = profile_texture
 
 func _load_enemy_catalog() -> void:
 	enemy_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json")

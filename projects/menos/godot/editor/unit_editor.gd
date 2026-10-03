@@ -210,7 +210,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	animation_title.add_theme_font_size_override("font_size", 16)
 	var projectile_row := _image_grid_row(visuals_grid, "Projectile Animation", "projectile")
 
-parent.add_child(animation_title)
+	parent.add_child(animation_title)
 	var animation_grid := GridContainer.new()
 	animation_grid.columns = 2
 	animation_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
