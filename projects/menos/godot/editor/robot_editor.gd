@@ -379,16 +379,18 @@ func _on_robot_selected(index: int) -> void:
 	cooldown_spin.value = float(data.get("cooldown", 0.65))
 	range_spin.value = float(data.get("range", 180.0))
 	color_edit.color = Color(str(data.get("color", "ffffffff")))
-	idle_edit.text = str(data.get("sprite_idle", "res://assets/menos/sprites/atlas_idle.png"))
-	attack_edit.text = str(data.get("sprite_attack", "res://assets/menos/sprites/atlas_attack.png"))
-	move_edit.text = str(data.get("sprite_move", "res://assets/menos/sprites/atlas_move.png"))
-	skill_edit.text = str(data.get("sprite_skill", "res://assets/menos/sprites/atlas_skill.png"))
-	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
-	default_image_edit.text = str(data.get("default_image", data.get("sprite_idle", "")))
 	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
 	animation_rects = data.get("animation_rects", {}) if data.get("animation_rects", {}) is Dictionary else {}
+	var legacy_defaults := {
+		"idle": str(data.get("sprite_idle", "")),
+		"move": str(data.get("sprite_move", "")),
+		"attack": str(data.get("sprite_attack", "")),
+		"projectile": str(data.get("projectile_anim", "")),
+	}
 	for animation_name in animation_edits.keys():
-		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, data.get("sprite_skill", "")))
+		var animation_path := str(animations.get(animation_name, legacy_defaults.get(animation_name, "")))
+		(animation_edits[animation_name] as LineEdit).text = animation_path
+	default_image_edit.text = str(data.get("default_image", ""))
 	_refresh_all_image_thumbnails()
 	_refresh_animation_previews()
 	_refresh_robot_preview()
@@ -478,17 +480,18 @@ func _save_data() -> void:
 	data["cooldown"] = float(cooldown_spin.value)
 	data["range"] = float(range_spin.value)
 	data["color"] = color_edit.color.to_html(true)
-	data["sprite_idle"] = idle_edit.text.strip_edges()
-	data["sprite_attack"] = attack_edit.text.strip_edges()
-	data["sprite_move"] = move_edit.text.strip_edges()
-	data["sprite_skill"] = skill_edit.text.strip_edges()
 	data["default_image"] = default_image_edit.text.strip_edges()
 	var animations: Dictionary = data.get("animations", {}).duplicate(true)
 	for animation_name in animation_edits.keys():
 		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
 	data["animations"] = animations
 	data["animation_rects"] = animation_rects.duplicate(true)
-	data["projectile_anim"] = projectile_edit.text.strip_edges()
+	# Legacy runtime fields remain synchronized during the migration.
+	data["sprite_idle"] = animations.get("idle", "")
+	data["sprite_move"] = animations.get("move", "")
+	data["sprite_attack"] = animations.get("attack", "")
+	data["sprite_skill"] = animations.get("skill1", "")
+	data["projectile_anim"] = animations.get("projectile", "")
 	robot_data[selected_type] = data
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/robots"))
 	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
