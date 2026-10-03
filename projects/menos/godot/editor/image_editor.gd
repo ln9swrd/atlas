@@ -59,7 +59,7 @@ func _build_ui() -> void:
 	var title_row := HBoxContainer.new()
 	root.add_child(title_row)
 	var title := Label.new()
-	title.text = "Asset Browser / Image Editor"
+	title.text = "Visual Asset Catalog Editor"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
@@ -72,7 +72,7 @@ func _build_ui() -> void:
 	content_button.pressed.connect(_request_content_editor)
 	title_row.add_child(content_button)
 	var intro := Label.new()
-	intro.text = "이미지 파일을 찾고, 어디에서 사용되는지 확인한 뒤 필요하면 이미지 또는 영역을 편집합니다. 게임 정의의 카탈로그 데이터는 각 Editor가 계속 관리합니다."
+	intro.text = "이미지를 열고 영역을 선택해 Visual Asset을 카탈로그로 등록합니다. 등록된 Asset은 유닛, 로봇, 타워 등의 Editor에서 참조할 수 있습니다."
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(intro)
 	var body := HBoxContainer.new()
@@ -117,9 +117,13 @@ func _build_ui() -> void:
 	reconnect_target_button.pressed.connect(_reconnect_current_to_selected_entry)
 	left.add_child(reconnect_target_button)
 	var new_catalog_button := Button.new()
-	new_catalog_button.text = "Map Asset Catalog에 등록"
-	new_catalog_button.pressed.connect(_add_current_image_to_asset_catalog)
+	new_catalog_button.text = "선택 영역을 Visual Asset으로 등록"
+	new_catalog_button.pressed.connect(_create_visual_asset_from_selection)
 	left.add_child(new_catalog_button)
+	var full_catalog_button := Button.new()
+	full_catalog_button.text = "전체 이미지를 Visual Asset으로 등록"
+	full_catalog_button.pressed.connect(_create_visual_asset_from_full_image)
+	left.add_child(full_catalog_button)
 	var audit_button := Button.new()
 	audit_button.text = "이미지 참조 점검"
 	audit_button.pressed.connect(_audit_image_references)
@@ -246,6 +250,7 @@ func _scan_connected_images() -> void:
 	_scan_allied_animations(seen)
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
+	_scan_visual_assets(seen)
 	_scan_main_preloads(seen)
 	list.clear()
 	source_list.clear()
@@ -388,6 +393,37 @@ func _scan_catalog(seen: Dictionary) -> void:
 		if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
 		entries.append({"label": "카탈로그 / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "카탈로그")), str(asset.get("kind", "asset"))], "category": "Map"})
+func _scan_visual_assets(seen: Dictionary) -> void:
+	var path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary:
+		return
+	for asset_id in data:
+		var asset = data[asset_id]
+		if not asset is Dictionary:
+			continue
+		var image_path := str(asset.get("source", ""))
+		if image_path.is_empty():
+			continue
+		var region_data: Array = asset.get("region", [])
+		var region_text := ""
+		if region_data.size() >= 4:
+			region_text = " [%s,%s %sx%s]" % [region_data[0], region_data[1], region_data[2], region_data[3]]
+		entries.append({
+			"label": "Visual Asset / %s" % str(asset.get("id", asset_id)),
+			"path": image_path,
+			"owner": path,
+			"owner_kind": "visual_asset",
+			"owner_key": str(asset_id),
+			"field": "source",
+			"usage": "Visual Asset%s" % region_text,
+			"category": str(asset.get("category", "Other"))
+		})
+
 func _scan_main_preloads(seen: Dictionary) -> void:
 	var path := "res://main.gd"
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -488,7 +524,7 @@ func _on_target_file_selected(path: String) -> void:
 	list.deselect_all()
 	usage_label.text = "용도: 새 편집 대상 이미지"
 	_refresh_view()
-	status.text = "새 편집 대상: %s — 편집 후 기존 카탈로그를 선택해 교체할 수 있습니다." % path
+	status.text = "새 이미지: %s — 드래그로 영역을 선택한 뒤 Visual Asset으로 등록할 수 있습니다." % path
 
 func _save_current_image_copy() -> String:
 	if not _require_image():
@@ -542,6 +578,56 @@ func _replace_entry_reference(entry: Dictionary, new_path: String) -> bool:
 	if owner_kind == "main":
 		return _replace_main_path(str(entry.get("owner_key", "")), new_path)
 	return false
+
+func _create_visual_asset_from_selection() -> void:
+	if not _require_image():
+		return
+	var rect := view.selected_region
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		status.text = "먼저 이미지에서 카탈로그로 만들 영역을 드래그해서 선택하세요."
+		return
+	_create_visual_asset(rect)
+
+func _create_visual_asset_from_full_image() -> void:
+	if not _require_image():
+		return
+	_create_visual_asset(Rect2i(0, 0, current_image.get_width(), current_image.get_height()))
+
+func _create_visual_asset(rect: Rect2i) -> void:
+	var catalog_path := "res://content/editor/visual_assets.json"
+	var data: Variant = {}
+	if FileAccess.file_exists(catalog_path):
+		var file := FileAccess.open(catalog_path, FileAccess.READ)
+		if file != null:
+			data = JSON.parse_string(file.get_as_text())
+			file.close()
+	if not data is Dictionary:
+		data = {}
+	var base_name := current_path.get_file().get_basename().to_snake_case()
+	if base_name.is_empty():
+		base_name = "image"
+	var base_id := "image." + base_name
+	var assets: Dictionary = data
+	var suffix := 1
+	var asset_id := base_id
+	while assets.has(asset_id):
+		asset_id = "%s.%02d" % [base_id, suffix]
+		suffix += 1
+	assets[asset_id] = {
+		"id": asset_id,
+		"category": "Other",
+		"source": current_path,
+		"region": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
+		"frames": 1,
+		"owner": "",
+		"usage": "visual_asset_catalog"
+	}
+	if not _write_json(catalog_path, assets):
+		status.text = "Visual Asset Catalog 저장에 실패했습니다."
+		return
+	_scan_connected_images()
+	_select_path(current_path)
+	status.text = "Visual Asset 등록 완료: %s | 영역 %d × %d px" % [asset_id, rect.size.x, rect.size.y]
 
 func _add_current_image_to_asset_catalog() -> void:
 	if not _require_image():

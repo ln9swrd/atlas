@@ -1,8 +1,8 @@
 {
 	"robot_main": {
+		"color": "ffffffff",
 		"cooldown": 0.65,
 		"damage": 28.0,
-		"color": "ffffffff",
 		"energy": {
 			"max": 100.0,
 			"regen": 12.0
@@ -91,9 +91,9 @@
 			"skill3": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
 			"special": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png"
 		},
+		"color": "ffffffff",
 		"cooldown": 0.65,
 		"damage": 28.0,
-		"color": "ffffffff",
 		"default_image": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
 		"default_image_rect": [
 			0.0,
@@ -114,7 +114,7 @@
 			1440.0,
 			220.0
 		],
-		"sprite_idle": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.png",
+		"sprite_idle": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.png",
 		"sprite_move": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
 		"sprite_move_rect": [
 			96.0,
