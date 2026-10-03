@@ -7,6 +7,7 @@ const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facili
 const OBJECT_GROUPS := ["Combat", "Decoration", "Ground", "Industrial", "Obstacle", "Other", "Prop", "Structure", "Terrain"]
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
+const EDITOR_THUMBNAIL_UTIL := preload("res://scripts/editor_thumbnail_util.gd")
 const EDITED_ASSET_DIR := "res://content/editor/edited_assets"
 
 var entries: Array[Dictionary] = []
@@ -861,28 +862,15 @@ func _refresh_list() -> void:
 		_select_asset_row(selected_index)
 
 func _entry_preview_icon(entry: Dictionary) -> Texture2D:
+	var value := str(entry.get("asset_id", ""))
+	var fallback_region := Rect2()
 	var rect_values: Variant = entry.get("source_rect_px", [])
-	if not rect_values is Array or rect_values.size() != 4:
-		return null
-	var source_path_value := str(entry.get("source_path", ""))
-	if source_path_value.is_empty():
-		return null
-	var texture: Texture2D = preview_source_cache.get(source_path_value) as Texture2D
-	if texture == null:
-		var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path_value)
-		if loaded == null:
-			return null
-		texture = loaded
-		preview_source_cache[source_path_value] = texture
-	var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
-	if rect.size.x <= 0 or rect.size.y <= 0 or rect.position.x < 0 or rect.position.y < 0:
-		return null
-	if rect.end.x > texture.get_width() or rect.end.y > texture.get_height():
-		return null
-	var preview := AtlasTexture.new()
-	preview.atlas = texture
-	preview.region = Rect2(rect.position, rect.size)
-	return preview
+	if rect_values is Array and rect_values.size() == 4:
+		fallback_region = Rect2(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+	var fallback_frames := maxi(1, int(entry.get("frames", 1)))
+	if value.is_empty():
+		value = str(entry.get("source_path", ""))
+	return EDITOR_THUMBNAIL_UTIL.create(value, fallback_region, fallback_frames)
 
 func _load_catalog() -> void:
 	entries.clear()
