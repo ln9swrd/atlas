@@ -26,6 +26,3 @@ static func set_language(value: String) -> void:
 	var config := ConfigFile.new()
 	config.set_value("general", "language", language)
 	config.save("user://menos_settings.cfg")
-
-static func text(ko: String, en: String) -> String:
-	return ko if get_language() == "ko" else en

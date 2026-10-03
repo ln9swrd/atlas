@@ -137,11 +137,11 @@ func _on_start_single_pressed() -> void:
 	stage_select.visible = single_mode_selected
 	stage_info.visible = single_mode_selected
 	if single_mode_selected:
-		start_button.text = SettingsManager.text("\uC2F1\uAE00 \uD50C\uB808\uC774 \uC2DC\uC791", "START SINGLE PLAY")
-		single_button.text = SettingsManager.text("\uC2F1\uAE00 \uD50C\uB808\uC774 \uC120\uD0DD\uB428", "SINGLE PLAY SELECTED")
+		start_button.text = LocalizationRepository.message("title.start_single_play")
+		single_button.text = LocalizationRepository.message("title.single_play_selected")
 	else:
-		start_button.text = SettingsManager.text("\uCEA0\uD398\uC778 \uC2DC\uC791", "START CAMPAIGN")
-		single_button.text = SettingsManager.text("\uC2F1\uAE00 \uD50C\uB808\uC774", "SINGLE PLAY")
+		start_button.text = LocalizationRepository.message("title.start_campaign")
+		single_button.text = LocalizationRepository.message("title.single_play")
 	if single_mode_selected:
 		map_select.grab_focus()
 	else:
@@ -164,10 +164,10 @@ func _on_settings_pressed() -> void:
 	get_tree().change_scene_to_file("res://ui/settings_screen.tscn")
 
 func _refresh_language() -> void:
-	start_button.text = SettingsManager.text("\uCEA0\uD398\uC778 \uC2DC\uC791", "START CAMPAIGN")
-	single_button.text = SettingsManager.text("\uC2F1\uAE00 \uD50C\uB808\uC774", "SINGLE PLAY")
-	quit_button.text = SettingsManager.text("\uC885\uB8CC", "QUIT")
-	settings_button.text = SettingsManager.text("\uC124\uC815", "SETTINGS")
+	start_button.text = LocalizationRepository.message("title.start_campaign")
+	single_button.text = LocalizationRepository.message("title.single_play")
+	quit_button.text = LocalizationRepository.message("title.quit")
+	settings_button.text = LocalizationRepository.message("title.settings")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

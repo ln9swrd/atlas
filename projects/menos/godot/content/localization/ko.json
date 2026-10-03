@@ -1,0 +1,18 @@
+{
+  "common.ok": "확인",
+  "common.cancel": "취소",
+  "common.apply": "적용",
+  "common.delete": "삭제",
+  "common.save": "저장",
+  "settings.title": "설정",
+  "settings.language": "언어",
+  "settings.korean": "한국어",
+  "settings.english": "영어",
+  "settings.back": "뒤로",
+  "title.start_campaign": "캠페인 시작",
+  "title.single_play": "싱글 플레이",
+  "title.start_single_play": "싱글 플레이 시작",
+  "title.single_play_selected": "싱글 플레이 선택됨",
+  "title.quit": "종료",
+  "title.settings": "설정"
+}
