@@ -144,7 +144,7 @@ func _build_interface() -> void:
 	var preview_box := VBoxContainer.new()
 	preview_panel.add_child(preview_box)
 	var preview_title := Label.new()
-\tpreview_title.text = "SOURCE REGION / 이미지 위에서 드래그하여 영역을 선택합니다."
+	preview_title.text = "SOURCE REGION / Drag over the image to select a region."
 	preview_box.add_child(preview_title)
 	region_view = REGION_VIEW_SCRIPT.new()
 	region_view.custom_minimum_size = Vector2(520, 520)
@@ -174,7 +174,7 @@ func _build_interface() -> void:
 	id_edit = LineEdit.new()
 	id_edit.placeholder_text = "asset.tile.ground.001"
 	form.add_child(id_edit)
-\t_add_form_label(form, "표시 이름")
+	_add_form_label(form, "Display Name")
 	name_edit = LineEdit.new()
 	name_edit.placeholder_text = "Meadow tile"
 	form.add_child(name_edit)
@@ -374,7 +374,7 @@ func _save_edited_image() -> void:
 	source_path = output_path
 	source_texture = ImageTexture.create_from_image(edited_image)
 	_set_source_preview(source_texture)
-	source_label.text = "%s  (%d 횞 %d)" % [output_path, edited_image.get_width(), edited_image.get_height()]
+	source_label.text = "%s  (%d x %d)" % [output_path, edited_image.get_width(), edited_image.get_height()]
 	region_view.cancel_image_edit()
 	region_view.set_source_texture(source_texture)
 	region_view.selected_region = Rect2i(0, 0, edited_image.get_width(), edited_image.get_height())
@@ -409,7 +409,7 @@ func _on_source_file_selected(path: String) -> void:
 	source_path = path
 	source_texture = loaded
 	_set_source_preview(loaded)
-	source_label.text = "%s  (%d 횞 %d)" % [path, source_texture.get_width(), source_texture.get_height()]
+	source_label.text = "%s  (%d x %d)" % [path, source_texture.get_width(), source_texture.get_height()]
 	region_view.set_source_texture(source_texture)
 	_update_rect_label(Rect2i())
 	_update_footprint_display(Rect2i())
@@ -540,7 +540,7 @@ func _load_source_for_entry(rect: Rect2i) -> void:
 	if loaded != null:
 		source_texture = loaded
 		_set_source_preview(loaded)
-		source_label.text = "%s  (%d 횞 %d)" % [source_path, source_texture.get_width(), source_texture.get_height()]
+		source_label.text = "%s  (%d x %d)" % [source_path, source_texture.get_width(), source_texture.get_height()]
 		region_view.set_source_texture(source_texture)
 		region_view.set("selected_region", rect)
 		region_view.queue_redraw()
@@ -569,7 +569,7 @@ func _refresh_list() -> void:
 	for entry in entries:
 		var kind_text := str(entry.get("kind", "tile")).capitalize()
 		var group_text := str(entry.get("group", "?"))
-		var display_text := "%s\n%s 쨌 %s" % [entry.get("display_name", "?"), kind_text, group_text]
+		var display_text := "%s\n%s 勇?%s" % [entry.get("display_name", "?"), kind_text, group_text]
 		asset_list.add_item(display_text, _entry_preview_icon(entry))
 	if selected_index >= 0 and selected_index < entries.size():
 		asset_list.select(selected_index)
@@ -625,7 +625,7 @@ func _save_catalog() -> bool:
 	if file == null:
 		status_label.text = "Could not write catalog. Error %d" % FileAccess.get_open_error()
 		return false
-	file.store_string(JSON.stringify({"schema_version": 1, "assets": entries}, "\t") + "\n")
+	file.store_string(JSON.stringify({"schema_version": 1, "assets": entries}, "	") + "\n")
 	file.close()
 	status_label.text = "Saved %d assets to %s" % [entries.size(), CATALOG_PATH]
 	var selected_asset_id := ""

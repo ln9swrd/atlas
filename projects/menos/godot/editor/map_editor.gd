@@ -148,7 +148,7 @@ func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: 
 		selected_asset_id = ""
 		if canvas:
 			canvas.set_catalog_asset({})
-\tlbl_asset_details.text = "%s\\n%s / %s\\nID: %s\\nSource: %s\\nPixels: %s\\nFootprint: %s x %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
+		lbl_asset_details.text = ""
 
 func _clear_catalog_selection() -> void:
 	selected_asset_id = ""
@@ -156,10 +156,10 @@ func _clear_catalog_selection() -> void:
 		canvas.set_catalog_asset({})
 	asset_preview.texture = null
 	lbl_asset_preview_status.text = ""
-\tlbl_asset_details.text = "%s\\n%s / %s\\nID: %s\\nSource: %s\\nPixels: %s\\nFootprint: %s x %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
+	lbl_asset_details.text = ""
 	update_selected_tile_label("None")
 	update_tool_label("CATALOG: None")
-	update_status("移대떖濡쒓렇 ?좏깮???댁젣?덉뒿?덈떎.")
+	update_status("Catalog selection cleared.")
 
 func _find_catalog_asset_index(asset_id: String) -> int:
 	if asset_id.is_empty():
@@ -189,7 +189,7 @@ func _rebuild_asset_rows() -> void:
 	group_names.sort()
 	if group_names.is_empty():
 		var empty_label := Label.new()
-\t\tempty_label.text = "검색 결과가 없습니다."
+		empty_label.text = "No search results."
 		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		asset_rows.add_child(empty_label)
 		return
@@ -260,7 +260,7 @@ func _select_catalog_asset(index: int) -> void:
 	set_asset_preview(entry)
 	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
 	var footprint := canvas.catalog_asset_footprint(entry)
-\tlbl_asset_details.text = "%s\\n%s / %s\\nID: %s\\nSource: %s\\nPixels: %s\\nFootprint: %s x %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
+	lbl_asset_details.text = "%s\\n%s / %s\\nID: %s\\nSource: %s\\nPixels: %s\\nFootprint: %s x %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
 	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
 	var asset_kind := str(entry.get("kind", "tile"))
 	var asset_group := str(entry.get("group", ""))
@@ -345,9 +345,9 @@ func _build_map_size_controls() -> void:
 	map_height_spin.value_changed.connect(_on_map_size_spin_changed)
 	row.add_child(map_height_spin)
 	var apply := Button.new()
-\tapply.text = "적용"
+	apply.text = "Apply"
 	apply.disabled = false
-\tapply.tooltip_text = "현재 W/H 값을 적용합니다."
+	apply.tooltip_text = "Apply the current map width and height."
 	apply.pressed.connect(_on_map_size_apply_pressed)
 	row.add_child(apply)
 	$MainLayout/Toolbox/VBox.add_child(map_size_panel)
@@ -377,7 +377,7 @@ func _on_map_size_spin_changed(_value: float) -> void:
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
 	canvas.set_map_size_preview(new_size)
 	current_map_data = canvas.map_data
-\tupdate_status("맵 미리보기 크기: %d x %d 타일. 변경 내용을 유지하려면 JSON을 저장하세요." % [new_size.x, new_size.y])
+	update_status("?????遺븍き?寃밸윿???????繹먮굟爰????? %d x %d ???? ???ㅼ뒧?????????쇨덧???????????브퀡???JSON??????μ떝?롳쭗???꿔꺂?????" % [new_size.x, new_size.y])
 
 func _on_map_size_apply_pressed() -> void:
 	if current_map_data.is_empty() or canvas == null:
@@ -386,7 +386,7 @@ func _on_map_size_apply_pressed() -> void:
 	var old_value: Variant = current_map_data.get("map_tiles", [36, 24])
 	var old_size := Vector2i(int(old_value[0]), int(old_value[1])) if old_value is Array and old_value.size() >= 2 else Vector2i(36, 24)
 	if new_size == old_size:
-\t\tupdate_status("맵 크기가 변경되지 않았습니다: %d x %d." % [new_size.x, new_size.y])
+		update_status("?????濚밸Þ??猷⑥땡? ???ㅼ뒧????β뼯援??蒻멤넃??쒕???? ?????源낅돹?????? %d x %d." % [new_size.x, new_size.y])
 		return
 	if (new_size.x < old_size.x or new_size.y < old_size.y) and not _map_size_can_contain(new_size):
 		_sync_map_size_controls()
@@ -396,7 +396,7 @@ func _on_map_size_apply_pressed() -> void:
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
 	canvas.set_map_data(current_map_data)
 	_sync_map_size_controls()
-\tupdate_status("맵 크기 변경: %d x %d 타일 (%d x %d px). 변경 내용을 유지하려면 JSON을 저장하세요." % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
+	update_status("?????????ㅼ뒧???? %d x %d ????(%d x %d px). ???ㅼ뒧?????????쇨덧???????????브퀡???JSON??????μ떝?롳쭗???꿔꺂?????" % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
 
 func _map_size_can_contain(new_size: Vector2i) -> bool:
 	var pixel_size := Vector2(new_size) * 32.0
@@ -462,7 +462,7 @@ func setup_layer_options() -> void:
 		if parent != null:
 			var view_label := Label.new()
 			view_label.text = "View Layer"
-\t\t\tview_label.tooltip_text = "맵에 표시할 레이어를 선택합니다."
+			view_label.tooltip_text = "Select the layer shown in the map preview."
 			option_layer_view = OptionButton.new()
 			option_layer_view.name = "OptionLayerView"
 			option_layer_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -479,8 +479,8 @@ func setup_layer_options() -> void:
 			parent.move_child(option_layer_view, index + 1)
 			gameplay_visibility_toggle = CheckButton.new()
 			gameplay_visibility_toggle.name = "GameplayVisibilityToggle"
-\t\t\tgameplay_visibility_toggle.text = "게임플레이 요소"
-\t\t\tgameplay_visibility_toggle.tooltip_text = "게임플레이 요소의 화면 표시를 전환합니다."
+			gameplay_visibility_toggle.text = "Gameplay Elements"
+			gameplay_visibility_toggle.tooltip_text = "Toggle gameplay element visibility."
 			gameplay_visibility_toggle.button_pressed = true
 			gameplay_visibility_toggle.toggled.connect(_on_gameplay_visibility_toggled)
 			parent.add_child(gameplay_visibility_toggle)
@@ -495,12 +495,12 @@ func _on_layer_view_selected(index: int) -> void:
 	var layer_names := ["ALL", "Ground", "Vegetation", "RoadComposition"]
 	if index >= 0 and index < layer_names.size() and canvas:
 		canvas.set_visible_layer(layer_names[index])
-\t\tupdate_status("표시 레이어: %s" % ("전체" if index == 0 else layer_names[index]))
+		update_status("Visible layer: %s" % ("All" if index == 0 else layer_names[index]))
 
 func _on_gameplay_visibility_toggled(visible: bool) -> void:
 	if canvas:
 		canvas.set_gameplay_visible(visible)
-\tupdate_status("게임플레이 요소: %s" % ("표시" if visible else "숨김"))
+	update_status("Gameplay elements: %s" % ("Visible" if visible else "Hidden"))
 
 func _sync_map_play_mode_controls() -> void:
 	var modes: Array = canvas.map_data.get("play_modes", ["campaign", "single", "multiplayer"]) if canvas and canvas.map_data.get("play_modes", []) is Array else ["campaign", "single", "multiplayer"]
@@ -511,7 +511,7 @@ func _sync_map_play_mode_controls() -> void:
 	third_alliance.set_pressed_no_signal(bool(multiplayer.get("third_alliance_enabled", false)))
 	third_alliance.visible = map_mode_multiplayer.button_pressed
 	map_mode_hint.visible = map_mode_multiplayer.button_pressed
-\tmap_mode_hint.text = "멀티플레이어: 아군 / 적군 / 제3 세력을 설정할 수 있습니다. 각 세력은 AI가 제어합니다."
+	map_mode_hint.text = "Multiplayer maps can use allied, enemy, and third-faction AI units."
 
 func _on_map_mode_toggled(_pressed: bool) -> void:
 	if not canvas:
@@ -550,9 +550,9 @@ func _ensure_multiplayer_config() -> void:
 	if not multiplayer.has("third_alliance_enabled"):
 		multiplayer["third_alliance_enabled"] = false
 	multiplayer["alliances"] = [
-\t\t{"id": "ally", "name": "아군 유닛", "controller": "ai"},
-\t\t{"id": "enemy", "name": "적군 유닛", "controller": "ai"},
-\t\t{"id": "third", "name": "제3 세력 유닛", "controller": "ai"}
+		{"id": "ally", "name": "Allied Unit", "controller": "ai"},
+		{"id": "enemy", "name": "Enemy Unit", "controller": "ai"},
+		{"id": "third", "name": "Third Faction Unit", "controller": "ai"}
 	]
 	multiplayer["relations"] = {
 		"ally": {"enemy": "hostile", "third": "hostile"},
@@ -569,7 +569,7 @@ func _update_map_mode_status() -> void:
 	if map_mode_multiplayer.button_pressed:
 		modes.append("Multiplayer")
 	var mode_text := ", ".join(modes)
-\tupdate_status("맵 모드: %s" % mode_text)
+	update_status("Map mode: %s" % mode_text)
 
 func load_map(path: String) -> void:
 	current_map_path = path
@@ -584,9 +584,9 @@ func load_map(path: String) -> void:
 	_sync_map_play_mode_controls()
 	var linked_stages := _find_linked_stages(path)
 	if linked_stages.is_empty():
-\t\tupdate_status("맵 로드: %s | 연결된 스테이지 없음" % path)
+		update_status("Loaded map: %s | No linked stages" % path)
 	else:
-\t\tupdate_status("맵 로드: %s | 연결된 스테이지: %s" % [path, ", ".join(linked_stages)])
+		update_status("Loaded map: %s | Linked stages: %s" % [path, ", ".join(linked_stages)])
 
 func _find_linked_stages(map_path: String) -> Array[String]:
 	var result: Array[String] = []
@@ -805,7 +805,7 @@ func _on_resize_placement_pressed() -> void:
 	var width_tiles := int(spin_placement_width.value)
 	var height_tiles := int(spin_placement_height.value)
 	if canvas.resize_selected_catalog_placement(width_tiles, height_tiles):
-\t\tupdate_status("배치된 에셋 크기 변경: %d x %d 셀." % [width_tiles, height_tiles])
+		update_status("??ш끽維뽳쭩????????????????ㅼ뒧???? %d x %d ??." % [width_tiles, height_tiles])
 	else:
 		update_status("Resize failed: target bounds are outside the map or overlap another tile.")
 
@@ -813,7 +813,7 @@ func _on_delete_placement_pressed() -> void:
 	if canvas.delete_selected_catalog_placement():
 		update_status("Selected asset placement deleted.")
 	else:
-\t\tupdate_status("크기 변경 실패: 먼저 배치된 카탈로그 에셋을 선택하세요.")
+		update_status("???????ㅼ뒧?????????怨뚯댅: ?雅?퍔瑗ⓩ뤃?? ??ш끽維뽳쭩???????ㅳ늾????쒓랜堉????諭??怨뚮뼺?源놁벀 ??????????節떷???癲ル슢?ｅ젆???")
 
 func _on_map_data_changed() -> void:
 	if canvas:
@@ -855,16 +855,16 @@ func _on_fill_ground_pressed() -> void:
 	if canvas == null:
 		return
 	if canvas.active_layer != "Ground":
-		update_status("Ground ??됱뵠??곷퓠??뺤춸 ?????????됰뮸??덈뼄.")
+		update_status("Only Ground assets can be used on the Ground layer.")
 		return
 	if canvas.selected_catalog_asset.is_empty():
-		update_status("?믪눘? Ground ????깆뱽 ?醫뤾문??뤿뼏??뽰궎.")
+		update_status("Select a Ground catalog asset first.")
 		return
 	if str(canvas.selected_catalog_asset.get("kind", "tile")) != "tile":
-		update_status("Ground ?袁⑷퍥 筌?쑴??묾怨뺣뮉 ????곗춸 ?????????됰뮸??덈뼄.")
+		update_status("Only tile assets can be used for Fill Ground.")
 		return
 	var filled := canvas.fill_ground_empty_with_selected_tile()
-\t\tupdate_status("Ground 전체 채우기에는 Ground 에셋만 사용할 수 있습니다.")
+	update_status("Fill Ground complete: %d tiles." % filled)
 
 func set_asset_preview(entry: Dictionary) -> void:
 	asset_preview.texture = null
@@ -890,7 +890,7 @@ func set_asset_preview(entry: Dictionary) -> void:
 	cropped_preview.atlas = source_texture
 	cropped_preview.region = rect
 	asset_preview.texture = cropped_preview
-\tlbl_asset_preview_status.text = "소스 영역: %d x %d px / 원본 비율" % [int(rect.size.x), int(rect.size.y)]
+	lbl_asset_preview_status.text = "Source region: %d x %d px / original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
 
 
 func _on_btn_load_pressed() -> void:
