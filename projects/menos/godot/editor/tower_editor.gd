@@ -395,12 +395,6 @@ func _get_file_thumbnail(path: String) -> Texture2D:
 		file_thumbnail_cache[path] = loaded
 	return loaded
 
-func _open_sprite_dialog(target: String = "sprite") -> void:
-	file_dialog_target = target
-	file_thumbnail_cache.clear()
-	if file_dialog:
-		file_dialog.popup_centered_ratio(0.75)
-
 func _on_file_selected(path: String) -> void:
 	if file_dialog_target == "projectile":
 		projectile_edit.text = path
