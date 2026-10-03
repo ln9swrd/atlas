@@ -1,4 +1,4 @@
-﻿extends Control
+extends Control
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const LOADER := preload("res://editor/image_texture_loader.gd")
 const IMAGE_STATE := preload("res://editor/image_editor_state.gd")
@@ -40,10 +40,10 @@ func _request_previous_editor() -> void:
 
 func _use_selected_asset() -> void:
 	if current_path.is_empty():
-		status.text = "?????Asset???믪눘? ?醫뤾문??뤾쉭??"
+No Visual Asset is selected. Use the Catalog to select an asset.
 		return
 	if not IMAGE_STATE.selection_pending:
-		status.text = "?袁⑹삺 Editor?癒?퐣 Asset ?醫뤾문???遺욧퍕???怨밴묶揶쎛 ?袁⑤뻸??덈뼄."
+The selected Asset is not in an editable state.
 		return
 	var asset_id := IMAGE_STATE.selection_asset_id
 	if asset_id.is_empty():
@@ -100,7 +100,7 @@ func _build_ui() -> void:
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
 	var previous_button := Button.new()
-	previous_button.text = "이전 에디터"
+Previous Editor
 	previous_button.pressed.connect(_request_previous_editor)
 	title_row.add_child(previous_button)
 	previous_button.visible = false
@@ -164,7 +164,7 @@ func _build_ui() -> void:
 	left.add_child(catalog_tree)
 	catalog_tree.visible = false
 	var clear_selection := Button.new()
-	clear_selection.text = "선택 해제"
+Clear Selection
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
 	var use_selected_button := Button.new()
@@ -172,7 +172,7 @@ func _build_ui() -> void:
 	use_selected_button.pressed.connect(_use_selected_asset)
 	left.add_child(use_selected_button)
 	var open_target_button := Button.new()
-	open_target_button.text = "소스 이미지 열기"
+Open Source Image
 	open_target_button.pressed.connect(_open_target_dialog)
 	left.add_child(open_target_button)
 	var reconnect_target_button := Button.new()
@@ -181,20 +181,20 @@ func _build_ui() -> void:
 	left.add_child(reconnect_target_button)
 	reconnect_target_button.visible = false
 	var new_catalog_button := Button.new()
-	new_catalog_button.text = "선택 영역을 Visual Asset으로 등록"
+Register Selected Visual Asset
 	new_catalog_button.pressed.connect(_create_visual_asset_from_selection)
 	left.add_child(new_catalog_button)
 	var delete_visual_asset_button := Button.new()
-	delete_visual_asset_button.text = "선택 Visual Asset 삭제"
+Delete Visual Asset
 	delete_visual_asset_button.pressed.connect(_confirm_delete_visual_asset)
 	left.add_child(delete_visual_asset_button)
 	var full_catalog_button := Button.new()
-	full_catalog_button.text = "?袁⑷퍥 ???筌왖??Visual Asset??곗쨮 ?源낆쨯"
+Register All PNGs as Visual Assets
 	full_catalog_button.pressed.connect(_create_visual_asset_from_full_image)
 	left.add_child(full_catalog_button)
 	full_catalog_button.visible = false
 	var audit_button := Button.new()
-	audit_button.text = "이미지 참조 검사"
+Audit Image References
 	audit_button.pressed.connect(_audit_image_references)
 	left.add_child(audit_button)
 	audit_button.visible = false
@@ -203,14 +203,14 @@ func _build_ui() -> void:
 	body.add_child(source_panel)
 	source_panel.visible = false
 	var source_title := Label.new()
-	source_title.text = "소스 이미지"
+Source Image
 	source_panel.add_child(source_title)
 	source_list = ItemList.new()
 	source_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	source_list.item_selected.connect(_select_source_entry)
 	source_panel.add_child(source_list)
 	var source_help := Label.new()
-	source_help.text = "??긱걹?癒?퐣 ?醫뤾문??Asset????삘뀲 Source???ⓥ뫀???袁⑷퍥 ?癒?뮉 ?醫뤾문 ?怨몃열????쑨???대Ŋ猿??몃빍??"
+Select a Source Image or Asset, then choose a region.
 	source_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	source_panel.add_child(source_help)
 	var source_full := Button.new()
@@ -218,7 +218,7 @@ func _build_ui() -> void:
 	source_full.pressed.connect(_replace_from_source_full)
 	source_panel.add_child(source_full)
 	var source_open := Button.new()
-	source_open.text = "소스 이미지 열기"
+Open Source Image
 	source_open.pressed.connect(_open_source_dialog)
 	source_panel.add_child(source_open)
 	var source_region := Button.new()
@@ -231,7 +231,7 @@ func _build_ui() -> void:
 	normalize.pressed.connect(_replace_source_region_as_unit)
 	source_panel.add_child(normalize)
 	var source_reference := Button.new()
-	source_reference.text = "선택 영역을 소스 참조로 적용"
+Use Previous Editor Source
 	source_reference.pressed.connect(_apply_source_region_reference)
 	source_panel.add_child(source_reference)
 	source_dialog = FileDialog.new()
@@ -260,7 +260,7 @@ func _build_ui() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
 	usage_label = Label.new()
-	usage_label.text = "선택된 Asset 없음"
+Asset Usage
 	usage_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	usage_label.add_theme_font_size_override("font_size", 16)
 	right.add_child(usage_label)
@@ -280,7 +280,7 @@ func _build_ui() -> void:
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
 	var resize_label := Label.new()
-	resize_label.text = "크기"
+Size
 	resize_row.add_child(resize_label)
 	var width_spin := SpinBox.new()
 	width_spin.name = "WidthSpin"
@@ -295,7 +295,7 @@ func _build_ui() -> void:
 	height_spin.step = 1
 	resize_row.add_child(height_spin)
 	var resize_btn := Button.new()
-	resize_btn.text = "크기 적용"
+Apply Size
 	resize_btn.pressed.connect(func(): _resize_image(int(width_spin.value), int(height_spin.value)))
 	resize_row.add_child(resize_btn)
 	status = Label.new()
@@ -332,7 +332,7 @@ func _scan_connected_images() -> void:
 	for entry in entries:
 		if str(entry.get("owner_kind", "")) == "visual_asset":
 			catalog_count += 1
-	status.text = "%d개의 Visual Asset이 등록되어 있습니다." % catalog_count
+%d Visual Assets registered.
 
 func _refresh_entry_list() -> void:
 	if list == null or source_list == null:
@@ -422,35 +422,35 @@ func _rename_catalog_tree_item() -> void:
 
 func _rename_visual_asset_id(old_id: String, new_id: String) -> bool:
 	if old_id.is_empty() or new_id.is_empty():
-		status.text = "Visual Asset ID는 비워둘 수 없습니다."
+Visual Asset ID is required.
 		return false
 	if new_id.find("/") >= 0 or new_id.find("\\") >= 0:
-		status.text = "Visual Asset ID에 경로 문자를 사용할 수 없습니다."
+Visual Asset ID contains invalid characters.
 		return false
 	var catalog_path := "res://content/editor/visual_assets.json"
 	var file := FileAccess.open(catalog_path, FileAccess.READ)
 	if file == null:
-		status.text = "Visual Asset Catalog를 열 수 없습니다."
+Visual Asset Catalog could not be loaded.
 		return false
 	var data = JSON.parse_string(file.get_as_text())
 	file.close()
 	if not data is Dictionary or not data.has(old_id):
-		status.text = "Visual Asset을 찾을 수 없습니다: " + old_id
+Visual Asset not found: 
 		return false
 	if data.has(new_id):
-		status.text = "이미 존재하는 Visual Asset ID입니다: " + new_id
+Visual Asset ID already exists: 
 		return false
 	var asset: Dictionary = data[old_id]
 	data.erase(old_id)
 	asset["id"] = new_id
 	data[new_id] = asset
 	if not _write_json(catalog_path, data):
-		status.text = "Visual Asset ID 변경에 실패했습니다."
+Visual Asset ID saved.
 		return false
 	VisualAssetResolver.reload()
 	if IMAGE_STATE.selection_asset_id == old_id:
 		IMAGE_STATE.selection_asset_id = new_id
-	status.text = "Visual Asset ID 변경: %s -> %s" % [old_id, new_id]
+Visual Asset ID: %s -> %s
 	return true
 
 func _get_catalog_thumbnail(entry: Dictionary) -> Texture2D:
@@ -482,7 +482,7 @@ func _audit_image_references() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "이미지 참조 검사"
 	dialog.dialog_text = report
-	dialog.ok_button_text = "확인"
+OK
 	add_child(dialog)
 	dialog.confirmed.connect(dialog.queue_free)
 	dialog.canceled.connect(dialog.queue_free)
@@ -723,9 +723,9 @@ func _clear_image_selection() -> void:
 	catalog_tree.deselect_all()
 	source_list.deselect_all()
 	IMAGE_STATE.selected_path = ""
-	usage_label.text = "선택된 Asset 없음"
+Asset Usage
 	view.set_source_texture(null)
-	status.text = "이미지 선택이 해제되었습니다."
+Image connection updated.
 
 func _select_entry(index: int) -> void:
 	if editing: return
@@ -750,13 +750,13 @@ func _select_entry_index(entry_index: int) -> void:
 	var catalog_region: Rect2i = _entry_region(entry)
 	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "Unknown")), current_path, str(entry.get("owner", "Unknown")), str(entry.get("field", "Unknown"))]
 	if current_image == null:
-		status.text = "???筌왖???븍뜄???????곷뮸??덈뼄: %s" % current_path
+Previous reference could not be resolved: %s
 		return
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
 	if catalog_region.size.x > 0 and catalog_region.size.y > 0:
 		view.selected_region = catalog_region
 		view.queue_redraw()
-	status.text = "?醫뤾문??燁삳??롦에?볥젃: %s ???怨몃열 %d ??%d px" % [str(entry.get("label", "Asset")), catalog_region.size.x, catalog_region.size.y] if catalog_region.size.x > 0 else "?醫뤾문??Source: %s ??%d ??%d px" % [current_path, current_image.get_width(), current_image.get_height()]
+Selected region: %s | area %d x %d px
 
 func _entry_region(entry: Dictionary) -> Rect2i:
 	var region_data: Array = entry.get("region", [])
@@ -785,16 +785,16 @@ func _on_target_file_selected(path: String) -> void:
 		_finish_erase()
 	var loaded := LOADER.load_image(path)
 	if loaded == null:
-		status.text = "?紐꾩춿 ???????筌왖???븍뜄???????곷뮸??덈뼄: %s" % path
+Edited reference could not be resolved: %s
 		return
 	current_index = -1
 	current_path = path
 	current_image = loaded
 	IMAGE_STATE.open_image(path)
 	list.deselect_all()
-	usage_label.text = "??몃즲: ???紐꾩춿 ???????筌왖"
+Usage: Edited Reference
 	_refresh_view()
-	status.text = "?????筌왖: %s ????뺤삋域밸챶以??怨몃열???醫뤾문????Visual Asset??곗쨮 ?源낆쨯??????됰뮸??덈뼄." % path
+No valid source reference. Select an image or region first.
 
 func _save_current_image_copy() -> String:
 	if not _require_image():
@@ -814,30 +814,30 @@ func _reconnect_current_to_selected_entry() -> void:
 	if not _require_image():
 		return
 	if catalog_target_index < 0 or catalog_target_index >= entries.size():
-		status.text = "??긱걹 ?怨뚭퍙 筌뤴뫖以?癒?퐣 ?대Ŋ猿??燁삳똾源됪에?볥젃 ??????믪눘? ?醫뤾문??뤾쉭??"
+Select a source image or asset from the catalog first.
 		return
 	if str(entries[catalog_target_index].get("path", "")) == current_path:
-		status.text = "??삘뀲 ???筌왖???紐꾩춿 ???怨몄몵嚥???곷선 雅뚯눘苑??"
+Select a valid source image or region.
 		return
 	if source_path == current_path:
 		source_path = ""
 		source_image = null
 	var output := _save_current_image_copy()
 	if output.is_empty():
-		status.text = "?紐꾩춿 ???筌왖?????館釉?쭪? 筌륁궢鍮?燁삳똾源됪에?볥젃???대Ŋ猿??????곷뮸??덈뼄."
+The source image could not be loaded from the catalog.
 		return
 	if catalog_target_index < 0 or catalog_target_index >= entries.size():
-		status.text = "??긱걹 ?怨뚭퍙 筌뤴뫖以?癒?퐣 ?대Ŋ猿??燁삳똾源됪에?볥젃 ??????믪눘? ?醫뤾문??뤾쉭??"
+Select a source image or asset from the catalog first.
 		return
 	if not _replace_entry_reference(entries[catalog_target_index], output):
-		status.text = "???筌왖?????館六쏙쭪?筌??醫뤾문 燁삳똾源됪에?볥젃 筌〓챷???대Ŋ猿????쎈솭??됰뮸??덈뼄: %s" % output
+The selected source could not be resolved.
 		return
 	current_path = output
 	IMAGE_STATE.open_image(output)
 	_refresh_view()
 	_scan_connected_images()
 	_select_path(output)
-	status.text = "?醫뤾문 燁삳똾源됪에?볥젃 筌〓챷?쒐몴??????筌왖嚥??대Ŋ猿??됰뮸??덈뼄: %s" % output
+Selected catalog source: %s
 
 func _replace_entry_reference(entry: Dictionary, new_path: String) -> bool:
 	var owner_kind := str(entry.get("owner_kind", ""))
@@ -851,12 +851,12 @@ func _replace_entry_reference(entry: Dictionary, new_path: String) -> bool:
 
 func _confirm_delete_visual_asset() -> void:
 	if current_index < 0 or current_index >= entries.size() or str(entries[current_index].get("owner_kind", "")) != "visual_asset":
-		status.text = "삭제할 Visual Asset을 선택하세요."
+Select a Visual Asset first.
 		return
 	var asset_id := str(entries[current_index].get("owner_key", ""))
 	var dialog := ConfirmationDialog.new()
 	dialog.title = "Visual Asset 삭제"
-	dialog.dialog_text = "Visual Asset \"%s\"을(를) 삭제하시겠습니까? 기존 에디터 참조는 자동으로 변경하지 않습니다." % asset_id
+Delete Visual Asset "%s"? This will remove the catalog entry only.
 	add_child(dialog)
 	dialog.confirmed.connect(func(): _delete_visual_asset(asset_id, dialog))
 	dialog.canceled.connect(dialog.queue_free)
@@ -866,24 +866,24 @@ func _delete_visual_asset(asset_id: String, dialog: ConfirmationDialog) -> void:
 	var catalog_path := "res://content/editor/visual_assets.json"
 	var file := FileAccess.open(catalog_path, FileAccess.READ)
 	if file == null:
-		status.text = "Visual Asset Catalog를 열 수 없습니다."
+Visual Asset Catalog could not be loaded.
 		dialog.queue_free()
 		return
 	var data = JSON.parse_string(file.get_as_text())
 	file.close()
 	if not data is Dictionary or not data.has(asset_id):
-		status.text = "Visual Asset을 찾을 수 없습니다: " + asset_id
+Visual Asset not found: 
 		dialog.queue_free()
 		return
 	data.erase(asset_id)
 	if not _write_json(catalog_path, data):
-		status.text = "Visual Asset Catalog 저장에 실패했습니다."
+Visual Asset Catalog updated.
 		dialog.queue_free()
 		return
 	VisualAssetResolver.reload()
 	_scan_connected_images()
 	current_index = -1
-	status.text = "Visual Asset 삭제 완료: " + asset_id
+Visual Asset update complete: 
 	dialog.queue_free()
 
 func _create_visual_asset_from_selection() -> void:
@@ -899,7 +899,7 @@ func _create_visual_asset_from_selection() -> void:
 			view.selected_region = rect
 			view.queue_redraw()
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "?믪눘? ???筌왖?癒?퐣 燁삳똾源됪에?볥젃嚥?筌띾슢諭??怨몃열????뺤삋域밸챸鍮???醫뤾문??뤾쉭??"
+Select a source image or asset, then drag-select a region.
 		return
 	_create_visual_asset(rect)
 
@@ -958,7 +958,7 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		"usage": owner_usage if not owner_usage.is_empty() else "visual_asset_catalog"
 	}
 	if not _write_json(catalog_path, assets):
-		status.text = "Visual Asset Catalog 저장에 실패했습니다."
+Visual Asset Catalog updated.
 		return
 	VisualAssetResolver.reload()
 	_scan_connected_images()
@@ -978,17 +978,17 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		_select_path(current_path)
 	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_target.is_empty():
 		IMAGE_STATE.apply_selection(asset_id)
-		status.text = "Visual Asset ?源낆쨯 ?袁⑥┷ 獄??癒?삋 Editor???怨몄뒠 餓Β?? %s | ?怨몃열 %d ??%d px" % [asset_id, rect.size.x, rect.size.y]
+Visual Asset registration complete: %s | region %d x %d px
 		request_previous_editor.emit()
 	else:
-		status.text = "Visual Asset ?源낆쨯 ?袁⑥┷: %s | ?怨몃열 %d ??%d px" % [asset_id, rect.size.x, rect.size.y]
+Visual Asset registration complete: %s | region %d x %d px
 
 func _add_current_image_to_asset_catalog() -> void:
 	if not _require_image():
 		return
 	var output := _save_current_image_copy()
 	if output.is_empty():
-		status.text = "??燁삳똾源됪에?볥젃??PNG?????館釉?쭪? 筌륁궢六??щ빍??"
+The selected catalog source is not a valid PNG.
 		return
 	var catalog_path := "res://content/editor/asset_catalog.json"
 	var data: Variant = {}
@@ -1023,11 +1023,11 @@ func _add_current_image_to_asset_catalog() -> void:
 	data["schema_version"] = int(data.get("schema_version", 1))
 	data["assets"] = assets
 	if not _write_json(catalog_path, data):
-		status.text = "PNG?????館六쏙쭪?筌?Asset Catalog ???關肉???쎈솭??됰뮸??덈뼄: %s" % output
+PNG import failed for Asset Catalog: %s
 		return
 	_scan_connected_images()
 	_select_path(output)
-	status.text = "??Asset Catalog ??????源낆쨯??됰뮸??덈뼄: %s" % asset_id
+Asset Catalog registration failed: %s
 
 func _catalog_asset_id_exists(assets: Array, asset_id: String) -> bool:
 	for asset in assets:
@@ -1051,16 +1051,16 @@ func _open_source_dialog() -> void:
 
 func _on_source_file_selected(path: String) -> void:
 	if path == current_path:
-		status.text = "???怨대궢 ??삘뀲 ???筌왖??筌〓챷?????筌왖嚥??醫뤾문??뤾쉭??"
+Select a source image or asset first.
 		return
 	source_path = path
 	source_index = -1
 	source_image = LOADER.load_image(source_path)
 	if source_image == null:
-		status.text = "筌〓챷?????筌왖???븍뜄???????곷뮸??덈뼄: %s" % source_path
+Source image could not be resolved: %s
 		return
 	view.set_source_texture(ImageTexture.create_from_image(source_image))
-	status.text = "筌〓챷?? %s ????뺤삋域밸챶以??怨몃열???醫뤾문??뤾쉭??" % source_path
+Select a region from: %s
 
 func _select_source_entry(index: int) -> void:
 	if editing: return
@@ -1070,86 +1070,89 @@ func _select_source_entry(index: int) -> void:
 	source_index = entry_index
 	source_path = str(entries[entry_index].get("path", ""))
 	if source_path == current_path:
-		status.text = "???怨대궢 ??삘뀲 ???筌왖??筌〓챷?????筌왖嚥??醫뤾문??뤾쉭??"
+Select a source image or asset first.
 		return
 	source_image = LOADER.load_image(source_path)
 	if source_image == null:
-		status.text = "筌〓챷?????筌왖???븍뜄???????곷뮸??덈뼄: %s" % source_path
+Source image could not be resolved: %s
 		return
 	view.set_source_texture(ImageTexture.create_from_image(source_image))
-	status.text = "筌〓챷?? %s ???袁⑷퍥 ?癒?뮉 ??뺤삋域??醫뤾문 ?怨몃열???????뤾쉭??" % source_path
+Use the full source image from %s
 
 func _replace_from_source_full() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "?믪눘? ??삘뀲 筌〓챷?????筌왖???醫뤾문??뤾쉭??"
+Select a source image or asset first.
 		return
 	current_image = source_image.duplicate()
 	_refresh_view()
-	status.text = "筌〓챷?????筌왖 ?袁⑷퍥?????怨몄몵嚥??대Ŋ猿??됰뮸??덈뼄. ????+ ?怨뚭퍙 癰궰野껋럩?????쑎 ?怨몄뒠??뤾쉭??"
+The full source image is already selected. Use reconnect to change the reference.
 
 func _apply_source_region_reference() -> void:
 	if not _require_image(): return
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "?믪눘? ??삘뀲 筌〓챷?????筌왖????욧탢???醫뤾문??뤾쉭??"
+Select a source image or asset first.
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "筌〓챷?????筌왖?癒?퐣 ?怨몃열????뺤삋域밸챶以??醫뤾문??뤾쉭??"
+Select a source image or asset, then choose a region.
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	if not _save_source_reference(source_path, rect):
-		status.text = "筌〓챷?????筌왖 ??쇱젟?????館釉?쭪? 筌륁궢六??щ빍??"
+The selected source region is invalid.
 		return
-	status.text = "筌〓챷?????筌왖嚥???쇱젟??됰뮸??덈뼄: %s [%d, %d, %d, %d]" % [source_path, rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+Source region updated: %s [%d, %d, %d, %d]
 
 func _replace_from_source_region() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "?믪눘? ??삘뀲 筌〓챷?????筌왖???醫뤾문??뤾쉭??"
+Select a source image or asset first.
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "筌〓챷?????筌왖?癒?퐣 ?대Ŋ猿???怨몃열????뺤삋域밸챶以??醫뤾문??뤾쉭??"
+Select a source image or asset, then choose a region.
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	current_image = source_image.get_region(rect)
 	_refresh_view()
-	status.text = "筌〓챷???怨몃열 %d ??%d px嚥????怨몄뱽 ?대Ŋ猿??됰뮸??덈뼄. ????+ ?怨뚭퍙 癰궰野껋럩?????쑎 ?怨몄뒠??뤾쉭??" % [rect.size.x, rect.size.y]
+Region %d x %d px applied. Use reconnect to change the source reference.
 
 func _replace_source_region_as_unit() -> void:
 	if not _require_image(): return
 	if current_index < 0 or current_index >= entries.size():
-		status.text = "?믪눘? ?醫딅뻺 ?癒?뮉 ???????筌왖???醫뤾문??뤾쉭??"
+Select an edited image or asset first.
 		return
 	var entry: Dictionary = entries[current_index]
 	var owner_path := str(entry.get("owner", ""))
 	var owner_key := str(entry.get("owner_key", ""))
 	if str(entry.get("owner_kind", "")) != "json" or (owner_path != "res://content/towers/towers.json" and owner_path != "res://content/allied_units/allied_units.json"):
-		status.text = "?醫딅뻺 ?癒?뮉 ?????퓠 ?怨뚭퍙?????筌왖?癒?퐣 ?????????됰뮸??덈뼄."
+The edited image is not connected to a source reference.
 		return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "?믪눘? ??삘뀲 筌〓챷?????筌왖???醫뤾문??뤾쉭??"
+Select a source image or asset first.
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "筌〓챷?????筌왖?癒?퐣 ?醫딅뻺??곗쨮 ??????怨몃열????뺤삋域밸챶以??醫뤾문??뤾쉭??"
+The selected source region is registered as the Visual Asset region.
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	var region := source_image.get_region(rect)
-	var frame_size := Vector2i(60, 90)
-	var frame_count := 4
+	var unit_sheet: Dictionary = ConfigRepository.get_editor_value("image_editor", "unit_sheet", {})
+	var default_size: Array = unit_sheet.get("default_frame_size", [60, 90])
+	var frame_size := Vector2i(int(default_size[0]), int(default_size[1])) if default_size.size() >= 2 else Vector2i(60, 90)
+	var frame_count := int(unit_sheet.get("default_frame_count", 4))
 	var unit_label := "Unit"
 	if owner_path == "res://content/allied_units/allied_units.json":
-		var sizes := {"basic": Vector2i(60, 90), "light": Vector2i(60, 90), "ranged": Vector2i(60, 90), "heavy": Vector2i(72, 96), "support": Vector2i(72, 96)}
-		frame_size = sizes.get(owner_key, Vector2i(60, 90))
-		frame_count = 8
+		var configured_sizes: Dictionary = unit_sheet.get("allied_unit_frame_sizes", {})
+		var size_data: Array = configured_sizes.get(owner_key, default_size)
+		frame_size = Vector2i(int(size_data[0]), int(size_data[1])) if size_data.size() >= 2 else Vector2i(60, 90)
+		frame_count = int(unit_sheet.get("allied_unit_frame_count", 8))
 		unit_label = "?醫딅뻺"
 	var frame := Image.create(frame_size.x, frame_size.y, false, Image.FORMAT_RGBA8)
 	frame.fill(Color(0, 0, 0, 0))
@@ -1165,7 +1168,7 @@ func _replace_source_region_as_unit() -> void:
 		sheet.blit_rect(frame, Rect2i(0, 0, frame_size.x, frame_size.y), Vector2i(frame_index * frame_size.x, 0))
 	current_image = sheet
 	_refresh_view()
-	status.text = "%s??%d?袁⑥쟿??%d ??%d px嚥??類?뇣?酉六??щ빍?? ????+ ?怨뚭퍙 癰궰野껋럩?????쑎 ?怨몄뒠??뤾쉭??" % [unit_label, frame_count, sheet.get_width(), sheet.get_height()]
+%s | %d frames | %d x %d px | reconnect the reference to apply changes.
 
 func _resize_image(width_px: int, height_px: int) -> void:
 	if not _require_image(): return

@@ -225,12 +225,12 @@ DONE / 최소 구현 완료.
 - `git diff --check`: PASS
 - 기존 gameplay 설정 smoke test: PASS
 
-보류 후보:
-- `image_editor.gd`의 unit sheet 생성 frame size/count
-- `asset_region_view.gd`의 brush size / fit margin
-- `title_screen.gd`의 장식용 grid spacing/color
+A 범위 승인 후 외부화 완료:
+- `image_editor.gd`의 unit sheet frame size/count → `content/settings/editor.json`
+- `asset_region_view.gd`의 brush size / fit margin → `content/settings/editor.json`
+- `title_screen.gd`의 grid spacing/color 및 장식 렌더 파라미터 → `content/settings/editor.json`
 
-이 후보들은 설정화 자체는 가능하지만 실제 프로젝트 정책인지 단순 구현/디자인 값인지 추가 Canon 판단이 필요하다. 무차별 외부화하지 않는다.
+A 범위에서는 조정 가능한 Editor/UI 정책값을 설정값으로 취급한다. Engine API 고정값과 계산 알고리즘 자체는 코드에 유지한다.
 
 ### Phase 3 — Runtime Gameplay Configuration
 camera tuning, inventory size, spawn/wave timing, gameplay limits, 기본 선택값을 이동한다.

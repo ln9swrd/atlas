@@ -32,14 +32,23 @@ func _ready() -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("e8ede7"))
-	var spacing := 40.0
-	var grid_color := Color(0.28, 0.43, 0.39, 0.07)
-	for x in range(0, int(size.x) + 1, int(spacing)):
+	var grid_spacing := float(ConfigRepository.get_editor_value("title_screen", "grid_spacing", 40.0))
+	var grid_color_data: Array = ConfigRepository.get_editor_value("title_screen", "grid_color", [0.28, 0.43, 0.39, 0.07])
+	var center_line_color_data: Array = ConfigRepository.get_editor_value("title_screen", "center_line_color", [0.12, 0.39, 0.37, 0.10])
+	var center_arc_color_data: Array = ConfigRepository.get_editor_value("title_screen", "center_arc_color", [0.12, 0.39, 0.37, 0.08])
+	var grid_color := Color(float(grid_color_data[0]), float(grid_color_data[1]), float(grid_color_data[2]), float(grid_color_data[3]))
+	var center_line_color := Color(float(center_line_color_data[0]), float(center_line_color_data[1]), float(center_line_color_data[2]), float(center_line_color_data[3]))
+	var center_arc_color := Color(float(center_arc_color_data[0]), float(center_arc_color_data[1]), float(center_arc_color_data[2]), float(center_arc_color_data[3]))
+	for x in range(0, int(size.x) + 1, int(grid_spacing)):
 		draw_line(Vector2(x, 0), Vector2(x, size.y), grid_color, 1.0)
-	for y in range(0, int(size.y) + 1, int(spacing)):
+	for y in range(0, int(size.y) + 1, int(grid_spacing)):
 		draw_line(Vector2(0, y), Vector2(size.x, y), grid_color, 1.0)
-	draw_rect(Rect2(0, size.y * 0.5 - 1.0, size.x, 2.0), Color(0.12, 0.39, 0.37, 0.10))
-	draw_arc(size * 0.5, minf(size.x, size.y) * 0.38, 0.0, TAU, 72, Color(0.12, 0.39, 0.37, 0.08), 1.0)
+	var center_line_width := float(ConfigRepository.get_editor_value("title_screen", "center_line_width", 2.0))
+	var center_arc_width := float(ConfigRepository.get_editor_value("title_screen", "center_arc_width", 1.0))
+	var center_arc_radius_ratio := float(ConfigRepository.get_editor_value("title_screen", "center_arc_radius_ratio", 0.38))
+	var center_arc_points := int(ConfigRepository.get_editor_value("title_screen", "center_arc_points", 72))
+	draw_rect(Rect2(0, size.y * 0.5 - center_line_width * 0.5, size.x, center_line_width), center_line_color)
+	draw_arc(size * 0.5, minf(size.x, size.y) * center_arc_radius_ratio, 0.0, TAU, center_arc_points, center_arc_color, center_arc_width)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_RESIZED:
