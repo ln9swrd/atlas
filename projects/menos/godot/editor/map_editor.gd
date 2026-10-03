@@ -345,7 +345,7 @@ func _build_map_size_controls() -> void:
 	map_height_spin.value_changed.connect(_on_map_size_spin_changed)
 	row.add_child(map_height_spin)
 	var apply := Button.new()
-	apply.text = "?곸슜"
+	apply.text = "적용"
 	apply.disabled = false
 	apply.tooltip_text = "?꾩옱 W/H 媛믪쓣 ?ㅼ떆 ?곸슜?⑸땲??"
 	apply.pressed.connect(_on_map_size_apply_pressed)

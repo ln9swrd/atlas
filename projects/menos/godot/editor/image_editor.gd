@@ -288,9 +288,9 @@ func _refresh_entry_list() -> void:
 		var entry: Dictionary = entries[index]
 		var category := str(entry.get("category", "Other"))
 		var is_catalog_entry := str(entry.get("owner_kind", "")) == "visual_asset"
-		if filter_name == "燁삳??롦에?볥젃" and not is_catalog_entry:
+		if filter_name == "Catalog" and not is_catalog_entry:
 			continue
-		if filter_name != "?袁⑷퍥" and filter_name != "燁삳??롦에?볥젃" and category != filter_name:
+		if filter_name != "All" and filter_name != "Catalog" and category != filter_name:
 			continue
 		if not query.is_empty():
 			var haystack := (str(entry.get("label", "")) + " " + str(entry.get("path", "")) + " " + str(entry.get("usage", "")) + " " + str(entry.get("owner", ""))).to_lower()
@@ -525,7 +525,10 @@ func _select_entry(index: int) -> void:
 	catalog_target_index = entry_index
 	current_index = entry_index
 	current_path = str(entries[entry_index].get("path", ""))
-	IMAGE_STATE.open_image(current_path)
+	if IMAGE_STATE.selection_pending:
+		IMAGE_STATE.selected_path = current_path
+	else:
+		IMAGE_STATE.open_image(current_path)
 	current_image = LOADER.load_image(current_path)
 	var entry: Dictionary = entries[entry_index]
 	var catalog_region: Rect2i = _entry_region(entry)
