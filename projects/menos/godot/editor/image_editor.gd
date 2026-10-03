@@ -109,13 +109,14 @@ func _build_ui() -> void:
 	use_selected_button.pressed.connect(_use_selected_asset)
 	left.add_child(use_selected_button)
 	var open_target_button := Button.new()
-	open_target_button.text = "Source Image 직접 열기"
+	open_target_button.text = "Source Image 열기"
 	open_target_button.pressed.connect(_open_target_dialog)
 	left.add_child(open_target_button)
 	var reconnect_target_button := Button.new()
 	reconnect_target_button.text = "편집 결과로 참조 이미지 교체"
 	reconnect_target_button.pressed.connect(_reconnect_current_to_selected_entry)
 	left.add_child(reconnect_target_button)
+	reconnect_target_button.visible = false
 	var new_catalog_button := Button.new()
 	new_catalog_button.text = "선택 영역을 Visual Asset으로 등록"
 	new_catalog_button.pressed.connect(_create_visual_asset_from_selection)
@@ -124,13 +125,16 @@ func _build_ui() -> void:
 	full_catalog_button.text = "전체 이미지를 Visual Asset으로 등록"
 	full_catalog_button.pressed.connect(_create_visual_asset_from_full_image)
 	left.add_child(full_catalog_button)
+	full_catalog_button.visible = false
 	var audit_button := Button.new()
 	audit_button.text = "이미지 참조 점검"
 	audit_button.pressed.connect(_audit_image_references)
 	left.add_child(audit_button)
+	audit_button.visible = false
 	var source_panel := VBoxContainer.new()
 	source_panel.custom_minimum_size.x = 280
 	body.add_child(source_panel)
+	source_panel.visible = false
 	var source_title := Label.new()
 	source_title.text = "Source / 다른 Asset"
 	source_panel.add_child(source_title)
