@@ -211,10 +211,10 @@ func _build_interface() -> void:
 	form.add_child(footprint_row)
 	var buttons := HBoxContainer.new()
 	details.add_child(buttons)
-	_add_button(buttons, "Add Entry", _add_entry)
-	_add_button(buttons, "Update Selected", _update_entry)
-	_add_button(buttons, "Remove Selected", _remove_entry)
-	_add_button(buttons, "Save Catalog", _on_save_catalog_pressed)
+	_add_button(buttons, "항목 추가", _add_entry)
+	_add_button(buttons, "선택 항목 업데이트", _update_entry)
+	_add_button(buttons, "선택 항목 삭제", _remove_entry)
+	_add_button(buttons, "카탈로그 저장", _on_save_catalog_pressed)
 	status_label = Label.new()
 	status_label.text = "Catalog ready. Choose an image and drag-select a pixel region."
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
