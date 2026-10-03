@@ -569,7 +569,7 @@ func _refresh_list() -> void:
 	for entry in entries:
 		var kind_text := str(entry.get("kind", "tile")).capitalize()
 		var group_text := str(entry.get("group", "?"))
-		var display_text := "%s\n%s 勇?%s" % [entry.get("display_name", "?"), kind_text, group_text]
+		var display_text := "%s\n%s  / %s" % [entry.get("display_name", "?"), kind_text, group_text]
 		asset_list.add_item(display_text, _entry_preview_icon(entry))
 	if selected_index >= 0 and selected_index < entries.size():
 		asset_list.select(selected_index)
