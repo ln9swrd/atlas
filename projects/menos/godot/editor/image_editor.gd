@@ -1,4 +1,4 @@
-extends Control
+﻿extends Control
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const LOADER := preload("res://editor/image_texture_loader.gd")
 const IMAGE_STATE := preload("res://editor/image_editor_state.gd")
@@ -38,10 +38,10 @@ func _request_previous_editor() -> void:
 
 func _use_selected_asset() -> void:
 	if current_path.is_empty():
-		status.text = "?ъ슜??Asset??癒쇱? ?좏깮?섏꽭??"
+		status.text = "?????Asset???믪눘? ?醫뤾문??뤾쉭??"
 		return
 	if not IMAGE_STATE.selection_pending:
-		status.text = "?꾩옱 Editor?먯꽌 Asset ?좏깮???붿껌???곹깭媛 ?꾨떃?덈떎."
+		status.text = "?袁⑹삺 Editor?癒?퐣 Asset ?醫뤾문???遺욧퍕???怨밴묶揶쎛 ?袁⑤뻸??덈뼄."
 		return
 	IMAGE_STATE.apply_selection(current_path)
 	request_previous_editor.emit()
@@ -64,7 +64,7 @@ func _build_ui() -> void:
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
 	var previous_button := Button.new()
-	previous_button.text = "?댁쟾 ?붾㈃"
+	previous_button.text = "??곸읈 ?遺얇늺"
 	previous_button.pressed.connect(_request_previous_editor)
 	title_row.add_child(previous_button)
 	previous_button.visible = false
@@ -90,12 +90,12 @@ func _build_ui() -> void:
 	var search_row := HBoxContainer.new()
 	left.add_child(search_row)
 	search_edit = LineEdit.new()
-	search_edit.placeholder_text = "?대쫫 / 寃쎈줈 / ?⑸룄濡?寃??
+	search_edit.placeholder_text = "Search image / project / category"
 	search_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	search_edit.text_changed.connect(func(_text: String): _refresh_entry_list())
 	search_row.add_child(search_edit)
 	filter_option = OptionButton.new()
-	for filter_name in ["?꾩껜", "移대떎濡쒓렇", "Map", "Unit", "Robot", "Tower", "Enemy", "Runtime"]:
+	for filter_name in ["All", "Catalog", "Map", "Unit", "Robot", "Tower", "Enemy", "Runtime"]:
 		filter_option.add_item(filter_name)
 	filter_option.select(1)
 	filter_option.item_selected.connect(func(_index: int): _refresh_entry_list())
@@ -110,33 +110,33 @@ func _build_ui() -> void:
 	list.item_selected.connect(_select_entry)
 	left.add_child(list)
 	var clear_selection := Button.new()
-	clear_selection.text = "?좏깮 ?댁젣"
+	clear_selection.text = "?醫뤾문 ??곸젫"
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
 	var use_selected_button := Button.new()
-	use_selected_button.text = "?좏깮 Asset ?ъ슜"
+	use_selected_button.text = "?醫뤾문 Asset ????
 	use_selected_button.pressed.connect(_use_selected_asset)
 	left.add_child(use_selected_button)
 	var open_target_button := Button.new()
-	open_target_button.text = "Source Image ?닿린"
+	open_target_button.text = "Source Image ??용┛"
 	open_target_button.pressed.connect(_open_target_dialog)
 	left.add_child(open_target_button)
 	var reconnect_target_button := Button.new()
-	reconnect_target_button.text = "?몄쭛 寃곌낵濡?李몄“ ?대?吏 援먯껜"
+	reconnect_target_button.text = "?紐꾩춿 野껉퀗?득에?筌〓챷?????筌왖 ?대Ŋ猿?
 	reconnect_target_button.pressed.connect(_reconnect_current_to_selected_entry)
 	left.add_child(reconnect_target_button)
 	reconnect_target_button.visible = false
 	var new_catalog_button := Button.new()
-	new_catalog_button.text = "?좏깮 ?곸뿭??Visual Asset?쇰줈 ?깅줉"
+	new_catalog_button.text = "?醫뤾문 ?怨몃열??Visual Asset??곗쨮 ?源낆쨯"
 	new_catalog_button.pressed.connect(_create_visual_asset_from_selection)
 	left.add_child(new_catalog_button)
 	var full_catalog_button := Button.new()
-	full_catalog_button.text = "?꾩껜 ?대?吏瑜?Visual Asset?쇰줈 ?깅줉"
+	full_catalog_button.text = "?袁⑷퍥 ???筌왖??Visual Asset??곗쨮 ?源낆쨯"
 	full_catalog_button.pressed.connect(_create_visual_asset_from_full_image)
 	left.add_child(full_catalog_button)
 	full_catalog_button.visible = false
 	var audit_button := Button.new()
-	audit_button.text = "?대?吏 李몄“ ?먭?"
+	audit_button.text = "???筌왖 筌〓챷???癒?"
 	audit_button.pressed.connect(_audit_image_references)
 	left.add_child(audit_button)
 	audit_button.visible = false
@@ -152,35 +152,35 @@ func _build_ui() -> void:
 	source_list.item_selected.connect(_select_source_entry)
 	source_panel.add_child(source_list)
 	var source_help := Label.new()
-	source_help.text = "?쇱そ?먯꽌 ?좏깮??Asset怨??ㅻⅨ Source瑜?怨⑤씪 ?꾩껜 ?먮뒗 ?좏깮 ?곸뿭??鍮꾧탳/援먯껜?⑸땲??"
+	source_help.text = "??긱걹?癒?퐣 ?醫뤾문??Asset????삘뀲 Source???ⓥ뫀???袁⑷퍥 ?癒?뮉 ?醫뤾문 ?怨몃열????쑨???대Ŋ猿??몃빍??"
 	source_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	source_panel.add_child(source_help)
 	var source_full := Button.new()
-	source_full.text = "Source ?꾩껜濡?援먯껜"
+	source_full.text = "Source ?袁⑷퍥嚥??대Ŋ猿?
 	source_full.pressed.connect(_replace_from_source_full)
 	source_panel.add_child(source_full)
 	var source_open := Button.new()
-	source_open.text = "??Source ?닿린"
+	source_open.text = "??Source ??용┛"
 	source_open.pressed.connect(_open_source_dialog)
 	source_panel.add_child(source_open)
 	var source_region := Button.new()
-	source_region.text = "?좏깮 ?곸뿭?쇰줈 援먯껜"
+	source_region.text = "?醫뤾문 ?怨몃열??곗쨮 ?대Ŋ猿?
 	source_region.pressed.connect(_replace_from_source_region)
 	source_panel.add_child(source_region)
 	var normalize := Button.new()
 	normalize.name = "NormalizeUnitButton"
-	normalize.text = "?좊떅 ?ш린濡?留욎떠 援먯껜"
+	normalize.text = "?醫딅뻺 ??由경에?筌띿쉸???대Ŋ猿?
 	normalize.pressed.connect(_replace_source_region_as_unit)
 	source_panel.add_child(normalize)
 	var source_reference := Button.new()
-	source_reference.text = "?좏깮 ?곸뿭??李몄“濡??곌껐"
+	source_reference.text = "?醫뤾문 ?怨몃열??筌〓챷?쒏에??怨뚭퍙"
 	source_reference.pressed.connect(_apply_source_region_reference)
 	source_panel.add_child(source_reference)
 	source_dialog = FileDialog.new()
-	source_dialog.title = "李몄“ ?대?吏 ?닿린"
+	source_dialog.title = "筌〓챷?????筌왖 ??용┛"
 	source_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	source_dialog.access = FileDialog.ACCESS_RESOURCES
-	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; ?대?吏"])
+	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; ???筌왖"])
 	source_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	source_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_source_thumbnail"))
@@ -188,10 +188,10 @@ func _build_ui() -> void:
 	source_dialog.file_selected.connect(_on_source_file_selected)
 	add_child(source_dialog)
 	target_dialog = FileDialog.new()
-	target_dialog.title = "?몄쭛 ????대?吏 ?닿린"
+	target_dialog.title = "?紐꾩춿 ???????筌왖 ??용┛"
 	target_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	target_dialog.access = FileDialog.ACCESS_RESOURCES
-	target_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; ?대?吏"])
+	target_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; ???筌왖"])
 	target_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	target_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_target_thumbnail"))
@@ -202,7 +202,7 @@ func _build_ui() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
 	usage_label = Label.new()
-	usage_label.text = "?좏깮??Asset ?놁쓬"
+	usage_label.text = "?醫뤾문??Asset ??곸벉"
 	usage_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	usage_label.add_theme_font_size_override("font_size", 16)
 	right.add_child(usage_label)
@@ -212,19 +212,19 @@ func _build_ui() -> void:
 	var tools := HBoxContainer.new()
 	right.add_child(tools)
 	tools.visible = false
-	_add_button(tools, "?뚰뙆 ??젣", _start_erase)
-	_add_button(tools, "?먮Ⅴ湲?, _crop_selection)
-	_add_button(tools, "醫뚯슦 諛섏쟾", _flip_h)
-	_add_button(tools, "?곹븯 諛섏쟾", _flip_v)
-	_add_button(tools, "?쒓퀎 諛⑺뼢 ?뚯쟾", _rotate_cw)
-	_add_button(tools, "諛섏떆怨?諛⑺뼢 ?뚯쟾", _rotate_ccw)
-	_add_button(tools, "?щ챸 ?곸뿭 ?쒓굅", _trim_alpha)
-	_add_button(tools, "???+ ?곌껐 蹂寃?, _save_reconnect)
+	_add_button(tools, "??곕솁 ????, _start_erase)
+	_add_button(tools, "?癒?뀮疫?, _crop_selection)
+	_add_button(tools, "?ル슣??獄쏆꼷??, _flip_h)
+	_add_button(tools, "?怨밸릭 獄쏆꼷??, _flip_v)
+	_add_button(tools, "??볧?獄쎻뫚堉????읈", _rotate_cw)
+	_add_button(tools, "獄쏆꼷?녷?獄쎻뫚堉????읈", _rotate_ccw)
+	_add_button(tools, "??梨??怨몃열 ??볤탢", _trim_alpha)
+	_add_button(tools, "????+ ?怨뚭퍙 癰궰野?, _save_reconnect)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
 	resize_row.visible = false
 	var resize_label := Label.new()
-	resize_label.text = "?ш린 蹂寃?
+	resize_label.text = "??由?癰궰野?
 	resize_row.add_child(resize_label)
 	var width_spin := SpinBox.new()
 	width_spin.name = "WidthSpin"
@@ -239,7 +239,7 @@ func _build_ui() -> void:
 	height_spin.step = 1
 	resize_row.add_child(height_spin)
 	var resize_btn := Button.new()
-	resize_btn.text = "?ш린 ?곸슜"
+	resize_btn.text = "??由??怨몄뒠"
 	resize_btn.pressed.connect(func(): _resize_image(int(width_spin.value), int(height_spin.value)))
 	resize_row.add_child(resize_btn)
 	status = Label.new()
@@ -256,12 +256,12 @@ func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) 
 func _scan_connected_images() -> void:
 	entries.clear()
 	var seen := {}
-	_scan_json_images("res://content/towers/towers.json", "???, "sprite_anim", "諛⑹뼱 ?쒖꽕 ?대?吏", "Tower", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "?좊떅", "visuals.sprite", "?뚮젅?댁뼱 ?좊떅 ?대?吏", "Unit", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "?좊떅", "visuals.default_image", "?좊떅 Profile Image", "Unit", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "?좊떅", "projectile_anim", "?좊떅 ?꾪솚 ?대?吏", "Unit", seen)
-	_scan_json_images("res://content/enemies/enemies.json", "???좊떅", "sprite_anim", "???좊떅 ?대?吏", "Enemy", seen)
-	_scan_json_images("res://content/enemies/enemies.json", "???좊떅", "projectile_anim", "???좊떅 ?꾪솚 ?대?吏", "Enemy", seen)
+	_scan_json_images("res://content/towers/towers.json", "????, "sprite_anim", "獄쎻뫗堉???뽮퐬 ???筌왖", "Tower", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "?醫딅뻺", "visuals.sprite", "???쟿??곷선 ?醫딅뻺 ???筌왖", "Unit", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "?醫딅뻺", "visuals.default_image", "?醫딅뻺 Profile Image", "Unit", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "?醫딅뻺", "projectile_anim", "?醫딅뻺 ?袁れ넎 ???筌왖", "Unit", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "???醫딅뻺", "sprite_anim", "???醫딅뻺 ???筌왖", "Enemy", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "???醫딅뻺", "projectile_anim", "???醫딅뻺 ?袁れ넎 ???筌왖", "Enemy", seen)
 	_scan_allied_animations(seen)
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
@@ -274,7 +274,7 @@ func _scan_connected_images() -> void:
 	for entry in entries:
 		if str(entry.get("owner_kind", "")) == "visual_asset":
 			catalog_count += 1
-	status.text = "%d媛?移대떎濡쒓렇 ??ぉ??議고쉶?????덉뒿?덈떎." % catalog_count
+	status.text = "%d揶?燁삳??롦에?볥젃 ?????鈺곌퀬???????됰뮸??덈뼄." % catalog_count
 
 func _refresh_entry_list() -> void:
 	if list == null or source_list == null:
@@ -283,14 +283,14 @@ func _refresh_entry_list() -> void:
 	list.clear()
 	source_list.clear()
 	var query := search_edit.text.strip_edges().to_lower() if search_edit else ""
-	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "?꾩껜"
+	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "?袁⑷퍥"
 	for index in range(entries.size()):
 		var entry: Dictionary = entries[index]
 		var category := str(entry.get("category", "Other"))
 		var is_catalog_entry := str(entry.get("owner_kind", "")) == "visual_asset"
-		if filter_name == "移대떎濡쒓렇" and not is_catalog_entry:
+		if filter_name == "燁삳??롦에?볥젃" and not is_catalog_entry:
 			continue
-		if filter_name != "?꾩껜" and filter_name != "移대떎濡쒓렇" and category != filter_name:
+		if filter_name != "?袁⑷퍥" and filter_name != "燁삳??롦에?볥젃" and category != filter_name:
 			continue
 		if not query.is_empty():
 			var haystack := (str(entry.get("label", "")) + " " + str(entry.get("path", "")) + " " + str(entry.get("usage", "")) + " " + str(entry.get("owner", ""))).to_lower()
@@ -298,7 +298,7 @@ func _refresh_entry_list() -> void:
 				continue
 		filtered_indices.append(index)
 		var icon: Texture2D = _get_catalog_thumbnail(entry) if is_catalog_entry else load(str(entry.get("path", ""))) as Texture2D
-		var display_category := "移대떎濡쒓렇" if is_catalog_entry else category
+		var display_category := "燁삳??롦에?볥젃" if is_catalog_entry else category
 		var label_text := "[%s] %s" % [display_category, str(entry.get("label", "Asset"))]
 		list.add_item(label_text, icon)
 		list.set_item_metadata(list.item_count - 1, index)
@@ -330,22 +330,22 @@ func _audit_image_references() -> void:
 		if image_path.is_empty():
 			continue
 		if not ResourceLoader.exists(image_path):
-			missing.append("%s | %s" % [str(entry.get("label", "?대?吏")), image_path])
+			missing.append("%s | %s" % [str(entry.get("label", "???筌왖")), image_path])
 			continue
 		var texture := load(image_path) as Texture2D
 		if texture == null:
-			invalid.append("%s | %s" % [str(entry.get("label", "?대?吏")), image_path])
-	var report := "?대?吏 李몄“ ?먭? 寃곌낵\n\n?꾩껜 李몄“: %d\n?꾨씫: %d\n濡쒕뱶 ?ㅽ뙣: %d" % [entries.size(), missing.size(), invalid.size()]
+			invalid.append("%s | %s" % [str(entry.get("label", "???筌왖")), image_path])
+	var report := "???筌왖 筌〓챷???癒? 野껉퀗??n\n?袁⑷퍥 筌〓챷?? %d\n?袁⑥뵭: %d\n嚥≪뮆諭???쎈솭: %d" % [entries.size(), missing.size(), invalid.size()]
 	if not missing.is_empty():
-		report += "\n\n[?꾨씫???대?吏]\n" + "\n".join(missing)
+		report += "\n\n[?袁⑥뵭?????筌왖]\n" + "\n".join(missing)
 	if not invalid.is_empty():
-		report += "\n\n[濡쒕뱶 ?ㅽ뙣 ?대?吏]\n" + "\n".join(invalid)
+		report += "\n\n[嚥≪뮆諭???쎈솭 ???筌왖]\n" + "\n".join(invalid)
 	if missing.is_empty() and invalid.is_empty():
-		report += "\n\n紐⑤뱺 ?곌껐 ?대?吏 李몄“媛 ?뺤긽?낅땲??"
+		report += "\n\n筌뤴뫀諭??怨뚭퍙 ???筌왖 筌〓챷?쒎첎? ?類ㅺ맒??낅빍??"
 	var dialog := AcceptDialog.new()
-	dialog.title = "?대?吏 李몄“ ?먭?"
+	dialog.title = "???筌왖 筌〓챷???癒?"
 	dialog.dialog_text = report
-	dialog.ok_button_text = "?リ린"
+	dialog.ok_button_text = "??る┛"
 	add_child(dialog)
 	dialog.confirmed.connect(dialog.queue_free)
 	dialog.canceled.connect(dialog.queue_free)
@@ -387,7 +387,7 @@ func _scan_allied_animations(seen: Dictionary) -> void:
 			var image_path := str(animations[animation_name])
 			if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
-			entries.append({"label": "?꾧뎔 ?좊떅 / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "?꾧뎔 ?좊떅 %s ?좊땲硫붿씠?? % str(animation_name), "category": "Unit"})
+			entries.append({"label": "?袁㏓럵 ?醫딅뻺 / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "?袁㏓럵 ?醫딅뻺 %s ?醫딅빍筌롫뗄??? % str(animation_name), "category": "Unit"})
 
 func _scan_robot_images(seen: Dictionary) -> void:
 	var path := "res://content/robots/robots.json"
@@ -403,21 +403,21 @@ func _scan_robot_images(seen: Dictionary) -> void:
 			var image_path := str(data[key].get(field, ""))
 			if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
-			var usage := "濡쒕큸 ?湲??대?吏"
+			var usage := "嚥≪뮆????疫????筌왖"
 			match field:
-				"sprite_attack": usage = "濡쒕큸 怨듦꺽 ?대?吏"
-				"default_image": usage = "濡쒕큸 Profile Image"
-				"sprite_move": usage = "濡쒕큸 ?대룞 ?대?吏"
-				"sprite_skill": usage = "濡쒕큸 ?ㅽ궗 ?대?吏"
-				"projectile_anim": usage = "濡쒕큸 ?ъ궗泥??대?吏"
-			entries.append({"label": "濡쒕큸 / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": "Robot"})
+				"sprite_attack": usage = "嚥≪뮆???⑤벀爰????筌왖"
+				"default_image": usage = "嚥≪뮆??Profile Image"
+				"sprite_move": usage = "嚥≪뮆????猷????筌왖"
+				"sprite_skill": usage = "嚥≪뮆????쎄텢 ???筌왖"
+				"projectile_anim": usage = "嚥≪뮆????沅쀯㎗????筌왖"
+			entries.append({"label": "嚥≪뮆??/ %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": "Robot"})
 		var animations: Dictionary = data[key].get("animations", {})
 		if animations is Dictionary:
 			for animation_name in animations:
 				var animation_path := str(animations[animation_name])
 				if animation_path.is_empty() or seen.has(animation_path): continue
 				seen[animation_path] = true
-				entries.append({"label": "濡쒕큸 / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "濡쒕큸 %s ?좊땲硫붿씠?? % str(animation_name), "category": "Robot"})
+				entries.append({"label": "嚥≪뮆??/ %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "嚥≪뮆??%s ?醫딅빍筌롫뗄??? % str(animation_name), "category": "Robot"})
 
 func _scan_catalog(seen: Dictionary) -> void:
 	var path := "res://content/editor/asset_catalog.json"
@@ -432,7 +432,7 @@ func _scan_catalog(seen: Dictionary) -> void:
 		var image_path := str(asset.get("source_path", ""))
 		if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "移댄깉濡쒓렇 / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "移댄깉濡쒓렇")), str(asset.get("kind", "asset"))], "category": "Map"})
+		entries.append({"label": "燁삳똾源됪에?볥젃 / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "燁삳똾源됪에?볥젃")), str(asset.get("kind", "asset"))], "category": "Map"})
 func _scan_visual_assets(seen: Dictionary) -> void:
 	var path := "res://content/editor/visual_assets.json"
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -478,7 +478,7 @@ func _scan_main_preloads(seen: Dictionary) -> void:
 		var image_path := str(match_data.get_string(1))
 		if seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "?고???/ %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload", "usage": "寃뚯엫 ?고????대?吏", "category": "Runtime"})
+		entries.append({"label": "?怨???/ %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload", "usage": "野껊슣???怨??????筌왖", "category": "Runtime"})
 
 func _select_path(path: String) -> void:
 	for visible_index in range(filtered_indices.size()):
@@ -513,9 +513,9 @@ func _clear_image_selection() -> void:
 	list.deselect_all()
 	source_list.deselect_all()
 	IMAGE_STATE.selected_path = ""
-	usage_label.text = "?좏깮??Asset ?놁쓬"
+	usage_label.text = "?醫뤾문??Asset ??곸벉"
 	view.set_source_texture(null)
-	status.text = "?대?吏 ?좏깮???댁젣?덉뒿?덈떎."
+	status.text = "???筌왖 ?醫뤾문????곸젫??됰뮸??덈뼄."
 
 func _select_entry(index: int) -> void:
 	if editing: return
@@ -529,15 +529,15 @@ func _select_entry(index: int) -> void:
 	current_image = LOADER.load_image(current_path)
 	var entry: Dictionary = entries[entry_index]
 	var catalog_region: Rect2i = _entry_region(entry)
-	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "誘몄???)), current_path, str(entry.get("owner", "誘몄???)), str(entry.get("field", "誘몄???))]
+	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "沃섎챷???)), current_path, str(entry.get("owner", "沃섎챷???)), str(entry.get("field", "沃섎챷???))]
 	if current_image == null:
-		status.text = "?대?吏瑜?遺덈윭?????놁뒿?덈떎: %s" % current_path
+		status.text = "???筌왖???븍뜄???????곷뮸??덈뼄: %s" % current_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
 	if catalog_region.size.x > 0 and catalog_region.size.y > 0:
 		view.selected_region = catalog_region
 		view.queue_redraw()
-	status.text = "?좏깮??移대떎濡쒓렇: %s ???곸뿭 %d 횞 %d px" % [str(entry.get("label", "Asset")), catalog_region.size.x, catalog_region.size.y] if catalog_region.size.x > 0 else "?좏깮??Source: %s ??%d 횞 %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+	status.text = "?醫뤾문??燁삳??롦에?볥젃: %s ???怨몃열 %d ??%d px" % [str(entry.get("label", "Asset")), catalog_region.size.x, catalog_region.size.y] if catalog_region.size.x > 0 else "?醫뤾문??Source: %s ??%d ??%d px" % [current_path, current_image.get_width(), current_image.get_height()]
 
 func _entry_region(entry: Dictionary) -> Rect2i:
 	var region_data: Array = entry.get("region", [])
@@ -566,16 +566,16 @@ func _on_target_file_selected(path: String) -> void:
 		_finish_erase()
 	var loaded := LOADER.load_image(path)
 	if loaded == null:
-		status.text = "?몄쭛 ????대?吏瑜?遺덈윭?????놁뒿?덈떎: %s" % path
+		status.text = "?紐꾩춿 ???????筌왖???븍뜄???????곷뮸??덈뼄: %s" % path
 		return
 	current_index = -1
 	current_path = path
 	current_image = loaded
 	IMAGE_STATE.open_image(path)
 	list.deselect_all()
-	usage_label.text = "?⑸룄: ???몄쭛 ????대?吏"
+	usage_label.text = "??몃즲: ???紐꾩춿 ???????筌왖"
 	_refresh_view()
-	status.text = "???대?吏: %s ???쒕옒洹몃줈 ?곸뿭???좏깮????Visual Asset?쇰줈 ?깅줉?????덉뒿?덈떎." % path
+	status.text = "?????筌왖: %s ????뺤삋域밸챶以??怨몃열???醫뤾문????Visual Asset??곗쨮 ?源낆쨯??????됰뮸??덈뼄." % path
 
 func _save_current_image_copy() -> String:
 	if not _require_image():
@@ -595,30 +595,30 @@ func _reconnect_current_to_selected_entry() -> void:
 	if not _require_image():
 		return
 	if catalog_target_index < 0 or catalog_target_index >= entries.size():
-		status.text = "?쇱そ ?곌껐 紐⑸줉?먯꽌 援먯껜??移댄깉濡쒓렇 ??ぉ??癒쇱? ?좏깮?섏꽭??"
+		status.text = "??긱걹 ?怨뚭퍙 筌뤴뫖以?癒?퐣 ?대Ŋ猿??燁삳똾源됪에?볥젃 ??????믪눘? ?醫뤾문??뤾쉭??"
 		return
 	if str(entries[catalog_target_index].get("path", "")) == current_path:
-		status.text = "?ㅻⅨ ?대?吏瑜??몄쭛 ??곸쑝濡??댁뼱 二쇱꽭??"
+		status.text = "??삘뀲 ???筌왖???紐꾩춿 ???怨몄몵嚥???곷선 雅뚯눘苑??"
 		return
 	if source_path == current_path:
 		source_path = ""
 		source_image = null
 	var output := _save_current_image_copy()
 	if output.is_empty():
-		status.text = "?몄쭛 ?대?吏瑜???ν븯吏 紐삵빐 移댄깉濡쒓렇瑜?援먯껜?????놁뒿?덈떎."
+		status.text = "?紐꾩춿 ???筌왖?????館釉?쭪? 筌륁궢鍮?燁삳똾源됪에?볥젃???대Ŋ猿??????곷뮸??덈뼄."
 		return
 	if catalog_target_index < 0 or catalog_target_index >= entries.size():
-		status.text = "?쇱そ ?곌껐 紐⑸줉?먯꽌 援먯껜??移댄깉濡쒓렇 ??ぉ??癒쇱? ?좏깮?섏꽭??"
+		status.text = "??긱걹 ?怨뚭퍙 筌뤴뫖以?癒?퐣 ?대Ŋ猿??燁삳똾源됪에?볥젃 ??????믪눘? ?醫뤾문??뤾쉭??"
 		return
 	if not _replace_entry_reference(entries[catalog_target_index], output):
-		status.text = "?대?吏????ν뻽吏留??좏깮 移댄깉濡쒓렇 李몄“ 援먯껜???ㅽ뙣?덉뒿?덈떎: %s" % output
+		status.text = "???筌왖?????館六쏙쭪?筌??醫뤾문 燁삳똾源됪에?볥젃 筌〓챷???대Ŋ猿????쎈솭??됰뮸??덈뼄: %s" % output
 		return
 	current_path = output
 	IMAGE_STATE.open_image(output)
 	_refresh_view()
 	_scan_connected_images()
 	_select_path(output)
-	status.text = "?좏깮 移댄깉濡쒓렇 李몄“瑜????대?吏濡?援먯껜?덉뒿?덈떎: %s" % output
+	status.text = "?醫뤾문 燁삳똾源됪에?볥젃 筌〓챷?쒐몴??????筌왖嚥??대Ŋ猿??됰뮸??덈뼄: %s" % output
 
 func _replace_entry_reference(entry: Dictionary, new_path: String) -> bool:
 	var owner_kind := str(entry.get("owner_kind", ""))
@@ -643,7 +643,7 @@ func _create_visual_asset_from_selection() -> void:
 			view.selected_region = rect
 			view.queue_redraw()
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "癒쇱? ?대?吏?먯꽌 移댄깉濡쒓렇濡?留뚮뱾 ?곸뿭???쒕옒洹명빐???좏깮?섏꽭??"
+		status.text = "?믪눘? ???筌왖?癒?퐣 燁삳똾源됪에?볥젃嚥?筌띾슢諭??怨몃열????뺤삋域밸챸鍮???醫뤾문??뤾쉭??"
 		return
 	_create_visual_asset(rect)
 
@@ -692,7 +692,7 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		"usage": "visual_asset_catalog"
 	}
 	if not _write_json(catalog_path, assets):
-		status.text = "Visual Asset Catalog ??μ뿉 ?ㅽ뙣?덉뒿?덈떎."
+		status.text = "Visual Asset Catalog ???關肉???쎈솭??됰뮸??덈뼄."
 		return
 	_scan_connected_images()
 	var created_index := -1
@@ -711,17 +711,17 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		_select_path(current_path)
 	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_target.is_empty():
 		IMAGE_STATE.apply_selection(asset_id)
-		status.text = "Visual Asset ?깅줉 ?꾨즺 諛??먮옒 Editor???곸슜 以鍮? %s | ?곸뿭 %d 횞 %d px" % [asset_id, rect.size.x, rect.size.y]
+		status.text = "Visual Asset ?源낆쨯 ?袁⑥┷ 獄??癒?삋 Editor???怨몄뒠 餓Β?? %s | ?怨몃열 %d ??%d px" % [asset_id, rect.size.x, rect.size.y]
 		request_previous_editor.emit()
 	else:
-		status.text = "Visual Asset ?깅줉 ?꾨즺: %s | ?곸뿭 %d 횞 %d px" % [asset_id, rect.size.x, rect.size.y]
+		status.text = "Visual Asset ?源낆쨯 ?袁⑥┷: %s | ?怨몃열 %d ??%d px" % [asset_id, rect.size.x, rect.size.y]
 
 func _add_current_image_to_asset_catalog() -> void:
 	if not _require_image():
 		return
 	var output := _save_current_image_copy()
 	if output.is_empty():
-		status.text = "??移댄깉濡쒓렇??PNG瑜???ν븯吏 紐삵뻽?듬땲??"
+		status.text = "??燁삳똾源됪에?볥젃??PNG?????館釉?쭪? 筌륁궢六??щ빍??"
 		return
 	var catalog_path := "res://content/editor/asset_catalog.json"
 	var data: Variant = {}
@@ -756,11 +756,11 @@ func _add_current_image_to_asset_catalog() -> void:
 	data["schema_version"] = int(data.get("schema_version", 1))
 	data["assets"] = assets
 	if not _write_json(catalog_path, data):
-		status.text = "PNG????ν뻽吏留?Asset Catalog ??μ뿉 ?ㅽ뙣?덉뒿?덈떎: %s" % output
+		status.text = "PNG?????館六쏙쭪?筌?Asset Catalog ???關肉???쎈솭??됰뮸??덈뼄: %s" % output
 		return
 	_scan_connected_images()
 	_select_path(output)
-	status.text = "??Asset Catalog ??ぉ???깅줉?덉뒿?덈떎: %s" % asset_id
+	status.text = "??Asset Catalog ??????源낆쨯??됰뮸??덈뼄: %s" % asset_id
 
 func _catalog_asset_id_exists(assets: Array, asset_id: String) -> bool:
 	for asset in assets:
@@ -784,16 +784,16 @@ func _open_source_dialog() -> void:
 
 func _on_source_file_selected(path: String) -> void:
 	if path == current_path:
-		status.text = "??곴낵 ?ㅻⅨ ?대?吏瑜?李몄“ ?대?吏濡??좏깮?섏꽭??"
+		status.text = "???怨대궢 ??삘뀲 ???筌왖??筌〓챷?????筌왖嚥??醫뤾문??뤾쉭??"
 		return
 	source_path = path
 	source_index = -1
 	source_image = LOADER.load_image(source_path)
 	if source_image == null:
-		status.text = "李몄“ ?대?吏瑜?遺덈윭?????놁뒿?덈떎: %s" % source_path
+		status.text = "筌〓챷?????筌왖???븍뜄???????곷뮸??덈뼄: %s" % source_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(source_image))
-	status.text = "李몄“: %s ???쒕옒洹몃줈 ?곸뿭???좏깮?섏꽭??" % source_path
+	status.text = "筌〓챷?? %s ????뺤삋域밸챶以??怨몃열???醫뤾문??뤾쉭??" % source_path
 
 func _select_source_entry(index: int) -> void:
 	if editing: return
@@ -803,87 +803,87 @@ func _select_source_entry(index: int) -> void:
 	source_index = entry_index
 	source_path = str(entries[entry_index].get("path", ""))
 	if source_path == current_path:
-		status.text = "??곴낵 ?ㅻⅨ ?대?吏瑜?李몄“ ?대?吏濡??좏깮?섏꽭??"
+		status.text = "???怨대궢 ??삘뀲 ???筌왖??筌〓챷?????筌왖嚥??醫뤾문??뤾쉭??"
 		return
 	source_image = LOADER.load_image(source_path)
 	if source_image == null:
-		status.text = "李몄“ ?대?吏瑜?遺덈윭?????놁뒿?덈떎: %s" % source_path
+		status.text = "筌〓챷?????筌왖???븍뜄???????곷뮸??덈뼄: %s" % source_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(source_image))
-	status.text = "李몄“: %s ???꾩껜 ?먮뒗 ?쒕옒洹??좏깮 ?곸뿭???ъ슜?섏꽭??" % source_path
+	status.text = "筌〓챷?? %s ???袁⑷퍥 ?癒?뮉 ??뺤삋域??醫뤾문 ?怨몃열???????뤾쉭??" % source_path
 
 func _replace_from_source_full() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "癒쇱? ?ㅻⅨ 李몄“ ?대?吏瑜??좏깮?섏꽭??"
+		status.text = "?믪눘? ??삘뀲 筌〓챷?????筌왖???醫뤾문??뤾쉭??"
 		return
 	current_image = source_image.duplicate()
 	_refresh_view()
-	status.text = "李몄“ ?대?吏 ?꾩껜瑜???곸쑝濡?援먯껜?덉뒿?덈떎. ???+ ?곌껐 蹂寃쎌쓣 ?뚮윭 ?곸슜?섏꽭??"
+	status.text = "筌〓챷?????筌왖 ?袁⑷퍥?????怨몄몵嚥??대Ŋ猿??됰뮸??덈뼄. ????+ ?怨뚭퍙 癰궰野껋럩?????쑎 ?怨몄뒠??뤾쉭??"
 
 func _apply_source_region_reference() -> void:
 	if not _require_image(): return
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "癒쇱? ?ㅻⅨ 李몄“ ?대?吏瑜??닿굅???좏깮?섏꽭??"
+		status.text = "?믪눘? ??삘뀲 筌〓챷?????筌왖????욧탢???醫뤾문??뤾쉭??"
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "李몄“ ?대?吏?먯꽌 ?곸뿭???쒕옒洹몃줈 ?좏깮?섏꽭??"
+		status.text = "筌〓챷?????筌왖?癒?퐣 ?怨몃열????뺤삋域밸챶以??醫뤾문??뤾쉭??"
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	if not _save_source_reference(source_path, rect):
-		status.text = "李몄“ ?대?吏 ?ㅼ젙????ν븯吏 紐삵뻽?듬땲??"
+		status.text = "筌〓챷?????筌왖 ??쇱젟?????館釉?쭪? 筌륁궢六??щ빍??"
 		return
-	status.text = "李몄“ ?대?吏濡??ㅼ젙?덉뒿?덈떎: %s [%d, %d, %d, %d]" % [source_path, rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+	status.text = "筌〓챷?????筌왖嚥???쇱젟??됰뮸??덈뼄: %s [%d, %d, %d, %d]" % [source_path, rect.position.x, rect.position.y, rect.size.x, rect.size.y]
 
 func _replace_from_source_region() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "癒쇱? ?ㅻⅨ 李몄“ ?대?吏瑜??좏깮?섏꽭??"
+		status.text = "?믪눘? ??삘뀲 筌〓챷?????筌왖???醫뤾문??뤾쉭??"
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "李몄“ ?대?吏?먯꽌 援먯껜???곸뿭???쒕옒洹몃줈 ?좏깮?섏꽭??"
+		status.text = "筌〓챷?????筌왖?癒?퐣 ?대Ŋ猿???怨몃열????뺤삋域밸챶以??醫뤾문??뤾쉭??"
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	current_image = source_image.get_region(rect)
 	_refresh_view()
-	status.text = "李몄“ ?곸뿭 %d 횞 %d px濡???곸쓣 援먯껜?덉뒿?덈떎. ???+ ?곌껐 蹂寃쎌쓣 ?뚮윭 ?곸슜?섏꽭??" % [rect.size.x, rect.size.y]
+	status.text = "筌〓챷???怨몃열 %d ??%d px嚥????怨몄뱽 ?대Ŋ猿??됰뮸??덈뼄. ????+ ?怨뚭퍙 癰궰野껋럩?????쑎 ?怨몄뒠??뤾쉭??" % [rect.size.x, rect.size.y]
 
 func _replace_source_region_as_unit() -> void:
 	if not _require_image(): return
 	if current_index < 0 or current_index >= entries.size():
-		status.text = "癒쇱? ?좊떅 ?먮뒗 ????대?吏瑜??좏깮?섏꽭??"
+		status.text = "?믪눘? ?醫딅뻺 ?癒?뮉 ???????筌왖???醫뤾문??뤾쉭??"
 		return
 	var entry: Dictionary = entries[current_index]
 	var owner_path := str(entry.get("owner", ""))
 	var owner_key := str(entry.get("owner_key", ""))
 	if str(entry.get("owner_kind", "")) != "json" or (owner_path != "res://content/towers/towers.json" and owner_path != "res://content/allied_units/allied_units.json"):
-		status.text = "?좊떅 ?먮뒗 ??뚯뿉 ?곌껐???대?吏?먯꽌 ?ъ슜?????덉뒿?덈떎."
+		status.text = "?醫딅뻺 ?癒?뮉 ?????퓠 ?怨뚭퍙?????筌왖?癒?퐣 ?????????됰뮸??덈뼄."
 		return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "癒쇱? ?ㅻⅨ 李몄“ ?대?吏瑜??좏깮?섏꽭??"
+		status.text = "?믪눘? ??삘뀲 筌〓챷?????筌왖???醫뤾문??뤾쉭??"
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "李몄“ ?대?吏?먯꽌 ?좊떅?쇰줈 ?ъ슜???곸뿭???쒕옒洹몃줈 ?좏깮?섏꽭??"
+		status.text = "筌〓챷?????筌왖?癒?퐣 ?醫딅뻺??곗쨮 ??????怨몃열????뺤삋域밸챶以??醫뤾문??뤾쉭??"
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	var region := source_image.get_region(rect)
 	var frame_size := Vector2i(60, 90)
 	var frame_count := 4
-	var unit_label := "???
+	var unit_label := "????
 	if owner_path == "res://content/allied_units/allied_units.json":
 		var sizes := {"basic": Vector2i(60, 90), "light": Vector2i(60, 90), "ranged": Vector2i(60, 90), "heavy": Vector2i(72, 96), "support": Vector2i(72, 96)}
 		frame_size = sizes.get(owner_key, Vector2i(60, 90))
 		frame_count = 8
-		unit_label = "?좊떅"
+		unit_label = "?醫딅뻺"
 	var frame := Image.create(frame_size.x, frame_size.y, false, Image.FORMAT_RGBA8)
 	frame.fill(Color(0, 0, 0, 0))
 	var scale := minf(float(frame_size.x) / float(region.get_width()), float(frame_size.y) / float(region.get_height()))
@@ -898,7 +898,7 @@ func _replace_source_region_as_unit() -> void:
 		sheet.blit_rect(frame, Rect2i(0, 0, frame_size.x, frame_size.y), Vector2i(frame_index * frame_size.x, 0))
 	current_image = sheet
 	_refresh_view()
-	status.text = "%s??%d?꾨젅??%d 횞 %d px濡??뺢퇋?뷀뻽?듬땲?? ???+ ?곌껐 蹂寃쎌쓣 ?뚮윭 ?곸슜?섏꽭??" % [unit_label, frame_count, sheet.get_width(), sheet.get_height()]
+	status.text = "%s??%d?袁⑥쟿??%d ??%d px嚥??類?뇣?酉六??щ빍?? ????+ ?怨뚭퍙 癰궰野껋럩?????쑎 ?怨몄뒠??뤾쉭??" % [unit_label, frame_count, sheet.get_width(), sheet.get_height()]
 
 func _resize_image(width_px: int, height_px: int) -> void:
 	if not _require_image(): return
@@ -914,7 +914,7 @@ func _require_image() -> bool:
 
 func _refresh_view() -> void:
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
-	status.text = "%s ??%d 횞 %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+	status.text = "%s ??%d ??%d px" % [current_path, current_image.get_width(), current_image.get_height()]
 func _start_erase() -> void:
 	if not _require_image(): return
 	view.begin_image_edit(current_image, 12)
@@ -1091,8 +1091,8 @@ func _replace_json_value(path: String, key: String, field: String, new_path: Str
 	file.close()
 	if not data is Dictionary or not data.has(key): return false
 	_set_nested_value(data[key], field, new_path)
-	# ???+ ?곌껐 蹂寃쎌쑝濡????몄쭛 PNG???곌껐???뚮뒗 ?댁쟾 李몄“ ?곸뿭???쒓굅?쒕떎.
-	# ??PNG ?먯껜媛 援먯껜 寃곌낵臾쇱씠誘濡??꾩껜 ?대?吏瑜??ъ슜?댁빞 ?쒕떎.
+	# ????+ ?怨뚭퍙 癰궰野껋럩?앮에????紐꾩춿 PNG???怨뚭퍙?????뮉 ??곸읈 筌〓챷???怨몃열????볤탢??뺣뼄.
+	# ??PNG ?癒?퍥揶쎛 ?대Ŋ猿?野껉퀗?듣눧?깆뵠沃샕嚥??袁⑷퍥 ???筌왖???????곷튊 ??뺣뼄.
 	_erase_nested_value(data[key], _field_suffix(field, "_rect"))
 	return _write_json(path, data)
 
