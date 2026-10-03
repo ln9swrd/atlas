@@ -36,9 +36,10 @@ var robot_preview_name: Label
 var robot_preview_description: Label
 var robot_preview: TextureRect
 var animation_previews: Dictionary = {}
+var animation_rects: Dictionary = {}
 var animation_timer: Timer
 var animation_frame := 0
-const ROBOT_ANIMATION_FRAMES := {"idle": 6, "attack": 7, "move": 5, "skill": 5, "projectile": 8}
+const ROBOT_ANIMATION_FRAMES := {"idle": 6, "attack": 8, "move": 8, "skill": 8, "projectile": 6}
 
 func _ready() -> void:
 	_build_ui()
@@ -349,7 +350,7 @@ func _on_robot_selected(index: int) -> void:
 	skill_edit.text = str(data.get("sprite_skill", "res://assets/menos/sprites/atlas_skill.png"))
 	projectile_edit.text = str(data.get("projectile_anim", "res://assets/menos/sprites/bullet_defender.png"))
 	default_image_edit.text = str(data.get("default_image", data.get("sprite_idle", "")))
-	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
+	animation_rects = data.get("animation_rects", {}) if data.get("animation_rects", {}) is Dictionary else {}
 	for animation_name in animation_edits.keys():
 		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, data.get("sprite_skill", "")))
 	_refresh_all_image_thumbnails()
@@ -371,14 +372,24 @@ func _create_animation_preview(parent: Container, label_text: String, size: Vect
 	box.add_child(preview)
 	return preview
 
-func _animated_texture(path: String, frame: int, total_frames: int) -> Texture2D:
+func _animated_texture(path: String, frame: int, total_frames: int, rect_values: Variant = []) -> Texture2D:
 	var texture := load(path) as Texture2D
-	if texture == null or total_frames <= 1:
+	if texture == null:
+		return null
+	var source_rect := Rect2(0.0, 0.0, texture.get_width(), texture.get_height())
+	if rect_values is Array and rect_values.size() >= 4:
+		source_rect = Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+	if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
 		return texture
-	var frame_width := texture.get_width() / float(total_frames)
+	if total_frames <= 1:
+		var single := AtlasTexture.new()
+		single.atlas = texture
+		single.region = source_rect
+		return single
+	var frame_width := source_rect.size.x / float(total_frames)
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture
-	atlas.region = Rect2(frame_width * (frame % total_frames), 0.0, frame_width, texture.get_height())
+	atlas.region = Rect2(source_rect.position.x + frame_width * (frame % total_frames), source_rect.position.y, frame_width, source_rect.size.y)
 	return atlas
 
 func _refresh_animation_previews() -> void:
@@ -393,7 +404,13 @@ func _refresh_animation_previews() -> void:
 		var preview: TextureRect = animation_previews[key]
 		var path := str(paths.get(key, ""))
 		var frames := int(ROBOT_ANIMATION_FRAMES.get(key, 1))
-		preview.texture = _animated_texture(path, animation_frame, frames)
+		var rect_values: Variant = []
+		if key == "idle": rect_values = robot_data.get(selected_type, {}).get("sprite_idle_rect", [])
+		elif key == "attack": rect_values = robot_data.get(selected_type, {}).get("sprite_attack_rect", [])
+		elif key == "move": rect_values = robot_data.get(selected_type, {}).get("sprite_move_rect", [])
+		elif key == "skill": rect_values = robot_data.get(selected_type, {}).get("sprite_skill_rect", [])
+		elif key == "projectile": rect_values = animation_rects.get("projectile", [])
+		preview.texture = _animated_texture(path, animation_frame, frames, rect_values)
 
 func _on_animation_tick() -> void:
 	animation_frame = (animation_frame + 1) % 8
@@ -423,6 +440,7 @@ func _save_data() -> void:
 	for animation_name in animation_edits.keys():
 		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
 	data["animations"] = animations
+	data["animation_rects"] = animation_rects.duplicate(true)
 	data["projectile_anim"] = projectile_edit.text.strip_edges()
 	robot_data[selected_type] = data
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/robots"))
