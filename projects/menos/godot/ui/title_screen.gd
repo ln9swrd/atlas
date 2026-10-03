@@ -137,8 +137,8 @@ func _on_start_single_pressed() -> void:
 	stage_select.visible = single_mode_selected
 	stage_info.visible = single_mode_selected
 	if single_mode_selected:
-		start_button.text = LocalizationRepository.message("title.start_single_play")
-		single_button.text = LocalizationRepository.message("title.single_play_selected")
+		start_button.text = tr("START SINGLE PLAY")
+		single_button.text = tr("SINGLE PLAY SELECTED")
 	else:
 		start_button.text = LocalizationRepository.message("title.start_campaign")
 		single_button.text = LocalizationRepository.message("title.single_play")
@@ -166,8 +166,8 @@ func _on_settings_pressed() -> void:
 func _refresh_language() -> void:
 	start_button.text = LocalizationRepository.message("title.start_campaign")
 	single_button.text = LocalizationRepository.message("title.single_play")
-	quit_button.text = LocalizationRepository.message("title.quit")
-	settings_button.text = LocalizationRepository.message("title.settings")
+	quit_button.text = tr("QUIT")
+	settings_button.text = tr("SETTINGS")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
