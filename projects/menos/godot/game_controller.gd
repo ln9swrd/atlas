@@ -103,6 +103,7 @@ var tower_catalog: Dictionary = {}
 var tower_definitions: Dictionary = {}
 var tower_sprite_catalog: Dictionary = {}
 var tower_projectile_catalog: Dictionary = {}
+const DEFAULT_ROBOT_ID := "valkyrie"
 var robot_catalog: Dictionary = {}
 var robot_definition: RobotDefinition
 var robot_weapon_definition: WeaponDefinition
@@ -233,7 +234,12 @@ func _load_enemy_catalog() -> void:
 		enemy_projectile_catalog[enemy_type] = projectile if projectile else VISUALS["bullet_threat"]
 
 func _load_robot_catalog() -> void:
-	robot_catalog = ContentCatalogLoader.load_single_entry("res://content/robots/robots.json", "robot_main")
+	var catalog := ContentCatalogLoader.load_dictionary_catalog("res://content/robots/robots.json")
+	var selected_robot_id := DEFAULT_ROBOT_ID
+	if not catalog.has(selected_robot_id):
+		push_error("Default robot '%s' is missing from the Robot Catalog." % selected_robot_id)
+		return
+	robot_catalog = catalog[selected_robot_id].duplicate(true)
 	if robot_catalog.is_empty():
 		return
 	robot_sprite_catalog = {
