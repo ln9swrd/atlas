@@ -86,6 +86,11 @@ skill_slot_3={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://locale/en.po", "res://locale/ko.po")
+locale/fallback="en"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
