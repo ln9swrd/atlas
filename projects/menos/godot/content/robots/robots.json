@@ -83,17 +83,17 @@
 			]
 		},
 		"animations": {
-			"idle": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271_edit_43489275_edit_97104382.png",
-			"move": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-			"attack": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-			"projectile": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-			"death": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-			"finisher": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-			"hit": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-			"skill1": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-			"skill2": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-			"skill3": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-			"special": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png"
+			"idle": "robot.valkyrie.idle",
+			"move": "robot.valkyrie.move",
+			"attack": "robot.valkyrie.attack",
+			"projectile": "robot.valkyrie.projectile",
+			"death": "robot.valkyrie.death",
+			"finisher": "robot.valkyrie.finisher",
+			"hit": "robot.valkyrie.hit",
+			"skill1": "robot.valkyrie.skill1",
+			"skill2": "robot.valkyrie.skill2",
+			"skill3": "robot.valkyrie.skill3",
+			"special": "robot.valkyrie.special"
 		},
 		"color": "ffffffff",
 		"cooldown": 0.65,

@@ -231,7 +231,7 @@ func _build_ui() -> void:
 	skill_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_child(skill_preview_row)
 	for animation_name in SKILL_ANIMATIONS:
-		animation_previews[animation_name] = _create_animation_preview(skill_preview_row, animation_name.capitalize(), Vector2(90, 120))
+		animation_previews[animation_name] = _create_animation_preview(skill_preview_row, _animation_display_name(animation_name), Vector2(90, 120))
 func _animation_display_name(animation_name: String) -> String:
 	match animation_name:
 		"skill1":
@@ -474,7 +474,10 @@ func _refresh_animation_previews() -> void:
 		preview.texture = _animated_texture(path, animation_frame, frames, rect_values)
 
 func _on_animation_tick() -> void:
-	animation_frame = (animation_frame + 1) % 8
+	var max_frames := 1
+	for animation_name in animation_previews.keys():
+		max_frames = maxi(max_frames, int(ROBOT_ANIMATION_FRAMES.get(animation_name, 1)))
+	animation_frame = (animation_frame + 1) % max_frames
 	_refresh_animation_previews()
 
 func _save_data() -> void:
