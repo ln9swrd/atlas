@@ -587,7 +587,15 @@ func _open_image_editor_for_target(target: String) -> void:
 	if path.is_empty():
 		_set_status("No image assigned for %s." % target)
 		return
-	IMAGE_STATE.open_image(path, target)
+
+	var source_path := path
+	var region := Rect2()
+	var resolved := VisualAssetResolver.resolve(path)
+	if resolved != null and not resolved.source.is_empty():
+		source_path = resolved.source
+		region = resolved.region
+
+	IMAGE_STATE.open_image(source_path, target, region)
 	request_image_editor.emit()
 
 func _apply_pending_asset_selection() -> void:

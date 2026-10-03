@@ -1,4 +1,4 @@
-extends Control
+﻿extends Control
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const LOADER := preload("res://editor/image_texture_loader.gd")
 const IMAGE_STATE := preload("res://editor/image_editor_state.gd")
@@ -38,10 +38,10 @@ func _request_previous_editor() -> void:
 
 func _use_selected_asset() -> void:
 	if current_path.is_empty():
-		status.text = "사용할 Asset을 먼저 선택하세요."
+		status.text = "?ъ슜??Asset??癒쇱? ?좏깮?섏꽭??"
 		return
 	if not IMAGE_STATE.selection_pending:
-		status.text = "현재 Editor에서 Asset 선택을 요청한 상태가 아닙니다."
+		status.text = "?꾩옱 Editor?먯꽌 Asset ?좏깮???붿껌???곹깭媛 ?꾨떃?덈떎."
 		return
 	IMAGE_STATE.apply_selection(current_path)
 	request_previous_editor.emit()
@@ -59,22 +59,22 @@ func _build_ui() -> void:
 	var title_row := HBoxContainer.new()
 	root.add_child(title_row)
 	var title := Label.new()
-	title.text = "카다로그 에디터"
+	title.text = "移대떎濡쒓렇 ?먮뵒??
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
 	var previous_button := Button.new()
-	previous_button.text = "이전 화면"
+	previous_button.text = "?댁쟾 ?붾㈃"
 	previous_button.pressed.connect(_request_previous_editor)
 	title_row.add_child(previous_button)
 	previous_button.visible = false
 	var content_button := Button.new()
-	content_button.text = "콘텐츠 에디터"
+	content_button.text = "肄섑뀗痢??먮뵒??
 	content_button.pressed.connect(_request_content_editor)
 	title_row.add_child(content_button)
 	content_button.visible = false
 	var intro := Label.new()
-	intro.text = "등록된 카다로그를 조회하고, Source Image의 일부 영역을 선택해 새로운 카다로그 항목으로 등록합니다."
+	intro.text = "?깅줉??移대떎濡쒓렇瑜?議고쉶?섍퀬, Source Image???쇰? ?곸뿭???좏깮???덈줈??移대떎濡쒓렇 ??ぉ?쇰줈 ?깅줉?⑸땲??"
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(intro)
 	var body := HBoxContainer.new()
@@ -85,17 +85,17 @@ func _build_ui() -> void:
 	left.custom_minimum_size.x = 420
 	body.add_child(left)
 	var list_title := Label.new()
-	list_title.text = "등록된 카다로그"
+	list_title.text = "?깅줉??移대떎濡쒓렇"
 	left.add_child(list_title)
 	var search_row := HBoxContainer.new()
 	left.add_child(search_row)
 	search_edit = LineEdit.new()
-	search_edit.placeholder_text = "이름 / 경로 / 용도로 검색"
+	search_edit.placeholder_text = "?대쫫 / 寃쎈줈 / ?⑸룄濡?寃??
 	search_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	search_edit.text_changed.connect(func(_text: String): _refresh_entry_list())
 	search_row.add_child(search_edit)
 	filter_option = OptionButton.new()
-	for filter_name in ["전체", "카다로그", "Map", "Unit", "Robot", "Tower", "Enemy", "Runtime"]:
+	for filter_name in ["?꾩껜", "移대떎濡쒓렇", "Map", "Unit", "Robot", "Tower", "Enemy", "Runtime"]:
 		filter_option.add_item(filter_name)
 	filter_option.select(1)
 	filter_option.item_selected.connect(func(_index: int): _refresh_entry_list())
@@ -110,33 +110,33 @@ func _build_ui() -> void:
 	list.item_selected.connect(_select_entry)
 	left.add_child(list)
 	var clear_selection := Button.new()
-	clear_selection.text = "선택 해제"
+	clear_selection.text = "?좏깮 ?댁젣"
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
 	var use_selected_button := Button.new()
-	use_selected_button.text = "선택 Asset 사용"
+	use_selected_button.text = "?좏깮 Asset ?ъ슜"
 	use_selected_button.pressed.connect(_use_selected_asset)
 	left.add_child(use_selected_button)
 	var open_target_button := Button.new()
-	open_target_button.text = "Source Image 열기"
+	open_target_button.text = "Source Image ?닿린"
 	open_target_button.pressed.connect(_open_target_dialog)
 	left.add_child(open_target_button)
 	var reconnect_target_button := Button.new()
-	reconnect_target_button.text = "편집 결과로 참조 이미지 교체"
+	reconnect_target_button.text = "?몄쭛 寃곌낵濡?李몄“ ?대?吏 援먯껜"
 	reconnect_target_button.pressed.connect(_reconnect_current_to_selected_entry)
 	left.add_child(reconnect_target_button)
 	reconnect_target_button.visible = false
 	var new_catalog_button := Button.new()
-	new_catalog_button.text = "선택 영역을 Visual Asset으로 등록"
+	new_catalog_button.text = "?좏깮 ?곸뿭??Visual Asset?쇰줈 ?깅줉"
 	new_catalog_button.pressed.connect(_create_visual_asset_from_selection)
 	left.add_child(new_catalog_button)
 	var full_catalog_button := Button.new()
-	full_catalog_button.text = "전체 이미지를 Visual Asset으로 등록"
+	full_catalog_button.text = "?꾩껜 ?대?吏瑜?Visual Asset?쇰줈 ?깅줉"
 	full_catalog_button.pressed.connect(_create_visual_asset_from_full_image)
 	left.add_child(full_catalog_button)
 	full_catalog_button.visible = false
 	var audit_button := Button.new()
-	audit_button.text = "이미지 참조 점검"
+	audit_button.text = "?대?吏 李몄“ ?먭?"
 	audit_button.pressed.connect(_audit_image_references)
 	left.add_child(audit_button)
 	audit_button.visible = false
@@ -145,42 +145,42 @@ func _build_ui() -> void:
 	body.add_child(source_panel)
 	source_panel.visible = false
 	var source_title := Label.new()
-	source_title.text = "Source / 다른 Asset"
+	source_title.text = "Source / ?ㅻⅨ Asset"
 	source_panel.add_child(source_title)
 	source_list = ItemList.new()
 	source_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	source_list.item_selected.connect(_select_source_entry)
 	source_panel.add_child(source_list)
 	var source_help := Label.new()
-	source_help.text = "왼쪽에서 선택한 Asset과 다른 Source를 골라 전체 또는 선택 영역을 비교/교체합니다."
+	source_help.text = "?쇱そ?먯꽌 ?좏깮??Asset怨??ㅻⅨ Source瑜?怨⑤씪 ?꾩껜 ?먮뒗 ?좏깮 ?곸뿭??鍮꾧탳/援먯껜?⑸땲??"
 	source_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	source_panel.add_child(source_help)
 	var source_full := Button.new()
-	source_full.text = "Source 전체로 교체"
+	source_full.text = "Source ?꾩껜濡?援먯껜"
 	source_full.pressed.connect(_replace_from_source_full)
 	source_panel.add_child(source_full)
 	var source_open := Button.new()
-	source_open.text = "새 Source 열기"
+	source_open.text = "??Source ?닿린"
 	source_open.pressed.connect(_open_source_dialog)
 	source_panel.add_child(source_open)
 	var source_region := Button.new()
-	source_region.text = "선택 영역으로 교체"
+	source_region.text = "?좏깮 ?곸뿭?쇰줈 援먯껜"
 	source_region.pressed.connect(_replace_from_source_region)
 	source_panel.add_child(source_region)
 	var normalize := Button.new()
 	normalize.name = "NormalizeUnitButton"
-	normalize.text = "유닛 크기로 맞춰 교체"
+	normalize.text = "?좊떅 ?ш린濡?留욎떠 援먯껜"
 	normalize.pressed.connect(_replace_source_region_as_unit)
 	source_panel.add_child(normalize)
 	var source_reference := Button.new()
-	source_reference.text = "선택 영역을 참조로 연결"
+	source_reference.text = "?좏깮 ?곸뿭??李몄“濡??곌껐"
 	source_reference.pressed.connect(_apply_source_region_reference)
 	source_panel.add_child(source_reference)
 	source_dialog = FileDialog.new()
-	source_dialog.title = "참조 이미지 열기"
+	source_dialog.title = "李몄“ ?대?吏 ?닿린"
 	source_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	source_dialog.access = FileDialog.ACCESS_RESOURCES
-	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; 이미지"])
+	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; ?대?吏"])
 	source_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	source_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_source_thumbnail"))
@@ -188,10 +188,10 @@ func _build_ui() -> void:
 	source_dialog.file_selected.connect(_on_source_file_selected)
 	add_child(source_dialog)
 	target_dialog = FileDialog.new()
-	target_dialog.title = "편집 대상 이미지 열기"
+	target_dialog.title = "?몄쭛 ????대?吏 ?닿린"
 	target_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	target_dialog.access = FileDialog.ACCESS_RESOURCES
-	target_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; 이미지"])
+	target_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; ?대?吏"])
 	target_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	target_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_target_thumbnail"))
@@ -202,7 +202,7 @@ func _build_ui() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
 	usage_label = Label.new()
-	usage_label.text = "선택된 Asset 없음"
+	usage_label.text = "?좏깮??Asset ?놁쓬"
 	usage_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	usage_label.add_theme_font_size_override("font_size", 16)
 	right.add_child(usage_label)
@@ -212,19 +212,19 @@ func _build_ui() -> void:
 	var tools := HBoxContainer.new()
 	right.add_child(tools)
 	tools.visible = false
-	_add_button(tools, "알파 삭제", _start_erase)
-	_add_button(tools, "자르기", _crop_selection)
-	_add_button(tools, "좌우 반전", _flip_h)
-	_add_button(tools, "상하 반전", _flip_v)
-	_add_button(tools, "시계 방향 회전", _rotate_cw)
-	_add_button(tools, "반시계 방향 회전", _rotate_ccw)
-	_add_button(tools, "투명 영역 제거", _trim_alpha)
-	_add_button(tools, "저장 + 연결 변경", _save_reconnect)
+	_add_button(tools, "?뚰뙆 ??젣", _start_erase)
+	_add_button(tools, "?먮Ⅴ湲?, _crop_selection)
+	_add_button(tools, "醫뚯슦 諛섏쟾", _flip_h)
+	_add_button(tools, "?곹븯 諛섏쟾", _flip_v)
+	_add_button(tools, "?쒓퀎 諛⑺뼢 ?뚯쟾", _rotate_cw)
+	_add_button(tools, "諛섏떆怨?諛⑺뼢 ?뚯쟾", _rotate_ccw)
+	_add_button(tools, "?щ챸 ?곸뿭 ?쒓굅", _trim_alpha)
+	_add_button(tools, "???+ ?곌껐 蹂寃?, _save_reconnect)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
 	resize_row.visible = false
 	var resize_label := Label.new()
-	resize_label.text = "크기 변경"
+	resize_label.text = "?ш린 蹂寃?
 	resize_row.add_child(resize_label)
 	var width_spin := SpinBox.new()
 	width_spin.name = "WidthSpin"
@@ -239,7 +239,7 @@ func _build_ui() -> void:
 	height_spin.step = 1
 	resize_row.add_child(height_spin)
 	var resize_btn := Button.new()
-	resize_btn.text = "크기 적용"
+	resize_btn.text = "?ш린 ?곸슜"
 	resize_btn.pressed.connect(func(): _resize_image(int(width_spin.value), int(height_spin.value)))
 	resize_row.add_child(resize_btn)
 	status = Label.new()
@@ -256,12 +256,12 @@ func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) 
 func _scan_connected_images() -> void:
 	entries.clear()
 	var seen := {}
-	_scan_json_images("res://content/towers/towers.json", "타워", "sprite_anim", "방어 시설 이미지", "Tower", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.sprite", "플레이어 유닛 이미지", "Unit", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.default_image", "유닛 Profile Image", "Unit", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "projectile_anim", "유닛 탄환 이미지", "Unit", seen)
-	_scan_json_images("res://content/enemies/enemies.json", "적 유닛", "sprite_anim", "적 유닛 이미지", "Enemy", seen)
-	_scan_json_images("res://content/enemies/enemies.json", "적 유닛", "projectile_anim", "적 유닛 탄환 이미지", "Enemy", seen)
+	_scan_json_images("res://content/towers/towers.json", "???, "sprite_anim", "諛⑹뼱 ?쒖꽕 ?대?吏", "Tower", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "?좊떅", "visuals.sprite", "?뚮젅?댁뼱 ?좊떅 ?대?吏", "Unit", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "?좊떅", "visuals.default_image", "?좊떅 Profile Image", "Unit", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "?좊떅", "projectile_anim", "?좊떅 ?꾪솚 ?대?吏", "Unit", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "???좊떅", "sprite_anim", "???좊떅 ?대?吏", "Enemy", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "???좊떅", "projectile_anim", "???좊떅 ?꾪솚 ?대?吏", "Enemy", seen)
 	_scan_allied_animations(seen)
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
@@ -274,7 +274,7 @@ func _scan_connected_images() -> void:
 	for entry in entries:
 		if str(entry.get("owner_kind", "")) == "visual_asset":
 			catalog_count += 1
-	status.text = "%d개 카다로그 항목을 조회할 수 있습니다." % catalog_count
+	status.text = "%d媛?移대떎濡쒓렇 ??ぉ??議고쉶?????덉뒿?덈떎." % catalog_count
 
 func _refresh_entry_list() -> void:
 	if list == null or source_list == null:
@@ -283,14 +283,14 @@ func _refresh_entry_list() -> void:
 	list.clear()
 	source_list.clear()
 	var query := search_edit.text.strip_edges().to_lower() if search_edit else ""
-	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "전체"
+	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "?꾩껜"
 	for index in range(entries.size()):
 		var entry: Dictionary = entries[index]
 		var category := str(entry.get("category", "Other"))
 		var is_catalog_entry := str(entry.get("owner_kind", "")) == "visual_asset"
-		if filter_name == "카다로그" and not is_catalog_entry:
+		if filter_name == "移대떎濡쒓렇" and not is_catalog_entry:
 			continue
-		if filter_name != "전체" and filter_name != "카다로그" and category != filter_name:
+		if filter_name != "?꾩껜" and filter_name != "移대떎濡쒓렇" and category != filter_name:
 			continue
 		if not query.is_empty():
 			var haystack := (str(entry.get("label", "")) + " " + str(entry.get("path", "")) + " " + str(entry.get("usage", "")) + " " + str(entry.get("owner", ""))).to_lower()
@@ -298,7 +298,7 @@ func _refresh_entry_list() -> void:
 				continue
 		filtered_indices.append(index)
 		var icon: Texture2D = _get_catalog_thumbnail(entry) if is_catalog_entry else load(str(entry.get("path", ""))) as Texture2D
-		var display_category := "카다로그" if is_catalog_entry else category
+		var display_category := "移대떎濡쒓렇" if is_catalog_entry else category
 		var label_text := "[%s] %s" % [display_category, str(entry.get("label", "Asset"))]
 		list.add_item(label_text, icon)
 		list.set_item_metadata(list.item_count - 1, index)
@@ -330,22 +330,22 @@ func _audit_image_references() -> void:
 		if image_path.is_empty():
 			continue
 		if not ResourceLoader.exists(image_path):
-			missing.append("%s | %s" % [str(entry.get("label", "이미지")), image_path])
+			missing.append("%s | %s" % [str(entry.get("label", "?대?吏")), image_path])
 			continue
 		var texture := load(image_path) as Texture2D
 		if texture == null:
-			invalid.append("%s | %s" % [str(entry.get("label", "이미지")), image_path])
-	var report := "이미지 참조 점검 결과\n\n전체 참조: %d\n누락: %d\n로드 실패: %d" % [entries.size(), missing.size(), invalid.size()]
+			invalid.append("%s | %s" % [str(entry.get("label", "?대?吏")), image_path])
+	var report := "?대?吏 李몄“ ?먭? 寃곌낵\n\n?꾩껜 李몄“: %d\n?꾨씫: %d\n濡쒕뱶 ?ㅽ뙣: %d" % [entries.size(), missing.size(), invalid.size()]
 	if not missing.is_empty():
-		report += "\n\n[누락된 이미지]\n" + "\n".join(missing)
+		report += "\n\n[?꾨씫???대?吏]\n" + "\n".join(missing)
 	if not invalid.is_empty():
-		report += "\n\n[로드 실패 이미지]\n" + "\n".join(invalid)
+		report += "\n\n[濡쒕뱶 ?ㅽ뙣 ?대?吏]\n" + "\n".join(invalid)
 	if missing.is_empty() and invalid.is_empty():
-		report += "\n\n모든 연결 이미지 참조가 정상입니다."
+		report += "\n\n紐⑤뱺 ?곌껐 ?대?吏 李몄“媛 ?뺤긽?낅땲??"
 	var dialog := AcceptDialog.new()
-	dialog.title = "이미지 참조 점검"
+	dialog.title = "?대?吏 李몄“ ?먭?"
 	dialog.dialog_text = report
-	dialog.ok_button_text = "닫기"
+	dialog.ok_button_text = "?リ린"
 	add_child(dialog)
 	dialog.confirmed.connect(dialog.queue_free)
 	dialog.canceled.connect(dialog.queue_free)
@@ -387,7 +387,7 @@ func _scan_allied_animations(seen: Dictionary) -> void:
 			var image_path := str(animations[animation_name])
 			if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
-			entries.append({"label": "아군 유닛 / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "아군 유닛 %s 애니메이션" % str(animation_name), "category": "Unit"})
+			entries.append({"label": "?꾧뎔 ?좊떅 / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "?꾧뎔 ?좊떅 %s ?좊땲硫붿씠?? % str(animation_name), "category": "Unit"})
 
 func _scan_robot_images(seen: Dictionary) -> void:
 	var path := "res://content/robots/robots.json"
@@ -403,21 +403,21 @@ func _scan_robot_images(seen: Dictionary) -> void:
 			var image_path := str(data[key].get(field, ""))
 			if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
-			var usage := "로봇 대기 이미지"
+			var usage := "濡쒕큸 ?湲??대?吏"
 			match field:
-				"sprite_attack": usage = "로봇 공격 이미지"
-				"default_image": usage = "로봇 Profile Image"
-				"sprite_move": usage = "로봇 이동 이미지"
-				"sprite_skill": usage = "로봇 스킬 이미지"
-				"projectile_anim": usage = "로봇 투사체 이미지"
-			entries.append({"label": "로봇 / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": "Robot"})
+				"sprite_attack": usage = "濡쒕큸 怨듦꺽 ?대?吏"
+				"default_image": usage = "濡쒕큸 Profile Image"
+				"sprite_move": usage = "濡쒕큸 ?대룞 ?대?吏"
+				"sprite_skill": usage = "濡쒕큸 ?ㅽ궗 ?대?吏"
+				"projectile_anim": usage = "濡쒕큸 ?ъ궗泥??대?吏"
+			entries.append({"label": "濡쒕큸 / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": "Robot"})
 		var animations: Dictionary = data[key].get("animations", {})
 		if animations is Dictionary:
 			for animation_name in animations:
 				var animation_path := str(animations[animation_name])
 				if animation_path.is_empty() or seen.has(animation_path): continue
 				seen[animation_path] = true
-				entries.append({"label": "로봇 / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "로봇 %s 애니메이션" % str(animation_name), "category": "Robot"})
+				entries.append({"label": "濡쒕큸 / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "濡쒕큸 %s ?좊땲硫붿씠?? % str(animation_name), "category": "Robot"})
 
 func _scan_catalog(seen: Dictionary) -> void:
 	var path := "res://content/editor/asset_catalog.json"
@@ -432,7 +432,7 @@ func _scan_catalog(seen: Dictionary) -> void:
 		var image_path := str(asset.get("source_path", ""))
 		if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "카탈로그 / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "카탈로그")), str(asset.get("kind", "asset"))], "category": "Map"})
+		entries.append({"label": "移댄깉濡쒓렇 / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "移댄깉濡쒓렇")), str(asset.get("kind", "asset"))], "category": "Map"})
 func _scan_visual_assets(seen: Dictionary) -> void:
 	var path := "res://content/editor/visual_assets.json"
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -478,7 +478,7 @@ func _scan_main_preloads(seen: Dictionary) -> void:
 		var image_path := str(match_data.get_string(1))
 		if seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "런타임 / %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload", "usage": "게임 런타임 이미지", "category": "Runtime"})
+		entries.append({"label": "?고???/ %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload", "usage": "寃뚯엫 ?고????대?吏", "category": "Runtime"})
 
 func _select_path(path: String) -> void:
 	for visible_index in range(filtered_indices.size()):
@@ -513,9 +513,9 @@ func _clear_image_selection() -> void:
 	list.deselect_all()
 	source_list.deselect_all()
 	IMAGE_STATE.selected_path = ""
-	usage_label.text = "선택된 Asset 없음"
+	usage_label.text = "?좏깮??Asset ?놁쓬"
 	view.set_source_texture(null)
-	status.text = "이미지 선택을 해제했습니다."
+	status.text = "?대?吏 ?좏깮???댁젣?덉뒿?덈떎."
 
 func _select_entry(index: int) -> void:
 	if editing: return
@@ -529,15 +529,15 @@ func _select_entry(index: int) -> void:
 	current_image = LOADER.load_image(current_path)
 	var entry: Dictionary = entries[entry_index]
 	var catalog_region: Rect2i = _entry_region(entry)
-	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "미지정")), current_path, str(entry.get("owner", "미지정")), str(entry.get("field", "미지정"))]
+	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "誘몄???)), current_path, str(entry.get("owner", "誘몄???)), str(entry.get("field", "誘몄???))]
 	if current_image == null:
-		status.text = "이미지를 불러올 수 없습니다: %s" % current_path
+		status.text = "?대?吏瑜?遺덈윭?????놁뒿?덈떎: %s" % current_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
 	if catalog_region.size.x > 0 and catalog_region.size.y > 0:
 		view.selected_region = catalog_region
 		view.queue_redraw()
-	status.text = "선택된 카다로그: %s — 영역 %d × %d px" % [str(entry.get("label", "Asset")), catalog_region.size.x, catalog_region.size.y] if catalog_region.size.x > 0 else "선택된 Source: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+	status.text = "?좏깮??移대떎濡쒓렇: %s ???곸뿭 %d 횞 %d px" % [str(entry.get("label", "Asset")), catalog_region.size.x, catalog_region.size.y] if catalog_region.size.x > 0 else "?좏깮??Source: %s ??%d 횞 %d px" % [current_path, current_image.get_width(), current_image.get_height()]
 
 func _entry_region(entry: Dictionary) -> Rect2i:
 	var region_data: Array = entry.get("region", [])
@@ -566,16 +566,16 @@ func _on_target_file_selected(path: String) -> void:
 		_finish_erase()
 	var loaded := LOADER.load_image(path)
 	if loaded == null:
-		status.text = "편집 대상 이미지를 불러올 수 없습니다: %s" % path
+		status.text = "?몄쭛 ????대?吏瑜?遺덈윭?????놁뒿?덈떎: %s" % path
 		return
 	current_index = -1
 	current_path = path
 	current_image = loaded
 	IMAGE_STATE.open_image(path)
 	list.deselect_all()
-	usage_label.text = "용도: 새 편집 대상 이미지"
+	usage_label.text = "?⑸룄: ???몄쭛 ????대?吏"
 	_refresh_view()
-	status.text = "새 이미지: %s — 드래그로 영역을 선택한 뒤 Visual Asset으로 등록할 수 있습니다." % path
+	status.text = "???대?吏: %s ???쒕옒洹몃줈 ?곸뿭???좏깮????Visual Asset?쇰줈 ?깅줉?????덉뒿?덈떎." % path
 
 func _save_current_image_copy() -> String:
 	if not _require_image():
@@ -595,30 +595,30 @@ func _reconnect_current_to_selected_entry() -> void:
 	if not _require_image():
 		return
 	if catalog_target_index < 0 or catalog_target_index >= entries.size():
-		status.text = "왼쪽 연결 목록에서 교체할 카탈로그 항목을 먼저 선택하세요."
+		status.text = "?쇱そ ?곌껐 紐⑸줉?먯꽌 援먯껜??移댄깉濡쒓렇 ??ぉ??癒쇱? ?좏깮?섏꽭??"
 		return
 	if str(entries[catalog_target_index].get("path", "")) == current_path:
-		status.text = "다른 이미지를 편집 대상으로 열어 주세요."
+		status.text = "?ㅻⅨ ?대?吏瑜??몄쭛 ??곸쑝濡??댁뼱 二쇱꽭??"
 		return
 	if source_path == current_path:
 		source_path = ""
 		source_image = null
 	var output := _save_current_image_copy()
 	if output.is_empty():
-		status.text = "편집 이미지를 저장하지 못해 카탈로그를 교체할 수 없습니다."
+		status.text = "?몄쭛 ?대?吏瑜???ν븯吏 紐삵빐 移댄깉濡쒓렇瑜?援먯껜?????놁뒿?덈떎."
 		return
 	if catalog_target_index < 0 or catalog_target_index >= entries.size():
-		status.text = "왼쪽 연결 목록에서 교체할 카탈로그 항목을 먼저 선택하세요."
+		status.text = "?쇱そ ?곌껐 紐⑸줉?먯꽌 援먯껜??移댄깉濡쒓렇 ??ぉ??癒쇱? ?좏깮?섏꽭??"
 		return
 	if not _replace_entry_reference(entries[catalog_target_index], output):
-		status.text = "이미지는 저장했지만 선택 카탈로그 참조 교체에 실패했습니다: %s" % output
+		status.text = "?대?吏????ν뻽吏留??좏깮 移댄깉濡쒓렇 李몄“ 援먯껜???ㅽ뙣?덉뒿?덈떎: %s" % output
 		return
 	current_path = output
 	IMAGE_STATE.open_image(output)
 	_refresh_view()
 	_scan_connected_images()
 	_select_path(output)
-	status.text = "선택 카탈로그 참조를 새 이미지로 교체했습니다: %s" % output
+	status.text = "?좏깮 移댄깉濡쒓렇 李몄“瑜????대?吏濡?援먯껜?덉뒿?덈떎: %s" % output
 
 func _replace_entry_reference(entry: Dictionary, new_path: String) -> bool:
 	var owner_kind := str(entry.get("owner_kind", ""))
@@ -643,7 +643,7 @@ func _create_visual_asset_from_selection() -> void:
 			view.selected_region = rect
 			view.queue_redraw()
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "먼저 이미지에서 카탈로그로 만들 영역을 드래그해서 선택하세요."
+		status.text = "癒쇱? ?대?吏?먯꽌 移댄깉濡쒓렇濡?留뚮뱾 ?곸뿭???쒕옒洹명빐???좏깮?섏꽭??"
 		return
 	_create_visual_asset(rect)
 
@@ -692,7 +692,7 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		"usage": "visual_asset_catalog"
 	}
 	if not _write_json(catalog_path, assets):
-		status.text = "Visual Asset Catalog 저장에 실패했습니다."
+		status.text = "Visual Asset Catalog ??μ뿉 ?ㅽ뙣?덉뒿?덈떎."
 		return
 	_scan_connected_images()
 	var created_index := -1
@@ -711,17 +711,17 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		_select_path(current_path)
 	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_target.is_empty():
 		IMAGE_STATE.apply_selection(asset_id)
-		status.text = "Visual Asset 등록 완료 및 원래 Editor에 적용 준비: %s | 영역 %d × %d px" % [asset_id, rect.size.x, rect.size.y]
+		status.text = "Visual Asset ?깅줉 ?꾨즺 諛??먮옒 Editor???곸슜 以鍮? %s | ?곸뿭 %d 횞 %d px" % [asset_id, rect.size.x, rect.size.y]
 		request_previous_editor.emit()
 	else:
-		status.text = "Visual Asset 등록 완료: %s | 영역 %d × %d px" % [asset_id, rect.size.x, rect.size.y]
+		status.text = "Visual Asset ?깅줉 ?꾨즺: %s | ?곸뿭 %d 횞 %d px" % [asset_id, rect.size.x, rect.size.y]
 
 func _add_current_image_to_asset_catalog() -> void:
 	if not _require_image():
 		return
 	var output := _save_current_image_copy()
 	if output.is_empty():
-		status.text = "새 카탈로그용 PNG를 저장하지 못했습니다."
+		status.text = "??移댄깉濡쒓렇??PNG瑜???ν븯吏 紐삵뻽?듬땲??"
 		return
 	var catalog_path := "res://content/editor/asset_catalog.json"
 	var data: Variant = {}
@@ -756,11 +756,11 @@ func _add_current_image_to_asset_catalog() -> void:
 	data["schema_version"] = int(data.get("schema_version", 1))
 	data["assets"] = assets
 	if not _write_json(catalog_path, data):
-		status.text = "PNG는 저장했지만 Asset Catalog 저장에 실패했습니다: %s" % output
+		status.text = "PNG????ν뻽吏留?Asset Catalog ??μ뿉 ?ㅽ뙣?덉뒿?덈떎: %s" % output
 		return
 	_scan_connected_images()
 	_select_path(output)
-	status.text = "새 Asset Catalog 항목을 등록했습니다: %s" % asset_id
+	status.text = "??Asset Catalog ??ぉ???깅줉?덉뒿?덈떎: %s" % asset_id
 
 func _catalog_asset_id_exists(assets: Array, asset_id: String) -> bool:
 	for asset in assets:
@@ -784,16 +784,16 @@ func _open_source_dialog() -> void:
 
 func _on_source_file_selected(path: String) -> void:
 	if path == current_path:
-		status.text = "대상과 다른 이미지를 참조 이미지로 선택하세요."
+		status.text = "??곴낵 ?ㅻⅨ ?대?吏瑜?李몄“ ?대?吏濡??좏깮?섏꽭??"
 		return
 	source_path = path
 	source_index = -1
 	source_image = LOADER.load_image(source_path)
 	if source_image == null:
-		status.text = "참조 이미지를 불러올 수 없습니다: %s" % source_path
+		status.text = "李몄“ ?대?吏瑜?遺덈윭?????놁뒿?덈떎: %s" % source_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(source_image))
-	status.text = "참조: %s — 드래그로 영역을 선택하세요." % source_path
+	status.text = "李몄“: %s ???쒕옒洹몃줈 ?곸뿭???좏깮?섏꽭??" % source_path
 
 func _select_source_entry(index: int) -> void:
 	if editing: return
@@ -803,87 +803,87 @@ func _select_source_entry(index: int) -> void:
 	source_index = entry_index
 	source_path = str(entries[entry_index].get("path", ""))
 	if source_path == current_path:
-		status.text = "대상과 다른 이미지를 참조 이미지로 선택하세요."
+		status.text = "??곴낵 ?ㅻⅨ ?대?吏瑜?李몄“ ?대?吏濡??좏깮?섏꽭??"
 		return
 	source_image = LOADER.load_image(source_path)
 	if source_image == null:
-		status.text = "참조 이미지를 불러올 수 없습니다: %s" % source_path
+		status.text = "李몄“ ?대?吏瑜?遺덈윭?????놁뒿?덈떎: %s" % source_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(source_image))
-	status.text = "참조: %s — 전체 또는 드래그 선택 영역을 사용하세요." % source_path
+	status.text = "李몄“: %s ???꾩껜 ?먮뒗 ?쒕옒洹??좏깮 ?곸뿭???ъ슜?섏꽭??" % source_path
 
 func _replace_from_source_full() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "먼저 다른 참조 이미지를 선택하세요."
+		status.text = "癒쇱? ?ㅻⅨ 李몄“ ?대?吏瑜??좏깮?섏꽭??"
 		return
 	current_image = source_image.duplicate()
 	_refresh_view()
-	status.text = "참조 이미지 전체를 대상으로 교체했습니다. 저장 + 연결 변경을 눌러 적용하세요."
+	status.text = "李몄“ ?대?吏 ?꾩껜瑜???곸쑝濡?援먯껜?덉뒿?덈떎. ???+ ?곌껐 蹂寃쎌쓣 ?뚮윭 ?곸슜?섏꽭??"
 
 func _apply_source_region_reference() -> void:
 	if not _require_image(): return
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "먼저 다른 참조 이미지를 열거나 선택하세요."
+		status.text = "癒쇱? ?ㅻⅨ 李몄“ ?대?吏瑜??닿굅???좏깮?섏꽭??"
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "참조 이미지에서 영역을 드래그로 선택하세요."
+		status.text = "李몄“ ?대?吏?먯꽌 ?곸뿭???쒕옒洹몃줈 ?좏깮?섏꽭??"
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	if not _save_source_reference(source_path, rect):
-		status.text = "참조 이미지 설정을 저장하지 못했습니다."
+		status.text = "李몄“ ?대?吏 ?ㅼ젙????ν븯吏 紐삵뻽?듬땲??"
 		return
-	status.text = "참조 이미지로 설정했습니다: %s [%d, %d, %d, %d]" % [source_path, rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+	status.text = "李몄“ ?대?吏濡??ㅼ젙?덉뒿?덈떎: %s [%d, %d, %d, %d]" % [source_path, rect.position.x, rect.position.y, rect.size.x, rect.size.y]
 
 func _replace_from_source_region() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "먼저 다른 참조 이미지를 선택하세요."
+		status.text = "癒쇱? ?ㅻⅨ 李몄“ ?대?吏瑜??좏깮?섏꽭??"
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "참조 이미지에서 교체할 영역을 드래그로 선택하세요."
+		status.text = "李몄“ ?대?吏?먯꽌 援먯껜???곸뿭???쒕옒洹몃줈 ?좏깮?섏꽭??"
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	current_image = source_image.get_region(rect)
 	_refresh_view()
-	status.text = "참조 영역 %d × %d px로 대상을 교체했습니다. 저장 + 연결 변경을 눌러 적용하세요." % [rect.size.x, rect.size.y]
+	status.text = "李몄“ ?곸뿭 %d 횞 %d px濡???곸쓣 援먯껜?덉뒿?덈떎. ???+ ?곌껐 蹂寃쎌쓣 ?뚮윭 ?곸슜?섏꽭??" % [rect.size.x, rect.size.y]
 
 func _replace_source_region_as_unit() -> void:
 	if not _require_image(): return
 	if current_index < 0 or current_index >= entries.size():
-		status.text = "먼저 유닛 또는 타워 이미지를 선택하세요."
+		status.text = "癒쇱? ?좊떅 ?먮뒗 ????대?吏瑜??좏깮?섏꽭??"
 		return
 	var entry: Dictionary = entries[current_index]
 	var owner_path := str(entry.get("owner", ""))
 	var owner_key := str(entry.get("owner_key", ""))
 	if str(entry.get("owner_kind", "")) != "json" or (owner_path != "res://content/towers/towers.json" and owner_path != "res://content/allied_units/allied_units.json"):
-		status.text = "유닛 또는 타워에 연결된 이미지에서 사용할 수 있습니다."
+		status.text = "?좊떅 ?먮뒗 ??뚯뿉 ?곌껐???대?吏?먯꽌 ?ъ슜?????덉뒿?덈떎."
 		return
 	if editing: _finish_erase()
 	if source_image == null or source_path.is_empty() or source_path == current_path:
-		status.text = "먼저 다른 참조 이미지를 선택하세요."
+		status.text = "癒쇱? ?ㅻⅨ 李몄“ ?대?吏瑜??좏깮?섏꽭??"
 		return
 	var rect := view.selected_region
 	if rect.size.x <= 0 or rect.size.y <= 0:
-		status.text = "참조 이미지에서 유닛으로 사용할 영역을 드래그로 선택하세요."
+		status.text = "李몄“ ?대?吏?먯꽌 ?좊떅?쇰줈 ?ъ슜???곸뿭???쒕옒洹몃줈 ?좏깮?섏꽭??"
 		return
 	rect = rect.intersection(Rect2i(0, 0, source_image.get_width(), source_image.get_height()))
 	if rect.size.x <= 0 or rect.size.y <= 0: return
 	var region := source_image.get_region(rect)
 	var frame_size := Vector2i(60, 90)
 	var frame_count := 4
-	var unit_label := "타워"
+	var unit_label := "???
 	if owner_path == "res://content/allied_units/allied_units.json":
 		var sizes := {"basic": Vector2i(60, 90), "light": Vector2i(60, 90), "ranged": Vector2i(60, 90), "heavy": Vector2i(72, 96), "support": Vector2i(72, 96)}
 		frame_size = sizes.get(owner_key, Vector2i(60, 90))
 		frame_count = 8
-		unit_label = "유닛"
+		unit_label = "?좊떅"
 	var frame := Image.create(frame_size.x, frame_size.y, false, Image.FORMAT_RGBA8)
 	frame.fill(Color(0, 0, 0, 0))
 	var scale := minf(float(frame_size.x) / float(region.get_width()), float(frame_size.y) / float(region.get_height()))
@@ -898,7 +898,7 @@ func _replace_source_region_as_unit() -> void:
 		sheet.blit_rect(frame, Rect2i(0, 0, frame_size.x, frame_size.y), Vector2i(frame_index * frame_size.x, 0))
 	current_image = sheet
 	_refresh_view()
-	status.text = "%s용 %d프레임 %d × %d px로 정규화했습니다. 저장 + 연결 변경을 눌러 적용하세요." % [unit_label, frame_count, sheet.get_width(), sheet.get_height()]
+	status.text = "%s??%d?꾨젅??%d 횞 %d px濡??뺢퇋?뷀뻽?듬땲?? ???+ ?곌껐 蹂寃쎌쓣 ?뚮윭 ?곸슜?섏꽭??" % [unit_label, frame_count, sheet.get_width(), sheet.get_height()]
 
 func _resize_image(width_px: int, height_px: int) -> void:
 	if not _require_image(): return
@@ -914,7 +914,7 @@ func _require_image() -> bool:
 
 func _refresh_view() -> void:
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
-	status.text = "%s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+	status.text = "%s ??%d 횞 %d px" % [current_path, current_image.get_width(), current_image.get_height()]
 func _start_erase() -> void:
 	if not _require_image(): return
 	view.begin_image_edit(current_image, 12)
@@ -1091,8 +1091,8 @@ func _replace_json_value(path: String, key: String, field: String, new_path: Str
 	file.close()
 	if not data is Dictionary or not data.has(key): return false
 	_set_nested_value(data[key], field, new_path)
-	# 저장 + 연결 변경으로 새 편집 PNG에 연결할 때는 이전 참조 영역을 제거한다.
-	# 새 PNG 자체가 교체 결과물이므로 전체 이미지를 사용해야 한다.
+	# ???+ ?곌껐 蹂寃쎌쑝濡????몄쭛 PNG???곌껐???뚮뒗 ?댁쟾 李몄“ ?곸뿭???쒓굅?쒕떎.
+	# ??PNG ?먯껜媛 援먯껜 寃곌낵臾쇱씠誘濡??꾩껜 ?대?吏瑜??ъ슜?댁빞 ?쒕떎.
 	_erase_nested_value(data[key], _field_suffix(field, "_rect"))
 	return _write_json(path, data)
 

@@ -1,4 +1,4 @@
-class_name ImageEditorState
+﻿class_name ImageEditorState
 extends RefCounted
 
 static var selected_path := ""

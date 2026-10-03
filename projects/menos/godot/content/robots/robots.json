@@ -106,6 +106,17 @@
 			264.0
 		],
 		"hp": 220.0,
+		"energy": {
+			"max": 100.0,
+			"regen": 12.0
+		},
+		"progression": {
+			"damage_growth": 0.05,
+			"hp_growth": 0.05,
+			"range_growth": 0.02,
+			"speed_growth": 0.02,
+			"xp_per_level": 100.0
+		},
 		"id": "valkyrie",
 		"name": "VALKYRIE",
 		"projectile_anim": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
