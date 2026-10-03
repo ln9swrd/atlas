@@ -21,9 +21,13 @@ var editing := false
 var usage_label: Label
 
 signal request_content_editor
+signal request_previous_editor
 
 func _request_content_editor() -> void:
 	request_content_editor.emit()
+
+func _request_previous_editor() -> void:
+	request_previous_editor.emit()
 
 func _ready() -> void:
 	_build_ui()
@@ -42,6 +46,10 @@ func _build_ui() -> void:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
+	var previous_button := Button.new()
+	previous_button.text = "이전 화면"
+	previous_button.pressed.connect(_request_previous_editor)
+	title_row.add_child(previous_button)
 	var content_button := Button.new()
 	content_button.text = "콘텐츠 에디터"
 	content_button.pressed.connect(_request_content_editor)
