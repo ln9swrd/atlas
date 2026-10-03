@@ -455,23 +455,12 @@ func _animated_texture(path: String, frame: int, total_frames: int, rect_values:
 	return atlas
 
 func _refresh_animation_previews() -> void:
-	var paths := {
-		"idle": idle_edit.text.strip_edges(),
-		"attack": attack_edit.text.strip_edges(),
-		"move": move_edit.text.strip_edges(),
-		"skill": skill_edit.text.strip_edges(),
-		"projectile": projectile_edit.text.strip_edges()
-	}
 	for key in animation_previews.keys():
 		var preview: TextureRect = animation_previews[key]
-		var path := str(paths.get(key, ""))
+		var edit: LineEdit = animation_edits.get(key)
+		var path := edit.text.strip_edges() if edit != null else ""
 		var frames := int(ROBOT_ANIMATION_FRAMES.get(key, 1))
-		var rect_values: Variant = []
-		if key == "idle": rect_values = robot_data.get(selected_type, {}).get("sprite_idle_rect", [])
-		elif key == "attack": rect_values = robot_data.get(selected_type, {}).get("sprite_attack_rect", [])
-		elif key == "move": rect_values = robot_data.get(selected_type, {}).get("sprite_move_rect", [])
-		elif key == "skill": rect_values = robot_data.get(selected_type, {}).get("sprite_skill_rect", [])
-		elif key == "projectile": rect_values = animation_rects.get("projectile", [])
+		var rect_values: Variant = animation_rects.get(key, [])
 		preview.texture = _animated_texture(path, animation_frame, frames, rect_values)
 
 func _on_animation_tick() -> void:
@@ -532,11 +521,8 @@ func _refresh_image_thumbnail(target: String) -> void:
 		path = projectile_edit.text.strip_edges()
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
-		if animation_name == "idle": path = idle_edit.text.strip_edges()
-		elif animation_name == "attack": path = attack_edit.text.strip_edges()
-		elif animation_name == "move": path = move_edit.text.strip_edges()
-		elif animation_name == "skill": path = skill_edit.text.strip_edges()
-		elif animation_edits.has(animation_name): path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+		if animation_edits.has(animation_name):
+			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
 	thumbnail.texture = _animated_texture(path, 0, 1) if not path.is_empty() else null
 	if target == "default_image" or target == "animation:idle":
 		_refresh_robot_preview()
@@ -585,11 +571,8 @@ func _open_image_editor_for_target(target: String) -> void:
 		path = projectile_edit.text.strip_edges()
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
-		if animation_name == "idle": path = idle_edit.text.strip_edges()
-		elif animation_name == "attack": path = attack_edit.text.strip_edges()
-		elif animation_name == "move": path = move_edit.text.strip_edges()
-		elif animation_name == "skill": path = skill_edit.text.strip_edges()
-		elif animation_edits.has(animation_name): path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+		if animation_edits.has(animation_name):
+			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
 	if path.is_empty():
 		_set_status("No image assigned for %s." % target)
 		return
@@ -609,18 +592,7 @@ func _apply_pending_asset_selection() -> void:
 		projectile_edit.text = path
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
-		if animation_name == "idle": idle_edit.text = path
-		elif animation_name == "attack": attack_edit.text = path
-		elif animation_name == "move": move_edit.text = path
-		elif animation_name == "skill": skill_edit.text = path
-		elif animation_name == "hit": hit_edit.text = path
-		elif animation_name == "death": death_edit.text = path
-		elif animation_name == "skill1": skill1_edit.text = path
-		elif animation_name == "skill2": skill2_edit.text = path
-		elif animation_name == "skill3": skill3_edit.text = path
-		elif animation_name == "special": special_edit.text = path
-		elif animation_name == "finisher": finisher_edit.text = path
-		elif animation_edits.has(animation_name):
+		if animation_edits.has(animation_name):
 			(animation_edits[animation_name] as LineEdit).text = path
 	elif target == "sprite":
 		idle_edit.text = path
