@@ -284,7 +284,8 @@ migration 완료 후 사용되지 않는 const와 중복 값을 제거한다.
 - 기존 domain JSON과 Config Repository의 권위를 충돌시키지 않는다.
 - migration과 동시에 gameplay 설계를 변경하지 않는다.
 - migration을 이유로 범위 밖 리팩터링을 하지 않는다.
-- Commit / Push하지 않는다.
+- Master 승인 없이 commit/push를 수행하지 않는다.
+- Master가 직접 commit/push한 변경은 기준선으로 인정한다.
 
 ## 9. 현재 검증 상태
 
