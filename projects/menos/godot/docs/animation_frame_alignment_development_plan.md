@@ -208,3 +208,15 @@ STATUS: HOLD
 계획/설계 단계다.
 변경 없음. 원본 Asset 변경 없음. Canon anchor 미확정. 구현 미착수.
 다음 단계는 Master가 anchor 기준을 결정한 후 Phase A 분석부터 시작한다.
+## Phase A 조사 결과 — 2026-10-04
+
+- **CONFIRMED:** Valkyrie 원본 스프라이트 시트의 실제 이미지 크기는 1536x1024이다.
+- **CONFIRMED:** 현재 Visual Asset Catalog의 프레임 수는 idle 8, move 8, attack 8, hit 4, death 8, projectile 6, skill1 8, skill2 10, skill3 12, special 14, finisher 18이다.
+- **CONFIRMED:** 프레임별 Alpha Bounds 분석 결과 X축 중심 이동은 모든 조사 애니메이션에서 0px로 측정되었다.
+- **CONFIRMED:** Y축 Alpha Bounds 중심 이동 범위는 idle 3px, move 4px, attack 6.5px, hit 0px, death 6.5px, projectile 0px, skill1 0px, skill2 0px, skill3 0px, special 0px, finisher 5px이다.
+- **INFERENCE:** 현재 어색함의 주요 후보는 프레임 자체의 X 위치 문제가 아니라, 일부 포즈에서 캐릭터의 실제 불투명 영역이 프레임 중앙에서 Y축으로 이동하는 현상이다.
+- **CONFIRMED:** Editor Preview는 Visual Asset의 region/frames를 사용하지만 프레임별 Body Center 보정은 하지 않는다.
+- **CONFIRMED:** Runtime은 game_controller.gd에서 catalog 값을 직접 load()하고, robot animation frame count를 6/7/5/5로 하드코딩한다.
+- **CONFIRMED:** Valkyrie의 catalog 값은 Visual Asset ID이므로 현재 Runtime의 직접 load() 방식과 데이터 의미가 일치하지 않는다.
+- **PROPOSAL:** Body Center 기준을 유지하되, Alpha Bounds 중심을 최종 Canon으로 자동 채택하지 않는다. 공통 Presentation 계층에서 프레임의 Body Center 보정값을 계산/적용할 수 있도록 하고, 실제 Body Center 값은 핵심 동작 프레임 분석 후 확정한다.
+- **다음 판단 지점:** Body Center를 공통 기준점 1개로 정의할지, 애니메이션별 공통 기준점을 허용할지 결정이 필요하다. 구현 전 이 결정이 필요하다.
