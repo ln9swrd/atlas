@@ -169,14 +169,14 @@ func _build_interface() -> void:
 	details.add_child(search_edit)
 	var list_header := HBoxContainer.new()
 	list_header.custom_minimum_size.y = 28
+	var id_header := Label.new()
+	id_header.text = "ID"
+	id_header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list_header.add_child(id_header)
 	var image_header := Label.new()
-	image_header.text = "이미지"
+	image_header.text = "Image"
 	image_header.custom_minimum_size.x = 64
 	list_header.add_child(image_header)
-	var name_header := Label.new()
-	name_header.text = "이름"
-	name_header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list_header.add_child(name_header)
 	var usage_header := Label.new()
 	usage_header.text = "사용 여부"
 	usage_header.custom_minimum_size.x = 120
@@ -802,17 +802,8 @@ func _build_asset_row(entry: Dictionary, index: int) -> void:
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	asset_list.add_child(row)
 
-	var preview := TextureRect.new()
-	preview.custom_minimum_size = Vector2(64, 64)
-	preview.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	preview.texture = _entry_preview_icon(entry)
-	row.add_child(preview)
-
 	var text_button := Button.new()
-	text_button.text = str(entry.get("display_name", "?"))
+	text_button.text = str(entry.get("asset_id", "?"))
 	text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_button.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -827,6 +818,15 @@ func _build_asset_row(entry: Dictionary, index: int) -> void:
 		_on_asset_row_gui_input(event, index)
 	)
 	row.add_child(text_button)
+
+	var preview := TextureRect.new()
+	preview.custom_minimum_size = Vector2(64, 64)
+	preview.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview.texture = _entry_preview_icon(entry)
+	row.add_child(preview)
 
 	var usage_label := Label.new()
 	usage_label.text = _catalog_usage_text(entry)

@@ -637,7 +637,7 @@ func _open_image_editor_for_target(target: String) -> void:
 		owner_frames = int(ROBOT_ANIMATION_FRAMES.get(owner_usage, 1))
 	elif target == "default_image":
 		owner_usage = "default_image"
-	IMAGE_STATE.open_image(source_path, target, asset_id, "robot", selected_type, owner_usage, owner_frames)
+	IMAGE_STATE.open_image(source_path, target, asset_id, "robot", selected_type, owner_usage, owner_frames, "res://editor/robot_editor.tscn")
 	request_image_editor.emit()
 
 func _apply_pending_asset_selection() -> void:
