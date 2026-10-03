@@ -535,16 +535,9 @@ func _load_visual_assets() -> void:
 
 func _visual_asset_entry(asset_id: String, data: Dictionary) -> Dictionary:
 	var region: Array = data.get("region", [0, 0, 0, 0])
-	var display_name := str(data.get("display_name", data.get("name", "")))
+	var display_name := str(data.get("display_name", ""))
 	if display_name.is_empty():
-		var owner := str(data.get("owner", ""))
-		var usage := str(data.get("usage", ""))
-		if not owner.is_empty() and not usage.is_empty() and usage != "visual_asset_catalog":
-			display_name = "%s / %s" % [owner, usage.capitalize()]
-		elif not usage.is_empty() and usage != "visual_asset_catalog":
-			display_name = usage.capitalize()
-		else:
-			display_name = asset_id
+		display_name = asset_id
 	return {
 		"asset_id": asset_id,
 		"display_name": display_name,
