@@ -389,12 +389,22 @@ func _create_animation_preview(parent: Container, label_text: String, size: Vect
 	return preview
 
 func _animated_texture(path: String, frame: int, total_frames: int, rect_values: Variant = []) -> Texture2D:
-	var texture := load(path) as Texture2D
+	var source_path := path
+	var asset_frames := 0
+	var resolved := VisualAssetResolver.resolve(path)
+	if resolved != null:
+		source_path = resolved.source
+		asset_frames = resolved.frames
+		if resolved.region.size.x > 0 and resolved.region.size.y > 0:
+			rect_values = [resolved.region.position.x, resolved.region.position.y, resolved.region.size.x, resolved.region.size.y]
+	var texture := load(source_path) as Texture2D
 	if texture == null:
 		return null
 	var source_rect := Rect2(0.0, 0.0, texture.get_width(), texture.get_height())
 	if rect_values is Array and rect_values.size() >= 4:
 		source_rect = Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+	if asset_frames > 0:
+		total_frames = asset_frames
 	if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
 		return texture
 	if total_frames <= 1:

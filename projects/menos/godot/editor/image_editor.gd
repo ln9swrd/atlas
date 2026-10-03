@@ -669,7 +669,12 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		return
 	_scan_connected_images()
 	_select_path(current_path)
-	status.text = "Visual Asset 등록 완료: %s | 영역 %d × %d px" % [asset_id, rect.size.x, rect.size.y]
+	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_target.is_empty():
+		IMAGE_STATE.apply_selection(asset_id)
+		status.text = "Visual Asset 등록 완료 및 원래 Editor에 적용 준비: %s | 영역 %d × %d px" % [asset_id, rect.size.x, rect.size.y]
+		request_previous_editor.emit()
+	else:
+		status.text = "Visual Asset 등록 완료: %s | 영역 %d × %d px" % [asset_id, rect.size.x, rect.size.y]
 
 func _add_current_image_to_asset_catalog() -> void:
 	if not _require_image():
