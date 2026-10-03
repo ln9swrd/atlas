@@ -167,6 +167,21 @@ func _build_interface() -> void:
 	search_edit.placeholder_text = "Search Asset ID / name / source"
 	search_edit.text_changed.connect(_on_search_changed)
 	details.add_child(search_edit)
+	var list_header := HBoxContainer.new()
+	list_header.custom_minimum_size.y = 28
+	var image_header := Label.new()
+	image_header.text = "이미지"
+	image_header.custom_minimum_size.x = 64
+	list_header.add_child(image_header)
+	var name_header := Label.new()
+	name_header.text = "이름"
+	name_header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list_header.add_child(name_header)
+	var usage_header := Label.new()
+	usage_header.text = "사용 여부"
+	usage_header.custom_minimum_size.x = 120
+	list_header.add_child(usage_header)
+	details.add_child(list_header)
 	var list_scroll := ScrollContainer.new()
 	list_scroll.custom_minimum_size.y = 170
 	list_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -802,8 +817,7 @@ func _build_asset_row(entry: Dictionary, index: int) -> void:
 	row.add_child(preview)
 
 	var text_button := Button.new()
-	var usage_text := _catalog_usage_text(entry)
-	text_button.text = "%s\n%s" % [entry.get("display_name", "?"), usage_text]
+	text_button.text = str(entry.get("display_name", "?"))
 	text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_button.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -818,6 +832,14 @@ func _build_asset_row(entry: Dictionary, index: int) -> void:
 		_on_asset_row_gui_input(event, index)
 	)
 	row.add_child(text_button)
+
+	var usage_label := Label.new()
+	usage_label.text = _catalog_usage_text(entry)
+	usage_label.custom_minimum_size.x = 120
+	usage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	usage_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	usage_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	row.add_child(usage_label)
 
 func _refresh_list() -> void:
 	var selected_asset_id := ""
