@@ -19,6 +19,7 @@ var editing_asset_index := -1
 var search_edit: LineEdit
 var visual_assets: Dictionary = {}
 var visual_asset_ids: Array[String] = []
+var usage_cache: Dictionary = {}
 var selected_is_visual_asset := false
 var source_dialog: FileDialog
 var asset_list: VBoxContainer
@@ -519,7 +520,16 @@ func _load_visual_assets() -> void:
 
 func _visual_asset_entry(asset_id: String, data: Dictionary) -> Dictionary:
 	var region: Array = data.get("region", [0, 0, 0, 0])
-	var display_name := str(data.get("display_name", data.get("name", data.get("usage", asset_id))))
+	var display_name := str(data.get("display_name", data.get("name", "")))
+	if display_name.is_empty():
+		var owner := str(data.get("owner", ""))
+		var usage := str(data.get("usage", ""))
+		if not owner.is_empty() and not usage.is_empty() and usage != "visual_asset_catalog":
+			display_name = "%s / %s" % [owner, usage.capitalize()]
+		elif not usage.is_empty() and usage != "visual_asset_catalog":
+			display_name = usage.capitalize()
+		else:
+			display_name = asset_id
 	return {
 		"asset_id": asset_id,
 		"display_name": display_name,
@@ -648,6 +658,14 @@ func _remove_entry() -> void:
 	if selected_index < 0 or selected_index >= entries.size():
 		status_label.text = "Select a catalog entry to remove."
 		return
+	if selected_is_visual_asset:
+		var visual_id := str(entries[selected_index].get("asset_id", ""))
+		_load_visual_assets()
+		if visual_assets.has(visual_id):
+			visual_assets.erase(visual_id)
+			if not _write_visual_assets():
+				status_label.text = "Visual Asset 삭제에 실패했습니다."
+				return
 	entries.remove_at(selected_index)
 	selected_index = -1
 	_refresh_list()
@@ -722,34 +740,76 @@ func _on_asset_row_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.double_click:
 		_on_asset_activated(index)
 
+func _rebuild_usage_cache() -> void:
+	usage_cache.clear()
+	_scan_usage_directory("res://content")
+
+func _scan_usage_directory(path: String) -> void:
+	var dir := DirAccess.open(path)
+	if dir == null:
+		return
+	for file_name in dir.get_files():
+		if not file_name.to_lower().ends_with(".json"):
+			continue
+		if file_name in ["asset_catalog.json", "visual_assets.json"]:
+			continue
+		var file_path := path.path_join(file_name)
+		var file := FileAccess.open(file_path, FileAccess.READ)
+		if file == null:
+			continue
+		var text := file.get_as_text()
+		file.close()
+		for asset_id in entries.map(func(value: Dictionary) -> String: return str(value.get("asset_id", ""))):
+			if asset_id.is_empty() or not text.contains(asset_id):
+				continue
+			var refs: Array = usage_cache.get(asset_id, [])
+			var short_name := file_name.get_basename()
+			if not refs.has(short_name):
+				refs.append(short_name)
+			usage_cache[asset_id] = refs
+	for directory_name in dir.get_directories():
+		_scan_usage_directory(path.path_join(directory_name))
+
 func _catalog_usage_text(entry: Dictionary) -> String:
 	var asset_id := str(entry.get("asset_id", ""))
 	if str(entry.get("catalog_kind", "")) == "visual_asset":
 		_load_visual_assets()
 		var data: Dictionary = visual_assets.get(asset_id, {})
 		var owner := str(data.get("owner", ""))
+		var usage := str(data.get("usage", ""))
 		if not owner.is_empty():
 			return "사용중: %s" % owner
-		var usage := str(data.get("usage", ""))
 		if not usage.is_empty() and usage != "visual_asset_catalog":
 			return "사용중: %s" % usage
+	var refs: Array = usage_cache.get(asset_id, [])
+	if refs.is_empty():
 		return "미사용"
-	return "미사용"
+	return "사용중: %s" % ", ".join(PackedStringArray(refs))
 
 func _build_asset_row(entry: Dictionary, index: int) -> void:
 	var row := HBoxContainer.new()
-	row.custom_minimum_size.y = 58
+	row.custom_minimum_size.y = 68
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	asset_list.add_child(row)
 
+	var preview := TextureRect.new()
+	preview.custom_minimum_size = Vector2(64, 64)
+	preview.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview.texture = _entry_preview_icon(entry)
+	row.add_child(preview)
+
 	var text_button := Button.new()
 	var usage_text := _catalog_usage_text(entry)
-	text_button.text = "%s\n%s  / %s\n사용: %s" % [entry.get("display_name", "?"), str(entry.get("kind", "tile")).capitalize(), str(entry.get("group", "?")), usage_text]
+	text_button.text = "%s\n%s" % [entry.get("display_name", "?"), usage_text]
 	text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_button.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_button.toggle_mode = true
 	text_button.set_meta("asset_index", index)
+	text_button.tooltip_text = "%s\nID: %s\n%s / %s" % [entry.get("source_path", ""), entry.get("asset_id", ""), str(entry.get("kind", "tile")).capitalize(), str(entry.get("group", "?"))]
 	text_button.pressed.connect(func() -> void:
 		_on_asset_selected(index)
 		_select_asset_row(index)
@@ -758,15 +818,6 @@ func _build_asset_row(entry: Dictionary, index: int) -> void:
 		_on_asset_row_gui_input(event, index)
 	)
 	row.add_child(text_button)
-
-	var preview := TextureRect.new()
-	preview.custom_minimum_size = Vector2(48, 48)
-	preview.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	preview.texture = _entry_preview_icon(entry)
-	row.add_child(preview)
 
 func _refresh_list() -> void:
 	var selected_asset_id := ""
@@ -819,6 +870,7 @@ func _entry_preview_icon(entry: Dictionary) -> Texture2D:
 func _load_catalog() -> void:
 	entries.clear()
 	selected_index = -1
+	usage_cache.clear()
 	_load_visual_assets()
 	if not FileAccess.file_exists(CATALOG_PATH):
 		_refresh_list()
@@ -837,6 +889,7 @@ func _load_catalog() -> void:
 		var visual_id := visual_asset_ids[visual_index]
 		entries.append(_visual_asset_entry(visual_id, visual_assets.get(visual_id, {})))
 		visual_index += 1
+	_rebuild_usage_cache()
 	_refresh_list()
 	status_label.text = "Loaded %d catalog entries." % entries.size()
 
@@ -849,9 +902,13 @@ func _save_catalog() -> bool:
 	if file == null:
 		status_label.text = "Could not write catalog. Error %d" % FileAccess.get_open_error()
 		return false
-	file.store_string(JSON.stringify({"schema_version": 1, "assets": entries}, "	") + "\n")
+	var catalog_assets: Array[Dictionary] = []
+	for entry in entries:
+		if str(entry.get("catalog_kind", "")) != "visual_asset":
+			catalog_assets.append(entry.duplicate(true))
+	file.store_string(JSON.stringify({"schema_version": 1, "assets": catalog_assets}, "	") + "\n")
 	file.close()
-	status_label.text = "Saved %d assets to %s" % [entries.size(), CATALOG_PATH]
+	status_label.text = "Saved %d catalog assets to %s" % [catalog_assets.size(), CATALOG_PATH]
 	var selected_asset_id := ""
 	if selected_index >= 0 and selected_index < entries.size():
 		selected_asset_id = str(entries[selected_index].get("asset_id", ""))
