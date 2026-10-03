@@ -297,13 +297,30 @@ func _refresh_entry_list() -> void:
 			if not haystack.contains(query):
 				continue
 		filtered_indices.append(index)
-		var icon: Texture2D = load(str(entry.get("path", ""))) as Texture2D
+		var icon: Texture2D = _get_catalog_thumbnail(entry) if is_catalog_entry else load(str(entry.get("path", ""))) as Texture2D
 		var display_category := "카다로그" if is_catalog_entry else category
 		var label_text := "[%s] %s" % [display_category, str(entry.get("label", "Asset"))]
 		list.add_item(label_text, icon)
 		list.set_item_metadata(list.item_count - 1, index)
 		source_list.add_item(label_text, icon)
 		source_list.set_item_metadata(source_list.item_count - 1, index)
+
+func _get_catalog_thumbnail(entry: Dictionary) -> Texture2D:
+	var source_path := str(entry.get("path", ""))
+	var source_texture := load(source_path) as Texture2D
+	if source_texture == null:
+		return null
+	var rect := _entry_region(entry)
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		return source_texture
+	var source_size := Vector2i(source_texture.get_width(), source_texture.get_height())
+	var clipped := rect.intersection(Rect2i(Vector2i.ZERO, source_size))
+	if clipped.size.x <= 0 or clipped.size.y <= 0:
+		return source_texture
+	var atlas := AtlasTexture.new()
+	atlas.atlas = source_texture
+	atlas.region = Rect2(clipped)
+	return atlas
 
 func _audit_image_references() -> void:
 	var missing: Array[String] = []
