@@ -43,7 +43,19 @@ var animation_previews: Dictionary = {}
 var animation_rects: Dictionary = {}
 var animation_timer: Timer
 var animation_frame := 0
-const ROBOT_ANIMATION_FRAMES := {"idle": 6, "attack": 8, "move": 8, "skill": 8, "projectile": 6}
+const ROBOT_ANIMATION_FRAMES := {
+	"idle": 6,
+	"move": 8,
+	"attack": 8,
+	"hit": 8,
+	"death": 8,
+	"projectile": 6,
+	"skill1": 8,
+	"skill2": 10,
+	"skill3": 12,
+	"special": 14,
+	"finisher": 18
+}
 
 func _ready() -> void:
 	_build_ui()
@@ -210,14 +222,16 @@ func _build_ui() -> void:
 	animation_preview_title.text = "ANIMATION PREVIEW"
 	animation_preview_title.add_theme_font_size_override("font_size", 14)
 	content.add_child(animation_preview_title)
-	var animation_preview_row := HBoxContainer.new()
-	animation_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_child(animation_preview_row)
-	animation_previews["idle"] = _create_animation_preview(animation_preview_row, "Idle", Vector2(110, 150))
-	animation_previews["attack"] = _create_animation_preview(animation_preview_row, "Attack", Vector2(110, 150))
-	animation_previews["move"] = _create_animation_preview(animation_preview_row, "Move", Vector2(110, 150))
-	animation_previews["skill"] = _create_animation_preview(animation_preview_row, "Skill", Vector2(110, 150))
-	animation_previews["projectile"] = _create_animation_preview(animation_preview_row, "Projectile", Vector2(90, 110))
+	var base_preview_row := HBoxContainer.new()
+	base_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(base_preview_row)
+	for animation_name in BASE_ANIMATIONS:
+		animation_previews[animation_name] = _create_animation_preview(base_preview_row, animation_name.capitalize(), Vector2(90, 120))
+	var skill_preview_row := HBoxContainer.new()
+	skill_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(skill_preview_row)
+	for animation_name in SKILL_ANIMATIONS:
+		animation_previews[animation_name] = _create_animation_preview(skill_preview_row, animation_name.capitalize(), Vector2(90, 120))
 	var ability_note := Label.new()
 	ability_note.text = "SPECIAL ABILITIES: managed by content/skills/skills.json"
 	ability_note.add_theme_font_size_override("font_size", 13)
