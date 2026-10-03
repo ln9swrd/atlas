@@ -786,6 +786,8 @@ func _catalog_usage_text(entry: Dictionary) -> String:
 		var owner := str(data.get("owner", ""))
 		var usage := str(data.get("usage", ""))
 		if not owner.is_empty():
+			if not usage.is_empty() and usage != "visual_asset_catalog":
+				return "사용중: %s / %s" % [owner, usage]
 			return "사용중: %s" % owner
 		if not usage.is_empty() and usage != "visual_asset_catalog":
 			return "사용중: %s" % usage
