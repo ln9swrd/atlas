@@ -630,7 +630,14 @@ func _open_image_editor_for_target(target: String) -> void:
 	# Select Asset always opens the Catalog Editor, even when the slot is empty.
 	# When an existing Visual Asset is assigned, pass its ID so the Catalog Editor
 	# can select that exact catalog entry.
-	IMAGE_STATE.open_image(source_path, target, asset_id)
+	var owner_usage := ""
+	var owner_frames := 1
+	if target.begins_with("animation:"):
+		owner_usage = target.trim_prefix("animation:")
+		owner_frames = int(ROBOT_ANIMATION_FRAMES.get(owner_usage, 1))
+	elif target == "default_image":
+		owner_usage = "default_image"
+	IMAGE_STATE.open_image(source_path, target, asset_id, "robot", selected_type, owner_usage, owner_frames)
 	request_image_editor.emit()
 
 func _apply_pending_asset_selection() -> void:
