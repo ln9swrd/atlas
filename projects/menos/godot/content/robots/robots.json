@@ -86,7 +86,7 @@
       "attack": "robot.valkyrie.attack",
       "death": "robot.valkyrie.death",
       "finisher": "robot.valkyrie.finisher",
-      "hit": "robot.valkyrie.hit",
+      "hit": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)",
       "idle": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.03",
       "move": "robot.valkyrie.move",
       "projectile": "robot.valkyrie.projectile",
