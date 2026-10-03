@@ -784,12 +784,15 @@ func spawn_allied_units() -> void:
 		var definition: AlliedUnitDefinition = allied_unit_definitions[unit_type]
 		for index in range(count):
 			var offset := Vector2(-26.0 - index * 24.0, (index % 2) * 42.0 - 21.0)
-			allied_units.append(AlliedUnitRuntimeState.create(
+			var unit := AlliedUnitRuntimeState.create(
 				"%s_%d" % [unit_type, index],
 				unit_type,
 				spawn_position + offset,
 				definition
-			))
+			)
+			allied_units.append(unit)
+			_create_allied_render_node(unit)
+	_sync_allied_render_nodes()
 	log_event("Allied support deployed: %d." % allied_units.size())
 
 func _resolve_allied_spawn_position(spawn_id: String) -> Vector2:
@@ -813,6 +816,7 @@ func update_allied_units(delta: float) -> void:
 		var event := AlliedUnitAI.update(unit, enemies, delta, robot, allied_units)
 		if event != null:
 			_handle_gameplay_event(event)
+	_sync_allied_render_nodes()
 
 func damage_allied_unit(unit: AlliedUnitRuntimeState, amount: float) -> void:
 	if unit == null or unit.hp <= 0.0:
