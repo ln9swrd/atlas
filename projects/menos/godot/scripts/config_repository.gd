@@ -2,6 +2,7 @@ class_name ConfigRepository
 extends RefCounted
 
 const EDITOR_SETTINGS_PATH := "res://content/settings/editor.json"
+const GAMEPLAY_SETTINGS_PATH := "res://content/settings/gameplay.json"
 
 static var _cache: Dictionary = {}
 
@@ -28,6 +29,9 @@ static func get_section(path: String, section: String) -> Dictionary:
 
 static func get_editor_value(section: String, key: String, default_value: Variant = null) -> Variant:
 	return get_value(EDITOR_SETTINGS_PATH, section, key, default_value)
+
+static func get_gameplay_value(section: String, key: String, default_value: Variant = null) -> Variant:
+	return get_value(GAMEPLAY_SETTINGS_PATH, section, key, default_value)
 
 static func reload(path: String = "") -> void:
 	if path.is_empty():

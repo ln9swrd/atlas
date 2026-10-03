@@ -103,7 +103,6 @@ var tower_catalog: Dictionary = {}
 var tower_definitions: Dictionary = {}
 var tower_sprite_catalog: Dictionary = {}
 var tower_projectile_catalog: Dictionary = {}
-const DEFAULT_ROBOT_ID := "valkyrie"
 var robot_catalog: Dictionary = {}
 var robot_definition: RobotDefinition
 var robot_weapon_definition: WeaponDefinition
@@ -116,8 +115,8 @@ var robot: RobotRuntimeState
 var player_profile: PlayerProfileState = PlayerProfileState.new()
 var robot_progression: RobotProgressionState = player_profile.robot_progression
 var inventory_open := false
-const INVENTORY_COLS := 6
-const INVENTORY_ROWS := 4
+var inventory_cols := int(ConfigRepository.get_gameplay_value("inventory", "columns", 6))
+var inventory_rows := int(ConfigRepository.get_gameplay_value("inventory", "rows", 4))
 const ROBOT_PROFILE_PATH := "user://menos_campaign_robot_profile.json"
 const ITEM_CATALOG_PATH := "res://content/items/items.json"
 var skills_catalog: Dictionary = {}
@@ -136,9 +135,9 @@ var selected_enemy_index := -1
 var camera_dragging := false
 var camera_last_mouse := Vector2.ZERO
 var robot_auto_attack := true
-const CAMERA_EDGE_MARGIN := 28.0
-const CAMERA_EDGE_SPEED := 720.0
-const BOTTOM_HUD_HEIGHT := 188.0
+var camera_edge_margin := float(ConfigRepository.get_gameplay_value("camera", "edge_margin", 28.0))
+var camera_edge_speed := float(ConfigRepository.get_gameplay_value("camera", "edge_speed", 720.0))
+var bottom_hud_height := float(ConfigRepository.get_gameplay_value("camera", "bottom_hud_height", 188.0))
 var damage_numbers: Array = []
 var effects: Array = []
 
@@ -235,7 +234,7 @@ func _load_enemy_catalog() -> void:
 
 func _load_robot_catalog() -> void:
 	var catalog := ContentCatalogLoader.load_dictionary_catalog("res://content/robots/robots.json")
-	var selected_robot_id := DEFAULT_ROBOT_ID
+	var selected_robot_id := str(ConfigRepository.get_gameplay_value("runtime", "default_robot_id", "valkyrie"))
 	if not catalog.has(selected_robot_id):
 		push_error("Default robot '%s' is missing from the Robot Catalog." % selected_robot_id)
 		return
@@ -1584,7 +1583,7 @@ func update_camera_edge_scroll(delta: float) -> void:
 		direction.y += 1.0
 	if direction == Vector2.ZERO:
 		return
-	get_parent().get_node("Camera2D").position = _camera_target_clamped(get_parent().get_node("Camera2D").position + direction.normalized() * CAMERA_EDGE_SPEED * delta)
+	get_parent().get_node("Camera2D").position = _camera_target_clamped(get_parent().get_node("Camera2D").position + direction.normalized() * camera_edge_speed * delta)
 
 func get_minimap_screen_rect() -> Rect2:
 	var viewport_size := get_viewport_rect().size

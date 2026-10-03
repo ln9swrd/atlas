@@ -1,4 +1,4 @@
-﻿{
+{
   "wave_auto_start": {
     "id": "wave_auto_start",
     "delay": 2.5
@@ -11,5 +11,17 @@
     "1": "area_attack",
     "2": "heavy_pierce",
     "3": ""
+  },
+  "runtime": {
+    "default_robot_id": "valkyrie"
+  },
+  "inventory": {
+    "columns": 6,
+    "rows": 4
+  },
+  "camera": {
+    "edge_margin": 28.0,
+    "edge_speed": 720.0,
+    "bottom_hud_height": 188.0
   }
 }
