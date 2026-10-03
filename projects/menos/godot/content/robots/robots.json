@@ -84,21 +84,21 @@
     },
     "animations": {
       "attack": "robot.valkyrie.attack",
-      "death": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).01",
-      "finisher": "robot.valkyrie.finisher",
-      "hit": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)",
-      "idle": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.03",
+      "death": "robot.valkyrie.death",
+      "finisher": "robot.valkyrie.skill(finisher)",
+      "hit": "robot.valkyrie.hit",
+      "idle": "robot.valkyrie.idle",
       "move": "robot.valkyrie.move",
-      "projectile": "image.치비_메카_스킬_애니메이션_스프라이트_시트_(1)",
+      "projectile": "robot.valkyrie.projectile",
       "skill1": "robot.valkyrie.skill1",
       "skill2": "robot.valkyrie.skill2",
       "skill3": "robot.valkyrie.skill3",
-      "special": "image.치비_메카_스프라이트_액션_시트"
+      "special": "robot.valkyrie.skill(special)"
     },
     "color": "ffffffff",
     "cooldown": 0.65,
     "damage": 28.0,
-    "default_image": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+    "default_image": "robot.valkyrie.profile",
     "default_image_rect": [
       0.0,
       760.0,
@@ -119,7 +119,7 @@
       "speed_growth": 0.02,
       "xp_per_level": 100.0
     },
-    "projectile_anim": "image.치비_메카_스킬_애니메이션_스프라이트_시트_(1)",
+    "projectile_anim": "robot.valkyrie.projectile",
     "range": 180.0,
     "speed": 125.0,
     "sprite_attack": "robot.valkyrie.attack",
@@ -129,7 +129,7 @@
       1440.0,
       220.0
     ],
-    "sprite_idle": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.03",
+    "sprite_idle": "robot.valkyrie.idle",
     "sprite_move": "robot.valkyrie.move",
     "sprite_move_rect": [
       96.0,

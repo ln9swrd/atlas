@@ -2,6 +2,7 @@ class_name RobotEditorMain
 extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
+const EDITOR_THUMBNAIL_UTIL = preload("res://scripts/editor_thumbnail_util.gd")
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 const ROBOT_COLOR_SHADER = preload("res://shaders/allied_unit_color.gdshader")
 
@@ -537,6 +538,7 @@ func _save_data() -> void:
 		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
 	data["animations"] = animations
 	data["animation_rects"] = animation_rects.duplicate(true)
+	data["default_image_rect"] = data.get("default_image_rect", [])
 	# Legacy runtime fields remain synchronized during the migration.
 	data["sprite_idle"] = animations.get("idle", "")
 	data["sprite_move"] = animations.get("move", "")
@@ -558,6 +560,7 @@ func _save_data() -> void:
 			break
 	_set_status("SAVED: " + ROBOT_FILE)
 
+
 func _refresh_image_thumbnail(target: String) -> void:
 	if not image_thumbnail_controls.has(target):
 		return
@@ -571,7 +574,9 @@ func _refresh_image_thumbnail(target: String) -> void:
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
-	thumbnail.texture = _animated_texture(path, 0, 1) if not path.is_empty() else null
+	var texture := EDITOR_THUMBNAIL_UTIL.create(path) if not path.is_empty() else null
+	thumbnail.texture = texture
+	thumbnail.scale = Vector2.ONE
 	if target == "default_image" or target == "animation:idle":
 		_refresh_robot_preview()
 
@@ -647,18 +652,37 @@ func _apply_pending_asset_selection() -> void:
 	var asset_id := IMAGE_STATE.consume_selection(target)
 	if asset_id.is_empty():
 		return
+	var resolved := VisualAssetResolver.get_asset(asset_id)
+	var rect_values: Array = []
+	if resolved != null and resolved.region.size.x > 0.0 and resolved.region.size.y > 0.0:
+		rect_values = [
+			resolved.region.position.x,
+			resolved.region.position.y,
+			resolved.region.size.x,
+			resolved.region.size.y
+		]
 	if target == "default_image":
 		default_image_edit.text = asset_id
+		if not rect_values.is_empty():
+			robot_data[selected_type]["default_image_rect"] = rect_values.duplicate()
 	elif target == "projectile":
 		projectile_edit.text = asset_id
+		if not rect_values.is_empty():
+			animation_rects["projectile"] = rect_values.duplicate()
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			(animation_edits[animation_name] as LineEdit).text = asset_id
+		if not rect_values.is_empty():
+			animation_rects[animation_name] = rect_values.duplicate()
 	elif target == "sprite":
 		idle_edit.text = asset_id
+		if not rect_values.is_empty():
+			animation_rects["idle"] = rect_values.duplicate()
 	_refresh_all_image_thumbnails()
-	_set_status("Asset selected: " + asset_id)
+	_refresh_animation_previews()
+	_refresh_robot_preview()
+	_set_status("Asset selected: %s | region: %s" % [asset_id, str(rect_values)])
 
 signal request_image_editor
 func _open_sprite_dialog(target: String = "sprite") -> void:

@@ -13,160 +13,6 @@
 		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
 		"usage": "visual_asset_catalog"
 	},
-	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).01": {
-		"category": "Robot",
-		"frames": 8.0,
-		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).01",
-		"owner": "",
-		"region": [
-			105.0,
-			830.0,
-			1430.0,
-			193.0
-		],
-		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).02": {
-		"category": "Other",
-		"frames": 1.0,
-		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).02",
-		"owner": "",
-		"region": [
-			122.0,
-			10.0,
-			936.0,
-			176.0
-		],
-		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).03": {
-		"category": "Other",
-		"frames": 1,
-		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2).03",
-		"owner": "",
-		"region": [
-			116,
-			8,
-			940,
-			182
-		],
-		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271": {
-		"category": "Robot",
-		"frames": 6.0,
-		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271",
-		"owner": "",
-		"region": [
-			96.0,
-			0.0,
-			960.0,
-			200.0
-		],
-		"source": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.01": {
-		"category": "Robot",
-		"frames": 6.0,
-		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.01",
-		"owner": "",
-		"region": [
-			96.0,
-			0.0,
-			960.0,
-			200.0
-		],
-		"source": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.02": {
-		"category": "Robot",
-		"frames": 6.0,
-		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.02",
-		"owner": "",
-		"region": [
-			96.0,
-			0.0,
-			960.0,
-			200.0
-		],
-		"source": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.03": {
-		"category": "Robot",
-		"frames": 6.0,
-		"id": "image.치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.03",
-		"owner": "",
-		"region": [
-			96.0,
-			0.0,
-			960.0,
-			200.0
-		],
-		"source": "res://content/editor/edited_assets/치비_메카_소녀_애니메이션_스프라이트_시트_(2)_edit_89073271.png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_스킬_애니메이션_스프라이트_시트_(1)": {
-		"category": "Robot",
-		"frames": 6.0,
-		"id": "image.치비_메카_스킬_애니메이션_스프라이트_시트_(1)",
-		"owner": "",
-		"region": [
-			31.0,
-			74.0,
-			1497.0,
-			128.0
-		],
-		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_스킬_애니메이션_스프라이트_시트_(1).01": {
-		"category": "Robot",
-		"frames": 8.0,
-		"id": "image.치비_메카_스킬_애니메이션_스프라이트_시트_(1).01",
-		"owner": "",
-		"region": [
-			11.0,
-			300.0,
-			1507.0,
-			180.0
-		],
-		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_스킬_애니메이션_스프라이트_시트_(1).02": {
-		"category": "Robot",
-		"frames": 12.0,
-		"id": "image.치비_메카_스킬_애니메이션_스프라이트_시트_(1).02",
-		"owner": "",
-		"region": [
-			20.0,
-			810.0,
-			1503.0,
-			177.0
-		],
-		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-		"usage": "visual_asset_catalog"
-	},
-	"image.치비_메카_스프라이트_액션_시트": {
-		"category": "Robot",
-		"frames": 14.0,
-		"id": "image.치비_메카_스프라이트_액션_시트",
-		"owner": "",
-		"region": [
-			1.0,
-			71.0,
-			1532.0,
-			164.0
-		],
-		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-		"usage": "visual_asset_catalog"
-	},
 	"robot.valkyrie.attack": {
 		"category": "Robot",
 		"frames": 8.0,
@@ -181,19 +27,47 @@
 		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
 		"usage": "attack"
 	},
-	"robot.valkyrie.finisher": {
+	"robot.valkyrie.death": {
 		"category": "Robot",
-		"frames": 18.0,
-		"id": "robot.valkyrie.finisher",
-		"owner": "valkyrie",
+		"frames": 8.0,
+		"id": "robot.valkyrie.death",
+		"owner": "",
 		"region": [
-			0.0,
-			300.0,
-			1536.0,
-			450.0
+			105.0,
+			830.0,
+			1430.0,
+			193.0
 		],
-		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-		"usage": "finisher"
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "visual_asset_catalog"
+	},
+	"robot.valkyrie.hit": {
+		"category": "Robot",
+		"frames": 1.0,
+		"id": "robot.valkyrie.hit",
+		"owner": "",
+		"region": [
+			112.0,
+			629.0,
+			732.0,
+			203.0
+		],
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "visual_asset_catalog"
+	},
+	"robot.valkyrie.idle": {
+		"category": "Other",
+		"frames": 1.0,
+		"id": "robot.valkyrie.idle",
+		"owner": "",
+		"region": [
+			122.0,
+			10.0,
+			936.0,
+			176.0
+		],
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "visual_asset_catalog"
 	},
 	"robot.valkyrie.move": {
 		"category": "Robot",
@@ -209,19 +83,75 @@
 		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
 		"usage": "move"
 	},
+	"robot.valkyrie.profile": {
+		"category": "Other",
+		"frames": 1.0,
+		"id": "robot.valkyrie.profile",
+		"owner": "",
+		"region": [
+			4.0,
+			785.0,
+			284.0,
+			231.0
+		],
+		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+		"usage": "visual_asset_catalog"
+	},
+	"robot.valkyrie.projectile": {
+		"category": "Robot",
+		"frames": 6.0,
+		"id": "robot.valkyrie.projectile",
+		"owner": "",
+		"region": [
+			31.0,
+			74.0,
+			1497.0,
+			128.0
+		],
+		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+		"usage": "visual_asset_catalog"
+	},
+	"robot.valkyrie.skill(finisher)": {
+		"category": "Robot",
+		"frames": 18.0,
+		"id": "robot.valkyrie.skill(finisher)",
+		"owner": "valkyrie",
+		"region": [
+			0.0,
+			300.0,
+			1536.0,
+			450.0
+		],
+		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+		"usage": "finisher"
+	},
+	"robot.valkyrie.skill(special)": {
+		"category": "Robot",
+		"frames": 14.0,
+		"id": "robot.valkyrie.skill(special)",
+		"owner": "",
+		"region": [
+			1.0,
+			71.0,
+			1532.0,
+			164.0
+		],
+		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+		"usage": "visual_asset_catalog"
+	},
 	"robot.valkyrie.skill1": {
 		"category": "Robot",
 		"frames": 8.0,
 		"id": "robot.valkyrie.skill1",
-		"owner": "valkyrie",
+		"owner": "",
 		"region": [
-			0.0,
-			200.0,
-			1536.0,
-			300.0
+			11.0,
+			300.0,
+			1507.0,
+			180.0
 		],
 		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-		"usage": "skill1"
+		"usage": "visual_asset_catalog"
 	},
 	"robot.valkyrie.skill2": {
 		"category": "Robot",

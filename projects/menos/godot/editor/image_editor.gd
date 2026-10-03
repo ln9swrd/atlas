@@ -3,9 +3,11 @@ const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const LOADER := preload("res://editor/image_texture_loader.gd")
 const IMAGE_STATE := preload("res://editor/image_editor_state.gd")
 const EDITED_DIR := "res://content/editor/edited_assets"
+const EDITOR_THUMBNAIL_UTIL = preload("res://scripts/editor_thumbnail_util.gd")
 
 var entries: Array[Dictionary] = []
 var list: ItemList
+var catalog_tree: Tree
 var source_list: ItemList
 var view: AssetRegionView
 var status: Label
@@ -69,8 +71,19 @@ func _select_asset_id(asset_id: String) -> void:
 		var entry_index := filtered_indices[visible_index]
 		var entry: Dictionary = entries[entry_index]
 		if str(entry.get("owner_kind", "")) == "visual_asset" and str(entry.get("owner_key", "")) == asset_id:
-			list.select(visible_index)
-			_select_entry(visible_index)
+			if catalog_tree.visible:
+				var row := catalog_tree.get_root()
+				if row != null:
+					row = row.get_first_child()
+					while row != null:
+						if int(row.get_metadata(0)) == entry_index:
+							row.select(0)
+							_select_entry_index(entry_index)
+							return
+						row = row.get_next()
+			else:
+				list.select(visible_index)
+				_select_entry(visible_index)
 			return
 	# Keep the current source-path fallback if the requested Visual Asset is unavailable.
 	_select_path(IMAGE_STATE.selected_path)
@@ -132,6 +145,24 @@ func _build_ui() -> void:
 	list.max_text_lines = 2
 	list.item_selected.connect(_select_entry)
 	left.add_child(list)
+	catalog_tree = Tree.new()
+	catalog_tree.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	catalog_tree.columns = 3
+	catalog_tree.hide_root = true
+	catalog_tree.set_column_title(0, "ID")
+	catalog_tree.set_column_title(1, "Image")
+	catalog_tree.set_column_title(2, "사용여부")
+	catalog_tree.set_column_titles_visible(true)
+	catalog_tree.set_column_expand(0, true)
+	catalog_tree.set_column_expand(1, false)
+	catalog_tree.set_column_expand(2, true)
+	catalog_tree.set_column_custom_minimum_width(0, 180)
+	catalog_tree.set_column_custom_minimum_width(1, 72)
+	catalog_tree.set_column_custom_minimum_width(2, 150)
+	catalog_tree.item_selected.connect(_select_catalog_tree_entry)
+	catalog_tree.item_edited.connect(_rename_catalog_tree_item)
+	left.add_child(catalog_tree)
+	catalog_tree.visible = false
 	var clear_selection := Button.new()
 	clear_selection.text = "선택 해제"
 	clear_selection.pressed.connect(_clear_image_selection)
@@ -229,7 +260,7 @@ func _build_ui() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
 	usage_label = Label.new()
-	usage_label.text = "?醫뤾문??Asset ??곸벉"
+	usage_label.text = "선택된 Asset 없음"
 	usage_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	usage_label.add_theme_font_size_override("font_size", 16)
 	right.add_child(usage_label)
@@ -238,7 +269,6 @@ func _build_ui() -> void:
 	right.add_child(view)
 	var tools := HBoxContainer.new()
 	right.add_child(tools)
-	tools.visible = false
 	_add_button(tools, "Erase", _start_erase)
 	_add_button(tools, "Crop Selection", _crop_selection)
 	_add_button(tools, "Flip Horizontal", _flip_h)
@@ -249,7 +279,6 @@ func _build_ui() -> void:
 	_add_button(tools, "Save + Reconnect", _save_reconnect)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
-	resize_row.visible = false
 	var resize_label := Label.new()
 	resize_label.text = "크기"
 	resize_row.add_child(resize_label)
@@ -293,8 +322,10 @@ func _scan_connected_images() -> void:
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
 	_scan_visual_assets(seen)
+	_refresh_visual_asset_usage_from_robot_refs()
 	_scan_main_preloads(seen)
 	list.clear()
+	catalog_tree.clear()
 	source_list.clear()
 	_refresh_entry_list()
 	var catalog_count := 0
@@ -308,9 +339,13 @@ func _refresh_entry_list() -> void:
 		return
 	filtered_indices.clear()
 	list.clear()
+	catalog_tree.clear()
 	source_list.clear()
+	var catalog_root := catalog_tree.create_item()
 	var query := search_edit.text.strip_edges().to_lower() if search_edit else ""
 	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "All"
+	catalog_tree.visible = filter_name == "Catalog"
+	list.visible = filter_name != "Catalog"
 	for index in range(entries.size()):
 		var entry: Dictionary = entries[index]
 		var category := str(entry.get("category", "Other"))
@@ -325,29 +360,104 @@ func _refresh_entry_list() -> void:
 				continue
 		filtered_indices.append(index)
 		var icon: Texture2D = _get_catalog_thumbnail(entry) if is_catalog_entry else load(str(entry.get("path", ""))) as Texture2D
-		var display_category := "燁삳??롦에?볥젃" if is_catalog_entry else category
+		var display_category := "Visual Asset" if is_catalog_entry else category
 		var label_text := "[%s] %s" % [display_category, str(entry.get("label", "Asset"))]
-		list.add_item(label_text, icon)
-		list.set_item_metadata(list.item_count - 1, index)
+		if is_catalog_entry:
+			var row := catalog_tree.create_item(catalog_root)
+			row.set_metadata(0, index)
+			row.set_text(0, str(entry.get("owner_key", entry.get("label", "Asset"))))
+			row.set_editable(0, true)
+			row.set_icon(1, icon)
+			row.set_text(2, _visual_asset_usage_text(entry))
+			row.set_icon_max_width(1, 64)
+			row.set_tooltip_text(0, "더블클릭하여 ID 변경\n" + str(entry.get("label", "Asset")))
+			row.set_tooltip_text(1, str(entry.get("path", "")))
+		else:
+			list.add_item(label_text, icon)
+			list.set_item_metadata(list.item_count - 1, index)
 		source_list.add_item(label_text, icon)
 		source_list.set_item_metadata(source_list.item_count - 1, index)
 
+func _visual_asset_usage_text(entry: Dictionary) -> String:
+	var owner := str(entry.get("asset_owner", ""))
+	var usage := str(entry.get("asset_usage", ""))
+	if owner.is_empty():
+		return "미사용"
+	if usage.is_empty():
+		return "사용 중 (%s)" % owner
+	return "사용 중 (%s / %s)" % [owner, usage]
+
+func _select_catalog_tree_entry() -> void:
+	if editing or catalog_tree == null:
+		return
+	var selected := catalog_tree.get_selected()
+	if selected == null:
+		return
+	var entry_index := int(selected.get_metadata(0))
+	_select_entry_index(entry_index)
+
+func _rename_catalog_tree_item() -> void:
+	if editing or catalog_tree == null:
+		return
+	var selected := catalog_tree.get_selected()
+	if selected == null:
+		return
+	var entry_index := int(selected.get_metadata(0))
+	if entry_index < 0 or entry_index >= entries.size():
+		return
+	var entry: Dictionary = entries[entry_index]
+	if str(entry.get("owner_kind", "")) != "visual_asset":
+		selected.set_text(0, str(entry.get("owner_key", entry.get("label", "Asset"))))
+		return
+	var old_id := str(entry.get("owner_key", ""))
+	var new_id := selected.get_text(0).strip_edges()
+	if new_id.is_empty() or old_id == new_id:
+		selected.set_text(0, old_id)
+		return
+	if not _rename_visual_asset_id(old_id, new_id):
+		selected.set_text(0, old_id)
+		return
+	_scan_connected_images()
+	_select_asset_id(new_id)
+
+func _rename_visual_asset_id(old_id: String, new_id: String) -> bool:
+	if old_id.is_empty() or new_id.is_empty():
+		status.text = "Visual Asset ID는 비워둘 수 없습니다."
+		return false
+	if new_id.find("/") >= 0 or new_id.find("\\") >= 0:
+		status.text = "Visual Asset ID에 경로 문자를 사용할 수 없습니다."
+		return false
+	var catalog_path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(catalog_path, FileAccess.READ)
+	if file == null:
+		status.text = "Visual Asset Catalog를 열 수 없습니다."
+		return false
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary or not data.has(old_id):
+		status.text = "Visual Asset을 찾을 수 없습니다: " + old_id
+		return false
+	if data.has(new_id):
+		status.text = "이미 존재하는 Visual Asset ID입니다: " + new_id
+		return false
+	var asset: Dictionary = data[old_id]
+	data.erase(old_id)
+	asset["id"] = new_id
+	data[new_id] = asset
+	if not _write_json(catalog_path, data):
+		status.text = "Visual Asset ID 변경에 실패했습니다."
+		return false
+	VisualAssetResolver.reload()
+	if IMAGE_STATE.selection_asset_id == old_id:
+		IMAGE_STATE.selection_asset_id = new_id
+	status.text = "Visual Asset ID 변경: %s -> %s" % [old_id, new_id]
+	return true
+
 func _get_catalog_thumbnail(entry: Dictionary) -> Texture2D:
-	var source_path := str(entry.get("path", ""))
-	var source_texture := load(source_path) as Texture2D
-	if source_texture == null:
-		return null
-	var rect := _entry_region(entry)
-	if rect.size.x <= 0 or rect.size.y <= 0:
-		return source_texture
-	var source_size := Vector2i(source_texture.get_width(), source_texture.get_height())
-	var clipped := rect.intersection(Rect2i(Vector2i.ZERO, source_size))
-	if clipped.size.x <= 0 or clipped.size.y <= 0:
-		return source_texture
-	var atlas := AtlasTexture.new()
-	atlas.atlas = source_texture
-	atlas.region = Rect2(clipped)
-	return atlas
+	var value := str(entry.get("owner_key", "")) if str(entry.get("owner_kind", "")) == "visual_asset" else str(entry.get("path", ""))
+	var fallback_region := _entry_region(entry)
+	var fallback_frames := maxi(1, int(entry.get("frames", 1)))
+	return EDITOR_THUMBNAIL_UTIL.create(value, fallback_region, fallback_frames)
 
 func _audit_image_references() -> void:
 	var missing: Array[String] = []
@@ -370,9 +480,9 @@ func _audit_image_references() -> void:
 	if missing.is_empty() and invalid.is_empty():
 		report += "\n\n筌뤴뫀諭??怨뚭퍙 ???筌왖 筌〓챷?쒎첎? ?類ㅺ맒??낅빍??"
 	var dialog := AcceptDialog.new()
-	dialog.title = "???筌왖 筌〓챷???癒?"
+	dialog.title = "이미지 참조 검사"
 	dialog.dialog_text = report
-	dialog.ok_button_text = "??る┛"
+	dialog.ok_button_text = "확인"
 	add_child(dialog)
 	dialog.confirmed.connect(dialog.queue_free)
 	dialog.canceled.connect(dialog.queue_free)
@@ -485,13 +595,73 @@ func _scan_visual_assets(seen: Dictionary) -> void:
 			"label": "Visual Asset / %s" % str(asset.get("id", asset_id)),
 			"path": image_path,
 			"region": region_data,
+			"frames": maxi(1, int(asset.get("frames", 1))),
 			"owner": path,
 			"owner_kind": "visual_asset",
 			"owner_key": str(asset_id),
 			"field": "source",
 			"usage": "Visual Asset%s" % region_text,
+			"asset_owner": str(asset.get("owner", "")),
+			"asset_usage": str(asset.get("usage", "")),
 			"category": str(asset.get("category", "Other"))
 		})
+
+func _refresh_visual_asset_usage_from_robot_refs() -> void:
+	var path := "res://content/robots/robots.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary:
+		return
+	var usage_by_asset: Dictionary = {}
+	for robot_key in data:
+		if not data[robot_key] is Dictionary:
+			continue
+		var robot: Dictionary = data[robot_key]
+		var robot_name := str(robot.get("name", robot_key))
+		var usages: Array[String] = []
+		var fields := {
+			"default_image": "profile",
+			"sprite_idle": "idle",
+			"sprite_move": "move",
+			"sprite_attack": "attack",
+			"sprite_skill": "skill",
+			"projectile_anim": "projectile"
+		}
+		for field in fields:
+			var asset_id := str(robot.get(field, "")).strip_edges()
+			if asset_id.is_empty():
+				continue
+			var usage_name := str(fields[field])
+			if not usages.has(usage_name):
+				usages.append(usage_name)
+			usage_by_asset[asset_id] = str(usage_by_asset.get(asset_id, ""))
+			if not usage_by_asset[asset_id].is_empty():
+				usage_by_asset[asset_id] += ", "
+			usage_by_asset[asset_id] += "%s:%s" % [robot_name, usage_name]
+		var animations: Dictionary = robot.get("animations", {})
+		if animations is Dictionary:
+			for animation_name in animations:
+				var asset_id := str(animations[animation_name]).strip_edges()
+				if asset_id.is_empty():
+					continue
+				var usage_text := "%s:%s" % [robot_name, str(animation_name)]
+				usage_by_asset[asset_id] = str(usage_by_asset.get(asset_id, ""))
+				if not usage_by_asset[asset_id].is_empty():
+					usage_by_asset[asset_id] += ", "
+				usage_by_asset[asset_id] += usage_text
+	for entry in entries:
+		if str(entry.get("owner_kind", "")) != "visual_asset":
+			continue
+		var asset_id := str(entry.get("owner_key", ""))
+		if usage_by_asset.has(asset_id):
+			entry["asset_owner"] = "robot"
+			entry["asset_usage"] = str(usage_by_asset[asset_id])
+		else:
+			entry["asset_owner"] = str(entry.get("asset_owner", ""))
+			entry["asset_usage"] = str(entry.get("asset_usage", ""))
 
 func _scan_main_preloads(seen: Dictionary) -> void:
 	var path := "res://main.gd"
@@ -525,8 +695,19 @@ func _select_path(path: String) -> void:
 			if entry_index < filtered_indices.size():
 				var visible_index := filtered_indices.find(entry_index)
 				if visible_index >= 0:
-					list.select(visible_index)
-					_select_entry(visible_index)
+					if catalog_tree.visible:
+						var row := catalog_tree.get_root()
+						if row != null:
+							row = row.get_first_child()
+							while row != null:
+								if int(row.get_metadata(0)) == entry_index:
+									row.select(0)
+									_select_entry_index(entry_index)
+									break
+								row = row.get_next()
+					else:
+						list.select(visible_index)
+						_select_entry(visible_index)
 			return
 
 func _clear_image_selection() -> void:
@@ -539,16 +720,21 @@ func _clear_image_selection() -> void:
 	source_path = ""
 	source_image = null
 	list.deselect_all()
+	catalog_tree.deselect_all()
 	source_list.deselect_all()
 	IMAGE_STATE.selected_path = ""
-	usage_label.text = "?醫뤾문??Asset ??곸벉"
+	usage_label.text = "선택된 Asset 없음"
 	view.set_source_texture(null)
-	status.text = "???筌왖 ?醫뤾문????곸젫??됰뮸??덈뼄."
+	status.text = "이미지 선택이 해제되었습니다."
 
 func _select_entry(index: int) -> void:
 	if editing: return
 	if index < 0 or index >= list.item_count: return
 	var entry_index := int(list.get_item_metadata(index))
+	_select_entry_index(entry_index)
+
+func _select_entry_index(entry_index: int) -> void:
+	if editing: return
 	if entry_index < 0 or entry_index >= entries.size(): return
 	catalog_target_index = entry_index
 	current_index = entry_index
