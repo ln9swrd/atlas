@@ -1,5 +1,7 @@
 extends Control
 
+const ImageEditorState = preload("res://editor/image_editor_state.gd")
+
 const MAP_EDITOR_SCENE := "res://editor/map_editor.tscn"
 const STAGE_EDITOR_SCENE := "res://editor/stage_editor.tscn"
 const UNIT_EDITOR_SCENE := "res://editor/unit_editor.tscn"
