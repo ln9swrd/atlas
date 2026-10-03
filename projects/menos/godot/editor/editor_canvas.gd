@@ -8,7 +8,7 @@ signal placement_rejected(message: String)
 
 const TILESET: TileSet = preload("res://assets/menos/maps/northbridge_tileset.tres")
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
-const MAX_UNDO_HISTORY := int(ConfigRepository.get_editor_value("undo", "max_history", 100))
+var max_undo_history = int(ConfigRepository.get_editor_value("undo", "max_history", 100))
 
 var map_data: Dictionary = {}
 var selected_object: Dictionary = {}
