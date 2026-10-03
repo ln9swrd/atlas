@@ -228,7 +228,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
 	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Images"]
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
-	file_dialog.add_theme_constant_override("thumbnail_size", 112)
+	file_dialog.add_theme_constant_override("thumbnail_size", int(ConfigRepository.get_editor_value("ui", "file_dialog_thumbnail_size", 112)))
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(_on_file_selected)
 	add_child(file_dialog)
