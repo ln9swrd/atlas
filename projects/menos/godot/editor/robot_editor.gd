@@ -31,6 +31,8 @@ var default_image_edit: LineEdit
 var animation_edits: Dictionary = {}
 var image_thumbnail_controls: Dictionary = {}
 var projectile_edit: LineEdit
+const BASE_ANIMATIONS := ["idle", "move", "attack", "hit", "death", "projectile"]
+const SKILL_ANIMATIONS := ["skill1", "skill2", "skill3", "special", "finisher"]
 var file_dialog: FileDialog
 var file_dialog_target := "sprite"
 var status_label: Label
@@ -166,25 +168,43 @@ func _build_ui() -> void:
 	visual_grid.add_theme_constant_override("h_separation", 12)
 	visual_grid.add_theme_constant_override("v_separation", 4)
 	content.add_child(visual_grid)
-	idle_edit = _image_grid_row(visual_grid, "IDLE", "animation:idle")
-	attack_edit = _image_grid_row(visual_grid, "ATTACK", "animation:attack")
-	move_edit = _image_grid_row(visual_grid, "MOVE", "animation:move")
-	skill_edit = _image_grid_row(visual_grid, "SKILL", "animation:skill")
 	default_image_edit = _image_grid_row(visual_grid, "PROFILE IMAGE", "default_image")
-	projectile_edit = _image_grid_row(visual_grid, "PROJECTILE", "projectile")
 
 	var animation_title := Label.new()
 	animation_title.text = "SPRITE ANIMATIONS"
 	animation_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(animation_title)
+	var base_animation_title := Label.new()
+	base_animation_title.text = "BASE"
+	base_animation_title.add_theme_font_size_override("font_size", 13)
+	content.add_child(base_animation_title)
 	var animation_grid := GridContainer.new()
 	animation_grid.columns = 2
 	animation_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	animation_grid.add_theme_constant_override("h_separation", 12)
 	animation_grid.add_theme_constant_override("v_separation", 4)
 	content.add_child(animation_grid)
-	for animation_name in ["hit", "death", "skill1", "skill2", "skill3", "special", "finisher"]:
-		animation_edits[animation_name] = _image_grid_row(animation_grid, animation_name.to_upper(), "animation:" + animation_name)
+	for animation_name in BASE_ANIMATIONS:
+		var edit := _image_grid_row(animation_grid, animation_name.to_upper(), "animation:" + animation_name)
+		animation_edits[animation_name] = edit
+		if animation_name == "idle": idle_edit = edit
+		elif animation_name == "move": move_edit = edit
+		elif animation_name == "attack": attack_edit = edit
+		elif animation_name == "projectile": projectile_edit = edit
+
+	var skill_animation_title := Label.new()
+	skill_animation_title.text = "SKILLS"
+	skill_animation_title.add_theme_font_size_override("font_size", 13)
+	content.add_child(skill_animation_title)
+	var skill_animation_grid := GridContainer.new()
+	skill_animation_grid.columns = 2
+	skill_animation_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	skill_animation_grid.add_theme_constant_override("h_separation", 12)
+	skill_animation_grid.add_theme_constant_override("v_separation", 4)
+	content.add_child(skill_animation_grid)
+	for animation_name in SKILL_ANIMATIONS:
+		var edit := _image_grid_row(skill_animation_grid, animation_name.to_upper(), "animation:" + animation_name)
+		animation_edits[animation_name] = edit
 
 	var animation_preview_title := Label.new()
 	animation_preview_title.text = "ANIMATION PREVIEW"
