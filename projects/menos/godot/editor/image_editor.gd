@@ -49,8 +49,23 @@ func _use_selected_asset() -> void:
 func _ready() -> void:
 	_build_ui()
 	_scan_connected_images()
-	if not IMAGE_STATE.selected_path.is_empty():
+	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_asset_id.is_empty():
+		_select_asset_id(IMAGE_STATE.selection_asset_id)
+	elif not IMAGE_STATE.selected_path.is_empty():
 		_select_path(IMAGE_STATE.selected_path)
+
+func _select_asset_id(asset_id: String) -> void:
+	if asset_id.is_empty():
+		return
+	for visible_index in range(filtered_indices.size()):
+		var entry_index := filtered_indices[visible_index]
+		var entry: Dictionary = entries[entry_index]
+		if str(entry.get("owner_kind", "")) == "visual_asset" and str(entry.get("owner_key", "")) == asset_id:
+			list.select(visible_index)
+			_select_entry(visible_index)
+			return
+	# Keep the current source-path fallback if the requested Visual Asset is unavailable.
+	_select_path(IMAGE_STATE.selected_path)
 
 func _build_ui() -> void:
 	var root := VBoxContainer.new()
@@ -64,7 +79,7 @@ func _build_ui() -> void:
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
 	var previous_button := Button.new()
-	previous_button.text = "??곸읈 ?遺얇늺"
+	previous_button.text = "이전 에디터"
 	previous_button.pressed.connect(_request_previous_editor)
 	title_row.add_child(previous_button)
 	previous_button.visible = false
@@ -110,7 +125,7 @@ func _build_ui() -> void:
 	list.item_selected.connect(_select_entry)
 	left.add_child(list)
 	var clear_selection := Button.new()
-	clear_selection.text = "?醫뤾문 ??곸젫"
+	clear_selection.text = "선택 해제"
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
 	var use_selected_button := Button.new()
@@ -118,7 +133,7 @@ func _build_ui() -> void:
 	use_selected_button.pressed.connect(_use_selected_asset)
 	left.add_child(use_selected_button)
 	var open_target_button := Button.new()
-	open_target_button.text = "Source Image ??용┛"
+	open_target_button.text = "소스 이미지 열기"
 	open_target_button.pressed.connect(_open_target_dialog)
 	left.add_child(open_target_button)
 	var reconnect_target_button := Button.new()
@@ -127,7 +142,7 @@ func _build_ui() -> void:
 	left.add_child(reconnect_target_button)
 	reconnect_target_button.visible = false
 	var new_catalog_button := Button.new()
-	new_catalog_button.text = "?醫뤾문 ?怨몃열??Visual Asset??곗쨮 ?源낆쨯"
+	new_catalog_button.text = "선택 영역을 Visual Asset으로 등록"
 	new_catalog_button.pressed.connect(_create_visual_asset_from_selection)
 	left.add_child(new_catalog_button)
 	var full_catalog_button := Button.new()
@@ -136,7 +151,7 @@ func _build_ui() -> void:
 	left.add_child(full_catalog_button)
 	full_catalog_button.visible = false
 	var audit_button := Button.new()
-	audit_button.text = "???筌왖 筌〓챷???癒?"
+	audit_button.text = "이미지 참조 검사"
 	audit_button.pressed.connect(_audit_image_references)
 	left.add_child(audit_button)
 	audit_button.visible = false
@@ -145,7 +160,7 @@ func _build_ui() -> void:
 	body.add_child(source_panel)
 	source_panel.visible = false
 	var source_title := Label.new()
-	source_title.text = "Catalog Editor"
+	source_title.text = "소스 이미지"
 	source_panel.add_child(source_title)
 	source_list = ItemList.new()
 	source_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -160,7 +175,7 @@ func _build_ui() -> void:
 	source_full.pressed.connect(_replace_from_source_full)
 	source_panel.add_child(source_full)
 	var source_open := Button.new()
-	source_open.text = "??Source ??용┛"
+	source_open.text = "소스 이미지 열기"
 	source_open.pressed.connect(_open_source_dialog)
 	source_panel.add_child(source_open)
 	var source_region := Button.new()
@@ -173,14 +188,14 @@ func _build_ui() -> void:
 	normalize.pressed.connect(_replace_source_region_as_unit)
 	source_panel.add_child(normalize)
 	var source_reference := Button.new()
-	source_reference.text = "?醫뤾문 ?怨몃열??筌〓챷?쒏에??怨뚭퍙"
+	source_reference.text = "선택 영역을 소스 참조로 적용"
 	source_reference.pressed.connect(_apply_source_region_reference)
 	source_panel.add_child(source_reference)
 	source_dialog = FileDialog.new()
-	source_dialog.title = "筌〓챷?????筌왖 ??용┛"
+	source_dialog.title = "소스 이미지 선택"
 	source_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	source_dialog.access = FileDialog.ACCESS_RESOURCES
-	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; ???筌왖"])
+	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; 이미지"])
 	source_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	source_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_source_thumbnail"))
@@ -188,10 +203,10 @@ func _build_ui() -> void:
 	source_dialog.file_selected.connect(_on_source_file_selected)
 	add_child(source_dialog)
 	target_dialog = FileDialog.new()
-	target_dialog.title = "?紐꾩춿 ???????筌왖 ??용┛"
+	target_dialog.title = "대상 이미지 선택"
 	target_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	target_dialog.access = FileDialog.ACCESS_RESOURCES
-	target_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; ???筌왖"])
+	target_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp ; 이미지"])
 	target_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
 	target_dialog.add_theme_constant_override("thumbnail_size", 112)
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_target_thumbnail"))
@@ -216,15 +231,15 @@ func _build_ui() -> void:
 	_add_button(tools, "Crop Selection", _crop_selection)
 	_add_button(tools, "Flip Horizontal", _flip_h)
 	_add_button(tools, "Flip Vertical", _flip_v)
-	_add_button(tools, "??볧?獄쎻뫚堉????읈", _rotate_cw)
-	_add_button(tools, "獄쏆꼷?녷?獄쎻뫚堉????읈", _rotate_ccw)
-	_add_button(tools, "??梨??怨몃열 ??볤탢", _trim_alpha)
+	_add_button(tools, "시계 방향 회전", _rotate_cw)
+	_add_button(tools, "반시계 방향 회전", _rotate_ccw)
+	_add_button(tools, "알파 영역 자르기", _trim_alpha)
 	_add_button(tools, "Save + Reconnect", _save_reconnect)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
 	resize_row.visible = false
 	var resize_label := Label.new()
-	resize_label.text = "Resize"
+	resize_label.text = "크기"
 	resize_row.add_child(resize_label)
 	var width_spin := SpinBox.new()
 	width_spin.name = "WidthSpin"
@@ -239,7 +254,7 @@ func _build_ui() -> void:
 	height_spin.step = 1
 	resize_row.add_child(height_spin)
 	var resize_btn := Button.new()
-	resize_btn.text = "??由??怨몄뒠"
+	resize_btn.text = "크기 적용"
 	resize_btn.pressed.connect(func(): _resize_image(int(width_spin.value), int(height_spin.value)))
 	resize_row.add_child(resize_btn)
 	status = Label.new()
@@ -274,7 +289,7 @@ func _scan_connected_images() -> void:
 	for entry in entries:
 		if str(entry.get("owner_kind", "")) == "visual_asset":
 			catalog_count += 1
-	status.text = "%d揶?燁삳??롦에?볥젃 ?????鈺곌퀬???????됰뮸??덈뼄." % catalog_count
+	status.text = "%d개의 Visual Asset이 등록되어 있습니다." % catalog_count
 
 func _refresh_entry_list() -> void:
 	if list == null or source_list == null:
@@ -283,7 +298,7 @@ func _refresh_entry_list() -> void:
 	list.clear()
 	source_list.clear()
 	var query := search_edit.text.strip_edges().to_lower() if search_edit else ""
-	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "?袁⑷퍥"
+	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "All"
 	for index in range(entries.size()):
 		var entry: Dictionary = entries[index]
 		var category := str(entry.get("category", "Other"))
@@ -449,6 +464,7 @@ func _scan_visual_assets(seen: Dictionary) -> void:
 		var image_path := str(asset.get("source", ""))
 		if image_path.is_empty():
 			continue
+		# Visual Assets are distinct catalog entries even when they share a source image.
 		var region_data: Array = asset.get("region", [])
 		var region_text := ""
 		if region_data.size() >= 4:
@@ -695,8 +711,9 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		"usage": "visual_asset_catalog"
 	}
 	if not _write_json(catalog_path, assets):
-		status.text = "Visual Asset Catalog ???關肉???쎈솭??됰뮸??덈뼄."
+		status.text = "Visual Asset Catalog 저장에 실패했습니다."
 		return
+	VisualAssetResolver.reload()
 	_scan_connected_images()
 	var created_index := -1
 	for index in range(entries.size()):

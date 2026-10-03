@@ -589,11 +589,13 @@ func _open_image_editor_for_target(target: String) -> void:
 		return
 
 	var source_path := path
+	var asset_id := ""
 	var resolved := VisualAssetResolver.resolve(path)
 	if resolved != null and not resolved.source.is_empty():
 		source_path = resolved.source
+		asset_id = resolved.id
 
-	IMAGE_STATE.open_image(source_path, target)
+	IMAGE_STATE.open_image(source_path, target, asset_id)
 	request_image_editor.emit()
 
 func _apply_pending_asset_selection() -> void:
