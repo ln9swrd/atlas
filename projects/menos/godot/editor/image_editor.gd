@@ -264,7 +264,11 @@ func _scan_connected_images() -> void:
 	list.clear()
 	source_list.clear()
 	_refresh_entry_list()
-	status.text = "%d개 Asset 참조를 찾았습니다." % entries.size()
+	var catalog_count := 0
+	for entry in entries:
+		if str(entry.get("owner_kind", "")) == "visual_asset":
+			catalog_count += 1
+	status.text = "%d개 카다로그 항목을 조회할 수 있습니다." % catalog_count
 
 func _refresh_entry_list() -> void:
 	if list == null or source_list == null:
