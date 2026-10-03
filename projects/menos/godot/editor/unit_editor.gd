@@ -1,7 +1,8 @@
 class_name UnitEditorMain
 extends Control
 
-const UNIT_FILE := "res://content/allied_units/allied_units.json"`nconst ENEMY_FILE := "res://content/enemies/enemies.json"
+const UNIT_FILE := "res://content/allied_units/allied_units.json"
+const ENEMY_FILE := "res://content/enemies/enemies.json"
 const BASE_UNIT_TYPES := ["basic", "light", "ranged", "heavy", "support"]
 const UNIT_DESCRIPTIONS := {
 	"basic": "기본 전투형 유닛. 공격과 생존의 균형을 갖춘 표준형입니다.",
@@ -13,7 +14,9 @@ const UNIT_DESCRIPTIONS := {
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 const UNIT_COLOR_SHADER = preload("res://shaders/allied_unit_color.gdshader")
 
-var unit_data: Dictionary = {}`nvar unit_sources: Dictionary = {}`nvar projectile_edit: LineEdit
+var unit_data: Dictionary = {}
+var unit_sources: Dictionary = {}
+var projectile_edit: LineEdit
 var selected_type := ""
 var unit_list: OptionButton
 var name_edit: LineEdit
@@ -205,7 +208,9 @@ func _build_properties(parent: VBoxContainer) -> void:
 	var animation_title := Label.new()
 	animation_title.text = "SPRITE ANIMATIONS"
 	animation_title.add_theme_font_size_override("font_size", 16)
-	var projectile_row := _image_grid_row(visuals_grid, "Projectile Animation", "projectile")`n`nparent.add_child(animation_title)
+	var projectile_row := _image_grid_row(visuals_grid, "Projectile Animation", "projectile")
+
+parent.add_child(animation_title)
 	var animation_grid := GridContainer.new()
 	animation_grid.columns = 2
 	animation_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -456,7 +461,9 @@ func _on_unit_selected(index: int) -> void:
 	var visuals: Dictionary = data.get("visuals", {})
 	sprite_edit.text = str(visuals.get("sprite", ""))
 	default_image_edit.text = str(visuals.get("default_image", ""))
-	projectile_edit.text = str(data.get("projectile_anim", ""))`n`n`tvar animations: Dictionary = visuals.get("animations", {}) if visuals.get("animations", {}) is Dictionary else {}
+	projectile_edit.text = str(data.get("projectile_anim", ""))
+
+`tvar animations: Dictionary = visuals.get("animations", {}) if visuals.get("animations", {}) is Dictionary else {}
 	for animation_name in animation_edits.keys():
 		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, ""))
 	var sprite_rect: Array = visuals.get("sprite_rect", [])
@@ -511,7 +518,9 @@ func _save_data() -> void:
 	data["melee_cooldown"] = float(melee_cooldown_spin.value)
 	data["robot_damage"] = float(robot_damage_spin.value)
 	data["robot_range"] = float(robot_range_spin.value)
-	data["robot_cooldown"] = float(robot_cooldown_spin.value)`n`ndata["projectile_anim"] = projectile_edit.text.strip_edges()
+	data["robot_cooldown"] = float(robot_cooldown_spin.value)
+
+data["projectile_anim"] = projectile_edit.text.strip_edges()
 	var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
 	visuals["sprite"] = sprite_edit.text.strip_edges()
 	visuals["default_image"] = default_image_edit.text.strip_edges()
