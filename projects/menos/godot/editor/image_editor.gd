@@ -81,7 +81,8 @@ func _build_ui() -> void:
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(body)
 	var left := VBoxContainer.new()
-	left.custom_minimum_size.x = 300
+	# Catalog browser: keep thumbnail cells uniform so very large source images do not dominate the list.
+	left.custom_minimum_size.x = 420
 	body.add_child(left)
 	var list_title := Label.new()
 	list_title.text = "등록된 카다로그"
@@ -101,6 +102,11 @@ func _build_ui() -> void:
 	search_row.add_child(filter_option)
 	list = ItemList.new()
 	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	# Use a fixed thumbnail box and grid so large/small source images have equal visual weight.
+	list.icon_mode = ItemList.ICON_MODE_TOP
+	list.fixed_icon_size = Vector2i(140, 100)
+	list.fixed_column_width = 190
+	list.max_text_lines = 2
 	list.item_selected.connect(_select_entry)
 	left.add_child(list)
 	var clear_selection := Button.new()
