@@ -22,6 +22,9 @@ var source_thumbnail_cache: Dictionary = {}
 var target_thumbnail_cache: Dictionary = {}
 var editing := false
 var usage_label: Label
+var filter_option: OptionButton
+var search_edit: LineEdit
+var filtered_indices: Array[int] = []
 
 signal request_content_editor
 signal request_previous_editor
@@ -45,7 +48,7 @@ func _build_ui() -> void:
 	var title_row := HBoxContainer.new()
 	root.add_child(title_row)
 	var title := Label.new()
-	title.text = "이미지 에디터"
+	title.text = "Asset Browser / Image Editor"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
@@ -58,7 +61,8 @@ func _build_ui() -> void:
 	content_button.pressed.connect(_request_content_editor)
 	title_row.add_child(content_button)
 	var intro := Label.new()
-	intro.text = "Connected images. Edit a copy, then reconnect the selected reference."
+	intro.text = "이미지 파일을 찾고, 어디에서 사용되는지 확인한 뒤 필요하면 이미지 또는 영역을 편집합니다. 게임 정의의 카탈로그 데이터는 각 Editor가 계속 관리합니다."
+	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(intro)
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -67,26 +71,38 @@ func _build_ui() -> void:
 	left.custom_minimum_size.x = 300
 	body.add_child(left)
 	var list_title := Label.new()
-	list_title.text = "연결된 이미지"
+	list_title.text = "Asset Browser"
 	left.add_child(list_title)
+	var search_row := HBoxContainer.new()
+	left.add_child(search_row)
+	search_edit = LineEdit.new()
+	search_edit.placeholder_text = "이름 / 경로 / 용도로 검색"
+	search_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	search_edit.text_changed.connect(func(_text: String): _refresh_entry_list())
+	search_row.add_child(search_edit)
+	filter_option = OptionButton.new()
+	for filter_name in ["전체", "Map", "Unit", "Robot", "Tower", "Enemy", "Runtime"]:
+		filter_option.add_item(filter_name)
+	filter_option.item_selected.connect(func(_index: int): _refresh_entry_list())
+	search_row.add_child(filter_option)
 	list = ItemList.new()
 	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	list.item_selected.connect(_select_entry)
 	left.add_child(list)
 	var clear_selection := Button.new()
-	clear_selection.text = "선택 이미지 해제"
+	clear_selection.text = "선택 해제"
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
 	var open_target_button := Button.new()
-	open_target_button.text = "다른 이미지 열기 (편집 대상)"
+	open_target_button.text = "Source Image 직접 열기"
 	open_target_button.pressed.connect(_open_target_dialog)
 	left.add_child(open_target_button)
 	var reconnect_target_button := Button.new()
-	reconnect_target_button.text = "현재 이미지로 선택 카탈로그 교체"
+	reconnect_target_button.text = "편집 결과로 참조 이미지 교체"
 	reconnect_target_button.pressed.connect(_reconnect_current_to_selected_entry)
 	left.add_child(reconnect_target_button)
 	var new_catalog_button := Button.new()
-	new_catalog_button.text = "현재 이미지를 새 Asset Catalog로 등록"
+	new_catalog_button.text = "Map Asset Catalog에 등록"
 	new_catalog_button.pressed.connect(_add_current_image_to_asset_catalog)
 	left.add_child(new_catalog_button)
 	var audit_button := Button.new()
@@ -97,22 +113,22 @@ func _build_ui() -> void:
 	source_panel.custom_minimum_size.x = 280
 	body.add_child(source_panel)
 	var source_title := Label.new()
-	source_title.text = "참조 이미지 카탈로그"
+	source_title.text = "Source / 다른 Asset"
 	source_panel.add_child(source_title)
 	source_list = ItemList.new()
 	source_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	source_list.item_selected.connect(_select_source_entry)
 	source_panel.add_child(source_list)
 	var source_help := Label.new()
-	source_help.text = "다른 이미지의 전체 또는 선택 영역을 현재 이미지로 교체합니다."
+	source_help.text = "왼쪽에서 선택한 Asset과 다른 Source를 골라 전체 또는 선택 영역을 비교/교체합니다."
 	source_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	source_panel.add_child(source_help)
 	var source_full := Button.new()
-	source_full.text = "전체 이미지로 교체"
+	source_full.text = "Source 전체로 교체"
 	source_full.pressed.connect(_replace_from_source_full)
 	source_panel.add_child(source_full)
 	var source_open := Button.new()
-	source_open.text = "다른 이미지 열기"
+	source_open.text = "새 Source 열기"
 	source_open.pressed.connect(_open_source_dialog)
 	source_panel.add_child(source_open)
 	var source_region := Button.new()
@@ -125,7 +141,7 @@ func _build_ui() -> void:
 	normalize.pressed.connect(_replace_source_region_as_unit)
 	source_panel.add_child(normalize)
 	var source_reference := Button.new()
-	source_reference.text = "선택 영역을 참조 이미지로 설정"
+	source_reference.text = "선택 영역을 참조로 연결"
 	source_reference.pressed.connect(_apply_source_region_reference)
 	source_panel.add_child(source_reference)
 	source_dialog = FileDialog.new()
@@ -154,7 +170,7 @@ func _build_ui() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right)
 	usage_label = Label.new()
-	usage_label.text = "용도: 선택된 이미지 없음"
+	usage_label.text = "선택된 Asset 없음"
 	usage_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	usage_label.add_theme_font_size_override("font_size", 16)
 	right.add_child(usage_label)
@@ -195,6 +211,7 @@ func _build_ui() -> void:
 	status = Label.new()
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status)
+	_refresh_entry_list()
 
 func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) -> void:
 	var b := Button.new()
@@ -205,24 +222,45 @@ func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) 
 func _scan_connected_images() -> void:
 	entries.clear()
 	var seen := {}
-	_scan_json_images("res://content/towers/towers.json", "타워", "sprite_anim", "방어 시설 이미지", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.sprite", "플레이어 유닛 이미지", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.default_image", "유닛 Profile Image", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "projectile_anim", "유닛 탄환 이미지", seen)
-	_scan_json_images("res://content/enemies/enemies.json", "적 유닛", "sprite_anim", "적 유닛 이미지", seen)
-	_scan_json_images("res://content/enemies/enemies.json", "적 유닛", "projectile_anim", "적 유닛 탄환 이미지", seen)
+	_scan_json_images("res://content/towers/towers.json", "타워", "sprite_anim", "방어 시설 이미지", "Tower", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.sprite", "플레이어 유닛 이미지", "Unit", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "visuals.default_image", "유닛 Profile Image", "Unit", seen)
+	_scan_json_images("res://content/allied_units/allied_units.json", "유닛", "projectile_anim", "유닛 탄환 이미지", "Unit", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "적 유닛", "sprite_anim", "적 유닛 이미지", "Enemy", seen)
+	_scan_json_images("res://content/enemies/enemies.json", "적 유닛", "projectile_anim", "적 유닛 탄환 이미지", "Enemy", seen)
 	_scan_allied_animations(seen)
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
 	_scan_main_preloads(seen)
 	list.clear()
 	source_list.clear()
-	for entry in entries:
-		var icon: Texture2D = load(str(entry.path)) as Texture2D
-		var label_text := "[%s] %s | %s" % [str(entry.get("usage", "용도 미지정")), entry.label, entry.path]
+	_refresh_entry_list()
+	status.text = "%d개 Asset 참조를 찾았습니다." % entries.size()
+
+func _refresh_entry_list() -> void:
+	if list == null or source_list == null:
+		return
+	filtered_indices.clear()
+	list.clear()
+	source_list.clear()
+	var query := search_edit.text.strip_edges().to_lower() if search_edit else ""
+	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "전체"
+	for index in range(entries.size()):
+		var entry: Dictionary = entries[index]
+		var category := str(entry.get("category", "Other"))
+		if filter_name != "전체" and category != filter_name:
+			continue
+		if not query.is_empty():
+			var haystack := (str(entry.get("label", "")) + " " + str(entry.get("path", "")) + " " + str(entry.get("usage", "")) + " " + str(entry.get("owner", ""))).to_lower()
+			if not haystack.contains(query):
+				continue
+		filtered_indices.append(index)
+		var icon: Texture2D = load(str(entry.get("path", ""))) as Texture2D
+		var label_text := "[%s] %s" % [category, str(entry.get("label", "Asset"))]
 		list.add_item(label_text, icon)
+		list.set_item_metadata(list.item_count - 1, index)
 		source_list.add_item(label_text, icon)
-	status.text = "%d connected images found." % entries.size()
+		source_list.set_item_metadata(source_list.item_count - 1, index)
 
 func _audit_image_references() -> void:
 	var missing: Array[String] = []
@@ -253,7 +291,7 @@ func _audit_image_references() -> void:
 	dialog.canceled.connect(dialog.queue_free)
 	dialog.popup_centered(Vector2i(760, 520))
 
-func _scan_json_images(path: String, kind: String, field: String, usage: String, seen: Dictionary) -> void:
+func _scan_json_images(path: String, kind: String, field: String, usage: String, category: String, seen: Dictionary) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null: return
 	var data = JSON.parse_string(file.get_as_text())
@@ -270,7 +308,7 @@ func _scan_json_images(path: String, kind: String, field: String, usage: String,
 		var image_path := str(value)
 		if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "%s / %s" % [kind, str(data[key].get("name", key))], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage})
+		entries.append({"label": "%s / %s" % [kind, str(data[key].get("name", key))], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": category})
 
 func _scan_allied_animations(seen: Dictionary) -> void:
 	var path := "res://content/allied_units/allied_units.json"
@@ -289,7 +327,7 @@ func _scan_allied_animations(seen: Dictionary) -> void:
 			var image_path := str(animations[animation_name])
 			if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
-			entries.append({"label": "아군 유닛 / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "아군 유닛 %s 애니메이션" % str(animation_name)})
+			entries.append({"label": "아군 유닛 / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "아군 유닛 %s 애니메이션" % str(animation_name), "category": "Unit"})
 
 func _scan_robot_images(seen: Dictionary) -> void:
 	var path := "res://content/robots/robots.json"
@@ -312,14 +350,14 @@ func _scan_robot_images(seen: Dictionary) -> void:
 				"sprite_move": usage = "로봇 이동 이미지"
 				"sprite_skill": usage = "로봇 스킬 이미지"
 				"projectile_anim": usage = "로봇 투사체 이미지"
-			entries.append({"label": "로봇 / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage})
+			entries.append({"label": "로봇 / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": "Robot"})
 		var animations: Dictionary = data[key].get("animations", {})
 		if animations is Dictionary:
 			for animation_name in animations:
 				var animation_path := str(animations[animation_name])
 				if animation_path.is_empty() or seen.has(animation_path): continue
 				seen[animation_path] = true
-				entries.append({"label": "로봇 / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "로봇 %s 애니메이션" % str(animation_name)})
+				entries.append({"label": "로봇 / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "로봇 %s 애니메이션" % str(animation_name), "category": "Robot"})
 
 func _scan_catalog(seen: Dictionary) -> void:
 	var path := "res://content/editor/asset_catalog.json"
@@ -334,7 +372,7 @@ func _scan_catalog(seen: Dictionary) -> void:
 		var image_path := str(asset.get("source_path", ""))
 		if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "카탈로그 / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "카탈로그")), str(asset.get("kind", "asset"))]})
+		entries.append({"label": "카탈로그 / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "카탈로그")), str(asset.get("kind", "asset"))], "category": "Map"})
 func _scan_main_preloads(seen: Dictionary) -> void:
 	var path := "res://main.gd"
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -348,13 +386,27 @@ func _scan_main_preloads(seen: Dictionary) -> void:
 		var image_path := str(match_data.get_string(1))
 		if seen.has(image_path): continue
 		seen[image_path] = true
-		entries.append({"label": "런타임 / %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload", "usage": "게임 런타임 이미지"})
+		entries.append({"label": "런타임 / %s" % image_path.get_file(), "path": image_path, "owner": path, "owner_kind": "main", "owner_key": image_path, "field": "preload", "usage": "게임 런타임 이미지", "category": "Runtime"})
 
 func _select_path(path: String) -> void:
-	for index in range(entries.size()):
-		if str(entries[index].path) == path:
-			list.select(index)
-			_select_entry(index)
+	for visible_index in range(filtered_indices.size()):
+		var entry_index := filtered_indices[visible_index]
+		if str(entries[entry_index].get("path", "")) == path:
+			list.select(visible_index)
+			_select_entry(visible_index)
+			return
+	for entry_index in range(entries.size()):
+		if str(entries[entry_index].get("path", "")) == path:
+			if search_edit:
+				search_edit.text = ""
+			if filter_option:
+				filter_option.select(0)
+			_refresh_entry_list()
+			if entry_index < filtered_indices.size():
+				var visible_index := filtered_indices.find(entry_index)
+				if visible_index >= 0:
+					list.select(visible_index)
+					_select_entry(visible_index)
 			return
 
 func _clear_image_selection() -> void:
@@ -369,24 +421,27 @@ func _clear_image_selection() -> void:
 	list.deselect_all()
 	source_list.deselect_all()
 	IMAGE_STATE.selected_path = ""
-	usage_label.text = "용도: 선택된 이미지 없음"
+	usage_label.text = "선택된 Asset 없음"
 	view.set_source_texture(null)
 	status.text = "이미지 선택을 해제했습니다."
 
 func _select_entry(index: int) -> void:
 	if editing: return
-	catalog_target_index = index
-	current_index = index
-	current_path = str(entries[index].path)
+	if index < 0 or index >= list.item_count: return
+	var entry_index := int(list.get_item_metadata(index))
+	if entry_index < 0 or entry_index >= entries.size(): return
+	catalog_target_index = entry_index
+	current_index = entry_index
+	current_path = str(entries[entry_index].get("path", ""))
 	IMAGE_STATE.open_image(current_path)
 	current_image = LOADER.load_image(current_path)
+	var entry: Dictionary = entries[entry_index]
+	usage_label.text = "[%s] %s\nUsage: %s\nSource: %s\nOwner: %s\nField: %s" % [str(entry.get("category", "Other")), str(entry.get("label", "Asset")), str(entry.get("usage", "미지정")), current_path, str(entry.get("owner", "미지정")), str(entry.get("field", "미지정"))]
 	if current_image == null:
-		usage_label.text = "용도: %s" % str(entries[index].get("usage", "용도 미지정"))
-		status.text = "Could not load: %s" % current_path
+		status.text = "이미지를 불러올 수 없습니다: %s" % current_path
 		return
-	usage_label.text = "용도: %s" % str(entries[index].get("usage", "용도 미지정"))
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
-	status.text = "대상: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
+	status.text = "선택된 Source: %s — %d × %d px" % [current_path, current_image.get_width(), current_image.get_height()]
 
 func _open_target_dialog() -> void:
 	if target_dialog == null:
@@ -554,9 +609,11 @@ func _on_source_file_selected(path: String) -> void:
 
 func _select_source_entry(index: int) -> void:
 	if editing: return
-	if index < 0 or index >= entries.size(): return
-	source_index = index
-	source_path = str(entries[index].path)
+	if index < 0 or index >= source_list.item_count: return
+	var entry_index := int(source_list.get_item_metadata(index))
+	if entry_index < 0 or entry_index >= entries.size(): return
+	source_index = entry_index
+	source_path = str(entries[entry_index].get("path", ""))
 	if source_path == current_path:
 		status.text = "대상과 다른 이미지를 참조 이미지로 선택하세요."
 		return
