@@ -399,3 +399,68 @@ ENGINE/API TEXT    → 코드 유지
 **CANON** — Master 승인 전에는 아님.
 
 **OUT OF SCOPE** — 제3언어, 외부 번역 서비스, 자동 번역, 콘텐츠 이름의 완전한 다국어화.
+## 18. 구현 진행 결과 및 아키텍처 결정 게이트
+
+현재까지 다음 기반 PoC를 구현하고 실제 실행 검증했다.
+
+- content/localization/ko.json
+- content/localization/en.json
+- scripts/localization_repository.gd
+- SettingsManager와 기존 언어 설정 연동
+- Settings 화면과 Title 화면의 일부 메시지를 localization key 조회로 전환
+- ko / en key set 검증
+- 실제 Godot headless 실행에서 한국어/영어 메시지 조회 검증
+
+**CODE VERIFIED** — LocalizationRepository.message()가 실제 실행에서 ko=설정, en=SETTINGS를 반환하고 두 locale의 key set 검증이 통과했다.
+
+### 아키텍처 재검토
+
+조사 결과 Godot 4.7은 공식 TranslationServer/Translation 시스템과 gettext .po 파일을 지원한다. TranslationServer는 locale 변경, translation 등록/조회, context, pluralization 등을 제공한다. gettext 방식은 locale별 파일을 분리하고 Git에서 관리하기에도 적합하다.
+
+따라서 전체 메시지 외부화를 시작하기 전에 다음 두 선택지를 비교해야 한다.
+
+**A. 현재 JSON + LocalizationRepository**
+
+장점:
+- 현재 프로젝트의 JSON 기반 Content/Config 구조와 동일한 운영 방식
+- 임의의 안정적인 message key를 직접 설계 가능
+- 현재 PoC가 이미 동작함
+
+단점:
+- Godot TranslationServer를 별도로 우회함
+- locale/fallback/translation 관리 기능을 프로젝트 코드가 직접 유지해야 함
+- plural/context/번역 도구 연계 기능을 추가 구현해야 함
+- 장기적으로 엔진 localization 시스템과 중복 계층이 됨
+
+**B. Godot TranslationServer + gettext .po**
+
+장점:
+- Godot 4.7의 공식 localization 경로 사용
+- locale 변경과 translation 조회가 엔진에 통합됨
+- context 및 pluralization 지원
+- locale별 파일 분리
+- Poedit/Weblate 등 gettext 계열 도구와 연계 가능
+
+단점:
+- 현재 JSON PoC를 .po 구조로 전환해야 함
+- 현재 정의한 안정적인 message key를 msgctxt 또는 message ID 정책으로 재설계해야 함
+- Project Settings에 번역 리소스 등록 및 import 검증 필요
+
+**기술 판단 — PROPOSAL:** 전체 308건 수준의 메시지를 장기적으로 관리해야 하므로, 엔진 기능을 중복 구현하지 않는 B안(TranslationServer + gettext)을 우선 검토하는 것이 기술적으로 유리하다. 단, 이것은 Master의 Canon 결정이 아니다.
+
+### 결정 게이트
+
+전체 Editor/Runtime 메시지 외부화 전에 다음 하나의 결정이 필요하다.
+
+> **Localization authority를 JSON + LocalizationRepository로 확정할 것인가, 아니면 Godot TranslationServer + gettext PO로 확정할 것인가?**
+
+결정 전에는 대규모 메시지 치환을 진행하지 않는다.
+
+**STATUS — HOLD**
+
+**현재 구현:** JSON 방식의 최소 PoC만 존재하며, 일부 UI에 적용되어 있다.
+
+**미확정:** 최종 localization authority.
+
+**다음 단계:** Master가 A 또는 B를 결정하면 해당 구조를 기준으로 전체 메시지 감사/외부화를 계속한다.
+
