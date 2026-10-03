@@ -1974,26 +1974,6 @@ func _draw() -> void:
 			draw_arc(r_feet_pos, 58.0 * select_pulse, PI - 0.7, PI + 0.7, 16, Color("f0a35a", 0.45), 1.5)
 		
 		if is_flashing: draw_circle(robot.position, 42, Color("ef7068", 0.30))
-		var anim_key := "atlas_idle"
-		var total_f := 6
-		var fps := 8.0
-		if float(robot.state_get("special", 0.0)) > 0.0:
-			anim_key = "atlas_skill"
-			total_f = 5
-			fps = 10.0
-		elif float(robot.state_get("attack", 0.0)) > 0.3:
-			anim_key = "atlas_attack"
-			total_f = 7
-			fps = 14.0
-		elif float(robot.state_get("area", 0.0)) > 5.0 or float(robot.state_get("pierce", 0.0)) > 6.0:
-			anim_key = "atlas_skill"
-			total_f = 5
-			fps = 10.0
-		elif bool(robot.state_get("is_moving", false)):
-			anim_key = "atlas_move"
-			total_f = 5
-			fps = 12.0
-		var r_frame: int = int(elapsed * fps) % total_f
 		if float(robot.state_get("special", 0.0)) > 0.0:
 			draw_arc(r_feet_pos, 47.0, elapsed * 2.5, elapsed * 2.5 + PI * 1.35, 24, Color("f0d28a", 0.85), 3.0)
 		elif float(robot.state_get("attack", 0.0)) > 0.3:
