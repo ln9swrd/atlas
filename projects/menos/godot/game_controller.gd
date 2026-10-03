@@ -91,6 +91,7 @@ var allied_units: Array[AlliedUnitRuntimeState] = []
 var allied_unit_catalog: Dictionary = {}
 var allied_unit_definitions: Dictionary = {}
 var allied_sprite_catalog: Dictionary = {}
+var allied_render_nodes: Dictionary = {}
 var enemy_catalog: Dictionary = {}
 var enemy_definitions: Dictionary = {}
 var enemy_weapon_definitions: Dictionary = {}
@@ -733,7 +734,39 @@ func spawn_enemies() -> void:
 			spawn_position = Vector2(randf_range(segment_rect.position.x, segment_rect.end.x), randf_range(segment_rect.position.y, segment_rect.end.y))
 		enemies.append(EnemyRuntimeState.create(entry.type, lane, spawn_position, float(definition.get_combat_value("hp", 0.0))))
 
+func _clear_allied_render_nodes() -> void:
+	for node in allied_render_nodes.values():
+		if is_instance_valid(node):
+			node.queue_free()
+	allied_render_nodes.clear()
+
+func _create_allied_render_node(unit: AlliedUnitRuntimeState) -> void:
+	var sprite := Sprite2D.new()
+	sprite.name = "AlliedUnit_%s" % unit.id
+	sprite.texture = allied_sprite_catalog.get(unit.type, null)
+	sprite.position = unit.position
+	sprite.z_index = 2
+	if sprite.texture != null:
+		var material := ShaderMaterial.new()
+		material.shader = ALLIED_UNIT_COLOR_SHADER
+		material.set_shader_parameter("team_color", unit.definition.color)
+		sprite.material = material
+		var source_size := sprite.texture.get_size()
+		if source_size.x > 0.0 and source_size.y > 0.0:
+			sprite.scale = Vector2(52.0, 72.0) / source_size
+	add_child(sprite)
+	allied_render_nodes[unit.id] = sprite
+
+func _sync_allied_render_nodes() -> void:
+	for unit in allied_units:
+		var sprite: Sprite2D = allied_render_nodes.get(unit.id, null)
+		if sprite == null:
+			continue
+		sprite.position = unit.position
+		sprite.visible = unit.hp > 0.0
+
 func spawn_allied_units() -> void:
+	_clear_allied_render_nodes()
 	allied_units.clear()
 	var stage_data := StageManager.get_current_stage()
 	var spawn_config: Variant = stage_data.get("allied_units", [])
