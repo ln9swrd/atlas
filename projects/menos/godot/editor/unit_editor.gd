@@ -58,6 +58,7 @@ func _ready() -> void:
 	if unit_list.item_count > 0:
 		unit_list.select(0)
 		_on_unit_selected(0)
+	_apply_pending_asset_selection()
 
 func _build_ui() -> void:
 	var root := VBoxContainer.new()
@@ -296,7 +297,7 @@ func _image_grid_row(parent: GridContainer, label_text: String, target: String) 
 	row.add_child(edit)
 	edit.text_changed.connect(func(_text: String): _refresh_image_thumbnail(target))
 	var browse := Button.new()
-	browse.text = "Browse"
+	browse.text = "Select Asset"
 	browse.pressed.connect(func(): _open_sprite_dialog(target))
 	row.add_child(browse)
 	parent.add_child(row)
@@ -313,7 +314,7 @@ func _image_row(parent: VBoxContainer, label_text: String, target: String) -> Li
 	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(edit)
 	var browse := Button.new()
-	browse.text = "Browse"
+	browse.text = "Select Asset"
 	browse.pressed.connect(func(): _open_sprite_dialog(target))
 	row.add_child(browse)
 	return edit
@@ -665,6 +666,26 @@ func _apply_preview_color() -> void:
 
 signal request_image_editor
 
+func _apply_pending_asset_selection() -> void:
+	var target := IMAGE_STATE.selection_target
+	if target.is_empty() or not IMAGE_STATE.selection_pending:
+		return
+	var path := IMAGE_STATE.consume_selection(target)
+	if path.is_empty():
+		return
+	if target == "sprite":
+		sprite_edit.text = path
+	elif target == "default_image":
+		default_image_edit.text = path
+	elif target == "projectile":
+		projectile_edit.text = path
+	elif target.begins_with("animation:"):
+		var animation_name := target.trim_prefix("animation:")
+		if animation_edits.has(animation_name):
+			(animation_edits[animation_name] as LineEdit).text = path
+	_refresh_all_image_thumbnails()
+	_set_status("Asset selected: " + path)
+
 func _open_image_editor_for_target(target: String) -> void:
 	var path := ""
 	if target == "sprite":
@@ -680,7 +701,7 @@ func _open_image_editor_for_target(target: String) -> void:
 	if path.is_empty():
 		_set_status("No image assigned for %s." % target)
 		return
-	IMAGE_STATE.open_image(path)
+	IMAGE_STATE.open_image(path, target)
 	request_image_editor.emit()
 
 func _get_file_thumbnail(path: String) -> Texture2D:
@@ -693,10 +714,7 @@ func _get_file_thumbnail(path: String) -> Texture2D:
 	return loaded
 
 func _open_sprite_dialog(target: String = "sprite") -> void:
-	file_dialog_target = target
-	file_thumbnail_cache.clear()
-	if file_dialog:
-		file_dialog.popup_centered_ratio(0.75)
+	_open_image_editor_for_target(target)
 
 func _on_file_selected(path: String) -> void:
 	if file_dialog_target == "default_image":

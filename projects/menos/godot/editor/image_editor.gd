@@ -33,6 +33,17 @@ func _request_content_editor() -> void:
 	request_content_editor.emit()
 
 func _request_previous_editor() -> void:
+	IMAGE_STATE.cancel_selection()
+	request_previous_editor.emit()
+
+func _use_selected_asset() -> void:
+	if current_path.is_empty():
+		status.text = "사용할 Asset을 먼저 선택하세요."
+		return
+	if not IMAGE_STATE.selection_pending:
+		status.text = "현재 Editor에서 Asset 선택을 요청한 상태가 아닙니다."
+		return
+	IMAGE_STATE.apply_selection(current_path)
 	request_previous_editor.emit()
 
 func _ready() -> void:
@@ -93,6 +104,10 @@ func _build_ui() -> void:
 	clear_selection.text = "선택 해제"
 	clear_selection.pressed.connect(_clear_image_selection)
 	left.add_child(clear_selection)
+	var use_selected_button := Button.new()
+	use_selected_button.text = "선택 Asset 사용"
+	use_selected_button.pressed.connect(_use_selected_asset)
+	left.add_child(use_selected_button)
 	var open_target_button := Button.new()
 	open_target_button.text = "Source Image 직접 열기"
 	open_target_button.pressed.connect(_open_target_dialog)

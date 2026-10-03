@@ -46,6 +46,7 @@ func _ready() -> void:
 	if tower_list.item_count > 0:
 		tower_list.select(0)
 		_on_tower_selected(0)
+	_apply_pending_asset_selection()
 
 func _build_ui() -> void:
 	var root := VBoxContainer.new()
@@ -101,7 +102,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	sprite_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sprite_row.add_child(sprite_edit)
 	var browse := Button.new()
-	browse.text = "Browse"
+	browse.text = "Select Asset"
 	browse.pressed.connect(func(): _open_sprite_dialog("sprite"))
 	sprite_row.add_child(browse)
 	var animation_title := Label.new()
@@ -121,7 +122,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	projectile_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	projectile_row.add_child(projectile_edit)
 	var projectile_browse := Button.new()
-	projectile_browse.text = "Browse"
+	projectile_browse.text = "Select Asset"
 	projectile_browse.pressed.connect(func(): _open_sprite_dialog("projectile"))
 	projectile_row.add_child(projectile_browse)
 	var image_management := VBoxContainer.new()
@@ -188,7 +189,7 @@ func _image_row(parent: VBoxContainer, label_text: String, target: String) -> Li
 	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(edit)
 	var browse := Button.new()
-	browse.text = "Browse"
+	browse.text = "Select Asset"
 	browse.pressed.connect(func(): _open_sprite_dialog(target))
 	row.add_child(browse)
 	return edit
@@ -340,9 +341,50 @@ func _on_animation_tick() -> void:
 	animation_frame = (animation_frame + 1) % 8
 	_refresh_animation_previews()
 
+func _apply_pending_asset_selection() -> void:
+	var target := IMAGE_STATE.selection_target
+	if target.is_empty() or not IMAGE_STATE.selection_pending:
+		return
+	var path := IMAGE_STATE.consume_selection(target)
+	if path.is_empty():
+		return
+	if target == "sprite":
+		sprite_edit.text = path
+	elif target == "default_image":
+		default_image_edit.text = path
+	elif target == "projectile":
+		projectile_edit.text = path
+	elif target.begins_with("animation:"):
+		var animation_name := target.trim_prefix("animation:")
+		if animation_edits.has(animation_name):
+			(animation_edits[animation_name] as LineEdit).text = path
+	_refresh_animation_previews()
+	_refresh_image_inventory()
+	_set_status("Asset selected: " + path)
+
+signal request_image_editor
+
 func _open_image_editor() -> void:
-	IMAGE_STATE.open_image(sprite_edit.text.strip_edges())
-	get_tree().change_scene_to_file("res://editor/image_editor.tscn")
+	_open_image_editor_for_target("sprite")
+
+func _open_image_editor_for_target(target: String) -> void:
+	var path := ""
+	if target == "sprite":
+		path = sprite_edit.text.strip_edges()
+	elif target == "default_image":
+		path = default_image_edit.text.strip_edges()
+	elif target == "projectile":
+		path = projectile_edit.text.strip_edges()
+	elif target.begins_with("animation:") and animation_edits.has(target.trim_prefix("animation:")):
+		path = (animation_edits[target.trim_prefix("animation:")] as LineEdit).text.strip_edges()
+	if path.is_empty():
+		_set_status("No image assigned for %s." % target)
+		return
+	IMAGE_STATE.open_image(path, target)
+	request_image_editor.emit()
+
+func _open_sprite_dialog(target: String = "sprite") -> void:
+	_open_image_editor_for_target(target)
 
 func _get_file_thumbnail(path: String) -> Texture2D:
 	var cached: Texture2D = file_thumbnail_cache.get(path) as Texture2D

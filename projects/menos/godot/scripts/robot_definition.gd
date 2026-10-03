@@ -9,6 +9,9 @@ var energy: Dictionary = {}
 var visuals: Dictionary = {}
 var color: Color = Color.WHITE
 
+func get_visual_asset(value: String) -> VisualAssetDefinition:
+	return VisualAssetResolver.resolve(value)
+
 static func from_catalog(data: Dictionary) -> RobotDefinition:
 	var definition := RobotDefinition.new()
 	definition.id = str(data.get("id", ""))
