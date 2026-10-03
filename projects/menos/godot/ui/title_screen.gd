@@ -140,8 +140,8 @@ func _on_start_single_pressed() -> void:
 		start_button.text = tr("START SINGLE PLAY")
 		single_button.text = tr("SINGLE PLAY SELECTED")
 	else:
-		start_button.text = LocalizationRepository.message("title.start_campaign")
-		single_button.text = LocalizationRepository.message("title.single_play")
+		start_button.text = tr("START CAMPAIGN")
+		single_button.text = tr("SINGLE PLAY")
 	if single_mode_selected:
 		map_select.grab_focus()
 	else:
@@ -164,8 +164,8 @@ func _on_settings_pressed() -> void:
 	get_tree().change_scene_to_file("res://ui/settings_screen.tscn")
 
 func _refresh_language() -> void:
-	start_button.text = LocalizationRepository.message("title.start_campaign")
-	single_button.text = LocalizationRepository.message("title.single_play")
+	start_button.text = tr("START CAMPAIGN")
+	single_button.text = tr("SINGLE PLAY")
 	quit_button.text = tr("QUIT")
 	settings_button.text = tr("SETTINGS")
 
