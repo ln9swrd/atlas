@@ -362,16 +362,34 @@ func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximu
 
 func _load_data() -> void:
 	unit_data.clear()
-	var file := FileAccess.open(UNIT_FILE, FileAccess.READ)
-	if file:
-		var parsed = JSON.parse_string(file.get_as_text())
-		file.close()
-		if parsed is Dictionary:
-			unit_data = parsed
+	unit_sources.clear()
+	_load_unit_catalog_file(UNIT_FILE, "unit")
+	_load_unit_catalog_file(ENEMY_FILE, "enemy")
 	_refresh_unit_list()
-	_set_status("Loaded: " + UNIT_FILE if file else "Failed to load JSON")
+	_set_status("Loaded: Unit + Enemy catalogs")
 
-func _load_unit_catalog_file(path: String, source: String) -> void:\n\tvar file := FileAccess.open(path, FileAccess.READ)\n\tif file == null:\n\t\treturn\n\tvar parsed = JSON.parse_string(file.get_as_text())\n\tfile.close()\n\tif not parsed is Dictionary:\n\t\treturn\n\tfor key in parsed.keys():\n\t\tvar id := str(key)\n\t\tvar data: Dictionary = parsed[key].duplicate(true)\n\t\tif source == "enemy":\n\t\t\tvar visuals: Dictionary = data.get("visuals", {}).duplicate(true)\n\t\t\tvar sprite_path := str(data.get("sprite_anim", ""))\n\t\t\tif not sprite_path.is_empty():\n\t\t\t\tvisuals["sprite"] = sprite_path\n\t\t\t\tvisuals["default_image"] = str(visuals.get("default_image", sprite_path))\n\t\t\tdata["visuals"] = visuals\n\t\tunit_data[id] = data\n\t\tunit_sources[id] = source\n\nfunc _get_unit_types() -> Array:
+func _load_unit_catalog_file(path: String, source: String) -> void:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Dictionary:
+		return
+	for key in parsed.keys():
+		var id := str(key)
+		var data: Dictionary = parsed[key].duplicate(true)
+		if source == "enemy":
+			var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
+			var sprite_path := str(data.get("sprite_anim", ""))
+			if not sprite_path.is_empty():
+				visuals["sprite"] = sprite_path
+				visuals["default_image"] = str(visuals.get("default_image", sprite_path))
+			data["visuals"] = visuals
+		unit_data[id] = data
+		unit_sources[id] = source
+
+func _get_unit_types() -> Array:
 	var types: Array = BASE_UNIT_TYPES.duplicate()
 	for key in unit_data.keys():
 		var unit_type := str(key)
