@@ -165,7 +165,7 @@ func _ready() -> void:
 func _setup_camera() -> void:
 	var camera: Camera2D = get_parent().get_node("Camera2D")
 	# Keep the battlefield centered in the visible play area above the bottom HUD.
-	camera.position = MAP_ORIGIN + MAP_PIXEL_SIZE * 0.5 + Vector2(0.0, BOTTOM_HUD_HEIGHT * 0.5)
+	camera.position = MAP_ORIGIN + MAP_PIXEL_SIZE * 0.5 + Vector2(0.0, bottom_hud_height * 0.5)
 	var viewport_size := get_viewport_rect().size
 	camera.limit_left = int(MAP_ORIGIN.x)
 	camera.limit_top = int(MAP_ORIGIN.y)
@@ -1549,7 +1549,7 @@ func check_wave_clear() -> void:
 func _camera_target_clamped(target: Vector2) -> Vector2:
 	var viewport_size := get_viewport_rect().size
 	# Camera bounds use the gameplay-safe area rather than the HUD-covered area.
-	var gameplay_viewport_size := Vector2(viewport_size.x, max(1.0, viewport_size.y - BOTTOM_HUD_HEIGHT))
+	var gameplay_viewport_size := Vector2(viewport_size.x, max(1.0, viewport_size.y - bottom_hud_height))
 	var half_view := gameplay_viewport_size * 0.5
 	var min_x := MAP_ORIGIN.x + half_view.x
 	var max_x := MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - half_view.x
@@ -1579,7 +1579,7 @@ func update_camera_edge_scroll(delta: float) -> void:
 		direction.x += 1.0
 	if mouse.y <= camera_edge_margin:
 		direction.y -= 1.0
-	elif mouse.y < viewport_size.y - BOTTOM_HUD_HEIGHT and mouse.y >= viewport_size.y - BOTTOM_HUD_HEIGHT - camera_edge_margin:
+	elif mouse.y < viewport_size.y - bottom_hud_height and mouse.y >= viewport_size.y - bottom_hud_height - camera_edge_margin:
 		direction.y += 1.0
 	if direction == Vector2.ZERO:
 		return
@@ -2000,7 +2000,7 @@ func _draw() -> void:
 
 func _ui_origin() -> Vector2:
 	var screen_to_world: Transform2D = get_viewport().get_canvas_transform().affine_inverse()
-	return screen_to_world * Vector2(0, get_viewport_rect().size.y - BOTTOM_HUD_HEIGHT)
+	return screen_to_world * Vector2(0, get_viewport_rect().size.y - bottom_hud_height)
 
 func _ui_action_rect(index: int) -> Rect2:
 	return Rect2(_ui_origin() + Vector2(330.0 + index * 78.0, 14.0), Vector2(72, 76))
@@ -2104,7 +2104,7 @@ func draw_ui2() -> void:
 	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x - 410, 35), target_text, HORIZONTAL_ALIGNMENT_RIGHT, 385, 11, Color("f0d28a") if selected_target != null else Color("829aa0"))
 
 	# Bottom HUD: Atlas portrait/readout, build palette, combat log and minimap.
-	var hud_rect := Rect2(bottom, Vector2(viewport_size.x, BOTTOM_HUD_HEIGHT))
+	var hud_rect := Rect2(bottom, Vector2(viewport_size.x, bottom_hud_height))
 	draw_rect(hud_rect, Color(0.025, 0.045, 0.055, 0.97), true)
 	draw_line(bottom, bottom + Vector2(viewport_size.x, 0), Color("527079"), 2.0)
 
