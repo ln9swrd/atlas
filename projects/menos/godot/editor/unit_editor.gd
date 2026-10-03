@@ -402,7 +402,7 @@ func _refresh_unit_list() -> void:
 	for unit_type in _get_unit_types():
 		var data: Dictionary = unit_data.get(unit_type, {})
 		var source_label := "ENEMY / " if unit_sources.get(unit_type, "unit") == "enemy" else ""
-\t\tunit_list.add_item(source_label + str(data.get("name", unit_type.to_upper())))
+		unit_list.add_item(source_label + str(data.get("name", unit_type.to_upper())))
 		unit_list.set_item_metadata(unit_list.item_count - 1, unit_type)
 		# Combo list is text-only. The selected unit thumbnail is shown separately below.
 		unit_list.set_item_icon(unit_list.item_count - 1, null)
@@ -448,8 +448,8 @@ func _refresh_image_thumbnail(target: String) -> void:
 	elif target == "default_image":
 		path = default_image_edit.text.strip_edges()
 	elif target == "projectile":
-\t\tpath = projectile_edit.text.strip_edges()
-\telif target.begins_with("animation:"):
+		path = projectile_edit.text.strip_edges()
+	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
@@ -458,7 +458,7 @@ func _refresh_image_thumbnail(target: String) -> void:
 func _refresh_all_image_thumbnails() -> void:
 	_refresh_image_thumbnail("sprite")
 	_refresh_image_thumbnail("default_image")
-\t_refresh_image_thumbnail("projectile")
+	_refresh_image_thumbnail("projectile")
 	for animation_name in animation_edits.keys():
 		_refresh_image_thumbnail("animation:" + str(animation_name))
 
@@ -485,7 +485,7 @@ func _on_unit_selected(index: int) -> void:
 	default_image_edit.text = str(visuals.get("default_image", ""))
 	projectile_edit.text = str(data.get("projectile_anim", ""))
 
-`tvar animations: Dictionary = visuals.get("animations", {}) if visuals.get("animations", {}) is Dictionary else {}
+	var animations: Dictionary = visuals.get("animations", {}) if visuals.get("animations", {}) is Dictionary else {}
 	for animation_name in animation_edits.keys():
 		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, ""))
 	var sprite_rect: Array = visuals.get("sprite_rect", [])
@@ -652,8 +652,8 @@ func _open_image_editor_for_target(target: String) -> void:
 	elif target == "default_image":
 		path = default_image_edit.text.strip_edges()
 	elif target == "projectile":
-\t\tpath = projectile_edit.text.strip_edges()
-\telif target.begins_with("animation:"):
+		path = projectile_edit.text.strip_edges()
+	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
