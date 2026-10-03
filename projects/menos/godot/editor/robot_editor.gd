@@ -32,6 +32,9 @@ var projectile_edit: LineEdit
 var file_dialog: FileDialog
 var file_dialog_target := "sprite"
 var status_label: Label
+var robot_preview_name: Label
+var robot_preview_description: Label
+var robot_preview: TextureRect
 var animation_previews: Dictionary = {}
 var animation_timer: Timer
 var animation_frame := 0
@@ -51,58 +54,123 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	var root := VBoxContainer.new()
-	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 10)
+	root.add_theme_constant_override("separation", 6)
 	add_child(root)
+
+	var header := HBoxContainer.new()
+	header.custom_minimum_size.y = 32
+	root.add_child(header)
 	var title := Label.new()
 	title.text = "MENOS // ROBOT EDITOR"
 	title.add_theme_font_size_override("font_size", 20)
-	root.add_child(title)
-	var top := HBoxContainer.new()
-	root.add_child(top)
-	robot_list = OptionButton.new()
-	robot_list.custom_minimum_size.x = 220
-	robot_list.item_selected.connect(_on_robot_selected)
-	top.add_child(robot_list)
+	header.add_child(title)
+	status_label = Label.new()
+	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(status_label)
 	var reload_btn := Button.new()
 	reload_btn.text = "RELOAD"
 	reload_btn.pressed.connect(_load_data)
-	top.add_child(reload_btn)
+	header.add_child(reload_btn)
 	var save_btn := Button.new()
 	save_btn.text = "SAVE JSON"
 	save_btn.pressed.connect(_save_data)
-	top.add_child(save_btn)
-	status_label = Label.new()
-	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(status_label)
+	header.add_child(save_btn)
+
+	var body := HSplitContainer.new()
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.split_offset = 260
+	root.add_child(body)
+
+	var sidebar := VBoxContainer.new()
+	sidebar.custom_minimum_size.x = 250
+	sidebar.add_theme_constant_override("separation", 5)
+	body.add_child(sidebar)
+	var robot_title := Label.new()
+	robot_title.text = "ROBOTS"
+	robot_title.add_theme_font_size_override("font_size", 14)
+	sidebar.add_child(robot_title)
+	robot_list = OptionButton.new()
+	robot_list.custom_minimum_size.y = 30
+	robot_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	robot_list.item_selected.connect(_on_robot_selected)
+	sidebar.add_child(robot_list)
+	var preview_title := Label.new()
+	preview_title.text = "PREVIEW"
+	preview_title.add_theme_font_size_override("font_size", 14)
+	sidebar.add_child(preview_title)
+	robot_preview_name = Label.new()
+	robot_preview_name.add_theme_font_size_override("font_size", 20)
+	sidebar.add_child(robot_preview_name)
+	robot_preview_description = Label.new()
+	robot_preview_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	robot_preview_description.custom_minimum_size.y = 48
+	sidebar.add_child(robot_preview_description)
+	robot_preview = TextureRect.new()
+	robot_preview.custom_minimum_size = Vector2(230, 240)
+	robot_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	robot_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	robot_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	robot_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sidebar.add_child(robot_preview)
+
 	var scroll := ScrollContainer.new()
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	root.add_child(scroll)
+	body.add_child(scroll)
 	var content := VBoxContainer.new()
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
 	scroll.add_child(content)
+
 	var base_title := Label.new()
 	base_title.text = "ROBOT PROPERTIES"
 	base_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(base_title)
-	id_edit = _line_row(content, "ID")
-	name_edit = _line_row(content, "Name")
-	hp_spin = _spin_row(content, "HP", 1, 999999, 1, 220)
-	speed_spin = _spin_row(content, "Speed", 0, 9999, 0.1, 125)
-	damage_spin = _spin_row(content, "Damage", 0, 99999, 0.1, 28)
-	cooldown_spin = _spin_row(content, "Cooldown", 0.01, 9999, 0.01, 0.65)
-	range_spin = _spin_row(content, "Range", 0, 99999, 1, 180)
+	var properties_grid := GridContainer.new()
+	properties_grid.columns = 2
+	properties_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	properties_grid.add_theme_constant_override("h_separation", 12)
+	properties_grid.add_theme_constant_override("v_separation", 4)
+	content.add_child(properties_grid)
+	id_edit = _line_grid_row(properties_grid, "ID")
+	name_edit = _line_grid_row(properties_grid, "Name")
+	hp_spin = _spin_grid_row(properties_grid, "HP", 1, 999999, 1, 220)
+	speed_spin = _spin_grid_row(properties_grid, "Speed", 0, 9999, 0.1, 125)
+	damage_spin = _spin_grid_row(properties_grid, "Damage", 0, 99999, 0.1, 28)
+	cooldown_spin = _spin_grid_row(properties_grid, "Cooldown", 0.01, 9999, 0.01, 0.65)
+	range_spin = _spin_grid_row(properties_grid, "Range", 0, 99999, 1, 180)
+
 	var visual_title := Label.new()
-	visual_title.text = "VISUAL / PROJECTILE"
+	visual_title.text = "VISUAL SOURCE"
 	visual_title.add_theme_font_size_override("font_size", 16)
 	content.add_child(visual_title)
-	idle_edit = _image_row(content, "Idle Animation", "animation:idle")
-	attack_edit = _image_row(content, "Attack Animation", "animation:attack")
-	move_edit = _image_row(content, "Move Animation", "animation:move")
-	skill_edit = _image_row(content, "Skill Animation", "animation:skill")
+	var visual_grid := GridContainer.new()
+	visual_grid.columns = 2
+	visual_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	visual_grid.add_theme_constant_override("h_separation", 12)
+	visual_grid.add_theme_constant_override("v_separation", 4)
+	content.add_child(visual_grid)
+	idle_edit = _image_grid_row(visual_grid, "IDLE", "animation:idle")
+	attack_edit = _image_grid_row(visual_grid, "ATTACK", "animation:attack")
+	move_edit = _image_grid_row(visual_grid, "MOVE", "animation:move")
+	skill_edit = _image_grid_row(visual_grid, "SKILL", "animation:skill")
+	default_image_edit = _image_grid_row(visual_grid, "PROFILE IMAGE", "default_image")
+	projectile_edit = _image_grid_row(visual_grid, "PROJECTILE", "projectile")
+
+	var animation_title := Label.new()
+	animation_title.text = "SPRITE ANIMATIONS"
+	animation_title.add_theme_font_size_override("font_size", 16)
+	content.add_child(animation_title)
+	var animation_grid := GridContainer.new()
+	animation_grid.columns = 2
+	animation_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	animation_grid.add_theme_constant_override("h_separation", 12)
+	animation_grid.add_theme_constant_override("v_separation", 4)
+	content.add_child(animation_grid)
 	for animation_name in ["hit", "death", "skill1", "skill2", "skill3", "special", "finisher"]:
-		animation_edits[animation_name] = _image_row(content, animation_name.to_upper() + " Animation", "animation:" + animation_name)
-	default_image_edit = _image_row(content, "Profile Image", "default_image")
-	projectile_edit = _image_row(content, "Projectile Animation", "projectile")
+		animation_edits[animation_name] = _image_grid_row(animation_grid, animation_name.to_upper(), "animation:" + animation_name)
+
 	var animation_preview_title := Label.new()
 	animation_preview_title.text = "ANIMATION PREVIEW"
 	animation_preview_title.add_theme_font_size_override("font_size", 14)
@@ -119,6 +187,67 @@ func _build_ui() -> void:
 	ability_note.text = "SPECIAL ABILITIES: managed by content/skills/skills.json"
 	ability_note.add_theme_font_size_override("font_size", 13)
 	content.add_child(ability_note)
+
+func _line_grid_row(parent: GridContainer, label_text: String) -> LineEdit:
+	var row := HBoxContainer.new()
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 105
+	row.add_child(label)
+	var edit := LineEdit.new()
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(edit)
+	parent.add_child(row)
+	return edit
+
+func _spin_grid_row(parent: GridContainer, label_text: String, minimum: float, maximum: float, step: float, value: float) -> SpinBox:
+	var row := HBoxContainer.new()
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 105
+	row.add_child(label)
+	var spin := SpinBox.new()
+	spin.min_value = minimum
+	spin.max_value = maximum
+	spin.step = step
+	spin.value = value
+	spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(spin)
+	parent.add_child(row)
+	return spin
+
+func _image_grid_row(parent: GridContainer, label_text: String, target: String) -> LineEdit:
+	var row := HBoxContainer.new()
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 105
+	row.add_child(label)
+	var thumbnail := TextureRect.new()
+	thumbnail.custom_minimum_size = Vector2(64, 64)
+	thumbnail.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	thumbnail.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	thumbnail.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	thumbnail.mouse_filter = Control.MOUSE_FILTER_STOP
+	thumbnail.gui_input.connect(func(event: InputEvent):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			_open_image_editor_for_target(target)
+	)
+	thumbnail.tooltip_text = "클릭하여 이미지 에디터에서 열기"
+	row.add_child(thumbnail)
+	image_thumbnail_controls[target] = thumbnail
+	var edit := LineEdit.new()
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(edit)
+	edit.text_changed.connect(func(_text: String): _refresh_image_thumbnail(target))
+	var browse := Button.new()
+	browse.text = "Browse"
+	browse.pressed.connect(func(): _open_sprite_dialog(target))
+	row.add_child(browse)
+	parent.add_child(row)
+	return edit
 
 func _image_row(parent: VBoxContainer, label_text: String, target: String) -> LineEdit:
 	var row := HBoxContainer.new()
@@ -204,13 +333,16 @@ func _on_robot_selected(index: int) -> void:
 	selected_type = str(robot_list.get_item_metadata(index))
 	id_edit.editable = true
 	var data: Dictionary = robot_data.get(selected_type, {})
+	var robot_name := str(data.get("name", selected_type.to_upper()))
 	id_edit.text = str(data.get("id", selected_type))
-	name_edit.text = str(data.get("name", selected_type.to_upper()))
-	hp_spin.value = float(data["hp"])
-	speed_spin.value = float(data["speed"])
-	damage_spin.value = float(data["damage"])
-	cooldown_spin.value = float(data["cooldown"])
-	range_spin.value = float(data["range"])
+	name_edit.text = robot_name
+	robot_preview_name.text = robot_name
+	robot_preview_description.text = str(data.get("description", "MENOS 전투 로봇. 이동, 공격, 스킬 애니메이션을 사용하는 전투 유닛입니다."))
+	hp_spin.value = float(data.get("hp", 220.0))
+	speed_spin.value = float(data.get("speed", 125.0))
+	damage_spin.value = float(data.get("damage", 28.0))
+	cooldown_spin.value = float(data.get("cooldown", 0.65))
+	range_spin.value = float(data.get("range", 180.0))
 	idle_edit.text = str(data.get("sprite_idle", "res://assets/menos/sprites/atlas_idle.png"))
 	attack_edit.text = str(data.get("sprite_attack", "res://assets/menos/sprites/atlas_attack.png"))
 	move_edit.text = str(data.get("sprite_move", "res://assets/menos/sprites/atlas_move.png"))
@@ -220,7 +352,9 @@ func _on_robot_selected(index: int) -> void:
 	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
 	for animation_name in animation_edits.keys():
 		(animation_edits[animation_name] as LineEdit).text = str(animations.get(animation_name, data.get("sprite_skill", "")))
+	_refresh_all_image_thumbnails()
 	_refresh_animation_previews()
+	_refresh_robot_preview()
 
 func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
 	var box := VBoxContainer.new()
@@ -322,8 +456,19 @@ func _refresh_image_thumbnail(target: String) -> void:
 		elif animation_name == "skill": path = skill_edit.text.strip_edges()
 		elif animation_edits.has(animation_name): path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
 	thumbnail.texture = load(path) as Texture2D if not path.is_empty() else null
+	if target == "default_image" or target == "animation:idle":
+		_refresh_robot_preview()
+
+func _refresh_robot_preview() -> void:
+	if not robot_preview:
+		return
+	var path := default_image_edit.text.strip_edges()
+	if path.is_empty():
+		path = idle_edit.text.strip_edges()
+	robot_preview.texture = load(path) as Texture2D if not path.is_empty() else null
 
 func _refresh_all_image_thumbnails() -> void:
+	_refresh_robot_preview()
 	_refresh_image_thumbnail("default_image")
 	_refresh_image_thumbnail("projectile")
 	for animation_name in ["idle", "attack", "move", "skill"]:
