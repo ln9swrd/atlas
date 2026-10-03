@@ -1,4 +1,4 @@
-﻿extends Control
+extends Control
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const LOADER := preload("res://editor/image_texture_loader.gd")
 const IMAGE_STATE := preload("res://editor/image_editor_state.gd")
@@ -59,7 +59,7 @@ func _build_ui() -> void:
 	var title_row := HBoxContainer.new()
 	root.add_child(title_row)
 	var title := Label.new()
-	title.text = "移대떎濡쒓렇 ?먮뵒??
+	title.text = "Catalog Editor"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 22)
 	title_row.add_child(title)
@@ -85,7 +85,7 @@ func _build_ui() -> void:
 	left.custom_minimum_size.x = 420
 	body.add_child(left)
 	var list_title := Label.new()
-	list_title.text = "?깅줉??移대떎濡쒓렇"
+	list_title.text = "Catalog Editor"
 	left.add_child(list_title)
 	var search_row := HBoxContainer.new()
 	left.add_child(search_row)
@@ -145,7 +145,7 @@ func _build_ui() -> void:
 	body.add_child(source_panel)
 	source_panel.visible = false
 	var source_title := Label.new()
-	source_title.text = "Source / ?ㅻⅨ Asset"
+	source_title.text = "Catalog Editor"
 	source_panel.add_child(source_title)
 	source_list = ItemList.new()
 	source_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
