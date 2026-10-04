@@ -4,7 +4,7 @@ extends Control
 const ROBOT_FILE := "res://content/robots/robots.json"
 const EDITOR_THUMBNAIL_UTIL = preload("res://scripts/editor_thumbnail_util.gd")
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
-const ROBOT_COLOR_SHADER = preload("res://shaders/allied_unit_color.gdshader")
+const ROBOT_COLOR_SHADER = preload("res://shaders/robot_profile_color.gdshader")
 
 var robot_data: Dictionary = {}
 var selected_type := ""
@@ -703,6 +703,10 @@ func _rect_from_values(values: Variant) -> Rect2:
 	return Rect2()
 
 func _on_preview_color_changed(_color: Color) -> void:
+	_set_status("COLOR EVENT: %s | BUTTON: %s" % [_color.to_html(true), color_edit.color.to_html(true)])
+	if not selected_type.is_empty() and robot_data.has(selected_type):
+		robot_data[selected_type]["color"] = color_edit.color.to_html(true)
+		_write_robot_data()
 	_apply_preview_color()
 
 func _apply_preview_color() -> void:
@@ -711,9 +715,21 @@ func _apply_preview_color() -> void:
 	var material := robot_preview.material as ShaderMaterial
 	if material == null:
 		material = ShaderMaterial.new()
-		material.shader = ROBOT_COLOR_SHADER
 		robot_preview.material = material
+	material.shader = ROBOT_COLOR_SHADER
 	material.set_shader_parameter("team_color", color_edit.color)
+	var mask_texture: Texture2D = null
+	if selected_type == "asura":
+		var mask_image := Image.load_from_file("res://images/robot/asura/profile_team_mask.png")
+		var rect_values: Variant = robot_data.get(selected_type, {}).get("default_image_rect", [])
+		if mask_image != null and rect_values is Array and rect_values.size() >= 4:
+			var mask_rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+			if mask_rect.position.x >= 0 and mask_rect.position.y >= 0 and mask_rect.end.x <= mask_image.get_width() and mask_rect.end.y <= mask_image.get_height():
+				mask_texture = ImageTexture.create_from_image(mask_image.get_region(mask_rect))
+	var mask_valid := mask_texture != null and robot_preview.texture != null
+	material.set_shader_parameter("use_team_mask", mask_valid)
+	if mask_valid:
+		material.set_shader_parameter("team_mask", mask_texture)
 
 func _refresh_robot_preview() -> void:
 	if not robot_preview:

@@ -112,18 +112,18 @@
 		"usage": "projectile"
 	},
 	"robot.asura.skill1": {
-		"category": "Robot",
-		"frames": 8.0,
+		"category": "Other",
+		"frames": 1.0,
 		"id": "robot.asura.skill1",
-		"owner": "robot.asura",
+		"owner": "",
 		"region": [
-			9.0,
-			184.0,
-			1408.0,
-			111.0
+			5.0,
+			44.0,
+			1401.0,
+			104.0
 		],
 		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
-		"usage": "skill1"
+		"usage": "visual_asset_catalog"
 	},
 	"robot.asura.skill2": {
 		"category": "Robot",
@@ -141,14 +141,14 @@
 	},
 	"robot.asura.skill3": {
 		"category": "Robot",
-		"frames": 12,
+		"frames": 12.0,
 		"id": "robot.asura.skill3",
 		"owner": "robot.asura",
 		"region": [
-			7,
-			494,
-			1330,
-			107
+			7.0,
+			494.0,
+			1330.0,
+			107.0
 		],
 		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
 		"usage": "skill3"
