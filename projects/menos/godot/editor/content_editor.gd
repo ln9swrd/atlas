@@ -1,5 +1,7 @@
 extends Control
 
+const ImageEditorState = preload("res://editor/image_editor_state.gd")
+
 const MAP_EDITOR_SCENE := "res://editor/map_editor.tscn"
 const STAGE_EDITOR_SCENE := "res://editor/stage_editor.tscn"
 const UNIT_EDITOR_SCENE := "res://editor/unit_editor.tscn"
@@ -135,7 +137,9 @@ func _open_image_editor_from_child() -> void:
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnCatalog)
 
 func _open_previous_editor_from_child() -> void:
-	var target_scene := previous_editor_scene
+	var target_scene := ImageEditorState.selection_return_scene
+	if target_scene.is_empty():
+		target_scene = previous_editor_scene
 	if target_scene.is_empty() or target_scene == IMAGE_EDITOR_SCENE:
 		target_scene = MAP_EDITOR_SCENE
 	_load_editor(target_scene)

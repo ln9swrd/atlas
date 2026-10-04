@@ -24,7 +24,8 @@ static func from_catalog(entry_id: String, data: Dictionary) -> EnemyDefinition:
 	}
 	definition.visuals = {
 		"color": str(data.get("color", "")),
-		"sprite_anim": str(data.get("sprite_anim", ""))
+		"sprite_anim": str(data.get("sprite_anim", "")),
+		"render_size": Vector2(float(data.get("render_width", 48.0)), float(data.get("render_height", 56.0)))
 	}
 	definition.robot_attack = {
 		"damage": float(data.get("robot_damage", 0.0)),
@@ -32,6 +33,9 @@ static func from_catalog(entry_id: String, data: Dictionary) -> EnemyDefinition:
 		"cooldown": float(data.get("robot_cooldown", 0.0))
 	}
 	return definition
+
+func get_visual_value(key: String, default_value: Variant = null) -> Variant:
+	return visuals.get(key, default_value)
 
 func get_combat_value(key: String, default_value: Variant = null) -> Variant:
 	return combat.get(key, default_value)

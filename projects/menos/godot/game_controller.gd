@@ -6,7 +6,8 @@ var _runtime_map_data: Dictionary = {}
 
 
 const ALLIED_UNIT_COLOR_SHADER := preload("res://shaders/allied_unit_color.gdshader")
-const ROBOT_COLOR_SHADER := preload("res://shaders/allied_unit_color.gdshader")
+const ROBOT_COLOR_SHADER := preload("res://shaders/robot_profile_color.gdshader")
+const ASURA_TEAM_MASK := preload("res://images/robot/asura/profile_team_mask.png")
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
 	"facility_base": preload("res://assets/menos/sprites/facility_base.png"),
@@ -35,12 +36,6 @@ const VISUALS := {
 	"enemy_rusher_anim": preload("res://assets/menos/sprites/enemy_rusher_anim.png"),
 	"enemy_heavy_anim": preload("res://assets/menos/sprites/enemy_heavy_anim.png"),
 	"enemy_giant_anim": preload("res://assets/menos/sprites/enemy_giant_anim.png")
-}
-const ENEMY_SPRITE_SIZES := {
-	"normal": Vector2(38, 52),
-	"rusher": Vector2(42, 54),
-	"heavy": Vector2(64, 72),
-	"giant": Vector2(112, 150)
 }
 const SFX_STREAMS := {
 	"ui_click": preload("res://sound/sfx_ui_click_1.mp3"),
@@ -115,8 +110,8 @@ var robot: RobotRuntimeState
 var player_profile: PlayerProfileState = PlayerProfileState.new()
 var robot_progression: RobotProgressionState = player_profile.robot_progression
 var inventory_open := false
-const INVENTORY_COLS := 6
-const INVENTORY_ROWS := 4
+var inventory_cols := int(ConfigRepository.get_gameplay_value("inventory", "columns", 6))
+var inventory_rows := int(ConfigRepository.get_gameplay_value("inventory", "rows", 4))
 const ROBOT_PROFILE_PATH := "user://menos_campaign_robot_profile.json"
 const ITEM_CATALOG_PATH := "res://content/items/items.json"
 var skills_catalog: Dictionary = {}
@@ -135,9 +130,9 @@ var selected_enemy_index := -1
 var camera_dragging := false
 var camera_last_mouse := Vector2.ZERO
 var robot_auto_attack := true
-const CAMERA_EDGE_MARGIN := 28.0
-const CAMERA_EDGE_SPEED := 720.0
-const BOTTOM_HUD_HEIGHT := 188.0
+var camera_edge_margin := float(ConfigRepository.get_gameplay_value("camera", "edge_margin", 28.0))
+var camera_edge_speed := float(ConfigRepository.get_gameplay_value("camera", "edge_speed", 720.0))
+var bottom_hud_height := float(ConfigRepository.get_gameplay_value("camera", "bottom_hud_height", 188.0))
 var damage_numbers: Array = []
 var effects: Array = []
 
@@ -165,7 +160,7 @@ func _ready() -> void:
 func _setup_camera() -> void:
 	var camera: Camera2D = get_parent().get_node("Camera2D")
 	# Keep the battlefield centered in the visible play area above the bottom HUD.
-	camera.position = MAP_ORIGIN + MAP_PIXEL_SIZE * 0.5 + Vector2(0.0, BOTTOM_HUD_HEIGHT * 0.5)
+	camera.position = MAP_ORIGIN + MAP_PIXEL_SIZE * 0.5 + Vector2(0.0, bottom_hud_height * 0.5)
 	var viewport_size := get_viewport_rect().size
 	camera.limit_left = int(MAP_ORIGIN.x)
 	camera.limit_top = int(MAP_ORIGIN.y)
@@ -183,22 +178,44 @@ func _setup_camera() -> void:
 	camera.position_smoothing_speed = 8.0
 
 func _texture_from_catalog_entry(data: Dictionary, field: String) -> Texture2D:
-	var sprite_path := str(data.get(field, ""))
-	if sprite_path.is_empty():
+	var sprite_value := str(data.get(field, ""))
+	if sprite_value.is_empty():
 		return null
-	var base_texture: Texture2D = load(sprite_path) as Texture2D
+
+	var source_path := sprite_value
+	var resolved_region := Rect2()
+	var resolved_frames := 1
+	var resolved := VisualAssetResolver.resolve(sprite_value)
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		source_path = resolved.source
+		resolved_region = resolved.region
+		resolved_frames = maxi(1, resolved.frames)
+
+	var base_texture: Texture2D = load(source_path) as Texture2D
 	if base_texture == null:
 		return null
+
+	var rect := resolved_region
 	var rect_values: Variant = data.get(field + "_rect", [])
 	if rect_values is Array and rect_values.size() >= 4:
-		var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
-		var image_size := Vector2i(base_texture.get_width(), base_texture.get_height())
-		if rect.size.x > 0 and rect.size.y > 0 and rect.position.x >= 0 and rect.position.y >= 0 and rect.end.x <= image_size.x and rect.end.y <= image_size.y:
-			var atlas := AtlasTexture.new()
-			atlas.atlas = base_texture
-			atlas.region = Rect2(rect.position, rect.size)
-			return atlas
-	return base_texture
+		rect = Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return base_texture
+
+	var image_size := Vector2i(base_texture.get_width(), base_texture.get_height())
+	var pixel_rect := Rect2i(
+		int(round(rect.position.x)),
+		int(round(rect.position.y)),
+		int(round(rect.size.x)),
+		int(round(rect.size.y))
+	)
+	if pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0 or pixel_rect.position.x < 0 or pixel_rect.position.y < 0 or pixel_rect.end.x > image_size.x or pixel_rect.end.y > image_size.y:
+		return null
+
+	var atlas := AtlasTexture.new()
+	atlas.atlas = base_texture
+	atlas.region = Rect2(pixel_rect.position, pixel_rect.size)
+	return atlas
 
 func _load_allied_unit_catalog() -> void:
 	allied_unit_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/allied_units/allied_units.json")
@@ -232,19 +249,136 @@ func _load_enemy_catalog() -> void:
 		var projectile: Texture2D = _texture_from_catalog_entry(enemy_catalog[enemy_type], "projectile_anim")
 		enemy_projectile_catalog[enemy_type] = projectile if projectile else VISUALS["bullet_threat"]
 
+func _robot_animation_value(anim_key: String) -> String:
+	var animations: Dictionary = robot_catalog.get("animations", {}) if robot_catalog.get("animations", {}) is Dictionary else {}
+	var value := str(animations.get(anim_key, ""))
+	if not value.is_empty():
+		return value
+	match anim_key:
+		"idle":
+			return str(robot_catalog.get("sprite_idle", ""))
+		"move":
+			return str(robot_catalog.get("sprite_move", ""))
+		"attack":
+			return str(robot_catalog.get("sprite_attack", ""))
+		"projectile":
+			return str(robot_catalog.get("projectile_anim", ""))
+		"skill1", "skill":
+			return str(robot_catalog.get("sprite_skill", ""))
+		_:
+			return ""
+
+func _texture_from_robot_animation(anim_key: String) -> Texture2D:
+	var value := _robot_animation_value(anim_key)
+	if value.is_empty():
+		return null
+	var rects: Dictionary = robot_catalog.get("animation_rects", {}) if robot_catalog.get("animation_rects", {}) is Dictionary else {}
+	var rect_values: Variant = rects.get(anim_key, [])
+	if anim_key == "skill" and (not rects.has("skill")):
+		rect_values = rects.get("skill1", [])
+	return _texture_from_catalog_value(value, rect_values)
+
+func _robot_frame_rect(anim_key: String, frame: int, resolved: VisualAssetDefinition, fallback_rect: Rect2) -> Rect2:
+	if resolved != null and not resolved.frame_regions.is_empty():
+		var index: int = posmod(frame, resolved.frame_regions.size())
+		var values: Variant = resolved.frame_regions[index]
+		if values is Array and values.size() >= 4:
+			return Rect2(float(values[0]), float(values[1]), float(values[2]), float(values[3]))
+	var frame_count := maxi(1, resolved.frames if resolved != null else 1)
+	var frame_width := fallback_rect.size.x / float(frame_count)
+	var frame_index: int = posmod(frame, frame_count)
+	var frame_start_x: float = fallback_rect.position.x + float(round(frame_width * float(frame_index)))
+	var frame_end_x: float = fallback_rect.position.x + float(round(frame_width * float(frame_index + 1)))
+	return Rect2(frame_start_x, fallback_rect.position.y, maxf(1.0, frame_end_x - frame_start_x), fallback_rect.size.y)
+
+func _texture_from_robot_animation_frame(anim_key: String, frame: int) -> Texture2D:
+	var value := _robot_animation_value(anim_key)
+	if value.is_empty():
+		return null
+	var source_path := value
+	var rect := Rect2()
+	var resolved := VisualAssetResolver.resolve(value)
+	var frame_count := 1
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		source_path = resolved.source
+		rect = resolved.region
+		frame_count = maxi(1, resolved.frames)
+	var rects: Dictionary = robot_catalog.get("animation_rects", {}) if robot_catalog.get("animation_rects", {}) is Dictionary else {}
+	var rect_values: Variant = rects.get(anim_key, [])
+	if anim_key == "skill" and not rects.has("skill"):
+		rect_values = rects.get("skill1", [])
+	if rect_values is Array and rect_values.size() >= 4:
+		rect = Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+	var base_texture: Texture2D = load(source_path) as Texture2D
+	if base_texture == null:
+		return null
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return base_texture
+	var frame_index: int = posmod(frame, frame_count)
+	var frame_rect := _robot_frame_rect(anim_key, frame_index, resolved, rect)
+	var image_size := Vector2i(base_texture.get_width(), base_texture.get_height())
+	var pixel_rect := Rect2i(
+		int(round(frame_rect.position.x)),
+		int(round(frame_rect.position.y)),
+		int(round(frame_rect.size.x)),
+		int(round(frame_rect.size.y))
+	)
+	if pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0 or pixel_rect.position.x < 0 or pixel_rect.position.y < 0 or pixel_rect.end.x > image_size.x or pixel_rect.end.y > image_size.y:
+		return null
+	var atlas := AtlasTexture.new()
+	atlas.atlas = base_texture
+	atlas.region = Rect2(pixel_rect.position, pixel_rect.size)
+	return atlas
+
+func _texture_from_catalog_value(sprite_value: String, rect_values: Variant = []) -> Texture2D:
+	if sprite_value.is_empty():
+		return null
+	var source_path := sprite_value
+	var resolved_region := Rect2()
+	var resolved := VisualAssetResolver.resolve(sprite_value)
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		source_path = resolved.source
+		resolved_region = resolved.region
+	var base_texture: Texture2D = load(source_path) as Texture2D
+	if base_texture == null:
+		return null
+	var rect := resolved_region
+	if rect_values is Array and rect_values.size() >= 4:
+		rect = Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return base_texture
+	var image_size := Vector2i(base_texture.get_width(), base_texture.get_height())
+	var pixel_rect := Rect2i(
+		int(round(rect.position.x)),
+		int(round(rect.position.y)),
+		int(round(rect.size.x)),
+		int(round(rect.size.y))
+	)
+	if pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0 or pixel_rect.position.x < 0 or pixel_rect.position.y < 0 or pixel_rect.end.x > image_size.x or pixel_rect.end.y > image_size.y:
+		return null
+	var atlas := AtlasTexture.new()
+	atlas.atlas = base_texture
+	atlas.region = Rect2(pixel_rect.position, pixel_rect.size)
+	return atlas
+
 func _load_robot_catalog() -> void:
-	robot_catalog = ContentCatalogLoader.load_single_entry("res://content/robots/robots.json", "robot_main")
+	var catalog := ContentCatalogLoader.load_dictionary_catalog("res://content/robots/robots.json")
+	var selected_robot_id := str(ConfigRepository.get_gameplay_value("runtime", "default_robot_id", "valkyrie"))
+	if not catalog.has(selected_robot_id):
+		push_error("Default robot '%s' is missing from the Robot Catalog." % selected_robot_id)
+		return
+	robot_catalog = catalog[selected_robot_id].duplicate(true)
 	if robot_catalog.is_empty():
 		return
-	robot_sprite_catalog = {
-		"idle": _texture_from_catalog_entry(robot_catalog, "sprite_idle"),
-		"attack": _texture_from_catalog_entry(robot_catalog, "sprite_attack"),
-		"move": _texture_from_catalog_entry(robot_catalog, "sprite_move"),
-		"skill": _texture_from_catalog_entry(robot_catalog, "sprite_skill")
-	}
+	robot_sprite_catalog.clear()
+	for animation_name in ["idle", "move", "attack", "hit", "death", "projectile", "skill1", "skill2", "skill3", "special", "finisher"]:
+		var animation_texture := _texture_from_robot_animation(animation_name)
+		if animation_texture != null:
+			robot_sprite_catalog[animation_name] = animation_texture
+	robot_sprite_catalog["skill"] = robot_sprite_catalog.get("skill1", null)
 	robot_definition = RobotDefinition.from_catalog(robot_catalog)
 	robot_weapon_definition = WeaponDefinition.from_actor("robot", "basic", robot_catalog)
-	robot_projectile_catalog["robot"] = _texture_from_catalog_entry(robot_catalog, "projectile_anim")
+	robot_projectile_catalog["robot"] = robot_sprite_catalog.get("projectile", _texture_from_robot_animation("projectile"))
 
 func _load_combat_definitions() -> void:
 	gameplay_settings = GameSettingsLoader.load_gameplay()
@@ -753,6 +887,68 @@ func _create_robot_render_node() -> void:
 	robot_render_node.material = robot_render_material
 	add_child(robot_render_node)
 
+func _asura_team_mask_for_frame(anim_key: String, frame: int) -> Texture2D:
+	if str(robot_catalog.get("id", "")) != "asura":
+		return null
+	var rect := Rect2()
+	var resolved := VisualAssetResolver.resolve(_robot_animation_value(anim_key))
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		rect = resolved.region
+	var rects: Dictionary = robot_catalog.get("animation_rects", {}) if robot_catalog.get("animation_rects", {}) is Dictionary else {}
+	var rect_values: Variant = rects.get(anim_key, [])
+	if anim_key == "skill" and not rects.has("skill"):
+		rect_values = rects.get("skill1", [])
+	if rect_values is Array and rect_values.size() >= 4:
+		rect = Rect2(
+			float(rect_values[0]),
+			float(rect_values[1]),
+			float(rect_values[2]),
+			float(rect_values[3])
+		)
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return null
+	var frame_count := _robot_animation_frame_count(anim_key)
+	var frame_index: int = posmod(frame, frame_count)
+	var frame_rect := _robot_frame_rect(anim_key, frame_index, resolved, rect)
+	var image_size := Vector2i(ASURA_TEAM_MASK.get_width(), ASURA_TEAM_MASK.get_height())
+	var pixel_rect := Rect2i(
+		int(round(frame_rect.position.x)),
+		int(round(frame_rect.position.y)),
+		int(round(frame_rect.size.x)),
+		int(round(frame_rect.size.y))
+	)
+	if pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0 or pixel_rect.position.x < 0 or pixel_rect.position.y < 0 or pixel_rect.end.x > image_size.x or pixel_rect.end.y > image_size.y:
+		return null
+	var mask_atlas := AtlasTexture.new()
+	mask_atlas.atlas = ASURA_TEAM_MASK
+	mask_atlas.region = Rect2(pixel_rect.position, pixel_rect.size)
+	return mask_atlas
+
+func _robot_movement_rotation() -> float:
+	if robot == null or not bool(robot.state_get("is_moving", false)):
+		return 0.0
+	var movement: Variant = robot.state_get("move_direction", Vector2.ZERO)
+	if not (movement is Vector2) or movement.length_squared() <= 0.001:
+		return 0.0
+	return movement.angle()
+
+func _robot_animation_frame_count(anim_key: String) -> int:
+	var sprite_value := _robot_animation_value(anim_key)
+	var resolved := VisualAssetResolver.resolve(sprite_value)
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		return maxi(1, resolved.frames)
+	match anim_key:
+		"idle": return 6
+		"attack": return 7
+		"move", "skill": return 5
+		_: return 1
+
+func _robot_animation_frame_count_for_value(sprite_value: String, fallback: int = 1) -> int:
+	var resolved := VisualAssetResolver.resolve(sprite_value)
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		return maxi(1, resolved.frames)
+	return maxi(1, fallback)
+
 func _update_robot_render_node() -> void:
 	if not is_instance_valid(robot_render_node):
 		return
@@ -760,38 +956,46 @@ func _update_robot_render_node() -> void:
 		robot_render_node.visible = false
 		return
 	var anim_key := "idle"
-	var total_f := 6
+	var total_f := 1
 	var fps := 8.0
 	if float(robot.state_get("special", 0.0)) > 0.0:
-		anim_key = "skill"
-		total_f = 5
+		anim_key = "special"
 		fps = 10.0
 	elif float(robot.state_get("attack", 0.0)) > 0.3:
 		anim_key = "attack"
-		total_f = 7
 		fps = 14.0
 	elif float(robot.state_get("area", 0.0)) > 5.0 or float(robot.state_get("pierce", 0.0)) > 6.0:
-		anim_key = "skill"
-		total_f = 5
+		anim_key = "skill1"
 		fps = 10.0
 	elif bool(robot.state_get("is_moving", false)):
 		anim_key = "move"
-		total_f = 5
 		fps = 12.0
-	var texture := robot_sprite_catalog.get(anim_key, null) as Texture2D
-	if texture == null:
+	total_f = _robot_animation_frame_count(anim_key)
+	var frame_index: int = int(elapsed * fps) % max(1, total_f)
+	var frame_texture := _texture_from_robot_animation_frame(anim_key, frame_index)
+	if frame_texture == null:
 		robot_render_node.visible = false
 		return
 	robot_render_node.visible = true
-	robot_render_node.texture = texture
-	robot_render_node.hframes = max(1, total_f)
+	robot_render_node.texture = frame_texture
+	robot_render_node.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	robot_render_node.hframes = 1
 	robot_render_node.vframes = 1
-	robot_render_node.frame = int(elapsed * fps) % max(1, total_f)
+	robot_render_node.frame = 0
+	robot_render_node.offset = Vector2.ZERO
 	robot_render_node.position = robot.position
-	var frame_size := texture.get_size() / Vector2(float(max(1, total_f)), 1.0)
+	robot_render_node.rotation = 0.0
+	if robot_render_material != null:
+		robot_render_material.set_shader_parameter("team_color", robot_definition.color if robot_definition != null else Color.WHITE)
+		var team_mask := _asura_team_mask_for_frame(anim_key, frame_index)
+		robot_render_material.set_shader_parameter("use_team_mask", team_mask != null)
+		if team_mask != null:
+			robot_render_material.set_shader_parameter("team_mask", team_mask)
+			robot_render_material.set_shader_parameter("mask_region_uv", Vector4(0.0, 0.0, 1.0, 1.0))
+	var frame_size := frame_texture.get_size()
 	if frame_size.x > 0.0 and frame_size.y > 0.0:
-		robot_render_node.scale = Vector2(78.0, 132.0) / frame_size
-	robot_render_material.set_shader_parameter("team_color", robot_definition.color if robot_definition != null else Color.WHITE)
+		var render_scale := minf(78.0 / frame_size.x, 132.0 / frame_size.y)
+		robot_render_node.scale = Vector2.ONE * render_scale
 
 func _clear_allied_render_nodes() -> void:
 	for node in allied_render_nodes.values():
@@ -1187,7 +1391,8 @@ func select_robot_target_at(point: Vector2) -> bool:
 		var enemy: EnemyRuntimeState = enemies[index]
 		if enemy.hp <= 0.0:
 			continue
-		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES.get(enemy.type, Vector2(48, 56))
+		var enemy_definition: EnemyDefinition = enemy_definitions.get(enemy.type)
+		var enemy_size: Vector2 = enemy_definition.get_visual_value("render_size", Vector2(48, 56)) if enemy_definition != null else Vector2(48, 56)
 		var hit_radius: float = max(24.0, max(enemy_size.x, enemy_size.y) * 0.42)
 		var distance := point.distance_to(enemy.position)
 		if distance <= hit_radius and distance < best_distance:
@@ -1241,9 +1446,11 @@ func update_robot_manual_input(delta: float) -> void:
 	direction.y = float(Input.is_action_pressed("move_down")) - float(Input.is_action_pressed("move_up"))
 	if direction == Vector2.ZERO:
 		robot["is_moving"] = false
+		robot["move_direction"] = Vector2.ZERO
 		return
 	direction = direction.normalized()
 	robot.erase_state("target_pos")
+	robot["move_direction"] = direction
 	robot["spot"] = "CUSTOM"
 	robot["is_moving"] = true
 	var target: Vector2 = robot.position + direction * get_robot_runtime_stats().speed * delta
@@ -1342,7 +1549,9 @@ func update_robot(delta: float) -> void:
 			if distance_to_target > robot_weapon_definition.range:
 				robot["target_pos"] = auto_target.position
 				var step: float = float(get_robot_runtime_stats().speed) * delta
+				var move_direction: Vector2 = (auto_target.position - robot.position).normalized()
 				robot.position = robot.position.move_toward(auto_target.position, step)
+				robot["move_direction"] = move_direction
 				robot["is_moving"] = true
 			else:
 				robot.erase_state("target_pos")
@@ -1353,9 +1562,12 @@ func update_robot(delta: float) -> void:
 		if distance_to_target <= 6.0:
 			robot.position = move_target
 			robot.erase_state("target_pos")
+			robot["move_direction"] = Vector2.ZERO
 		else:
 			var step: float = float(get_robot_runtime_stats().speed) * delta
+			var move_direction: Vector2 = (move_target - robot.position).normalized()
 			robot.position = robot.position.move_toward(move_target, step)
+			robot["move_direction"] = move_direction
 			robot["is_moving"] = true
 
 func try_basic_attack() -> bool:
@@ -1544,7 +1756,7 @@ func check_wave_clear() -> void:
 func _camera_target_clamped(target: Vector2) -> Vector2:
 	var viewport_size := get_viewport_rect().size
 	# Camera bounds use the gameplay-safe area rather than the HUD-covered area.
-	var gameplay_viewport_size := Vector2(viewport_size.x, max(1.0, viewport_size.y - BOTTOM_HUD_HEIGHT))
+	var gameplay_viewport_size := Vector2(viewport_size.x, max(1.0, viewport_size.y - bottom_hud_height))
 	var half_view := gameplay_viewport_size * 0.5
 	var min_x := MAP_ORIGIN.x + half_view.x
 	var max_x := MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - half_view.x
@@ -1568,17 +1780,17 @@ func update_camera_edge_scroll(delta: float) -> void:
 	if get_minimap_screen_rect().has_point(mouse):
 		return
 	var direction := Vector2.ZERO
-	if mouse.x <= CAMERA_EDGE_MARGIN:
+	if mouse.x <= camera_edge_margin:
 		direction.x -= 1.0
-	elif mouse.x >= viewport_size.x - CAMERA_EDGE_MARGIN:
+	elif mouse.x >= viewport_size.x - camera_edge_margin:
 		direction.x += 1.0
-	if mouse.y <= CAMERA_EDGE_MARGIN:
+	if mouse.y <= camera_edge_margin:
 		direction.y -= 1.0
-	elif mouse.y < viewport_size.y - BOTTOM_HUD_HEIGHT and mouse.y >= viewport_size.y - BOTTOM_HUD_HEIGHT - CAMERA_EDGE_MARGIN:
+	elif mouse.y < viewport_size.y - bottom_hud_height and mouse.y >= viewport_size.y - bottom_hud_height - camera_edge_margin:
 		direction.y += 1.0
 	if direction == Vector2.ZERO:
 		return
-	get_parent().get_node("Camera2D").position = _camera_target_clamped(get_parent().get_node("Camera2D").position + direction.normalized() * CAMERA_EDGE_SPEED * delta)
+	get_parent().get_node("Camera2D").position = _camera_target_clamped(get_parent().get_node("Camera2D").position + direction.normalized() * camera_edge_speed * delta)
 
 func get_minimap_screen_rect() -> Rect2:
 	var viewport_size := get_viewport_rect().size
@@ -1674,8 +1886,8 @@ func handle_click(point: Vector2) -> void:
 		if inventory_rect.has_point(point):
 			var grid_origin := inventory_rect.position + Vector2(24, 70)
 			var cell := Vector2i(floor((point.x - grid_origin.x) / 52.0), floor((point.y - grid_origin.y) / 52.0))
-			if cell.x >= 0 and cell.x < INVENTORY_COLS and cell.y >= 0 and cell.y < INVENTORY_ROWS:
-				var index := cell.y * INVENTORY_COLS + cell.x
+			if cell.x >= 0 and cell.x < inventory_cols and cell.y >= 0 and cell.y < inventory_rows:
+				var index := cell.y * inventory_cols + cell.x
 				if index < player_profile.inventory.size():
 					equip_item(str(player_profile.inventory[index].get("id", "")))
 					play_sfx("ui_confirm")
@@ -1859,7 +2071,7 @@ func _draw() -> void:
 	for enemy in enemies:
 		if enemy.hp <= 0.0: continue
 		var definition: EnemyDefinition = enemy_definitions[enemy.type]
-		var enemy_size: Vector2 = ENEMY_SPRITE_SIZES[enemy.type] * 1.08
+		var enemy_size: Vector2 = definition.get_visual_value("render_size", Vector2(48, 56)) * 1.08
 		
 		# Presentation-only scale increase keeps battlefield combat as the primary visual focus.
 		# Enemy data, collision, targeting and movement are unchanged.
@@ -1936,8 +2148,11 @@ func _draw() -> void:
 			var end_p: Vector2 = effect.get("target", Vector2.ZERO)
 			var current_p: Vector2 = start_p.lerp(end_p, progress)
 			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
-			var p_frame: int = int(elapsed * 18.0) % 8
 			var weapon_type := str(effect.get("weapon", "robot"))
+			var projectile_frames := 8
+			if weapon_type == "robot":
+				projectile_frames = _robot_animation_frame_count_for_value(_robot_animation_value("projectile"), 6)
+			var p_frame: int = int(elapsed * 18.0) % projectile_frames
 			var projectile_color := Color("7ed6ce")
 			if weapon_type == "cannon":
 				projectile_color = Color("f0d28a")
@@ -1947,7 +2162,7 @@ func _draw() -> void:
 			draw_line(trail_start, current_p, Color(projectile_color, 0.55), 3.0)
 			draw_circle(current_p, 5.0, Color(projectile_color, 0.85))
 			var projectile_texture: Texture2D = (robot_projectile_catalog.get("robot", VISUALS["bullet_defender"]) if weapon_type == "robot" else tower_projectile_catalog.get(weapon_type, VISUALS["bullet_defender"])) as Texture2D
-			draw_rotated_animated_sprite(projectile_texture, current_p, Vector2(36, 44), angle, p_frame, 8)
+			draw_rotated_animated_sprite(projectile_texture, current_p, Vector2(36, 44), angle, p_frame, projectile_frames)
 		elif etype == "proj_threat":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
 			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
@@ -1995,7 +2210,7 @@ func _draw() -> void:
 
 func _ui_origin() -> Vector2:
 	var screen_to_world: Transform2D = get_viewport().get_canvas_transform().affine_inverse()
-	return screen_to_world * Vector2(0, get_viewport_rect().size.y - BOTTOM_HUD_HEIGHT)
+	return screen_to_world * Vector2(0, get_viewport_rect().size.y - bottom_hud_height)
 
 func _ui_action_rect(index: int) -> Rect2:
 	return Rect2(_ui_origin() + Vector2(330.0 + index * 78.0, 14.0), Vector2(72, 76))
@@ -2047,15 +2262,15 @@ func draw_inventory() -> void:
 		draw_string(ThemeDB.fallback_font, slot_rect.position + Vector2(10, 39), equipped_name, HORIZONTAL_ALIGNMENT_LEFT, 220, 11, Color("f0d28a"))
 		slot_y += slot_rect.size.y + 10.0
 	var grid_origin := rect.position + Vector2(24, 70)
-	for y in range(INVENTORY_ROWS):
-		for x in range(INVENTORY_COLS):
+	for y in range(inventory_rows):
+		for x in range(inventory_cols):
 			var cell_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
 			draw_rect(cell_rect, Color("0b171b"), true)
 			draw_rect(cell_rect, Color("30484f"), false, 1.0)
-	for index in range(min(player_profile.inventory.size(), INVENTORY_COLS * INVENTORY_ROWS)):
+	for index in range(min(player_profile.inventory.size(), inventory_cols * inventory_rows)):
 		var item: Dictionary = player_profile.inventory[index]
-		var x := index % INVENTORY_COLS
-		var y := index / INVENTORY_COLS
+		var x := index % inventory_cols
+		var y := index / inventory_cols
 		var item_rect := Rect2(grid_origin + Vector2(x * 52, y * 52), Vector2(46, 46))
 		var slot := str(item.get("slot", ""))
 		var item_color := Color("f0d28a") if player_profile.equipped_items.get(slot, "") == item.get("id", "") else Color("7ed6ce")
@@ -2099,7 +2314,7 @@ func draw_ui2() -> void:
 	draw_string(ThemeDB.fallback_font, top_rect.position + Vector2(viewport_size.x - 410, 35), target_text, HORIZONTAL_ALIGNMENT_RIGHT, 385, 11, Color("f0d28a") if selected_target != null else Color("829aa0"))
 
 	# Bottom HUD: Atlas portrait/readout, build palette, combat log and minimap.
-	var hud_rect := Rect2(bottom, Vector2(viewport_size.x, BOTTOM_HUD_HEIGHT))
+	var hud_rect := Rect2(bottom, Vector2(viewport_size.x, bottom_hud_height))
 	draw_rect(hud_rect, Color(0.025, 0.045, 0.055, 0.97), true)
 	draw_line(bottom, bottom + Vector2(viewport_size.x, 0), Color("527079"), 2.0)
 

@@ -2,8 +2,9 @@ class_name RobotEditorMain
 extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
+const EDITOR_THUMBNAIL_UTIL = preload("res://scripts/editor_thumbnail_util.gd")
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
-const ROBOT_COLOR_SHADER = preload("res://shaders/allied_unit_color.gdshader")
+const ROBOT_COLOR_SHADER = preload("res://shaders/robot_profile_color.gdshader")
 
 var robot_data: Dictionary = {}
 var selected_type := ""
@@ -16,6 +17,7 @@ var damage_spin: SpinBox
 var cooldown_spin: SpinBox
 var range_spin: SpinBox
 var color_edit: ColorPickerButton
+var color_swatch_texture: ImageTexture
 var idle_edit: LineEdit
 var attack_edit: LineEdit
 var move_edit: LineEdit
@@ -43,19 +45,17 @@ var animation_previews: Dictionary = {}
 var animation_rects: Dictionary = {}
 var animation_timer: Timer
 var animation_frame := 0
-const ROBOT_ANIMATION_FRAMES := {
-	"idle": 6,
-	"move": 8,
-	"attack": 8,
-	"hit": 8,
-	"death": 8,
-	"projectile": 6,
-	"skill1": 8,
-	"skill2": 10,
-	"skill3": 12,
-	"special": 14,
-	"finisher": 18
-}
+
+func _animation_frame_count(animation_name: String) -> int:
+	var asset_id := ""
+	if animation_name == "profile":
+		asset_id = "robot.%s.profile" % selected_type
+	else:
+		asset_id = "robot.%s.%s" % [selected_type, animation_name]
+	var resolved := VisualAssetResolver.resolve(asset_id)
+	if resolved != null and not resolved.id.begins_with("legacy:") and resolved.frames > 0:
+		return resolved.frames
+	return int(ConfigRepository.get_editor_value("animation_preview", "legacy_frame_counts", {}).get(animation_name, 1))
 
 func _ready() -> void:
 	_build_ui()
@@ -65,9 +65,16 @@ func _ready() -> void:
 	animation_timer.timeout.connect(_on_animation_tick)
 	add_child(animation_timer)
 	_load_data()
+	var pending_robot := IMAGE_STATE.selection_owner_key if IMAGE_STATE.selection_pending and IMAGE_STATE.selection_owner_kind == "robot" else ""
+	var initial_index := 0
+	if not pending_robot.is_empty():
+		for i in range(robot_list.item_count):
+			if str(robot_list.get_item_metadata(i)) == pending_robot:
+				initial_index = i
+				break
 	if robot_list.item_count > 0:
-		robot_list.select(0)
-		_on_robot_selected(0)
+		robot_list.select(initial_index)
+		_on_robot_selected(initial_index)
 	_apply_pending_asset_selection()
 
 func _build_ui() -> void:
@@ -94,6 +101,10 @@ func _build_ui() -> void:
 	save_btn.text = "SAVE JSON"
 	save_btn.pressed.connect(_save_data)
 	header.add_child(save_btn)
+	var delete_btn := Button.new()
+	delete_btn.text = "DELETE ROBOT"
+	delete_btn.pressed.connect(_confirm_delete_robot)
+	header.add_child(delete_btn)
 
 	var body := HSplitContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -104,10 +115,18 @@ func _build_ui() -> void:
 	sidebar.custom_minimum_size.x = 250
 	sidebar.add_theme_constant_override("separation", 5)
 	body.add_child(sidebar)
+	var robot_header := HBoxContainer.new()
+	robot_header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sidebar.add_child(robot_header)
 	var robot_title := Label.new()
 	robot_title.text = "ROBOTS"
 	robot_title.add_theme_font_size_override("font_size", 14)
-	sidebar.add_child(robot_title)
+	robot_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	robot_header.add_child(robot_title)
+	var add_btn := Button.new()
+	add_btn.text = "ADD ROBOT"
+	add_btn.pressed.connect(_open_add_robot_dialog)
+	robot_header.add_child(add_btn)
 	robot_list = OptionButton.new()
 	robot_list.custom_minimum_size.y = 30
 	robot_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -165,7 +184,10 @@ func _build_ui() -> void:
 	color_label.custom_minimum_size.x = 105
 	color_row.add_child(color_label)
 	color_edit = ColorPickerButton.new()
+	color_edit.edit_alpha = false
+	color_edit.custom_minimum_size = Vector2(120, 30)
 	color_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_update_color_button_swatch()
 	color_edit.color_changed.connect(_on_preview_color_changed)
 	color_row.add_child(color_edit)
 	properties_grid.add_child(color_row)
@@ -402,7 +424,10 @@ func _on_robot_selected(index: int) -> void:
 	damage_spin.value = float(data.get("damage", 28.0))
 	cooldown_spin.value = float(data.get("cooldown", 0.65))
 	range_spin.value = float(data.get("range", 180.0))
-	color_edit.color = Color(str(data.get("color", "ffffffff")))
+	var stored_color := Color(str(data.get("color", "ffffffff")))
+	stored_color.a = 1.0
+	color_edit.color = stored_color
+	_update_color_button_swatch()
 	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
 	animation_rects = data.get("animation_rects", {}) if data.get("animation_rects", {}) is Dictionary else {}
 	var legacy_defaults := {
@@ -431,6 +456,7 @@ func _create_animation_preview(parent: Container, label_text: String, size: Vect
 	preview.custom_minimum_size = size
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	box.add_child(preview)
 	return preview
 
@@ -459,9 +485,18 @@ func _animated_texture(path: String, frame: int, total_frames: int, rect_values:
 		single.region = source_rect
 		return single
 	var frame_width := source_rect.size.x / float(total_frames)
+	var frame_index := frame % total_frames
+	var frame_start_x: float = source_rect.position.x + float(round(frame_width * float(frame_index)))
+	var frame_end_x: float = source_rect.position.x + float(round(frame_width * float(frame_index + 1)))
+	var frame_rect := Rect2(
+		frame_start_x,
+		source_rect.position.y,
+		maxf(1.0, frame_end_x - frame_start_x),
+		source_rect.size.y
+	)
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture
-	atlas.region = Rect2(source_rect.position.x + frame_width * (frame % total_frames), source_rect.position.y, frame_width, source_rect.size.y)
+	atlas.region = frame_rect
 	return atlas
 
 func _refresh_animation_previews() -> void:
@@ -469,16 +504,139 @@ func _refresh_animation_previews() -> void:
 		var preview: TextureRect = animation_previews[key]
 		var edit: LineEdit = animation_edits.get(key)
 		var path := edit.text.strip_edges() if edit != null else ""
-		var frames := int(ROBOT_ANIMATION_FRAMES.get(key, 1))
+		var frames := _animation_frame_count(key)
 		var rect_values: Variant = animation_rects.get(key, [])
 		preview.texture = _animated_texture(path, animation_frame, frames, rect_values)
 
 func _on_animation_tick() -> void:
 	var max_frames := 1
 	for animation_name in animation_previews.keys():
-		max_frames = maxi(max_frames, int(ROBOT_ANIMATION_FRAMES.get(animation_name, 1)))
+		max_frames = maxi(max_frames, _animation_frame_count(animation_name))
 	animation_frame = (animation_frame + 1) % max_frames
 	_refresh_animation_previews()
+
+func _open_add_robot_dialog() -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Add Robot"
+	dialog.ok_button_text = "ADD"
+	var form := VBoxContainer.new()
+	form.custom_minimum_size = Vector2(360, 0)
+	form.add_theme_constant_override("separation", 8)
+	dialog.add_child(form)
+	var id_row := HBoxContainer.new()
+	form.add_child(id_row)
+	var id_label := Label.new()
+	id_label.text = "ID"
+	id_label.custom_minimum_size.x = 80
+	id_row.add_child(id_label)
+	var new_id_edit := LineEdit.new()
+	new_id_edit.placeholder_text = "robot_id"
+	new_id_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	id_row.add_child(new_id_edit)
+	var name_row := HBoxContainer.new()
+	form.add_child(name_row)
+	var name_label := Label.new()
+	name_label.text = "Name"
+	name_label.custom_minimum_size.x = 80
+	name_row.add_child(name_label)
+	var new_name_edit := LineEdit.new()
+	new_name_edit.placeholder_text = "ROBOT NAME"
+	new_name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_row.add_child(new_name_edit)
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		_add_robot(dialog, new_id_edit.text, new_name_edit.text)
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(440, 220))
+	new_id_edit.grab_focus()
+
+func _add_robot(dialog: ConfirmationDialog, requested_id: String, requested_name: String) -> void:
+	var new_id := requested_id.strip_edges().to_lower().validate_filename()
+	var new_name := requested_name.strip_edges()
+	if new_id.is_empty() or new_name.is_empty():
+		_set_status("Robot ID and name are required.")
+		dialog.queue_free()
+		return
+	if robot_data.has(new_id):
+		_set_status("Robot ID already exists: " + new_id)
+		dialog.queue_free()
+		return
+	var new_robot: Dictionary = {
+		"color": "ffffffff",
+		"cooldown": 0.65,
+		"damage": 28.0,
+		"energy": {"max": 100.0, "regen": 12.0},
+		"hp": 220.0,
+		"id": new_id,
+		"name": new_name,
+		"progression": {
+			"damage_growth": 0.05,
+			"hp_growth": 0.05,
+			"range_growth": 0.02,
+			"speed_growth": 0.02,
+			"xp_per_level": 100.0
+		},
+		"range": 180.0,
+		"speed": 125.0,
+		"default_image": "",
+		"animations": {},
+		"animation_rects": {}
+	}
+	robot_data[new_id] = new_robot
+	if not _write_robot_data():
+		robot_data.erase(new_id)
+		_set_status("FAILED to save new robot.")
+		dialog.queue_free()
+		return
+	_refresh_robot_list()
+	for i in range(robot_list.item_count):
+		if str(robot_list.get_item_metadata(i)) == new_id:
+			robot_list.select(i)
+			_on_robot_selected(i)
+			break
+	_set_status("ADDED robot: " + new_id)
+	dialog.queue_free()
+
+func _write_robot_data() -> bool:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/robots"))
+	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(robot_data, "  "))
+	file.close()
+	return true
+
+func _confirm_delete_robot() -> void:
+	if selected_type.is_empty() or not robot_data.has(selected_type):
+		_set_status("No robot selected.")
+		return
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Delete Robot"
+	dialog.dialog_text = "Delete robot \"%s\" from robots.json?" % str(robot_data[selected_type].get("name", selected_type))
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		_delete_robot(dialog)
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(480, 180))
+
+func _delete_robot(dialog: ConfirmationDialog) -> void:
+	robot_data.erase(selected_type)
+	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
+	if file == null:
+		_set_status("FAILED to write JSON.")
+		dialog.queue_free()
+		return
+	file.store_string(JSON.stringify(robot_data, "  "))
+	file.close()
+	selected_type = ""
+	_refresh_robot_list()
+	if robot_list.item_count > 0:
+		robot_list.select(0)
+		_on_robot_selected(0)
+	_set_status("DELETED robot from: " + ROBOT_FILE)
+	dialog.queue_free()
 
 func _save_data() -> void:
 	if selected_type.is_empty():
@@ -495,13 +653,16 @@ func _save_data() -> void:
 	data["damage"] = float(damage_spin.value)
 	data["cooldown"] = float(cooldown_spin.value)
 	data["range"] = float(range_spin.value)
-	data["color"] = color_edit.color.to_html(true)
+	var team_color := color_edit.color
+	team_color.a = 1.0
+	data["color"] = team_color.to_html(true)
 	data["default_image"] = default_image_edit.text.strip_edges()
 	var animations: Dictionary = data.get("animations", {}).duplicate(true)
 	for animation_name in animation_edits.keys():
 		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
 	data["animations"] = animations
 	data["animation_rects"] = animation_rects.duplicate(true)
+	data["default_image_rect"] = data.get("default_image_rect", [])
 	# Legacy runtime fields remain synchronized during the migration.
 	data["sprite_idle"] = animations.get("idle", "")
 	data["sprite_move"] = animations.get("move", "")
@@ -523,24 +684,61 @@ func _save_data() -> void:
 			break
 	_set_status("SAVED: " + ROBOT_FILE)
 
+
 func _refresh_image_thumbnail(target: String) -> void:
 	if not image_thumbnail_controls.has(target):
 		return
+	VisualAssetResolver.reload()
 	var thumbnail := image_thumbnail_controls[target] as TextureRect
 	var path := ""
+	var fallback_region := Rect2()
+	var fallback_frames := 1
 	if target == "default_image":
 		path = default_image_edit.text.strip_edges()
+		fallback_region = _rect_from_values(robot_data.get(selected_type, {}).get("default_image_rect", []))
 	elif target == "projectile":
 		path = projectile_edit.text.strip_edges()
+		fallback_region = _rect_from_values(animation_rects.get("projectile", []))
+		fallback_frames = _animation_frame_count("projectile")
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
-	thumbnail.texture = _animated_texture(path, 0, 1) if not path.is_empty() else null
+		fallback_region = _rect_from_values(animation_rects.get(animation_name, []))
+		fallback_frames = _animation_frame_count(animation_name)
+	var texture := EDITOR_THUMBNAIL_UTIL.create(path, fallback_region, fallback_frames) if not path.is_empty() else null
+	thumbnail.texture = texture
+	thumbnail.scale = Vector2.ONE
 	if target == "default_image" or target == "animation:idle":
 		_refresh_robot_preview()
 
+func _rect_from_values(values: Variant) -> Rect2:
+	if values is Array and values.size() >= 4:
+		return Rect2(
+			float(values[0]),
+			float(values[1]),
+			float(values[2]),
+			float(values[3])
+		)
+	return Rect2()
+
+func _update_color_button_swatch() -> void:
+	if color_edit == null:
+		return
+	var swatch_image := Image.create(2, 2, false, Image.FORMAT_RGBA8)
+	swatch_image.fill(color_edit.color)
+	color_swatch_texture = ImageTexture.create_from_image(swatch_image)
+	color_edit.add_theme_icon_override("bg", color_swatch_texture)
+
 func _on_preview_color_changed(_color: Color) -> void:
+	var team_color := color_edit.color
+	team_color.a = 1.0
+	color_edit.color = team_color
+	_update_color_button_swatch()
+	_set_status("COLOR EVENT: %s | BUTTON: %s" % [team_color.to_html(true), color_edit.color.to_html(true)])
+	if not selected_type.is_empty() and robot_data.has(selected_type):
+		robot_data[selected_type]["color"] = team_color.to_html(true)
+		_write_robot_data()
 	_apply_preview_color()
 
 func _apply_preview_color() -> void:
@@ -549,9 +747,27 @@ func _apply_preview_color() -> void:
 	var material := robot_preview.material as ShaderMaterial
 	if material == null:
 		material = ShaderMaterial.new()
-		material.shader = ROBOT_COLOR_SHADER
 		robot_preview.material = material
+	material.shader = ROBOT_COLOR_SHADER
 	material.set_shader_parameter("team_color", color_edit.color)
+	var mask_texture: Texture2D = null
+	if selected_type == "asura":
+		var mask_image := Image.load_from_file("res://images/robot/asura/profile_team_mask.png")
+		var rect_values: Variant = robot_data.get(selected_type, {}).get("default_image_rect", [])
+		if mask_image != null and rect_values is Array and rect_values.size() >= 4:
+			var mask_rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+			if mask_rect.position.x >= 0 and mask_rect.position.y >= 0 and mask_rect.end.x <= mask_image.get_width() and mask_rect.end.y <= mask_image.get_height():
+				mask_texture = ImageTexture.create_from_image(mask_image.get_region(mask_rect))
+				material.set_shader_parameter("mask_region_uv", Vector4(
+					float(mask_rect.position.x) / float(mask_image.get_width()),
+					float(mask_rect.position.y) / float(mask_image.get_height()),
+					float(mask_rect.size.x) / float(mask_image.get_width()),
+					float(mask_rect.size.y) / float(mask_image.get_height())
+				))
+	var mask_valid := mask_texture != null and robot_preview.texture != null
+	material.set_shader_parameter("use_team_mask", mask_valid)
+	if mask_valid:
+		material.set_shader_parameter("team_mask", mask_texture)
 
 func _refresh_robot_preview() -> void:
 	if not robot_preview:
@@ -584,31 +800,66 @@ func _open_image_editor_for_target(target: String) -> void:
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
-	if path.is_empty():
-		_set_status("No image assigned for %s." % target)
-		return
-	IMAGE_STATE.open_image(path, target)
+	var source_path := path
+	var asset_id := ""
+	if not path.is_empty():
+		var resolved := VisualAssetResolver.resolve(path)
+		if resolved != null and not resolved.source.is_empty():
+			source_path = resolved.source
+			asset_id = resolved.id
+
+	# Select Asset always opens the Catalog Editor, even when the slot is empty.
+	# When an existing Visual Asset is assigned, pass its ID so the Catalog Editor
+	# can select that exact catalog entry.
+	var owner_usage := ""
+	var owner_frames := 1
+	if target.begins_with("animation:"):
+		owner_usage = target.trim_prefix("animation:")
+		owner_frames = _animation_frame_count(owner_usage)
+	elif target == "default_image":
+		owner_usage = "default_image"
+	IMAGE_STATE.open_image(source_path, target, asset_id, "robot", selected_type, owner_usage, owner_frames, "res://editor/robot_editor.tscn")
 	request_image_editor.emit()
 
 func _apply_pending_asset_selection() -> void:
 	var target := IMAGE_STATE.selection_target
 	if target.is_empty() or not IMAGE_STATE.selection_pending:
 		return
-	var path := IMAGE_STATE.consume_selection(target)
-	if path.is_empty():
+	var asset_id := IMAGE_STATE.consume_selection(target)
+	if asset_id.is_empty():
 		return
+	VisualAssetResolver.reload()
+	var resolved := VisualAssetResolver.get_asset(asset_id)
+	var rect_values: Array = []
+	if resolved != null and resolved.region.size.x > 0.0 and resolved.region.size.y > 0.0:
+		rect_values = [
+			resolved.region.position.x,
+			resolved.region.position.y,
+			resolved.region.size.x,
+			resolved.region.size.y
+		]
 	if target == "default_image":
-		default_image_edit.text = path
+		default_image_edit.text = asset_id
+		if not rect_values.is_empty():
+			robot_data[selected_type]["default_image_rect"] = rect_values.duplicate()
 	elif target == "projectile":
-		projectile_edit.text = path
+		projectile_edit.text = asset_id
+		if not rect_values.is_empty():
+			animation_rects["projectile"] = rect_values.duplicate()
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
-			(animation_edits[animation_name] as LineEdit).text = path
+			(animation_edits[animation_name] as LineEdit).text = asset_id
+		if not rect_values.is_empty():
+			animation_rects[animation_name] = rect_values.duplicate()
 	elif target == "sprite":
-		idle_edit.text = path
+		idle_edit.text = asset_id
+		if not rect_values.is_empty():
+			animation_rects["idle"] = rect_values.duplicate()
 	_refresh_all_image_thumbnails()
-	_set_status("Asset selected: " + path)
+	_refresh_animation_previews()
+	_refresh_robot_preview()
+	_set_status("Asset selected: %s | region: %s" % [asset_id, str(rect_values)])
 
 signal request_image_editor
 func _open_sprite_dialog(target: String = "sprite") -> void:

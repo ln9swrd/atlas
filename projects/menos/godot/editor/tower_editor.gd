@@ -2,7 +2,6 @@
 extends Control
 
 const TOWER_FILE := "res://content/towers/towers.json"
-const TOWER_TYPES := ["cannon", "gatling"]
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var tower_data: Dictionary = {}
@@ -32,8 +31,6 @@ var image_inventory_box: VBoxContainer
 var image_inventory_status: Label
 var animation_timer: Timer
 var animation_frame := 0
-const TOWER_ANIMATION_FRAMES := 4
-const PROJECTILE_ANIMATION_FRAMES := 8
 
 func _ready() -> void:
 	_build_ui()
@@ -70,6 +67,10 @@ func _build_ui() -> void:
 	save_btn.text = "SAVE JSON"
 	save_btn.pressed.connect(_save_data)
 	top.add_child(save_btn)
+	var delete_btn := Button.new()
+	delete_btn.text = "DELETE TOWER"
+	delete_btn.pressed.connect(_confirm_delete_tower)
+	top.add_child(delete_btn)
 	status_label = Label.new()
 	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(status_label)
@@ -151,7 +152,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
 	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Images"]
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
-	file_dialog.add_theme_constant_override("thumbnail_size", 112)
+	file_dialog.add_theme_constant_override("thumbnail_size", int(ConfigRepository.get_editor_value("ui", "file_dialog_thumbnail_size", 112)))
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(_on_file_selected)
 	var animation_preview_title := Label.new()
@@ -232,14 +233,20 @@ func _load_data() -> void:
 	_refresh_tower_list()
 	_set_status("Loaded: " + TOWER_FILE if file else "Failed to load JSON")
 
+func _get_tower_types() -> Array:
+	var types: Array = tower_data.keys()
+	types.sort()
+	return types
+
 func _refresh_tower_list() -> void:
 	tower_list.clear()
-	for tower_type in TOWER_TYPES:
-		if tower_data.has(tower_type):
-			tower_list.add_item(str(tower_data[tower_type].get("name", tower_type.to_upper())))
-			tower_list.set_item_icon(tower_list.item_count - 1, load(str(tower_data[tower_type].get("sprite_anim", ""))) as Texture2D)
-		else:
-			tower_list.add_item(tower_type.to_upper())
+	var keys: Array = _get_tower_types()
+	for tower_type in keys:
+		var data: Dictionary = tower_data.get(tower_type, {})
+		if not data is Dictionary:
+			continue
+		tower_list.add_item(str(data.get("name", tower_type.to_upper())))
+		tower_list.set_item_icon(tower_list.item_count - 1, load(str(data.get("sprite_anim", ""))) as Texture2D)
 		tower_list.set_item_metadata(tower_list.item_count - 1, tower_type)
 
 func _on_tower_selected(index: int) -> void:
@@ -266,6 +273,35 @@ func _on_tower_selected(index: int) -> void:
 	level2_damage_spin.value = float(level2.get("damage", data.get("damage", 0.0)))
 	level2_cooldown_spin.value = float(level2.get("cooldown", data.get("cooldown", 1.0)))
 	level2_range_spin.value = float(level2.get("range", data.get("range", 0.0)))
+
+func _confirm_delete_tower() -> void:
+	if selected_type.is_empty() or not tower_data.has(selected_type):
+		_set_status("No tower selected.")
+		return
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Delete Tower"
+	dialog.dialog_text = "Delete tower \"%s\" from towers.json?" % str(tower_data[selected_type].get("name", selected_type))
+	add_child(dialog)
+	dialog.confirmed.connect(func(): _delete_tower(dialog))
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(480, 180))
+
+func _delete_tower(dialog: ConfirmationDialog) -> void:
+	tower_data.erase(selected_type)
+	var file := FileAccess.open(TOWER_FILE, FileAccess.WRITE)
+	if file == null:
+		_set_status("FAILED to write JSON.")
+		dialog.queue_free()
+		return
+	file.store_string(JSON.stringify(tower_data, "  "))
+	file.close()
+	selected_type = ""
+	_refresh_tower_list()
+	if tower_list.item_count > 0:
+		tower_list.select(0)
+		_on_tower_selected(0)
+	_set_status("DELETED tower from: " + TOWER_FILE)
+	dialog.queue_free()
 
 func _save_data() -> void:
 	if selected_type.is_empty():
@@ -303,7 +339,9 @@ func _save_data() -> void:
 	file.store_string(JSON.stringify(tower_data, "  "))
 	file.close()
 	_refresh_tower_list()
-	tower_list.select(TOWER_TYPES.find(selected_type))
+	var selected_index := _get_tower_types().find(selected_type)
+	if selected_index >= 0:
+		tower_list.select(selected_index)
 	_set_status("SAVED: " + TOWER_FILE)
 
 func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
@@ -333,9 +371,9 @@ func _animated_texture(path: String, frame: int, total_frames: int) -> Texture2D
 
 func _refresh_animation_previews() -> void:
 	if sprite_preview:
-		sprite_preview.texture = _animated_texture(sprite_edit.text.strip_edges(), animation_frame, TOWER_ANIMATION_FRAMES)
+		sprite_preview.texture = _animated_texture(sprite_edit.text.strip_edges(), animation_frame, int(tower_data.get(selected_type, {}).get("sprite_frames", 4)))
 	if projectile_preview:
-		projectile_preview.texture = _animated_texture(projectile_edit.text.strip_edges(), animation_frame, PROJECTILE_ANIMATION_FRAMES)
+		projectile_preview.texture = _animated_texture(projectile_edit.text.strip_edges(), animation_frame, int(tower_data.get(selected_type, {}).get("projectile_frames", 8)))
 
 func _on_animation_tick() -> void:
 	animation_frame = (animation_frame + 1) % 8
@@ -345,22 +383,22 @@ func _apply_pending_asset_selection() -> void:
 	var target := IMAGE_STATE.selection_target
 	if target.is_empty() or not IMAGE_STATE.selection_pending:
 		return
-	var path := IMAGE_STATE.consume_selection(target)
-	if path.is_empty():
+	var asset_id := IMAGE_STATE.consume_selection(target)
+	if asset_id.is_empty():
 		return
 	if target == "sprite":
-		sprite_edit.text = path
+		sprite_edit.text = asset_id
 	elif target == "default_image":
-		default_image_edit.text = path
+		default_image_edit.text = asset_id
 	elif target == "projectile":
-		projectile_edit.text = path
+		projectile_edit.text = asset_id
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
-			(animation_edits[animation_name] as LineEdit).text = path
+			(animation_edits[animation_name] as LineEdit).text = asset_id
 	_refresh_animation_previews()
 	_refresh_image_inventory()
-	_set_status("Asset selected: " + path)
+	_set_status("Asset selected: " + asset_id)
 
 signal request_image_editor
 

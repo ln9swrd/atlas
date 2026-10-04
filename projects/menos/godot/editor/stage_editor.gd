@@ -7,7 +7,6 @@ const STAGE_DIR := "res://content/stages/"
 const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
 const MAP_DIR := "res://content/maps/"
 const ASSET_CATALOG_FILE := "res://content/editor/asset_catalog.json"
-const ENEMY_TYPES := ["normal", "rusher", "heavy", "giant"]
 const LANES := ["left", "right", "both"]
 var current_path := ""
 var stage_data: Dictionary = {}
@@ -29,11 +28,14 @@ var map_preview_container: SubViewportContainer
 var map_preview_viewport: SubViewport
 var map_preview_canvas: EditorCanvas
 var map_preview_status: Label
+var enemy_types: Array = []
 var map_preview_assets: Array[Dictionary] = []
 var encounters_box: VBoxContainer
 var status_label: Label
 
 func _ready() -> void:
+	enemy_types = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json").keys()
+	enemy_types.sort()
 	_build_ui()
 	_refresh_stage_list()
 	if stage_list.item_count > 0:
@@ -62,6 +64,10 @@ func _build_ui() -> void:
 	save_btn.text = "Save JSON"
 	save_btn.pressed.connect(_save_stage)
 	top.add_child(save_btn)
+	var delete_btn := Button.new()
+	delete_btn.text = "Delete Stage"
+	delete_btn.pressed.connect(_confirm_delete_stage)
+	top.add_child(delete_btn)
 	status_label = Label.new()
 	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(status_label)
@@ -384,9 +390,9 @@ func _build_group_row(parent: VBoxContainer, ei: int, wi: int, gi: int) -> void:
 	var row := HBoxContainer.new()
 	parent.add_child(row)
 	var enemy := OptionButton.new()
-	for e in ENEMY_TYPES: enemy.add_item(e.to_upper())
-	enemy.select(max(0, ENEMY_TYPES.find(str(group[0]))))
-	enemy.item_selected.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["groups"][gi][0] = ENEMY_TYPES[v])
+	for e in enemy_types: enemy.add_item(str(e).to_upper())
+	enemy.select(max(0, enemy_types.find(str(group[0]))))
+	enemy.item_selected.connect(func(v): stage_data["encounters"][ei]["waves"][wi]["groups"][gi][0] = str(enemy_types[v]))
 	row.add_child(enemy)
 	var count := SpinBox.new()
 	count.min_value = 1
@@ -439,6 +445,45 @@ func _add_group(ei: int, wi: int) -> void:
 func _delete_group(ei: int, wi: int, gi: int) -> void:
 	stage_data["encounters"][ei]["waves"][wi]["groups"].remove_at(gi)
 	_rebuild_encounters()
+
+func _confirm_delete_stage() -> void:
+	if current_path.is_empty() or not FileAccess.file_exists(current_path):
+		_set_status("No stage selected.")
+		return
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Delete Stage"
+	dialog.dialog_text = "Delete stage \"%s\"? The linked map will not be deleted." % str(stage_data.get("name", current_path.get_file().get_basename()))
+	add_child(dialog)
+	dialog.confirmed.connect(func(): _delete_stage(dialog))
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(520, 200))
+
+func _delete_stage(dialog: ConfirmationDialog) -> void:
+	var stage_id := str(stage_data.get("stage_id", current_path.get_file().get_basename()))
+	var absolute_path := ProjectSettings.globalize_path(current_path)
+	if not FileAccess.file_exists(current_path) or DirAccess.remove_absolute(absolute_path) != OK:
+		_set_status("FAILED to delete stage file.")
+		dialog.queue_free()
+		return
+	var catalog_file := FileAccess.open(STAGE_CATALOG_FILE, FileAccess.READ)
+	if catalog_file != null:
+		var parsed = JSON.parse_string(catalog_file.get_as_text())
+		catalog_file.close()
+		if parsed is Dictionary and parsed.get("stages", []) is Array:
+			var stages: Array = parsed["stages"]
+			stages.erase(stage_id)
+			var catalog_out := FileAccess.open(STAGE_CATALOG_FILE, FileAccess.WRITE)
+			if catalog_out != null:
+				catalog_out.store_string(JSON.stringify(parsed, "  "))
+				catalog_out.close()
+	current_path = ""
+	stage_data = {}
+	_refresh_stage_list()
+	if stage_list.item_count > 0:
+		stage_list.select(0)
+		_load_selected_stage()
+	_set_status("DELETED stage: " + stage_id)
+	dialog.queue_free()
 
 func _save_stage() -> void:
 	if current_path.is_empty() or id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty():

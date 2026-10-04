@@ -60,16 +60,16 @@ text = "Single Player"
 
 [node name="MapModeMultiplayer" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "嶺뚮졋???⑥쥓????깅턄 (AI ???롫짂)"
+text = "Multiplayer (AI)"
 
 [node name="ThirdAlliance" type="CheckButton" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 text = "Third Alliance"
-tooltip_text = "?熬곥룗?????롫짂???????롫짂 嶺뚮ㅄ維筌뤒?ご???⑤챷紐드슖????た???濡ル츎 AI ???롫짂???낅퉵??"
+tooltip_text = "Configure the Third Alliance map mode and AI behavior."
 
 [node name="MapModeHint" type="Label" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "嶺뚮졋???⑥쥓????깅턄 ???롫짂?? ?熬곣뫗??嶺뚮ㅄ維筌?AI?띠럾? ??戮?꽑??紐껊퉵??"
+text = "Select Campaign, Single Player, or Multiplayer map mode."
 autowrap_mode = 2
 
 [node name="ModeBar" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
@@ -104,7 +104,7 @@ text = "Asset Data Authoring"
 [node name="AssetSearch" type="LineEdit" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
 layout_mode = 2
 placeholder_text = "Search asset catalog"
-tooltip_text = "????????藥????裕?ID???곸궠??戮れ뿉?蹂μ쟽???롪틵????????덈펲."
+tooltip_text = "Search the asset catalog by asset ID or name."
 clear_button_enabled = true
 
 [node name="BtnClearCatalogSelection" type="Button" parent="MainLayout/Toolbox/VBox/AssetCatalogSection"]
@@ -164,7 +164,7 @@ text = "Mode: Erase Tile"
 [node name="BtnFillGround" type="Button" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
 text = "Fill Ground"
-tooltip_text = "??ルㅎ臾??Ground ????怨쀬Ŧ ???닷젆????덈츎 ??⑤챶???嶺??熬곣뫕????꾩룇瑗???꾩룄????紐껊퉵?? ?リ옇????꾩룄?????곌랜????紐껊퉵??"
+tooltip_text = "Fill the selected ground layer."
 
 [node name="GameplayTools" type="VBoxContainer" parent="MainLayout/Toolbox/VBox"]
 visible = false
@@ -371,7 +371,7 @@ autowrap_mode = 2
 
 [node name="LblPlacementSize" type="Label" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2
-text = "Placed grid size (W ??H); drag corner to resize"
+text = "Placed grid size (W x H); drag corner to resize"
 
 [node name="PlacementSizeRow" type="HBoxContainer" parent="MainLayout/Toolbox/VBox"]
 layout_mode = 2

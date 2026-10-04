@@ -13,6 +13,7 @@ static func _ensure_loaded() -> void:
 		language = str(config.get_value("general", "language", "ko"))
 	if language not in ["ko", "en"]:
 		language = "ko"
+	TranslationServer.set_locale(language)
 
 static func get_language() -> String:
 	_ensure_loaded()
@@ -23,9 +24,7 @@ static func set_language(value: String) -> void:
 		return
 	language = value
 	loaded = true
+	TranslationServer.set_locale(language)
 	var config := ConfigFile.new()
 	config.set_value("general", "language", language)
 	config.save("user://menos_settings.cfg")
-
-static func text(ko: String, en: String) -> String:
-	return ko if get_language() == "ko" else en

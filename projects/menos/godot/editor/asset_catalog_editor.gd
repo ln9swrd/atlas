@@ -7,6 +7,7 @@ const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facili
 const OBJECT_GROUPS := ["Combat", "Decoration", "Ground", "Industrial", "Obstacle", "Other", "Prop", "Structure", "Terrain"]
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
+const EDITOR_THUMBNAIL_UTIL := preload("res://scripts/editor_thumbnail_util.gd")
 const EDITED_ASSET_DIR := "res://content/editor/edited_assets"
 
 var entries: Array[Dictionary] = []
@@ -16,8 +17,13 @@ var preview_source_cache: Dictionary = {}
 var source_thumbnail_cache: Dictionary = {}
 var selected_index := -1
 var editing_asset_index := -1
+var search_edit: LineEdit
+var visual_assets: Dictionary = {}
+var visual_asset_ids: Array[String] = []
+var usage_cache: Dictionary = {}
+var selected_is_visual_asset := false
 var source_dialog: FileDialog
-var asset_list: ItemList
+var asset_list: VBoxContainer
 var region_view: AssetRegionView
 var source_label: Label
 var source_preview_panel: PanelContainer
@@ -48,13 +54,12 @@ func _ready() -> void:
 
 func open_for_asset_id(asset_id: String, edit_target: String) -> void:
 	_load_catalog()
-	var target_index := -1
-	for index in range(entries.size()):
-		if str(entries[index].get("asset_id", "")) == asset_id:
-			target_index = index
-			break
+	var target_index := _find_entry_index(asset_id)
 	if target_index < 0:
-		status_label.text = "Catalog entry not found: " + asset_id
+		id_edit.text = asset_id
+		selected_index = -1
+		selected_is_visual_asset = true
+		status_label.text = "Asset ID not registered. Choose a project image, select a region, then click Visual Asset 저장."
 		return
 	_on_asset_selected(target_index)
 	if edit_target == "image":
@@ -144,7 +149,7 @@ func _build_interface() -> void:
 	var preview_box := VBoxContainer.new()
 	preview_panel.add_child(preview_box)
 	var preview_title := Label.new()
-	preview_title.text = "SOURCE REGION — drag over the image"
+	preview_title.text = "SOURCE REGION / Drag over the image to select a region."
 	preview_box.add_child(preview_title)
 	region_view = REGION_VIEW_SCRIPT.new()
 	region_view.custom_minimum_size = Vector2(520, 520)
@@ -157,16 +162,35 @@ func _build_interface() -> void:
 	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(details)
 	var list_title := Label.new()
-	list_title.text = "REGISTERED ASSETS (double-click row to edit crop)"
+	list_title.text = "REGISTERED ASSETS / VISUAL ASSETS"
 	details.add_child(list_title)
-	asset_list = ItemList.new()
-	asset_list.custom_minimum_size.y = 170
-	asset_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	asset_list.icon_mode = ItemList.ICON_MODE_LEFT
-	asset_list.fixed_icon_size = Vector2i(48, 48)
-	asset_list.item_selected.connect(_on_asset_selected)
-	asset_list.item_activated.connect(_on_asset_activated)
-	details.add_child(asset_list)
+	search_edit = LineEdit.new()
+	search_edit.placeholder_text = "Search Asset ID / name / source"
+	search_edit.text_changed.connect(_on_search_changed)
+	details.add_child(search_edit)
+	var list_header := HBoxContainer.new()
+	list_header.custom_minimum_size.y = 28
+	var id_header := Label.new()
+	id_header.text = "ID"
+	id_header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list_header.add_child(id_header)
+	var image_header := Label.new()
+	image_header.text = "Image"
+	image_header.custom_minimum_size.x = 64
+	list_header.add_child(image_header)
+	var usage_header := Label.new()
+	usage_header.text = "사용 여부"
+	usage_header.custom_minimum_size.x = 120
+	list_header.add_child(usage_header)
+	details.add_child(list_header)
+	var list_scroll := ScrollContainer.new()
+	list_scroll.custom_minimum_size.y = 170
+	list_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	asset_list = VBoxContainer.new()
+	asset_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	asset_list.mouse_filter = Control.MOUSE_FILTER_STOP
+	list_scroll.add_child(asset_list)
+	details.add_child(list_scroll)
 	var form := GridContainer.new()
 	form.columns = 2
 	details.add_child(form)
@@ -174,7 +198,7 @@ func _build_interface() -> void:
 	id_edit = LineEdit.new()
 	id_edit.placeholder_text = "asset.tile.ground.001"
 	form.add_child(id_edit)
-	_add_form_label(form, "Display 이름")
+	_add_form_label(form, "Display Name")
 	name_edit = LineEdit.new()
 	name_edit.placeholder_text = "Meadow tile"
 	form.add_child(name_edit)
@@ -211,10 +235,12 @@ func _build_interface() -> void:
 	form.add_child(footprint_row)
 	var buttons := HBoxContainer.new()
 	details.add_child(buttons)
-	_add_button(buttons, "Add Entry", _add_entry)
-	_add_button(buttons, "Update Selected", _update_entry)
-	_add_button(buttons, "Remove Selected", _remove_entry)
-	_add_button(buttons, "Save Catalog", _on_save_catalog_pressed)
+	_add_button(buttons, "항목 추가", _add_entry)
+	_add_button(buttons, "Visual Asset 저장", _save_visual_asset)
+	_add_button(buttons, "이름 변경", _rename_entry)
+	_add_button(buttons, "선택 항목 업데이트", _update_entry)
+	_add_button(buttons, "선택 항목 삭제", _remove_entry)
+	_add_button(buttons, "카탈로그 저장", _on_save_catalog_pressed)
 	status_label = Label.new()
 	status_label.text = "Catalog ready. Choose an image and drag-select a pixel region."
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -225,7 +251,7 @@ func _build_interface() -> void:
 	source_dialog.access = FileDialog.ACCESS_RESOURCES
 	source_dialog.filters = PackedStringArray(["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Project Images"])
 	source_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
-	source_dialog.add_theme_constant_override("thumbnail_size", 112)
+	source_dialog.add_theme_constant_override("thumbnail_size", int(ConfigRepository.get_editor_value("ui", "file_dialog_thumbnail_size", 112)))
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_source_thumbnail"))
 	source_dialog.current_dir = "res://"
 	source_dialog.file_selected.connect(_on_source_file_selected)
@@ -374,7 +400,7 @@ func _save_edited_image() -> void:
 	source_path = output_path
 	source_texture = ImageTexture.create_from_image(edited_image)
 	_set_source_preview(source_texture)
-	source_label.text = "%s  (%d × %d)" % [output_path, edited_image.get_width(), edited_image.get_height()]
+	source_label.text = "%s  (%d x %d)" % [output_path, edited_image.get_width(), edited_image.get_height()]
 	region_view.cancel_image_edit()
 	region_view.set_source_texture(source_texture)
 	region_view.selected_region = Rect2i(0, 0, edited_image.get_width(), edited_image.get_height())
@@ -385,7 +411,7 @@ func _save_edited_image() -> void:
 	_finish_image_edit()
 	status_label.text = "Saved edited crop %s and updated asset %s." % [output_path, asset_id]
 	_refresh_list()
-	asset_list.select(completed_index)
+	_select_asset_row(completed_index)
 
 func _safe_asset_filename(asset_id: String) -> String:
 	var result := ""
@@ -409,7 +435,7 @@ func _on_source_file_selected(path: String) -> void:
 	source_path = path
 	source_texture = loaded
 	_set_source_preview(loaded)
-	source_label.text = "%s  (%d × %d)" % [path, source_texture.get_width(), source_texture.get_height()]
+	source_label.text = "%s  (%d x %d)" % [path, source_texture.get_width(), source_texture.get_height()]
 	region_view.set_source_texture(source_texture)
 	_update_rect_label(Rect2i())
 	_update_footprint_display(Rect2i())
@@ -483,6 +509,86 @@ func _id_exists(asset_id: String, except_index: int = -1) -> bool:
 			return true
 	return false
 
+func _find_entry_index(asset_id: String) -> int:
+	for index in range(entries.size()):
+		if str(entries[index].get("asset_id", "")) == asset_id:
+			return index
+	return -1
+
+func _load_visual_assets() -> void:
+	visual_assets.clear()
+	visual_asset_ids.clear()
+	var path := "res://content/editor/visual_assets.json"
+	if not FileAccess.file_exists(path):
+		return
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Dictionary:
+		return
+	for key in parsed.keys():
+		if parsed[key] is Dictionary:
+			visual_assets[str(key)] = parsed[key].duplicate(true)
+			visual_asset_ids.append(str(key))
+	visual_asset_ids.sort()
+
+func _visual_asset_entry(asset_id: String, data: Dictionary) -> Dictionary:
+	var region: Array = data.get("region", [0, 0, 0, 0])
+	var display_name := str(data.get("display_name", ""))
+	if display_name.is_empty():
+		display_name = asset_id
+	return {
+		"asset_id": asset_id,
+		"display_name": display_name,
+		"kind": "visual_asset",
+		"group": str(data.get("category", "Other")),
+		"source_path": str(data.get("source", "")),
+		"source_rect_px": region,
+		"footprint_tiles": [1, 1],
+		"catalog_kind": "visual_asset"
+	}
+
+func _save_visual_asset() -> void:
+	var asset_id := id_edit.text.strip_edges()
+	var rect := _current_rect()
+	if asset_id.is_empty() or source_path.is_empty() or rect.size.x <= 0 or rect.size.y <= 0:
+		status_label.text = "Asset ID, project image, and a valid selected region are required."
+		return
+	_load_visual_assets()
+	var previous: Dictionary = visual_assets.get(asset_id, {})
+	if visual_assets.has(asset_id) and not selected_is_visual_asset:
+		status_label.text = "Visual Asset ID already exists. Select it and use Update instead."
+		return
+	visual_assets[asset_id] = {
+		"id": asset_id,
+		"category": "Robot" if asset_id.begins_with("robot.") else "Other",
+		"source": source_path,
+		"region": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
+		"frames": 1,
+		"owner": "",
+		"usage": "visual_asset_catalog"
+	}
+	if not _write_visual_assets():
+		status_label.text = "Visual Asset Catalog 저장에 실패했습니다."
+		return
+	_load_catalog()
+	var new_index := _find_entry_index(asset_id)
+	if new_index >= 0:
+		_on_asset_selected(new_index)
+	status_label.text = "Visual Asset 저장 완료: " + asset_id
+
+func _write_visual_assets() -> bool:
+	var path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(visual_assets, "\t") + "\n")
+	file.close()
+	VisualAssetResolver.reload()
+	return true
+
 func _add_entry() -> void:
 	var entry := _build_entry()
 	if entry.is_empty():
@@ -495,7 +601,54 @@ func _add_entry() -> void:
 	_refresh_list()
 	status_label.text = "Added %s. Save Catalog to persist changes." % entry.asset_id
 
+func _rename_entry() -> void:
+	if selected_is_visual_asset:
+		_rename_visual_asset()
+		return
+	if selected_index < 0 or selected_index >= entries.size():
+		status_label.text = "Select a catalog entry before changing its name."
+		return
+	var new_name := name_edit.text.strip_edges()
+	if new_name.is_empty():
+		status_label.text = "Enter a display name first."
+		return
+	entries[selected_index]["display_name"] = new_name
+	_refresh_list()
+	status_label.text = "Name changed. Save Catalog to persist the change."
+
+func _rename_visual_asset() -> void:
+	if selected_index < 0 or selected_index >= entries.size():
+		status_label.text = "Select a Visual Asset first."
+		return
+	var old_id := str(entries[selected_index].get("asset_id", ""))
+	var new_id := id_edit.text.strip_edges()
+	if old_id.is_empty() or new_id.is_empty() or old_id == new_id:
+		status_label.text = "Enter a new Visual Asset ID."
+		return
+	_load_visual_assets()
+	if not visual_assets.has(old_id):
+		status_label.text = "Visual Asset not found: " + old_id
+		return
+	if visual_assets.has(new_id):
+		status_label.text = "Visual Asset ID already exists: " + new_id
+		return
+	var data: Dictionary = visual_assets[old_id]
+	visual_assets.erase(old_id)
+	data["id"] = new_id
+	visual_assets[new_id] = data
+	if not _write_visual_assets():
+		status_label.text = "Visual Asset ID rename failed."
+		return
+	_load_catalog()
+	var new_index := _find_entry_index(new_id)
+	if new_index >= 0:
+		_on_asset_selected(new_index)
+	status_label.text = "Visual Asset ID changed: %s -> %s" % [old_id, new_id]
+
 func _update_entry() -> void:
+	if selected_is_visual_asset:
+		_save_visual_asset()
+		return
 	if selected_index < 0 or selected_index >= entries.size():
 		status_label.text = "Select a catalog entry to update."
 		return
@@ -507,13 +660,21 @@ func _update_entry() -> void:
 		return
 	entries[selected_index] = entry
 	_refresh_list()
-	asset_list.select(selected_index)
+	_select_asset_row(selected_index)
 	status_label.text = "Updated entry. Save Catalog to persist changes."
 
 func _remove_entry() -> void:
 	if selected_index < 0 or selected_index >= entries.size():
 		status_label.text = "Select a catalog entry to remove."
 		return
+	if selected_is_visual_asset:
+		var visual_id := str(entries[selected_index].get("asset_id", ""))
+		_load_visual_assets()
+		if visual_assets.has(visual_id):
+			visual_assets.erase(visual_id)
+			if not _write_visual_assets():
+				status_label.text = "Visual Asset 삭제에 실패했습니다."
+				return
 	entries.remove_at(selected_index)
 	selected_index = -1
 	_refresh_list()
@@ -524,6 +685,7 @@ func _on_asset_selected(index: int) -> void:
 	if index < 0 or index >= entries.size():
 		return
 	selected_index = index
+	selected_is_visual_asset = str(entries[index].get("catalog_kind", "")) == "visual_asset"
 	var entry: Dictionary = entries[index]
 	id_edit.text = str(entry.get("asset_id", ""))
 	name_edit.text = str(entry.get("display_name", ""))
@@ -540,7 +702,7 @@ func _load_source_for_entry(rect: Rect2i) -> void:
 	if loaded != null:
 		source_texture = loaded
 		_set_source_preview(loaded)
-		source_label.text = "%s  (%d × %d)" % [source_path, source_texture.get_width(), source_texture.get_height()]
+		source_label.text = "%s  (%d x %d)" % [source_path, source_texture.get_width(), source_texture.get_height()]
 		region_view.set_source_texture(source_texture)
 		region_view.set("selected_region", rect)
 		region_view.queue_redraw()
@@ -553,6 +715,7 @@ func _load_source_for_entry(rect: Rect2i) -> void:
 		_update_rect_label(rect)
 
 func _clear_form() -> void:
+	selected_is_visual_asset = false
 	id_edit.clear()
 	name_edit.clear()
 	source_path = ""
@@ -564,43 +727,155 @@ func _clear_form() -> void:
 	_update_rect_label(Rect2i())
 	_update_footprint_display(Rect2i())
 
+func _sort_entries_by_name() -> void:
+	entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_name := str(a.get("display_name", "")).strip_edges().to_lower()
+		var b_name := str(b.get("display_name", "")).strip_edges().to_lower()
+		if a_name == b_name:
+			return str(a.get("asset_id", "")) < str(b.get("asset_id", ""))
+		return a_name < b_name
+	)
+
+func _select_asset_row(index: int) -> void:
+	if index < 0 or index >= entries.size():
+		return
+	selected_index = index
+	for row in asset_list.get_children():
+		if row.get_child_count() > 1 and row.get_child(1) is Button:
+			var row_button: Button = row.get_child(1)
+			row_button.button_pressed = row_button.get_meta("asset_index", -1) == index
+
+func _on_asset_row_gui_input(event: InputEvent, index: int) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.double_click:
+		_on_asset_activated(index)
+
+func _rebuild_usage_cache() -> void:
+	usage_cache.clear()
+	_scan_usage_directory("res://content")
+
+func _scan_usage_directory(path: String) -> void:
+	var dir := DirAccess.open(path)
+	if dir == null:
+		return
+	for file_name in dir.get_files():
+		if not file_name.to_lower().ends_with(".json"):
+			continue
+		if file_name in ["asset_catalog.json", "visual_assets.json"]:
+			continue
+		var file_path := path.path_join(file_name)
+		var file := FileAccess.open(file_path, FileAccess.READ)
+		if file == null:
+			continue
+		var text := file.get_as_text()
+		file.close()
+		for asset_id in entries.map(func(value: Dictionary) -> String: return str(value.get("asset_id", ""))):
+			if asset_id.is_empty() or not text.contains(asset_id):
+				continue
+			var refs: Array = usage_cache.get(asset_id, [])
+			var short_name := file_name.get_basename()
+			if not refs.has(short_name):
+				refs.append(short_name)
+			usage_cache[asset_id] = refs
+	for directory_name in dir.get_directories():
+		_scan_usage_directory(path.path_join(directory_name))
+
+func _catalog_usage_text(entry: Dictionary) -> String:
+	var asset_id := str(entry.get("asset_id", ""))
+	if str(entry.get("catalog_kind", "")) == "visual_asset":
+		_load_visual_assets()
+		var data: Dictionary = visual_assets.get(asset_id, {})
+		var owner := str(data.get("owner", ""))
+		var usage := str(data.get("usage", ""))
+		if not owner.is_empty():
+			if not usage.is_empty() and usage != "visual_asset_catalog":
+				return "사용중: %s / %s" % [owner, usage]
+			return "사용중: %s" % owner
+		if not usage.is_empty() and usage != "visual_asset_catalog":
+			return "사용중: %s" % usage
+	var refs: Array = usage_cache.get(asset_id, [])
+	if refs.is_empty():
+		return "미사용"
+	return "사용중: %s" % ", ".join(PackedStringArray(refs))
+
+func _build_asset_row(entry: Dictionary, index: int) -> void:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size.y = 68
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	asset_list.add_child(row)
+
+	var text_button := Button.new()
+	text_button.text = str(entry.get("asset_id", "?"))
+	text_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_button.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	text_button.toggle_mode = true
+	text_button.set_meta("asset_index", index)
+	text_button.tooltip_text = "%s\nID: %s\n%s / %s" % [entry.get("source_path", ""), entry.get("asset_id", ""), str(entry.get("kind", "tile")).capitalize(), str(entry.get("group", "?"))]
+	text_button.pressed.connect(func() -> void:
+		_on_asset_selected(index)
+		_select_asset_row(index)
+	)
+	text_button.gui_input.connect(func(event: InputEvent) -> void:
+		_on_asset_row_gui_input(event, index)
+	)
+	row.add_child(text_button)
+
+	var preview := TextureRect.new()
+	preview.custom_minimum_size = Vector2(64, 64)
+	preview.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview.texture = _entry_preview_icon(entry)
+	row.add_child(preview)
+
+	var usage_label := Label.new()
+	usage_label.text = _catalog_usage_text(entry)
+	usage_label.custom_minimum_size.x = 120
+	usage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	usage_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	usage_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	row.add_child(usage_label)
+
 func _refresh_list() -> void:
-	asset_list.clear()
-	for entry in entries:
-		var kind_text := str(entry.get("kind", "tile")).capitalize()
-		var group_text := str(entry.get("group", "?"))
-		var display_text := "%s\n%s · %s" % [entry.get("display_name", "?"), kind_text, group_text]
-		asset_list.add_item(display_text, _entry_preview_icon(entry))
+	var selected_asset_id := ""
 	if selected_index >= 0 and selected_index < entries.size():
-		asset_list.select(selected_index)
+		selected_asset_id = str(entries[selected_index].get("asset_id", ""))
+	_sort_entries_by_name()
+	selected_index = -1
+	if not selected_asset_id.is_empty():
+		for index in range(entries.size()):
+			if str(entries[index].get("asset_id", "")) == selected_asset_id:
+				selected_index = index
+				break
+	for child in asset_list.get_children():
+		child.queue_free()
+	var query := search_edit.text.strip_edges().to_lower() if search_edit != null else ""
+	for index in range(entries.size()):
+		var entry: Dictionary = entries[index]
+		if not query.is_empty():
+			var haystack := "%s %s %s %s" % [str(entry.get("asset_id", "")), str(entry.get("display_name", "")), str(entry.get("source_path", "")), str(entry.get("group", ""))]
+			if not haystack.to_lower().contains(query):
+				continue
+		_build_asset_row(entry, index)
+	if selected_index >= 0 and selected_index < entries.size():
+		_select_asset_row(selected_index)
 
 func _entry_preview_icon(entry: Dictionary) -> Texture2D:
+	var is_visual_asset := str(entry.get("catalog_kind", "")) == "visual_asset"
+	var value := str(entry.get("asset_id", "")) if is_visual_asset else str(entry.get("source_path", ""))
+	var fallback_region := Rect2()
 	var rect_values: Variant = entry.get("source_rect_px", [])
-	if not rect_values is Array or rect_values.size() != 4:
-		return null
-	var source_path_value := str(entry.get("source_path", ""))
-	if source_path_value.is_empty():
-		return null
-	var texture: Texture2D = preview_source_cache.get(source_path_value) as Texture2D
-	if texture == null:
-		var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path_value)
-		if loaded == null:
-			return null
-		texture = loaded
-		preview_source_cache[source_path_value] = texture
-	var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
-	if rect.size.x <= 0 or rect.size.y <= 0 or rect.position.x < 0 or rect.position.y < 0:
-		return null
-	if rect.end.x > texture.get_width() or rect.end.y > texture.get_height():
-		return null
-	var preview := AtlasTexture.new()
-	preview.atlas = texture
-	preview.region = Rect2(rect.position, rect.size)
-	return preview
+	if rect_values is Array and rect_values.size() == 4:
+		fallback_region = Rect2(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+	var fallback_frames := maxi(1, int(entry.get("frames", 1)))
+	return EDITOR_THUMBNAIL_UTIL.create(value, fallback_region, fallback_frames)
 
 func _load_catalog() -> void:
 	entries.clear()
 	selected_index = -1
+	usage_cache.clear()
+	_load_visual_assets()
 	if not FileAccess.file_exists(CATALOG_PATH):
 		_refresh_list()
 		return
@@ -613,6 +888,12 @@ func _load_catalog() -> void:
 		for value in parsed.assets:
 			if value is Dictionary:
 				entries.append(value.duplicate(true))
+	var visual_index := 0
+	while visual_index < visual_asset_ids.size():
+		var visual_id := visual_asset_ids[visual_index]
+		entries.append(_visual_asset_entry(visual_id, visual_assets.get(visual_id, {})))
+		visual_index += 1
+	_rebuild_usage_cache()
 	_refresh_list()
 	status_label.text = "Loaded %d catalog entries." % entries.size()
 
@@ -625,9 +906,13 @@ func _save_catalog() -> bool:
 	if file == null:
 		status_label.text = "Could not write catalog. Error %d" % FileAccess.get_open_error()
 		return false
-	file.store_string(JSON.stringify({"schema_version": 1, "assets": entries}, "\t") + "\n")
+	var catalog_assets: Array[Dictionary] = []
+	for entry in entries:
+		if str(entry.get("catalog_kind", "")) != "visual_asset":
+			catalog_assets.append(entry.duplicate(true))
+	file.store_string(JSON.stringify({"schema_version": 1, "assets": catalog_assets}, "	") + "\n")
 	file.close()
-	status_label.text = "Saved %d assets to %s" % [entries.size(), CATALOG_PATH]
+	status_label.text = "Saved %d catalog assets to %s" % [catalog_assets.size(), CATALOG_PATH]
 	var selected_asset_id := ""
 	if selected_index >= 0 and selected_index < entries.size():
 		selected_asset_id = str(entries[selected_index].get("asset_id", ""))
@@ -639,3 +924,13 @@ func _on_save_catalog_pressed() -> void:
 		_save_edited_image()
 		return
 	_save_catalog()
+
+func _on_search_changed(text: String) -> void:
+	_refresh_list()
+	if text.strip_edges().is_empty():
+		return
+	if asset_list.get_child_count() == 0:
+		id_edit.text = text.strip_edges()
+		selected_index = -1
+		selected_is_visual_asset = true
+		status_label.text = "새 Visual Asset ID: %s / 이미지를 선택하고 Visual Asset 저장을 누르세요." % text.strip_edges()

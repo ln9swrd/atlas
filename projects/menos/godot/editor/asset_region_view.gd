@@ -17,7 +17,7 @@ var _last_pan_position := Vector2.ZERO
 var _editing_pixels := false
 var _edit_image: Image
 var _edit_texture: ImageTexture
-var _brush_size_px := 12
+var _brush_size_px := int(ConfigRepository.get_editor_value("asset_region_view", "brush_size_px", 12))
 var _last_pointer := Vector2(-1, -1)
 var _clip_erase_to_region := false
 var _edit_clip_rect := Rect2i()
@@ -34,7 +34,7 @@ func set_source_texture(value: Texture2D) -> void:
 	_pan_offset = Vector2.ZERO
 	queue_redraw()
 
-func begin_image_edit(source_crop: Image, brush_size_px: int = 12) -> void:
+func begin_image_edit(source_crop: Image, brush_size_px: int = -1) -> void:
 	_clip_erase_to_region = false
 	_edit_clip_rect = Rect2i()
 	_edit_image = source_crop.duplicate()
@@ -42,12 +42,12 @@ func begin_image_edit(source_crop: Image, brush_size_px: int = 12) -> void:
 	_edit_texture = ImageTexture.create_from_image(_edit_image)
 	texture = _edit_texture
 	selected_region = Rect2i()
-	_brush_size_px = maxi(1, brush_size_px)
+	_brush_size_px = maxi(1, brush_size_px if brush_size_px > 0 else int(ConfigRepository.get_editor_value("asset_region_view", "brush_size_px", 12)))
 	_editing_pixels = true
 	_fit_view_to_pixel_rect(Rect2i(0, 0, _edit_image.get_width(), _edit_image.get_height()))
 	queue_redraw()
 
-func begin_image_edit_clipped(full_source: Image, clip_rect: Rect2i, brush_size_px: int = 12) -> void:
+func begin_image_edit_clipped(full_source: Image, clip_rect: Rect2i, brush_size_px: int = -1) -> void:
 	_clip_erase_to_region = true
 	_edit_clip_rect = clip_rect
 	_edit_image = full_source.duplicate()
@@ -55,7 +55,7 @@ func begin_image_edit_clipped(full_source: Image, clip_rect: Rect2i, brush_size_
 	_edit_texture = ImageTexture.create_from_image(_edit_image)
 	texture = _edit_texture
 	selected_region = clip_rect
-	_brush_size_px = maxi(1, brush_size_px)
+	_brush_size_px = maxi(1, brush_size_px if brush_size_px > 0 else int(ConfigRepository.get_editor_value("asset_region_view", "brush_size_px", 12)))
 	_editing_pixels = true
 	_fit_view_to_pixel_rect(clip_rect)
 	queue_redraw()
@@ -103,7 +103,7 @@ func _fit_view_to_pixel_rect(pixel_rect: Rect2i) -> void:
 	if texture == null or pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0:
 		return
 	var base := _get_base_scale()
-	var margin := 0.88
+	var margin := float(ConfigRepository.get_editor_value("asset_region_view", "fit_margin", 0.88))
 	_zoom = 1.0
 	_pan_offset = Vector2.ZERO
 	var zoom_x := (size.x * margin) / (float(pixel_rect.size.x) * base)

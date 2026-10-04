@@ -1,5 +1,7 @@
 ﻿class_name GameSettingsLoader
 extends RefCounted
 
+const GAMEPLAY_PATH := "res://content/settings/gameplay.json"
+
 static func load_gameplay() -> Dictionary:
-	return ContentCatalogLoader.load_dictionary_catalog("res://content/settings/gameplay.json")
+	return ConfigRepository.load_dictionary(GAMEPLAY_PATH)

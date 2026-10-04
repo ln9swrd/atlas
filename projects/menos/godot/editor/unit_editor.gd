@@ -87,6 +87,10 @@ func _build_ui() -> void:
 	new_btn.text = "NEW UNIT"
 	new_btn.pressed.connect(_create_new_unit)
 	header.add_child(new_btn)
+	var delete_btn := Button.new()
+	delete_btn.text = "DELETE UNIT"
+	delete_btn.pressed.connect(_confirm_delete_unit)
+	header.add_child(delete_btn)
 	var body := HSplitContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.split_offset = 260
@@ -224,7 +228,7 @@ func _build_properties(parent: VBoxContainer) -> void:
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
 	file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.webp,*.bmp,*.svg ; Images"]
 	file_dialog.display_mode = FileDialog.DISPLAY_THUMBNAILS
-	file_dialog.add_theme_constant_override("thumbnail_size", 112)
+	file_dialog.add_theme_constant_override("thumbnail_size", int(ConfigRepository.get_editor_value("ui", "file_dialog_thumbnail_size", 112)))
 	FileDialog.set_get_thumbnail_callback(Callable(self, "_get_file_thumbnail"))
 	file_dialog.file_selected.connect(_on_file_selected)
 	add_child(file_dialog)
@@ -390,11 +394,12 @@ func _load_unit_catalog_file(path: String, source: String) -> void:
 		unit_sources[id] = source
 
 func _get_unit_types() -> Array:
-	var types: Array = BASE_UNIT_TYPES.duplicate()
+	var types: Array = []
 	for key in unit_data.keys():
 		var unit_type := str(key)
 		if not types.has(unit_type):
 			types.append(unit_type)
+	types.sort()
 	return types
 
 func _refresh_unit_list() -> void:
@@ -412,6 +417,50 @@ func _find_unit_index(unit_type: String) -> int:
 		if str(unit_list.get_item_metadata(index)) == unit_type:
 			return index
 	return -1
+
+func _confirm_delete_unit() -> void:
+	if selected_type.is_empty() or not unit_data.has(selected_type):
+		_set_status("No unit selected.")
+		return
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Delete Unit"
+	dialog.dialog_text = "Delete unit \"%s\" from its source JSON?" % str(unit_data[selected_type].get("name", selected_type))
+	add_child(dialog)
+	dialog.confirmed.connect(func(): _delete_unit(dialog))
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(480, 180))
+
+func _delete_unit(dialog: ConfirmationDialog) -> void:
+	var source := str(unit_sources.get(selected_type, "unit"))
+	var target_file := ENEMY_FILE if source == "enemy" else UNIT_FILE
+	var catalog: Dictionary = {}
+	var file := FileAccess.open(target_file, FileAccess.READ)
+	if file != null:
+		var parsed = JSON.parse_string(file.get_as_text())
+		file.close()
+		if parsed is Dictionary:
+			catalog = parsed
+	if not catalog.has(selected_type):
+		_set_status("FAILED: selected unit was not found in source JSON.")
+		dialog.queue_free()
+		return
+	catalog.erase(selected_type)
+	var out := FileAccess.open(target_file, FileAccess.WRITE)
+	if out == null:
+		_set_status("FAILED to write JSON.")
+		dialog.queue_free()
+		return
+	out.store_string(JSON.stringify(catalog, "  "))
+	out.close()
+	unit_data.erase(selected_type)
+	unit_sources.erase(selected_type)
+	selected_type = ""
+	_refresh_unit_list()
+	if unit_list.item_count > 0:
+		unit_list.select(0)
+		_on_unit_selected(0)
+	_set_status("DELETED unit from: " + target_file)
+	dialog.queue_free()
 
 func _create_new_unit() -> void:
 	var sequence := 1
@@ -670,21 +719,21 @@ func _apply_pending_asset_selection() -> void:
 	var target := IMAGE_STATE.selection_target
 	if target.is_empty() or not IMAGE_STATE.selection_pending:
 		return
-	var path := IMAGE_STATE.consume_selection(target)
-	if path.is_empty():
+	var asset_id := IMAGE_STATE.consume_selection(target)
+	if asset_id.is_empty():
 		return
 	if target == "sprite":
-		sprite_edit.text = path
+		sprite_edit.text = asset_id
 	elif target == "default_image":
-		default_image_edit.text = path
+		default_image_edit.text = asset_id
 	elif target == "projectile":
-		projectile_edit.text = path
+		projectile_edit.text = asset_id
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
-			(animation_edits[animation_name] as LineEdit).text = path
+			(animation_edits[animation_name] as LineEdit).text = asset_id
 	_refresh_all_image_thumbnails()
-	_set_status("Asset selected: " + path)
+	_set_status("Asset selected: " + asset_id)
 
 func _open_image_editor_for_target(target: String) -> void:
 	var path := ""

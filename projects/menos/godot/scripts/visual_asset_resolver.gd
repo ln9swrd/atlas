@@ -19,6 +19,11 @@ static func _ensure_loaded() -> void:
 	if parsed is Dictionary:
 		_catalog = parsed
 
+static func reload() -> void:
+	_catalog.clear()
+	_loaded = false
+	_ensure_loaded()
+
 static func get_asset(asset_id: String) -> VisualAssetDefinition:
 	_ensure_loaded()
 	var data = _catalog.get(asset_id)

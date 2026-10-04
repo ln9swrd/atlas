@@ -159,7 +159,7 @@ func _clear_catalog_selection() -> void:
 	lbl_asset_details.text = ""
 	update_selected_tile_label("None")
 	update_tool_label("CATALOG: None")
-	update_status("카달로그 선택을 해제했습니다.")
+	update_status("Catalog selection cleared.")
 
 func _find_catalog_asset_index(asset_id: String) -> int:
 	if asset_id.is_empty():
@@ -189,7 +189,7 @@ func _rebuild_asset_rows() -> void:
 	group_names.sort()
 	if group_names.is_empty():
 		var empty_label := Label.new()
-		empty_label.text = "寃??寃곌낵媛 ?놁뒿?덈떎."
+		empty_label.text = "No search results."
 		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		asset_rows.add_child(empty_label)
 		return
@@ -260,7 +260,7 @@ func _select_catalog_asset(index: int) -> void:
 	set_asset_preview(entry)
 	var rect: Array = entry.get("source_rect_px", [0, 0, 0, 0])
 	var footprint := canvas.catalog_asset_footprint(entry)
-	lbl_asset_details.text = "%s\n%s 쨌 %s\nID: %s\nSource: %s\nPixels: %s\nFootprint: %s 횞 %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
+	lbl_asset_details.text = "%s\\n%s / %s\\nID: %s\\nSource: %s\\nPixels: %s\\nFootprint: %s x %s" % [entry.get("display_name", ""), str(entry.get("kind", "tile")).capitalize(), entry.get("group", ""), entry.get("asset_id", ""), entry.get("source_path", ""), str(rect), str(footprint.x), str(footprint.y)]
 	update_tool_label("CATALOG: " + str(entry.get("display_name", entry.get("asset_id", ""))))
 	var asset_kind := str(entry.get("kind", "tile"))
 	var asset_group := str(entry.get("group", ""))
@@ -345,9 +345,9 @@ func _build_map_size_controls() -> void:
 	map_height_spin.value_changed.connect(_on_map_size_spin_changed)
 	row.add_child(map_height_spin)
 	var apply := Button.new()
-	apply.text = "?곸슜"
+	apply.text = "Apply"
 	apply.disabled = false
-	apply.tooltip_text = "?꾩옱 W/H 媛믪쓣 ?ㅼ떆 ?곸슜?⑸땲??"
+	apply.tooltip_text = "Apply the current map width and height."
 	apply.pressed.connect(_on_map_size_apply_pressed)
 	row.add_child(apply)
 	$MainLayout/Toolbox/VBox.add_child(map_size_panel)
@@ -377,7 +377,7 @@ func _on_map_size_spin_changed(_value: float) -> void:
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
 	canvas.set_map_size_preview(new_size)
 	current_map_data = canvas.map_data
-	update_status("Map preview resized to %d 횞 %d tiles. Save JSON to keep the change." % [new_size.x, new_size.y])
+	update_status("Map size changed: %d x %d. Preview updated." % [new_size.x, new_size.y])
 
 func _on_map_size_apply_pressed() -> void:
 	if current_map_data.is_empty() or canvas == null:
@@ -386,7 +386,7 @@ func _on_map_size_apply_pressed() -> void:
 	var old_value: Variant = current_map_data.get("map_tiles", [36, 24])
 	var old_size := Vector2i(int(old_value[0]), int(old_value[1])) if old_value is Array and old_value.size() >= 2 else Vector2i(36, 24)
 	if new_size == old_size:
-		update_status("Map size unchanged: %d 횞 %d." % [new_size.x, new_size.y])
+		update_status("Map size is already %d x %d." % [new_size.x, new_size.y])
 		return
 	if (new_size.x < old_size.x or new_size.y < old_size.y) and not _map_size_can_contain(new_size):
 		_sync_map_size_controls()
@@ -396,7 +396,7 @@ func _on_map_size_apply_pressed() -> void:
 	current_map_data["map_pixel_size"] = [new_size.x * 32, new_size.y * 32]
 	canvas.set_map_data(current_map_data)
 	_sync_map_size_controls()
-	update_status("Map resized to %d 횞 %d tiles (%d 횞 %d px). Save JSON to keep the change." % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
+	update_status("Map size applied: %d x %d (%d x %d px)." % [new_size.x, new_size.y, new_size.x * 32, new_size.y * 32])
 
 func _map_size_can_contain(new_size: Vector2i) -> bool:
 	var pixel_size := Vector2(new_size) * 32.0
@@ -462,7 +462,7 @@ func setup_layer_options() -> void:
 		if parent != null:
 			var view_label := Label.new()
 			view_label.text = "View Layer"
-			view_label.tooltip_text = "以묒븰 留듭뿉 ?쒖떆???덉씠?대? ?좏깮?⑸땲??"
+			view_label.tooltip_text = "Select the layer shown in the map preview."
 			option_layer_view = OptionButton.new()
 			option_layer_view.name = "OptionLayerView"
 			option_layer_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -479,8 +479,8 @@ func setup_layer_options() -> void:
 			parent.move_child(option_layer_view, index + 1)
 			gameplay_visibility_toggle = CheckButton.new()
 			gameplay_visibility_toggle.name = "GameplayVisibilityToggle"
-			gameplay_visibility_toggle.text = "寃뚯엫?뚮젅???붿냼"
-			gameplay_visibility_toggle.tooltip_text = "寃뚯엫?뚮젅???붿냼???붾㈃ ?쒖떆/?④????꾪솚?⑸땲??"
+			gameplay_visibility_toggle.text = "Gameplay Elements"
+			gameplay_visibility_toggle.tooltip_text = "Toggle gameplay element visibility."
 			gameplay_visibility_toggle.button_pressed = true
 			gameplay_visibility_toggle.toggled.connect(_on_gameplay_visibility_toggled)
 			parent.add_child(gameplay_visibility_toggle)
@@ -495,12 +495,12 @@ func _on_layer_view_selected(index: int) -> void:
 	var layer_names := ["ALL", "Ground", "Vegetation", "RoadComposition"]
 	if index >= 0 and index < layer_names.size() and canvas:
 		canvas.set_visible_layer(layer_names[index])
-		update_status("?쒖떆 ?덉씠?? %s" % ("?꾩껜" if index == 0 else layer_names[index]))
+		update_status("Visible layer: %s" % ("All" if index == 0 else layer_names[index]))
 
 func _on_gameplay_visibility_toggled(visible: bool) -> void:
 	if canvas:
 		canvas.set_gameplay_visible(visible)
-	update_status("寃뚯엫?뚮젅???붿냼: %s" % ("?쒖떆" if visible else "?④?"))
+	update_status("Gameplay elements: %s" % ("Visible" if visible else "Hidden"))
 
 func _sync_map_play_mode_controls() -> void:
 	var modes: Array = canvas.map_data.get("play_modes", ["campaign", "single", "multiplayer"]) if canvas and canvas.map_data.get("play_modes", []) is Array else ["campaign", "single", "multiplayer"]
@@ -511,7 +511,7 @@ func _sync_map_play_mode_controls() -> void:
 	third_alliance.set_pressed_no_signal(bool(multiplayer.get("third_alliance_enabled", false)))
 	third_alliance.visible = map_mode_multiplayer.button_pressed
 	map_mode_hint.visible = map_mode_multiplayer.button_pressed
-	map_mode_hint.text = "硫?고뵆?덉씠: ?꾧뎔 ?숇㏏ / ???숇㏏? 紐⑤몢 AI媛 ?쒖뼱?⑸땲?? ???숇㏏??AI?대ŉ ?꾧뎔쨌???숇㏏ 紐⑤몢? ?곷??⑸땲??"
+	map_mode_hint.text = "Multiplayer maps can use allied, enemy, and third-faction AI units."
 
 func _on_map_mode_toggled(_pressed: bool) -> void:
 	if not canvas:
@@ -550,9 +550,9 @@ func _ensure_multiplayer_config() -> void:
 	if not multiplayer.has("third_alliance_enabled"):
 		multiplayer["third_alliance_enabled"] = false
 	multiplayer["alliances"] = [
-		{"id": "ally", "name": "?꾧뎔 ?숇㏏", "controller": "ai"},
-		{"id": "enemy", "name": "???숇㏏", "controller": "ai"},
-		{"id": "third", "name": "???숇㏏", "controller": "ai"}
+		{"id": "ally", "name": "Allied Unit", "controller": "ai"},
+		{"id": "enemy", "name": "Enemy Unit", "controller": "ai"},
+		{"id": "third", "name": "Third Faction Unit", "controller": "ai"}
 	]
 	multiplayer["relations"] = {
 		"ally": {"enemy": "hostile", "third": "hostile"},
@@ -569,7 +569,7 @@ func _update_map_mode_status() -> void:
 	if map_mode_multiplayer.button_pressed:
 		modes.append("Multiplayer")
 	var mode_text := ", ".join(modes)
-	update_status("留??ъ슜 紐⑤뱶: %s" % mode_text)
+	update_status("Map mode: %s" % mode_text)
 
 func load_map(path: String) -> void:
 	current_map_path = path
@@ -584,9 +584,9 @@ func load_map(path: String) -> void:
 	_sync_map_play_mode_controls()
 	var linked_stages := _find_linked_stages(path)
 	if linked_stages.is_empty():
-		update_status("Loaded map: %s | ?곌껐 ?ㅽ뀒?댁?: ?놁쓬" % path)
+		update_status("Loaded map: %s | No linked stages" % path)
 	else:
-		update_status("Loaded map: %s | ?곌껐 ?ㅽ뀒?댁?: %s" % [path, ", ".join(linked_stages)])
+		update_status("Loaded map: %s | Linked stages: %s" % [path, ", ".join(linked_stages)])
 
 func _find_linked_stages(map_path: String) -> Array[String]:
 	var result: Array[String] = []
@@ -805,15 +805,15 @@ func _on_resize_placement_pressed() -> void:
 	var width_tiles := int(spin_placement_width.value)
 	var height_tiles := int(spin_placement_height.value)
 	if canvas.resize_selected_catalog_placement(width_tiles, height_tiles):
-		update_status("Placed asset resized to %d 횞 %d cells." % [width_tiles, height_tiles])
+		update_status("Placement resized: %d x %d tiles." % [width_tiles, height_tiles])
 	else:
-		update_status("Resize failed: target bounds are outside the map or overlap another tile.")
+		update_status("Placement operation failed.")
 
 func _on_delete_placement_pressed() -> void:
 	if canvas.delete_selected_catalog_placement():
-		update_status("Selected asset placement deleted.")
+		update_status("Selected placement deleted.")
 	else:
-		update_status("??젣 failed: select a placed catalog asset first.")
+		update_status("Placement operation failed.")
 
 func _on_map_data_changed() -> void:
 	if canvas:
@@ -855,16 +855,16 @@ func _on_fill_ground_pressed() -> void:
 	if canvas == null:
 		return
 	if canvas.active_layer != "Ground":
-		update_status("Ground ?덉씠?댁뿉?쒕쭔 ?ъ슜?????덉뒿?덈떎.")
+		update_status("Only Ground assets can be used on the Ground layer.")
 		return
 	if canvas.selected_catalog_asset.is_empty():
-		update_status("癒쇱? Ground ??쇱쓣 ?좏깮?섏떗?쒖삤.")
+		update_status("Select a Ground catalog asset first.")
 		return
 	if str(canvas.selected_catalog_asset.get("kind", "tile")) != "tile":
-		update_status("Ground ?꾩껜 梨꾩슦湲곕뒗 ??쇰쭔 ?ъ슜?????덉뒿?덈떎.")
+		update_status("Only tile assets can be used for Fill Ground.")
 		return
 	var filled := canvas.fill_ground_empty_with_selected_tile()
-	update_status("Ground fill: %d placed" % filled)
+	update_status("Fill Ground complete: %d tiles." % filled)
 
 func set_asset_preview(entry: Dictionary) -> void:
 	asset_preview.texture = null
@@ -890,7 +890,7 @@ func set_asset_preview(entry: Dictionary) -> void:
 	cropped_preview.atlas = source_texture
 	cropped_preview.region = rect
 	asset_preview.texture = cropped_preview
-	lbl_asset_preview_status.text = "Source region: %d 횞 %d px 쨌 original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
+	lbl_asset_preview_status.text = "Source region: %d x %d px / original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
 
 
 func _on_btn_load_pressed() -> void:
