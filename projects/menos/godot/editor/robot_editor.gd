@@ -817,6 +817,7 @@ func _apply_pending_asset_selection() -> void:
 	var asset_id := IMAGE_STATE.consume_selection(target)
 	if asset_id.is_empty():
 		return
+	VisualAssetResolver.reload()
 	var resolved := VisualAssetResolver.get_asset(asset_id)
 	var rect_values: Array = []
 	if resolved != null and resolved.region.size.x > 0.0 and resolved.region.size.y > 0.0:

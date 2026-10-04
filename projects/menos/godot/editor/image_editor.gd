@@ -744,6 +744,7 @@ func _select_entry_index(entry_index: int) -> void:
 		IMAGE_STATE.selected_path = current_path
 		if str(entry.get("owner_kind", "")) == "visual_asset":
 			IMAGE_STATE.selection_asset_id = str(entry.get("owner_key", ""))
+			IMAGE_STATE.selection_frames = maxi(1, int(entry.get("frames", 1)))
 	else:
 		IMAGE_STATE.open_image(current_path)
 	current_image = LOADER.load_image(current_path)
