@@ -69,7 +69,7 @@
       "skill3": "",
       "special": ""
     },
-    "color": "d8c535ff",
+    "color": "b7e30fff",
     "cooldown": 0.65,
     "damage": 28.0,
     "default_image": "robot.asura.profile",
@@ -189,7 +189,7 @@
       "skill3": "robot.valkyrie.skill3",
       "special": "robot.valkyrie.special"
     },
-    "color": "49963aff",
+    "color": "4be32dff",
     "cooldown": 0.65,
     "damage": 28.0,
     "default_image": "robot.valkyrie.profile",
