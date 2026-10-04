@@ -184,6 +184,7 @@ func _build_ui() -> void:
 	color_label.custom_minimum_size.x = 105
 	color_row.add_child(color_label)
 	color_edit = ColorPickerButton.new()
+	color_edit.edit_alpha = false
 	color_edit.custom_minimum_size = Vector2(120, 30)
 	color_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_update_color_button_swatch()
@@ -423,7 +424,9 @@ func _on_robot_selected(index: int) -> void:
 	damage_spin.value = float(data.get("damage", 28.0))
 	cooldown_spin.value = float(data.get("cooldown", 0.65))
 	range_spin.value = float(data.get("range", 180.0))
-	color_edit.color = Color(str(data.get("color", "ffffffff")))
+	var stored_color := Color(str(data.get("color", "ffffffff")))
+	stored_color.a = 1.0
+	color_edit.color = stored_color
 	_update_color_button_swatch()
 	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
 	animation_rects = data.get("animation_rects", {}) if data.get("animation_rects", {}) is Dictionary else {}
@@ -640,7 +643,9 @@ func _save_data() -> void:
 	data["damage"] = float(damage_spin.value)
 	data["cooldown"] = float(cooldown_spin.value)
 	data["range"] = float(range_spin.value)
-	data["color"] = color_edit.color.to_html(true)
+	var team_color := color_edit.color
+	team_color.a = 1.0
+	data["color"] = team_color.to_html(true)
 	data["default_image"] = default_image_edit.text.strip_edges()
 	var animations: Dictionary = data.get("animations", {}).duplicate(true)
 	for animation_name in animation_edits.keys():
@@ -715,10 +720,13 @@ func _update_color_button_swatch() -> void:
 	color_edit.add_theme_icon_override("bg", color_swatch_texture)
 
 func _on_preview_color_changed(_color: Color) -> void:
+	var team_color := color_edit.color
+	team_color.a = 1.0
+	color_edit.color = team_color
 	_update_color_button_swatch()
-	_set_status("COLOR EVENT: %s | BUTTON: %s" % [_color.to_html(true), color_edit.color.to_html(true)])
+	_set_status("COLOR EVENT: %s | BUTTON: %s" % [team_color.to_html(true), color_edit.color.to_html(true)])
 	if not selected_type.is_empty() and robot_data.has(selected_type):
-		robot_data[selected_type]["color"] = color_edit.color.to_html(true)
+		robot_data[selected_type]["color"] = team_color.to_html(true)
 		_write_robot_data()
 	_apply_preview_color()
 
@@ -739,6 +747,12 @@ func _apply_preview_color() -> void:
 			var mask_rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
 			if mask_rect.position.x >= 0 and mask_rect.position.y >= 0 and mask_rect.end.x <= mask_image.get_width() and mask_rect.end.y <= mask_image.get_height():
 				mask_texture = ImageTexture.create_from_image(mask_image.get_region(mask_rect))
+				material.set_shader_parameter("mask_region_uv", Vector4(
+					float(mask_rect.position.x) / float(mask_image.get_width()),
+					float(mask_rect.position.y) / float(mask_image.get_height()),
+					float(mask_rect.size.x) / float(mask_image.get_width()),
+					float(mask_rect.size.y) / float(mask_image.get_height())
+				))
 	var mask_valid := mask_texture != null and robot_preview.texture != null
 	material.set_shader_parameter("use_team_mask", mask_valid)
 	if mask_valid:
