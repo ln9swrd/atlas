@@ -52,9 +52,19 @@ var sprite_rect_x_spin: SpinBox
 var sprite_rect_y_spin: SpinBox
 var sprite_rect_w_spin: SpinBox
 var sprite_rect_h_spin: SpinBox
+var animation_previews: Dictionary = {}
+var animation_timer: Timer
+var animation_frame := 0
+var image_inventory_status: Label
+var image_inventory_box: VBoxContainer
 
 func _ready() -> void:
 	_build_ui()
+	animation_timer = Timer.new()
+	animation_timer.wait_time = 0.12
+	animation_timer.autostart = true
+	animation_timer.timeout.connect(_on_animation_tick)
+	add_child(animation_timer)
 	_load_data()
 	if unit_list.item_count > 0:
 		unit_list.select(0)
@@ -224,6 +234,36 @@ func _build_properties(parent: VBoxContainer) -> void:
 	projectile_edit = _image_grid_row(animation_grid, "Projectile Animation", "projectile")
 	for animation_name in ["idle", "move", "attack", "hit", "death"]:
 		animation_edits[animation_name] = _image_grid_row(animation_grid, animation_name.to_upper(), "animation:" + animation_name)
+	var animation_preview_title := Label.new()
+	animation_preview_title.text = "ANIMATION PREVIEW"
+	animation_preview_title.add_theme_font_size_override("font_size", 14)
+	parent.add_child(animation_preview_title)
+	var animation_preview_row := HBoxContainer.new()
+	animation_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(animation_preview_row)
+	for animation_name in ["idle", "move", "attack", "hit", "death"]:
+		animation_previews[animation_name] = _create_animation_preview(animation_preview_row, animation_name.to_upper(), Vector2(90, 120))
+	var image_management := VBoxContainer.new()
+	image_management.name = "ImageManagement"
+	image_management.add_theme_constant_override("separation", 4)
+	parent.add_child(image_management)
+	var image_management_title := Label.new()
+	image_management_title.text = "IMAGE ASSET MANAGEMENT"
+	image_management_title.add_theme_font_size_override("font_size", 16)
+	image_management.add_child(image_management_title)
+	var image_management_actions := HBoxContainer.new()
+	image_management.add_child(image_management_actions)
+	var validate_images := Button.new()
+	validate_images.text = "CHECK SELECTED UNIT"
+	validate_images.pressed.connect(_refresh_image_inventory)
+	image_management_actions.add_child(validate_images)
+	image_inventory_status = Label.new()
+	image_inventory_status.name = "ImageInventoryStatus"
+	image_inventory_status.text = "Select a unit to inspect its image assets."
+	image_management.add_child(image_inventory_status)
+	image_inventory_box = VBoxContainer.new()
+	image_inventory_box.name = "ImageInventory"
+	image_management.add_child(image_inventory_box)
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_RESOURCES
@@ -565,6 +605,8 @@ func _on_unit_selected(index: int) -> void:
 	melee_cooldown_spin.editable = melee_check.button_pressed
 	_refresh_sprite_preview(default_image_edit.text)
 	_refresh_all_image_thumbnails()
+	_refresh_animation_previews()
+	_refresh_image_inventory()
 	robot_damage_spin.value = float(data.get("robot_damage", 0.0))
 	robot_range_spin.value = float(data.get("robot_range", 0.0))
 	robot_cooldown_spin.value = float(data.get("robot_cooldown", 0.0))
@@ -706,10 +748,100 @@ func _texture_from_sprite_data(path: String, rect_values: Array) -> Texture2D:
 	atlas.region = Rect2(rect.position, rect.size)
 	return atlas
 
+func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(size.x + 8.0, size.y + 24.0)
+	parent.add_child(box)
+	var label := Label.new()
+	label.text = label_text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(label)
+	var preview := TextureRect.new()
+	preview.custom_minimum_size = size
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	box.add_child(preview)
+	return preview
+
+func _animation_frame_count(animation_name: String) -> int:
+	var edit: LineEdit = animation_edits.get(animation_name) as LineEdit
+	var path := edit.text.strip_edges() if edit != null else ""
+	if path.is_empty():
+		return 1
+	var resolved := VisualAssetResolver.resolve(path)
+	if resolved != null and resolved.frames > 0:
+		return resolved.frames
+	return 1
+
+func _animated_texture(path: String, frame: int, fallback_rect: Array = []) -> Texture2D:
+	if path.is_empty():
+		return null
+	var source_path := path
+	var columns := 1
+	var rows := 1
+	var total_frames := 1
+	var frame_order := "row_major"
+	var source_rect := Rect2(0.0, 0.0, 0.0, 0.0)
+	var resolved := VisualAssetResolver.resolve(path)
+	if resolved != null:
+		source_path = resolved.source
+		columns = maxi(1, resolved.columns)
+		rows = maxi(1, resolved.rows)
+		total_frames = maxi(1, resolved.frames)
+		frame_order = resolved.frame_order
+		if resolved.region.size.x > 0.0 and resolved.region.size.y > 0.0:
+			source_rect = Rect2(resolved.region.position, resolved.region.size)
+	if source_rect.size.x <= 0.0 and source_rect.size.y <= 0.0 and fallback_rect.size() >= 4:
+		source_rect = Rect2(float(fallback_rect[0]), float(fallback_rect[1]), float(fallback_rect[2]), float(fallback_rect[3]))
+	var texture := load(source_path) as Texture2D
+	if texture == null:
+		return null
+	if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
+		source_rect = Rect2(0.0, 0.0, texture.get_width(), texture.get_height())
+	if total_frames <= 1:
+		var single := AtlasTexture.new()
+		single.atlas = texture
+		single.region = source_rect
+		return single
+	if total_frames > columns * rows:
+		return null
+	var frame_index := frame % total_frames
+	var column := frame_index % columns
+	var row := frame_index / columns
+	if frame_order == "column_major":
+		column = frame_index / rows
+		row = frame_index % rows
+	var frame_left := source_rect.position.x + floorf(source_rect.size.x * float(column) / float(columns))
+	var frame_right := source_rect.position.x + floorf(source_rect.size.x * float(column + 1) / float(columns))
+	var frame_top := source_rect.position.y + floorf(source_rect.size.y * float(row) / float(rows))
+	var frame_bottom := source_rect.position.y + floorf(source_rect.size.y * float(row + 1) / float(rows))
+	var atlas := AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = Rect2(frame_left, frame_top, maxf(1.0, frame_right - frame_left), maxf(1.0, frame_bottom - frame_top))
+	return atlas
+
+func _refresh_animation_previews() -> void:
+	for animation_name in animation_previews.keys():
+		var preview: TextureRect = animation_previews[animation_name]
+		var edit: LineEdit = animation_edits.get(animation_name) as LineEdit
+		var path := edit.text.strip_edges() if edit != null else ""
+		preview.texture = _animated_texture(path, animation_frame)
+
+func _on_animation_tick() -> void:
+	var max_frames := 1
+	for animation_name in animation_previews.keys():
+		max_frames = maxi(max_frames, _animation_frame_count(animation_name))
+	animation_frame = (animation_frame + 1) % max_frames
+	_refresh_animation_previews()
+
 func _refresh_sprite_preview(path: String) -> void:
 	if not sprite_preview:
 		return
-	sprite_preview.texture = _texture_from_sprite_data(path, _get_sprite_rect_from_controls())
+	var preview_path := path.strip_edges()
+	if preview_path.is_empty():
+		preview_path = sprite_edit.text.strip_edges()
+	sprite_preview.texture = _animated_texture(preview_path, 0, _get_sprite_rect_from_controls())
 	_apply_preview_color()
 
 func _on_preview_color_changed(_color: Color) -> void:
@@ -721,8 +853,8 @@ func _apply_preview_color() -> void:
 	var material := sprite_preview.material as ShaderMaterial
 	if material == null:
 		material = ShaderMaterial.new()
-		material.shader = UNIT_COLOR_SHADER
 		sprite_preview.material = material
+	material.shader = UNIT_COLOR_SHADER
 	material.set_shader_parameter("team_color", color_edit.color)
 
 signal request_image_editor
@@ -745,7 +877,12 @@ func _apply_pending_asset_selection() -> void:
 		if animation_edits.has(animation_name):
 			(animation_edits[animation_name] as LineEdit).text = asset_id
 	_refresh_all_image_thumbnails()
-	_set_status("Asset selected: " + asset_id)
+	_refresh_animation_previews()
+	_refresh_image_inventory()
+	# Catalog selection is an assignment operation. Persist it immediately,
+	# matching Robot Editor behavior so the selected slot survives navigation.
+	_save_data()
+	_set_status("Asset assigned + saved: " + asset_id)
 
 func _open_image_editor_for_target(target: String) -> void:
 	var path := ""
@@ -764,7 +901,11 @@ func _open_image_editor_for_target(target: String) -> void:
 		return
 	var resolved := VisualAssetResolver.resolve(path)
 	var asset_id := resolved.id if resolved != null else ""
-	IMAGE_STATE.open_image(path, target, asset_id)
+	var usage := target
+	if target.begins_with("animation:"):
+		usage = target.trim_prefix("animation:")
+	var frames := _animation_frame_count(usage) if animation_edits.has(usage) else 1
+	IMAGE_STATE.open_image(path, target, asset_id, "unit", selected_type, usage, frames, "res://editor/unit_editor.tscn")
 	request_image_editor.emit()
 
 func _get_file_thumbnail(path: String) -> Texture2D:
@@ -791,8 +932,62 @@ func _on_file_selected(path: String) -> void:
 	else:
 		sprite_edit.text = path
 	_refresh_image_thumbnail(file_dialog_target)
-	if file_dialog_target == "default_image":
+	_refresh_animation_previews()
+	_refresh_image_inventory()
+	if file_dialog_target == "default_image" or file_dialog_target == "sprite":
 		_refresh_sprite_preview(path)
+
+func _image_asset_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	entries.append({"name": "Sprite", "path": sprite_edit.text.strip_edges(), "required": true})
+	entries.append({"name": "Profile Image", "path": default_image_edit.text.strip_edges(), "required": false})
+	entries.append({"name": "Projectile", "path": projectile_edit.text.strip_edges(), "required": false})
+	for animation_name in animation_edits.keys():
+		var edit: LineEdit = animation_edits[animation_name] as LineEdit
+		entries.append({"name": str(animation_name).to_upper() + " Animation", "path": edit.text.strip_edges(), "required": animation_name == "idle" or animation_name == "attack"})
+	return entries
+
+func _image_path_exists(path: String) -> bool:
+	if path.is_empty():
+		return false
+	if path.begins_with("res://") or path.begins_with("user://"):
+		return ResourceLoader.exists(path)
+	return FileAccess.file_exists(path)
+
+func _refresh_image_inventory() -> void:
+	if not is_instance_valid(image_inventory_box) or not is_instance_valid(image_inventory_status):
+		return
+	for child in image_inventory_box.get_children():
+		child.queue_free()
+	var missing_required := 0
+	var missing_optional := 0
+	for entry in _image_asset_entries():
+		var path := str(entry.path)
+		var exists := _image_path_exists(path)
+		var required := bool(entry.required)
+		if not exists:
+			if required:
+				missing_required += 1
+			else:
+				missing_optional += 1
+		var row := HBoxContainer.new()
+		var name_label := Label.new()
+		name_label.text = str(entry.name) + (" *" if required else "")
+		name_label.custom_minimum_size.x = 190
+		row.add_child(name_label)
+		var path_label := Label.new()
+		path_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		path_label.text = path if not path.is_empty() else "(not assigned)"
+		path_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		row.add_child(path_label)
+		var state_label := Label.new()
+		state_label.text = "OK" if exists else ("MISSING" if not path.is_empty() else "EMPTY")
+		row.add_child(state_label)
+		image_inventory_box.add_child(row)
+	if missing_required == 0:
+		image_inventory_status.text = "Required assets: OK | Optional missing: %d" % missing_optional
+	else:
+		image_inventory_status.text = "Required assets missing: %d | Optional missing: %d" % [missing_required, missing_optional]
 
 func _set_status(message: String) -> void:
 	if status_label:

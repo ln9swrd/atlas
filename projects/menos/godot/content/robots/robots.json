@@ -58,11 +58,7 @@
     },
     "animations": {
       "attack": "",
-      "death": "robot.asura.death",
       "finisher": "",
-      "hit": "robot.asura.hit",
-      "idle": "robot.asura.idle",
-      "move": "robot.asura.move",
       "projectile": "",
       "skill1": "",
       "skill2": "",
@@ -72,7 +68,6 @@
     "color": "b7e30fff",
     "cooldown": 0.65,
     "damage": 28.0,
-    "default_image": "robot.asura.profile",
     "default_image_rect": [
       14.0,
       159.0,
@@ -93,12 +88,10 @@
       "speed_growth": 0.02,
       "xp_per_level": 100.0
     },
-    "projectile_anim": "",
+    "projectile_anim": "legacy:res://images/Unit/basic.png",
     "range": 180.0,
     "speed": 125.0,
     "sprite_attack": "",
-    "sprite_idle": "robot.asura.idle",
-    "sprite_move": "robot.asura.move",
     "sprite_skill": ""
   },
   "valkyrie": {
@@ -176,23 +169,10 @@
         174.0
       ]
     },
-    "animations": {
-      "attack": "robot.valkyrie.attack",
-      "death": "robot.valkyrie.death",
-      "finisher": "robot.valkyrie.finisher",
-      "hit": "robot.valkyrie.hit",
-      "idle": "robot.valkyrie.idle",
-      "move": "robot.valkyrie.move",
-      "projectile": "robot.valkyrie.projectile",
-      "skill1": "robot.valkyrie.skill1",
-      "skill2": "robot.valkyrie.skill2",
-      "skill3": "robot.valkyrie.skill3",
-      "special": "robot.valkyrie.special"
-    },
-    "color": "4be32dff",
+    "animations": {},
+    "color": "e3702dff",
     "cooldown": 0.65,
     "damage": 28.0,
-    "default_image": "robot.valkyrie.profile",
     "default_image_rect": [
       7.0,
       787.0,
@@ -213,25 +193,20 @@
       "speed_growth": 0.02,
       "xp_per_level": 100.0
     },
-    "projectile_anim": "robot.valkyrie.projectile",
     "range": 180.0,
     "speed": 125.0,
-    "sprite_attack": "robot.valkyrie.attack",
     "sprite_attack_rect": [
       96.0,
       400.0,
       1440.0,
       220.0
     ],
-    "sprite_idle": "robot.valkyrie.idle",
-    "sprite_move": "robot.valkyrie.move",
     "sprite_move_rect": [
       96.0,
       200.0,
       1360.0,
       200.0
     ],
-    "sprite_skill": "robot.valkyrie.skill1",
     "sprite_skill_rect": [
       96.0,
       200.0,
