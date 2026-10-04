@@ -216,10 +216,11 @@ func _build_ui() -> void:
 	reconnect_target_button.pressed.connect(_reconnect_current_to_selected_entry)
 	left.add_child(reconnect_target_button)
 	reconnect_target_button.visible = false
-	var new_catalog_button := Button.new()
-	new_catalog_button.text = "Register Selected Visual Asset"
-	new_catalog_button.pressed.connect(_create_visual_asset_from_selection)
-	left.add_child(new_catalog_button)
+	register_selected_asset_button = Button.new()
+	register_selected_asset_button.text = "Register Selected Visual Asset"
+	register_selected_asset_button.disabled = IMAGE_STATE.selection_asset_id.is_empty()
+	register_selected_asset_button.pressed.connect(_create_visual_asset_from_selection)
+	left.add_child(register_selected_asset_button)
 	var delete_visual_asset_button := Button.new()
 	delete_visual_asset_button.text = "Delete Visual Asset"
 	delete_visual_asset_button.pressed.connect(_confirm_delete_visual_asset)
@@ -1336,8 +1337,10 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		registered_frames = maxi(registered_frames, inherited_frames)
 	var assets: Dictionary = data
 	var suffix := 1
-	var asset_id := base_id
+	var asset_id := IMAGE_STATE.selection_asset_id if not IMAGE_STATE.selection_asset_id.is_empty() else base_id
 	while assets.has(asset_id):
+		if not IMAGE_STATE.selection_asset_id.is_empty():
+			break
 		if owner_kind == "robot" and asset_id == base_id:
 			break
 		asset_id = "%s.%02d" % [base_id, suffix]
@@ -1401,7 +1404,7 @@ func _add_current_image_to_asset_catalog() -> void:
 	var base_id := "asset.image." + current_path.get_file().get_basename().to_snake_case()
 	if base_id == "asset.image.":
 		base_id = "asset.image.generated"
-	var asset_id := base_id
+	var asset_id := IMAGE_STATE.selection_asset_id if not IMAGE_STATE.selection_asset_id.is_empty() else base_id
 	var suffix := 1
 	while _catalog_asset_id_exists(assets, asset_id):
 		asset_id = "%s.%02d" % [base_id, suffix]
