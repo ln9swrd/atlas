@@ -15,6 +15,7 @@ void fragment() {
         float mask = texture(team_mask, UV).r;
         COLOR = vec4(mix(base.rgb, tinted, mask), base.a);
     } else {
-        COLOR = vec4(tinted, base.a);
+        // Without a valid team mask, do not tint the whole profile.
+        COLOR = base;
     }
 }

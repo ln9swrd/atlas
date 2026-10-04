@@ -36,6 +36,16 @@ var anchor_mode_option: OptionButton
 var anchor_x_spin: SpinBox
 var anchor_y_spin: SpinBox
 var grid_status: Label
+var frame_transform_status: Label
+var frame_index_spin: SpinBox
+var frame_x_spin: SpinBox
+var frame_y_spin: SpinBox
+var frame_scale_spin: SpinBox
+var frame_transform_base: Image
+var frame_transform_active_index := -1
+var frame_transform_values: Dictionary = {}
+var frame_transform_syncing := false
+var frame_select_mode := false
 var filtered_indices: Array[int] = []
 
 signal request_content_editor
@@ -314,6 +324,7 @@ func _build_ui() -> void:
 	right.add_child(usage_label)
 	view = REGION_VIEW_SCRIPT.new()
 	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	view.frame_selected.connect(_on_frame_selected)
 	right.add_child(view)
 	var tools := HBoxContainer.new()
 	right.add_child(tools)
@@ -390,6 +401,58 @@ func _build_ui() -> void:
 	grid_status = Label.new()
 	grid_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	right.add_child(grid_status)
+	var frame_transform_title := Label.new()
+	frame_transform_title.text = "Frame Transform"
+	frame_transform_title.add_theme_font_size_override("font_size", 16)
+	right.add_child(frame_transform_title)
+	var frame_select_button := Button.new()
+	frame_select_button.text = "Frame Select: OFF"
+	frame_select_button.toggle_mode = true
+	frame_select_button.toggled.connect(func(enabled: bool):
+		frame_select_mode = enabled
+		frame_select_button.text = "Frame Select: ON" if enabled else "Frame Select: OFF"
+		view.set_frame_select_mode(enabled)
+	)
+	right.add_child(frame_select_button)
+	var frame_transform_help := Label.new()
+	frame_transform_help.text = "Frame Select ON: click a frame, then use Arrow keys to move it. Shift = 10 px."
+	frame_transform_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	right.add_child(frame_transform_help)
+	var frame_transform_row := HBoxContainer.new()
+	right.add_child(frame_transform_row)
+	var frame_label := Label.new()
+	frame_label.text = "Frame"
+	frame_transform_row.add_child(frame_label)
+	frame_index_spin = _make_grid_spin("Frame", 1, 4096, 1)
+	frame_index_spin.value = 1
+	frame_index_spin.value_changed.connect(_on_frame_transform_changed)
+	frame_transform_row.add_child(frame_index_spin)
+	var x_label := Label.new()
+	x_label.text = "X"
+	frame_transform_row.add_child(x_label)
+	frame_x_spin = _make_grid_spin("X", -4096, 4096, 1)
+	frame_x_spin.value_changed.connect(_on_frame_transform_changed)
+	frame_transform_row.add_child(frame_x_spin)
+	var y_label := Label.new()
+	y_label.text = "Y"
+	frame_transform_row.add_child(y_label)
+	frame_y_spin = _make_grid_spin("Y", -4096, 4096, 1)
+	frame_y_spin.value_changed.connect(_on_frame_transform_changed)
+	frame_transform_row.add_child(frame_y_spin)
+	var scale_label := Label.new()
+	scale_label.text = "%"
+	frame_transform_row.add_child(scale_label)
+	frame_scale_spin = _make_grid_spin("Scale", 10, 400, 1)
+	frame_scale_spin.value = 100
+	frame_scale_spin.value_changed.connect(_on_frame_transform_changed)
+	frame_transform_row.add_child(frame_scale_spin)
+	var reset_frame_button := Button.new()
+	reset_frame_button.text = "Reset"
+	reset_frame_button.pressed.connect(_reset_frame_transform)
+	frame_transform_row.add_child(reset_frame_button)
+	frame_transform_status = Label.new()
+	frame_transform_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	right.add_child(frame_transform_status)
 	status = Label.new()
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status)
@@ -873,6 +936,16 @@ func _load_grid_metadata(entry: Dictionary) -> void:
 	if rows > 0:
 		cell_h = float(region.size.y) / float(rows)
 	grid_status.text = "Grid %d × %d | Frames %d | Cell %.0f × %.0f | Anchor %s (%.2f, %.2f)" % [columns, rows, frames, cell_w, cell_h, anchor_mode, anchor_x, anchor_y]
+	if frame_index_spin != null:
+		frame_index_spin.max_value = maxi(1, frames)
+		frame_index_spin.value = clampi(int(frame_index_spin.value), 1, maxi(1, frames))
+		frame_x_spin.value = 0
+		frame_y_spin.value = 0
+		frame_scale_spin.value = 100
+		frame_transform_base = current_image.duplicate() if current_image != null else null
+		frame_transform_values.clear()
+		frame_transform_active_index = -1
+		frame_transform_status.text = "Select a frame number, then adjust X/Y and scale. Each frame keeps its own transform."
 
 func _apply_grid_metadata() -> void:
 	if current_index < 0 or current_index >= entries.size():
@@ -941,6 +1014,110 @@ func _apply_grid_metadata() -> void:
 	var cell_h := float(region.size.y) / float(rows)
 	grid_status.text = "Saved: %d × %d grid | %d frames | Cell %.0f × %.0f | Anchor %s (%.2f, %.2f)" % [columns, rows, frames, cell_w, cell_h, anchor_mode, anchor_x, anchor_y]
 
+func _on_frame_transform_changed(_value: float = 0.0) -> void:
+	if current_image == null or current_image.is_empty():
+		return
+	if columns_spin == null or rows_spin == null or frames_spin == null or frame_index_spin == null:
+		return
+	var region := _entry_region(entries[current_index]) if current_index >= 0 and current_index < entries.size() else Rect2i()
+	var columns := maxi(1, int(columns_spin.value))
+	var rows := maxi(1, int(rows_spin.value))
+	var frames := maxi(1, int(frames_spin.value))
+	var frame_index := clampi(int(frame_index_spin.value) - 1, 0, frames - 1)
+	if region.size.x <= 0 or region.size.y <= 0:
+		return
+	if frame_transform_base == null:
+		frame_transform_base = current_image.duplicate()
+
+	# Keep a separate transform for every frame. Switching frames must not
+	# discard the scale/X/Y already applied to another frame.
+	if frame_transform_active_index >= 0 and frame_transform_active_index != frame_index and not frame_transform_syncing:
+		frame_transform_values[frame_transform_active_index] = [float(frame_x_spin.value), float(frame_y_spin.value), float(frame_scale_spin.value)]
+	var saved: Array = frame_transform_values.get(frame_index, [0.0, 0.0, 100.0])
+	if frame_transform_active_index != frame_index:
+		frame_transform_syncing = true
+		frame_x_spin.value = float(saved[0])
+		frame_y_spin.value = float(saved[1])
+		frame_scale_spin.value = float(saved[2])
+		frame_transform_syncing = false
+		frame_transform_active_index = frame_index
+	frame_transform_values[frame_index] = [float(frame_x_spin.value), float(frame_y_spin.value), float(frame_scale_spin.value)]
+
+	var cell_w := maxi(1, floori(float(region.size.x) / float(columns)))
+	var cell_h := maxi(1, floori(float(region.size.y) / float(rows)))
+	var result := frame_transform_base.duplicate()
+
+	# Rebuild the whole sheet from the original base so transforms from all
+	# previously edited frames remain visible when another frame is selected.
+	for index in range(frames):
+		var column := index % columns
+		var row := index / columns
+		if frame_order_option.selected == 1:
+			column = index / rows
+			row = index % rows
+		var cell := Rect2i(region.position.x + column * cell_w, region.position.y + row * cell_h, cell_w, cell_h)
+		var transform: Array = frame_transform_values.get(index, [0.0, 0.0, 100.0])
+		var frame := frame_transform_base.get_region(cell)
+		var scale := clampf(float(transform[2]) / 100.0, 0.1, 4.0)
+		var scaled_w := maxi(1, roundi(float(frame.get_width()) * scale))
+		var scaled_h := maxi(1, roundi(float(frame.get_height()) * scale))
+		frame.resize(scaled_w, scaled_h, Image.INTERPOLATE_LANCZOS)
+		var canvas := Image.create(cell.size.x, cell.size.y, false, Image.FORMAT_RGBA8)
+		canvas.fill(Color(0, 0, 0, 0))
+		var dest := Vector2i(
+			floori((cell.size.x - scaled_w) * 0.5 + float(transform[0])),
+			floori((cell.size.y - scaled_h) * 0.5 + float(transform[1]))
+		)
+		var dst := Rect2i(dest.x, dest.y, scaled_w, scaled_h)
+		var clipped := dst.intersection(Rect2i(0, 0, canvas.get_width(), canvas.get_height()))
+		if clipped.size.x > 0 and clipped.size.y > 0:
+			var src := Rect2i(clipped.position - dst.position, clipped.size)
+			canvas.blit_rect(frame, src, clipped.position)
+		result.fill_rect(cell, Color(0, 0, 0, 0))
+		result.blit_rect(canvas, Rect2i(0, 0, canvas.get_width(), canvas.get_height()), cell.position)
+
+	current_image = result
+	view.set_source_texture(ImageTexture.create_from_image(current_image))
+	view.selected_region = region
+	view.queue_redraw()
+	frame_transform_status.text = "Frame %d | X %+d | Y %+d | Scale %.0f%% | Per-frame transform retained" % [frame_index + 1, int(frame_x_spin.value), int(frame_y_spin.value), float(frame_scale_spin.value)]
+
+func _on_frame_selected(frame_index: int) -> void:
+	if frame_index_spin == null:
+		return
+	frame_index_spin.value = frame_index + 1
+	view.set_selected_frame(frame_index)
+	frame_transform_status.text = "Selected Frame %d | Arrow keys move the frame | Shift = 10 px" % [frame_index + 1]
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not frame_select_mode or frame_transform_active_index < 0:
+		return
+	if not event.pressed or event.echo:
+		return
+	var step := 10 if event.shift_pressed else 1
+	var changed := true
+	match event.keycode:
+		KEY_LEFT:
+			frame_x_spin.value -= step
+		KEY_RIGHT:
+			frame_x_spin.value += step
+		KEY_UP:
+			frame_y_spin.value -= step
+		KEY_DOWN:
+			frame_y_spin.value += step
+		_:
+			changed = false
+	if changed:
+		get_viewport().set_input_as_handled()
+
+func _reset_frame_transform() -> void:
+	if frame_transform_base == null:
+		return
+	frame_x_spin.value = 0
+	frame_y_spin.value = 0
+	frame_scale_spin.value = 100
+	_on_frame_transform_changed(0.0)
+
 func _select_entry_index(entry_index: int) -> void:
 	if editing: return
 	if entry_index < 0 or entry_index >= entries.size(): return
@@ -961,6 +1138,16 @@ func _select_entry_index(entry_index: int) -> void:
 		status.text = "Previous reference could not be resolved: %s" % current_path
 		return
 	view.set_source_texture(ImageTexture.create_from_image(current_image))
+	frame_transform_base = current_image.duplicate()
+	frame_transform_active_index = -1
+	if frame_index_spin != null:
+		var transform_frames := maxi(1, int(entry.get("frames", 1)))
+		frame_index_spin.max_value = transform_frames
+		frame_index_spin.value = 1
+		frame_x_spin.value = 0
+		frame_y_spin.value = 0
+		frame_scale_spin.value = 100
+		frame_transform_status.text = "Select a frame number, then adjust X/Y and scale. Changes preview immediately."
 	if catalog_region.size.x > 0 and catalog_region.size.y > 0:
 		view.selected_region = catalog_region
 		view.queue_redraw()
@@ -1697,6 +1884,12 @@ func _save_reconnect() -> void:
 		status.text = "Saved edit, but reconnect failed: %s" % output
 		return
 	current_path = output
+	# The PNG now contains the current per-frame transforms. Make this saved
+	# image the new transform baseline so switching to another frame cannot
+	# rebuild from the pre-save/original sheet and undo the saved movement.
+	frame_transform_base = current_image.duplicate()
+	frame_transform_values.clear()
+	frame_transform_active_index = -1
 	_refresh_view()
 	status.text = "Saved edited image and reconnected the selected reference."
 func _save_source_reference(path: String, rect: Rect2i) -> bool:

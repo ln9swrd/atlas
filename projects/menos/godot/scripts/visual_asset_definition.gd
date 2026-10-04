@@ -65,5 +65,6 @@ func to_dict() -> Dictionary:
 		},
 		"owner": owner_id,
 		"usage": usage,
+		"team_mask": {"source": team_mask_source} if not team_mask_source.is_empty() else {},
 		"frame_regions": frame_regions.duplicate(true)
 	}

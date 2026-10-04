@@ -204,6 +204,18 @@ func _build_ui() -> void:
 	visual_grid.add_theme_constant_override("v_separation", 4)
 	content.add_child(visual_grid)
 	default_image_edit = _image_grid_row(visual_grid, "PROFILE IMAGE", "default_image")
+	var mask_row := HBoxContainer.new()
+	mask_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var mask_label := Label.new()
+	mask_label.text = "TEAM COLOR MASK"
+	mask_label.custom_minimum_size.x = 105
+	mask_row.add_child(mask_label)
+	var generate_mask_btn := Button.new()
+	generate_mask_btn.text = "GENERATE MASK"
+	generate_mask_btn.tooltip_text = "프로파일 이미지의 전신 불투명 영역을 원본 알파 경계 그대로 팀 색상 마스크로 생성합니다."
+	generate_mask_btn.pressed.connect(_generate_profile_team_mask)
+	mask_row.add_child(generate_mask_btn)
+	visual_grid.add_child(mask_row)
 
 	var animation_title := Label.new()
 	animation_title.text = "SPRITE ANIMATIONS"
@@ -800,13 +812,13 @@ func _apply_preview_color() -> void:
 	var profile_asset_id := "robot.%s.profile" % selected_type if not selected_type.is_empty() else ""
 	var profile_asset = VisualAssetResolver.get_asset(profile_asset_id) if not profile_asset_id.is_empty() else null
 	if profile_asset != null:
-		var mask_source := profile_asset.team_mask_source
-		var mask_image := Image.load_from_file(mask_source) if not mask_source.is_empty() else null
-		var rect_values: Variant = robot_data.get(selected_type, {}).get("default_image_rect", [])
-		if mask_image != null and rect_values is Array and rect_values.size() >= 4:
-			var mask_rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
-			if mask_rect.position.x >= 0 and mask_rect.position.y >= 0 and mask_rect.end.x <= mask_image.get_width() and mask_rect.end.y <= mask_image.get_height():
-				mask_texture = ImageTexture.create_from_image(mask_image.get_region(mask_rect))
+		var mask_source: String = str(profile_asset.team_mask_source)
+		var mask_path := ProjectSettings.globalize_path(mask_source) if mask_source.begins_with("res://") else mask_source
+		var mask_image: Image = Image.load_from_file(mask_path) if not mask_path.is_empty() else null
+		# Generated masks are already cropped to the exact Profile Visual Asset
+		# region. Do not crop them again with default_image_rect.
+		if mask_image != null and mask_image.get_width() > 0 and mask_image.get_height() > 0:
+			mask_texture = ImageTexture.create_from_image(mask_image)
 	var mask_valid := mask_texture != null and robot_preview.texture != null
 	material.set_shader_parameter("use_team_mask", mask_valid)
 	if mask_valid:
@@ -988,6 +1000,76 @@ func _on_file_selected(path: String) -> void:
 			(animation_edits[animation_name] as LineEdit).text = resource_path
 	_refresh_animation_previews()
 	_set_status("Imported image: " + resource_path)
+
+func _generate_profile_team_mask() -> void:
+	if selected_type.is_empty():
+		_set_status("Select a robot before generating a mask.")
+		return
+	var profile_asset_id := "robot.%s.profile" % selected_type
+	VisualAssetResolver.reload()
+	var profile_asset := VisualAssetResolver.get_asset(profile_asset_id)
+	if profile_asset == null or profile_asset.source.is_empty():
+		_set_status("Profile Visual Asset not found: " + profile_asset_id)
+		return
+	var absolute_source := ProjectSettings.globalize_path(profile_asset.source)
+	var source_image := Image.load_from_file(absolute_source)
+	if source_image == null:
+		_set_status("Failed to load profile image: " + profile_asset.source)
+		return
+	var region := Rect2i(
+		int(profile_asset.region.position.x),
+		int(profile_asset.region.position.y),
+		int(profile_asset.region.size.x),
+		int(profile_asset.region.size.y)
+	)
+	if region.size.x <= 0 or region.size.y <= 0 or region.position.x < 0 or region.position.y < 0 or region.end.x > source_image.get_width() or region.end.y > source_image.get_height():
+		_set_status("Invalid profile region for mask generation.")
+		return
+	var profile := source_image.get_region(region)
+	var mask := Image.create(profile.get_width(), profile.get_height(), false, Image.FORMAT_L8)
+	# The team-color region is the entire visible robot. Use the source alpha
+	# directly so every visible body part is covered while antialiased edges
+	# retain their original coverage. Transparent background stays unmasked.
+	for y in range(profile.get_height()):
+		for x in range(profile.get_width()):
+			var alpha := profile.get_pixel(x, y).a
+			mask.set_pixel(x, y, Color(alpha, alpha, alpha, 1.0))
+	var relative_dir := "res://images/robot/%s" % selected_type
+	var absolute_dir := ProjectSettings.globalize_path(relative_dir)
+	var dir_error := DirAccess.make_dir_recursive_absolute(absolute_dir)
+	if dir_error != OK:
+		_set_status("Failed to create mask directory: " + error_string(dir_error))
+		return
+	var mask_resource := relative_dir + "/profile_team_mask.png"
+	var save_error := mask.save_png(ProjectSettings.globalize_path(mask_resource))
+	if save_error != OK:
+		_set_status("Failed to save team mask: " + error_string(save_error))
+		return
+	if not _set_profile_team_mask_source(profile_asset_id, mask_resource):
+		_set_status("Mask created, but Catalog update failed.")
+		return
+	VisualAssetResolver.reload()
+	_apply_preview_color()
+	_set_status("Generated team mask: %s" % mask_resource)
+
+func _set_profile_team_mask_source(asset_id: String, mask_source: String) -> bool:
+	const catalog_path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(catalog_path, FileAccess.READ)
+	if file == null:
+		return false
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not (parsed is Dictionary) or not (parsed.get(asset_id, null) is Dictionary):
+		return false
+	var entry: Dictionary = parsed[asset_id]
+	entry["team_mask"] = {"source": mask_source}
+	parsed[asset_id] = entry
+	file = FileAccess.open(catalog_path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(parsed, "\t"))
+	file.close()
+	return true
 
 func _set_status(message: String) -> void:
 	if status_label:

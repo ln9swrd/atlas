@@ -4,6 +4,7 @@ extends Control
 const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 
 signal region_changed(rect: Rect2i)
+signal frame_selected(frame_index: int)
 
 var texture: Texture2D
 var selected_region := Rect2i()
@@ -26,6 +27,18 @@ var grid_rows := 1
 var grid_frames := 1
 var grid_frame_order := "row_major"
 var grid_anchor := Vector2(0.5, 1.0)
+var frame_select_mode := false
+var selected_frame_index := -1
+
+func set_frame_select_mode(enabled: bool) -> void:
+	frame_select_mode = enabled
+	if not enabled:
+		selected_frame_index = -1
+	queue_redraw()
+
+func set_selected_frame(frame_index: int) -> void:
+	selected_frame_index = clampi(frame_index, 0, maxi(0, grid_frames - 1))
+	queue_redraw()
 
 func set_source_texture(value: Texture2D) -> void:
 	texture = value
@@ -204,7 +217,11 @@ func _draw_grid_overlay(selected_rect: Rect2) -> void:
 			selected_rect.position + Vector2(left, top),
 			Vector2(maxf(1.0, right - left), maxf(1.0, bottom - top))
 		)
-		draw_rect(cell_rect, Color(0.3, 0.85, 1.0, 0.35) if frame_index == 0 else Color(0.9, 0.9, 0.9, 0.18), false, 2.0)
+		var cell_border := Color(0.3, 0.85, 1.0, 0.35) if frame_index == 0 else Color(0.9, 0.9, 0.9, 0.18)
+		if frame_select_mode and frame_index == selected_frame_index:
+			cell_border = Color("ff6b6b")
+			draw_rect(cell_rect.grow(-2.0), Color(1.0, 0.35, 0.35, 0.08), true)
+		draw_rect(cell_rect, cell_border, false, 3.0 if frame_select_mode and frame_index == selected_frame_index else 2.0)
 	var anchor_column := 0
 	var anchor_row := 0
 	var anchor_left := floorf(selected_rect.size.x * float(anchor_column) / float(grid_columns))
@@ -236,6 +253,24 @@ func _gui_input(event: InputEvent) -> void:
 			accept_event()
 			return
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			if mouse_event.pressed and frame_select_mode and not _editing_pixels and _get_image_rect().has_point(mouse_event.position):
+				var region_rect := selected_region
+				if region_rect.size.x > 0 and region_rect.size.y > 0 and (grid_columns > 1 or grid_rows > 1):
+					var pixel_size := Vector2(texture.get_size())
+					var selected_rect := Rect2(_get_image_rect().position + Vector2(region_rect.position) / pixel_size * _get_image_rect().size, Vector2(region_rect.size) / pixel_size * _get_image_rect().size)
+					var local := mouse_event.position - selected_rect.position
+					if selected_rect.has_point(mouse_event.position):
+						var column := clampi(floori(local.x / (selected_rect.size.x / float(grid_columns))), 0, grid_columns - 1)
+						var row := clampi(floori(local.y / (selected_rect.size.y / float(grid_rows))), 0, grid_rows - 1)
+						var frame_index := row * grid_columns + column
+						if grid_frame_order == "column_major":
+							frame_index = column * grid_rows + row
+						if frame_index < grid_frames:
+							selected_frame_index = frame_index
+							frame_selected.emit(frame_index)
+							accept_event()
+							queue_redraw()
+							return
 			if mouse_event.pressed and _get_image_rect().has_point(mouse_event.position):
 				_last_pointer = mouse_event.position
 				if _pan_input_active():
