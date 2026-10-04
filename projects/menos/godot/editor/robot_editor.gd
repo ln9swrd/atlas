@@ -463,10 +463,16 @@ func _create_animation_preview(parent: Container, label_text: String, size: Vect
 func _animated_texture(path: String, frame: int, total_frames: int, rect_values: Variant = []) -> Texture2D:
 	var source_path := path
 	var asset_frames := 0
+	var columns := maxi(1, total_frames)
+	var rows := 1
+	var frame_order := "row_major"
 	var resolved := VisualAssetResolver.resolve(path)
 	if resolved != null:
 		source_path = resolved.source
 		asset_frames = resolved.frames
+		columns = maxi(1, resolved.columns)
+		rows = maxi(1, resolved.rows)
+		frame_order = resolved.frame_order
 		if resolved.region.size.x > 0 and resolved.region.size.y > 0:
 			rect_values = [resolved.region.position.x, resolved.region.position.y, resolved.region.size.x, resolved.region.size.y]
 	var texture := load(source_path) as Texture2D
@@ -477,22 +483,35 @@ func _animated_texture(path: String, frame: int, total_frames: int, rect_values:
 		source_rect = Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
 	if asset_frames > 0:
 		total_frames = asset_frames
-	if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
-		return texture
 	if total_frames <= 1:
 		var single := AtlasTexture.new()
 		single.atlas = texture
 		single.region = source_rect
 		return single
-	var frame_width := source_rect.size.x / float(total_frames)
+	if rows <= 1:
+		columns = maxi(columns, total_frames)
+	else:
+		columns = maxi(1, columns)
+		rows = maxi(1, rows)
+	if total_frames > columns * rows:
+		return null
+	if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
+		return texture
 	var frame_index := frame % total_frames
-	var frame_start_x: float = source_rect.position.x + float(round(frame_width * float(frame_index)))
-	var frame_end_x: float = source_rect.position.x + float(round(frame_width * float(frame_index + 1)))
+	var column := frame_index % columns
+	var row := frame_index / columns
+	if frame_order == "column_major":
+		column = frame_index / rows
+		row = frame_index % rows
+	var frame_left := source_rect.position.x + floorf(source_rect.size.x * float(column) / float(columns))
+	var frame_right := source_rect.position.x + floorf(source_rect.size.x * float(column + 1) / float(columns))
+	var frame_top := source_rect.position.y + floorf(source_rect.size.y * float(row) / float(rows))
+	var frame_bottom := source_rect.position.y + floorf(source_rect.size.y * float(row + 1) / float(rows))
 	var frame_rect := Rect2(
-		frame_start_x,
-		source_rect.position.y,
-		maxf(1.0, frame_end_x - frame_start_x),
-		source_rect.size.y
+		frame_left,
+		frame_top,
+		maxf(1.0, frame_right - frame_left),
+		maxf(1.0, frame_bottom - frame_top)
 	)
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture

@@ -8,12 +8,18 @@ static func create(value: String, fallback_region: Rect2 = Rect2(), fallback_fra
 	var source_path := value
 	var region := fallback_region
 	var frame_count := maxi(1, fallback_frames)
+	var columns := maxi(1, frame_count)
+	var rows := 1
+	var frame_order := "row_major"
 	if resolved != null:
 		source_path = resolved.source
 		if not resolved.id.begins_with("legacy:"):
 			if resolved.region.size.x > 0.0 and resolved.region.size.y > 0.0:
 				region = resolved.region
 			frame_count = resolved.frames
+			columns = resolved.columns
+			rows = resolved.rows
+			frame_order = resolved.frame_order
 	var source_texture := load(source_path) as Texture2D
 	if source_texture == null:
 		return null
@@ -24,8 +30,24 @@ static func create(value: String, fallback_region: Rect2 = Rect2(), fallback_fra
 		return null
 	frame_count = maxi(1, frame_count)
 	if frame_count > 1:
-		var frame_width := float(clipped.size.x) / float(frame_count)
-		clipped = Rect2i(clipped.position.x, clipped.position.y, maxi(1, int(round(frame_width))), clipped.size.y)
+		columns = maxi(1, columns)
+		rows = maxi(1, rows)
+		if frame_count > columns * rows:
+			return null
+		var frame_index := 0
+		var column := frame_index % columns
+		var row := frame_index / columns
+		if frame_order == "column_major":
+			column = frame_index / rows
+			row = frame_index % rows
+		var cell_width := float(clipped.size.x) / float(columns)
+		var cell_height := float(clipped.size.y) / float(rows)
+		clipped = Rect2i(
+			int(round(float(clipped.position.x) + cell_width * float(column))),
+			int(round(float(clipped.position.y) + cell_height * float(row))),
+			maxi(1, int(round(cell_width))),
+			maxi(1, int(round(cell_height)))
+		)
 		clipped = clipped.intersection(Rect2i(Vector2i.ZERO, source_size))
 		if clipped.size.x <= 0 or clipped.size.y <= 0:
 			return null

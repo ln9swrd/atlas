@@ -21,6 +21,11 @@ var _brush_size_px := int(ConfigRepository.get_editor_value("asset_region_view",
 var _last_pointer := Vector2(-1, -1)
 var _clip_erase_to_region := false
 var _edit_clip_rect := Rect2i()
+var grid_columns := 1
+var grid_rows := 1
+var grid_frames := 1
+var grid_frame_order := "row_major"
+var grid_anchor := Vector2(0.5, 1.0)
 
 func set_source_texture(value: Texture2D) -> void:
 	texture = value
@@ -32,6 +37,22 @@ func set_source_texture(value: Texture2D) -> void:
 	selected_region = Rect2i()
 	_zoom = 1.0
 	_pan_offset = Vector2.ZERO
+	queue_redraw()
+
+func set_grid_metadata(columns: int, rows: int, frames: int, anchor: Vector2, frame_order: String = "row_major") -> void:
+	grid_columns = maxi(1, columns)
+	grid_rows = maxi(1, rows)
+	grid_frames = clampi(frames, 1, grid_columns * grid_rows)
+	grid_frame_order = "column_major" if frame_order == "column_major" else "row_major"
+	grid_anchor = Vector2(clampf(anchor.x, 0.0, 1.0), clampf(anchor.y, 0.0, 1.0))
+	queue_redraw()
+
+func clear_grid_metadata() -> void:
+	grid_columns = 1
+	grid_rows = 1
+	grid_frames = 1
+	grid_frame_order = "row_major"
+	grid_anchor = Vector2(0.5, 1.0)
 	queue_redraw()
 
 func begin_image_edit(source_crop: Image, brush_size_px: int = -1) -> void:
@@ -139,6 +160,8 @@ func _draw() -> void:
 		var border := Color("ff6b6b") if _editing_pixels else Color("38e0c3")
 		draw_rect(selected_rect, fill, true)
 		draw_rect(selected_rect, border, false, 2.0)
+		if not _editing_pixels:
+			_draw_grid_overlay(selected_rect)
 	if _dragging_region:
 		var drag_rect := Rect2(_drag_start, _drag_end - _drag_start).abs().intersection(image_rect)
 		draw_rect(drag_rect, Color(0.95, 0.75, 0.28, 0.2), true)
@@ -153,6 +176,48 @@ func _draw() -> void:
 		var preview_region := _region_for_drag(_drag_start, _drag_end)
 		drag_status = " · Selection %d × %d px" % [preview_region.size.x, preview_region.size.y]
 	draw_string(ThemeDB.fallback_font, Vector2(10, size.y - 10), "Zoom %.0f%% · wheel zoom · Space/Alt/middle/right drag pan%s%s" % [_zoom * 100.0, edit_hint, drag_status], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("c2cbd4"))
+
+func _draw_grid_overlay(selected_rect: Rect2) -> void:
+	if grid_columns <= 1 and grid_rows <= 1:
+		var anchor_point := selected_rect.position + selected_rect.size * grid_anchor
+		draw_circle(anchor_point, 4.0, Color("ffd166"))
+		draw_line(anchor_point - Vector2(8, 0), anchor_point + Vector2(8, 0), Color("ffd166"), 1.0)
+		draw_line(anchor_point - Vector2(0, 8), anchor_point + Vector2(0, 8), Color("ffd166"), 1.0)
+		return
+	for column in range(1, grid_columns):
+		var x := selected_rect.position.x + floorf(selected_rect.size.x * float(column) / float(grid_columns))
+		draw_line(Vector2(x, selected_rect.position.y), Vector2(x, selected_rect.end.y), Color(0.95, 0.8, 0.3, 0.7), 1.0)
+	for row in range(1, grid_rows):
+		var y := selected_rect.position.y + floorf(selected_rect.size.y * float(row) / float(grid_rows))
+		draw_line(Vector2(selected_rect.position.x, y), Vector2(selected_rect.end.x, y), Color(0.95, 0.8, 0.3, 0.7), 1.0)
+	for frame_index in range(grid_frames):
+		var column := frame_index % grid_columns
+		var row := frame_index / grid_columns
+		if grid_frame_order == "column_major":
+			column = frame_index / grid_rows
+			row = frame_index % grid_rows
+		var left := floorf(selected_rect.size.x * float(column) / float(grid_columns))
+		var right := floorf(selected_rect.size.x * float(column + 1) / float(grid_columns))
+		var top := floorf(selected_rect.size.y * float(row) / float(grid_rows))
+		var bottom := floorf(selected_rect.size.y * float(row + 1) / float(grid_rows))
+		var cell_rect := Rect2(
+			selected_rect.position + Vector2(left, top),
+			Vector2(maxf(1.0, right - left), maxf(1.0, bottom - top))
+		)
+		draw_rect(cell_rect, Color(0.3, 0.85, 1.0, 0.35) if frame_index == 0 else Color(0.9, 0.9, 0.9, 0.18), false, 2.0)
+	var anchor_column := 0
+	var anchor_row := 0
+	var anchor_left := floorf(selected_rect.size.x * float(anchor_column) / float(grid_columns))
+	var anchor_right := floorf(selected_rect.size.x * float(anchor_column + 1) / float(grid_columns))
+	var anchor_top := floorf(selected_rect.size.y * float(anchor_row) / float(grid_rows))
+	var anchor_bottom := floorf(selected_rect.size.y * float(anchor_row + 1) / float(grid_rows))
+	var anchor_point := selected_rect.position + Vector2(
+		anchor_left + (anchor_right - anchor_left) * grid_anchor.x,
+		anchor_top + (anchor_bottom - anchor_top) * grid_anchor.y
+	)
+	draw_circle(anchor_point, 4.0, Color("ffd166"))
+	draw_line(anchor_point - Vector2(8, 0), anchor_point + Vector2(8, 0), Color("ffd166"), 1.0)
+	draw_line(anchor_point - Vector2(0, 8), anchor_point + Vector2(0, 8), Color("ffd166"), 1.0)
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:

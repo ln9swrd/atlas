@@ -26,6 +26,14 @@ var editing := false
 var usage_label: Label
 var filter_option: OptionButton
 var search_edit: LineEdit
+var columns_spin: SpinBox
+var rows_spin: SpinBox
+var frames_spin: SpinBox
+var frame_order_option: OptionButton
+var anchor_mode_option: OptionButton
+var anchor_x_spin: SpinBox
+var anchor_y_spin: SpinBox
+var grid_status: Label
 var filtered_indices: Array[int] = []
 
 signal request_content_editor
@@ -325,10 +333,63 @@ func _build_ui() -> void:
 	resize_btn.text = "Apply Size"
 	resize_btn.pressed.connect(func(): _resize_image(int(width_spin.value), int(height_spin.value)))
 	resize_row.add_child(resize_btn)
+	var grid_title := Label.new()
+	grid_title.text = "Sprite Sheet Grid / Anchor"
+	grid_title.add_theme_font_size_override("font_size", 16)
+	right.add_child(grid_title)
+	var grid_row := HBoxContainer.new()
+	right.add_child(grid_row)
+	columns_spin = _make_grid_spin("Columns", 1, 128, 1)
+	grid_row.add_child(columns_spin)
+	rows_spin = _make_grid_spin("Rows", 1, 128, 1)
+	grid_row.add_child(rows_spin)
+	frames_spin = _make_grid_spin("Frames", 1, 4096, 1)
+	grid_row.add_child(frames_spin)
+	var order_label := Label.new()
+	order_label.text = "Order"
+	grid_row.add_child(order_label)
+	frame_order_option = OptionButton.new()
+	frame_order_option.add_item("Row Major", 0)
+	frame_order_option.add_item("Column Major", 1)
+	grid_row.add_child(frame_order_option)
+	var anchor_row := HBoxContainer.new()
+	right.add_child(anchor_row)
+	var anchor_label := Label.new()
+	anchor_label.text = "Anchor"
+	anchor_row.add_child(anchor_label)
+	anchor_mode_option = OptionButton.new()
+	anchor_mode_option.add_item("BOTTOM_CENTER", 0)
+	anchor_mode_option.add_item("CENTER", 1)
+	anchor_mode_option.add_item("CENTER_LEFT", 2)
+	anchor_mode_option.add_item("BOTTOM_LEFT", 3)
+	anchor_mode_option.add_item("CUSTOM", 4)
+	anchor_row.add_child(anchor_mode_option)
+	anchor_x_spin = _make_grid_spin("X", 0.0, 1.0, 0.01)
+	anchor_x_spin.step = 0.01
+	anchor_row.add_child(anchor_x_spin)
+	anchor_y_spin = _make_grid_spin("Y", 0.0, 1.0, 0.01)
+	anchor_y_spin.step = 0.01
+	anchor_row.add_child(anchor_y_spin)
+	var apply_grid_button := Button.new()
+	apply_grid_button.text = "Apply Grid / Anchor"
+	apply_grid_button.pressed.connect(_apply_grid_metadata)
+	anchor_row.add_child(apply_grid_button)
+	grid_status = Label.new()
+	grid_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	right.add_child(grid_status)
 	status = Label.new()
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status)
 	_refresh_entry_list()
+
+func _make_grid_spin(label_text: String, min_value: float, max_value: float, step_value: float) -> SpinBox:
+	var spin := SpinBox.new()
+	spin.min_value = min_value
+	spin.max_value = max_value
+	spin.step = step_value
+	spin.custom_minimum_size.x = 78
+	spin.tooltip_text = label_text
+	return spin
 
 func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) -> void:
 	var b := Button.new()
@@ -623,6 +684,10 @@ func _scan_visual_assets(seen: Dictionary) -> void:
 			"path": image_path,
 			"region": region_data,
 			"frames": maxi(1, int(asset.get("frames", 1))),
+			"columns": maxi(1, int(asset.get("columns", asset.get("frames", 1)))),
+			"rows": maxi(1, int(asset.get("rows", 1))),
+			"frame_order": str(asset.get("frame_order", "row_major")),
+			"anchor": asset.get("anchor", {"mode": "BOTTOM_CENTER", "x": 0.5, "y": 1.0}),
 			"owner": path,
 			"owner_kind": "visual_asset",
 			"owner_key": str(asset_id),
@@ -760,6 +825,102 @@ func _select_entry(index: int) -> void:
 	var entry_index := int(list.get_item_metadata(index))
 	_select_entry_index(entry_index)
 
+func _load_grid_metadata(entry: Dictionary) -> void:
+	if columns_spin == null:
+		return
+	var frames := maxi(1, int(entry.get("frames", 1)))
+	var columns := maxi(1, int(entry.get("columns", frames)))
+	var rows := maxi(1, int(entry.get("rows", 1)))
+	var order := str(entry.get("frame_order", "row_major"))
+	var anchor_data: Dictionary = entry.get("anchor", {}) if entry.get("anchor", {}) is Dictionary else {}
+	var anchor_mode := str(anchor_data.get("mode", "BOTTOM_CENTER"))
+	var anchor_x := clampf(float(anchor_data.get("x", 0.5)), 0.0, 1.0)
+	var anchor_y := clampf(float(anchor_data.get("y", 1.0)), 0.0, 1.0)
+	columns_spin.value = columns
+	rows_spin.value = rows
+	frames_spin.value = frames
+	frame_order_option.select(1 if order == "column_major" else 0)
+	var modes := ["BOTTOM_CENTER", "CENTER", "CENTER_LEFT", "BOTTOM_LEFT", "CUSTOM"]
+	anchor_mode_option.select(modes.find(anchor_mode) if modes.find(anchor_mode) >= 0 else 4)
+	anchor_x_spin.value = anchor_x
+	anchor_y_spin.value = anchor_y
+	view.set_grid_metadata(columns, rows, frames, Vector2(anchor_x, anchor_y), order)
+	var cell_w := 0.0
+	var cell_h := 0.0
+	var region := _entry_region(entry)
+	if columns > 0:
+		cell_w = float(region.size.x) / float(columns)
+	if rows > 0:
+		cell_h = float(region.size.y) / float(rows)
+	grid_status.text = "Grid %d × %d | Frames %d | Cell %.0f × %.0f | Anchor %s (%.2f, %.2f)" % [columns, rows, frames, cell_w, cell_h, anchor_mode, anchor_x, anchor_y]
+
+func _apply_grid_metadata() -> void:
+	if current_index < 0 or current_index >= entries.size():
+		grid_status.text = "Select a Visual Asset first."
+		return
+	var entry: Dictionary = entries[current_index]
+	if str(entry.get("owner_kind", "")) != "visual_asset":
+		grid_status.text = "Grid / Anchor metadata can only be saved for Visual Assets."
+		return
+	var columns := maxi(1, int(columns_spin.value))
+	var rows := maxi(1, int(rows_spin.value))
+	var frames := maxi(1, int(frames_spin.value))
+	var region := _entry_region(entry)
+	if frames > columns * rows:
+		grid_status.text = "Invalid: Frames cannot exceed Columns × Rows."
+		return
+	if region.size.x <= 0 or region.size.y <= 0:
+		grid_status.text = "Invalid: Region must have positive width and height."
+		return
+	var order := "column_major" if frame_order_option.selected == 1 else "row_major"
+	var anchor_mode := anchor_mode_option.get_item_text(anchor_mode_option.selected)
+	var anchor_x := clampf(float(anchor_x_spin.value), 0.0, 1.0)
+	var anchor_y := clampf(float(anchor_y_spin.value), 0.0, 1.0)
+	match anchor_mode:
+		"BOTTOM_CENTER":
+			anchor_x = 0.5
+			anchor_y = 1.0
+		"CENTER":
+			anchor_x = 0.5
+			anchor_y = 0.5
+		"CENTER_LEFT":
+			anchor_x = 0.0
+			anchor_y = 0.5
+		"BOTTOM_LEFT":
+			anchor_x = 0.0
+			anchor_y = 1.0
+	var catalog_path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(catalog_path, FileAccess.READ)
+	if file == null:
+		grid_status.text = "Cannot open Visual Asset Catalog."
+		return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary or not data.has(str(entry.get("owner_key", ""))):
+		grid_status.text = "Visual Asset not found in Catalog."
+		return
+	var asset: Dictionary = data[str(entry.get("owner_key", ""))]
+	asset["columns"] = columns
+	asset["rows"] = rows
+	asset["frames"] = frames
+	asset["frame_order"] = order
+	asset["anchor"] = {"mode": anchor_mode, "x": anchor_x, "y": anchor_y}
+	data[str(entry.get("owner_key", ""))] = asset
+	if not _write_json(catalog_path, data):
+		grid_status.text = "Failed to save Grid / Anchor metadata."
+		return
+	VisualAssetResolver.reload()
+	entry["columns"] = columns
+	entry["rows"] = rows
+	entry["frames"] = frames
+	entry["frame_order"] = order
+	entry["anchor"] = asset["anchor"]
+	entries[current_index] = entry
+	view.set_grid_metadata(columns, rows, frames, Vector2(anchor_x, anchor_y), order)
+	var cell_w := float(region.size.x) / float(columns)
+	var cell_h := float(region.size.y) / float(rows)
+	grid_status.text = "Saved: %d × %d grid | %d frames | Cell %.0f × %.0f | Anchor %s (%.2f, %.2f)" % [columns, rows, frames, cell_w, cell_h, anchor_mode, anchor_x, anchor_y]
+
 func _select_entry_index(entry_index: int) -> void:
 	if editing: return
 	if entry_index < 0 or entry_index >= entries.size(): return
@@ -783,6 +944,11 @@ func _select_entry_index(entry_index: int) -> void:
 	if catalog_region.size.x > 0 and catalog_region.size.y > 0:
 		view.selected_region = catalog_region
 		view.queue_redraw()
+	if str(entry.get("owner_kind", "")) == "visual_asset":
+		_load_grid_metadata(entry)
+	else:
+		view.clear_grid_metadata()
+		grid_status.text = "Grid / Anchor metadata is available when a Visual Asset is selected."
 	status.text = "Selected region: %s | area %d x %d px" % [str(entry.get("label", "Asset")), catalog_region.size.x, catalog_region.size.y]
 
 func _entry_region(entry: Dictionary) -> Rect2i:
@@ -981,6 +1147,10 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		"source": current_path,
 		"region": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
 		"frames": registered_frames,
+		"columns": registered_frames,
+		"rows": 1,
+		"frame_order": "row_major",
+		"anchor": {"mode": "BOTTOM_CENTER", "x": 0.5, "y": 1.0},
 		"owner": ("%s.%s" % [owner_kind, owner_key]) if not owner_kind.is_empty() and not owner_key.is_empty() else "",
 		"usage": owner_usage if not owner_usage.is_empty() else "visual_asset_catalog"
 	}

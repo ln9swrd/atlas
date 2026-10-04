@@ -280,6 +280,14 @@
 	"robot.valkyrie.skill(finisher)": {
 		"category": "Robot",
 		"frames": 18.0,
+		"columns": 9.0,
+		"rows": 2.0,
+		"frame_order": "row_major",
+		"anchor": {
+			"mode": "BOTTOM_CENTER",
+			"x": 0.5,
+			"y": 1.0
+		},
 		"id": "robot.valkyrie.skill(finisher)",
 		"owner": "valkyrie",
 		"region": [
