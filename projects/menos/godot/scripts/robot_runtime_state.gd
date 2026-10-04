@@ -5,6 +5,7 @@ var active: bool = false
 var position: Vector2 = Vector2.ZERO
 var spot: String = ""
 var is_moving: bool = false
+var move_direction: Vector2 = Vector2.ZERO
 var hp: float = 0.0
 var max_hp: float = 0.0
 var energy: float = 0.0
@@ -22,6 +23,7 @@ func reset(initial_position: Vector2, initial_max_hp: float, initial_energy: flo
 	position = initial_position
 	spot = ""
 	is_moving = false
+	move_direction = Vector2.ZERO
 	hp = initial_max_hp
 	max_hp = initial_max_hp
 	energy = initial_energy
@@ -43,6 +45,7 @@ func state_get(key: String, default_value: Variant = null) -> Variant:
 		"position": return position
 		"spot": return spot
 		"is_moving": return is_moving
+		"move_direction": return move_direction
 		"hp": return hp
 		"max_hp": return max_hp
 		"energy": return energy

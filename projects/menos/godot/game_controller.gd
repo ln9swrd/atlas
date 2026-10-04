@@ -278,6 +278,19 @@ func _texture_from_robot_animation(anim_key: String) -> Texture2D:
 		rect_values = rects.get("skill1", [])
 	return _texture_from_catalog_value(value, rect_values)
 
+func _robot_frame_rect(anim_key: String, frame: int, resolved: VisualAssetDefinition, fallback_rect: Rect2) -> Rect2:
+	if resolved != null and not resolved.frame_regions.is_empty():
+		var index: int = posmod(frame, resolved.frame_regions.size())
+		var values: Variant = resolved.frame_regions[index]
+		if values is Array and values.size() >= 4:
+			return Rect2(float(values[0]), float(values[1]), float(values[2]), float(values[3]))
+	var frame_count := maxi(1, resolved.frames if resolved != null else 1)
+	var frame_width := fallback_rect.size.x / float(frame_count)
+	var frame_index: int = posmod(frame, frame_count)
+	var frame_start_x: float = fallback_rect.position.x + float(round(frame_width * float(frame_index)))
+	var frame_end_x: float = fallback_rect.position.x + float(round(frame_width * float(frame_index + 1)))
+	return Rect2(frame_start_x, fallback_rect.position.y, maxf(1.0, frame_end_x - frame_start_x), fallback_rect.size.y)
+
 func _texture_from_robot_animation_frame(anim_key: String, frame: int) -> Texture2D:
 	var value := _robot_animation_value(anim_key)
 	if value.is_empty():
