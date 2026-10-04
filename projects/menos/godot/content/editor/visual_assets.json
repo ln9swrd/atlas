@@ -49,17 +49,17 @@
 		"id": "robot.asura.attack",
 		"owner": "robot.asura",
 		"region": [
-			13.0,
-			514.0,
-			1237.0,
-			138.0
+			10.0,
+			511.0,
+			1241.0,
+			143.0
 		],
 		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
 		"usage": "attack"
 	},
 	"robot.asura.death": {
 		"category": "Robot",
-		"frames": 8.0,
+		"frames": 9.0,
 		"id": "robot.asura.death",
 		"owner": "robot.asura",
 		"region": [
@@ -91,17 +91,17 @@
 		"id": "robot.asura.finisher",
 		"owner": "robot.asura",
 		"region": [
-			16.0,
-			874.0,
-			1381.0,
-			137.0
+			10,
+			873,
+			1513,
+			141
 		],
 		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
 		"usage": "finisher"
 	},
 	"robot.asura.hit": {
 		"category": "Robot",
-		"frames": 8.0,
+		"frames": 4.0,
 		"id": "robot.asura.hit",
 		"owner": "robot.asura",
 		"region": [
@@ -115,14 +115,14 @@
 	},
 	"robot.asura.idle": {
 		"category": "Robot",
-		"frames": 8.0,
+		"frames": 9.0,
 		"id": "robot.asura.idle",
 		"owner": "robot.asura",
 		"region": [
-			17.0,
-			193.0,
-			1361.0,
-			145.0
+			11.0,
+			197.0,
+			1370.0,
+			152.0
 		],
 		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
 		"usage": "idle"
@@ -195,10 +195,10 @@
 		"id": "robot.asura.move",
 		"owner": "robot.asura",
 		"region": [
-			24.0,
-			355.0,
-			1498.0,
-			139.0
+			9.0,
+			341.0,
+			1511.0,
+			159.0
 		],
 		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
 		"usage": "move"
