@@ -909,10 +909,36 @@ func _apply_pending_asset_selection() -> void:
 		idle_edit.text = asset_id
 		if not rect_values.is_empty():
 			animation_rects["idle"] = rect_values.duplicate()
+	# Applying a Catalog selection is the assignment operation itself.
+	# Persist it immediately so the originating Robot slot no longer needs a
+	# second click/use action after returning from the Catalog Editor.
+	if target == "default_image":
+		robot_data[selected_type]["default_image"] = asset_id
+	elif target == "projectile":
+		robot_data[selected_type]["projectile_anim"] = asset_id
+	elif target.begins_with("animation:"):
+		var animation_name := target.trim_prefix("animation:")
+		var animations: Dictionary = robot_data[selected_type].get("animations", {}).duplicate(true)
+		animations[animation_name] = asset_id
+		robot_data[selected_type]["animations"] = animations
+		# Keep legacy runtime fields synchronized with the canonical animation map.
+		if animation_name == "idle":
+			robot_data[selected_type]["sprite_idle"] = asset_id
+		elif animation_name == "move":
+			robot_data[selected_type]["sprite_move"] = asset_id
+		elif animation_name == "attack":
+			robot_data[selected_type]["sprite_attack"] = asset_id
+		elif animation_name == "skill1":
+			robot_data[selected_type]["sprite_skill"] = asset_id
+		elif animation_name == "projectile":
+			robot_data[selected_type]["projectile_anim"] = asset_id
+	if not _write_robot_data():
+		_set_status("Asset selected in editor, but failed to persist: %s" % asset_id)
+		return
 	_refresh_all_image_thumbnails()
 	_refresh_animation_previews()
 	_refresh_robot_preview()
-	_set_status("Asset selected: %s | region: %s" % [asset_id, str(rect_values)])
+	_set_status("Asset assigned: %s | region: %s" % [asset_id, str(rect_values)])
 
 signal request_image_editor
 func _open_sprite_dialog(target: String = "sprite") -> void:
