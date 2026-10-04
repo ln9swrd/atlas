@@ -1,4 +1,4 @@
-﻿class_name TowerEditorMain
+class_name TowerEditorMain
 extends Control
 
 const TOWER_FILE := "res://content/towers/towers.json"
@@ -418,7 +418,9 @@ func _open_image_editor_for_target(target: String) -> void:
 	if path.is_empty():
 		_set_status("No image assigned for %s." % target)
 		return
-	IMAGE_STATE.open_image(path, target)
+	var resolved := VisualAssetResolver.resolve(path)
+	var asset_id := resolved.id if resolved != null else ""
+	IMAGE_STATE.open_image(path, target, asset_id)
 	request_image_editor.emit()
 
 func _open_sprite_dialog(target: String = "sprite") -> void:

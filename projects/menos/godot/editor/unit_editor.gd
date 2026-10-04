@@ -762,7 +762,9 @@ func _open_image_editor_for_target(target: String) -> void:
 	if path.is_empty():
 		_set_status("No image assigned for %s." % target)
 		return
-	IMAGE_STATE.open_image(path, target)
+	var resolved := VisualAssetResolver.resolve(path)
+	var asset_id := resolved.id if resolved != null else ""
+	IMAGE_STATE.open_image(path, target, asset_id)
 	request_image_editor.emit()
 
 func _get_file_thumbnail(path: String) -> Texture2D:

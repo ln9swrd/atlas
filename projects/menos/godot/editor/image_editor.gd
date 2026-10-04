@@ -12,6 +12,7 @@ var source_list: ItemList
 var view: AssetRegionView
 var status: Label
 var current_index := -1
+var register_selected_asset_button: Button
 var catalog_target_index := -1
 var current_path := ""
 var current_image: Image
