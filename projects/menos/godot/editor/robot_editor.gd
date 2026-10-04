@@ -678,6 +678,7 @@ func _save_data() -> void:
 func _refresh_image_thumbnail(target: String) -> void:
 	if not image_thumbnail_controls.has(target):
 		return
+	VisualAssetResolver.reload()
 	var thumbnail := image_thumbnail_controls[target] as TextureRect
 	var path := ""
 	var fallback_region := Rect2()
