@@ -1,2415 +1,2398 @@
 {
-  "assets": [
-	{
-	  "asset_id": "asset.facility.a7_01",
-	  "display_name": "A7 시설 01",
-	  "footprint_tiles": [
-		8,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1048.0,
-		78.0,
-		230.0,
-		154.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_02",
-	  "display_name": "A7 시설 02",
-	  "footprint_tiles": [
-		6,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1348.0,
-		79.0,
-		171.0,
-		151.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_03",
-	  "display_name": "A7 시설 03",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		529.0,
-		89.0,
-		144.0,
-		110.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_04",
-	  "display_name": "A7 시설 04",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		700.0,
-		89.0,
-		133.0,
-		110.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_05",
-	  "display_name": "A7 시설 05",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		863.0,
-		89.0,
-		146.0,
-		110.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_06",
-	  "display_name": "A7 시설 06",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		21.0,
-		92.0,
-		148.0,
-		143.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_07",
-	  "display_name": "A7 시설 07",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		183.0,
-		92.0,
-		146.0,
-		143.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_08",
-	  "display_name": "A7 시설 08",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		343.0,
-		92.0,
-		144.0,
-		143.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_09",
-	  "display_name": "A7 시설 09",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		541.0,
-		249.0,
-		138.0,
-		108.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_10",
-	  "display_name": "A7 시설 10",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		702.0,
-		249.0,
-		130.0,
-		108.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_11",
-	  "display_name": "A7 시설 11",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		857.0,
-		249.0,
-		142.0,
-		108.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_12",
-	  "display_name": "A7 시설 12",
-	  "footprint_tiles": [
-		7,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1054.0,
-		253.0,
-		198.0,
-		151.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_13",
-	  "display_name": "A7 시설 13",
-	  "footprint_tiles": [
-		6,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1323.0,
-		265.0,
-		184.0,
-		143.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_14",
-	  "display_name": "A7 시설 14",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		24.0,
-		298.0,
-		146.0,
-		147.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_15",
-	  "display_name": "A7 시설 15",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		184.0,
-		298.0,
-		145.0,
-		147.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_16",
-	  "display_name": "A7 시설 16",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		344.0,
-		299.0,
-		145.0,
-		146.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_17",
-	  "display_name": "A7 시설 17",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		777.0,
-		404.0,
-		157.0,
-		129.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_18",
-	  "display_name": "A7 시설 18",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		539.0,
-		406.0,
-		170.0,
-		127.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_19",
-	  "display_name": "A7 시설 19",
-	  "footprint_tiles": [
-		7,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1043.0,
-		427.0,
-		198.0,
-		141.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_20",
-	  "display_name": "A7 시설 20",
-	  "footprint_tiles": [
-		8,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1272.0,
-		435.0,
-		229.0,
-		158.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_21",
-	  "display_name": "A7 시설 21",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1312.0,
-		634.0,
-		178.0,
-		118.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_22",
-	  "display_name": "A7 시설 22",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		534.0,
-		656.0,
-		163.0,
-		109.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_23",
-	  "display_name": "A7 시설 23",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		704.0,
-		656.0,
-		143.0,
-		103.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_24",
-	  "display_name": "A7 시설 24",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		870.0,
-		657.0,
-		131.0,
-		101.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_25",
-	  "display_name": "A7 시설 25",
-	  "footprint_tiles": [
-		7,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1054.0,
-		657.0,
-		208.0,
-		114.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_26",
-	  "display_name": "A7 시설 26",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		347.0,
-		664.0,
-		148.0,
-		108.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_27",
-	  "display_name": "A7 시설 27",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		25.0,
-		665.0,
-		148.0,
-		107.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_28",
-	  "display_name": "A7 시설 28",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		189.0,
-		665.0,
-		146.0,
-		132.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_29",
-	  "display_name": "A7 시설 29",
-	  "footprint_tiles": [
-		6,
-		3
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1289.0,
-		767.0,
-		182.0,
-		96.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_30",
-	  "display_name": "A7 시설 30",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1066.0,
-		780.0,
-		174.0,
-		104.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_31",
-	  "display_name": "A7 시설 31",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		573.0,
-		781.0,
-		161.0,
-		109.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_32",
-	  "display_name": "A7 시설 32",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		794.0,
-		782.0,
-		157.0,
-		101.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_33",
-	  "display_name": "A7 시설 33",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		22.0,
-		818.0,
-		151.0,
-		109.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_34",
-	  "display_name": "A7 시설 34",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		191.0,
-		818.0,
-		146.0,
-		109.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_35",
-	  "display_name": "A7 시설 35",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		354.0,
-		820.0,
-		143.0,
-		107.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_36",
-	  "display_name": "A7 시설 36",
-	  "footprint_tiles": [
-		7,
-		5
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1293.0,
-		877.0,
-		199.0,
-		130.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_37",
-	  "display_name": "A7 시설 37",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		560.0,
-		890.0,
-		163.0,
-		108.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_38",
-	  "display_name": "A7 시설 38",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		1047.0,
-		894.0,
-		182.0,
-		97.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.facility.a7_39",
-	  "display_name": "A7 시설 39",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Facility",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/facility/a7.png",
-	  "source_rect_px": [
-		792.0,
-		908.0,
-		167.0,
-		101.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.a_7",
-	  "display_name": "Border Wall Tiles",
-	  "group": "Boundary",
-	  "kind": "tile",
-	  "source_path": "res://content/editor/edited_assets/asset_tile_a_7_edit_14449287.png",
-	  "source_rect_px": [
-		0.0,
-		0.0,
-		258.0,
-		151.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.ground.basic_meadow",
-	  "display_name": "Basic Meadow",
-	  "footprint_tiles": [
-		1,
-		1
-	  ],
-	  "group": "Ground",
-	  "kind": "tile",
-	  "source_path": "res://assets/menos/maps/ground_basic_32.svg",
-	  "source_rect_px": [
-		0,
-		0,
-		32,
-		32
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.ground_1",
-	  "display_name": "Ground 1",
-	  "footprint_tiles": [
-		5.0,
-		3.0
-	  ],
-	  "group": "Boundary",
-	  "kind": "tile",
-	  "source_path": "res://content/editor/edited_assets/asset_tile_ground_1_edit_217984384.png",
-	  "source_rect_px": [
-		0.0,
-		0.0,
-		134.0,
-		81.0
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.ground_2",
-	  "display_name": "Ground 2",
-	  "footprint_tiles": [
-		2,
-		3
-	  ],
-	  "group": "Boundary",
-	  "kind": "tile",
-	  "source_path": "res://images/map/tile/ground/ground3.png",
-	  "source_rect_px": [
-		14,
-		10,
-		61,
-		67
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_001",
-	  "display_name": "Terrain Atlas 001",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		15,
-		23,
-		125,
-		123
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_002",
-	  "display_name": "Terrain Atlas 002",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		147,
-		23,
-		122,
-		124
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_003",
-	  "display_name": "Terrain Atlas 003",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		404,
-		23,
-		121,
-		123
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_004",
-	  "display_name": "Terrain Atlas 004",
-	  "footprint_tiles": [
-		3,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1063,
-		23,
-		89,
-		123
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_005",
-	  "display_name": "Terrain Atlas 005",
-	  "footprint_tiles": [
-		3,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1164,
-		23,
-		83,
-		124
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_006",
-	  "display_name": "Terrain Atlas 006",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		275,
-		24,
-		121,
-		122
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_007",
-	  "display_name": "Terrain Atlas 007",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		532,
-		24,
-		121,
-		122
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_008",
-	  "display_name": "Terrain Atlas 008",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		661,
-		24,
-		120,
-		122
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_009",
-	  "display_name": "Terrain Atlas 009",
-	  "footprint_tiles": [
-		3,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		786,
-		24,
-		76,
-		122
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_010",
-	  "display_name": "Terrain Atlas 010",
-	  "footprint_tiles": [
-		3,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		869,
-		24,
-		90,
-		122
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_011",
-	  "display_name": "Terrain Atlas 011",
-	  "footprint_tiles": [
-		3,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		968,
-		24,
-		86,
-		122
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_012",
-	  "display_name": "Terrain Atlas 012",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1455,
-		27,
-		68,
-		46
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_013",
-	  "display_name": "Terrain Atlas 013",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1362,
-		29,
-		79,
-		38
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_014",
-	  "display_name": "Terrain Atlas 014",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1260,
-		30,
-		91,
-		34
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_015",
-	  "display_name": "Terrain Atlas 015",
-	  "footprint_tiles": [
-		2,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1282,
-		86,
-		51,
-		48
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_016",
-	  "display_name": "Terrain Atlas 016",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1363,
-		87,
-		70,
-		59
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_017",
-	  "display_name": "Terrain Atlas 017",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1454,
-		91,
-		69,
-		55
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_018",
-	  "display_name": "Terrain Atlas 018",
-	  "footprint_tiles": [
-		4,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		276,
-		160,
-		120,
-		213
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_019",
-	  "display_name": "Terrain Atlas 019",
-	  "footprint_tiles": [
-		4,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		405,
-		160,
-		120,
-		213
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_020",
-	  "display_name": "Terrain Atlas 020",
-	  "footprint_tiles": [
-		4,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		533,
-		160,
-		120,
-		213
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_021",
-	  "display_name": "Terrain Atlas 021",
-	  "footprint_tiles": [
-		4,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		661,
-		160,
-		121,
-		213
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_022",
-	  "display_name": "Terrain Atlas 022",
-	  "footprint_tiles": [
-		3,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		784,
-		160,
-		77,
-		212
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_023",
-	  "display_name": "Terrain Atlas 023",
-	  "footprint_tiles": [
-		3,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		870,
-		160,
-		88,
-		212
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_024",
-	  "display_name": "Terrain Atlas 024",
-	  "footprint_tiles": [
-		3,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		968,
-		160,
-		86,
-		211
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_025",
-	  "display_name": "Terrain Atlas 025",
-	  "footprint_tiles": [
-		3,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1065,
-		160,
-		87,
-		211
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_026",
-	  "display_name": "Terrain Atlas 026",
-	  "footprint_tiles": [
-		3,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1164,
-		160,
-		85,
-		211
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_027",
-	  "display_name": "Terrain Atlas 027",
-	  "footprint_tiles": [
-		4,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		15,
-		161,
-		124,
-		212
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_028",
-	  "display_name": "Terrain Atlas 028",
-	  "footprint_tiles": [
-		4,
-		7
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		149,
-		161,
-		118,
-		212
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_029",
-	  "display_name": "Terrain Atlas 029",
-	  "footprint_tiles": [
-		4,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1262,
-		162,
-		128,
-		91
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_030",
-	  "display_name": "Terrain Atlas 030",
-	  "footprint_tiles": [
-		4,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1413,
-		163,
-		110,
-		88
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_031",
-	  "display_name": "Terrain Atlas 031",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1399,
-		261,
-		123,
-		110
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_032",
-	  "display_name": "Terrain Atlas 032",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1263,
-		265,
-		119,
-		107
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_033",
-	  "display_name": "Terrain Atlas 033",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1399,
-		384,
-		122,
-		110
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_034",
-	  "display_name": "Terrain Atlas 034",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		147,
-		386,
-		119,
-		109
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_035",
-	  "display_name": "Terrain Atlas 035",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		406,
-		386,
-		118,
-		109
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_036",
-	  "display_name": "Terrain Atlas 036",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		533,
-		386,
-		119,
-		109
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_037",
-	  "display_name": "Terrain Atlas 037",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		661,
-		386,
-		116,
-		109
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_038",
-	  "display_name": "Terrain Atlas 038",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		788,
-		386,
-		131,
-		109
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_039",
-	  "display_name": "Terrain Atlas 039",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		930,
-		386,
-		126,
-		109
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_040",
-	  "display_name": "Terrain Atlas 040",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1068,
-		386,
-		131,
-		109
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_041",
-	  "display_name": "Terrain Atlas 041",
-	  "footprint_tiles": [
-		6,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1218,
-		386,
-		165,
-		108
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_042",
-	  "display_name": "Terrain Atlas 042",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		15,
-		387,
-		124,
-		108
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_043",
-	  "display_name": "Terrain Atlas 043",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		277,
-		387,
-		119,
-		108
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_044",
-	  "display_name": "Terrain Atlas 044",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1245,
-		508,
-		133,
-		143
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_045",
-	  "display_name": "Terrain Atlas 045",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1389,
-		508,
-		132,
-		143
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_046",
-	  "display_name": "Terrain Atlas 046",
-	  "footprint_tiles": [
-		4,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		15,
-		509,
-		124,
-		142
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_047",
-	  "display_name": "Terrain Atlas 047",
-	  "footprint_tiles": [
-		4,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		148,
-		509,
-		119,
-		142
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_048",
-	  "display_name": "Terrain Atlas 048",
-	  "footprint_tiles": [
-		4,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		276,
-		509,
-		120,
-		142
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_049",
-	  "display_name": "Terrain Atlas 049",
-	  "footprint_tiles": [
-		4,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		407,
-		509,
-		115,
-		140
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_050",
-	  "display_name": "Terrain Atlas 050",
-	  "footprint_tiles": [
-		4,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		530,
-		509,
-		121,
-		141
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_051",
-	  "display_name": "Terrain Atlas 051",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1080,
-		509,
-		158,
-		142
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_052",
-	  "display_name": "Terrain Atlas 052",
-	  "footprint_tiles": [
-		4,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		661,
-		510,
-		117,
-		141
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_053",
-	  "display_name": "Terrain Atlas 053",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		788,
-		510,
-		132,
-		140
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_054",
-	  "display_name": "Terrain Atlas 054",
-	  "footprint_tiles": [
-		5,
-		5
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		931,
-		510,
-		139,
-		140
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_055",
-	  "display_name": "Terrain Atlas 055",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		15,
-		665,
-		123,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_056",
-	  "display_name": "Terrain Atlas 056",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		148,
-		665,
-		119,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_057",
-	  "display_name": "Terrain Atlas 057",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		277,
-		665,
-		105,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_058",
-	  "display_name": "Terrain Atlas 058",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		393,
-		665,
-		128,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_059",
-	  "display_name": "Terrain Atlas 059",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		532,
-		665,
-		119,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_060",
-	  "display_name": "Terrain Atlas 060",
-	  "footprint_tiles": [
-		4,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		661,
-		665,
-		116,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_061",
-	  "display_name": "Terrain Atlas 061",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		788,
-		665,
-		133,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_062",
-	  "display_name": "Terrain Atlas 062",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		930,
-		665,
-		140,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_063",
-	  "display_name": "Terrain Atlas 063",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1080,
-		665,
-		134,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_064",
-	  "display_name": "Terrain Atlas 064",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1222,
-		665,
-		156,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_065",
-	  "display_name": "Terrain Atlas 065",
-	  "footprint_tiles": [
-		5,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1390,
-		665,
-		131,
-		119
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_066",
-	  "display_name": "Terrain Atlas 066",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		15,
-		799,
-		82,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_067",
-	  "display_name": "Terrain Atlas 067",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		109,
-		799,
-		85,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_068",
-	  "display_name": "Terrain Atlas 068",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		206,
-		799,
-		85,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_069",
-	  "display_name": "Terrain Atlas 069",
-	  "footprint_tiles": [
-		4,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		304,
-		799,
-		101,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_070",
-	  "display_name": "Terrain Atlas 070",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		417,
-		799,
-		81,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_071",
-	  "display_name": "Terrain Atlas 071",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		511,
-		799,
-		81,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_072",
-	  "display_name": "Terrain Atlas 072",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		604,
-		799,
-		82,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_073",
-	  "display_name": "Terrain Atlas 073",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		697,
-		799,
-		81,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_074",
-	  "display_name": "Terrain Atlas 074",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		790,
-		799,
-		73,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_075",
-	  "display_name": "Terrain Atlas 075",
-	  "footprint_tiles": [
-		4,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		875,
-		799,
-		105,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_076",
-	  "display_name": "Terrain Atlas 076",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		992,
-		799,
-		78,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_077",
-	  "display_name": "Terrain Atlas 077",
-	  "footprint_tiles": [
-		4,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1081,
-		799,
-		107,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_078",
-	  "display_name": "Terrain Atlas 078",
-	  "footprint_tiles": [
-		4,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1200,
-		799,
-		99,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_079",
-	  "display_name": "Terrain Atlas 079",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1311,
-		799,
-		84,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_080",
-	  "display_name": "Terrain Atlas 080",
-	  "footprint_tiles": [
-		4,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1407,
-		799,
-		112,
-		81
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_081",
-	  "display_name": "Terrain Atlas 081",
-	  "footprint_tiles": [
-		1,
-		4
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1148,
-		892,
-		32,
-		99
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_082",
-	  "display_name": "Terrain Atlas 082",
-	  "footprint_tiles": [
-		4,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1406,
-		898,
-		110,
-		92
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_083",
-	  "display_name": "Terrain Atlas 083",
-	  "footprint_tiles": [
-		1,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		595,
-		899,
-		28,
-		91
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_084",
-	  "display_name": "Terrain Atlas 084",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		20,
-		902,
-		65,
-		74
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_085",
-	  "display_name": "Terrain Atlas 085",
-	  "footprint_tiles": [
-		2,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		644,
-		902,
-		49,
-		88
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_086",
-	  "display_name": "Terrain Atlas 086",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		313,
-		907,
-		87,
-		73
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_087",
-	  "display_name": "Terrain Atlas 087",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		119,
-		914,
-		72,
-		70
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_088",
-	  "display_name": "Terrain Atlas 088",
-	  "footprint_tiles": [
-		3,
-		3
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		503,
-		914,
-		70,
-		65
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_089",
-	  "display_name": "Terrain Atlas 089",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		901,
-		914,
-		71,
-		60
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_090",
-	  "display_name": "Terrain Atlas 090",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		818,
-		916,
-		75,
-		58
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_091",
-	  "display_name": "Terrain Atlas 091",
-	  "footprint_tiles": [
-		2,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1055,
-		916,
-		55,
-		64
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_092",
-	  "display_name": "Terrain Atlas 092",
-	  "footprint_tiles": [
-		2,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		425,
-		917,
-		56,
-		57
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_093",
-	  "display_name": "Terrain Atlas 093",
-	  "footprint_tiles": [
-		1,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		261,
-		918,
-		27,
-		46
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_094",
-	  "display_name": "Terrain Atlas 094",
-	  "footprint_tiles": [
-		3,
-		1
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1306,
-		918,
-		82,
-		26
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_095",
-	  "display_name": "Terrain Atlas 095",
-	  "footprint_tiles": [
-		1,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		228,
-		919,
-		30,
-		50
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_096",
-	  "display_name": "Terrain Atlas 096",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		970,
-		922,
-		67,
-		58
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_097",
-	  "display_name": "Terrain Atlas 097",
-	  "footprint_tiles": [
-		2,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1229,
-		925,
-		50,
-		55
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_098",
-	  "display_name": "Terrain Atlas 098",
-	  "footprint_tiles": [
-		3,
-		2
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		721,
-		930,
-		77,
-		38
-	  ]
-	},
-	{
-	  "asset_id": "asset.tile.terrain_atlas_099",
-	  "display_name": "Terrain Atlas 099",
-	  "footprint_tiles": [
-		3,
-		1
-	  ],
-	  "group": "Terrain Atlas",
-	  "kind": "tile",
-	  "source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
-	  "source_rect_px": [
-		1307,
-		950,
-		81,
-		27
-	  ]
-	}
-  ],
-  "schema_version": 1
+	"assets": [
+		{
+			"asset_id": "asset.facility.a7_01",
+			"display_name": "A7 시설 01",
+			"footprint_tiles": [
+				8.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1048.0,
+				78.0,
+				230.0,
+				154.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_02",
+			"display_name": "A7 시설 02",
+			"footprint_tiles": [
+				6.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1348.0,
+				79.0,
+				171.0,
+				151.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_03",
+			"display_name": "A7 시설 03",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				529.0,
+				89.0,
+				144.0,
+				110.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_04",
+			"display_name": "A7 시설 04",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				700.0,
+				89.0,
+				133.0,
+				110.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_05",
+			"display_name": "A7 시설 05",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				863.0,
+				89.0,
+				146.0,
+				110.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_06",
+			"display_name": "A7 시설 06",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				21.0,
+				92.0,
+				148.0,
+				143.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_07",
+			"display_name": "A7 시설 07",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				183.0,
+				92.0,
+				146.0,
+				143.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_08",
+			"display_name": "A7 시설 08",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				343.0,
+				92.0,
+				144.0,
+				143.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_09",
+			"display_name": "A7 시설 09",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				541.0,
+				249.0,
+				138.0,
+				108.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_10",
+			"display_name": "A7 시설 10",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				702.0,
+				249.0,
+				130.0,
+				108.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_11",
+			"display_name": "A7 시설 11",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				857.0,
+				249.0,
+				142.0,
+				108.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_12",
+			"display_name": "A7 시설 12",
+			"footprint_tiles": [
+				7.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1054.0,
+				253.0,
+				198.0,
+				151.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_13",
+			"display_name": "A7 시설 13",
+			"footprint_tiles": [
+				6.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1323.0,
+				265.0,
+				184.0,
+				143.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_14",
+			"display_name": "A7 시설 14",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				24.0,
+				298.0,
+				146.0,
+				147.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_15",
+			"display_name": "A7 시설 15",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				184.0,
+				298.0,
+				145.0,
+				147.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_16",
+			"display_name": "A7 시설 16",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				344.0,
+				299.0,
+				145.0,
+				146.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_17",
+			"display_name": "A7 시설 17",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				777.0,
+				404.0,
+				157.0,
+				129.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_18",
+			"display_name": "A7 시설 18",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				539.0,
+				406.0,
+				170.0,
+				127.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_19",
+			"display_name": "A7 시설 19",
+			"footprint_tiles": [
+				7.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1043.0,
+				427.0,
+				198.0,
+				141.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_20",
+			"display_name": "A7 시설 20",
+			"footprint_tiles": [
+				8.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1272.0,
+				435.0,
+				229.0,
+				158.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_21",
+			"display_name": "A7 시설 21",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1312.0,
+				634.0,
+				178.0,
+				118.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_22",
+			"display_name": "A7 시설 22",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				534.0,
+				656.0,
+				163.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_23",
+			"display_name": "A7 시설 23",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				704.0,
+				656.0,
+				143.0,
+				103.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_24",
+			"display_name": "A7 시설 24",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				870.0,
+				657.0,
+				131.0,
+				101.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_25",
+			"display_name": "A7 시설 25",
+			"footprint_tiles": [
+				7.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1054.0,
+				657.0,
+				208.0,
+				114.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_26",
+			"display_name": "A7 시설 26",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				347.0,
+				664.0,
+				148.0,
+				108.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_27",
+			"display_name": "A7 시설 27",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				25.0,
+				665.0,
+				148.0,
+				107.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_28",
+			"display_name": "A7 시설 28",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				189.0,
+				665.0,
+				146.0,
+				132.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_29",
+			"display_name": "A7 시설 29",
+			"footprint_tiles": [
+				6.0,
+				3.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1289.0,
+				767.0,
+				182.0,
+				96.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_30",
+			"display_name": "A7 시설 30",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1066.0,
+				780.0,
+				174.0,
+				104.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_31",
+			"display_name": "A7 시설 31",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				573.0,
+				781.0,
+				161.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_32",
+			"display_name": "A7 시설 32",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				794.0,
+				782.0,
+				157.0,
+				101.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_33",
+			"display_name": "A7 시설 33",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				22.0,
+				818.0,
+				151.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_34",
+			"display_name": "A7 시설 34",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				191.0,
+				818.0,
+				146.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_35",
+			"display_name": "A7 시설 35",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				354.0,
+				820.0,
+				143.0,
+				107.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_36",
+			"display_name": "A7 시설 36",
+			"footprint_tiles": [
+				7.0,
+				5.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1293.0,
+				877.0,
+				199.0,
+				130.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_37",
+			"display_name": "A7 시설 37",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				560.0,
+				890.0,
+				163.0,
+				108.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_38",
+			"display_name": "A7 시설 38",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				1047.0,
+				894.0,
+				182.0,
+				97.0
+			]
+		},
+		{
+			"asset_id": "asset.facility.a7_39",
+			"display_name": "A7 시설 39",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Facility",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/facility/a7.png",
+			"source_rect_px": [
+				792.0,
+				908.0,
+				167.0,
+				101.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.a_7",
+			"display_name": "Border Wall Tiles",
+			"group": "Boundary",
+			"kind": "tile",
+			"source_path": "res://content/editor/edited_assets/asset_tile_a_7_edit_14449287.png",
+			"source_rect_px": [
+				0.0,
+				0.0,
+				258.0,
+				151.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.ground.basic_meadow",
+			"display_name": "Basic Meadow",
+			"footprint_tiles": [
+				1.0,
+				1.0
+			],
+			"group": "Ground",
+			"kind": "tile",
+			"source_path": "res://assets/menos/maps/ground_basic_32.svg",
+			"source_rect_px": [
+				0.0,
+				0.0,
+				32.0,
+				32.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.ground_2",
+			"display_name": "Ground 2",
+			"footprint_tiles": [
+				2.0,
+				3.0
+			],
+			"group": "Boundary",
+			"kind": "tile",
+			"source_path": "res://images/map/tile/ground/ground3.png",
+			"source_rect_px": [
+				14.0,
+				10.0,
+				61.0,
+				67.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_001",
+			"display_name": "Terrain Atlas 001",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				15.0,
+				23.0,
+				125.0,
+				123.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_002",
+			"display_name": "Terrain Atlas 002",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				147.0,
+				23.0,
+				122.0,
+				124.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_003",
+			"display_name": "Terrain Atlas 003",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				404.0,
+				23.0,
+				121.0,
+				123.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_004",
+			"display_name": "Terrain Atlas 004",
+			"footprint_tiles": [
+				3.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1063.0,
+				23.0,
+				89.0,
+				123.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_005",
+			"display_name": "Terrain Atlas 005",
+			"footprint_tiles": [
+				3.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1164.0,
+				23.0,
+				83.0,
+				124.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_006",
+			"display_name": "Terrain Atlas 006",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				275.0,
+				24.0,
+				121.0,
+				122.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_007",
+			"display_name": "Terrain Atlas 007",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				532.0,
+				24.0,
+				121.0,
+				122.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_008",
+			"display_name": "Terrain Atlas 008",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				661.0,
+				24.0,
+				120.0,
+				122.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_009",
+			"display_name": "Terrain Atlas 009",
+			"footprint_tiles": [
+				3.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				786.0,
+				24.0,
+				76.0,
+				122.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_010",
+			"display_name": "Terrain Atlas 010",
+			"footprint_tiles": [
+				3.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				869.0,
+				24.0,
+				90.0,
+				122.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_011",
+			"display_name": "Terrain Atlas 011",
+			"footprint_tiles": [
+				3.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				968.0,
+				24.0,
+				86.0,
+				122.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_012",
+			"display_name": "Terrain Atlas 012",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1455.0,
+				27.0,
+				68.0,
+				46.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_013",
+			"display_name": "Terrain Atlas 013",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1362.0,
+				29.0,
+				79.0,
+				38.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_014",
+			"display_name": "Terrain Atlas 014",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1260.0,
+				30.0,
+				91.0,
+				34.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_015",
+			"display_name": "Terrain Atlas 015",
+			"footprint_tiles": [
+				2.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1282.0,
+				86.0,
+				51.0,
+				48.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_016",
+			"display_name": "Terrain Atlas 016",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1363.0,
+				87.0,
+				70.0,
+				59.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_017",
+			"display_name": "Terrain Atlas 017",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1454.0,
+				91.0,
+				69.0,
+				55.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_018",
+			"display_name": "Terrain Atlas 018",
+			"footprint_tiles": [
+				4.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				276.0,
+				160.0,
+				120.0,
+				213.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_019",
+			"display_name": "Terrain Atlas 019",
+			"footprint_tiles": [
+				4.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				405.0,
+				160.0,
+				120.0,
+				213.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_020",
+			"display_name": "Terrain Atlas 020",
+			"footprint_tiles": [
+				4.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				533.0,
+				160.0,
+				120.0,
+				213.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_021",
+			"display_name": "Terrain Atlas 021",
+			"footprint_tiles": [
+				4.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				661.0,
+				160.0,
+				121.0,
+				213.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_022",
+			"display_name": "Terrain Atlas 022",
+			"footprint_tiles": [
+				3.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				784.0,
+				160.0,
+				77.0,
+				212.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_023",
+			"display_name": "Terrain Atlas 023",
+			"footprint_tiles": [
+				3.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				870.0,
+				160.0,
+				88.0,
+				212.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_024",
+			"display_name": "Terrain Atlas 024",
+			"footprint_tiles": [
+				3.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				968.0,
+				160.0,
+				86.0,
+				211.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_025",
+			"display_name": "Terrain Atlas 025",
+			"footprint_tiles": [
+				3.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1065.0,
+				160.0,
+				87.0,
+				211.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_026",
+			"display_name": "Terrain Atlas 026",
+			"footprint_tiles": [
+				3.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1164.0,
+				160.0,
+				85.0,
+				211.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_027",
+			"display_name": "Terrain Atlas 027",
+			"footprint_tiles": [
+				4.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				15.0,
+				161.0,
+				124.0,
+				212.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_028",
+			"display_name": "Terrain Atlas 028",
+			"footprint_tiles": [
+				4.0,
+				7.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				149.0,
+				161.0,
+				118.0,
+				212.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_029",
+			"display_name": "Terrain Atlas 029",
+			"footprint_tiles": [
+				4.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1262.0,
+				162.0,
+				128.0,
+				91.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_030",
+			"display_name": "Terrain Atlas 030",
+			"footprint_tiles": [
+				4.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1413.0,
+				163.0,
+				110.0,
+				88.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_031",
+			"display_name": "Terrain Atlas 031",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1399.0,
+				261.0,
+				123.0,
+				110.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_032",
+			"display_name": "Terrain Atlas 032",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1263.0,
+				265.0,
+				119.0,
+				107.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_033",
+			"display_name": "Terrain Atlas 033",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1399.0,
+				384.0,
+				122.0,
+				110.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_034",
+			"display_name": "Terrain Atlas 034",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				147.0,
+				386.0,
+				119.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_035",
+			"display_name": "Terrain Atlas 035",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				406.0,
+				386.0,
+				118.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_036",
+			"display_name": "Terrain Atlas 036",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				533.0,
+				386.0,
+				119.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_037",
+			"display_name": "Terrain Atlas 037",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				661.0,
+				386.0,
+				116.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_038",
+			"display_name": "Terrain Atlas 038",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				788.0,
+				386.0,
+				131.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_039",
+			"display_name": "Terrain Atlas 039",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				930.0,
+				386.0,
+				126.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_040",
+			"display_name": "Terrain Atlas 040",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1068.0,
+				386.0,
+				131.0,
+				109.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_041",
+			"display_name": "Terrain Atlas 041",
+			"footprint_tiles": [
+				6.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1218.0,
+				386.0,
+				165.0,
+				108.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_042",
+			"display_name": "Terrain Atlas 042",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				15.0,
+				387.0,
+				124.0,
+				108.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_043",
+			"display_name": "Terrain Atlas 043",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				277.0,
+				387.0,
+				119.0,
+				108.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_044",
+			"display_name": "Terrain Atlas 044",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1245.0,
+				508.0,
+				133.0,
+				143.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_045",
+			"display_name": "Terrain Atlas 045",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1389.0,
+				508.0,
+				132.0,
+				143.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_046",
+			"display_name": "Terrain Atlas 046",
+			"footprint_tiles": [
+				4.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				15.0,
+				509.0,
+				124.0,
+				142.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_047",
+			"display_name": "Terrain Atlas 047",
+			"footprint_tiles": [
+				4.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				148.0,
+				509.0,
+				119.0,
+				142.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_048",
+			"display_name": "Terrain Atlas 048",
+			"footprint_tiles": [
+				4.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				276.0,
+				509.0,
+				120.0,
+				142.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_049",
+			"display_name": "Terrain Atlas 049",
+			"footprint_tiles": [
+				4.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				407.0,
+				509.0,
+				115.0,
+				140.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_050",
+			"display_name": "Terrain Atlas 050",
+			"footprint_tiles": [
+				4.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				530.0,
+				509.0,
+				121.0,
+				141.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_051",
+			"display_name": "Terrain Atlas 051",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1080.0,
+				509.0,
+				158.0,
+				142.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_052",
+			"display_name": "Terrain Atlas 052",
+			"footprint_tiles": [
+				4.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				661.0,
+				510.0,
+				117.0,
+				141.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_053",
+			"display_name": "Terrain Atlas 053",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				788.0,
+				510.0,
+				132.0,
+				140.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_054",
+			"display_name": "Terrain Atlas 054",
+			"footprint_tiles": [
+				5.0,
+				5.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				931.0,
+				510.0,
+				139.0,
+				140.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_055",
+			"display_name": "Terrain Atlas 055",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				15.0,
+				665.0,
+				123.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_056",
+			"display_name": "Terrain Atlas 056",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				148.0,
+				665.0,
+				119.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_057",
+			"display_name": "Terrain Atlas 057",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				277.0,
+				665.0,
+				105.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_058",
+			"display_name": "Terrain Atlas 058",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				393.0,
+				665.0,
+				128.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_059",
+			"display_name": "Terrain Atlas 059",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				532.0,
+				665.0,
+				119.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_060",
+			"display_name": "Terrain Atlas 060",
+			"footprint_tiles": [
+				4.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				661.0,
+				665.0,
+				116.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_061",
+			"display_name": "Terrain Atlas 061",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				788.0,
+				665.0,
+				133.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_062",
+			"display_name": "Terrain Atlas 062",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				930.0,
+				665.0,
+				140.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_063",
+			"display_name": "Terrain Atlas 063",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1080.0,
+				665.0,
+				134.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_064",
+			"display_name": "Terrain Atlas 064",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1222.0,
+				665.0,
+				156.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_065",
+			"display_name": "Terrain Atlas 065",
+			"footprint_tiles": [
+				5.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1390.0,
+				665.0,
+				131.0,
+				119.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_066",
+			"display_name": "Terrain Atlas 066",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				15.0,
+				799.0,
+				82.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_067",
+			"display_name": "Terrain Atlas 067",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				109.0,
+				799.0,
+				85.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_068",
+			"display_name": "Terrain Atlas 068",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				206.0,
+				799.0,
+				85.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_069",
+			"display_name": "Terrain Atlas 069",
+			"footprint_tiles": [
+				4.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				304.0,
+				799.0,
+				101.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_070",
+			"display_name": "Terrain Atlas 070",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				417.0,
+				799.0,
+				81.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_071",
+			"display_name": "Terrain Atlas 071",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				511.0,
+				799.0,
+				81.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_072",
+			"display_name": "Terrain Atlas 072",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				604.0,
+				799.0,
+				82.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_073",
+			"display_name": "Terrain Atlas 073",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				697.0,
+				799.0,
+				81.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_074",
+			"display_name": "Terrain Atlas 074",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				790.0,
+				799.0,
+				73.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_075",
+			"display_name": "Terrain Atlas 075",
+			"footprint_tiles": [
+				4.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				875.0,
+				799.0,
+				105.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_076",
+			"display_name": "Terrain Atlas 076",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				992.0,
+				799.0,
+				78.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_077",
+			"display_name": "Terrain Atlas 077",
+			"footprint_tiles": [
+				4.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1081.0,
+				799.0,
+				107.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_078",
+			"display_name": "Terrain Atlas 078",
+			"footprint_tiles": [
+				4.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1200.0,
+				799.0,
+				99.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_079",
+			"display_name": "Terrain Atlas 079",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1311.0,
+				799.0,
+				84.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_080",
+			"display_name": "Terrain Atlas 080",
+			"footprint_tiles": [
+				4.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1407.0,
+				799.0,
+				112.0,
+				81.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_081",
+			"display_name": "Terrain Atlas 081",
+			"footprint_tiles": [
+				1.0,
+				4.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1148.0,
+				892.0,
+				32.0,
+				99.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_082",
+			"display_name": "Terrain Atlas 082",
+			"footprint_tiles": [
+				4.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1406.0,
+				898.0,
+				110.0,
+				92.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_083",
+			"display_name": "Terrain Atlas 083",
+			"footprint_tiles": [
+				1.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				595.0,
+				899.0,
+				28.0,
+				91.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_084",
+			"display_name": "Terrain Atlas 084",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				20.0,
+				902.0,
+				65.0,
+				74.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_085",
+			"display_name": "Terrain Atlas 085",
+			"footprint_tiles": [
+				2.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				644.0,
+				902.0,
+				49.0,
+				88.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_086",
+			"display_name": "Terrain Atlas 086",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				313.0,
+				907.0,
+				87.0,
+				73.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_087",
+			"display_name": "Terrain Atlas 087",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				119.0,
+				914.0,
+				72.0,
+				70.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_088",
+			"display_name": "Terrain Atlas 088",
+			"footprint_tiles": [
+				3.0,
+				3.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				503.0,
+				914.0,
+				70.0,
+				65.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_089",
+			"display_name": "Terrain Atlas 089",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				901.0,
+				914.0,
+				71.0,
+				60.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_090",
+			"display_name": "Terrain Atlas 090",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				818.0,
+				916.0,
+				75.0,
+				58.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_091",
+			"display_name": "Terrain Atlas 091",
+			"footprint_tiles": [
+				2.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1055.0,
+				916.0,
+				55.0,
+				64.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_092",
+			"display_name": "Terrain Atlas 092",
+			"footprint_tiles": [
+				2.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				425.0,
+				917.0,
+				56.0,
+				57.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_093",
+			"display_name": "Terrain Atlas 093",
+			"footprint_tiles": [
+				1.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				261.0,
+				918.0,
+				27.0,
+				46.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_094",
+			"display_name": "Terrain Atlas 094",
+			"footprint_tiles": [
+				3.0,
+				1.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1306.0,
+				918.0,
+				82.0,
+				26.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_095",
+			"display_name": "Terrain Atlas 095",
+			"footprint_tiles": [
+				1.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				228.0,
+				919.0,
+				30.0,
+				50.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_096",
+			"display_name": "Terrain Atlas 096",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				970.0,
+				922.0,
+				67.0,
+				58.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_097",
+			"display_name": "Terrain Atlas 097",
+			"footprint_tiles": [
+				2.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1229.0,
+				925.0,
+				50.0,
+				55.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_098",
+			"display_name": "Terrain Atlas 098",
+			"footprint_tiles": [
+				3.0,
+				2.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				721.0,
+				930.0,
+				77.0,
+				38.0
+			]
+		},
+		{
+			"asset_id": "asset.tile.terrain_atlas_099",
+			"display_name": "Terrain Atlas 099",
+			"footprint_tiles": [
+				3.0,
+				1.0
+			],
+			"group": "Terrain Atlas",
+			"kind": "tile",
+			"source_path": "res://images/active/SF 군사 지형 타일셋 아틀라스.png",
+			"source_rect_px": [
+				1307.0,
+				950.0,
+				81.0,
+				27.0
+			]
+		}
+	],
+	"schema_version": 1.0
 }

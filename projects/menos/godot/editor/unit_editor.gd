@@ -36,6 +36,7 @@ var sprite_edit: LineEdit
 var default_image_edit: LineEdit
 var animation_edits: Dictionary = {}
 var image_thumbnail_controls: Dictionary = {}
+var image_asset_id_labels: Dictionary = {}
 
 var file_dialog: FileDialog
 var file_dialog_target := "sprite"
@@ -289,6 +290,13 @@ func _image_grid_row(parent: GridContainer, label_text: String, target: String) 
 	thumbnail.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	thumbnail.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	thumbnail.mouse_filter = Control.MOUSE_FILTER_STOP
+	var asset_id_label := Label.new()
+	asset_id_label.text = "ID: -"
+	asset_id_label.custom_minimum_size.x = 150
+	asset_id_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	asset_id_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	row.add_child(asset_id_label)
+	image_asset_id_labels[target] = asset_id_label
 	thumbnail.gui_input.connect(func(event: InputEvent):
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			_open_image_editor_for_target(target)
@@ -503,6 +511,10 @@ func _refresh_image_thumbnail(target: String) -> void:
 		if animation_edits.has(animation_name):
 			path = (animation_edits[animation_name] as LineEdit).text.strip_edges()
 	thumbnail.texture = _texture_from_sprite_data(path, [])
+	if image_asset_id_labels.has(target):
+		var resolved := VisualAssetResolver.resolve(path) if not path.is_empty() else null
+		var asset_id := resolved.id if resolved != null else ""
+		(image_asset_id_labels[target] as Label).text = "ID: " + (asset_id if not asset_id.is_empty() else "-")
 
 func _refresh_all_image_thumbnails() -> void:
 	_refresh_image_thumbnail("sprite")

@@ -1059,20 +1059,136 @@ func _confirm_delete_visual_asset() -> void:
 		if current_index >= 0 and current_index < entries.size():
 			entry_index = current_index
 	if entry_index < 0 or entry_index >= entries.size():
-		status.text = "Select a Visual Asset first."
+		status.text = "Select an asset first."
 		return
 	current_index = entry_index
-	var asset_id := _resolve_visual_asset_id(entries[entry_index])
-	if asset_id.is_empty():
-		status.text = "Selected item is not a registered Visual Asset."
+	var entry: Dictionary = entries[entry_index]
+	var target := _resolve_delete_target(entry)
+	if target.is_empty():
+		status.text = "Selected item has no deletable catalog/reference target."
 		return
 	var dialog := ConfirmationDialog.new()
-	dialog.title = "Delete Visual Asset"
-	dialog.dialog_text = "Delete Visual Asset and remove all references to it?\nThe source image file will be preserved."
+	dialog.title = "Delete Asset"
+	dialog.dialog_text = "Delete this asset/reference from all managed catalogs?\nThe source image file will be preserved."
 	add_child(dialog)
-	dialog.confirmed.connect(func(): _delete_visual_asset(asset_id, dialog))
+	dialog.confirmed.connect(func(): _delete_managed_asset(target, dialog))
 	dialog.canceled.connect(dialog.queue_free)
-	dialog.popup_centered(Vector2i(600, 240))
+	dialog.popup_centered(Vector2i(640, 260))
+
+func _resolve_delete_target(entry: Dictionary) -> String:
+	var visual_asset_id := _resolve_visual_asset_id(entry)
+	if not visual_asset_id.is_empty():
+		return visual_asset_id
+	var path := str(entry.get("path", "")).strip_edges()
+	if not path.is_empty():
+		return path
+	return ""
+
+func _delete_managed_asset(target: String, dialog: ConfirmationDialog) -> void:
+	var changed_files: Array[String] = []
+	var failed_files: Array[String] = []
+	if _delete_visual_asset_definition(target):
+		changed_files.append("visual_assets.json")
+	for path in [
+		"res://content/towers/towers.json",
+		"res://content/allied_units/allied_units.json",
+		"res://content/enemies/enemies.json",
+		"res://content/robots/robots.json"
+	]:
+		var result := _remove_json_references(path, target)
+		if result == 1:
+			changed_files.append(path.get_file())
+		elif result == -1:
+			failed_files.append(path.get_file())
+	var catalog_result := _remove_asset_catalog_references(target)
+	if catalog_result == 1:
+		changed_files.append("asset_catalog.json")
+	elif catalog_result == -1:
+		failed_files.append("asset_catalog.json")
+	var main_result := _remove_main_preload_reference(target)
+	if main_result == 1:
+		changed_files.append("main.gd")
+	elif main_result == -1:
+		failed_files.append("main.gd")
+	VisualAssetResolver.reload()
+	_scan_connected_images()
+	current_index = -1
+	dialog.queue_free()
+	if not failed_files.is_empty():
+		status.text = "Deleted with incomplete cleanup: %s / failed: %s" % [target, ", ".join(failed_files)]
+	elif changed_files.is_empty():
+		status.text = "No managed references found: " + target
+	else:
+		status.text = "Deleted from managed catalogs: %s" % target
+
+func _delete_visual_asset_definition(asset_id: String) -> bool:
+	var path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return false
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary or not data.has(asset_id):
+		return false
+	data.erase(asset_id)
+	return _write_json(path, data)
+
+func _remove_json_references(path: String, target: String) -> int:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return -1
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if data == null:
+		return -1
+	if not _remove_matching_values(data, target):
+		return 0
+	return 1 if _write_json(path, data) else -1
+
+func _remove_asset_catalog_references(target: String) -> int:
+	var path := "res://content/editor/asset_catalog.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return -1
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary:
+		return -1
+	var assets: Array = data.get("assets", [])
+	var changed := false
+	for index in range(assets.size() - 1, -1, -1):
+		var asset = assets[index]
+		if not asset is Dictionary:
+			continue
+		if str(asset.get("asset_id", "")) == target or str(asset.get("source_path", "")) == target:
+			assets.remove_at(index)
+			changed = true
+	if not changed:
+		return 0
+	data["assets"] = assets
+	return 1 if _write_json(path, data) else -1
+
+func _remove_main_preload_reference(target: String) -> int:
+	var path := "res://main.gd"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return -1
+	var lines := file.get_as_text().split("\n")
+	file.close()
+	var needle := 'preload("' + target + '")'
+	var changed := false
+	for index in range(lines.size() - 1, -1, -1):
+		if lines[index].contains(needle):
+			lines.remove_at(index)
+			changed = true
+	if not changed:
+		return 0
+	var out := FileAccess.open(ProjectSettings.globalize_path(path), FileAccess.WRITE)
+	if out == null:
+		return -1
+	out.store_string("\n".join(lines))
+	out.close()
+	return 1
 
 func _resolve_visual_asset_id(entry: Dictionary) -> String:
 	var file := FileAccess.open("res://content/editor/visual_assets.json", FileAccess.READ)

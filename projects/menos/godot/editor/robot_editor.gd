@@ -32,6 +32,7 @@ var finisher_edit: LineEdit
 var default_image_edit: LineEdit
 var animation_edits: Dictionary = {}
 var image_thumbnail_controls: Dictionary = {}
+var image_asset_id_labels: Dictionary = {}
 var projectile_edit: LineEdit
 const BASE_ANIMATIONS := ["idle", "move", "attack", "hit", "death", "projectile"]
 const SKILL_ANIMATIONS := ["skill1", "skill2", "skill3", "special", "finisher"]
@@ -312,6 +313,13 @@ func _image_grid_row(parent: GridContainer, label_text: String, target: String) 
 	thumbnail.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	thumbnail.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	thumbnail.mouse_filter = Control.MOUSE_FILTER_STOP
+	var asset_id_label := Label.new()
+	asset_id_label.text = "ID: -"
+	asset_id_label.custom_minimum_size.x = 150
+	asset_id_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	asset_id_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	row.add_child(asset_id_label)
+	image_asset_id_labels[target] = asset_id_label
 	thumbnail.gui_input.connect(func(event: InputEvent):
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			_open_image_editor_for_target(target)
@@ -343,6 +351,13 @@ func _image_row(parent: VBoxContainer, label_text: String, target: String) -> Li
 	thumbnail.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	thumbnail.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	thumbnail.mouse_filter = Control.MOUSE_FILTER_STOP
+	var asset_id_label := Label.new()
+	asset_id_label.text = "ID: -"
+	asset_id_label.custom_minimum_size.x = 150
+	asset_id_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	asset_id_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	row.add_child(asset_id_label)
+	image_asset_id_labels[target] = asset_id_label
 	thumbnail.gui_input.connect(func(event: InputEvent):
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			_open_image_editor_for_target(target)
@@ -728,6 +743,10 @@ func _refresh_image_thumbnail(target: String) -> void:
 	var texture := EDITOR_THUMBNAIL_UTIL.create(path, fallback_region, fallback_frames) if not path.is_empty() else null
 	thumbnail.texture = texture
 	thumbnail.scale = Vector2.ONE
+	if image_asset_id_labels.has(target):
+		var resolved := VisualAssetResolver.resolve(path) if not path.is_empty() else null
+		var asset_id := resolved.id if resolved != null else ""
+		(image_asset_id_labels[target] as Label).text = "ID: " + (asset_id if not asset_id.is_empty() else "-")
 	if target == "default_image" or target == "animation:idle":
 		_refresh_robot_preview()
 
@@ -836,7 +855,9 @@ func _open_image_editor_for_target(target: String) -> void:
 		owner_usage = target.trim_prefix("animation:")
 		owner_frames = _animation_frame_count(owner_usage)
 	elif target == "default_image":
-		owner_usage = "default_image"
+		# PROFILE IMAGE has a stable Visual Asset identity independent of the
+		# Robot Editor's legacy storage field name (default_image).
+		owner_usage = "profile"
 	IMAGE_STATE.open_image(source_path, target, asset_id, "robot", selected_type, owner_usage, owner_frames, "res://editor/robot_editor.tscn")
 	request_image_editor.emit()
 

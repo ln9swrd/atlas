@@ -56,23 +56,10 @@
         107.0
       ]
     },
-    "animations": {
-      "attack": "robot.asura.attack",
-      "death": "robot.asura.death",
-      "finisher": "robot.asura.finisher",
-      "hit": "robot.asura.hit",
-      "idle": "robot.asura.idle",
-      "move": "robot.asura.move",
-      "projectile": "robot.asura.projectile",
-      "skill1": "robot.asura.skill1",
-      "skill2": "robot.asura.skill2",
-      "skill3": "robot.asura.skill3",
-      "special": "robot.asura.special"
-    },
+    "animations": {},
     "color": "1865e7ff",
     "cooldown": 0.65,
     "damage": 28.0,
-    "default_image": "robot.asura.default_image",
     "default_image_rect": [
       16.0,
       159.0,
@@ -93,39 +80,8 @@
       "speed_growth": 0.02,
       "xp_per_level": 100.0
     },
-    "projectile_anim": "robot.asura.projectile",
     "range": 180.0,
-    "speed": 125.0,
-    "sprite_attack": "robot.asura.attack",
-    "sprite_idle": "robot.asura.idle",
-    "sprite_move": "robot.asura.move",
-    "sprite_skill": "robot.asura.skill1"
-  },
-  "robot_main": {
-    "color": "ffffffff",
-    "cooldown": 0.65,
-    "damage": 28.0,
-    "energy": {
-      "max": 100.0,
-      "regen": 12.0
-    },
-    "hp": 220.0,
-    "id": "robot_main",
-    "name": "ATLAS-01",
-    "progression": {
-      "damage_growth": 0.05,
-      "hp_growth": 0.05,
-      "range_growth": 0.02,
-      "speed_growth": 0.02,
-      "xp_per_level": 100.0
-    },
-    "projectile_anim": "res://assets/menos/sprites/bullet_defender.png",
-    "range": 180.0,
-    "speed": 125.0,
-    "sprite_attack": "res://assets/menos/sprites/atlas_attack.png",
-    "sprite_idle": "res://assets/menos/sprites/atlas_idle.png",
-    "sprite_move": "res://assets/menos/sprites/atlas_move.png",
-    "sprite_skill": "res://assets/menos/sprites/atlas_skill.png"
+    "speed": 125.0
   },
   "valkyrie": {
     "animation_rects": {
@@ -190,23 +146,10 @@
         300.0
       ]
     },
-    "animations": {
-      "attack": "robot.valkyrie.attack",
-      "death": "robot.valkyrie.death",
-      "finisher": "robot.valkyrie.skill(finisher)",
-      "hit": "robot.valkyrie.hit",
-      "idle": "robot.valkyrie.idle",
-      "move": "robot.valkyrie.move",
-      "projectile": "robot.valkyrie.projectile",
-      "skill1": "robot.valkyrie.skill1",
-      "skill2": "robot.valkyrie.skill2",
-      "skill3": "robot.valkyrie.skill3",
-      "special": "robot.valkyrie.skill(special)"
-    },
+    "animations": {},
     "color": "ffffffff",
     "cooldown": 0.65,
     "damage": 28.0,
-    "default_image": "robot.valkyrie.profile",
     "default_image_rect": [
       0.0,
       760.0,
@@ -227,25 +170,20 @@
       "speed_growth": 0.02,
       "xp_per_level": 100.0
     },
-    "projectile_anim": "robot.valkyrie.projectile",
     "range": 180.0,
     "speed": 125.0,
-    "sprite_attack": "robot.valkyrie.attack",
     "sprite_attack_rect": [
       96.0,
       400.0,
       1440.0,
       220.0
     ],
-    "sprite_idle": "robot.valkyrie.idle",
-    "sprite_move": "robot.valkyrie.move",
     "sprite_move_rect": [
       96.0,
       200.0,
       1360.0,
       200.0
     ],
-    "sprite_skill": "robot.valkyrie.skill1",
     "sprite_skill_rect": [
       96.0,
       200.0,
