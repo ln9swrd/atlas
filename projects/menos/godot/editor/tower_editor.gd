@@ -234,9 +234,7 @@ func _load_data() -> void:
 	_set_status("Loaded: " + TOWER_FILE if file else "Failed to load JSON")
 
 func _get_tower_types() -> Array:
-	var types: Array = tower_data.keys()
-	types.sort()
-	return types
+	return Array(ObjectRepository.list_towers())
 
 func _refresh_tower_list() -> void:
 	tower_list.clear()
@@ -331,27 +329,8 @@ func _save_data() -> bool:
 		"range": float(level2_range_spin.value)
 	}
 	tower_data[selected_type] = data
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/towers"))
-	var file := FileAccess.open(TOWER_FILE, FileAccess.WRITE)
-	if file == null:
-		_set_status("FAILED to open JSON for writing.")
-		return false
-	var json_text := JSON.stringify(tower_data, "  ")
-	file.store_string(json_text)
-	file.flush()
-	var write_error := file.get_error()
-	file.close()
-	if write_error != OK:
-		_set_status("FAILED to write JSON: %s." % error_string(write_error))
-		return false
-	var verify_file := FileAccess.open(TOWER_FILE, FileAccess.READ)
-	if verify_file == null:
-		_set_status("FAILED to verify saved JSON.")
-		return false
-	var verify_text := verify_file.get_as_text()
-	verify_file.close()
-	if verify_text.strip_edges() != json_text.strip_edges():
-		_set_status("FAILED: saved JSON verification mismatch.")
+	if not ObjectPersistence.save_catalog(TOWER_FILE, tower_data):
+		_set_status("FAILED to save or verify JSON: %s." % TOWER_FILE)
 		return false
 	_refresh_tower_list()
 	var selected_index := _get_tower_types().find(selected_type)

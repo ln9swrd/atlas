@@ -428,7 +428,7 @@ func _load_data() -> void:
 
 func _refresh_robot_list() -> void:
 	robot_list.clear()
-	for robot_type in robot_data.keys():
+	for robot_type in ObjectRepository.list_robots():
 		var data: Dictionary = robot_data.get(robot_type, {})
 		if not (data is Dictionary):
 			continue
@@ -645,13 +645,7 @@ func _add_robot(dialog: ConfirmationDialog, requested_id: String, requested_name
 	dialog.queue_free()
 
 func _write_robot_data() -> bool:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/robots"))
-	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
-	if file == null:
-		return false
-	file.store_string(JSON.stringify(robot_data, "  "))
-	file.close()
-	return true
+	return ObjectPersistence.save_catalog(ROBOT_FILE, robot_data)
 
 func _confirm_delete_robot() -> void:
 	if selected_type.is_empty() or not robot_data.has(selected_type):
@@ -669,13 +663,10 @@ func _confirm_delete_robot() -> void:
 
 func _delete_robot(dialog: ConfirmationDialog) -> void:
 	robot_data.erase(selected_type)
-	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
-	if file == null:
+	if not ObjectPersistence.save_catalog(ROBOT_FILE, robot_data):
 		_set_status("FAILED to write JSON.")
 		dialog.queue_free()
 		return
-	file.store_string(JSON.stringify(robot_data, "  "))
-	file.close()
 	selected_type = ""
 	_refresh_robot_list()
 	if robot_list.item_count > 0:
@@ -716,13 +707,9 @@ func _save_data() -> void:
 	data["sprite_skill"] = animations.get("skill1", "")
 	data["projectile_anim"] = animations.get("projectile", "")
 	robot_data[selected_type] = data
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/robots"))
-	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
-	if file == null:
-		_set_status("FAILED to open JSON for writing.")
+	if not ObjectPersistence.save_catalog(ROBOT_FILE, robot_data):
+		_set_status("FAILED to save JSON.")
 		return
-	file.store_string(JSON.stringify(robot_data, "  "))
-	file.close()
 	_refresh_robot_list()
 	for i in range(robot_list.item_count):
 		if str(robot_list.get_item_metadata(i)) == selected_type:

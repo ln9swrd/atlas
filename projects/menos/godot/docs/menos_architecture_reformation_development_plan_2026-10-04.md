@@ -1025,3 +1025,34 @@ TECHNICALLY POSSIBLE
 PRACTICALLY FEASIBLE
 RECOMMENDED
 BUSINESS VIABLE은 현재 단계에서 판단하지 않음.
+
+
+# 38. Master 승인 — Object Composition 구조
+
+2026-10-05 Master 승인.
+
+다음 구조를 MENOS Content Model의 Canon으로 채택한다.
+
+```text
+Object
+ ├─ Robot
+ ├─ Unit
+ ├─ Tower
+ └─ Enemy
+
+Skill
+Effect
+Item
+Technology
+Map
+Visual Asset
+```
+
+Object의 공통 기능은 Composition 기반 Component/Property 구조로 구성한다.
+Robot / Unit / Tower / Enemy를 거대한 공통 테이블의 모든 필드를 공유하는 상속 구조로 만들지 않는다.
+
+공통 기능과 타입별 기능의 책임을 분리하며, 사용하지 않는 타입의 속성을 NULL 필드로 무분별하게 확장하지 않는다.
+
+이 결정은 이후 Model / Repository / SQLite Schema / Editor 통합 / Runtime Definition 설계의 기준으로 사용한다.
+
+PROPOSAL이었던 Composition 기반 Object 구조를 Master 승인에 따라 CANON으로 승격한다.

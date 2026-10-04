@@ -443,10 +443,12 @@ func _load_unit_catalog_file(path: String, source: String) -> void:
 
 func _get_unit_types() -> Array:
 	var types: Array = []
-	for key in unit_data.keys():
-		var unit_type := str(key)
-		if not types.has(unit_type):
+	for unit_type in ObjectRepository.list_units():
+		if unit_data.has(unit_type) and not types.has(unit_type):
 			types.append(unit_type)
+	for enemy_type in ObjectRepository.list_enemies():
+		if unit_data.has(enemy_type) and not types.has(enemy_type):
+			types.append(enemy_type)
 	types.sort()
 	return types
 
@@ -684,32 +686,8 @@ func _save_data() -> void:
 		catalog[selected_type] = enemy_data
 	else:
 		catalog[selected_type] = data
-	var absolute_path := ProjectSettings.globalize_path(target_file)
-	var parent_dir := absolute_path.get_base_dir()
-	var dir_error := DirAccess.make_dir_recursive_absolute(parent_dir)
-	if dir_error != OK:
-		_set_status("FAILED: cannot create JSON directory (%s)." % error_string(dir_error))
-		return
-	var file := FileAccess.open(target_file, FileAccess.WRITE)
-	if file == null:
-		_set_status("FAILED to open JSON for writing: %s." % error_string(FileAccess.get_open_error()))
-		return
-	var json_text := JSON.stringify(catalog, "  ")
-	file.store_string(json_text)
-	file.flush()
-	var write_error := file.get_error()
-	file.close()
-	if write_error != OK:
-		_set_status("FAILED to write JSON: %s." % error_string(write_error))
-		return
-	var verify_file := FileAccess.open(target_file, FileAccess.READ)
-	if verify_file == null:
-		_set_status("FAILED to verify saved JSON: %s." % error_string(FileAccess.get_open_error()))
-		return
-	var verify_text := verify_file.get_as_text()
-	verify_file.close()
-	if verify_text.strip_edges() != json_text.strip_edges():
-		_set_status("FAILED: saved JSON verification mismatch.")
+	if not ObjectPersistence.save_catalog(target_file, catalog):
+		_set_status("FAILED to save or verify JSON: %s." % target_file)
 		return
 	unit_data[selected_type] = data
 	var selected_index := _find_unit_index(selected_type)
