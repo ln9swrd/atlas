@@ -117,10 +117,10 @@
 		"id": "robot.asura.skill1",
 		"owner": "",
 		"region": [
-			5.0,
-			44.0,
-			1401.0,
-			104.0
+			5,
+			44,
+			1401,
+			104
 		],
 		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
 		"usage": "visual_asset_catalog"

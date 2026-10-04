@@ -53,8 +53,31 @@ func _use_selected_asset() -> void:
 	if asset_id.is_empty():
 		status.text = "No Visual Asset is selected."
 		return
+	var rect := view.selected_region
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		status.text = "Select a valid region before using this asset."
+		return
+	if not _update_visual_asset_region(asset_id, current_path, rect):
+		status.text = "Could not update Visual Asset: %s" % asset_id
+		return
+	VisualAssetResolver.reload()
 	IMAGE_STATE.apply_selection(asset_id)
 	request_previous_editor.emit()
+
+func _update_visual_asset_region(asset_id: String, source_path_value: String, rect: Rect2i) -> bool:
+	var path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return false
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary or not data.has(asset_id) or not data[asset_id] is Dictionary:
+		return false
+	var asset: Dictionary = data[asset_id]
+	asset["source"] = source_path_value
+	asset["region"] = [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
+	data[asset_id] = asset
+	return _write_json(path, data)
 
 func _ready() -> void:
 	_build_ui()
@@ -741,10 +764,9 @@ func _select_entry_index(entry_index: int) -> void:
 	var entry: Dictionary = entries[entry_index]
 	current_path = str(entry.get("path", ""))
 	if IMAGE_STATE.selection_pending:
+		# Selection mode edits the existing target asset. Keep its ID and only
+		# change the source path/region currently being authored.
 		IMAGE_STATE.selected_path = current_path
-		if str(entry.get("owner_kind", "")) == "visual_asset":
-			IMAGE_STATE.selection_asset_id = str(entry.get("owner_key", ""))
-			IMAGE_STATE.selection_frames = maxi(1, int(entry.get("frames", 1)))
 	else:
 		IMAGE_STATE.open_image(current_path)
 	current_image = LOADER.load_image(current_path)
