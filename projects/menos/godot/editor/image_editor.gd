@@ -61,6 +61,11 @@ func _use_selected_asset() -> void:
 		status.text = "Could not update Visual Asset: %s" % asset_id
 		return
 	VisualAssetResolver.reload()
+	# Rebuild the Catalog entry cache before returning to the previous editor.
+	# The thumbnail list is populated from the scanned entry data, so leaving the
+	# old entries in memory would keep the previous region visible until restart.
+	_scan_connected_images()
+	_select_asset_id(asset_id)
 	IMAGE_STATE.apply_selection(asset_id)
 	request_previous_editor.emit()
 
