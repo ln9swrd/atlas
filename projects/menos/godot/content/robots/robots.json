@@ -1,4 +1,106 @@
 {
+  "asura": {
+    "animation_rects": {
+      "attack": [
+        13.0,
+        514.0,
+        1237.0,
+        138.0
+      ],
+      "death": [
+        20.0,
+        792.0,
+        1422.0,
+        103.0
+      ],
+      "finisher": [
+        16.0,
+        874.0,
+        1381.0,
+        137.0
+      ],
+      "hit": [
+        41.0,
+        680.0,
+        615.0,
+        111.0
+      ],
+      "idle": [
+        17.0,
+        193.0,
+        1361.0,
+        145.0
+      ],
+      "move": [
+        24.0,
+        355.0,
+        1498.0,
+        139.0
+      ],
+      "projectile": [
+        353.0,
+        493.0,
+        986.0,
+        109.0
+      ],
+      "skill1": [
+        9.0,
+        184.0,
+        1408.0,
+        111.0
+      ],
+      "skill3": [
+        7.0,
+        494.0,
+        1330.0,
+        107.0
+      ]
+    },
+    "animations": {
+      "attack": "robot.asura.attack",
+      "death": "robot.asura.death",
+      "finisher": "robot.asura.finisher",
+      "hit": "robot.asura.hit",
+      "idle": "robot.asura.idle",
+      "move": "robot.asura.move",
+      "projectile": "robot.asura.projectile",
+      "skill1": "robot.asura.skill1",
+      "skill2": "robot.asura.skill2",
+      "skill3": "robot.asura.skill3",
+      "special": "robot.asura.special"
+    },
+    "color": "ffffffff",
+    "cooldown": 0.65,
+    "damage": 28.0,
+    "default_image": "robot.asura.default_image",
+    "default_image_rect": [
+      16.0,
+      159.0,
+      128.0,
+      131.0
+    ],
+    "energy": {
+      "max": 100.0,
+      "regen": 12.0
+    },
+    "hp": 220.0,
+    "id": "asura",
+    "name": "asura",
+    "progression": {
+      "damage_growth": 0.05,
+      "hp_growth": 0.05,
+      "range_growth": 0.02,
+      "speed_growth": 0.02,
+      "xp_per_level": 100.0
+    },
+    "projectile_anim": "robot.asura.projectile",
+    "range": 180.0,
+    "speed": 125.0,
+    "sprite_attack": "robot.asura.attack",
+    "sprite_idle": "robot.asura.idle",
+    "sprite_move": "robot.asura.move",
+    "sprite_skill": "robot.asura.skill1"
+  },
   "robot_main": {
     "color": "ffffffff",
     "cooldown": 0.65,
@@ -44,6 +146,12 @@
         600.0,
         760.0,
         220.0
+      ],
+      "move": [
+        108.0,
+        205.0,
+        1286.0,
+        186.0
       ],
       "profile": [
         0.0,

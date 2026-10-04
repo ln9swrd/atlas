@@ -114,10 +114,18 @@ func _build_ui() -> void:
 	sidebar.custom_minimum_size.x = 250
 	sidebar.add_theme_constant_override("separation", 5)
 	body.add_child(sidebar)
+	var robot_header := HBoxContainer.new()
+	robot_header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sidebar.add_child(robot_header)
 	var robot_title := Label.new()
 	robot_title.text = "ROBOTS"
 	robot_title.add_theme_font_size_override("font_size", 14)
-	sidebar.add_child(robot_title)
+	robot_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	robot_header.add_child(robot_title)
+	var add_btn := Button.new()
+	add_btn.text = "ADD ROBOT"
+	add_btn.pressed.connect(_open_add_robot_dialog)
+	robot_header.add_child(add_btn)
 	robot_list = OptionButton.new()
 	robot_list.custom_minimum_size.y = 30
 	robot_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -489,6 +497,98 @@ func _on_animation_tick() -> void:
 		max_frames = maxi(max_frames, _animation_frame_count(animation_name))
 	animation_frame = (animation_frame + 1) % max_frames
 	_refresh_animation_previews()
+
+func _open_add_robot_dialog() -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Add Robot"
+	dialog.ok_button_text = "ADD"
+	var form := VBoxContainer.new()
+	form.custom_minimum_size = Vector2(360, 0)
+	form.add_theme_constant_override("separation", 8)
+	dialog.add_child(form)
+	var id_row := HBoxContainer.new()
+	form.add_child(id_row)
+	var id_label := Label.new()
+	id_label.text = "ID"
+	id_label.custom_minimum_size.x = 80
+	id_row.add_child(id_label)
+	var new_id_edit := LineEdit.new()
+	new_id_edit.placeholder_text = "robot_id"
+	new_id_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	id_row.add_child(new_id_edit)
+	var name_row := HBoxContainer.new()
+	form.add_child(name_row)
+	var name_label := Label.new()
+	name_label.text = "Name"
+	name_label.custom_minimum_size.x = 80
+	name_row.add_child(name_label)
+	var new_name_edit := LineEdit.new()
+	new_name_edit.placeholder_text = "ROBOT NAME"
+	new_name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_row.add_child(new_name_edit)
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		_add_robot(dialog, new_id_edit.text, new_name_edit.text)
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(440, 220))
+	new_id_edit.grab_focus()
+
+func _add_robot(dialog: ConfirmationDialog, requested_id: String, requested_name: String) -> void:
+	var new_id := requested_id.strip_edges().to_lower().validate_filename()
+	var new_name := requested_name.strip_edges()
+	if new_id.is_empty() or new_name.is_empty():
+		_set_status("Robot ID and name are required.")
+		dialog.queue_free()
+		return
+	if robot_data.has(new_id):
+		_set_status("Robot ID already exists: " + new_id)
+		dialog.queue_free()
+		return
+	var new_robot: Dictionary = {
+		"color": "ffffffff",
+		"cooldown": 0.65,
+		"damage": 28.0,
+		"energy": {"max": 100.0, "regen": 12.0},
+		"hp": 220.0,
+		"id": new_id,
+		"name": new_name,
+		"progression": {
+			"damage_growth": 0.05,
+			"hp_growth": 0.05,
+			"range_growth": 0.02,
+			"speed_growth": 0.02,
+			"xp_per_level": 100.0
+		},
+		"range": 180.0,
+		"speed": 125.0,
+		"default_image": "",
+		"animations": {},
+		"animation_rects": {}
+	}
+	robot_data[new_id] = new_robot
+	if not _write_robot_data():
+		robot_data.erase(new_id)
+		_set_status("FAILED to save new robot.")
+		dialog.queue_free()
+		return
+	_refresh_robot_list()
+	for i in range(robot_list.item_count):
+		if str(robot_list.get_item_metadata(i)) == new_id:
+			robot_list.select(i)
+			_on_robot_selected(i)
+			break
+	_set_status("ADDED robot: " + new_id)
+	dialog.queue_free()
+
+func _write_robot_data() -> bool:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/robots"))
+	var file := FileAccess.open(ROBOT_FILE, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(robot_data, "  "))
+	file.close()
+	return true
 
 func _confirm_delete_robot() -> void:
 	if selected_type.is_empty() or not robot_data.has(selected_type):

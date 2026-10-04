@@ -1,4 +1,172 @@
 {
+	"robot.asura.attack": {
+		"category": "Robot",
+		"frames": 8.0,
+		"id": "robot.asura.attack",
+		"owner": "robot.asura",
+		"region": [
+			13.0,
+			514.0,
+			1237.0,
+			138.0
+		],
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "attack"
+	},
+	"robot.asura.death": {
+		"category": "Robot",
+		"frames": 8.0,
+		"id": "robot.asura.death",
+		"owner": "robot.asura",
+		"region": [
+			20.0,
+			792.0,
+			1422.0,
+			103.0
+		],
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "death"
+	},
+	"robot.asura.default_image": {
+		"category": "Robot",
+		"frames": 1.0,
+		"id": "robot.asura.default_image",
+		"owner": "robot.asura",
+		"region": [
+			16.0,
+			159.0,
+			128.0,
+			131.0
+		],
+		"source": "res://images/robot/asura/ChatGPT 이미지 2026년 10월 4일 오전 11_06_58.png",
+		"usage": "default_image"
+	},
+	"robot.asura.finisher": {
+		"category": "Robot",
+		"frames": 10.0,
+		"id": "robot.asura.finisher",
+		"owner": "robot.asura",
+		"region": [
+			16.0,
+			874.0,
+			1381.0,
+			137.0
+		],
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "finisher"
+	},
+	"robot.asura.hit": {
+		"category": "Robot",
+		"frames": 8.0,
+		"id": "robot.asura.hit",
+		"owner": "robot.asura",
+		"region": [
+			41.0,
+			680.0,
+			615.0,
+			111.0
+		],
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "hit"
+	},
+	"robot.asura.idle": {
+		"category": "Robot",
+		"frames": 8.0,
+		"id": "robot.asura.idle",
+		"owner": "robot.asura",
+		"region": [
+			17.0,
+			193.0,
+			1361.0,
+			145.0
+		],
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "idle"
+	},
+	"robot.asura.move": {
+		"category": "Robot",
+		"frames": 8.0,
+		"id": "robot.asura.move",
+		"owner": "robot.asura",
+		"region": [
+			24.0,
+			355.0,
+			1498.0,
+			139.0
+		],
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "move"
+	},
+	"robot.asura.projectile": {
+		"category": "Robot",
+		"frames": 6.0,
+		"id": "robot.asura.projectile",
+		"owner": "robot.asura",
+		"region": [
+			353.0,
+			493.0,
+			986.0,
+			109.0
+		],
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "projectile"
+	},
+	"robot.asura.skill1": {
+		"category": "Robot",
+		"frames": 8.0,
+		"id": "robot.asura.skill1",
+		"owner": "robot.asura",
+		"region": [
+			9.0,
+			184.0,
+			1408.0,
+			111.0
+		],
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "skill1"
+	},
+	"robot.asura.skill2": {
+		"category": "Robot",
+		"frames": 10.0,
+		"id": "robot.asura.skill2",
+		"owner": "robot.asura",
+		"region": [
+			6.0,
+			492.0,
+			1330.0,
+			106.0
+		],
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "skill2"
+	},
+	"robot.asura.skill3": {
+		"category": "Robot",
+		"frames": 12,
+		"id": "robot.asura.skill3",
+		"owner": "robot.asura",
+		"region": [
+			7,
+			494,
+			1330,
+			107
+		],
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "skill3"
+	},
+	"robot.asura.special": {
+		"category": "Robot",
+		"frames": 14.0,
+		"id": "robot.asura.special",
+		"owner": "robot.asura",
+		"region": [
+			20.0,
+			722.0,
+			1383.0,
+			146.0
+		],
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "special"
+	},
 	"robot.valkyrie.attack": {
 		"category": "Robot",
 		"frames": 8.0,
