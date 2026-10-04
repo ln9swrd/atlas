@@ -17,6 +17,7 @@ var damage_spin: SpinBox
 var cooldown_spin: SpinBox
 var range_spin: SpinBox
 var color_edit: ColorPickerButton
+var color_swatch_texture: ImageTexture
 var idle_edit: LineEdit
 var attack_edit: LineEdit
 var move_edit: LineEdit
@@ -185,6 +186,7 @@ func _build_ui() -> void:
 	color_edit = ColorPickerButton.new()
 	color_edit.custom_minimum_size = Vector2(120, 30)
 	color_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_update_color_button_swatch()
 	color_edit.color_changed.connect(_on_preview_color_changed)
 	color_row.add_child(color_edit)
 	properties_grid.add_child(color_row)
@@ -422,6 +424,7 @@ func _on_robot_selected(index: int) -> void:
 	cooldown_spin.value = float(data.get("cooldown", 0.65))
 	range_spin.value = float(data.get("range", 180.0))
 	color_edit.color = Color(str(data.get("color", "ffffffff")))
+	_update_color_button_swatch()
 	var animations: Dictionary = data.get("animations", {}) if data.get("animations", {}) is Dictionary else {}
 	animation_rects = data.get("animation_rects", {}) if data.get("animation_rects", {}) is Dictionary else {}
 	var legacy_defaults := {
@@ -703,7 +706,16 @@ func _rect_from_values(values: Variant) -> Rect2:
 		)
 	return Rect2()
 
+func _update_color_button_swatch() -> void:
+	if color_edit == null:
+		return
+	var swatch_image := Image.create(2, 2, false, Image.FORMAT_RGBA8)
+	swatch_image.fill(color_edit.color)
+	color_swatch_texture = ImageTexture.create_from_image(swatch_image)
+	color_edit.add_theme_icon_override("bg", color_swatch_texture)
+
 func _on_preview_color_changed(_color: Color) -> void:
+	_update_color_button_swatch()
 	_set_status("COLOR EVENT: %s | BUTTON: %s" % [_color.to_html(true), color_edit.color.to_html(true)])
 	if not selected_type.is_empty() and robot_data.has(selected_type):
 		robot_data[selected_type]["color"] = color_edit.color.to_html(true)
