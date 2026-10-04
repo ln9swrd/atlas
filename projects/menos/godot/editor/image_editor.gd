@@ -187,7 +187,7 @@ func _build_ui() -> void:
 	catalog_tree.hide_root = true
 	catalog_tree.set_column_title(0, "ID")
 	catalog_tree.set_column_title(1, "Image")
-	catalog_tree.set_column_title(2, "??????")
+	catalog_tree.set_column_title(2, "사용 여부")
 	catalog_tree.set_column_titles_visible(true)
 	catalog_tree.set_column_expand(0, true)
 	catalog_tree.set_column_expand(1, false)
@@ -432,8 +432,8 @@ func _refresh_entry_list() -> void:
 	var catalog_root := catalog_tree.create_item()
 	var query := search_edit.text.strip_edges().to_lower() if search_edit else ""
 	var filter_name := filter_option.get_item_text(filter_option.selected) if filter_option and filter_option.selected >= 0 else "All"
-	catalog_tree.visible = filter_name == "Catalog"
-	list.visible = filter_name != "Catalog"
+	catalog_tree.visible = true
+	list.visible = false
 	for index in range(entries.size()):
 		var entry: Dictionary = entries[index]
 		var category := str(entry.get("category", "Other"))
@@ -448,22 +448,26 @@ func _refresh_entry_list() -> void:
 				continue
 		filtered_indices.append(index)
 		var icon: Texture2D = _get_catalog_thumbnail(entry) if is_catalog_entry else load(str(entry.get("path", ""))) as Texture2D
-		var display_category := "Visual Asset" if is_catalog_entry else category
-		var label_text := "[%s] %s" % [display_category, str(entry.get("label", "Asset"))]
-		if is_catalog_entry:
-			var row := catalog_tree.create_item(catalog_root)
-			row.set_metadata(0, index)
-			row.set_text(0, str(entry.get("owner_key", entry.get("label", "Asset"))))
-			row.set_editable(0, false)
-			row.set_icon(1, icon)
-			row.set_text(2, _visual_asset_usage_text(entry))
-			row.set_icon_max_width(1, 64)
-			row.set_tooltip_text(0, "Visual Asset ID and label\n" + str(entry.get("label", "Asset")))
-			row.set_tooltip_text(1, str(entry.get("path", "")))
-		else:
-			list.add_item(label_text, icon)
-			list.set_item_metadata(list.item_count - 1, index)
-		source_list.add_item(label_text, icon)
+		var display_id := str(entry.get("owner_key", ""))
+		if display_id.is_empty():
+			display_id = str(entry.get("label", "Asset"))
+		if not is_catalog_entry:
+			var field := str(entry.get("field", ""))
+			if not field.is_empty():
+				display_id = "%s.%s" % [display_id, field]
+		var usage_text := _visual_asset_usage_text(entry) if is_catalog_entry else str(entry.get("usage", ""))
+		if usage_text.is_empty():
+			usage_text = "미사용"
+		var row := catalog_tree.create_item(catalog_root)
+		row.set_metadata(0, index)
+		row.set_text(0, display_id)
+		row.set_editable(0, false)
+		row.set_icon(1, icon)
+		row.set_text(2, usage_text)
+		row.set_icon_max_width(1, 64)
+		row.set_tooltip_text(0, str(entry.get("label", "Asset")) + "\nID: " + display_id)
+		row.set_tooltip_text(1, str(entry.get("path", "")))
+		source_list.add_item("[%s] %s" % [category, str(entry.get("label", "Asset"))], icon)
 		source_list.set_item_metadata(source_list.item_count - 1, index)
 
 func _visual_asset_usage_text(entry: Dictionary) -> String:
@@ -482,6 +486,9 @@ func _select_catalog_tree_entry() -> void:
 	if selected == null:
 		return
 	var entry_index := int(selected.get_metadata(0))
+	if entry_index < 0 or entry_index >= entries.size():
+		return
+	current_index = entry_index
 	_select_entry_index(entry_index)
 
 func _rename_catalog_tree_item() -> void:
@@ -1043,17 +1050,43 @@ func _replace_entry_reference(entry: Dictionary, new_path: String) -> bool:
 	return false
 
 func _confirm_delete_visual_asset() -> void:
-	if current_index < 0 or current_index >= entries.size() or str(entries[current_index].get("owner_kind", "")) != "visual_asset":
+	var entry_index := -1
+	if catalog_tree != null and catalog_tree.visible:
+		var selected := catalog_tree.get_selected()
+		if selected != null:
+			entry_index = int(selected.get_metadata(0))
+	if entry_index < 0 or entry_index >= entries.size():
+		if current_index >= 0 and current_index < entries.size():
+			entry_index = current_index
+	if entry_index < 0 or entry_index >= entries.size():
 		status.text = "Select a Visual Asset first."
 		return
-	var asset_id := str(entries[current_index].get("owner_key", ""))
+	current_index = entry_index
+	var asset_id := _resolve_visual_asset_id(entries[entry_index])
+	if asset_id.is_empty():
+		status.text = "Selected item is not a registered Visual Asset."
+		return
 	var dialog := ConfirmationDialog.new()
 	dialog.title = "Delete Visual Asset"
-	dialog.dialog_text = "Delete Visual Asset? This will remove the catalog entry only."
+	dialog.dialog_text = "Delete Visual Asset and remove all references to it?\nThe source image file will be preserved."
 	add_child(dialog)
 	dialog.confirmed.connect(func(): _delete_visual_asset(asset_id, dialog))
 	dialog.canceled.connect(dialog.queue_free)
-	dialog.popup_centered(Vector2i(560, 200))
+	dialog.popup_centered(Vector2i(600, 240))
+
+func _resolve_visual_asset_id(entry: Dictionary) -> String:
+	var owner_kind := str(entry.get("owner_kind", ""))
+	var candidate := str(entry.get("owner_key", "")) if owner_kind == "visual_asset" else str(entry.get("path", ""))
+	if candidate.is_empty():
+		return ""
+	var file := FileAccess.open("res://content/editor/visual_assets.json", FileAccess.READ)
+	if file == null:
+		return ""
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary or not data.has(candidate):
+		return ""
+	return candidate
 
 func _delete_visual_asset(asset_id: String, dialog: ConfirmationDialog) -> void:
 	var catalog_path := "res://content/editor/visual_assets.json"
@@ -1070,14 +1103,58 @@ func _delete_visual_asset(asset_id: String, dialog: ConfirmationDialog) -> void:
 		return
 	data.erase(asset_id)
 	if not _write_json(catalog_path, data):
-		status.text = "Visual Asset Catalog updated."
+		status.text = "Failed to update Visual Asset Catalog."
+		dialog.queue_free()
+		return
+	if not _remove_visual_asset_robot_references(asset_id):
+		status.text = "Visual Asset deleted, but some robot references could not be removed: " + asset_id
+		VisualAssetResolver.reload()
+		_scan_connected_images()
+		current_index = -1
 		dialog.queue_free()
 		return
 	VisualAssetResolver.reload()
 	_scan_connected_images()
 	current_index = -1
-	status.text = "Visual Asset update complete: " + asset_id
+	status.text = "Visual Asset and all robot references deleted: " + asset_id
 	dialog.queue_free()
+
+func _remove_visual_asset_robot_references(asset_id: String) -> bool:
+	var robots_path := "res://content/robots/robots.json"
+	var file := FileAccess.open(robots_path, FileAccess.READ)
+	if file == null:
+		return false
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary:
+		return false
+	var changed := _remove_matching_values(data, asset_id)
+	if not changed:
+		return true
+	return _write_json(robots_path, data)
+
+func _remove_matching_values(value: Variant, target: String) -> bool:
+	var changed := false
+	if value is Dictionary:
+		var keys_to_remove: Array = []
+		for key in value.keys():
+			var child = value[key]
+			if child is String and str(child) == target:
+				keys_to_remove.append(key)
+			elif _remove_matching_values(child, target):
+				changed = true
+		for key in keys_to_remove:
+			value.erase(key)
+			changed = true
+	elif value is Array:
+		for index in range(value.size() - 1, -1, -1):
+			var child = value[index]
+			if child is String and str(child) == target:
+				value.remove_at(index)
+				changed = true
+			elif _remove_matching_values(child, target):
+				changed = true
+	return changed
 
 func _create_visual_asset_from_selection() -> void:
 	if not _require_image():
