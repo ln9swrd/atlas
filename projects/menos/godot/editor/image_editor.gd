@@ -188,7 +188,6 @@ func _build_ui() -> void:
 	catalog_tree.set_column_custom_minimum_width(1, 72)
 	catalog_tree.set_column_custom_minimum_width(2, 150)
 	catalog_tree.item_selected.connect(_select_catalog_tree_entry)
-	catalog_tree.item_edited.connect(_rename_catalog_tree_item)
 	left.add_child(catalog_tree)
 	catalog_tree.visible = false
 	var clear_selection := Button.new()
@@ -394,7 +393,7 @@ func _refresh_entry_list() -> void:
 			var row := catalog_tree.create_item(catalog_root)
 			row.set_metadata(0, index)
 			row.set_text(0, str(entry.get("owner_key", entry.get("label", "Asset"))))
-			row.set_editable(0, true)
+			row.set_editable(0, false)
 			row.set_icon(1, icon)
 			row.set_text(2, _visual_asset_usage_text(entry))
 			row.set_icon_max_width(1, 64)

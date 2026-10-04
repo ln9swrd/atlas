@@ -456,6 +456,7 @@ func _create_animation_preview(parent: Container, label_text: String, size: Vect
 	preview.custom_minimum_size = size
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	box.add_child(preview)
 	return preview
 
@@ -484,9 +485,18 @@ func _animated_texture(path: String, frame: int, total_frames: int, rect_values:
 		single.region = source_rect
 		return single
 	var frame_width := source_rect.size.x / float(total_frames)
+	var frame_index := frame % total_frames
+	var frame_start_x: float = source_rect.position.x + float(round(frame_width * float(frame_index)))
+	var frame_end_x: float = source_rect.position.x + float(round(frame_width * float(frame_index + 1)))
+	var frame_rect := Rect2(
+		frame_start_x,
+		source_rect.position.y,
+		maxf(1.0, frame_end_x - frame_start_x),
+		source_rect.size.y
+	)
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture
-	atlas.region = Rect2(source_rect.position.x + frame_width * (frame % total_frames), source_rect.position.y, frame_width, source_rect.size.y)
+	atlas.region = frame_rect
 	return atlas
 
 func _refresh_animation_previews() -> void:

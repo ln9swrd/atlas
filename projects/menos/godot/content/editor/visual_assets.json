@@ -113,7 +113,7 @@
 	},
 	"robot.asura.skill1": {
 		"category": "Other",
-		"frames": 1.0,
+		"frames": 10.0,
 		"id": "robot.asura.skill1",
 		"owner": "",
 		"region": [

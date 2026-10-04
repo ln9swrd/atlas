@@ -69,7 +69,7 @@
       "skill3": "robot.asura.skill3",
       "special": "robot.asura.special"
     },
-    "color": "ffffffff",
+    "color": "e71818ff",
     "cooldown": 0.65,
     "damage": 28.0,
     "default_image": "robot.asura.default_image",
