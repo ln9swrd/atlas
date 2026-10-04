@@ -1075,18 +1075,25 @@ func _confirm_delete_visual_asset() -> void:
 	dialog.popup_centered(Vector2i(600, 240))
 
 func _resolve_visual_asset_id(entry: Dictionary) -> String:
-	var owner_kind := str(entry.get("owner_kind", ""))
-	var candidate := str(entry.get("owner_key", "")) if owner_kind == "visual_asset" else str(entry.get("path", ""))
-	if candidate.is_empty():
-		return ""
 	var file := FileAccess.open("res://content/editor/visual_assets.json", FileAccess.READ)
 	if file == null:
 		return ""
 	var data = JSON.parse_string(file.get_as_text())
 	file.close()
-	if not data is Dictionary or not data.has(candidate):
+	if not data is Dictionary:
 		return ""
-	return candidate
+	# ALL rows can originate from robots.json, catalog, or other references.
+	# Their owner_key is not necessarily the Visual Asset ID. The actual
+	# reference path is the primary candidate, while owner_key/id are fallbacks.
+	var candidates: Array[String] = []
+	for key in ["path", "owner_key", "id"]:
+		var candidate := str(entry.get(key, "")).strip_edges()
+		if not candidate.is_empty() and not candidates.has(candidate):
+			candidates.append(candidate)
+	for candidate in candidates:
+		if data.has(candidate):
+			return candidate
+	return ""
 
 func _delete_visual_asset(asset_id: String, dialog: ConfirmationDialog) -> void:
 	var catalog_path := "res://content/editor/visual_assets.json"
