@@ -315,15 +315,7 @@ func _texture_from_robot_animation_frame(anim_key: String, frame: int) -> Textur
 	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
 		return base_texture
 	var frame_index: int = posmod(frame, frame_count)
-	var frame_width := rect.size.x / float(frame_count)
-	var frame_start_x: float = rect.position.x + float(round(frame_width * float(frame_index)))
-	var frame_end_x: float = rect.position.x + float(round(frame_width * float(frame_index + 1)))
-	var frame_rect := Rect2(
-		frame_start_x,
-		rect.position.y,
-		maxf(1.0, frame_end_x - frame_start_x),
-		rect.size.y
-	)
+	var frame_rect := _robot_frame_rect(anim_key, frame_index, resolved, rect)
 	var image_size := Vector2i(base_texture.get_width(), base_texture.get_height())
 	var pixel_rect := Rect2i(
 		int(round(frame_rect.position.x)),
@@ -917,15 +909,7 @@ func _asura_team_mask_for_frame(anim_key: String, frame: int) -> Texture2D:
 		return null
 	var frame_count := _robot_animation_frame_count(anim_key)
 	var frame_index: int = posmod(frame, frame_count)
-	var frame_width := rect.size.x / float(frame_count)
-	var frame_start_x: float = rect.position.x + float(round(frame_width * float(frame_index)))
-	var frame_end_x: float = rect.position.x + float(round(frame_width * float(frame_index + 1)))
-	var frame_rect := Rect2(
-		frame_start_x,
-		rect.position.y,
-		maxf(1.0, frame_end_x - frame_start_x),
-		rect.size.y
-	)
+	var frame_rect := _robot_frame_rect(anim_key, frame_index, resolved, rect)
 	var image_size := Vector2i(ASURA_TEAM_MASK.get_width(), ASURA_TEAM_MASK.get_height())
 	var pixel_rect := Rect2i(
 		int(round(frame_rect.position.x)),
