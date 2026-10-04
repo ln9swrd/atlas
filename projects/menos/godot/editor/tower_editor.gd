@@ -286,13 +286,10 @@ func _confirm_delete_tower() -> void:
 
 func _delete_tower(dialog: ConfirmationDialog) -> void:
 	tower_data.erase(selected_type)
-	var file := FileAccess.open(TOWER_FILE, FileAccess.WRITE)
-	if file == null:
-		_set_status("FAILED to write JSON.")
+	if not ObjectPersistence.save_catalog(TOWER_FILE, tower_data):
+		_set_status("FAILED to save or verify JSON: %s." % TOWER_FILE)
 		dialog.queue_free()
 		return
-	file.store_string(JSON.stringify(tower_data, "  "))
-	file.close()
 	selected_type = ""
 	_refresh_tower_list()
 	if tower_list.item_count > 0:
@@ -386,7 +383,7 @@ func _animated_texture(path: String, frame: int, fallback_frames: int = 1) -> Te
 		return null
 	if frame_regions.size() >= total_frames:
 		var explicit_index := clampi(frame % total_frames, 0, frame_regions.size() - 1)
-		var explicit := frame_regions[explicit_index]
+		var explicit: Variant = frame_regions[explicit_index]
 		if explicit is Array and explicit.size() >= 4:
 			var explicit_atlas := AtlasTexture.new()
 			explicit_atlas.atlas = texture

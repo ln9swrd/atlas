@@ -339,5 +339,3 @@ func _walk_refs(value, source: String) -> void:
 	elif value is Array:
 		for child in value:
 			_walk_refs(child, source)
-
-

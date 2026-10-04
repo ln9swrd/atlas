@@ -1,4 +1,4 @@
-﻿class_name RobotRuntimeState
+class_name RobotRuntimeState
 extends RefCounted
 
 var active: bool = false
@@ -64,5 +64,3 @@ func has_state(key: String) -> bool:
 func erase_state(key: String) -> void:
 	if key == "target_pos":
 		target_pos = null
-
-

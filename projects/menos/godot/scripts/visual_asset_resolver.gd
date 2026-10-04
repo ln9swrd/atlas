@@ -5,7 +5,7 @@ static func reload() -> void:
 	VisualAssetRepository.reload()
 
 static func get_asset(asset_id: String) -> VisualAssetDefinition:
-	return VisualAssetRepository.get(asset_id)
+	return VisualAssetRepository.get_asset(asset_id)
 
 static func resolve(value: String) -> VisualAssetDefinition:
 	if value.is_empty():

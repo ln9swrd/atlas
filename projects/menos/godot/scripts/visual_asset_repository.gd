@@ -24,7 +24,7 @@ static func reload() -> void:
 	_loaded = false
 	_ensure_loaded()
 
-static func get(asset_id: String) -> VisualAssetDefinition:
+static func get_asset(asset_id: String) -> VisualAssetDefinition:
 	_ensure_loaded()
 	var data = _catalog.get(asset_id)
 	if not (data is Dictionary):
