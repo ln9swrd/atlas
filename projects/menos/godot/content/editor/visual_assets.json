@@ -1,4 +1,48 @@
 {
+	"image.atlas": {
+		"anchor": {
+			"mode": "BOTTOM_CENTER",
+			"x": 0.5,
+			"y": 1.0
+		},
+		"category": "Other",
+		"columns": 1,
+		"frame_order": "row_major",
+		"frames": 1,
+		"id": "image.atlas",
+		"owner": "",
+		"region": [
+			13,
+			45,
+			688,
+			199
+		],
+		"rows": 1,
+		"source": "res://images/atlas/atlas.png",
+		"usage": "visual_asset_catalog"
+	},
+	"image.atlas_tb": {
+		"anchor": {
+			"mode": "BOTTOM_CENTER",
+			"x": 0.5,
+			"y": 1.0
+		},
+		"category": "Other",
+		"columns": 1.0,
+		"frame_order": "row_major",
+		"frames": 1.0,
+		"id": "image.atlas_tb",
+		"owner": "",
+		"region": [
+			26.0,
+			331.0,
+			691.0,
+			141.0
+		],
+		"rows": 1.0,
+		"source": "res://images/atlas/atlas tb.png",
+		"usage": "visual_asset_catalog"
+	},
 	"robot.asura.attack": {
 		"category": "Robot",
 		"frames": 7.0,
@@ -85,19 +129,69 @@
 	},
 	"robot.asura.move": {
 		"category": "Robot",
-		"frames": 10.0,
 		"frame_regions": [
-			[24.0, 355.0, 136.0, 139.0],
-			[156.0, 355.0, 136.0, 139.0],
-			[316.0, 355.0, 136.0, 139.0],
-			[465.0, 355.0, 136.0, 139.0],
-			[622.0, 355.0, 136.0, 139.0],
-			[770.0, 355.0, 136.0, 139.0],
-			[916.0, 355.0, 136.0, 139.0],
-			[1068.0, 355.0, 136.0, 139.0],
-			[1226.0, 355.0, 136.0, 139.0],
-			[1372.0, 355.0, 136.0, 139.0]
+			[
+				24.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				156.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				316.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				465.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				622.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				770.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				916.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				1068.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				1226.0,
+				355.0,
+				136.0,
+				139.0
+			],
+			[
+				1372.0,
+				355.0,
+				136.0,
+				139.0
+			]
 		],
+		"frames": 10.0,
 		"id": "robot.asura.move",
 		"owner": "robot.asura",
 		"region": [
@@ -129,10 +223,10 @@
 		"id": "robot.asura.skill1",
 		"owner": "",
 		"region": [
-			5,
-			44,
-			1401,
-			104
+			5.0,
+			44.0,
+			1401.0,
+			104.0
 		],
 		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
 		"usage": "visual_asset_catalog"
@@ -278,16 +372,15 @@
 		"usage": "visual_asset_catalog"
 	},
 	"robot.valkyrie.skill(finisher)": {
-		"category": "Robot",
-		"frames": 18.0,
-		"columns": 9.0,
-		"rows": 2.0,
-		"frame_order": "row_major",
 		"anchor": {
 			"mode": "BOTTOM_CENTER",
 			"x": 0.5,
 			"y": 1.0
 		},
+		"category": "Robot",
+		"columns": 9.0,
+		"frame_order": "row_major",
+		"frames": 18.0,
 		"id": "robot.valkyrie.skill(finisher)",
 		"owner": "valkyrie",
 		"region": [
@@ -296,6 +389,7 @@
 			1536.0,
 			450.0
 		],
+		"rows": 2.0,
 		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
 		"usage": "finisher"
 	},
