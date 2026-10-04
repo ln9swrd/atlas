@@ -984,7 +984,7 @@ func _update_robot_render_node() -> void:
 	robot_render_node.frame = 0
 	robot_render_node.offset = Vector2.ZERO
 	robot_render_node.position = robot.position
-	robot_render_node.rotation = _robot_movement_rotation()
+	robot_render_node.rotation = 0.0
 	if robot_render_material != null:
 		robot_render_material.set_shader_parameter("team_color", robot_definition.color if robot_definition != null else Color.WHITE)
 		var team_mask := _asura_team_mask_for_frame(anim_key, frame_index)
