@@ -37,6 +37,7 @@ static func get_robot(robot_id: String) -> RobotDefinition:
 	return RobotDefinition.from_catalog(data)
 
 static func list_robots() -> Array[String]:
+	_ensure_loaded()
 	return _list_ids(_robot_catalog)
 
 static func get_unit(unit_id: String) -> AlliedUnitDefinition:
@@ -47,6 +48,7 @@ static func get_unit(unit_id: String) -> AlliedUnitDefinition:
 	return AlliedUnitDefinition.from_catalog(unit_id, data)
 
 static func list_units() -> Array[String]:
+	_ensure_loaded()
 	return _list_ids(_unit_catalog)
 
 static func get_enemy(enemy_id: String) -> EnemyDefinition:
@@ -57,6 +59,7 @@ static func get_enemy(enemy_id: String) -> EnemyDefinition:
 	return EnemyDefinition.from_catalog(enemy_id, data)
 
 static func list_enemies() -> Array[String]:
+	_ensure_loaded()
 	return _list_ids(_enemy_catalog)
 
 static func get_tower(tower_id: String) -> TowerDefinition:
@@ -67,6 +70,7 @@ static func get_tower(tower_id: String) -> TowerDefinition:
 	return TowerDefinition.from_catalog(tower_id, data)
 
 static func list_towers() -> Array[String]:
+	_ensure_loaded()
 	return _list_ids(_tower_catalog)
 
 static func _list_ids(catalog: Dictionary) -> Array[String]:
