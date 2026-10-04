@@ -1,1 +1,90 @@
-{}
+{
+	"robot.asura.profile": {
+		"anchor": {
+			"mode": "BOTTOM_CENTER",
+			"x": 0.5,
+			"y": 1.0
+		},
+		"category": "Other",
+		"columns": 1.0,
+		"frame_order": "row_major",
+		"frames": 1.0,
+		"id": "robot.asura.profile",
+		"owner": "",
+		"region": [
+			14.0,
+			159.0,
+			134.0,
+			131.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/ChatGPT 이미지 2026년 10월 4일 오전 11_06_58.png",
+		"usage": "visual_asset_catalog"
+	},
+	"robot.valkyrie.attack": {
+		"anchor": {
+			"mode": "BOTTOM_CENTER",
+			"x": 0.5,
+			"y": 1.0
+		},
+		"category": "Robot",
+		"columns": 8.0,
+		"frame_order": "row_major",
+		"frames": 8.0,
+		"id": "robot.valkyrie.attack",
+		"owner": "robot.valkyrie",
+		"region": [
+			112.0,
+			397.0,
+			1419.0,
+			220.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "attack"
+	},
+	"robot.valkyrie.idle": {
+		"anchor": {
+			"mode": "BOTTOM_CENTER",
+			"x": 0.5,
+			"y": 1.0
+		},
+		"category": "Other",
+		"columns": 8,
+		"frame_order": "row_major",
+		"frames": 8,
+		"id": "robot.valkyrie.idle",
+		"owner": "",
+		"region": [
+			118.0,
+			8.0,
+			940.0,
+			179.0
+		],
+		"rows": 1,
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "visual_asset_catalog"
+	},
+	"robot.valkyrie.profile": {
+		"anchor": {
+			"mode": "BOTTOM_CENTER",
+			"x": 0.5,
+			"y": 1.0
+		},
+		"category": "Other",
+		"columns": 1.0,
+		"frame_order": "row_major",
+		"frames": 1.0,
+		"id": "robot.valkyrie.profile",
+		"owner": "",
+		"region": [
+			7.0,
+			787.0,
+			289.0,
+			234.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+		"usage": "visual_asset_catalog"
+	}
+}

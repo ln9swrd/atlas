@@ -14,6 +14,7 @@ var anchor_x: float = 0.5
 var anchor_y: float = 1.0
 var owner_id: String = ""
 var usage: String = ""
+var team_mask_source: String = ""
 var frame_regions: Array = []
 
 static func from_dict(data: Dictionary) -> VisualAssetDefinition:
@@ -39,6 +40,9 @@ static func from_dict(data: Dictionary) -> VisualAssetDefinition:
 	definition.anchor_y = clampf(float(anchor_data.get("y", data.get("anchor_y", 1.0))), 0.0, 1.0)
 	definition.owner_id = str(data.get("owner", ""))
 	definition.usage = str(data.get("usage", ""))
+	var team_mask_data: Variant = data.get("team_mask", {})
+	if team_mask_data is Dictionary:
+		definition.team_mask_source = str(team_mask_data.get("source", ""))
 	var frame_regions_data: Variant = data.get("frame_regions", [])
 	if frame_regions_data is Array:
 		definition.frame_regions = frame_regions_data.duplicate(true)

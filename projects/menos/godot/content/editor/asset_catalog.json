@@ -664,19 +664,6 @@
 			]
 		},
 		{
-			"asset_id": "asset.tile.a_7",
-			"display_name": "Border Wall Tiles",
-			"group": "Boundary",
-			"kind": "tile",
-			"source_path": "res://content/editor/edited_assets/asset_tile_a_7_edit_14449287.png",
-			"source_rect_px": [
-				0.0,
-				0.0,
-				258.0,
-				151.0
-			]
-		},
-		{
 			"asset_id": "asset.tile.ground.basic_meadow",
 			"display_name": "Basic Meadow",
 			"footprint_tiles": [

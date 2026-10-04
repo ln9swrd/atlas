@@ -13,6 +13,7 @@ var view: AssetRegionView
 var status: Label
 var current_index := -1
 var register_selected_asset_button: Button
+var originating_asset_id := ""
 var catalog_target_index := -1
 var current_path := ""
 var current_image: Image
@@ -94,14 +95,24 @@ func _update_visual_asset_region(asset_id: String, source_path_value: String, re
 	return _write_json(path, data)
 
 func _ready() -> void:
+	# Snapshot the semantic ID supplied by the originating editor. Catalog browsing
+	# must not be able to replace or clear the registration identity.
+	originating_asset_id = IMAGE_STATE.selection_asset_id.strip_edges()
 	_build_ui()
 	_scan_connected_images()
-	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_asset_id.is_empty():
-		_select_asset_id(IMAGE_STATE.selection_asset_id)
+	_sync_register_selected_asset_button()
+	if not originating_asset_id.is_empty():
+		_select_asset_id(originating_asset_id)
 	elif not IMAGE_STATE.selected_path.is_empty():
 		_select_path(IMAGE_STATE.selected_path)
 
+func _sync_register_selected_asset_button() -> void:
+	if register_selected_asset_button == null:
+		return
+	register_selected_asset_button.disabled = originating_asset_id.is_empty()
+
 func _select_asset_id(asset_id: String) -> void:
+	_sync_register_selected_asset_button()
 	if asset_id.is_empty():
 		return
 	for visible_index in range(filtered_indices.size()):
@@ -218,7 +229,7 @@ func _build_ui() -> void:
 	reconnect_target_button.visible = false
 	register_selected_asset_button = Button.new()
 	register_selected_asset_button.text = "Register Selected Visual Asset"
-	register_selected_asset_button.disabled = IMAGE_STATE.selection_asset_id.is_empty()
+	register_selected_asset_button.disabled = originating_asset_id.is_empty()
 	register_selected_asset_button.pressed.connect(_create_visual_asset_from_selection)
 	left.add_child(register_selected_asset_button)
 	var delete_visual_asset_button := Button.new()
@@ -1336,16 +1347,13 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		inherited_category = "Robot"
 		registered_frames = maxi(registered_frames, inherited_frames)
 	var assets: Dictionary = data
-	var suffix := 1
-	var asset_id := IMAGE_STATE.selection_asset_id if not IMAGE_STATE.selection_asset_id.is_empty() else base_id
-	while assets.has(asset_id):
-		if not IMAGE_STATE.selection_asset_id.is_empty():
-			break
-		if owner_kind == "robot" and asset_id == base_id:
-			break
-		asset_id = "%s.%02d" % [base_id, suffix]
-		suffix += 1
-	assets[asset_id] = {
+	# Registration from another editor is valid only when that editor supplied
+	# the exact semantic Visual Asset ID. Never derive a new ID from the source image.
+	var asset_id := originating_asset_id.strip_edges()
+	if asset_id.is_empty():
+		status.text = "Registration blocked: no Visual Asset ID was supplied by the originating editor."
+		return
+	var asset_definition: Dictionary = {
 		"id": asset_id,
 		"category": inherited_category,
 		"source": current_path,
@@ -1358,8 +1366,16 @@ func _create_visual_asset(rect: Rect2i) -> void:
 		"owner": ("%s.%s" % [owner_kind, owner_key]) if not owner_kind.is_empty() and not owner_key.is_empty() else "",
 		"usage": owner_usage if not owner_usage.is_empty() else "visual_asset_catalog"
 	}
+	# Profile team-color masks belong to the Profile Visual Asset definition.
+	# The mask uses the same atlas coordinates as the profile region, so only its
+	# source needs to be stored; Robot Editor can resolve the exact asset later.
+	if owner_kind == "robot" and owner_usage == "profile" and not owner_key.is_empty():
+		var mask_path := "res://images/robot/%s/profile_team_mask.png" % owner_key
+		if FileAccess.file_exists(mask_path):
+			asset_definition["team_mask"] = {"source": mask_path}
+	assets[asset_id] = asset_definition
 	if not _write_json(catalog_path, assets):
-		status.text = "Visual Asset Catalog updated."
+		status.text = "Failed to write Visual Asset Catalog: %s" % catalog_path
 		return
 	VisualAssetResolver.reload()
 	_scan_connected_images()

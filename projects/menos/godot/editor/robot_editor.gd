@@ -744,8 +744,14 @@ func _refresh_image_thumbnail(target: String) -> void:
 	thumbnail.texture = texture
 	thumbnail.scale = Vector2.ONE
 	if image_asset_id_labels.has(target):
-		var resolved := VisualAssetResolver.resolve(path) if not path.is_empty() else null
-		var asset_id := resolved.id if resolved != null else ""
+		var asset_id := ""
+		if not selected_type.is_empty():
+			if target == "default_image":
+				asset_id = "robot.%s.profile" % selected_type
+			elif target == "projectile":
+				asset_id = "robot.%s.projectile" % selected_type
+			elif target.begins_with("animation:"):
+				asset_id = "robot.%s.%s" % [selected_type, target.trim_prefix("animation:")]
 		(image_asset_id_labels[target] as Label).text = "ID: " + (asset_id if not asset_id.is_empty() else "-")
 	if target == "default_image" or target == "animation:idle":
 		_refresh_robot_preview()
@@ -789,19 +795,18 @@ func _apply_preview_color() -> void:
 	material.shader = ROBOT_COLOR_SHADER
 	material.set_shader_parameter("team_color", color_edit.color)
 	var mask_texture: Texture2D = null
-	if selected_type == "asura":
-		var mask_image := Image.load_from_file("res://images/robot/asura/profile_team_mask.png")
+	# Team-mask ownership comes from the registered Profile Visual Asset.
+	# Do not hard-code a robot or mask path here; the Catalog is the source of truth.
+	var profile_asset_id := "robot.%s.profile" % selected_type if not selected_type.is_empty() else ""
+	var profile_asset = VisualAssetResolver.get_asset(profile_asset_id) if not profile_asset_id.is_empty() else null
+	if profile_asset != null:
+		var mask_source := profile_asset.team_mask_source
+		var mask_image := Image.load_from_file(mask_source) if not mask_source.is_empty() else null
 		var rect_values: Variant = robot_data.get(selected_type, {}).get("default_image_rect", [])
 		if mask_image != null and rect_values is Array and rect_values.size() >= 4:
 			var mask_rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
 			if mask_rect.position.x >= 0 and mask_rect.position.y >= 0 and mask_rect.end.x <= mask_image.get_width() and mask_rect.end.y <= mask_image.get_height():
 				mask_texture = ImageTexture.create_from_image(mask_image.get_region(mask_rect))
-				material.set_shader_parameter("mask_region_uv", Vector4(
-					float(mask_rect.position.x) / float(mask_image.get_width()),
-					float(mask_rect.position.y) / float(mask_image.get_height()),
-					float(mask_rect.size.x) / float(mask_image.get_width()),
-					float(mask_rect.size.y) / float(mask_image.get_height())
-				))
 	var mask_valid := mask_texture != null and robot_preview.texture != null
 	material.set_shader_parameter("use_team_mask", mask_valid)
 	if mask_valid:
@@ -858,6 +863,14 @@ func _open_image_editor_for_target(target: String) -> void:
 		# PROFILE IMAGE has a stable Visual Asset identity independent of the
 		# Robot Editor's legacy storage field name (default_image).
 		owner_usage = "profile"
+	# The Robot Editor owns the semantic Visual Asset ID for each slot.
+	# Never infer the slot ID from the source image: one image may be shared by
+	# several slots and may already resolve to an unrelated Visual Asset ID.
+	# The slot identity is always robot.<robot>.<usage>.
+	if not selected_type.is_empty() and not owner_usage.is_empty():
+		asset_id = "robot.%s.%s" % [selected_type, owner_usage]
+	else:
+		asset_id = ""
 	IMAGE_STATE.open_image(source_path, target, asset_id, "robot", selected_type, owner_usage, owner_frames, "res://editor/robot_editor.tscn")
 	request_image_editor.emit()
 

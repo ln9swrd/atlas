@@ -11,10 +11,9 @@
 		},
 		"name": "CANNON",
 		"preference": "heavy",
-		"sprite_frames": 4,
-		"projectile_frames": 8,
+		"projectile_frames": 8.0,
 		"range": 155.0,
-		"sprite_anim": "res://content/editor/edited_assets/tower_cannon_anim_edit_147375775_edit_78326377_edit_126137086_edit_121231702_edit_134211552.png"
+		"sprite_frames": 4.0
 	},
 	"gatling": {
 		"cooldown": 0.23,
@@ -28,9 +27,8 @@
 		},
 		"name": "GATLING",
 		"preference": "fast",
-		"sprite_frames": 4,
-		"projectile_frames": 8,
+		"projectile_frames": 8.0,
 		"range": 145.0,
-		"sprite_anim": "res://content/editor/edited_assets/tower_gatling_anim_edit_42698469_edit_79165238_edit_109592238.png"
+		"sprite_frames": 4.0
 	}
 }
