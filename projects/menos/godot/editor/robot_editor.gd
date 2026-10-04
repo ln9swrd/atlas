@@ -183,6 +183,7 @@ func _build_ui() -> void:
 	color_label.custom_minimum_size.x = 105
 	color_row.add_child(color_label)
 	color_edit = ColorPickerButton.new()
+	color_edit.custom_minimum_size = Vector2(120, 30)
 	color_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	color_edit.color_changed.connect(_on_preview_color_changed)
 	color_row.add_child(color_edit)
