@@ -303,13 +303,13 @@ func _delete_tower(dialog: ConfirmationDialog) -> void:
 	_set_status("DELETED tower from: " + TOWER_FILE)
 	dialog.queue_free()
 
-func _save_data() -> void:
+func _save_data() -> bool:
 	if selected_type.is_empty():
 		_set_status("No tower selected.")
-		return
+		return false
 	if name_edit.text.strip_edges().is_empty():
 		_set_status("Name is required.")
-		return
+		return false
 	var data: Dictionary = tower_data.get(selected_type, {}).duplicate(true)
 	data["name"] = name_edit.text.strip_edges()
 	data["cost"] = int(cost_spin.value)
@@ -335,14 +335,30 @@ func _save_data() -> void:
 	var file := FileAccess.open(TOWER_FILE, FileAccess.WRITE)
 	if file == null:
 		_set_status("FAILED to open JSON for writing.")
-		return
-	file.store_string(JSON.stringify(tower_data, "  "))
+		return false
+	var json_text := JSON.stringify(tower_data, "  ")
+	file.store_string(json_text)
+	file.flush()
+	var write_error := file.get_error()
 	file.close()
+	if write_error != OK:
+		_set_status("FAILED to write JSON: %s." % error_string(write_error))
+		return false
+	var verify_file := FileAccess.open(TOWER_FILE, FileAccess.READ)
+	if verify_file == null:
+		_set_status("FAILED to verify saved JSON.")
+		return false
+	var verify_text := verify_file.get_as_text()
+	verify_file.close()
+	if verify_text.strip_edges() != json_text.strip_edges():
+		_set_status("FAILED: saved JSON verification mismatch.")
+		return false
 	_refresh_tower_list()
 	var selected_index := _get_tower_types().find(selected_type)
 	if selected_index >= 0:
 		tower_list.select(selected_index)
-	_set_status("SAVED: " + TOWER_FILE)
+	_set_status("SAVED + VERIFIED: " + TOWER_FILE)
+	return true
 
 func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
 	var box := VBoxContainer.new()
@@ -359,24 +375,82 @@ func _create_animation_preview(parent: Container, label_text: String, size: Vect
 	box.add_child(preview)
 	return preview
 
-func _animated_texture(path: String, frame: int, total_frames: int) -> Texture2D:
-	var texture := load(path) as Texture2D
-	if texture == null or total_frames <= 1:
-		return texture
-	var frame_width := texture.get_width() / float(total_frames)
+func _animation_frame_count_for_path(path: String, fallback_frames: int = 1) -> int:
+	if path.is_empty():
+		return maxi(1, fallback_frames)
+	var resolved := VisualAssetResolver.resolve(path)
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		return maxi(1, resolved.frames)
+	return maxi(1, fallback_frames)
+
+func _animated_texture(path: String, frame: int, fallback_frames: int = 1) -> Texture2D:
+	if path.is_empty():
+		return null
+	var source_path := path
+	var columns := 1
+	var rows := 1
+	var total_frames := maxi(1, fallback_frames)
+	var frame_order := "row_major"
+	var source_rect := Rect2()
+	var frame_regions: Array = []
+	var resolved := VisualAssetResolver.resolve(path)
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		source_path = resolved.source
+		columns = maxi(1, resolved.columns)
+		rows = maxi(1, resolved.rows)
+		total_frames = maxi(1, resolved.frames)
+		frame_order = resolved.frame_order
+		source_rect = resolved.region
+		frame_regions = resolved.frame_regions.duplicate(true)
+	var texture := load(source_path) as Texture2D
+	if texture == null:
+		return null
+	if frame_regions.size() >= total_frames:
+		var explicit_index := clampi(frame % total_frames, 0, frame_regions.size() - 1)
+		var explicit := frame_regions[explicit_index]
+		if explicit is Array and explicit.size() >= 4:
+			var explicit_atlas := AtlasTexture.new()
+			explicit_atlas.atlas = texture
+			explicit_atlas.region = Rect2(float(explicit[0]), float(explicit[1]), float(explicit[2]), float(explicit[3]))
+			return explicit_atlas
+	if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
+		source_rect = Rect2(0.0, 0.0, texture.get_width(), texture.get_height())
+	if total_frames <= 1:
+		var single := AtlasTexture.new()
+		single.atlas = texture
+		single.region = source_rect
+		return single
+	if total_frames > columns * rows:
+		return null
+	var frame_index := frame % total_frames
+	var column := frame_index % columns
+	var row := frame_index / columns
+	if frame_order == "column_major":
+		column = frame_index / rows
+		row = frame_index % rows
+	var frame_left := source_rect.position.x + floorf(source_rect.size.x * float(column) / float(columns))
+	var frame_right := source_rect.position.x + floorf(source_rect.size.x * float(column + 1) / float(columns))
+	var frame_top := source_rect.position.y + floorf(source_rect.size.y * float(row) / float(rows))
+	var frame_bottom := source_rect.position.y + floorf(source_rect.size.y * float(row + 1) / float(rows))
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture
-	atlas.region = Rect2(frame_width * (frame % total_frames), 0.0, frame_width, texture.get_height())
+	atlas.region = Rect2(frame_left, frame_top, maxf(1.0, frame_right - frame_left), maxf(1.0, frame_bottom - frame_top))
 	return atlas
 
 func _refresh_animation_previews() -> void:
 	if sprite_preview:
-		sprite_preview.texture = _animated_texture(sprite_edit.text.strip_edges(), animation_frame, int(tower_data.get(selected_type, {}).get("sprite_frames", 4)))
+		var sprite_fallback := int(tower_data.get(selected_type, {}).get("sprite_frames", 4))
+		sprite_preview.texture = _animated_texture(sprite_edit.text.strip_edges(), animation_frame, sprite_fallback)
 	if projectile_preview:
-		projectile_preview.texture = _animated_texture(projectile_edit.text.strip_edges(), animation_frame, int(tower_data.get(selected_type, {}).get("projectile_frames", 8)))
+		var projectile_fallback := int(tower_data.get(selected_type, {}).get("projectile_frames", 8))
+		projectile_preview.texture = _animated_texture(projectile_edit.text.strip_edges(), animation_frame, projectile_fallback)
 
 func _on_animation_tick() -> void:
-	animation_frame = (animation_frame + 1) % 8
+	var max_frames := maxi(
+		_animation_frame_count_for_path(sprite_edit.text.strip_edges(), int(tower_data.get(selected_type, {}).get("sprite_frames", 4))),
+		_animation_frame_count_for_path(projectile_edit.text.strip_edges(), int(tower_data.get(selected_type, {}).get("projectile_frames", 8)))
+	)
+	animation_frame = (animation_frame + 1) % max_frames
 	_refresh_animation_previews()
 
 func _apply_pending_asset_selection() -> void:
@@ -386,19 +460,42 @@ func _apply_pending_asset_selection() -> void:
 	var asset_id := IMAGE_STATE.consume_selection(target)
 	if asset_id.is_empty():
 		return
+	VisualAssetResolver.reload()
+	var resolved := VisualAssetResolver.get_asset(asset_id)
+	var rect_values: Array = []
+	if resolved != null and resolved.region.size.x > 0.0 and resolved.region.size.y > 0.0:
+		rect_values = [resolved.region.position.x, resolved.region.position.y, resolved.region.size.x, resolved.region.size.y]
 	if target == "sprite":
 		sprite_edit.text = asset_id
+		_apply_asset_rect_to_data("sprite_anim", rect_values)
 	elif target == "default_image":
 		default_image_edit.text = asset_id
+		_apply_asset_rect_to_data("default_image", rect_values)
 	elif target == "projectile":
 		projectile_edit.text = asset_id
+		_apply_asset_rect_to_data("projectile_anim", rect_values)
 	elif target.begins_with("animation:"):
 		var animation_name := target.trim_prefix("animation:")
 		if animation_edits.has(animation_name):
 			(animation_edits[animation_name] as LineEdit).text = asset_id
 	_refresh_animation_previews()
 	_refresh_image_inventory()
-	_set_status("Asset selected: " + asset_id)
+	# Catalog selection is the assignment operation. Persist it immediately,
+	# matching Robot Editor behavior.
+	if _save_data():
+		_set_status("Asset assigned + saved: " + asset_id)
+	else:
+		_set_status("Asset assigned, but save failed: " + asset_id)
+
+func _apply_asset_rect_to_data(field: String, rect_values: Array) -> void:
+	if selected_type.is_empty():
+		return
+	var data: Dictionary = tower_data.get(selected_type, {})
+	if rect_values.is_empty():
+		data.erase(field + "_rect")
+	else:
+		data[field + "_rect"] = rect_values.duplicate()
+	tower_data[selected_type] = data
 
 signal request_image_editor
 
@@ -415,12 +512,19 @@ func _open_image_editor_for_target(target: String) -> void:
 		path = projectile_edit.text.strip_edges()
 	elif target.begins_with("animation:") and animation_edits.has(target.trim_prefix("animation:")):
 		path = (animation_edits[target.trim_prefix("animation:")] as LineEdit).text.strip_edges()
-	if path.is_empty():
-		_set_status("No image assigned for %s." % target)
-		return
-	var resolved := VisualAssetResolver.resolve(path)
-	var asset_id := resolved.id if resolved != null else ""
-	IMAGE_STATE.open_image(path, target, asset_id)
+	var source_path := path
+	var asset_id := ""
+	if not path.is_empty():
+		var resolved := VisualAssetResolver.resolve(path)
+		if resolved != null and not resolved.source.is_empty():
+			source_path = resolved.source
+			asset_id = resolved.id
+	var owner_usage := target.trim_prefix("animation:") if target.begins_with("animation:") else target
+	var owner_frames := _animation_frame_count_for_path(path)
+	# Tower semantic Asset IDs are not yet introduced because the current
+	# Catalog contains no tower.* entries. Preserve the resolved ID here until
+	# that Canon is explicitly established.
+	IMAGE_STATE.open_image(source_path, target, asset_id, "tower", selected_type, owner_usage, owner_frames, "res://editor/tower_editor.tscn")
 	request_image_editor.emit()
 
 func _open_sprite_dialog(target: String = "sprite") -> void:
