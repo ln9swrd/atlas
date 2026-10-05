@@ -235,15 +235,12 @@ func _load_enemy_catalog() -> void:
 	if enemy_catalog.is_empty():
 		return
 	enemy_sprite_catalog.clear()
-	enemy_projectile_catalog.clear()
 	for enemy_type in enemy_catalog:
 		var sprite: Texture2D = _texture_from_catalog_entry(enemy_catalog[enemy_type], "sprite_anim")
 		if sprite:
 			enemy_sprite_catalog[enemy_type] = sprite
 		else:
 			enemy_sprite_catalog[enemy_type] = VISUALS.get("enemy_%s_anim" % enemy_type)
-		var projectile: Texture2D = _texture_from_catalog_entry(enemy_catalog[enemy_type], "projectile_anim")
-		enemy_projectile_catalog[enemy_type] = projectile if projectile else VISUALS["bullet_threat"]
 
 func _robot_animation_value(anim_key: String) -> String:
 	var animations: Dictionary = robot_catalog.get("animations", {}) if robot_catalog.get("animations", {}) is Dictionary else {}
@@ -364,7 +361,6 @@ func _load_robot_catalog() -> void:
 	robot_sprite_catalog["skill"] = robot_sprite_catalog.get("skill1", null)
 	robot_definition = RobotDefinition.from_catalog(robot_catalog)
 	robot_weapon_definition = WeaponDefinition.from_actor("robot", "basic", robot_catalog)
-	robot_projectile_catalog["robot"] = robot_sprite_catalog.get("projectile", _texture_from_robot_animation("projectile"))
 
 func _load_combat_definitions() -> void:
 	gameplay_settings = GameSettingsLoader.load_gameplay()
@@ -385,15 +381,12 @@ func _load_tower_catalog() -> void:
 	for tower_id in tower_catalog:
 		tower_definitions[tower_id] = TowerDefinition.from_catalog(str(tower_id), tower_catalog[tower_id])
 	tower_sprite_catalog.clear()
-	tower_projectile_catalog.clear()
 	for tower_type in tower_catalog:
 		var sprite: Texture2D = _texture_from_catalog_entry(tower_catalog[tower_type], "sprite_anim")
 		if sprite:
 			tower_sprite_catalog[tower_type] = sprite
 		else:
 			tower_sprite_catalog[tower_type] = VISUALS.get("tower_%s_anim" % tower_type)
-		var projectile: Texture2D = _texture_from_catalog_entry(tower_catalog[tower_type], "projectile_anim")
-		tower_projectile_catalog[tower_type] = projectile if projectile else VISUALS["bullet_defender"]
 
 func load_stage_map(stage_id: String) -> bool:
 	if StageManager.load_stage(stage_id).is_empty():
