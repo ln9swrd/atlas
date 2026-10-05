@@ -1984,91 +1984,91 @@ STATUS: CODE VERIFIED GAP / HOLD
 - Navigation 시스템 추가
 - Movement Area/Obstacle Area Runtime 연결
 
-## Handoff ? 2026-10-05 MapLoader / Runtime Spawn Conversion �����
+## Handoff ? 2026-10-05 MapLoader / Runtime Spawn Conversion �����
 **STATUS** ? HOLD
 
-**����**
-Map�� Legacy `spawns.left/right`�� Gameplay `spawn_area`�� MapLoader �� Runtime���� ��� ��ȯ�Ǵ��� Ȯ���Ѵ�.
+**����**
+Map�� Legacy `spawns.left/right`�� Gameplay `spawn_area`�� MapLoader �� Runtime���� ��� ��ȯ�Ǵ��� Ȯ���Ѵ�.
 
 **CONFIRMED**
-- `MapLoader`�� Legacy `spawns`�� �����ϸ� �״�� `parsed.lanes[left/right]` ���·� ��ȯ�Ѵ�.
-- `MapLoader`�� `gameplay_areas`�� ���� �����ϸ� Lane ID�� ��ȯ���� �ʴ´�.
-- Runtime `GameController.apply_map_spatial_data()`�� Gameplay `spawn_area`�� ������� `spawn_0`, `spawn_1` ������ �����Ѵ�.
-- �� `spawn_area`�� ���� ID/name�� Runtime Lane ID�� �������� �ʴ´�.
-- Gameplay Spawn Area�� �ϳ� �̻� �����ϸ� Runtime�� Legacy `lanes`�� ������� �ʰ� Spawn Area ��� `LANES`�� �����Ѵ�.
-- Spawn Area�� ���� ���� `loaded_map.lanes`�� Legacy Lane���� fallback�ȴ�.
-- Stage�� `left/right` ��û�� Spawn Area ��� Map���� ���� �������� ������ Runtime�� Spawn Area ����� ��ȯ �����Ѵ�.
-- ���� ������ Stage Group�� `left/right` �����Ͱ� Map�� ���� Legacy ��ǥ Lane �Ǵ� Spawn Area ��ȯ���� �ؼ��ȴ�.
+- `MapLoader`�� Legacy `spawns`�� �����ϸ� �״�� `parsed.lanes[left/right]` ���·� ��ȯ�Ѵ�.
+- `MapLoader`�� `gameplay_areas`�� ���� �����ϸ� Lane ID�� ��ȯ���� �ʴ´�.
+- Runtime `GameController.apply_map_spatial_data()`�� Gameplay `spawn_area`�� ������� `spawn_0`, `spawn_1` ������ �����Ѵ�.
+- �� `spawn_area`�� ���� ID/name�� Runtime Lane ID�� �������� �ʴ´�.
+- Gameplay Spawn Area�� �ϳ� �̻� �����ϸ� Runtime�� Legacy `lanes`�� ������� �ʰ� Spawn Area ��� `LANES`�� �����Ѵ�.
+- Spawn Area�� ���� ���� `loaded_map.lanes`�� Legacy Lane���� fallback�ȴ�.
+- Stage�� `left/right` ��û�� Spawn Area ��� Map���� ���� �������� ������ Runtime�� Spawn Area ����� ��ȯ �����Ѵ�.
+- ���� ������ Stage Group�� `left/right` �����Ͱ� Map�� ���� Legacy ��ǥ Lane �Ǵ� Spawn Area ��ȯ���� �ؼ��ȴ�.
 
 **INFERENCE**
-���� `left/right`�� Map�� �������� Canonical Lane ID�� �ƴ϶� Runtime���� Map ǥ���� ���� ���ؼ��Ǵ� ��û���� ������.
+���� `left/right`�� Map�� �������� Canonical Lane ID�� �ƴ϶� Runtime���� Map ǥ���� ���� ���ؼ��Ǵ� ��û���� ������.
 
-**���� ����**
-Phase C�� Lane/Spawn ����� ���� ���� ���� Canon ������ �ʿ��� ���´�. ���� ���縸���δ� Ư�� ǥ���� �������� Ȯ������ �ʴ´�. HOLD.
+**���� ����**
+Phase C�� Lane/Spawn ����� ���� ���� ���� Canon ������ �ʿ��� ���´�. ���� ���縸���δ� Ư�� ǥ���� �������� Ȯ������ �ʴ´�. HOLD.
 
-**���� ����**
+**���� ����**
 - CODE VERIFIED: PASS
 - BUILD VERIFIED: NOT VERIFIED
 - EDITOR VERIFIED: NOT VERIFIED
 - PIE VERIFIED: NOT VERIFIED
 
-**���� ����**
-�ڵ�/Asset ���� ����. ���� �����ϸ� ����.
+**���� ����**
+�ڵ�/Asset ���� ����. ���� �����ϸ� ����.
 
 **OUT OF SCOPE**
-Lane ���� ����, Map JSON ��ȯ, Validator ��ȭ, Stage ������ ����.
+Lane ���� ����, Map JSON ��ȯ, Validator ��ȭ, Stage ������ ����.
 
-## Handoff ? 2026-10-05 Phase C �Ϸ����� ���� ����
-**STATUS** ? HOLD / Phase C �̿Ϸ�
+## Handoff ? 2026-10-05 Phase C �Ϸ����� ���� ����
+**STATUS** ? HOLD / Phase C �̿Ϸ�
 
-**����**
-���߰�ȹ���� Phase C �Ϸ������� ���� �ڵ�/���� ���¿� �����Ͽ� Phase D ���� ���� ���θ� �����Ѵ�.
+**����**
+���߰�ȹ���� Phase C �Ϸ������� ���� �ڵ�/���� ���¿� �����Ͽ� Phase D ���� ���� ���θ� �����Ѵ�.
 
-**Phase C �Ϸ�����**
-- �ϳ��� Stage�� Map, Mission, Encounter/Wave ��ü�� �����Ѵ�.
-- Stage�� ���� �����ϴ�.
-- Mission �����Ͱ� Stage�� �ߺ� ������� �ʴ´�.
+**Phase C �Ϸ�����**
+- �ϳ��� Stage�� Map, Mission, Encounter/Wave ��ü�� �����Ѵ�.
+- Stage�� ���� �����ϴ�.
+- Mission �����Ͱ� Stage�� �ߺ� ������� �ʴ´�.
 
-**CONFIRMED ? ����**
-- Stage �� `map_file` ������ �����ϰ� StageLoader/StageManager/GameController�� ���޵ȴ�.
-- Stage �� `mission_id` ������ �����ϰ� Mission Catalog/Definition���� �ؼ��ȴ�.
-- Stage �� `reward_id` ������ RewardDefinition ��ΰ� �����Ǿ� �ִ�.
-- Stage �� Encounter/Wave ������ ���� Runtime spawn queue�� �Һ�ȴ�.
-- Mission �����ʹ� Stage�� �и��� Catalog/Definition���� �����ȴ�.
-- Building ��ġ �����ʹ� Map�� �����ϸ� Runtime Tower ��ġ ��ο� ����ȴ�.
+**CONFIRMED ? ����**
+- Stage �� `map_file` ������ �����ϰ� StageLoader/StageManager/GameController�� ���޵ȴ�.
+- Stage �� `mission_id` ������ �����ϰ� Mission Catalog/Definition���� �ؼ��ȴ�.
+- Stage �� `reward_id` ������ RewardDefinition ��ΰ� �����Ǿ� �ִ�.
+- Stage �� Encounter/Wave ������ ���� Runtime spawn queue�� �Һ�ȴ�.
+- Mission �����ʹ� Stage�� �и��� Catalog/Definition���� �����ȴ�.
+- Building ��ġ �����ʹ� Map�� �����ϸ� Runtime Tower ��ġ ��ο� ����ȴ�.
 
-**CONFIRMED GAP ? �Ϸ����� ������ ���� �׸�**
-1. Lane/Spawn Contract: Stage�� `left/right/both` �ǹ̰� Map�� legacy `spawns`�� `gameplay_areas.spawn_area` ���̿��� �ϰ����� �ʴ�.
-2. Mission Contract: ���� Runtime�� `defend_base`�� `clear_encounters`�� �����ϸ� `target_id` �ǹ̰� �Һ���� �ʴ´�. Master Canon�� 3 Gameplay ������ 1:1 ������ Ȯ�ε��� �ʾҴ�.
-3. PIE: ���� Stage ���� ����� Master�� Ȯ���ϴ� PIE VERIFIED�� ���� ����.
+**CONFIRMED GAP ? �Ϸ����� ������ ���� �׸�**
+1. Lane/Spawn Contract: Stage�� `left/right/both` �ǹ̰� Map�� legacy `spawns`�� `gameplay_areas.spawn_area` ���̿��� �ϰ����� �ʴ�.
+2. Mission Contract: ���� Runtime�� `defend_base`�� `clear_encounters`�� �����ϸ� `target_id` �ǹ̰� �Һ���� �ʴ´�. Master Canon�� 3 Gameplay ������ 1:1 ������ Ȯ�ε��� �ʾҴ�.
+3. PIE: ���� Stage ���� ����� Master�� Ȯ���ϴ� PIE VERIFIED�� ���� ����.
 
-**Phase C�� ������ Ȯ�ε� ����**
-- Player Count / Multiplayer�� ���� Canon/storage�� Ȯ�ε��� �ʾ����Ƿ� Phase C �Ϸ����ǿ� ���Ƿ� �������� �ʴ´�.
-- Allied Unit�� Runtime ����� ���������� Stage-level authoring UI�� ����. �̴� ���� Phase C �Ϸ����� ��ü�ʹ� ���� authoring gap�̴�.
-- Building�� `tower_slots` / `tower_placement_area` ����� �߰� Canon Ȯ�� ����̳� ���� Phase C �Ϸ������� ���� ���� ������ �������� �ʴ´�.
+**Phase C�� ������ Ȯ�ε� ����**
+- Player Count / Multiplayer�� ���� Canon/storage�� Ȯ�ε��� �ʾ����Ƿ� Phase C �Ϸ����ǿ� ���Ƿ� �������� �ʴ´�.
+- Allied Unit�� Runtime ����� ���������� Stage-level authoring UI�� ����. �̴� ���� Phase C �Ϸ����� ��ü�ʹ� ���� authoring gap�̴�.
+- Building�� `tower_slots` / `tower_placement_area` ����� �߰� Canon Ȯ�� ����̳� ���� Phase C �Ϸ������� ���� ���� ������ �������� �ʴ´�.
 
-**���� ����**
-Phase C�� ��ü ���� ������ Runtime ���� ����� ��κ� �����ߴ�. �׷��� Lane/Spawn ���� Mission Canon�� Ȯ������ �ʾҰ� PIE ������ �����Ƿ� **Phase C �Ϸ�� ������ �� ����. Phase D �������� �ڵ� �������� �ʴ´�.**
+**���� ����**
+Phase C�� ��ü ���� ������ Runtime ���� ����� ��κ� �����ߴ�. �׷��� Lane/Spawn ���� Mission Canon�� Ȯ������ �ʾҰ� PIE ������ �����Ƿ� **Phase C �Ϸ�� ������ �� ����. Phase D �������� �ڵ� �������� �ʴ´�.**
 
-**���� ����**
+**���� ����**
 - CODE VERIFIED: PASS
 - BUILD VERIFIED: NOT VERIFIED
 - EDITOR VERIFIED: NOT VERIFIED
 - PIE VERIFIED: NOT VERIFIED
 
-**���� ����**
-- �ڵ�/Asset ���� ����.
-- �� ���� Handoff�� ������ ���.
+**���� ����**
+- �ڵ�/Asset ���� ����.
+- �� ���� Handoff�� ������ ���.
 
 **OUT OF SCOPE**
-- Lane ���� ����
-- Map JSON ���̱׷��̼�
-- Mission Type �߰�/����
-- Player Count/Multiplayer ����
-- Allied Unit Stage Editor ����
-- Phase D �ű� ��� ����
+- Lane ���� ����
+- Map JSON ���̱׷��̼�
+- Mission Type �߰�/����
+- Player Count/Multiplayer ����
+- Allied Unit Stage Editor ����
+- Phase D �ű� ��� ����
 
-**��� �ð�**
+**��� �ð�**
 $stamp
 
 ## Handoff — 2026-10-05 Mission Contract Canon 승인 반영
@@ -2137,3 +2137,831 @@ DIFF — 의도된 3개 코드 파일만 Mission Contract 변경. 기존 문서 
 git diff --check — PASS
 CHANGES — `editor/content_validator.gd`, `editor/stage_editor.gd`, `game_controller.gd`
 OUT OF SCOPE — 실제 Mission Catalog에 Giant Boss Mission을 지정하는 Content 변경, PIE Runtime 확인, Player Count, Lane/Spawn Canon.
+
+
+## Handoff — 2026-10-05 Audio Design / BGM·SFX 개발계획 반영
+
+**STATUS** — PLAN UPDATED / IMPLEMENTATION NOT STARTED
+
+**목적**
+MENOS의 BGM과 효과음을 객체 중심 개발계획에 포함하고, 실제 Asset 제작 전에 최소 오디오 계약과 검증 순서를 정의한다.
+
+**CONFIRMED**
+- 현재 개발계획의 Combat Object인 Weapon/Skill에 SFX 연결 항목이 존재한다.
+- 현재 개발계획에는 BGM을 독립적인 개발 항목으로 정의한 절차가 없다.
+- 현재 문서 기준으로 오디오 Asset 제작/Runtime 연결/검증이 완료되었다고 선언할 근거는 없다.
+
+**개발계획 반영**
+오디오는 기존 객체의 Runtime 책임을 침범하지 않는 Asset/참조 계층으로 관리한다.
+
+1. **BGM**
+   - Title/Menu
+   - 일반 Battle
+   - Boss Battle
+   - Victory
+   - Defeat
+   - 필요 시 Tension/Stage 상황용을 후속 추가
+   - 초기에는 모든 곡을 한꺼번에 제작하지 않고 핵심 5종을 우선 검토한다.
+
+2. **SFX**
+   - UI
+   - Robot/Unit Combat
+   - Enemy Combat
+   - Building/Tower
+   - Base Damage
+   - Boss
+   - Skill/Weapon
+   - Victory/Defeat
+   - 공통 효과음은 객체별 중복 제작을 피하고 재사용 가능한 Asset으로 관리한다.
+
+3. **Combat 연결**
+   - Weapon/Skill의 SFX 참조는 기존 Combat Object 계획을 따른다.
+   - 공격 효과음은 필요하면 Charge / Fire / Impact 등의 단계별 Asset으로 분리한다.
+   - Robot/Enemy/Tower Definition에 음원 자체를 중복 저장하지 않고 Asset ID 또는 참조 구조를 우선 검토한다.
+
+4. **Audio Runtime 구조**
+   - BGM과 SFX를 별도 Audio Bus/재생 책임으로 분리하는 구조를 검토한다.
+   - 실제 Godot AudioStreamPlayer 계층과 데이터 참조 방식은 기존 Runtime 조사 후 최소 구현한다.
+   - 별도 Audio Editor는 반복 편집 가치와 실제 데이터 책임이 확인되기 전에는 만들지 않는다.
+
+5. **제작 순서**
+   - 1단계: Audio Design/Asset naming 및 참조 계약
+   - 2단계: BGM 2종(Battle/Boss) + 핵심 SFX 최소 세트로 PoC
+   - 3단계: 실제 Runtime 연결
+   - 4단계: CODE/BUILD/EDITOR 검증
+   - 5단계: Master의 실제 Runtime 확인 후 PIE VERIFIED
+   - 방향이 승인되면 전체 BGM/SFX Asset을 확장한다.
+
+6. **최소 PoC Asset**
+   - BGM_BATTLE
+   - BGM_BOSS
+   - SFX_UI_CLICK
+   - SFX_ROBOT_ATTACK
+   - SFX_ROBOT_HIT
+   - SFX_ENEMY_DEATH
+   - SFX_TOWER_ATTACK
+   - SFX_BASE_DAMAGE
+   - SFX_BOSS_WARNING
+   - SFX_BOSS_DEATH
+
+**범위 원칙**
+- 현재 Phase C의 Map/Mission/Encounter 계약 문제를 오디오 작업으로 우회하지 않는다.
+- 오디오 제작이 완료되었다고 해서 Phase C 또는 Production 완료로 판정하지 않는다.
+- 외부 음원 Source는 기존/엔진 자원으로 대체할 수 없는 경우에만 별도 승인 대상으로 둔다.
+- 실제 Asset 제작 전에는 사운드 스타일과 제작 Source를 PROPOSAL로 유지한다.
+- BGM/SFX의 구체적인 음악 장르, 음색, 외부 생성 서비스 사용 여부는 Master 승인 전 Canon으로 확정하지 않는다.
+
+**검증 기준**
+- DATA VERIFIED: Asset ID/경로 및 메타데이터 확인
+- CODE VERIFIED: Runtime 재생 경로 확인
+- EDITOR VERIFIED: 관련 Editor에서 참조/저장 가능 여부 확인
+- BUILD VERIFIED: Godot Build 성공
+- PIE VERIFIED: Master가 실제 게임에서 BGM/SFX 재생을 확인
+
+**마리 판정**
+현재 개발계획에 오디오 개발 범위를 추가하는 것으로 충분하다. 지금은 Asset을 대량 제작하거나 Audio 시스템을 새로 구현하지 않는다. 다음 작업은 Audio Design/Asset Contract를 확정한 뒤 최소 PoC를 제작하는 단계로 제한한다.
+
+**변경 사항**
+- 개발계획 문서에 Audio Design / BGM·SFX 개발 항목 추가.
+- 코드/Asset/Editor 변경 없음.
+
+**검증 상태**
+- 문서 기준선: CODE/BUILD/EDITOR/PIE와 무관한 계획 반영
+- 코드/Asset: NOT CHANGED
+
+
+### Phase D 계획 확장 — Item / Shop / Exchange
+
+STATUS: PLAN UPDATED / IMPLEMENTATION HOLD
+
+CONFIRMED:
+- Item/Equipment는 기존 Phase D 계획에 포함되어 있다.
+- Item Catalog에는 Weapon / Armor / Core 정의와 Base Stat 및 Prefix/Suffix 생성 규칙이 존재한다.
+- PlayerProfileState는 Gold / Inventory / Equipped Items를 저장한다.
+- Reward Runtime은 Stage 완료 보상을 Profile Gold 및 Inventory에 반영하는 경로가 존재한다.
+- 현재 코드/데이터 조사에서는 Shop/Store/Exchange/거래소 기능이 확인되지 않았다.
+
+#### Item
+
+Phase D의 Item을 독립적인 Progression/경제 객체로 계속 관리한다.
+
+관리 범위:
+- Item ID / Name
+- Category
+- Equipment Slot
+- Base Stat
+- Affix / Prefix / Suffix
+- Compatibility
+- Value
+- Acquisition Rule
+- Inventory 보관
+- Equipment 장착
+- Reward / Shop / Exchange를 통한 획득 경로
+
+검증 순서:
+1. Item Definition/Catalog 계약 확인
+2. Inventory 저장/복원 확인
+3. Equipment → Robot Runtime 적용 확인
+4. Reward 획득 경로 확인
+5. Shop/Exchange 획득 경로 연결
+6. Build/Editor/PIE 검증
+
+#### Shop
+
+Shop은 Item을 경제 자원으로 구매하는 별도 시스템으로 계획한다.
+
+최소 계약 후보:
+- Shop ID
+- 판매 목록
+- Item ID
+- 가격
+- 사용 Currency
+- 구매 가능 조건
+- 구매 수량/재고 규칙
+- 갱신 규칙이 필요한 경우 별도 데이터로 정의
+
+원칙:
+- Shop은 Item Definition을 복제하지 않고 Item ID를 참조한다.
+- 가격/재고/갱신 방식은 경제 Canon 확정 전 PROPOSAL로 유지한다.
+- Gold 외의 Currency를 추가할 필요성은 별도 판단한다.
+- Shop Editor는 실제 Shop 데이터 편집 필요성이 확인된 후 추가한다.
+
+#### Exchange / 거래소
+
+Exchange는 Shop과 별도 객체로 취급한다.
+
+Shop:
+- 게임이 제공하는 판매 목록을 구매
+
+Exchange:
+- 정해진 교환 규칙 또는 등록된 교환 대상 사이의 교환
+
+최소 계약 후보:
+- Exchange ID
+- Input Item/Currency
+- Output Item/Currency
+- 교환 비율
+- 교환 조건
+- 횟수 제한
+- 기간/갱신 조건이 필요한 경우 별도 데이터
+
+원칙:
+- Exchange는 Item의 가격 자체를 변경하는 시스템이 아니다.
+- Shop 가격과 Exchange 비율은 독립된 데이터로 관리한다.
+- 자유시장/플레이어 간 거래소 여부는 Canon으로 확정하지 않는다.
+- 실제 필요성이 확인되기 전까지 네트워크 기반 플레이어 거래 기능은 계획에 포함하지 않는다.
+
+#### 경제 객체 관계
+
+Reward → Inventory / Gold
+Shop → Gold/Currency → Item → Inventory
+Exchange → Input Item/Currency → Output Item/Currency → Inventory
+Equipment → Inventory Item → Robot Runtime
+
+이 관계를 Phase D의 기본 경제 흐름으로 사용하되, 구체적인 Currency 종류와 경제 수치는 Master Canon 확정 전까지 결정하지 않는다.
+
+#### 개발 순서
+
+1. Item Definition / Catalog 계약 확정
+2. Inventory / Equipment Runtime 검증
+3. Currency / Economy 계약 확정
+4. Shop Definition / 구매 Runtime
+5. Exchange Definition / 교환 Runtime
+6. Profile Save/Load 연계
+7. 최소 Editor/UI 연결
+8. Build / Editor 검증
+9. PIE 검증
+
+완료 조건:
+- Item이 Catalog → Inventory → Equipment/Runtime으로 일관되게 흐른다.
+- Shop 구매 결과가 Inventory/Profile에 안전하게 반영된다.
+- Exchange 결과가 Input 소모와 Output 지급에 일관되게 반영된다.
+- 저장 후 재진입해 Item/Gold/구매·교환 결과가 복원된다.
+
+DESIGN HOLD:
+- Shop의 판매 방식
+- Shop 갱신 주기
+- Currency 종류
+- Exchange의 구체적인 교환 규칙
+- 플레이어 간 거래 여부
+- Shop/Exchange Editor의 필요성
+
+위 항목은 기술 구현이 아니라 경제/게임 디자인 결정이므로 Master 승인 전 Canon으로 확정하지 않는다.
+
+
+## Handoff — 2026-10-05 Art Asset Structure / 제작 범위 정의
+
+STATUS — ACCEPT / 구조 정의
+
+### 목적
+MENOS의 게임 객체와 Editor/Runtime 구조에 대응하는 Art Asset의 종류, 소유 관계, 참조 경계를 정의한다.
+현재 단계에서는 실제 아트 제작보다 **Art Asset Contract와 제작 우선순위 확정**을 우선한다.
+
+### 1. Art Asset 계층
+
+게임 아트는 다음 5개 영역으로 분류한다.
+
+1. **Core Gameplay Art**
+   - Robot
+   - Enemy
+   - Giant/Boss
+   - Allied Unit
+   - Tower / Building
+   - Base
+   - Projectile
+   - Combat VFX
+
+2. **Map Art**
+   - Background
+   - Terrain / Tile
+   - Spawn Area 표현
+   - Lane 표현
+   - Obstacle
+   - Tower/Building Placement Area
+   - Base / Objective
+   - Environment Decoration
+
+3. **Content Art**
+   - Item Icon
+   - Equipment Icon
+   - Faction Icon
+   - Robot/Enemy/Unit/Tower Thumbnail
+   - Stage Thumbnail
+   - Map Thumbnail
+   - Catalog/Visual Asset Thumbnail
+
+4. **UI Art**
+   - Button / Panel / Tab
+   - Slot
+   - Selection / Disabled / Locked State
+   - Warning / Confirm / Delete
+   - Search / Filter / Navigation
+   - HP / Status UI
+   - Mission / Victory / Defeat UI
+   - Inventory / Equipment / Shop / Exchange UI elements
+
+5. **Presentation / Effects Art**
+   - Boss Warning
+   - Boss Entry
+   - Skill Charge / Impact
+   - Hit / Explosion
+   - Death
+   - Base Damage
+   - Victory / Defeat
+   - 기타 전투 화면 연출
+
+### 2. Object → Art Asset Contract
+
+권장 참조 구조:
+
+Robot Definition
+ → Visual Asset ID
+ → Sprite Atlas / Animation Frames
+
+Enemy Definition
+ → Visual Asset ID
+ → Sprite Atlas / Animation Frames
+
+Allied Unit Definition
+ → Visual Asset ID
+ → Sprite Atlas / Animation Frames
+
+Building / Tower Definition
+ → Visual Asset ID
+ → Sprite Atlas / Animation Frames
+
+Item Definition
+ → Icon Asset ID
+
+Faction Definition
+ → Faction Icon Asset ID
+
+Map Definition
+ → Map Visual Asset / Environment Asset references
+
+Stage Definition
+ → Map ID / Mission ID
+ → Stage Thumbnail Asset ID
+
+Skill / Weapon Definition
+ → Animation / VFX Asset ID
+ → SFX reference
+
+원칙:
+- 객체 Definition에 이미지 경로를 중복 저장하지 않고 Asset ID 참조를 우선한다.
+- Gameplay Logic과 시각 Asset을 분리한다.
+- Sprite Atlas는 Animation/Visual Asset의 실제 리소스로 취급한다.
+- Item은 우선 Icon 중심으로 정의하고 대형 개별 일러스트는 필요성이 확인된 후 추가한다.
+- Map의 논리 영역(Spawn, Placement, Objective 등)과 실제 그래픽을 분리한다.
+- Thumbnail은 Editor/Catalog 표시용 Asset으로 Gameplay Visual Asset과 구분할 수 있다.
+
+### 3. Core Gameplay Art 제작 우선순위
+
+**P0 — 전투 가시성에 직접 필요한 것**
+1. Robot 기본/이동/공격/피격/사망/Skill Animation
+2. Enemy 기본/이동/공격/피격/사망 Animation
+3. Giant/Boss 기본/공격/피격/사망 및 주요 Skill
+4. Allied Unit 기본/이동/공격/피격/사망
+5. Tower/Building 기본/공격/파괴
+6. Base 기본/피격/파괴
+7. Projectile
+8. Hit / Death / Explosion 등 최소 Combat VFX
+
+**P1 — Map과 콘텐츠 가시성**
+1. Map Background
+2. Terrain / Environment
+3. Spawn / Placement / Objective 표현
+4. Environment Decoration
+5. Robot/Enemy/Unit/Tower Thumbnail
+6. Stage/Map Thumbnail
+7. Faction Icon
+
+**P2 — Progression / Economy**
+1. Weapon / Armor / Core Item Icon
+2. Equipment Slot Icon
+3. Currency Icon
+4. Shop Item Presentation
+5. Exchange Input/Output Presentation
+
+**P3 — UI / Presentation 확장**
+1. 공통 UI Art
+2. Inventory / Equipment UI
+3. Shop / Exchange UI
+4. Boss / Skill / Victory / Defeat 연출 확장
+
+### 4. 현재 제작 원칙
+
+- 아트 수량을 먼저 늘리지 않는다.
+- 하나의 객체에 필요한 최소 Visual Contract를 먼저 정의한다.
+- Sprite Atlas는 실제 Animation 사용 단위와 일치해야 한다.
+- Placeholder는 Production Asset으로 간주하지 않는다.
+- 외부 Source 사용은 기존/엔진 Asset으로 대체 불가하고 목적상 필수일 때 Master 승인 후 사용한다.
+- 실제 Asset 제작 전 해상도, 프레임 규격, Pivot/Anchor, naming, Atlas 규칙을 별도 Asset Contract로 확정한다.
+- Editor Thumbnail과 Runtime Visual은 필요하면 동일 원본을 재사용하되 역할은 분리한다.
+
+### 5. Editor 책임
+
+Content/Asset Catalog는 Asset의 등록과 선택을 담당한다.
+각 Object Editor는 해당 Object가 사용할 Asset ID를 참조한다.
+Stage/Map Editor는 Object Definition을 직접 복제하거나 시각 Asset의 세부 내용을 편집하지 않는다.
+별도 Art Editor는 현재 추가하지 않으며, 반복적인 편집 수요가 확인될 때만 검토한다.
+
+### 6. 제작 완료 기준
+
+각 핵심 객체는 다음을 만족해야 한다.
+
+DATA — Asset ID가 Definition에서 안정적으로 참조됨
+CODE — Runtime이 해당 Visual Asset을 실제 소비함
+EDITOR — 해당 Editor/Catalog에서 Asset을 선택하고 저장할 수 있음
+BUILD — Asset 포함 프로젝트 Build 성공
+PIE — Master가 실제 화면에서 시각 결과 확인
+
+자동화 테스트나 Editor 표시만으로 PIE VERIFIED를 선언하지 않는다.
+
+### 7. 현재 범위 판정
+
+현재는 **Art Asset Structure 정의 단계**다.
+실제 아트 대량 제작, UI 아트 제작, Shop/Exchange 전용 아트 제작은 자동으로 시작하지 않는다.
+먼저 Core Gameplay Art의 Asset Contract와 기존 Sprite Atlas 규격을 확정한 뒤 제작한다.
+
+
+## Handoff — 2026-10-05 Networked Single-Player / User Map Upload 구조 고려
+
+STATUS — ACCEPT / STRUCTURE ONLY
+
+### 목적
+현재 개발 범위에서는 멀티플레이 기능을 구현하지 않되, 향후 네트워크를 사용하는 싱글플레이 서비스와 사용자 제작 맵 업로드/공유를 수용할 수 있도록 데이터와 Asset 구조의 경계를 정의한다.
+
+### 1. 범위 원칙
+- 현재 Gameplay Mode 개발 범위에 Multiplayer Runtime을 포함하지 않는다.
+- 네트워크 사용 여부와 Gameplay Mode를 동일한 개념으로 취급하지 않는다.
+- 현재 싱글플레이의 핵심 Gameplay/Stage/Map 구조는 로컬 Runtime에서도 독립적으로 동작할 수 있어야 한다.
+- 향후 네트워크 환경에서는 동일한 Stage/Map/Content Definition을 서버 또는 서비스가 전달하고 클라이언트가 소비할 수 있는 구조를 우선한다.
+- 네트워크 계정, 매치메이킹, 동기화, PvP, 협동 플레이는 현재 범위 밖이다.
+
+### 2. Networked Single-Player 구조 원칙
+향후 가능한 구조:
+
+User / Profile
+→ Content / Stage Selection
+→ Stage Definition
+→ Map Definition
+→ Runtime
+
+네트워크를 사용할 경우에도 Gameplay Logic과 네트워크 전송 계층을 분리한다.
+
+권장 경계:
+- Definition/Data — 게임 콘텐츠의 구조와 식별 정보
+- Content Service — 향후 서버/서비스에서 Definition을 제공할 수 있는 경계
+- Asset Service/CDN — 향후 Sprite, Icon, VFX 등의 배포 경계
+- Runtime — 전달받은 유효한 Definition과 Asset을 소비
+- Profile/Save — 사용자 진행상태 저장 경계
+
+현재는 위 계층을 실제 구현하지 않는다.
+
+### 3. User Map Upload 구조
+사용자가 제작한 Map은 기존 Map Definition 구조를 기반으로 업로드 가능한 콘텐츠 단위가 될 수 있도록 한다.
+
+권장 개념:
+- Map ID — 콘텐츠의 논리적 식별자
+- Author/User ID — 작성자 식별자
+- Version — Map 데이터 버전
+- Schema Version — 현재 Map Schema 버전
+- Metadata — 이름, 설명, Thumbnail, Tags 등
+- Map Definition — 실제 Map 구조 데이터
+- Referenced Asset IDs — Map이 사용하는 Visual/Environment Asset 식별자
+- Validation Status — 업로드 전/후 검증 상태
+- Visibility — 향후 Private / Unlisted / Public 등의 공개 범위를 가질 수 있음
+
+현재 Visibility 정책, 업로드 용량, 저장소, 승인/검수 정책, 검색/추천, 신고/삭제 정책은 UNVERIFIED / DESIGN HOLD로 둔다.
+
+### 4. User Map과 기존 Stage의 관계
+사용자 Map 자체와 플레이 가능한 Stage를 동일 객체로 강제하지 않는다.
+
+권장 구조:
+
+User Map
+→ Map Definition
+
+Stage Definition
+→ Map ID
+→ Mission / Encounter / Gameplay Rules
+
+따라서 사용자 Map은 향후 여러 Stage에서 참조될 수 있고, 반대로 Stage가 사용자 Map을 참조하는 것도 가능하도록 구조를 유지한다.
+
+사용자 Map 업로드만으로 Mission/Encounter/Game Mode를 임의 생성하지 않는다.
+
+### 5. Upload Validation 경계
+사용자 Map은 Runtime에 직접 투입하기 전에 최소한의 구조 검증 단계를 거치는 것을 전제로 한다.
+
+검증 후보:
+- Schema Version
+- 필수 Map 데이터 존재 여부
+- Spawn / Goal / Placement 등 논리 영역 유효성
+- 참조 Asset ID 존재 여부
+- 허용되지 않은 데이터/객체 포함 여부
+- 데이터 크기/구조 제한
+- Runtime이 소비할 수 있는 Map Schema인지 여부
+
+검증 통과는 콘텐츠의 게임성 승인이나 품질 보증을 의미하지 않는다.
+
+### 6. User-Uploaded Art Asset 원칙
+사용자 Map이 임의의 외부 파일을 Runtime에 직접 참조하는 구조는 기본값으로 사용하지 않는다.
+
+우선 구조:
+User Map → Allowed Asset ID → Approved/Available Asset
+
+사용자 업로드 이미지/음원/VFX 등의 외부 Asset 허용 여부는 별도 Canon 결정이 필요하다.
+현재는 UNVERIFIED / DESIGN HOLD다.
+
+### 7. Version / Compatibility
+향후 서비스 배포를 고려하여 다음 버전 경계를 유지한다.
+- Map Schema Version
+- Content Definition Version
+- Asset Contract Version
+
+구버전 Map을 새 Runtime에서 사용할 수 없는 경우를 고려해 Migration 또는 Compatibility 정책을 별도 정의할 수 있도록 한다.
+현재 Migration 구현은 범위 밖이다.
+
+### 8. 보안 / 신뢰 경계
+User-uploaded content는 신뢰된 내장 Content와 동일하게 취급하지 않는다.
+향후 네트워크 업로드가 도입될 경우 서버 측 검증을 포함하는 구조를 고려한다.
+
+현재는 인증, 권한, 서버 검증, 악성 데이터 방어, 저장소 보안 등을 구현하지 않는다.
+
+### 9. 현재 판정
+- 현재 개발 범위: Local/Single-Player 중심
+- 미래 구조 호환: Networked Single-Player 고려
+- User Map Upload: 구조적으로 수용 가능하도록 Map/Stage/Asset 경계 정의
+- Multiplayer Gameplay: 현재 범위 밖
+- Network Runtime: 현재 구현하지 않음
+- UGC Service: 현재 구현하지 않음
+
+이 구조는 현재 개발을 불필요하게 확장하지 않으면서 향후 서비스형 콘텐츠 전달과 User Map Upload를 위한 확장 지점을 확보하는 것을 목표로 한다.
+
+
+## Handoff — 2026-10-05 Sprite Atlas Contract / 공통 규격 구조화
+
+STATUS — ACCEPT / STRUCTURE ONLY
+
+### 목적
+Robot/Enemy/Allied Unit/Tower/Boss 등 전투 객체의 Sprite Atlas 제작 방식이 객체마다 달라지지 않도록 공통 Asset Contract를 정의한다.
+실제 Atlas 대량 제작이나 기존 Asset 변환은 수행하지 않는다.
+
+### 1. 기본 구조
+권장 계층:
+
+Object Definition
+→ Visual Asset ID
+→ Animation Set
+→ Sprite Atlas
+→ Frame Region
+
+Sprite Atlas는 단순 이미지가 아니라 Animation Set을 구성하는 실제 Runtime Visual Asset으로 취급한다.
+
+### 2. Frame 규격
+현재 MENOS 전투 Sprite 제작에서는 **120×120 px 셀 규격을 기본 후보**로 사용한다.
+
+원칙:
+- 한 Frame은 하나의 동일한 셀 크기를 사용한다.
+- Animation Set 내부 Frame 크기를 임의로 섞지 않는다.
+- Atlas의 행/열 배치는 Animation Set 계약으로 관리한다.
+- 빈 셀은 Runtime Frame으로 간주하지 않는다.
+- 캐릭터가 셀 경계를 넘는 경우 임의 Crop보다 셀 크기 계약을 먼저 재검토한다.
+
+120×120을 모든 향후 Art Asset에 강제하는 것은 아니며, 전투 Sprite의 공통 제작 기준으로 우선 적용한다.
+
+### 3. Animation Set 구조
+기본 후보:
+- idle
+- move
+- attack
+- hit
+- death
+- skill / special
+
+객체별로 실제 필요한 Animation만 가진다.
+예:
+- Tower는 move가 필요하지 않을 수 있다.
+- Projectile은 일반 Character Animation Set을 사용하지 않는다.
+- Boss는 phase/special animation이 추가될 수 있다.
+
+Animation 이름은 Runtime에서 직접 사용하는 논리 ID와 일치하도록 한다.
+
+### 4. Frame 안정성
+Animation은 단순히 Frame 수를 맞추는 것이 아니라 시작/중간/종료 동작이 자연스럽게 연결되어야 한다.
+
+필수 원칙:
+- Frame별 캐릭터 중심점이 일관되어야 한다.
+- Pivot/Anchor 기준을 통일한다.
+- Idle/Move에서 불필요한 위치 이동이 발생하지 않아야 한다.
+- Attack/Skill은 시작 자세와 종료 자세를 고려한다.
+- Loop Animation은 마지막 Frame에서 첫 Frame으로 연결될 때 큰 위치/자세 jump가 없어야 한다.
+- Frame을 추가/삭제할 때 전체 Animation의 중심과 타이밍을 다시 검증한다.
+
+### 5. Pivot / Anchor
+Sprite의 이미지 중앙과 Gameplay 위치를 동일시하지 않는다.
+
+기본 원칙:
+- Actor의 Gameplay 기준점은 발/접지점 또는 정의된 Combat Anchor를 사용한다.
+- Sprite Frame의 Pivot은 Animation 전체에서 동일한 기준을 유지한다.
+- 공격 이펙트와 Projectile의 시작점은 Sprite 이미지 중앙이 아니라 정의된 Weapon/Skill Anchor를 우선한다.
+
+정확한 Anchor 좌표와 이름은 Runtime 구조를 추가 확인한 뒤 별도 Asset Contract로 확정한다.
+
+### 6. Atlas Layout
+Atlas는 사람이 보기 좋은 배치보다 Runtime에서 안정적으로 Frame을 식별할 수 있는 배치를 우선한다.
+
+권장:
+- 동일 Animation은 연속된 영역에 배치
+- Animation별 행/영역을 명확히 분리
+- Frame 순서를 좌→우, 상→하 중 하나로 통일
+- Atlas 외부의 설명 텍스트/장식 요소를 넣지 않음
+- 실제 Frame과 무관한 여백/장식은 최소화
+
+현재 제작된 Robot Atlas의 행별 Animation 배치는 개별 Asset Contract로 기록할 수 있으며, 모든 객체에 동일한 행 번호를 강제하지 않는다.
+
+### 7. Visual Asset ID
+Runtime은 파일명이나 Atlas 좌표를 직접 의미 계약으로 사용하지 않고 Visual Asset ID를 기준으로 참조하는 방향을 우선한다.
+
+예:
+Robot Definition
+→ visual_asset_id
+→ Animation Set: attack
+→ Frame 0..N
+
+이를 통해 향후:
+- Sprite Atlas 교체
+- 해상도/플랫폼별 Asset 교체
+- User Map/Networked Single-Player의 Asset 배포
+가 가능하도록 한다.
+
+### 8. Thumbnail 분리
+Runtime Sprite와 Editor/Catalog Thumbnail은 역할을 분리한다.
+
+- Runtime Visual Asset: 실제 게임 표시
+- Thumbnail Asset: Catalog/Editor 목록 표시
+
+동일 원본을 재사용할 수 있지만, Runtime Atlas의 특정 Frame을 Editor Thumbnail 계약으로 직접 고정하지 않는다.
+
+### 9. VFX / SFX 연결
+Animation 자체와 VFX/SFX를 하나의 이미지 Asset으로 결합하지 않는다.
+
+권장:
+Animation Set
+→ Event/Timing
+→ VFX Asset ID
+→ SFX ID
+
+실제 Event Timing 구현 여부는 Runtime 조사 후 결정한다.
+
+### 10. 제작 및 검증 순서
+1. Object Definition의 Visual Asset ID 확인
+2. Animation Set 이름 확정
+3. Frame size / Atlas layout 확정
+4. Pivot / Anchor 규칙 확인
+5. Sprite Atlas 제작
+6. Asset Catalog 등록
+7. Object Editor에서 참조
+8. Runtime 소비 경로 확인
+9. Build 검증
+10. Master PIE 검증
+
+자동화된 Atlas 파일 존재 확인만으로 Visual Runtime 완성을 선언하지 않는다.
+
+### 11. 현재 판정
+- **구조:** 확정 방향
+- **기본 전투 셀:** 120×120 px 후보/현재 제작 기준
+- **Animation 이름:** 공통 ID 체계로 관리
+- **Pivot/Anchor:** 공통 원칙 정의, 정확 좌표는 UNVERIFIED
+- **Atlas 행 번호:** 객체별 개별 정의, 전역 강제하지 않음
+- **실제 Asset 제작:** 현재 범위 밖
+- **Asset 변환:** 현재 범위 밖
+
+이 계약은 기존 Sprite Atlas를 재작성하는 지시가 아니며, 이후 신규/수정 Atlas 제작의 기준 구조다.
+
+
+## Handoff — 2026-10-05 Sprite Frame Size / 1500×1000 24프레임 제약 반영
+
+STATUS — ACCEPTED / 제작 규격 갱신
+
+**목적**
+Sprite Atlas 제작 시 1500×1000 캔버스에서 24프레임을 수용해야 하는 경우의 프레임 셀 크기와 Giant Boss 제작 기준을 문서화한다.
+
+**CONFIRMED**
+- 1500×1000 이미지를 6열 × 4행으로 24프레임 배치하면 프레임 셀은 정확히 250×250 px이다.
+- 프레임 외곽 여백과 모션 확장 영역을 고려하면 실제 Giant Boss 실루엣은 250 px보다 작게 운용한다.
+- 제작 안전 여유를 고려한 Giant Boss 실루엣의 1차 목표 범위는 약 200~220 px로 둔다.
+- 프레임 셀 크기와 게임 화면 표시 크기는 별개의 계약이다. 셀 크기만으로 화면상 Giant Boss의 크기를 결정하지 않는다.
+- Giant Boss는 게임 화면에서 Asura 대비 약 4배의 상대 크기를 목표로 한다.
+
+**PROPOSAL**
+- 1500×1000 / 24프레임 Giant Boss 시트에서는 250×250 px를 프레임 셀의 상한으로 사용한다.
+- 실제 캐릭터 실루엣은 셀 내부에 약 200~220 px 수준으로 배치하고, 프레임 간 접지점/Combat Anchor를 일정하게 유지한다.
+- 공격/스킬 모션에서 셀 경계를 넘지 않도록 최대 동작 범위를 먼저 고려한다.
+
+**기존 규격과의 관계**
+- 기존 문서의 120×120 px는 이전 제작 후보 기준으로 유지 기록한다.
+- 이번 변경은 1500×1000 / 24프레임이라는 특정 시트 제약에 대한 제작 규격이며, 모든 Sprite Atlas를 250×250으로 일괄 변경하는 의미가 아니다.
+- 실제 Asset 생성/변환은 이번 기록 범위에 포함하지 않는다.
+
+**검증 상태**
+- DATA: 문서 계약 반영
+- CODE: NOT VERIFIED
+- EDITOR: NOT VERIFIED
+- BUILD: NOT VERIFIED
+- PIE: NOT VERIFIED
+
+**판정**
+현재 목적에 필요한 프레임 크기 제약을 확정 기록하고 종료한다. 추가 Asset 제작이나 Runtime 변경은 자동 진행하지 않는다.
+
+
+## Handoff — 2026-10-05 Gameplay Display Size / Asura·Giant 상대 크기
+
+STATUS — PROPOSAL / 화면 기준 반영
+
+**목적**
+Sprite Frame Cell 크기와 실제 Gameplay 화면 표시 크기를 분리하고, Asura와 Giant Boss의 상대적인 시각 크기 기준을 기록한다.
+
+**PROPOSAL**
+- Asura의 Gameplay 화면 표시 높이: 약 60~100 px 범위를 1차 목표로 한다.
+- Giant Boss의 Gameplay 화면 표시 높이: 약 240~400 px 범위를 1차 목표로 한다.
+- Giant Boss는 Asura 대비 약 4배의 화면상 크기를 목표로 한다.
+- 위 값은 Sprite Frame Cell 크기(예: 125×125, 250×250)와 별개의 표시 Scale 기준이다.
+
+**UNVERIFIED**
+- 실제 게임 해상도별 정확한 화면 픽셀 크기
+- Camera Zoom/Viewport 기준
+- Asura의 최종 화면 표시 Scale
+- Giant Boss의 최종 화면 표시 Scale
+
+**판정**
+현재는 상대 크기 기준만 구조적으로 기록한다. 실제 Camera/Viewport 기준 확정 및 PIE 화면 검증은 별도 단계에서 Master 확인이 필요하다.
+
+
+## Handoff — 2026-10-05 Gameplay Visual Quality 우선 원칙
+
+STATUS — ACCEPTED / 품질 제약 추가
+
+**목적**
+Robot Editor Preview와 Gameplay 표시 기준을 통일하더라도 실제 Gameplay의 시각 품질을 저하시키지 않는 것을 최우선 품질 제약으로 명시한다.
+
+**CONFIRMED**
+- Gameplay에서 사용하는 Runtime Visual Asset은 Editor Preview와의 표시 통일을 위해 저해상도 이미지나 별도 열화 Asset으로 대체해서는 안 된다.
+- Editor Preview의 크기/Anchor/Frame 계산을 Gameplay 기준에 맞추는 경우에도 Gameplay Runtime Asset의 원본 해상도와 Frame 정보를 보존해야 한다.
+- Display Size 계약과 Source Asset 해상도는 별개의 계약이다.
+- Gameplay Render Scale을 맞추기 위해 원본 Sprite를 강제로 축소 저장하거나 재샘플링하는 방식은 기본적으로 사용하지 않는다.
+- 현재 Gameplay는 TEXTURE_FILTER_NEAREST를 사용하므로 픽셀 아트 품질을 유지하는 현재 필터링 정책을 임의로 변경하지 않는다.
+
+**PROPOSAL**
+- Editor와 Gameplay는 동일한 Visual Asset Definition, Frame Region, Anchor를 공유한다.
+- 표시 크기 계산은 공통 규칙을 사용하되, Runtime은 원본 Runtime Visual Asset을 사용한다.
+- Gameplay 품질 검증 시 최소 기준은 원본 Frame 해상도 보존, 필터링 정책 보존, 프레임 경계 손상 없음, Anchor/Pivot에 따른 시각적 흔들림 없음으로 한다.
+- 저해상도 Preview가 필요할 경우 Editor 전용 표시 축소만 허용하며 Runtime Asset 자체를 축소하지 않는다.
+
+**검증 기준**
+- DATA: Visual Asset ID / Frame Region / Anchor 보존
+- EDITOR: Preview와 Gameplay 표시 기준 일치 여부
+- CODE: Runtime이 원본 Visual Asset을 사용하는지 확인
+- BUILD: Runtime Visual Asset 품질 손상 없음
+- PIE: Master가 실제 화면 품질 확인 필요
+
+**판정**
+Gameplay 시각 품질 저하는 허용하지 않는다. Editor Preview와 Gameplay의 표시 차이를 해결하더라도 품질 저하가 발생하면 해당 방법은 CHANGE METHOD 대상이다.
+
+**OUT OF SCOPE**
+- 신규 Sprite 제작
+- Sprite 해상도 일괄 변경
+- Texture 압축/변환 정책 변경
+- Camera/Viewport 확정
+
+
+## Handoff — 2026-10-05 MENOS 3/4 측면 Sprite 제작 규격
+
+STATUS — ACCEPTED / 제작 규격 정의
+
+**목적**
+기존 수평/정면 중심 Sprite보다 기체의 전면·측면·상면 구조와 깊이감을 명확하게 표현하기 위해 MENOS 공통 3/4 측면 시점을 정의한다.
+
+**시점 규격**
+- 기본 시점은 완전 측면이 아닌 **3/4 측면(Quarter View)** 으로 한다.
+- 권장 회전감은 약 30~45° 범위이며, 기본 제작 기준은 약 35~40°의 사선 시점으로 둔다.
+- 전면과 한쪽 측면이 동시에 식별되어야 한다.
+- 상부 장갑/어깨/머리 구조가 약간 보이도록 하여 평면적인 정면 투영을 피한다.
+- 반대쪽 측면은 필요 이상으로 노출하지 않는다.
+- 기체가 화면 밖으로 돌아가 보이는 극단적인 측면 투영은 사용하지 않는다.
+- 모든 Robot/Enemy/Giant/Allied Unit은 동일한 시점 계열을 기본으로 사용한다.
+
+**전투 방향**
+- 기본 Sprite는 하나의 고정 3/4 방향을 기준으로 제작한다.
+- 진행 방향과 공격 방향이 실루엣에서 명확해야 한다.
+- 무기와 팔/어깨가 서로 겹치더라도 무기의 종류와 공격 방향을 식별할 수 있어야 한다.
+- 별도 좌우 방향 Sprite가 필요할 경우 기존 Sprite를 단순 좌우 반전하는 것이 가능한 구조를 우선 검토한다. 비대칭 장비/무기가 있는 경우에는 별도 프레임 제작을 고려한다.
+
+**입체감 / 명암**
+- 3D 모델 렌더처럼 보이는 것이 아니라 2D Sprite 내부에 3D 구조가 읽히도록 제작한다.
+- 광원 방향은 전체 Animation Set에서 고정한다.
+- 전면/측면/상면의 명암 차이를 명확히 한다.
+- 관절, 장갑 틈, 겹치는 부위에는 적절한 AO/접촉 명암을 둔다.
+- 금속 장갑은 면별 하이라이트와 반사광으로 재질을 구분한다.
+- 명암은 작은 Gameplay 표시 크기에서도 유지될 정도로 충분히 강하게 한다.
+- 프레임마다 광원 위치나 명암 구조가 흔들리지 않아야 한다.
+
+**Team Color**
+- 팀 컬러 적용 영역은 별도 식별 가능한 불투명 Base Color 영역으로 만든다.
+- 해당 영역의 Alpha는 **1.0**을 유지한다.
+- 팀 컬러 영역에 금속 반사광이나 투명 효과를 혼합하지 않는다.
+- 중립 금속, 관절, 무기, 센서 등은 팀 컬러 영역에서 제외한다.
+- Runtime에서 팀 컬러를 변경해도 기체의 입체 명암이 손상되지 않는 구조를 우선한다.
+
+**Frame / Atlas**
+- Animation Set 내부의 모든 프레임은 동일한 셀 크기를 사용한다.
+- 캐릭터는 각 셀 내부에 완전히 들어와야 한다.
+- 3/4 시점 변경으로 인해 무기/장갑이 셀 경계를 넘지 않도록 동작 범위를 사전에 고려한다.
+- 프레임 간 기체의 기준 크기와 접지 위치를 일정하게 유지한다.
+- Pivot/Combat Anchor는 시각적 중심이 아니라 발/접지점 기준을 우선한다.
+- 기존 120×120, 125×125, 250×250 등의 셀 규격은 캐릭터별 시트 조건에 따라 유지하며 3/4 시점 자체가 셀 크기를 강제하지 않는다.
+
+**Gameplay 품질**
+- 원본 Sprite의 해상도와 세부 묘사를 보존한다.
+- 3/4 시점 제작을 위해 저해상도화, 강제 재샘플링, 과도한 Blur를 사용하지 않는다.
+- Godot의 현재 nearest-neighbor 필터링 정책과 충돌하지 않는 선명한 경계를 유지한다.
+- 작은 Gameplay 표시 크기에서도 실루엣, 무기, 머리/상체, 다리/접지 위치가 식별되어야 한다.
+
+**투명 배경**
+- 배경은 완전 투명으로 한다.
+- 바닥, 환경, 원근 배경, 체크보드, 텍스트, 라벨, 워터마크를 포함하지 않는다.
+- 캐릭터 외부에 의도하지 않은 Glow/Smoke/Dust가 남지 않도록 한다.
+- 필요하면 접지 그림자는 별도 Runtime/VFX 레이어로 분리한다.
+
+**Animation 일관성**
+- Idle, Move, Attack, Hit, Death, Skill 등 모든 Animation Set에서 동일한 3/4 시점을 유지한다.
+- Idle은 접지점과 중심이 안정되어야 한다.
+- Attack/Skill에서는 동작을 크게 확장하되 기본 시점과 기체 비율을 유지한다.
+- 시작/종료 프레임의 자세가 자연스럽게 연결되어야 한다.
+- 프레임 추가/삭제 시 Anchor와 화면상 크기를 다시 검증한다.
+
+**권장 제작 기준**
+- 기본 Robot: 3/4 전투 시점
+- Giant Boss: 동일한 3/4 시점 계열을 유지하되 큰 실루엣과 상면 노출을 허용
+- 공격/스킬: 동일 시점 + 동작 확장
+- VFX: Sprite 본체와 분리 가능한 구조를 우선
+- 카메라 회전으로 3/4 시점을 만들지 않고 Sprite 자체에서 시점을 표현한다.
+
+**검증 기준**
+- DATA: Visual Asset ID / Animation Set / Frame Region / Anchor 보존
+- ASSET: 3/4 시점, 실루엣, 명암, Team Color 영역, 투명 배경 확인
+- EDITOR: Catalog/Robot Editor Preview에서 시점과 Frame이 올바르게 표시되는지 확인
+- CODE: Runtime이 동일 Visual Asset/Frame/Anchor를 소비하는지 확인
+- BUILD: 원본 해상도 및 필터링 품질 손상 없음
+- PIE: Master가 실제 Gameplay 화면에서 크기·입체감·가독성을 최종 확인
+
+**판정**
+3/4 측면 Sprite를 MENOS의 차기 Sprite 제작 기준으로 채택한다. 기존 Asset을 자동 변환하거나 재제작하지 않는다. 신규 Sprite 제작 또는 기존 Asset 교체는 별도 범위에서 수행한다.
+
+**OUT OF SCOPE**
+- 기존 Robot/Enemy/Giant Sprite 일괄 재제작
+- Camera/Viewport 변경
+- Normal Map/2D Light 신규 구현
+- Sprite 자동 변환 도구 제작
+- 기존 Asset 좌우 방향 체계의 일괄 변경
