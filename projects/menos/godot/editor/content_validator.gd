@@ -1,4 +1,5 @@
-extends Node
+class_name ContentValidator
+extends RefCounted
 
 const ROOT := "res://"
 const ENEMY_FILE := "res://content/enemies/enemies.json"
@@ -13,8 +14,15 @@ const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
 var errors: Array[String] = []
 var warnings: Array[String] = []
 
-func _ready() -> void:
+func run() -> Dictionary:
+	errors.clear()
+	warnings.clear()
+	_run()
+	return {"valid": errors.is_empty(), "errors": errors.duplicate(), "warnings": warnings.duplicate()}
+
+func _run() -> void:
 	_validate_catalog("ENEMY", ENEMY_FILE, ["name", "hp", "speed", "armor", "base_damage", "reward", "radius", "sprite_anim"])
+	_validate_catalog("ALLIED_UNIT", ALLIED_UNIT_FILE, ["name", "description", "hp", "speed", "armor", "damage", "cooldown", "range", "radius", "attack_type", "reward", "color", "projectile_anim", "robot_damage", "robot_range", "robot_cooldown", "ai", "visuals"])
 	_validate_catalog("TOWER", TOWER_FILE, ["name", "cost", "damage", "cooldown", "range", "preference", "sprite_anim", "level2"])
 	_validate_catalog("ROBOT", ROBOT_FILE, ["id", "name", "hp", "speed", "damage", "cooldown", "range", "sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "projectile_anim", "progression", "energy"])
 	var skills := _load_json_dictionary(SKILL_FILE, "SKILL")
@@ -24,24 +32,10 @@ func _ready() -> void:
 	_validate_campaign()
 	_validate_stages()
 	_validate_resource_refs()
-	if errors.is_empty():
-		print("CONTENT_VALIDATION PASS")
-	else:
-		print("CONTENT_VALIDATION FAIL")
-	for warning in warnings:
-		print("WARNING: ", warning)
-	for error in errors:
-		push_error(error)
-	get_tree().quit(1 if not errors.is_empty() else 0)
 
 func _validate_catalog(label: String, path: String, required: Array[String]) -> void:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		errors.append("%s catalog missing: %s" % [label, path])
-		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not (parsed is Dictionary) or parsed.is_empty():
+	var parsed := ObjectRepository.load_catalog(path)
+	if parsed.is_empty():
 		errors.append("%s catalog is not a non-empty object: %s" % [label, path])
 		return
 	for id in parsed.keys():
@@ -191,8 +185,9 @@ func _validate_stages() -> void:
 	while not file.is_empty():
 		if not dir.current_is_dir() and file.ends_with(".json"):
 			var path := "res://content/stages/" + file
-			var parsed = _load_json_dictionary(path, "STAGE")
-			if not parsed.is_empty(): _validate_stage(parsed, path)
+			if path != STAGE_CATALOG_FILE:
+				var parsed = _load_json_dictionary(path, "STAGE")
+				if not parsed.is_empty(): _validate_stage(parsed, path)
 		file = dir.get_next()
 	dir.list_dir_end()
 
@@ -273,12 +268,7 @@ func _map_has_allied_spawn(map_file: String, spawn_id: String) -> bool:
 	return false
 
 func _catalog_contains(path: String, entry_id: String) -> bool:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return false
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	return parsed is Dictionary and parsed.has(entry_id)
+	return ObjectRepository.load_catalog(path).has(entry_id)
 
 func _validate_map_file(map_file: String, stage_path: String) -> void:
 	var file := FileAccess.open(map_file, FileAccess.READ)
@@ -321,12 +311,7 @@ func _validate_map_vector(container: Dictionary, key: String, map_file: String, 
 
 func _validate_resource_refs() -> void:
 	for path in [ENEMY_FILE, TOWER_FILE, ROBOT_FILE]:
-		var file := FileAccess.open(path, FileAccess.READ)
-		if file == null:
-			continue
-		var parsed = JSON.parse_string(file.get_as_text())
-		file.close()
-		_walk_refs(parsed, path)
+		_walk_refs(ObjectRepository.load_catalog(path), path)
 
 func _walk_refs(value, source: String) -> void:
 	if value is Dictionary:

@@ -29,6 +29,21 @@ static func reload() -> void:
 	_loaded = false
 	_ensure_loaded()
 
+static func load_catalog(path: String) -> Dictionary:
+	if path == ROBOT_CATALOG_PATH:
+		_ensure_loaded()
+		return _robot_catalog.duplicate(true)
+	if path == UNIT_CATALOG_PATH:
+		_ensure_loaded()
+		return _unit_catalog.duplicate(true)
+	if path == ENEMY_CATALOG_PATH:
+		_ensure_loaded()
+		return _enemy_catalog.duplicate(true)
+	if path == TOWER_CATALOG_PATH:
+		_ensure_loaded()
+		return _tower_catalog.duplicate(true)
+	return ContentCatalogLoader.load_dictionary_catalog(path)
+
 static func get_robot(robot_id: String) -> RobotDefinition:
 	_ensure_loaded()
 	var data = _robot_catalog.get(robot_id)

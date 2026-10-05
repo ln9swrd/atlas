@@ -7,6 +7,7 @@ var _runtime_map_data: Dictionary = {}
 
 const ALLIED_UNIT_COLOR_SHADER := preload("res://shaders/allied_unit_color.gdshader")
 const ROBOT_COLOR_SHADER := preload("res://shaders/robot_profile_color.gdshader")
+const VISUAL_ASSET_FRAME := preload("res://scripts/visual_asset_frame.gd")
 const ASURA_TEAM_MASK := preload("res://images/robot/asura/profile_team_mask.png")
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
@@ -279,17 +280,7 @@ func _texture_from_robot_animation(anim_key: String) -> Texture2D:
 	return _texture_from_catalog_value(value, rect_values)
 
 func _robot_frame_rect(anim_key: String, frame: int, resolved: VisualAssetDefinition, fallback_rect: Rect2) -> Rect2:
-	if resolved != null and not resolved.frame_regions.is_empty():
-		var index: int = posmod(frame, resolved.frame_regions.size())
-		var values: Variant = resolved.frame_regions[index]
-		if values is Array and values.size() >= 4:
-			return Rect2(float(values[0]), float(values[1]), float(values[2]), float(values[3]))
-	var frame_count := maxi(1, resolved.frames if resolved != null else 1)
-	var frame_width := fallback_rect.size.x / float(frame_count)
-	var frame_index: int = posmod(frame, frame_count)
-	var frame_start_x: float = fallback_rect.position.x + float(round(frame_width * float(frame_index)))
-	var frame_end_x: float = fallback_rect.position.x + float(round(frame_width * float(frame_index + 1)))
-	return Rect2(frame_start_x, fallback_rect.position.y, maxf(1.0, frame_end_x - frame_start_x), fallback_rect.size.y)
+	return VISUAL_ASSET_FRAME.region_for(resolved, frame, fallback_rect)
 
 func _texture_from_robot_animation_frame(anim_key: String, frame: int) -> Texture2D:
 	var value := _robot_animation_value(anim_key)
@@ -982,7 +973,6 @@ func _update_robot_render_node() -> void:
 	robot_render_node.hframes = 1
 	robot_render_node.vframes = 1
 	robot_render_node.frame = 0
-	robot_render_node.offset = Vector2.ZERO
 	robot_render_node.position = robot.position
 	robot_render_node.rotation = 0.0
 	if robot_render_material != null:
@@ -996,6 +986,8 @@ func _update_robot_render_node() -> void:
 	if frame_size.x > 0.0 and frame_size.y > 0.0:
 		var render_scale := minf(78.0 / frame_size.x, 132.0 / frame_size.y)
 		robot_render_node.scale = Vector2.ONE * render_scale
+		var resolved := VisualAssetResolver.resolve(_robot_animation_value(anim_key))
+		robot_render_node.offset = VISUAL_ASSET_FRAME.anchor_offset(resolved, frame_size)
 
 func _clear_allied_render_nodes() -> void:
 	for node in allied_render_nodes.values():

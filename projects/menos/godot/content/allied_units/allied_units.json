@@ -1,118 +1,178 @@
 {
-	"basic": {
-		"ai": {
-			"engagement_range": 72.0,
-			"target_preference": "front"
-		},
-		"armor": 0.0,
-		"attack_type": "ranged",
-		"color": "ffffffff",
-		"cooldown": 0.8,
-		"damage": 18.0,
-		"description": "기본 전투형 유닛. 공격과 생존의 균형을 갖춘 표준형입니다.",
-		"hp": 180.0,
-		"melee": false,
-		"melee_cooldown": 1.0,
-		"name": "기본",
-		"projectile_anim": "res://images/Unit/basic.png",
-		"radius": 22.0,
-		"range": 72.0,
-		"reward": 0.0,
-		"robot_cooldown": 0.0,
-		"robot_damage": 0.0,
-		"robot_range": 0.0,
-		"speed": 105.0,
-		"visuals": {
-			"animations": {},
-			"sprite": "res://content/editor/edited_assets/basic_edit_100900580.png"
-		}
-	},
-	"heavy": {
-		"ai": {
-			"engagement_range": 90.0,
-			"target_preference": "front"
-		},
-		"cooldown": 1.5,
-		"damage": 30.0,
-		"description": "헤비 전투형 유닛. 높은 내구도와 강한 화력을 갖습니다.",
-		"hp": 320.0,
-		"name": "헤비",
-		"radius": 28.0,
-		"range": 90.0,
-		"speed": 55.0,
-		"visuals": {
-			"sprite": "res://images/Unit/heavy.png",
-			"sprite_rect": [
-				20.0,
-				30.0,
-				115.0,
-				140.0
-			]
-		}
-	},
-	"light": {
-		"ai": {
-			"engagement_range": 90.0,
-			"target_preference": "fast"
-		},
-		"cooldown": 0.7,
-		"damage": 12.0,
-		"description": "경량 기동형 유닛. 빠른 이동과 전개에 특화됩니다.",
-		"hp": 100.0,
-		"name": "경량",
-		"radius": 17.0,
-		"range": 90.0,
-		"speed": 130.0,
-		"visuals": {
-			"sprite": "res://images/Unit/light.png",
-			"sprite_rect": [
-				24.0,
-				30.0,
-				112.0,
-				135.0
-			]
-		}
-	},
-	"ranged": {
-		"ai": {
-			"engagement_range": 260.0,
-			"target_preference": "fast"
-		},
-		"cooldown": 1.1,
-		"damage": 14.0,
-		"description": "원거리 공격형 유닛. 긴 사거리에서 지속적으로 화력을 투사합니다.",
-		"hp": 95.0,
-		"name": "?�거�?",
-		"radius": 18.0,
-		"range": 260.0,
-		"speed": 82.0,
-		"visuals": {
-			"sprite": "res://content/editor/edited_assets/range_edit_208771618.png"
-		}
-	},
-	"support": {
-		"ai": {
-			"role": "support",
-			"support_range": 220.0
-		},
-		"cooldown": 1.6,
-		"damage": 6.0,
-		"description": "지원형 유닛. 아군의 전투를 보조하고 회복합니다.",
-		"heal": 24.0,
-		"hp": 80.0,
-		"name": "지??",
-		"radius": 18.0,
-		"range": 220.0,
-		"speed": 78.0,
-		"support_cooldown": 2.0,
-		"visuals": {
-			"sprite": "res://images/Unit/support.png",
-			"sprite_rect": [
-				48.0,
-				0.0,
-				144.0,
-				192.0
-			]
-		}
-	}
+  "basic": {
+    "ai": {
+      "engagement_range": 72.0,
+      "target_preference": "front"
+    },
+    "armor": 0.0,
+    "attack_type": "ranged",
+    "color": "ffffffff",
+    "cooldown": 0.8,
+    "damage": 18.0,
+    "description": "기본 전투형 유닛. 공격과 생존의 균형을 갖춘 표준형입니다.",
+    "hp": 180.0,
+    "melee": false,
+    "melee_cooldown": 1.0,
+    "name": "기본a",
+    "projectile_anim": "res://images/Unit/basic.png",
+    "radius": 22.0,
+    "range": 72.0,
+    "reward": 0.0,
+    "robot_cooldown": 0.0,
+    "robot_damage": 0.0,
+    "robot_range": 0.0,
+    "speed": 105.0,
+    "visuals": {
+      "animations": {},
+      "default_image": "",
+      "sprite": "res://content/editor/edited_assets/basic_edit_100900580.png"
+    }
+  },
+  "heavy": {
+    "ai": {
+      "engagement_range": 90.0,
+      "target_preference": "front"
+    },
+    "armor": 8.0,
+    "attack_type": "melee",
+    "color": "ffffffff",
+    "cooldown": 1.5,
+    "damage": 30.0,
+    "description": "헤비 전투형 유닛. 높은 내구도와 강한 화력을 갖습니다.",
+    "hp": 320.0,
+    "melee": true,
+    "melee_cooldown": 1.5,
+    "name": "헤비",
+    "projectile_anim": "",
+    "radius": 28.0,
+    "range": 90.0,
+    "reward": 0.0,
+    "robot_cooldown": 0.0,
+    "robot_damage": 0.0,
+    "robot_range": 0.0,
+    "speed": 55.0,
+    "visuals": {
+      "animations": {},
+      "default_image": "",
+      "sprite": "res://images/Unit/heavy.png",
+      "sprite_rect": [20.0, 30.0, 115.0, 140.0]
+    }
+  },
+  "light": {
+    "ai": {
+      "engagement_range": 90.0,
+      "target_preference": "fast"
+    },
+    "armor": 0.0,
+    "attack_type": "ranged",
+    "color": "ffffffff",
+    "cooldown": 0.7,
+    "damage": 12.0,
+    "description": "경량 기동형 유닛. 빠른 이동과 전개에 특화됩니다.",
+    "hp": 100.0,
+    "melee": false,
+    "melee_cooldown": 0.7,
+    "name": "경량",
+    "projectile_anim": "",
+    "radius": 17.0,
+    "range": 90.0,
+    "reward": 0.0,
+    "robot_cooldown": 0.0,
+    "robot_damage": 0.0,
+    "robot_range": 0.0,
+    "speed": 130.0,
+    "visuals": {
+      "animations": {},
+      "default_image": "",
+      "sprite": "res://images/Unit/light.png",
+      "sprite_rect": [24.0, 30.0, 112.0, 135.0]
+    }
+  },
+  "ranged": {
+    "ai": {
+      "engagement_range": 260.0,
+      "target_preference": "fast"
+    },
+    "armor": 0.0,
+    "attack_type": "ranged",
+    "color": "ffffffff",
+    "cooldown": 1.1,
+    "damage": 14.0,
+    "description": "원거리 공격형 유닛. 긴 사거리에서 지속적으로 화력을 투사합니다.",
+    "hp": 95.0,
+    "melee": false,
+    "melee_cooldown": 1.1,
+    "name": "원거리",
+    "projectile_anim": "",
+    "radius": 18.0,
+    "range": 260.0,
+    "reward": 0.0,
+    "robot_cooldown": 0.0,
+    "robot_damage": 0.0,
+    "robot_range": 0.0,
+    "speed": 82.0,
+    "visuals": {
+      "animations": {},
+      "default_image": "",
+      "sprite": "res://content/editor/edited_assets/range_edit_208771618.png"
+    }
+  },
+  "support": {
+    "ai": {
+      "role": "support",
+      "support_range": 220.0
+    },
+    "armor": 0.0,
+    "attack_type": "ranged",
+    "color": "ffffffff",
+    "cooldown": 1.6,
+    "damage": 6.0,
+    "description": "지원형 유닛. 아군의 전투를 보조하고 회복합니다.",
+    "heal": 24.0,
+    "hp": 80.0,
+    "melee": false,
+    "melee_cooldown": 1.6,
+    "name": "지원",
+    "projectile_anim": "",
+    "radius": 18.0,
+    "range": 220.0,
+    "reward": 0.0,
+    "robot_cooldown": 0.0,
+    "robot_damage": 0.0,
+    "robot_range": 0.0,
+    "speed": 78.0,
+    "support_cooldown": 2.0,
+    "visuals": {
+      "animations": {},
+      "default_image": "",
+      "sprite": "res://images/Unit/support.png",
+      "sprite_rect": [48.0, 0.0, 144.0, 192.0]
+    }
+  },
+  "unit_01": {
+    "ai": {},
+    "armor": 0.0,
+    "attack_type": "ranged",
+    "color": "ffffffff",
+    "cooldown": 1.0,
+    "damage": 10.0,
+    "description": "새로 등록한 사용자 유닛입니다.",
+    "hp": 100.0,
+    "melee": false,
+    "melee_cooldown": 1.0,
+    "name": "새 유닛",
+    "projectile_anim": "",
+    "radius": 18.0,
+    "range": 120.0,
+    "reward": 0.0,
+    "robot_cooldown": 0.0,
+    "robot_damage": 0.0,
+    "robot_range": 0.0,
+    "speed": 80.0,
+    "visuals": {
+      "animations": {},
+      "default_image": "",
+      "sprite": ""
+    }
+  }
 }

@@ -36,6 +36,12 @@ var footprint_width_label: Label
 var footprint_height_label: Label
 var footprint_row: HBoxContainer
 var rect_label: Label
+var visual_frames_spin: SpinBox
+var visual_columns_spin: SpinBox
+var visual_rows_spin: SpinBox
+var visual_frame_order_option: OptionButton
+var visual_anchor_x_spin: SpinBox
+var visual_anchor_y_spin: SpinBox
 var status_label: Label
 var maximize_button: Button
 var brush_size_spin: SpinBox
@@ -59,6 +65,12 @@ func open_for_asset_id(asset_id: String, edit_target: String) -> void:
 		id_edit.text = asset_id
 		selected_index = -1
 		selected_is_visual_asset = true
+		visual_frames_spin.visible = true
+		visual_columns_spin.visible = true
+		visual_rows_spin.visible = true
+		visual_frame_order_option.visible = true
+		visual_anchor_x_spin.visible = true
+		visual_anchor_y_spin.visible = true
 		status_label.text = "Asset ID not registered. Choose a project image, select a region, then click Visual Asset 저장."
 		return
 	_on_asset_selected(target_index)
@@ -220,6 +232,30 @@ func _build_interface() -> void:
 	rect_label = Label.new()
 	rect_label.text = "[0, 0, 0, 0]"
 	form.add_child(rect_label)
+	_add_form_label(form, "Visual Frames")
+	visual_frames_spin = _new_spin(1, 999)
+	form.add_child(visual_frames_spin)
+	_add_form_label(form, "Visual Columns")
+	visual_columns_spin = _new_spin(1, 999)
+	form.add_child(visual_columns_spin)
+	_add_form_label(form, "Visual Rows")
+	visual_rows_spin = _new_spin(1, 999)
+	form.add_child(visual_rows_spin)
+	_add_form_label(form, "Frame Order")
+	visual_frame_order_option = OptionButton.new()
+	visual_frame_order_option.add_item("row_major")
+	visual_frame_order_option.add_item("column_major")
+	form.add_child(visual_frame_order_option)
+	_add_form_label(form, "Anchor X")
+	visual_anchor_x_spin = _new_spin(0.0, 1.0)
+	visual_anchor_x_spin.step = 0.01
+	visual_anchor_x_spin.value = 0.5
+	form.add_child(visual_anchor_x_spin)
+	_add_form_label(form, "Anchor Y")
+	visual_anchor_y_spin = _new_spin(0.0, 1.0)
+	visual_anchor_y_spin.step = 0.01
+	visual_anchor_y_spin.value = 1.0
+	form.add_child(visual_anchor_y_spin)
 	_add_form_label(form, "Grid size (map tiles)")
 	footprint_row = HBoxContainer.new()
 	footprint_row.add_child(_new_label("W"))
@@ -518,20 +554,13 @@ func _find_entry_index(asset_id: String) -> int:
 func _load_visual_assets() -> void:
 	visual_assets.clear()
 	visual_asset_ids.clear()
-	var path := "res://content/editor/visual_assets.json"
-	if not FileAccess.file_exists(path):
-		return
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not parsed is Dictionary:
-		return
-	for key in parsed.keys():
-		if parsed[key] is Dictionary:
-			visual_assets[str(key)] = parsed[key].duplicate(true)
-			visual_asset_ids.append(str(key))
+	VisualAssetRepository.reload()
+	for asset_id in VisualAssetRepository.list():
+		var definition := VisualAssetRepository.get_asset(asset_id)
+		if definition == null:
+			continue
+		visual_assets[asset_id] = definition.to_dict()
+		visual_asset_ids.append(asset_id)
 	visual_asset_ids.sort()
 
 func _visual_asset_entry(asset_id: String, data: Dictionary) -> Dictionary:
@@ -547,6 +576,12 @@ func _visual_asset_entry(asset_id: String, data: Dictionary) -> Dictionary:
 		"source_path": str(data.get("source", "")),
 		"source_rect_px": region,
 		"footprint_tiles": [1, 1],
+		"frames": maxi(1, int(data.get("frames", 1))),
+		"columns": maxi(1, int(data.get("columns", data.get("frames", 1)))),
+		"rows": maxi(1, int(data.get("rows", 1))),
+		"frame_order": str(data.get("frame_order", "row_major")),
+		"anchor": data.get("anchor", {"mode": "BOTTOM_CENTER", "x": 0.5, "y": 1.0}),
+		"frame_regions": data.get("frame_regions", []).duplicate(true) if data.get("frame_regions", []) is Array else [],
 		"catalog_kind": "visual_asset"
 	}
 
@@ -557,19 +592,28 @@ func _save_visual_asset() -> void:
 		status_label.text = "Asset ID, project image, and a valid selected region are required."
 		return
 	_load_visual_assets()
-	var previous: Dictionary = visual_assets.get(asset_id, {})
+	var previous: Dictionary = visual_assets.get(asset_id, {}).duplicate(true)
 	if visual_assets.has(asset_id) and not selected_is_visual_asset:
 		status_label.text = "Visual Asset ID already exists. Select it and use Update instead."
 		return
-	visual_assets[asset_id] = {
-		"id": asset_id,
-		"category": "Robot" if asset_id.begins_with("robot.") else "Other",
-		"source": source_path,
-		"region": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
-		"frames": 1,
-		"owner": "",
-		"usage": "visual_asset_catalog"
-	}
+	var definition := VisualAssetDefinition.from_dict(previous) if not previous.is_empty() else VisualAssetDefinition.new()
+	definition.id = asset_id
+	definition.category = "Robot" if asset_id.begins_with("robot.") else "Other"
+	definition.source = source_path
+	definition.region = Rect2(rect.position, rect.size)
+	definition.frames = maxi(1, int(visual_frames_spin.value))
+	definition.columns = maxi(1, int(visual_columns_spin.value))
+	definition.rows = maxi(1, int(visual_rows_spin.value))
+	definition.frame_order = "column_major" if visual_frame_order_option.selected == 1 else "row_major"
+	definition.anchor_mode = "CUSTOM"
+	definition.anchor_x = clampf(float(visual_anchor_x_spin.value), 0.0, 1.0)
+	definition.anchor_y = clampf(float(visual_anchor_y_spin.value), 0.0, 1.0)
+	definition.owner_id = str(previous.get("owner", ""))
+	definition.usage = "visual_asset_catalog"
+	if definition.frames > definition.columns * definition.rows:
+		status_label.text = "Visual Frames cannot exceed Columns × Rows."
+		return
+	visual_assets[asset_id] = definition.to_dict()
 	if not _write_visual_assets():
 		status_label.text = "Visual Asset Catalog 저장에 실패했습니다."
 		return
@@ -581,11 +625,9 @@ func _save_visual_asset() -> void:
 
 func _write_visual_assets() -> bool:
 	var path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
+	if not ObjectPersistence.save_catalog(path, visual_assets):
 		return false
-	file.store_string(JSON.stringify(visual_assets, "\t") + "\n")
-	file.close()
+	VisualAssetRepository.reload()
 	VisualAssetResolver.reload()
 	return true
 
@@ -693,9 +735,32 @@ func _on_asset_selected(index: int) -> void:
 	_refresh_group_options(str(entry.get("group", "")))
 	var rect_values: Array = entry.get("source_rect_px", [0, 0, 0, 0])
 	var rect := Rect2i(int(rect_values[0]), int(rect_values[1]), int(rect_values[2]), int(rect_values[3]))
+	if selected_is_visual_asset:
+		visual_frames_spin.value = maxi(1, int(entry.get("frames", 1)))
+		visual_columns_spin.value = maxi(1, int(entry.get("columns", entry.get("frames", 1))))
+		visual_rows_spin.value = maxi(1, int(entry.get("rows", 1)))
+		visual_frame_order_option.select(1 if str(entry.get("frame_order", "row_major")) == "column_major" else 0)
+		var anchor_data: Variant = entry.get("anchor", {})
+		if anchor_data is Dictionary:
+			visual_anchor_x_spin.value = clampf(float(anchor_data.get("x", 0.5)), 0.0, 1.0)
+			visual_anchor_y_spin.value = clampf(float(anchor_data.get("y", 1.0)), 0.0, 1.0)
+	else:
+		visual_frames_spin.value = 1
+		visual_columns_spin.value = 1
+		visual_rows_spin.value = 1
+		visual_frame_order_option.select(0)
+		visual_anchor_x_spin.value = 0.5
+		visual_anchor_y_spin.value = 1.0
 	source_path = str(entry.get("source_path", ""))
 	_load_source_for_entry(rect)
 	_update_footprint_display(rect)
+	var visual_meta_visible := selected_is_visual_asset
+	visual_frames_spin.visible = visual_meta_visible
+	visual_columns_spin.visible = visual_meta_visible
+	visual_rows_spin.visible = visual_meta_visible
+	visual_frame_order_option.visible = visual_meta_visible
+	visual_anchor_x_spin.visible = visual_meta_visible
+	visual_anchor_y_spin.visible = visual_meta_visible
 
 func _load_source_for_entry(rect: Rect2i) -> void:
 	var loaded: Texture2D = IMAGE_TEXTURE_LOADER.load_texture(source_path)
@@ -724,6 +789,18 @@ func _clear_form() -> void:
 	source_label.text = "No project image selected"
 	region_view.set_source_texture(null)
 	region_view.set("selected_region", Rect2i())
+	visual_frames_spin.value = 1
+	visual_columns_spin.value = 1
+	visual_rows_spin.value = 1
+	visual_frame_order_option.select(0)
+	visual_anchor_x_spin.value = 0.5
+	visual_anchor_y_spin.value = 1.0
+	visual_frames_spin.visible = false
+	visual_columns_spin.visible = false
+	visual_rows_spin.visible = false
+	visual_frame_order_option.visible = false
+	visual_anchor_x_spin.visible = false
+	visual_anchor_y_spin.visible = false
 	_update_rect_label(Rect2i())
 	_update_footprint_display(Rect2i())
 

@@ -55,6 +55,12 @@ func _build_ui() -> void:
 	root.add_child(title)
 	var top := HBoxContainer.new()
 	root.add_child(top)
+	var tower_actions := HBoxContainer.new()
+	top.add_child(tower_actions)
+	var add_btn := Button.new()
+	add_btn.text = "ADD TOWER"
+	add_btn.pressed.connect(_open_add_tower_dialog)
+	tower_actions.add_child(add_btn)
 	tower_list = OptionButton.new()
 	tower_list.custom_minimum_size.x = 220
 	tower_list.item_selected.connect(_on_tower_selected)
@@ -224,14 +230,9 @@ func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximu
 	return spin
 func _load_data() -> void:
 	tower_data.clear()
-	var file := FileAccess.open(TOWER_FILE, FileAccess.READ)
-	if file:
-		var parsed = JSON.parse_string(file.get_as_text())
-		file.close()
-		if parsed is Dictionary:
-			tower_data = parsed
+	tower_data = ObjectRepository.load_catalog(TOWER_FILE)
 	_refresh_tower_list()
-	_set_status("Loaded: " + TOWER_FILE if file else "Failed to load JSON")
+	_set_status("Loaded: " + TOWER_FILE if not tower_data.is_empty() else "Failed to load JSON")
 
 func _get_tower_types() -> Array:
 	return Array(ObjectRepository.list_towers())
@@ -272,6 +273,91 @@ func _on_tower_selected(index: int) -> void:
 	level2_cooldown_spin.value = float(level2.get("cooldown", data.get("cooldown", 1.0)))
 	level2_range_spin.value = float(level2.get("range", data.get("range", 0.0)))
 
+func _open_add_tower_dialog() -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Add Tower"
+	dialog.ok_button_text = "ADD"
+	var form := VBoxContainer.new()
+	form.custom_minimum_size = Vector2(360, 0)
+	form.add_theme_constant_override("separation", 8)
+	dialog.add_child(form)
+	var id_row := HBoxContainer.new()
+	form.add_child(id_row)
+	var id_label := Label.new()
+	id_label.text = "ID"
+	id_label.custom_minimum_size.x = 80
+	id_row.add_child(id_label)
+	var new_id_edit := LineEdit.new()
+	new_id_edit.placeholder_text = "tower_id"
+	new_id_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	id_row.add_child(new_id_edit)
+	var name_row := HBoxContainer.new()
+	form.add_child(name_row)
+	var name_label := Label.new()
+	name_label.text = "Name"
+	name_label.custom_minimum_size.x = 80
+	name_row.add_child(name_label)
+	var new_name_edit := LineEdit.new()
+	new_name_edit.placeholder_text = "TOWER NAME"
+	new_name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_row.add_child(new_name_edit)
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		_add_tower(dialog, new_id_edit.text, new_name_edit.text)
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(440, 220))
+	new_id_edit.grab_focus()
+
+func _add_tower(dialog: ConfirmationDialog, requested_id: String, requested_name: String) -> void:
+	var new_id := requested_id.strip_edges().to_lower().validate_filename()
+	var new_name := requested_name.strip_edges()
+	if new_id.is_empty():
+		_set_status("Tower ID is required.")
+		dialog.queue_free()
+		return
+	if new_name.is_empty():
+		new_name = new_id.to_upper()
+	if tower_data.has(new_id):
+		_set_status("Tower ID already exists: " + new_id)
+		dialog.queue_free()
+		return
+	var new_tower: Dictionary = {
+		"cooldown": 1.0,
+		"cost": 50.0,
+		"damage": 10.0,
+		"level2": {
+			"cooldown": 0.9,
+			"damage": 15.0,
+			"range": 150.0,
+			"upgrade_cost": 75.0
+		},
+		"name": new_name,
+		"preference": "",
+		"projectile_frames": 1.0,
+		"range": 150.0,
+		"sprite_frames": 1.0,
+		"sprite_anim": "",
+		"default_image": "",
+		"animations": {},
+		"projectile_anim": ""
+	}
+	tower_data[new_id] = new_tower
+	if not ObjectPersistence.save_catalog(TOWER_FILE, tower_data):
+		tower_data.erase(new_id)
+		_set_status("FAILED to save new tower.")
+		dialog.queue_free()
+		return
+	ObjectRepository.reload()
+	_refresh_tower_list()
+	for i in range(tower_list.item_count):
+		if str(tower_list.get_item_metadata(i)) == new_id:
+			tower_list.select(i)
+			_on_tower_selected(i)
+			break
+	_set_status("ADDED tower: " + new_id)
+	dialog.queue_free()
+
 func _confirm_delete_tower() -> void:
 	if selected_type.is_empty() or not tower_data.has(selected_type):
 		_set_status("No tower selected.")
@@ -290,6 +376,7 @@ func _delete_tower(dialog: ConfirmationDialog) -> void:
 		_set_status("FAILED to save or verify JSON: %s." % TOWER_FILE)
 		dialog.queue_free()
 		return
+	ObjectRepository.reload()
 	selected_type = ""
 	_refresh_tower_list()
 	if tower_list.item_count > 0:
@@ -329,6 +416,7 @@ func _save_data() -> bool:
 	if not ObjectPersistence.save_catalog(TOWER_FILE, tower_data):
 		_set_status("FAILED to save or verify JSON: %s." % TOWER_FILE)
 		return false
+	ObjectRepository.reload()
 	_refresh_tower_list()
 	var selected_index := _get_tower_types().find(selected_type)
 	if selected_index >= 0:

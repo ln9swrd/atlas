@@ -3,6 +3,8 @@ extends Control
 
 const ROBOT_FILE := "res://content/robots/robots.json"
 const EDITOR_THUMBNAIL_UTIL = preload("res://scripts/editor_thumbnail_util.gd")
+const VISUAL_ASSET_FRAME = preload("res://scripts/visual_asset_frame.gd")
+const VISUAL_ASSET_PREVIEW = preload("res://editor/visual_asset_preview.gd")
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 const ROBOT_COLOR_SHADER = preload("res://shaders/robot_profile_color.gdshader")
 
@@ -417,14 +419,9 @@ func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximu
 
 func _load_data() -> void:
 	robot_data.clear()
-	var file := FileAccess.open(ROBOT_FILE, FileAccess.READ)
-	if file:
-		var parsed = JSON.parse_string(file.get_as_text())
-		file.close()
-		if parsed is Dictionary:
-			robot_data = parsed
-		_refresh_robot_list()
-	_set_status("Loaded: " + ROBOT_FILE if file else "Failed to load JSON")
+	robot_data = ObjectRepository.load_catalog(ROBOT_FILE)
+	_refresh_robot_list()
+	_set_status("Loaded: " + ROBOT_FILE if not robot_data.is_empty() else "Failed to load JSON")
 
 func _refresh_robot_list() -> void:
 	robot_list.clear()
@@ -471,7 +468,7 @@ func _on_robot_selected(index: int) -> void:
 	_refresh_animation_previews()
 	_refresh_robot_preview()
 
-func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> TextureRect:
+func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> VisualAssetPreview:
 	var box := VBoxContainer.new()
 	box.custom_minimum_size = Vector2(size.x + 8.0, size.y + 24.0)
 	parent.add_child(box)
@@ -479,10 +476,9 @@ func _create_animation_preview(parent: Container, label_text: String, size: Vect
 	label.text = label_text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(label)
-	var preview := TextureRect.new()
+	var preview: VisualAssetPreview = VISUAL_ASSET_PREVIEW.new()
 	preview.custom_minimum_size = size
-	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	box.add_child(preview)
 	return preview
@@ -492,14 +488,12 @@ func _animated_texture(path: String, frame: int, total_frames: int, rect_values:
 	var asset_frames := 0
 	var columns := maxi(1, total_frames)
 	var rows := 1
-	var frame_order := "row_major"
 	var resolved := VisualAssetResolver.resolve(path)
 	if resolved != null:
 		source_path = resolved.source
 		asset_frames = resolved.frames
 		columns = maxi(1, resolved.columns)
 		rows = maxi(1, resolved.rows)
-		frame_order = resolved.frame_order
 		if resolved.region.size.x > 0 and resolved.region.size.y > 0:
 			rect_values = [resolved.region.position.x, resolved.region.position.y, resolved.region.size.x, resolved.region.size.y]
 	var texture := load(source_path) as Texture2D
@@ -525,21 +519,7 @@ func _animated_texture(path: String, frame: int, total_frames: int, rect_values:
 	if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
 		return texture
 	var frame_index := frame % total_frames
-	var column := frame_index % columns
-	var row := frame_index / columns
-	if frame_order == "column_major":
-		column = frame_index / rows
-		row = frame_index % rows
-	var frame_left := source_rect.position.x + floorf(source_rect.size.x * float(column) / float(columns))
-	var frame_right := source_rect.position.x + floorf(source_rect.size.x * float(column + 1) / float(columns))
-	var frame_top := source_rect.position.y + floorf(source_rect.size.y * float(row) / float(rows))
-	var frame_bottom := source_rect.position.y + floorf(source_rect.size.y * float(row + 1) / float(rows))
-	var frame_rect := Rect2(
-		frame_left,
-		frame_top,
-		maxf(1.0, frame_right - frame_left),
-		maxf(1.0, frame_bottom - frame_top)
-	)
+	var frame_rect := VISUAL_ASSET_FRAME.region_for(resolved, frame_index, source_rect)
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture
 	atlas.region = frame_rect
@@ -547,12 +527,14 @@ func _animated_texture(path: String, frame: int, total_frames: int, rect_values:
 
 func _refresh_animation_previews() -> void:
 	for key in animation_previews.keys():
-		var preview: TextureRect = animation_previews[key]
+		var preview: VisualAssetPreview = animation_previews[key]
 		var edit: LineEdit = animation_edits.get(key)
 		var path := edit.text.strip_edges() if edit != null else ""
 		var frames := _animation_frame_count(key)
 		var rect_values: Variant = animation_rects.get(key, [])
 		preview.texture = _animated_texture(path, animation_frame, frames, rect_values)
+		var resolved := VisualAssetResolver.resolve(path)
+		preview.anchor = VISUAL_ASSET_FRAME.anchor_normalized(resolved)
 
 func _on_animation_tick() -> void:
 	var max_frames := 1
@@ -667,6 +649,7 @@ func _delete_robot(dialog: ConfirmationDialog) -> void:
 		_set_status("FAILED to write JSON.")
 		dialog.queue_free()
 		return
+	ObjectRepository.reload()
 	selected_type = ""
 	_refresh_robot_list()
 	if robot_list.item_count > 0:
@@ -710,6 +693,7 @@ func _save_data() -> void:
 	if not ObjectPersistence.save_catalog(ROBOT_FILE, robot_data):
 		_set_status("FAILED to save JSON.")
 		return
+	ObjectRepository.reload()
 	_refresh_robot_list()
 	for i in range(robot_list.item_count):
 		if str(robot_list.get_item_metadata(i)) == selected_type:

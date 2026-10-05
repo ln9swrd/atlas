@@ -1,34 +1,27 @@
 {
-	"cannon": {
-		"cooldown": 1.35,
-		"cost": 55.0,
-		"damage": 42.0,
-		"level2": {
-			"cooldown": 1.15,
-			"damage": 60.0,
-			"range": 165.0,
-			"upgrade_cost": 75.0
-		},
-		"name": "CANNON",
-		"preference": "heavy",
-		"projectile_frames": 8.0,
-		"range": 155.0,
-		"sprite_frames": 4.0
-	},
-	"gatling": {
-		"cooldown": 0.23,
-		"cost": 35.0,
-		"damage": 9.0,
-		"level2": {
-			"cooldown": 0.2,
-			"damage": 13.0,
-			"range": 155.0,
-			"upgrade_cost": 50.0
-		},
-		"name": "GATLING",
-		"preference": "fast",
-		"projectile_frames": 8.0,
-		"range": 145.0,
-		"sprite_frames": 4.0
-	}
+  "rail": {
+    "animations": {
+      "attack": "",
+      "death": "",
+      "hit": "",
+      "idle": ""
+    },
+    "cooldown": 1.0,
+    "cost": 50,
+    "damage": 10.0,
+    "default_image": "",
+    "level2": {
+      "cooldown": 0.9,
+      "damage": 15.0,
+      "range": 150.0,
+      "upgrade_cost": 75
+    },
+    "name": "raila",
+    "preference": "",
+    "projectile_anim": "",
+    "projectile_frames": 1.0,
+    "range": 150.0,
+    "sprite_anim": "",
+    "sprite_frames": 1.0
+  }
 }

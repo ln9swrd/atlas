@@ -421,12 +421,8 @@ func _load_data() -> void:
 	_set_status("Loaded: Unit + Enemy catalogs")
 
 func _load_unit_catalog_file(path: String, source: String) -> void:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not parsed is Dictionary:
+	var parsed := ObjectRepository.load_catalog(path)
+	if parsed.is_empty():
 		return
 	for key in parsed.keys():
 		var id := str(key)
@@ -449,6 +445,10 @@ func _get_unit_types() -> Array:
 	for enemy_type in ObjectRepository.list_enemies():
 		if unit_data.has(enemy_type) and not types.has(enemy_type):
 			types.append(enemy_type)
+	for unit_type in unit_data.keys():
+		var id := str(unit_type)
+		if not types.has(id) and unit_sources.get(id, "unit") == "unit":
+			types.append(id)
 	types.sort()
 	return types
 
@@ -495,13 +495,11 @@ func _delete_unit(dialog: ConfirmationDialog) -> void:
 		dialog.queue_free()
 		return
 	catalog.erase(selected_type)
-	var out := FileAccess.open(target_file, FileAccess.WRITE)
-	if out == null:
-		_set_status("FAILED to write JSON.")
+	if not ObjectPersistence.save_catalog(target_file, catalog):
+		_set_status("FAILED to save or verify JSON: %s." % target_file)
 		dialog.queue_free()
 		return
-	out.store_string(JSON.stringify(catalog, "  "))
-	out.close()
+	ObjectRepository.reload()
 	unit_data.erase(selected_type)
 	unit_sources.erase(selected_type)
 	selected_type = ""
@@ -689,6 +687,7 @@ func _save_data() -> void:
 	if not ObjectPersistence.save_catalog(target_file, catalog):
 		_set_status("FAILED to save or verify JSON: %s." % target_file)
 		return
+	ObjectRepository.reload()
 	unit_data[selected_type] = data
 	var selected_index := _find_unit_index(selected_type)
 	if selected_index >= 0:

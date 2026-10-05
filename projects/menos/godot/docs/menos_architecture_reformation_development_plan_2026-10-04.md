@@ -736,6 +736,20 @@ Editor가 직접 파일을 관리하는 구조를 제거할 기반 마련.
 - Robot / Unit / Tower에서 동일 Visual Asset Resolver 사용
 - Catalog에서 동일 Asset 선택 흐름 사용
 
+### Phase 2 진행 상태 — 2026-10-04
+
+- Visual Asset Definition의 `Frames / Columns / Rows / Frame Order / Frame Regions / Anchor / Team Mask` 구조를 유지한다.
+- `VisualAssetFrame` 공통 해석기를 도입하여 Frame Region과 Anchor 계산을 공통화했다.
+- Robot Editor Animation Preview, Editor Thumbnail, Runtime Robot Animation이 동일 Frame Region 해석 규칙을 사용한다.
+- Runtime Robot Sprite는 Visual Asset Anchor를 Sprite offset에 반영한다.
+- Robot Editor Animation Preview는 Visual Asset Anchor를 기준점으로 사용한다.
+- Asset Catalog Editor의 Visual Asset 저장/로드는 Definition / Repository / ObjectPersistence 경계를 사용하도록 연결했다.
+- Catalog에서 Visual Asset의 Frames / Columns / Rows / Frame Order / Anchor X/Y를 편집할 수 있다.
+- 기존 `frame_regions`와 Team Mask 데이터는 Visual Asset 수정 시 보존한다.
+- Non-uniform Cell은 `frame_regions`를 authoritative geometry로 사용한다.
+- 검증 결과: Godot headless editor parse PASS, Content Validation exit code 0, 공통 Frame/Anchor compile check PASS, `git diff --check` PASS.
+- PIE는 Master Runtime 확인 전까지 VERIFIED하지 않는다.
+
 ## Phase 3 — Object / Robot / Unit / Tower 통합
 
 목적:

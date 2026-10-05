@@ -10,7 +10,6 @@ static func create(value: String, fallback_region: Rect2 = Rect2(), fallback_fra
 	var frame_count := maxi(1, fallback_frames)
 	var columns := maxi(1, frame_count)
 	var rows := 1
-	var frame_order := "row_major"
 	if resolved != null:
 		source_path = resolved.source
 		if not resolved.id.begins_with("legacy:"):
@@ -19,7 +18,6 @@ static func create(value: String, fallback_region: Rect2 = Rect2(), fallback_fra
 			frame_count = resolved.frames
 			columns = resolved.columns
 			rows = resolved.rows
-			frame_order = resolved.frame_order
 	var source_texture := load(source_path) as Texture2D
 	if source_texture == null:
 		return null
@@ -34,20 +32,20 @@ static func create(value: String, fallback_region: Rect2 = Rect2(), fallback_fra
 		rows = maxi(1, rows)
 		if frame_count > columns * rows:
 			return null
-		var frame_index := 0
-		var column := frame_index % columns
-		var row := frame_index / columns
-		if frame_order == "column_major":
-			column = frame_index / rows
-			row = frame_index % rows
-		var cell_width := float(clipped.size.x) / float(columns)
-		var cell_height := float(clipped.size.y) / float(rows)
-		clipped = Rect2i(
-			int(round(float(clipped.position.x) + cell_width * float(column))),
-			int(round(float(clipped.position.y) + cell_height * float(row))),
-			maxi(1, int(round(cell_width))),
-			maxi(1, int(round(cell_height)))
-		)
+		if resolved != null and not resolved.id.begins_with("legacy:"):
+			clipped = Rect2i(VisualAssetFrame.region_for(resolved, 0, Rect2(clipped.position, clipped.size)))
+		else:
+			var frame_index := 0
+			var column := frame_index % columns
+			var row := frame_index / columns
+			var cell_width := float(clipped.size.x) / float(columns)
+			var cell_height := float(clipped.size.y) / float(rows)
+			clipped = Rect2i(
+				int(round(float(clipped.position.x) + cell_width * float(column))),
+				int(round(float(clipped.position.y) + cell_height * float(row))),
+				maxi(1, int(round(cell_width))),
+				maxi(1, int(round(cell_height)))
+			)
 		clipped = clipped.intersection(Rect2i(Vector2i.ZERO, source_size))
 		if clipped.size.x <= 0 or clipped.size.y <= 0:
 			return null
@@ -71,5 +69,15 @@ static func create(value: String, fallback_region: Rect2 = Rect2(), fallback_fra
 	var canvas := Image.create(canvas_size, canvas_size, false, Image.FORMAT_RGBA8)
 	canvas.fill(Color(0, 0, 0, 0))
 	var offset := Vector2i((canvas_size - width) / 2, (canvas_size - height) / 2)
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		var anchor := VisualAssetFrame.anchor_normalized(resolved)
+		var anchor_source := Vector2(region_image.get_width() * anchor.x, region_image.get_height() * anchor.y)
+		var anchor_used := anchor_source - Vector2(used.position)
+		var scale_x := float(width) / float(maxi(1, used.size.x))
+		var scale_y := float(height) / float(maxi(1, used.size.y))
+		offset = Vector2i(
+			round(float(canvas_size) * 0.5 - anchor_used.x * scale_x),
+			round(float(canvas_size) * 0.5 - anchor_used.y * scale_y)
+		)
 	canvas.blit_rect(cropped, Rect2i(Vector2i.ZERO, Vector2i(width, height)), offset)
 	return ImageTexture.create_from_image(canvas)

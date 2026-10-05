@@ -92,6 +92,8 @@
     "range": 180.0,
     "speed": 125.0,
     "sprite_attack": "",
+    "sprite_idle": "",
+    "sprite_move": "",
     "sprite_skill": ""
   },
   "valkyrie": {
@@ -195,6 +197,11 @@
     },
     "range": 180.0,
     "speed": 125.0,
+    "sprite_attack": "",
+    "sprite_idle": "",
+    "sprite_move": "",
+    "sprite_skill": "",
+    "projectile_anim": "",
     "sprite_attack_rect": [
       96.0,
       400.0,
