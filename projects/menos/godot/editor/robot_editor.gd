@@ -12,6 +12,7 @@ var robot_data: Dictionary = {}
 var selected_type := ""
 var robot_list: OptionButton
 var name_edit: LineEdit
+var faction_option: OptionButton
 var id_edit: LineEdit
 var hp_spin: SpinBox
 var speed_spin: SpinBox
@@ -174,6 +175,7 @@ func _build_ui() -> void:
 	content.add_child(properties_grid)
 	id_edit = _line_grid_row(properties_grid, "ID")
 	name_edit = _line_grid_row(properties_grid, "Name")
+	faction_option = _faction_grid_row(properties_grid)
 	hp_spin = _spin_grid_row(properties_grid, "HP", 1, 999999, 1, 220)
 	speed_spin = _spin_grid_row(properties_grid, "Speed", 0, 9999, 0.1, 125)
 	damage_spin = _spin_grid_row(properties_grid, "Damage", 0, 99999, 0.1, 28)
@@ -294,6 +296,38 @@ func _line_grid_row(parent: GridContainer, label_text: String) -> LineEdit:
 	row.add_child(edit)
 	parent.add_child(row)
 	return edit
+
+func _faction_grid_row(parent: GridContainer) -> OptionButton:
+	var row := HBoxContainer.new()
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var label := Label.new()
+	label.text = "Faction"
+	label.custom_minimum_size.x = 105
+	row.add_child(label)
+	var option := OptionButton.new()
+	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(option)
+	parent.add_child(row)
+	_refresh_faction_options(option)
+	return option
+
+func _refresh_faction_options(option: OptionButton) -> void:
+	option.clear()
+	option.add_item("(None)")
+	option.set_item_metadata(0, "")
+	for faction_id in FactionRepository.list_factions():
+		var faction := FactionRepository.get_faction(faction_id)
+		option.add_item(faction.name if faction != null and not faction.name.is_empty() else faction_id)
+		option.set_item_metadata(option.item_count - 1, faction_id)
+
+func _set_faction_selection(faction_id: String) -> void:
+	if faction_option == null:
+		return
+	for i in range(faction_option.item_count):
+		if str(faction_option.get_item_metadata(i)) == faction_id:
+			faction_option.select(i)
+			return
+	faction_option.select(0)
 
 func _spin_grid_row(parent: GridContainer, label_text: String, minimum: float, maximum: float, step: float, value: float) -> SpinBox:
 	var row := HBoxContainer.new()
@@ -439,6 +473,8 @@ func _on_robot_selected(index: int) -> void:
 	var robot_name := str(data.get("name", selected_type.to_upper()))
 	id_edit.text = str(data.get("id", selected_type))
 	name_edit.text = robot_name
+	_refresh_faction_options(faction_option)
+	_set_faction_selection(str(data.get("faction_id", "")))
 	robot_preview_name.text = robot_name
 	robot_preview_description.text = str(data.get("description", "MENOS 전투 로봇. 이동, 공격, 스킬 애니메이션을 사용하는 전투 유닛입니다."))
 	hp_spin.value = float(data.get("hp", 220.0))
@@ -595,6 +631,7 @@ func _add_robot(dialog: ConfirmationDialog, requested_id: String, requested_name
 		"hp": 220.0,
 		"id": new_id,
 		"name": new_name,
+		"faction_id": "",
 		"progression": {
 			"damage_growth": 0.05,
 			"hp_growth": 0.05,
@@ -665,6 +702,7 @@ func _save_data() -> void:
 	var data: Dictionary = robot_data.get(selected_type, {}).duplicate(true)
 	data["id"] = id_edit.text.strip_edges()
 	data["name"] = name_edit.text.strip_edges()
+	data["faction_id"] = str(faction_option.get_selected_metadata())
 	data["hp"] = float(hp_spin.value)
 	data["speed"] = float(speed_spin.value)
 	data["damage"] = float(damage_spin.value)

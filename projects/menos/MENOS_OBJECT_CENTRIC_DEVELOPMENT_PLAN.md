@@ -1114,3 +1114,472 @@ OUT OF SCOPE:
 
 NEXT CANDIDATE:
 - Enemy / Allied Unit / Tower의 공통 ObjectDefinition 소비 규칙과 Validator 기준의 일관성 READ-ONLY 조사.
+
+### Phase E 조사 갱신 — Enemy / Allied Unit / Tower 공통 ObjectDefinition 소비 규칙 및 Validator 일관성
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / DESIGN HOLD
+
+BASELINE:
+- HEAD: 735b42f01daefa0ef0ff8ad9810620b80fecb2b0
+- Branch: main
+- Working Tree: clean at investigation start
+- Godot: 4.7.2.stable.official.ed1daf0bf
+
+CONFIRMED:
+- ObjectDefinition은 id, name, combat, weapon_refs, skill_refs, visual_refs, specialized를 공통 기반으로 제공한다.
+- EnemyDefinition, AlliedUnitDefinition, TowerDefinition은 ObjectDefinition을 상속한다.
+- AlliedUnitDefinition / EnemyDefinition / TowerDefinition 모두 Catalog Dictionary를 전용 Definition으로 변환하는 from_catalog 경로를 가진다.
+- ObjectRepository는 Robot / Allied Unit / Enemy / Tower에 대해 동일한 Repository 진입점을 제공하며 Catalog 로드도 공통 ContentCatalogLoader를 사용한다.
+- GameController는 AlliedUnitDefinition / EnemyDefinition / TowerDefinition을 각각 Runtime State 생성 및 전투 처리에 소비한다.
+- AlliedUnitRuntimeState와 TowerRuntimeState는 Definition을 보유한다.
+- Enemy는 GameController의 enemy_definitions에서 EnemyDefinition을 소비한다.
+- 현재 Validator는 ENEMY / ALLIED_UNIT / TOWER / ROBOT Catalog를 공통 _validate_catalog() 함수로 검사하지만 타입별 required field 목록은 개별적으로 하드코딩한다.
+- Validator의 Visual Asset 참조 검사는 별도의 공통 _validate_catalog_visual_refs() 경로를 사용한다.
+- 현재 EnemyDefinition은 catalog의 attack/robot_attack/visual 값을 전용 Dictionary로 변환한다.
+- 현재 AlliedUnitDefinition은 combat/ai/visuals를 분리하고 WeaponDefinition을 생성한다.
+- 현재 TowerDefinition은 combat/upgrade/visuals를 분리하지만 현재 catalog에 존재하는 animations/default_image/projectile_frames/sprite_frames 일부는 Definition에서 직접 소비하지 않는다.
+- 현재 Allied Unit catalog에는 visuals.default_image / visuals.sprite / visuals.animations 구조가 존재하며, Tower catalog에는 animations/default_image/projectile_anim/sprite_anim 및 frame count 필드가 혼재한다.
+- 현재 Enemy catalog에는 sprite_anim 기반 legacy visual field와 enemy 전용 robot attack 값이 함께 존재한다.
+- Godot 4.7.2 headless editor project load는 exit code 0으로 확인했다.
+- git diff --check PASS.
+
+JUDGMENT:
+- 공통 ObjectDefinition + 전용 Definition + ObjectRepository 구조 자체는 현재 Master 승인 Composition Canon과 양립한다.
+- 현재 단계에서 Enemy / Allied Unit / Tower의 Definition을 하나의 거대한 공통 Definition으로 합칠 필요는 없다.
+- 반면 Visual Asset 소비 필드가 타입별로 완전히 동일한 계약을 사용하고 있지는 않으며, Validator도 Legacy/신규 필드가 혼재된 상태를 허용한다.
+- 특히 Tower의 animations/default_image와 기존 sprite_anim/projectile_anim, Allied Unit의 visuals 구조, Enemy의 sprite_anim 구조 사이에는 명시적인 공통 Visual Asset Contract가 아직 확정되지 않았다.
+- 이 상태에서 공통 Validator 또는 Definition 구조를 성급하게 통합하면 현재 Asset Migration과 충돌할 가능성이 있다.
+- 따라서 현재 목적에서는 구현 변경을 하지 않고 DESIGN HOLD가 타당하다.
+
+UNVERIFIED:
+- Tower / Enemy / Allied Unit의 최종 Visual Asset Schema를 하나로 통일할 Canon 요구.
+- 각 타입의 legacy visual field 제거 시점.
+- 현재 모든 Runtime Render 경로가 VisualAssetResolver를 통해 동일하게 소비되는지에 대한 PIE 검증.
+- Validator를 Definition 기반으로 전환할 경우 실제 migration 비용.
+
+OUT OF SCOPE:
+- Enemy / Allied Unit / Tower Definition 구조 개편
+- Legacy Visual field 일괄 제거
+- Validator 공통 Schema 재작성
+- SQLite Migration
+- PIE 검증
+
+NEXT CANDIDATE:
+- Visual Asset Contract의 Enemy / Allied Unit / Tower 실제 소비 경로 READ-ONLY 조사.
+
+
+### Phase E 조사 갱신 — Visual Asset Contract 실제 소비 경로
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / DESIGN HOLD
+
+조사 목적:
+- Enemy / Allied Unit / Tower가 현재 Runtime에서 Visual Asset을 실제로 어떻게 소비하는지 확인한다.
+
+기준선:
+- 기존 Working Tree 변경은 보존.
+- 코드/Asset 변경 없음.
+- 조사 범위는 VisualAssetResolver, Definition 변환, GameController Runtime 소비, 관련 Editor 경로.
+
+CONFIRMED:
+- VisualAssetResolver는 asset id를 VisualAssetRepository에서 조회하고, 조회 실패 시 legacy source를 VisualAssetDefinition으로 감싼다.
+- VisualAssetDefinition은 source, region, frames, columns, rows, frame_order, anchor, owner, usage, frame_regions를 공통으로 표현할 수 있다.
+- Allied Unit은 Catalog의 `visuals` Dictionary를 AlliedUnitDefinition.visuals로 그대로 전달한다. Runtime의 _load_allied_unit_catalog는 해당 visuals의 default_image를 우선, sprite를 fallback으로 _texture_from_catalog_entry에 전달한다.
+- Enemy는 EnemyDefinition.visuals에 `sprite_anim`을 별도 보관하지만 Runtime의 enemy_sprite_catalog 생성은 EnemyDefinition.visuals가 아니라 원본 enemy_catalog의 `sprite_anim`을 직접 읽는다.
+- Tower도 TowerDefinition.visuals에 `sprite_anim`과 `projectile_anim`을 보관하지만 Runtime의 tower_sprite_catalog 생성은 TowerDefinition이 아니라 원본 tower_catalog의 `sprite_anim`을 직접 읽는다.
+- Robot은 별도 경로에서 Animation 값 → VisualAssetResolver → frame region으로 연결되는 소비 경로가 이미 비교적 직접적으로 구현되어 있다.
+- Enemy / Tower의 Runtime Texture 생성은 공통 `_texture_from_catalog_entry`를 사용하고 내부에서 VisualAssetResolver를 호출하므로 Resolver 자체는 사용한다. 그러나 Definition → Runtime의 단일 계약으로 통일되어 있지는 않다.
+- Unit Editor는 Enemy를 Unit 목록에 합쳐 보여주기 위해 Enemy의 `sprite_anim`을 `visuals.sprite`와 `visuals.default_image`로 임시 매핑한다. 이는 Editor 호환 계층이며 Enemy Catalog 원본 스키마 자체가 변경된 것은 아니다.
+- ContentValidator는 Enemy/Tower에 여전히 `sprite_anim`을 required field로 요구하고 있으며, Visual reference validation도 Enemy/Tower의 legacy field를 기준으로 수행한다.
+
+INFERENCE:
+- 현재 시스템은 VisualAssetResolver를 공통 인프라로 사용하지만, ObjectDefinition을 통한 공통 Visual Asset Contract는 아직 완성되지 않았다.
+- Allied Unit은 신형 `visuals` 구조에 가장 가깝고, Enemy/Tower는 legacy top-level visual field를 유지한 채 Resolver를 중간에서 사용하는 과도기 구조로 판단된다.
+- 따라서 지금 단계에서 세 타입의 Catalog Schema를 강제로 하나로 합치는 것은 Asset Migration 작업과 충돌할 가능성이 높다.
+
+마리의 판정:
+- ObjectDefinition 구조를 변경하지 않는다.
+- VisualAssetResolver / VisualAssetDefinition도 현재 목적상 재작성하지 않는다.
+- 다음 실제 개발 후보는 Enemy/Tower의 legacy visual field를 제거하는 것이 아니라, 먼저 Editor와 Runtime에서 Definition.visuals를 단일 소비 경로로 사용할 수 있는지 검증하는 것이다.
+- 이는 Schema Canon을 새로 결정하는 변경이므로 Master 승인 없이 구현하지 않는다.
+
+UNVERIFIED:
+- 실제 PIE에서 Enemy / Allied Unit / Tower 각각의 Sprite Sheet frame 및 anchor가 의도대로 표시되는지.
+- Enemy/Tower의 Definition.visuals로 전환했을 때 기존 Runtime 동작을 완전히 보존할 수 있는지.
+- 최종 Catalog Visual Asset Contract의 Canon.
+
+OUT OF SCOPE:
+- Catalog Schema 강제 통합
+- legacy field 삭제
+- Definition 구조 변경
+- Validator 재작성
+- PIE 검증
+
+NEXT CANDIDATE:
+- Master가 Visual Asset Contract의 통일 방향을 승인하면 최소 1개 타입(Enemy 또는 Tower)을 기준으로 Definition.visuals → Runtime 단일 소비 PoC를 수행한다.
+
+### Phase E 조사 갱신 — Faction과 Alignment 분리 및 Object 진영 소비 경로
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / DESIGN HOLD
+
+조사 목적:
+- Robot / Unit / Tower / Enemy 모두가 Faction에 소속될 수 있다는 기준을 확인하고, Faction과 적/동맹 Alignment가 기존 코드에서 분리되어 있는지 확인한다.
+
+CONFIRMED:
+- ObjectDefinition 현재 공통 필드는 id, name, combat, weapon_refs, skill_refs, visual_refs, specialized이며 faction 필드는 없다.
+- AlliedUnitDefinition, TowerDefinition, RobotDefinition, EnemyDefinition 모두 현재 Catalog에서 명시적인 faction 필드를 읽지 않는다.
+- Robot에는 color와 team_color Shader 적용 및 Asura용 team_mask 경로가 존재한다. 이는 현재 시각적 팀 표현 경로이지, 공통 Faction 식별자 계약으로 확인되지는 않았다.
+- Allied Unit도 Runtime에서 ALLIED_UNIT_COLOR_SHADER에 team_color를 전달하는 경로가 존재한다. 현재 Catalog에는 명시적인 Faction 식별자가 없다.
+- Map Editor에는 multiplayer의 alliances와 relations 데이터 구조가 존재하며 enemy, third 등의 전투 관계/세력 구성이 표현된다. 이것은 Object Catalog의 Faction 필드와는 별도 계층이다.
+- alignment라는 명시적 Object Definition 필드는 확인되지 않았다.
+- Enemy Catalog은 legacy 구조이며 현재 sprite_anim 중심이다. Enemy를 Faction 구조의 기준 구현으로 삼지 않는다.
+- Tower Catalog에는 현재 sprite_anim이 있지만 Faction 정보는 없다.
+- Robot Catalog에도 현재 Faction 정보는 없으며 Visual은 Animation/Color/Team Mask 경로로 구성되어 있다.
+
+INFERENCE:
+- 현재 team_color는 Faction 자체라기보다 Faction에 의해 결정될 수 있는 시각 표현 수단으로 보는 것이 안전하다.
+- Faction은 적/동맹(Alignment)과 동일 개념으로 취급하면 안 된다.
+- 최종 구조에서는 Robot / Unit / Tower / Enemy 모두 Object의 소속 정보로 Faction을 가질 수 있고, Alignment는 전투 관계로 별도 취급해야 한다.
+- Visual Asset 선택/적용은 Object의 Faction을 입력으로 사용할 수 있어야 하며, Faction과 Visual Asset의 관계를 Runtime의 단순 색상 Shader로 한정해서는 안 된다.
+
+마리의 판정:
+- 현재 코드에는 공통 Faction Contract가 아직 없다.
+- Allied Unit이 신형 Visual 구조의 기준이라는 기존 판단은 유지한다.
+- Robot / Unit / Tower / Enemy 모두 Faction을 가질 수 있다는 기준으로 Visual Asset Contract를 설계해야 한다.
+- team_color, team_mask, alliances, relations를 곧바로 Faction Canon으로 승격하지 않는다.
+- Faction 필드명, 저장 위치, Faction→Visual Asset 선택 규칙은 Master 승인 전까지 DESIGN HOLD로 둔다.
+
+UNVERIFIED:
+- 프로젝트에서 최종적으로 사용할 Faction 식별자와 Catalog 저장 위치.
+- 하나의 Object가 여러 Faction Visual을 가질 경우의 선택 규칙.
+- Faction과 Map의 alliances/relations가 Runtime에서 어떤 방식으로 연결되어야 하는지.
+
+OUT OF SCOPE:
+- Faction Schema 구현
+- Alignment 시스템 구현
+- 기존 Catalog 일괄 migration
+- Visual Asset Resolver 재작성
+- PIE 검증
+
+NEXT CANDIDATE:
+- Faction의 데이터 소유 위치와 Visual Asset 선택 관계에 대한 최소 설계안을 작성하고 Master 승인 여부를 확인한다.
+
+
+### Phase E 설계 갱신 — Faction 독립 관리와 Object 소속 관리
+STATUS: PROPOSAL / DESIGN HOLD
+
+설계 목적:
+- Faction을 Robot / Unit / Tower 등의 단순 속성값이 아니라 독립적으로 관리되는 프로젝트 데이터로 정의한다.
+- Faction 자체의 관리와 Object의 Faction 소속 관리를 분리한다.
+- 적/동맹은 Faction의 속성이 아니라 플레이 중 형성되는 관계(Alignment)로 분리한다.
+
+PROPOSAL:
+- Faction은 독립 Catalog/Definition 대상이 된다.
+- Faction 자체를 생성·수정·삭제·조회할 수 있는 Faction Editor가 필요하다.
+- Robot / Unit / Tower는 각 Object Editor에서 자신이 소속될 Faction을 선택·관리한다.
+- Object는 Faction의 정의 정보를 중복 저장하지 않고 Faction 식별자를 통해 소속을 참조한다.
+- Faction 자체의 데이터와 Faction에 소속된 Object 목록은 서로 다른 관리 관점으로 취급한다.
+- Enemy 역시 구조적으로 Faction에 소속될 수 있으나, 기존 Enemy legacy 구조를 이 설계의 선행 구현 기준으로 삼지 않는다.
+- Alignment(적/동맹/중립 등)는 Object 또는 Faction의 고정 소속 정보가 아니라 플레이 시점의 관계 데이터로 별도 관리한다.
+- 따라서 Faction Editor는 '진영 자체 관리'를 담당하고, Object Editor는 '진영 소속 관리'를 담당한다.
+
+EDITOR STRUCTURE:
+- Faction Editor: Faction 정의와 Faction 자체의 관리
+- Robot Editor: Robot의 Faction 소속 선택/표시
+- Unit Editor: Unit의 Faction 소속 선택/표시
+- Tower Editor: Tower의 Faction 소속 선택/표시
+- Enemy Editor: 향후 Faction 소속 지원 대상이 될 수 있으나 기존 legacy 구조와의 충돌 여부를 먼저 확인한다.
+
+INFERENCE:
+- Faction Editor와 기존 Catalog Editor의 공통 UI/Repository 패턴을 재사용할 가능성이 높다.
+- Faction Editor가 관리하는 데이터와 Object Editor가 참조하는 소속 데이터는 동일 Catalog를 공유하되, 편집 책임은 분리하는 구조가 적절하다.
+
+마리의 판정:
+- Faction을 독립 관리 대상으로 개발계획에 반영한다.
+- Faction Editor를 별도 개발 대상으로 명시한다.
+- Object Editor의 Faction 선택 기능을 별도 작업 대상으로 명시한다.
+- Alignment는 Faction Editor에 포함시키지 않고 플레이 관계 계층으로 분리한다.
+- 아직 Faction Schema, 저장 경로, 구체 필드명, Editor 구현 방식은 Canon으로 확정하지 않는다.
+
+UNVERIFIED:
+- 최종 Faction Catalog 저장 위치와 Schema
+- Faction Editor의 기존 Editor Framework 재사용 범위
+- Object별 Faction 참조 필드명
+- Runtime에서 Faction 관계를 Alignment로 변환/조회하는 구체 경로
+
+OUT OF SCOPE:
+- Faction Editor 구현
+- Object Editor의 Faction 필드 구현
+- Alignment Runtime 구현
+- 기존 Catalog migration
+- Visual Asset Resolver 변경
+- PIE 검증
+
+NEXT CANDIDATE:
+- 기존 Editor/Catalog 구조를 조사하여 Faction Editor를 추가할 최소 구현 위치와 공통 컴포넌트 재사용 범위를 결정한다. Master 승인 전에는 구현하지 않는다.
+
+
+### Phase E 정정 — Content Editor 연결
+- Faction Editor는 독립 상위 시스템이 아니라 기존 Content Editor의 하위 콘텐츠 편집기로 연결한다.
+- Content Editor가 Faction Catalog의 상위 관리 진입점이 된다.
+- Faction Editor는 진영 자체를 관리한다.
+- Robot / Unit / Tower / Enemy Editor는 Content Editor가 관리하는 Faction Catalog를 참조하여 Object의 소속을 관리한다.
+- Object Editor에 Faction 데이터를 별도로 복제하지 않는다.
+- 따라서 향후 Faction Editor 구현은 기존 Content Editor의 Editor 등록/탭/선택 구조를 우선 조사하고 그 체계 안에서 구현한다.
+
+
+### Phase E 정정 — Content Editor 상단 메뉴 연결
+- Faction Editor는 Content Editor의 상단 메뉴에 정식 콘텐츠 항목으로 노출한다.
+- Content Editor 상단 메뉴의 Faction 항목을 선택하면 Faction Editor로 진입한다.
+- Faction은 기존 Robot / Unit / Tower / Enemy와 동일한 Content Editor 메뉴 계층에서 관리한다.
+- Faction Editor는 진영 자체를 관리하고, 각 Object Editor는 Faction 메뉴에서 관리되는 Catalog를 참조하여 소속을 관리한다.
+- 실제 메뉴 등록 위치와 UI 구현 방식은 기존 Content Editor 구조 조사 후 결정한다.
+
+
+### Phase E 조사 갱신 — Content Editor Faction 메뉴 연결 지점
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / IMPLEMENTATION HOLD
+
+조사 범위:
+- 현재 Content Editor의 상단 메뉴 구성과 Editor Scene 전환 구조를 확인했다.
+
+CONFIRMED:
+- Content Editor의 상단 메뉴는 editor/content_editor.tscn의 MainLayout/TopMenu/Buttons 아래 Button 노드들로 구성되어 있다.
+- 현재 상단 메뉴에는 맵, 스테이지, 로봇, 유닛, 타워, 카다로그, 종료 버튼이 존재한다.
+- Content Editor의 content_editor.gd가 각 상단 버튼의 pressed signal을 연결하고 Editor Scene을 교체하는 중앙 진입점 역할을 한다.
+- Robot / Unit / Tower는 각각 별도 Scene 경로 상수와 열기 함수가 이미 존재한다.
+- Faction은 현재 메뉴와 Scene 경로에 존재하지 않는다.
+- 현재 Content Editor 상단 메뉴에는 별도의 Enemy Editor 버튼이 없다. Enemy는 기존 구조상 Unit Editor 및 기타 legacy 경로와 연관되어 있으므로 이번 Faction 메뉴 추가의 직접 대상에서 분리한다.
+
+INFERENCE:
+- Faction Editor는 현재 Content Editor의 상단 메뉴 Button을 하나 추가하고, content_editor.gd에 Faction Scene 경로와 열기 함수를 연결하는 방식이 기존 구조와 가장 직접적으로 일치한다.
+- 별도 최상위 Editor 런처를 만들 필요가 없다.
+- Faction Editor는 기존 Content Editor의 content_host에 다른 Editor와 동일한 방식으로 인스턴스화하는 것이 적절하다.
+
+마리의 판정:
+- Faction의 UI 진입점은 Content Editor 상단 메뉴로 확정 가능한 수준의 근거를 확보했다.
+- 구현 위치는 content_editor.tscn + content_editor.gd가 최소 변경 지점이다.
+- 아직 Faction Editor Scene 자체와 Faction Catalog Schema가 없으므로 메뉴만 먼저 구현하는 것은 기능 완성으로 간주하지 않는다.
+- Faction Editor의 실제 구현은 Faction Catalog/Definition 설계가 확정된 후 진행한다.
+
+UNVERIFIED:
+- Faction Editor의 최종 Scene 이름과 Catalog 저장 경로
+- Faction Editor가 재사용할 기존 Catalog Editor UI 컴포넌트 범위
+- Faction Object 목록을 Faction Editor에서 어떤 형태로 표시할지
+
+OUT OF SCOPE:
+- Content Editor 메뉴 실제 수정
+- Faction Editor Scene 생성
+- Faction Catalog 구현
+- Object Editor Faction 필드 구현
+- Alignment Runtime 구현
+- PIE 검증
+
+NEXT CANDIDATE:
+- 기존 Catalog Editor의 목록/상세/등록/삭제 패턴을 조사하여 Faction Editor의 최소 화면과 Object 소속 목록 표시 방식을 결정한다.
+
+
+### Phase E 조사 갱신 — Faction Editor 최소 UI 설계
+STATUS: PASS / DESIGN PROPOSAL / IMPLEMENTATION HOLD
+
+CONFIRMED:
+- 기존 Asset Catalog Editor는 목록, 검색, 선택, 상세 편집, 추가/수정/삭제, 저장의 공통 Editor 패턴을 제공한다.
+- 목록에는 ID, 이름/이미지, 사용 여부를 표시하는 구조가 이미 존재한다.
+- Visual Asset은 별도 Repository를 연동하면서 Catalog UI 패턴을 사용한다.
+
+PROPOSAL:
+- Faction Editor는 Asset Catalog Editor를 그대로 복제하지 않고 기존 Catalog Editor의 목록/상세/저장 패턴만 재사용한다.
+- 최소 화면은 다음으로 구성한다.
+  1. Faction 목록: ID / 이름 / 사용 여부
+  2. Faction 상세: ID / 이름 / 설명 및 확정된 Faction 메타데이터
+  3. 작업 버튼: 추가 / 수정 / 삭제 / 저장
+- Faction 선택 후 Object 소속 현황을 표시하는 영역은 향후 faction_id 계약이 확정되면 추가한다.
+
+UNVERIFIED:
+- Faction의 최종 Schema와 필드
+- Faction Catalog 저장 경로
+- Faction 대표 이미지/색상 등의 메타데이터 필요 여부
+- Object별 Faction 소속 현황 표시 방식
+
+판정:
+- 현재 단계에서 Faction Editor의 UI 구현을 시작하지 않는다.
+- 다음 설계 단계는 기존 Object Catalog의 데이터 저장 패턴을 조사하여 FactionDefinition / FactionRepository / Faction Catalog의 최소 계약을 확정하는 것이다.
+
+### Phase E 설계 갱신 — Faction 최소 데이터 계약
+STATUS: PASS / DESIGN PROPOSAL / IMPLEMENTATION HOLD
+
+조사 결과:
+- 현재 ObjectRepository는 Object 종류별 JSON Catalog를 별도 경로로 관리하고 ContentCatalogLoader로 Dictionary Catalog를 읽는다.
+- 각 Object Definition은 별도 클래스로 변환된다. 공통 ObjectDefinition을 사용하되 Robot/Unit/Tower/Enemy의 전문 데이터는 각각 분리되어 있다.
+- ObjectPersistence는 Dictionary Catalog를 JSON으로 저장하고 저장 직후 파일 내용을 재검증한다.
+- 따라서 Faction도 기존 Object Catalog에 억지로 포함시키기보다 독립 Catalog + 독립 Definition + 독립 Repository를 두는 것이 현재 구조와 일치한다.
+
+PROPOSAL — 최소 Faction 계약:
+- Catalog 경로 후보: res://content/factions/factions.json
+- Catalog 형태: 최상위 Dictionary, key는 faction_id, value는 Faction 데이터 Dictionary
+- 최소 필드 후보: id: String, name: String
+- FactionDefinition은 ObjectDefinition을 상속하지 않는 독립 RefCounted Definition을 우선 제안한다. Faction은 Robot/Unit/Tower/Enemy 같은 Object가 아니기 때문이다.
+- FactionRepository는 load/reload, get_faction(faction_id), list_factions(), exists(faction_id)를 제공하는 구조를 제안한다.
+- Faction Catalog 저장은 ObjectPersistence.save_catalog()를 재사용한다.
+
+설계 원칙:
+- Faction은 Object Catalog의 한 종류가 아니다.
+- Object의 faction_id는 Faction Catalog의 ID를 참조하는 관계 데이터로 취급한다.
+- Alignment는 Faction Definition의 필드로 넣지 않는다. Faction 간 전투 관계는 별도 개념으로 유지한다.
+- team_color / team_mask / map alliances / relations를 Faction 필드로 승격하지 않는다.
+
+UNVERIFIED:
+- name 외에 description, display_name, color, icon 등의 Faction 메타데이터가 실제 필요할지
+- Faction ID의 최종 naming convention
+- faction_id를 어떤 Object Catalog부터 적용할지
+
+판정:
+- Faction의 최소 기술 계약은 독립 Catalog + Definition + Repository로 잡을 수 있다.
+- Master 승인 없이 코드/Asset 생성은 하지 않는다.
+- 다음 단계에서는 현재 Object Editor들이 Catalog를 읽고 저장하는 실제 패턴을 조사하여 faction_id를 연결할 최소 변경 지점을 확인한다.
+
+
+### Phase E 실행 — Robot Faction 1차 연결
+STATUS: PASS / CODE VERIFIED / BUILD-LIKE SCRIPT LOAD VERIFIED
+
+Master가 1차 적용 대상으로 Robot을 지정함.
+
+실제 변경:
+- `godot/scripts/faction_definition.gd` 추가 — 최소 `id`, `name` Definition
+- `godot/scripts/faction_repository.gd` 추가 — 독립 Faction Catalog 로드 및 조회
+- `godot/content/factions/factions.json` 추가 — 현재 빈 Catalog `{}`
+- `godot/editor/robot_editor.gd` — Faction 선택 UI, 로드/저장 연결, 신규 Robot 기본 빈 faction_id
+- `godot/scripts/robot_definition.gd` — faction_id 전달
+
+검증:
+- 최초 Headless Editor 로드에서 FactionRepository의 `load()` 이름 충돌을 확인하고 `load_catalog()`로 수정함.
+- 수정 후 Headless Editor 로드에서 FactionDefinition / FactionRepository / RobotDefinition / RobotEditor 등록 완료.
+- 최종 Headless Editor 로드에서 추가 Parse Error는 확인되지 않음.
+- `git diff --check`는 기존 계획 문서의 CRLF 경고 외 오류 없음.
+
+LIMITATION / UNVERIFIED:
+- factions.json이 비어 있어 실제 Faction 선택값을 Robot에 지정하는 데이터 검증은 아직 불가.
+- Robot Editor 실제 화면 조작은 아직 수행하지 않음.
+- PIE VERIFIED 아님.
+- Faction Editor는 아직 구현하지 않음.
+
+판정:
+- Robot이 독립 Faction Catalog를 참조할 최소 코드 경로는 성립했다.
+- 임의 Faction을 생성하지 않아 Canon을 추가하지 않았다.
+- 다음 단계는 자동 진행하지 않는다.
+
+
+### Gameplay Scope Lock — 2026-10-05
+Master 결정에 따라 MENOS의 Gameplay는 다음 3개만 대상으로 한다.
+1. Tower Defense
+2. LoL 스타일 섬멸전
+3. 거대 보스전
+
+운영 원칙:
+- Faction은 세 Gameplay 모두에서 Object의 소속/정체성을 표현한다.
+- Faction과 Alignment는 분리한다.
+- 위 3개와 직접 관계없는 Gameplay Mode/Rule은 현재 범위에서 추가하지 않는다.
+- 이 결정은 Gameplay Scope이며 기존 Object/Faction Canon을 임의로 변경하지 않는다.
+
+
+### Gameplay Scope 기반 조사 — Tower / Skill / Weapon
+STATUS: READ-ONLY INVESTIGATION COMPLETE / NO CODE CHANGE
+
+BASELINE:
+- HEAD: 735b42f01daefa0ef0ff8ad9810620b80fecb2b0
+- Branch: main
+- Working Tree: 기존 변경사항 유지 상태에서 조사
+- git diff --check: 기존 plan 문서의 LF→CRLF warning 외 오류 없음
+
+CONFIRMED — Tower:
+- TowerDefinition이 ObjectDefinition을 상속하며 combat / upgrade / visuals를 별도 보유한다.
+- TowerRepository 역할은 현재 ObjectRepository 내부의 tower catalog 경로로 수행된다.
+- TowerRuntimeState가 TowerDefinition을 참조하고 effective_combat을 생성한다.
+- TowerRuntimeState.get_weapon_definition()이 현재 Tower의 combat 값을 WeaponDefinition으로 변환한다.
+- GameController.update_towers()가 TowerRuntimeState의 WeaponDefinition으로 자동 타깃/공격을 수행한다.
+- Tower 배치/업그레이드 Runtime 경로가 GameController에 존재한다.
+
+CONFIRMED — Skill:
+- 독립 Skill Catalog `content/skills/skills.json`과 SkillDefinitionLoader가 존재한다.
+- 현재 Skill Definition은 별도 RefCounted Definition 객체가 아니라 Dictionary로 직접 소비된다.
+- GameController가 Skill Catalog를 로드하고 base_special / finisher / 성장 Skill을 직접 참조한다.
+- Robot Skill 실행, 성장 선택, Finisher 실행이 GameController에 직접 구현되어 있다.
+
+CONFIRMED — Weapon:
+- WeaponDefinition은 독립 RefCounted Definition으로 존재한다.
+- Robot / Enemy / Allied Unit / Tower Runtime이 각각 자신의 데이터에서 WeaponDefinition을 생성한다.
+- 현재 Weapon은 독립 Catalog보다 Actor/Runtime 데이터에서 파생되는 구조다.
+
+IMPORTANT FINDING:
+- Tower Defense에 필요한 최소 Tower Runtime 기반은 이미 존재한다. 현재 즉시 Building 공통 모델이나 별도 Weapon Editor를 추가해야 할 근거는 없다.
+- Skill은 Catalog는 독립되어 있으나 Definition 객체화 없이 GameController가 Dictionary를 직접 소비한다. 이는 향후 Skill 확장 시 조사 대상이지만 현재 3 Gameplay Scope를 충족시키는 데 즉시 결함으로 판정하지 않는다.
+- 현재 Tower Catalog의 실제 항목은 `rail`이며 GameController의 일부 시각/표현 경로에는 `cannon` / `gatling` 고정 분기가 남아 있다. 이것은 현재 조사에서 확인된 구조적 불일치 가능성이며, 실제 Runtime 영향은 아직 검증하지 않았다.
+
+JUDGMENT:
+- Tower Defense 핵심 기반은 이미 존재한다.
+- LoL 스타일 섬멸전은 Robot/Unit/Enemy + Weapon/Skill Runtime 기반을 활용할 수 있다.
+- 거대 보스전은 기존 GIANT Runtime 기반이 있으나 Boss 공통화는 별도 Canon/콘텐츠 요구가 있을 때 판단한다.
+- 다음 구현은 새 공통 시스템을 만드는 것보다 현재 3 Gameplay에서 실제로 막히는 Runtime/Editor 연결을 하나씩 확인하는 방식이 적절하다.
+
+VERIFICATION:
+- CODE VERIFIED — 위 구조 직접 확인
+- BUILD VERIFIED — 이번 조사에서는 수행하지 않음
+- EDITOR VERIFIED — 이번 조사에서는 수행하지 않음
+- PIE VERIFIED — 미수행
+
+OUT OF SCOPE:
+- Building 공통 Definition 신규 구현
+- SkillDefinition 신규 구현
+- Weapon Editor 신규 구현
+- Tower Catalog 일괄 수정
+- Gameplay Mode 추가
+
+
+### Gameplay Mode 구조 점검 — 2026-10-05
+STATUS: HOLD / DESIGN-CANON 필요
+
+CONFIRMED:
+- 현재 StageManager의 runtime mode는 기본값 `campaign`이며 `begin_run(mode, stage_id)`로 문자열을 전달한다.
+- GameController는 `campaign` / `single`을 여러 경로에서 특별 취급한다.
+- `map_01.json`의 `play_modes`에는 현재 `campaign`, `single`, `multiplayer`가 기록되어 있다.
+- MissionDefinition의 `primary_type`은 현재 `clear_encounters` 중심이며, 코드에는 `defend_base` 판정이 존재한다.
+- Giant Boss Runtime은 `enemy.type == "giant"` 조건으로 별도 공격 패턴을 실행한다.
+
+판정:
+- Master가 Gameplay를 3개(Tower Defense / LoL 스타일 섬멸전 / 거대 보스전)로 고정했으므로, 현재 `campaign / single / multiplayer`라는 기존 mode 명칭을 그대로 새 Gameplay Canon으로 승격하면 안 된다.
+- `multiplayer`는 현재 Master가 확정한 3 Gameplay 중 하나가 아니므로 Gameplay Mode Canon으로 사용하지 않는다.
+- 기존 코드의 campaign/single은 Legacy/현재 Runtime 진입 방식일 가능성이 있으나, 실제 대체 명칭과 stage 진입 구조는 아직 결정되지 않았다.
+
+HOLD 사유:
+- 3 Gameplay를 기존 Stage/Run 구조에 어떤 식으로 매핑할지 Master의 Canon 결정이 필요하다.
+- 특히 `Tower Defense`, `Elimination`, `Giant Boss Battle`을 run_mode 문자열로 직접 만들지, Stage가 gameplay_type을 가지게 할지 아직 결정하지 않았다.
+
+OUT OF SCOPE:
+- 기존 mode 문자열 임의 변경
+- multiplayer 제거/구현
+- Stage Catalog 구조 개편
+- Gameplay Mode Editor 구현
+
+
+## Mission 구조 조사 — 2026-10-05
+
+STATUS — 조사 완료 / 다음 설계 판단 대기
+
+- Master가 확정한 세 가지는 Gameplay Mode가 아니라 Mission의 종류다.
+  - Tower Defense
+  - Elimination
+  - Giant Boss Battle
+- 현재 구조는 Stage가 `mission_id`로 Mission을 참조한다: Stage → Mission → Runtime.
+- `MissionDefinition.primary_type`이 현재 Mission 종류를 표현하는 필드다.
+- 현재 구현된 Mission type은 `defend_base`, `clear_encounters` 두 가지뿐이다.
+- Stage Editor와 Validator도 위 두 값을 하드코딩하고 있다.
+- Runtime에서 `defend_base`는 실제 제한시간 방어 판정까지 연결되어 있다. `clear_encounters`는 Encounter/Wave 전체 종료를 기본 클리어 조건으로 사용한다.
+- Giant Boss Runtime은 별도로 존재하지만 현재 Mission type과 직접 연결된 구조라는 증거는 확인하지 못했다.
+- Elimination에 해당하는 독립 Mission type 및 전용 승리 조건은 현재 확인되지 않았다.
+
+판정:
+- Mission을 현재 세 Gameplay 종류로 재정의하는 방향은 기존 Stage → Mission 구조와 자연스럽게 맞는다.
+- 다만 기존 `defend_base` / `clear_encounters`를 즉시 삭제하거나 새 문자열로 일괄 치환하면 Runtime 호환성 변경이 발생한다.
+- 다음 구현 전에 각 Mission type의 최소 판정 조건을 Master Canon으로 확정해야 한다.
+- 특히 Giant Boss Battle의 승리 조건과 Elimination의 승리/패배 조건은 현재 코드에서 독립적인 Mission 계약으로 확인되지 않았다.
+
+검증 상태:
+- CODE VERIFIED — MissionDefinition / Stage Editor / Validator / GameController 경로 직접 확인.
+- BUILD VERIFIED — 이번 조사에서는 수행하지 않음.
+- EDITOR VERIFIED — 실제 UI 조작은 수행하지 않음.
+- PIE VERIFIED — 수행하지 않음.

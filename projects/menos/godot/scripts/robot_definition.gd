@@ -6,6 +6,7 @@ var base_stats: Dictionary = {}
 var progression: Dictionary = {}
 var energy: Dictionary = {}
 var visuals: Dictionary = {}
+var faction_id: String = ""
 var color: Color = Color.WHITE
 
 func get_visual_asset(value: String) -> VisualAssetDefinition:
@@ -15,6 +16,7 @@ static func from_catalog(data: Dictionary) -> RobotDefinition:
 	var definition := RobotDefinition.new()
 	definition.id = str(data.get("id", ""))
 	definition.name = str(data.get("name", ""))
+	definition.faction_id = str(data.get("faction_id", ""))
 	definition.base_stats = {
 		"hp": float(data.get("hp", 0.0)),
 		"speed": float(data.get("speed", 0.0)),
