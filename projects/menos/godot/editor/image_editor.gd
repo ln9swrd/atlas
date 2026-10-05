@@ -25,6 +25,8 @@ var target_dialog: FileDialog
 var source_thumbnail_cache: Dictionary = {}
 var target_thumbnail_cache: Dictionary = {}
 var editing := false
+var background_color_button: ColorPickerButton
+var background_tolerance_spin: SpinBox
 var usage_label: Label
 var filter_option: OptionButton
 var search_edit: LineEdit
@@ -336,6 +338,29 @@ func _build_ui() -> void:
 	_add_button(tools, "Rotate Counterclockwise", _rotate_ccw)
 	_add_button(tools, "Trim Transparent Pixels", _trim_alpha)
 	_add_button(tools, "Save + Reconnect", _save_reconnect)
+	var bg_row := HBoxContainer.new()
+	right.add_child(bg_row)
+	var bg_label := Label.new()
+	bg_label.text = "Background"
+	bg_row.add_child(bg_label)
+	background_color_button = ColorPickerButton.new()
+	background_color_button.color = Color.WHITE
+	background_color_button.tooltip_text = "투명 처리할 배경색"
+	bg_row.add_child(background_color_button)
+	var bg_tolerance_label := Label.new()
+	bg_tolerance_label.text = "Tolerance"
+	bg_row.add_child(bg_tolerance_label)
+	background_tolerance_spin = SpinBox.new()
+	background_tolerance_spin.min_value = 0.0
+	background_tolerance_spin.max_value = 1.0
+	background_tolerance_spin.step = 0.01
+	background_tolerance_spin.value = 0.08
+	background_tolerance_spin.custom_minimum_size.x = 90
+	bg_row.add_child(background_tolerance_spin)
+	var bg_apply := Button.new()
+	bg_apply.text = "Remove Background Color"
+	bg_apply.pressed.connect(_remove_background_color)
+	bg_row.add_child(bg_apply)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
 	var resize_label := Label.new()
@@ -1847,6 +1872,28 @@ func _rotate_ccw() -> void:
 	if editing: _finish_erase()
 	current_image.rotate_90(COUNTERCLOCKWISE)
 	_refresh_view()
+
+func _remove_background_color() -> void:
+	if not _require_image(): return
+	if editing: _finish_erase()
+	var target := background_color_button.color
+	var tolerance := float(background_tolerance_spin.value)
+	var tolerance_sq := tolerance * tolerance
+	var w := current_image.get_width()
+	var h := current_image.get_height()
+	var changed := 0
+	for y in range(h):
+		for x in range(w):
+			var pixel := current_image.get_pixel(x, y)
+			if pixel.a <= 0.0: continue
+			var dr := pixel.r - target.r
+			var dg := pixel.g - target.g
+			var db := pixel.b - target.b
+			if dr * dr + dg * dg + db * db <= tolerance_sq:
+				current_image.set_pixel(x, y, Color(pixel.r, pixel.g, pixel.b, 0.0))
+				changed += 1
+	_refresh_view()
+	status.text = "Background removed: %d pixels (tolerance %.2f)" % [changed, tolerance]
 
 func _trim_alpha() -> void:
 	if not _require_image(): return

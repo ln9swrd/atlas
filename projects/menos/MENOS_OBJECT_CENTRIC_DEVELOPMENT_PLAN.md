@@ -900,3 +900,82 @@ OUT OF SCOPE:
 - Boss Editor 생성
 - GIANT Runtime 리팩터링
 - Boss Phase/Weak Point/Enrage/Summon 설계
+
+### Phase A 계획 추가 — 생성 이미지 배경색 → 투명 처리
+STATUS: PLANNED / IMPLEMENTATION NOT STARTED
+
+PURPOSE:
+- Gemini 등 외부 이미지 생성 도구가 투명 배경 대신 단색/체크무늬 등의 배경을 포함해 생성한 이미지를 MENOS Image Editor에서 직접 정리할 수 있게 한다.
+
+REQUIREMENTS:
+- 이미지에서 기준 배경색을 픽셀 선택 또는 색상 선택으로 지정한다.
+- 선택 색상과의 Tolerance를 조절할 수 있게 한다.
+- 기준 색상 및 허용 범위에 해당하는 픽셀을 Alpha 0으로 변환한다.
+- 연결된 배경 영역만 제거하는 방식과 이미지 전체의 유사 색상 제거 방식의 필요성을 검토한다.
+- 안티앨리어싱 경계의 유사 색상을 고려한다.
+- 처리 전/후 Preview를 제공한다.
+- 원본 복구 또는 Undo 경로를 제공한다.
+- 일반 이미지뿐 아니라 Sprite Sheet/Frame Asset에도 적용한다.
+- 결과가 기존 Visual Asset 및 Runtime Asset 경로와 호환되어야 한다.
+
+MINIMUM ACCEPTANCE:
+1. 단색 배경이 포함된 생성 이미지를 Image Editor에서 연다.
+2. 배경색을 선택한다.
+3. Tolerance를 조절한다.
+4. 배경이 투명으로 변하고 캐릭터 본체가 유지되는 것을 Preview에서 확인한다.
+5. 결과를 저장하고 기존 Visual Asset 경로에서 정상적으로 사용할 수 있다.
+
+IMPLEMENTATION ORDER:
+1. Image Editor의 현재 이미지 로드/저장 경로 READ-ONLY 확인
+2. 픽셀 접근 및 Image API 확인
+3. 최소 배경 제거 알고리즘 PoC
+4. 색상 선택 / Tolerance / Preview 연결
+5. Undo/원본 복구 및 안전한 저장 연결
+6. Sprite Sheet/Frame 적용 검증
+7. Content Validator 및 Runtime Asset 호환성 검증
+
+SAFETY:
+- 기존 Asset을 임의로 덮어쓰지 않는다.
+- 원본과 처리 결과의 저장 경로를 먼저 확정한다.
+- 실제 Asset 변환은 Master 승인 후 수행한다.
+- 코드 변경 후 Diff 및 최소 검증을 수행한다.
+
+OUT OF SCOPE:
+- AI 기반 자동 배경 제거
+- 의미론적 객체 분리
+- 그림자/반사광 자동 판별
+- 외부 이미지 생성 서비스 연동
+- 기존 Asset 일괄 변환
+
+### Phase A 진행 갱신 — Image Editor 배경색 투명화 최소 구현
+STATUS: PASS / MINIMUM IMPLEMENTATION COMPLETE / RUNTIME UI PENDING
+
+CONFIRMED:
+- Image Editor의 기존 current_image는 Godot Image 객체이며 get_pixel()/set_pixel() 기반의 직접 Pixel 수정이 가능하다.
+- 기존 Save + Reconnect 경로가 편집 결과를 PNG로 저장하고 기존 Asset 참조를 재연결할 수 있다.
+- Image Editor에 Background Color 선택기, Tolerance 입력, Remove Background Color 동작을 추가했다.
+- 현재 알고리즘은 이미지 전체에서 선택 색상과 RGB 거리 기준으로 Tolerance 이내의 불투명 픽셀을 Alpha 0으로 변환한다.
+- 처리 결과는 즉시 Preview에 반영되며 저장은 기존 Save + Reconnect를 사용한다.
+
+LIMITATION:
+- 현재 구현은 전체 이미지 유사색 제거 방식이다.
+- 연결된 배경 영역만 제거하는 Flood Fill 방식은 아직 구현하지 않았다.
+- 이미지에서 직접 픽셀을 클릭해 색상을 추출하는 Eyedropper는 아직 구현하지 않았다.
+- Tolerance는 RGB Euclidean distance 기준이며 가장자리 Alpha 페더링은 아직 적용하지 않는다.
+
+VALIDATION:
+- Godot 4.7.2 headless project/editor load PASS.
+- Process exit code 0.
+- git diff --check PASS.
+- 기존 변경사항과 별개로 Image Editor 변경 Diff 확인 완료.
+- CODE VERIFIED
+- BUILD VERIFIED
+- EDITOR VERIFIED: headless editor load only
+- PIE VERIFIED: NOT VERIFIED
+
+NEXT DECISION:
+- 최소 테스트 Image를 실제 Image Editor 코드 경로에 주입하여 Background Color / Tolerance UI 생성과 배경 제거 알고리즘을 검증한다.
+- 테스트 결과: 4x4 이미지에서 흰색 12픽셀이 Alpha 0으로 제거되고 빨간색 4픽셀은 유지됨.
+- Godot 4.7.2 headless validation exit 0.
+- 실제 생성 이미지 1장을 대상으로 Runtime Editor에서 시각 결과를 확인하는 PIE/수동 검증은 아직 필요하다.
+- 필요한 경우 Eyedropper / Flood Fill / Edge Alpha 개선 여부를 그 결과로 결정한다.
