@@ -1,8 +1,7 @@
 ﻿class_name RobotDefinition
-extends RefCounted
+extends ObjectDefinition
 
-var id: String = ""
-var name: String = ""
+
 var base_stats: Dictionary = {}
 var progression: Dictionary = {}
 var energy: Dictionary = {}

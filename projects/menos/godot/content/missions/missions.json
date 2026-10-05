@@ -1,0 +1,26 @@
+{
+  "mission_stage_01": {
+    "id": "mission_stage_01",
+    "title": "Northbridge Sector 방어",
+    "briefing": "적의 공세를 막고 모든 교전을 완료하십시오.",
+    "primary_type": "clear_encounters",
+    "target_id": "",
+    "time_limit": 0
+  },
+  "mission_stage_02": {
+    "id": "mission_stage_02",
+    "title": "",
+    "briefing": "",
+    "primary_type": "clear_encounters",
+    "target_id": "",
+    "time_limit": 0
+  },
+  "mission_stage_03": {
+    "id": "mission_stage_03",
+    "title": "",
+    "briefing": "",
+    "primary_type": "clear_encounters",
+    "target_id": "",
+    "time_limit": 0
+  }
+}

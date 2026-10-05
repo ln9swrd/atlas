@@ -1,5 +1,7 @@
 {
   "stage_id": "stage_03",
+  "mission_id": "mission_stage_03",
+  "reward_id": "reward_stage_03",
   "order": 3,
   "name": "Northbridge Sector 03",
   "map_file": "res://content/maps/map_03.json",

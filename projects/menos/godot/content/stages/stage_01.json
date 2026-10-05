@@ -7,13 +7,8 @@
   "name": "Northbridge Sector 01",
   "order": 1,
   "stage_id": "stage_01",
-  "mission": {
-	"title": "Northbridge Sector 방어",
-	"briefing": "적의 공세를 막고 모든 교전을 완료하십시오.",
-	"primary_type": "clear_encounters",
-	"target_id": "",
-	"time_limit": 0
-  },
+  "mission_id": "mission_stage_01",
+  "reward_id": "reward_stage_01",
   "allied_units": [
 	{
 	  "id": "basic",

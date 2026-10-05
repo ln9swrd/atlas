@@ -87,6 +87,20 @@ static func get_map_file() -> String:
 	var stage := get_current_stage()
 	return str(stage.get("map_file", ""))
 
+static func get_mission_definition() -> MissionDefinition:
+	var stage := get_current_stage()
+	var mission_id := str(stage.get("mission_id", ""))
+	if mission_id.is_empty():
+		return null
+	return MissionDefinitionLoader.load_definition(mission_id)
+
+static func get_reward_definition() -> RewardDefinition:
+	var stage := get_current_stage()
+	var reward_id := str(stage.get("reward_id", ""))
+	if reward_id.is_empty():
+		return null
+	return RewardDefinitionLoader.load_definition(reward_id)
+
 static func get_initial_gold() -> int:
 	var stage := get_current_stage()
 	if not stage.has("initial_gold"):

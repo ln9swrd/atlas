@@ -1,9 +1,7 @@
 ﻿class_name EnemyDefinition
-extends RefCounted
+extends ObjectDefinition
 
-var id: String = ""
-var name: String = ""
-var combat: Dictionary = {}
+
 var visuals: Dictionary = {}
 var robot_attack: Dictionary = {}
 

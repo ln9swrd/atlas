@@ -5,6 +5,8 @@ signal request_map_editor_for_path(map_path: String)
 
 const STAGE_DIR := "res://content/stages/"
 const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
+const MISSION_CATALOG_FILE := "res://content/missions/missions.json"
+const REWARD_CATALOG_FILE := "res://content/rewards/rewards.json"
 const MAP_DIR := "res://content/maps/"
 const ASSET_CATALOG_FILE := "res://content/editor/asset_catalog.json"
 const LANES := ["left", "right", "both"]
@@ -18,11 +20,15 @@ var map_option: OptionButton
 var gold_spin: SpinBox
 var hp_spin: SpinBox
 var next_edit: LineEdit
+var mission_id_edit: LineEdit
 var mission_title_edit: LineEdit
 var mission_briefing_edit: TextEdit
 var mission_type_option: OptionButton
 var mission_target_edit: LineEdit
 var mission_time_spin: SpinBox
+var reward_id_edit: LineEdit
+var reward_gold_spin: SpinBox
+var reward_item_ids_edit: LineEdit
 var map_open_button: Button
 var map_preview_container: SubViewportContainer
 var map_preview_viewport: SubViewport
@@ -149,6 +155,7 @@ func _build_stage_properties(parent: VBoxContainer) -> void:
 	mission_header.add_theme_font_size_override("font_size", 16)
 	parent.add_child(mission_header)
 
+	mission_id_edit = _line_row(parent, "Mission ID")
 	mission_title_edit = _line_row(parent, "미션 제목")
 	var briefing_row := VBoxContainer.new()
 	parent.add_child(briefing_row)
@@ -166,6 +173,17 @@ func _build_stage_properties(parent: VBoxContainer) -> void:
 	_option_row(parent, "주 임무 유형", mission_type_option)
 	mission_target_edit = _line_row(parent, "대상 ID")
 	mission_time_spin = _spin_row(parent, "제한 시간(초)", 0, 86400, 1, 0)
+
+	reward_id_edit = _line_row(parent, "Reward ID")
+	reward_gold_spin = _spin_row(parent, "Reward Gold", 0, 999999999, 1, 0)
+	reward_item_ids_edit = _line_row(parent, "Reward Item IDs")
+	reward_item_ids_edit.placeholder_text = "예: weapon, armor (쉼표로 구분)"
+
+	var reward_note := Label.new()
+	reward_note.text = "보상은 Stage 완료 시 영구 Profile에 지급됩니다. Item ID는 Item Catalog의 base_id를 사용합니다."
+	reward_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	reward_note.modulate = Color("9fb2aa")
+	parent.add_child(reward_note)
 
 	var mission_note := Label.new()
 	mission_note.text = "현재 Runtime이 실제 판정하는 기본 조건은 HQ 파괴 시 패배와 전체 Encounter 종료 시 클리어입니다. 위 설정은 Stage의 미션 정의를 저장합니다."
@@ -307,13 +325,23 @@ func _load_selected_stage() -> void:
 	_rebuild_encounters()
 
 func _load_mission_fields() -> void:
-	var mission: Dictionary = stage_data.get("mission", {}) if stage_data.get("mission", {}) is Dictionary else {}
-	mission_title_edit.text = str(mission.get("title", ""))
-	mission_briefing_edit.text = str(mission.get("briefing", ""))
-	var mission_type := str(mission.get("primary_type", "clear_encounters"))
+	var mission_id := str(stage_data.get("mission_id", ""))
+	var mission := MissionDefinitionLoader.load_definition(mission_id) if not mission_id.is_empty() else null
+	mission_id_edit.text = mission_id
+	mission_title_edit.text = mission.title if mission != null else ""
+	mission_briefing_edit.text = mission.briefing if mission != null else ""
+	var mission_type := mission.primary_type if mission != null else "clear_encounters"
 	mission_type_option.select(max(0, ["defend_base", "clear_encounters"].find(mission_type)))
-	mission_target_edit.text = str(mission.get("target_id", ""))
-	mission_time_spin.value = float(mission.get("time_limit", 0))
+	mission_target_edit.text = mission.target_id if mission != null else ""
+	mission_time_spin.value = mission.time_limit if mission != null else 0
+	reward_id_edit.text = str(stage_data.get("reward_id", ""))
+	_load_reward_fields()
+
+func _load_reward_fields() -> void:
+	var reward_id := str(stage_data.get("reward_id", ""))
+	var reward := RewardDefinitionLoader.load_definition(reward_id) if not reward_id.is_empty() else null
+	reward_gold_spin.value = reward.gold if reward != null else 0
+	reward_item_ids_edit.text = ", ".join(reward.item_ids) if reward != null else ""
 
 func _open_selected_map() -> void:
 	if map_option == null or map_option.selected < 0:
@@ -485,6 +513,48 @@ func _delete_stage(dialog: ConfirmationDialog) -> void:
 	_set_status("DELETED stage: " + stage_id)
 	dialog.queue_free()
 
+func _save_mission() -> bool:
+	var mission_id := mission_id_edit.text.strip_edges()
+	if mission_id.is_empty():
+		_set_status("Mission ID is required."); return false
+	var catalog := MissionDefinitionLoader.load_catalog()
+	catalog[mission_id] = {
+		"id": mission_id,
+		"title": mission_title_edit.text.strip_edges(),
+		"briefing": mission_briefing_edit.text.strip_edges(),
+		"primary_type": str(mission_type_option.get_item_text(mission_type_option.selected)),
+		"target_id": mission_target_edit.text.strip_edges(),
+		"time_limit": int(mission_time_spin.value)
+	}
+	var file := FileAccess.open(MISSION_CATALOG_FILE, FileAccess.WRITE)
+	if file == null:
+		_set_status("FAILED to open Mission catalog for writing."); return false
+	file.store_string(JSON.stringify(catalog, "  "))
+	file.close()
+	return true
+
+func _save_reward() -> bool:
+	var reward_id := reward_id_edit.text.strip_edges()
+	if reward_id.is_empty():
+		_set_status("Reward ID is required."); return false
+	var item_ids: Array[String] = []
+	for raw_item_id in reward_item_ids_edit.text.split(","):
+		var item_id := str(raw_item_id).strip_edges()
+		if not item_id.is_empty() and not item_ids.has(item_id):
+			item_ids.append(item_id)
+	var catalog := RewardDefinitionLoader.load_catalog()
+	catalog[reward_id] = {
+		"id": reward_id,
+		"gold": int(reward_gold_spin.value),
+		"item_ids": item_ids
+	}
+	var file := FileAccess.open(REWARD_CATALOG_FILE, FileAccess.WRITE)
+	if file == null:
+		_set_status("FAILED to open Reward catalog for writing."); return false
+	file.store_string(JSON.stringify(catalog, "  "))
+	file.close()
+	return true
+
 func _save_stage() -> void:
 	if current_path.is_empty() or id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty():
 		_set_status("Stage ID and Name are required."); return
@@ -501,13 +571,11 @@ func _save_stage() -> void:
 	stage_data["name"] = name_edit.text
 	stage_data["map_file"] = str(map_option.get_item_metadata(map_option.selected))
 	stage_data["balance"] = {"initial_gold": int(gold_spin.value), "base_hp": float(hp_spin.value)}
-	stage_data["mission"] = {
-		"title": mission_title_edit.text.strip_edges(),
-		"briefing": mission_briefing_edit.text.strip_edges(),
-		"primary_type": str(mission_type_option.get_item_text(mission_type_option.selected)),
-		"target_id": mission_target_edit.text.strip_edges(),
-		"time_limit": int(mission_time_spin.value)
-	}
+	if not _save_mission(): return
+	if not _save_reward(): return
+	stage_data["mission_id"] = mission_id_edit.text.strip_edges()
+	stage_data["reward_id"] = reward_id_edit.text.strip_edges()
+	stage_data.erase("mission")
 	var file := FileAccess.open(current_path, FileAccess.WRITE)
 	if file == null: _set_status("FAILED to open file for writing."); return
 	file.store_string(JSON.stringify(stage_data, "  "))

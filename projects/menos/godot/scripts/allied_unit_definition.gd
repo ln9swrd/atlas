@@ -1,9 +1,7 @@
 class_name AlliedUnitDefinition
-extends RefCounted
+extends ObjectDefinition
 
-var id: String = ""
-var name: String = ""
-var combat: Dictionary = {}
+
 var ai: Dictionary = {}
 var visuals: Dictionary = {}
 var color: Color = Color.WHITE

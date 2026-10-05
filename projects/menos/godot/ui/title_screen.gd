@@ -94,8 +94,9 @@ func _populate_missions_for_selected_map() -> void:
 		var stage_data := StageLoader.load_stage_data(str(stage_id))
 		if stage_data.is_empty() or str(stage_data.get("map_file", "")) != selected_map:
 			continue
-		var mission: Dictionary = stage_data.get("mission", {}) if stage_data.get("mission", {}) is Dictionary else {}
-		var title: String = str(mission.get("title", stage_data.get("name", stage_id)))
+		var mission_id := str(stage_data.get("mission_id", ""))
+		var mission := MissionDefinitionLoader.load_definition(mission_id) if not mission_id.is_empty() else null
+		var title: String = mission.title if mission != null and not mission.title.is_empty() else str(stage_data.get("name", stage_id))
 		stage_select.add_item(title)
 		stage_select.set_item_metadata(stage_select.item_count - 1, str(stage_id))
 	if stage_select.item_count > 0:
@@ -123,10 +124,11 @@ func _update_stage_info(index: int) -> void:
 			var waves = encounter.get("waves", [])
 			if waves is Array:
 				wave_count += waves.size()
-	var mission: Dictionary = stage_data.get("mission", {}) if stage_data.get("mission", {}) is Dictionary else {}
-	var mission_title := str(mission.get("title", stage_data.get("name", stage_id)))
-	var mission_type := str(mission.get("primary_type", "clear_encounters"))
-	var time_limit := int(mission.get("time_limit", 0))
+	var mission_id := str(stage_data.get("mission_id", ""))
+	var mission := MissionDefinitionLoader.load_definition(mission_id) if not mission_id.is_empty() else null
+	var mission_title := mission.title if mission != null and not mission.title.is_empty() else str(stage_data.get("name", stage_id))
+	var mission_type := mission.primary_type if mission != null else "clear_encounters"
+	var time_limit := mission.time_limit if mission != null else 0
 	var limit_text := "제한시간 %d초" % time_limit if time_limit > 0 else "제한시간 없음"
 	stage_info.text = "%s  /  %s  /  %s  /  %d ENCOUNTER  /  %d WAVE" % [stage_id.to_upper(), mission_title, mission_type, encounters.size(), wave_count]
 

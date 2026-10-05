@@ -323,16 +323,37 @@ Wave와 Encounter를 별도 Editor로 무조건 분리하지 않는다.
 
 Stage는 다음을 조합한다.
 - Map
-- Mission
+- Mission ID
 - Encounter/Wave
 - Spawn 설정
 - Victory Rule
 - Defeat Rule
 - Reward
 
-Mission은 목표와 승패 규칙을 소유한다.
+Mission은 독립 데이터 객체로 존재하며 목표와 승패 규칙을 소유한다.
+Stage는 Mission을 직접 복사하지 않고 Mission ID로 참조한다.
 Map은 공간을 소유한다.
-Stage는 둘을 실제 플레이 단위로 조합한다.
+Stage는 Map과 Mission 및 Encounter/Wave를 실제 플레이 단위로 조합한다.
+
+### Mission 객체화 — 완료
+
+CONFIRMED:
+- MissionDefinition 및 MissionDefinitionLoader를 추가했다.
+- content/missions/missions.json을 독립 Mission Catalog로 사용한다.
+- Stage JSON은 기존 Mission Dictionary 대신 mission_id를 참조한다.
+- StageLoader는 mission_id를 필수값으로 검증하고 실제 Mission 존재 여부를 확인한다.
+- StageManager는 현재 Stage의 Mission Definition을 조회할 수 있다.
+- Stage Editor는 Mission ID를 편집하고 독립 Mission Catalog에 저장한다.
+- Title Screen은 Stage 내부 Mission 데이터가 아니라 Mission Definition을 참조한다.
+- Content Validator는 Mission 필수 필드와 Stage → Mission 참조를 검증한다.
+
+검증:
+- Godot 4.7.2 headless CODE 검증 PASS
+- Stage 01~03의 Mission ID 해석 PASS
+- Content Validator PASS
+- git diff --check PASS
+
+현재 Mission Runtime의 승패 판정(primary_type, target_id, time_limit)은 별도 작업으로 남긴다.
 
 Stage Editor가 담당하지 않아야 할 것:
 - Robot 기본 능력치
@@ -436,26 +457,70 @@ Phase A — 객체 기반 정리
 - Content Validator 기준 확장
 
 완료 조건: 각 핵심 객체가 무엇을 소유하고 무엇을 참조하는지 문서로 확정 가능.
-Phase B — 핵심 객체 Runtime 연결
-- Robot 직접 조종
-- Enemy AI
-- Building 고정 지원 시설
-- Base
-- 기본 공격
-- Skill
-- Finisher
 
-완료 조건: 플레이어 Robot과 Enemy/Building이 동일한 객체 데이터 기반으로 Runtime에서 동작.
+### Phase B 조사 갱신 — Robot / Enemy Runtime 연결
+
+STATUS: COMPLETE
+
+CONFIRMED:
+- RobotDefinition이 Robot Runtime의 정적 능력치, progression, energy, visual 정보를 제공한다.
+- Robot의 실제 Runtime State는 GameController가 생성하고 관리하며, `get_robot_runtime_stats()`가 Definition과 progression을 조합한다.
+- Robot 기본 공격은 `RobotDefinition -> WeaponDefinition -> robot_weapon_definition -> try_basic_attack()` 경로로 소비된다.
+- EnemyDefinition은 `combat`, `visuals`, `robot_attack`으로 정적 데이터를 보유한다.
+- EnemyRuntimeState는 type/lane/position/hp/timer/boss 상태 등 실행 중 mutable state만 보유한다.
+- Enemy AI/공격은 현재 별도 EnemyAI 객체가 아니라 GameController에 구현되어 있으며, 필요한 정적 값은 EnemyDefinition에서 조회한다.
+- Enemy의 Giant Robot 공격은 EnemyDefinition의 `robot_attack`에서 파생된 WeaponDefinition을 사용한다.
+
+JUDGMENT:
+- 현재 Robot/Enemy 모두 Definition과 Runtime의 기능적 연결은 존재한다.
+- `ActorRuntimeState` 공통 상속 구조를 즉시 도입할 필요는 확인되지 않았다.
+- GameController의 Definition 참조 집중은 향후 리팩터링 후보이나 현재 Phase B의 목적 달성을 막는 결함으로 판정하지 않는다.
+- 기존 Runtime을 보존하면서 Definition 소비 경로를 우선 검증한다.
+
+IMPLEMENTATION RULE:
+- JSON 대량 변환 금지.
+- Runtime 구조의 일괄 재설계 금지.
+- Definition/Editor/Runtime 경계에서 실제 중복 또는 잘못된 소유권이 확인된 경우에만 최소 변경한다.
+- 변경 전 baseline 확인, 변경 후 diff 및 최소 검증을 수행한다.
+
+NEXT:
+- Tower/Building/Base Runtime 소비 구조 확인.
+- Skill/Special/Finisher의 Definition → Runtime 소비 구조 확인.
+- 이후 Phase B의 실제 변경 필요 여부를 판정한다.
+### Phase C 조사 갱신 — Mission 객체화 및 Runtime 규칙
+
+STATUS: MISSION DATA OBJECTIFICATION COMPLETE / CORE RUNTIME RULES IMPLEMENTED
+
+CONFIRMED:
+- Mission을 Stage 내부 Dictionary에서 독립 MissionDefinition으로 승격했다.
+- Mission Catalog와 Loader를 추가했다.
+- Stage는 mission_id로 Mission을 참조한다.
+- StageLoader, StageManager, Stage Editor, Title Screen, Content Validator가 새 참조 구조를 사용한다.
+- Stage 01~03의 Mission 참조와 Content Validator가 통과했다.
+- `clear_encounters`는 기존처럼 마지막 Encounter/Wave 완료를 Victory로 사용한다.
+- `defend_base`는 `time_limit` 동안 Base HP가 0보다 크면 Victory로 판정한다.
+- `defend_base`에서는 Encounter/Wave 전체 완료가 조기 Victory를 발생시키지 않고 Mission 시간 제한까지 방어를 계속한다.
+- Base HP 0에 의한 DEFEAT가 Mission 시간 완료보다 우선한다.
+- Campaign 모드에서도 `defend_base` 완료 후 기존 Stage 전환/최종 Campaign Victory 흐름을 유지한다.
+- `target_id`는 현재 승인된 `defend_base` 규칙에서는 사용하지 않는다. 보호 대상은 Stage Base로 고정한다.
+- Godot 4.7.2 headless Content Validator PASS.
+- Mission Runtime 최소 로직 검증 PASS: defend 활성화, 시간 완료 Victory, Base 파괴 시 Victory 방지.
+- `git diff --check` PASS.
+
+PENDING:
+- Mission별 Reward 연결
+- `defend_base` 실제 Stage 데이터의 PIE 검증
 
 Phase C — 전투 조합
 - Map
 - Building 배치
 - Spawn
 - Encounter/Wave
-- Mission
+- Mission 객체화 및 Stage 참조
+- Mission Runtime 승패 규칙
 - Stage
 
-완료 조건: 하나의 Stage가 Map과 객체 정의를 참조해 독립적으로 실행 가능.
+완료 조건: 하나의 Stage가 Map, Mission, Encounter/Wave와 객체 정의를 참조해 독립적으로 실행 가능하며 Mission 데이터가 Stage에 중복 저장되지 않는다.
 
 Phase D — 성장/보상
 - Robot Profile
@@ -510,6 +575,11 @@ Stage
  → Encounter IDs
  → Reward ID
 
+Mission
+ → Objective / Victory / Defeat Rules
+ → Target ID
+ → Time Limit
+
 Campaign
  → Stage IDs
  → Unlock Rules
@@ -529,6 +599,8 @@ Content Validator는 객체 중심 구조의 안전망으로 사용한다.
 - Building 유형 불일치
 - Map/Stage 호환성
 - Encounter 참조 오류
+- Mission 참조 오류
+- Mission 필수 필드/타입 오류
 - Reward 참조 오류
 - Campaign Stage 누락
 - 필수 필드 누락
@@ -634,3 +706,197 @@ STATUS — PASS / PROPOSAL
 OUT OF SCOPE — 실제 Building Editor/Skill Editor 구현, 데이터 마이그레이션, Canon 변경, Commit/Push.
 
 다음 단계 — Master 승인 후 객체별 조사 또는 구현 작업을 개별 작업지시로 분리한다.
+
+
+### Phase C 조사 갱신 — Stage Reward 객체화
+STATUS: REWARD DATA/RUNTIME IMPLEMENTATION COMPLETE / PIE PENDING
+
+CONFIRMED:
+- Mission Reward와 Enemy combat.reward를 별도 개념으로 분리
+- RewardDefinition 및 RewardDefinitionLoader 추가
+- Reward Catalog 추가: content/rewards/rewards.json
+- Stage에 reward_id 참조 추가
+- StageLoader가 reward_id를 필수 참조로 검증하고 RewardDefinition을 resolve
+- StageManager가 RewardDefinition 조회 경로 제공
+- Stage Editor에서 Reward ID를 표시하고 신규 Reward catalog entry를 생성/저장 가능
+- Content Validator가 Reward id/gold/item_ids 및 Stage reward_id 참조를 검증
+- 현재 Stage 01~03은 reward_stage_01~03을 참조하며 기본 보상은 gold 0 / item_ids []
+- Master 승인으로 PlayerProfileState에 영구 gold 필드 추가
+- PlayerProfileState gold가 load/save 직렬화 경로에 포함됨
+- Campaign Stage 완료 시 RewardDefinition을 한 번만 지급
+- Reward.gold는 PlayerProfileState.gold에 영구 누적
+- Reward.item_ids는 기존 Item Catalog의 base_id를 사용해 create_item()으로 생성 후 persistent inventory에 추가
+- clear_encounters 완료와 defend_base 완료 모두 동일한 Reward 지급 경로를 사용
+- non-campaign 실행에서는 persistent Stage Reward를 지급하지 않음
+- Godot 4.7.2 project headless load PASS
+- PlayerProfile gold serialize/restore validation PASS
+- RewardDefinition load validation PASS
+- Content Validator PASS
+- git diff --check PASS
+
+PENDING:
+
+- 실제 Stage Reward 값 구성
+- PIE 검증
+
+
+### Phase D 조사 갱신 — Robot Progression / Equipment / Profile
+STATUS: READ-ONLY BASELINE CONFIRMED / IMPLEMENTATION HOLD
+
+CONFIRMED:
+- RobotProgressionState가 Level, XP, unlocked_abilities를 영구 데이터로 관리한다.
+- PlayerProfileState가 RobotProgressionState와 CampaignProgressionState를 포함하며 Gold, Inventory, Equipped Items를 함께 직렬화한다.
+- PlayerProfileState.gold는 load/save 경로에 연결되어 있다.
+- Item Catalog에는 Weapon / Armor / Core 정의와 Base Stat 및 Prefix/Suffix 생성 규칙이 존재한다.
+- ObjectPersistence는 Catalog 저장 후 실제 파일 재읽기 비교까지 수행한다.
+- Reward Runtime은 Stage 완료 시 Profile Gold 및 Inventory에 반영되는 경로가 구현되어 있다.
+
+UNVERIFIED:
+- XP 증가에 따른 실제 Level-Up 규칙과 Stat Growth의 완성 여부
+- Skill Unlock 조건과 Runtime 적용 경로의 완전성
+- Equipped Item 능력치가 Robot Runtime에 적용되는 전체 경로
+- 실제 게임 재진입을 통한 Profile/Equipment 복원 PIE 검증
+
+JUDGMENT:
+- Phase D의 Profile/Reward 저장 기반은 이미 존재한다.
+- 현재 확인된 정보만으로 새로운 Progression 시스템을 추가할 필요성은 확인되지 않았다.
+- 다음 조사에서는 XP/Level, Skill Unlock, Equipment → Robot Runtime 연결을 READ-ONLY로 확인하고 실제 결함이 확인될 때만 최소 변경한다.
+
+PENDING:
+- XP → Level 규칙 확인
+- Skill Unlock Runtime 연결 확인
+- Equipment Runtime 적용 확인
+- PIE 검증
+
+
+### Phase D 조사 갱신 — Profile Save/Load 안전성
+STATUS: PASS / MINIMAL SAFETY FIX APPLIED / PIE PENDING
+
+CONFIRMED:
+- Campaign Profile은 user://menos_campaign_robot_profile.json에 저장된다.
+- PlayerProfileState는 Level / XP / Unlock / Campaign Progress / Gold / Inventory / Equipped Items를 직렬화한다.
+- 정상적인 Dictionary Profile은 load_from_data()를 통해 복원된다.
+- 저장 파일이 없으면 기본 Profile로 시작한다.
+- 기존 Profile의 Inventory가 비어 있을 때만 기본 Weapon / Armor / Core를 생성한다.
+
+ISSUE FOUND:
+- 기존 로드 경로는 Profile JSON 파싱 결과가 Dictionary가 아니어도 기본 상태로 계속 진행한 뒤 _save_robot_progression()을 호출하여 손상된 Profile을 기본 Profile로 덮어쓸 가능성이 있었다.
+
+CHANGE:
+- JSON 파싱 결과가 Dictionary가 아니면 오류를 기록하고 즉시 로드를 중단하도록 최소 수정했다.
+- 정상 Profile의 기존 저장/복원 경로는 변경하지 않았다.
+
+VALIDATION:
+- 변경 후 git diff 확인 완료.
+- git diff --check PASS.
+- PIE 검증은 아직 수행하지 않음.
+
+PENDING:
+- 실제 게임 재진입을 통한 정상 Profile 복원 PIE 검증
+- 손상 Profile에 대한 보호 동작의 실제 Runtime 검증
+
+
+### Phase E 조사 갱신 — Campaign Progression Save/Load
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / DESIGN HOLD
+
+CONFIRMED:
+- CampaignProgressionState는 unlocked_stage_ids와 completed_stage_ids를 분리해 보유한다.
+- complete_stage(stage_id, next_stage_id)는 완료 Stage를 기록하고 다음 Stage를 Unlock한다.
+- PlayerProfileState.to_data()/load_from_data()가 CampaignProgressionState를 Profile 저장 데이터에 포함한다.
+- GameController의 Campaign Stage 완료 경로는 다음 Stage ID를 계산한 뒤 complete_stage()를 호출하고 Profile을 저장한다.
+- Stage 01~03의 Campaign 순서는 main_campaign.json의 stage_01 → stage_02 → stage_03으로 정의되어 있다.
+- 임시 headless 검증에서 CampaignProgressionState의 완료/Unlock 직렬화·복원과 PlayerProfileState 내 Campaign Progress + Gold 복원이 PASS했다.
+- git diff --check PASS.
+
+IMPORTANT FINDINGS:
+- CampaignProgressionState의 초기 Stage는 현재 "stage_01"로 하드코딩되어 있다.
+- StageManager.begin_run()은 campaign에서 전달된 stage_id가 Unlock 상태인지 검사하지 않는다.
+- 현재 Title Screen의 Stage 선택은 Single Play에만 노출되므로 Campaign에서 잠금 Stage를 선택하는 UI 문제는 실제 발생 경로가 아니다.
+- 향후 Campaign Stage 선택 UI를 추가할 경우 Unlock 검사와 초기 Stage 식별자를 Campaign 데이터에서 읽는 구조가 필요하다.
+- Story Event / Ending / Free Battle 전용 객체나 Catalog는 현재 확인되지 않았다.
+
+JUDGMENT:
+- 현재 Campaign의 Stage 순차 진행, 완료/Unlock 상태 저장·복원 기반은 목적에 충분하다.
+- 즉시 Campaign Progression 코드를 변경할 필요는 확인되지 않았다.
+- Campaign Unlock의 독립 객체화, Story Event, Ending, Free Battle은 새로운 콘텐츠 설계/Canon 판단이 필요하므로 현재 구현을 시작하지 않는다.
+
+VERIFICATION:
+- CODE VERIFIED
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: not required for this investigation
+- PIE VERIFIED: PENDING
+
+OUT OF SCOPE:
+- Campaign Editor 구현
+- Mission Unlock 독립 객체 구현
+- Story Event / Ending / Free Battle 데이터 설계
+- Campaign Stage Select UI 변경
+
+
+### Phase D 조사 갱신 — XP / Level / Skill Unlock / Equipment Runtime 재개
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / PIE PENDING
+
+CONFIRMED:
+- RobotProgressionState는 Level / XP / unlocked_abilities를 저장하고 복원한다.
+- robots.json의 progression 정의에는 xp_per_level=100, damage_growth=0.05, hp_growth=0.05, range_growth=0.02, speed_growth=0.02가 존재한다.
+- GameController.add_robot_xp()는 Campaign에서만 XP를 증가시키며, 레벨별 요구 XP를 계산해 Level을 올리고 Runtime Robot max HP 및 HP를 갱신한다.
+- available_robot_growths()는 Skill Catalog의 growth_available=true 항목 중 아직 Unlock되지 않은 Skill을 제공한다.
+- choose_robot_growth()는 GROWTH 상태에서 선택된 Skill을 RobotProgressionState에 Unlock하고 READY로 복귀시킨다.
+- get_robot_runtime_stats()는 Robot Definition의 기본 스탯에 Level 성장률을 적용하고 Equipped Item의 HP/Damage/Range/Speed 보정을 추가한다.
+- PlayerProfileState가 Level / XP / Unlock / Inventory / Equipped Items를 저장하고 _load_robot_progression()이 이를 복원한다.
+- 기존 Profile Save/Load 안전성 최소 수정 이후 정상 Dictionary가 아닌 Profile은 즉시 오류 처리하고 기존 데이터 경로를 덮어쓰지 않는다.
+
+JUDGMENT:
+- XP → Level → Runtime Stat 연결은 현재 코드상 구현되어 있다.
+- Skill Unlock → Runtime 상태 연결도 현재 코드상 구현되어 있다.
+- Equipment → Robot Runtime Stat 연결도 구현되어 있다.
+- 따라서 새로운 Progression 시스템이나 별도 Equipment Runtime 계층을 추가할 근거는 확인되지 않았다.
+- 실제 게임에서 레벨업, 성장 선택, 장비 효과, 재진입 복원을 확인하는 PIE 검증만 남는다.
+
+VERIFICATION:
+- CODE VERIFIED
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT REQUIRED FOR THIS READ-ONLY INVESTIGATION
+- PIE VERIFIED: PENDING
+
+OUT OF SCOPE:
+- 새로운 XP/Level 시스템 설계
+- 새로운 Skill Unlock 시스템 설계
+- Equipment 시스템 재구축
+- 성장 UI 신규 설계
+- PIE 자동 실행을 통한 Production 승인
+
+
+### Phase B 조사 갱신 — Boss 객체 구조
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / DESIGN HOLD
+
+CONFIRMED:
+- 현재 Enemy Catalog의 giant 항목은 일반 Enemy Definition 데이터로 존재하며 HP, Armor, 공격값, 속도, 보상, Sprite 정보만 가진다.
+- Boss 전용 Runtime 상태는 EnemyRuntimeState에 boss_pattern_timer, boss_pattern_index, boss_windup_timer, boss_charge_timer, boss_charge_target, boss_pattern_active로 존재한다.
+- GameController.update_giant_boss_attack()가 GIANT의 공격 패턴 3종(CANNON SHOT / CRUSHING BLAST / CHARGE)을 직접 구현한다.
+- GIANT 판정은 GameController 여러 Runtime 경로에서 enemy.type == "giant" 조건으로 직접 연결되어 있다.
+- 현재 BossDefinition 또는 Boss Catalog는 확인되지 않았다.
+- 현재 Boss 전용 Editor도 확인되지 않았다.
+- 현재 데이터에서는 Phase / Weak Point / Enrage / Summon / Death Sequence 같은 Boss 전용 정의 필드는 확인되지 않았다.
+
+IMPORTANT FINDING:
+- Boss는 이미 Runtime 동작을 갖고 있지만 Boss 규칙의 상당 부분이 GameController에 하드코딩되어 있다.
+- 따라서 향후 Boss 콘텐츠를 확장하려면 BossDefinition으로 즉시 리팩터링하기보다, 먼저 Master가 Boss를 독립 객체로 취급할 필요가 있는지 Canon/콘텐츠 요구를 결정해야 한다.
+
+JUDGMENT:
+- 현재 GIANT 하나의 동작을 유지하는 목적에는 기존 구조가 동작 가능한 상태다.
+- Boss 공통화 또는 BossDefinition 생성은 현재 조사만으로 필수라고 판정할 수 없다.
+- Boss Editor 추가는 더더욱 콘텐츠 확장 요구가 확인되기 전에는 보류한다.
+- 새로운 Boss 설계가 필요해지는 경우에만 Enemy 확장과 독립 Boss 객체의 비용/효과를 비교한다.
+
+VERIFICATION:
+- CODE VERIFIED
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT REQUIRED
+- PIE VERIFIED: PENDING
+
+OUT OF SCOPE:
+- BossDefinition 신규 생성
+- Boss Editor 생성
+- GIANT Runtime 리팩터링
+- Boss Phase/Weak Point/Enrage/Summon 설계

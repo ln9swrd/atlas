@@ -674,7 +674,12 @@ func _scan_json_images(path: String, kind: String, field: String, usage: String,
 			else:
 				value = ""
 		var image_path := str(value)
-		if image_path.is_empty() or seen.has(image_path): continue
+		if image_path.is_empty(): continue
+		if not ResourceLoader.exists(image_path):
+			var alias_path := "res://assets/menos/sprites/%s.png" % image_path
+			if ResourceLoader.exists(alias_path):
+				image_path = alias_path
+		if seen.has(image_path): continue
 		seen[image_path] = true
 		entries.append({"label": "%s / %s" % [kind, str(data[key].get("name", key))], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": category})
 

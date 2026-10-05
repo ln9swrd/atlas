@@ -1,0 +1,17 @@
+{
+  "reward_stage_01": {
+    "id": "reward_stage_01",
+    "gold": 0,
+    "item_ids": []
+  },
+  "reward_stage_02": {
+    "id": "reward_stage_02",
+    "gold": 0,
+    "item_ids": []
+  },
+  "reward_stage_03": {
+    "id": "reward_stage_03",
+    "gold": 0,
+    "item_ids": []
+  }
+}

@@ -69,7 +69,10 @@ const VEGETATION_ANCHORS := [Vector2i(1, 7), Vector2i(21, 7), Vector2i(1, 13), V
 enum RunState { READY, RUNNING, GROWTH, VICTORY, DEFEAT }
 
 var base_hp := 0.0
+var mission_definition: MissionDefinition = null
+var mission_elapsed := 0.0
 var gold := 0
+var stage_reward_granted := false
 var encounter := 1
 var wave := 1
 var run_state := RunState.READY
@@ -701,6 +704,9 @@ func play_sfx(id: String) -> void:
 
 func reset_game() -> void:
 	base_hp = StageManager.get_base_hp(); gold = StageManager.get_initial_gold(); encounter = 1; wave = 1; run_state = RunState.READY; wave_running = false; wave_clear = false; elapsed = 0.0
+	mission_definition = StageManager.get_mission_definition()
+	mission_elapsed = 0.0
+	stage_reward_granted = false
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); allied_units.clear(); towers.clear(); effects.clear(); damage_numbers.clear(); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; pending_tower_type = ""; robot_selected = false
 	wave_auto_start_timer = wave_auto_start_delay
 	var initial_robot_spot := ""
@@ -752,6 +758,10 @@ func _process(delta: float) -> void:
 		update_towers(delta)
 		update_robot(delta)
 		check_wave_clear()
+	if _is_defend_base_mission_active():
+		mission_elapsed += delta
+		if mission_elapsed >= float(mission_definition.time_limit) and base_hp > 0.0:
+			_complete_defend_base_mission()
 	for damage_number in damage_numbers:
 		damage_number["life"] = float(damage_number.get("life", 0.0)) - delta
 		damage_number["position"] = damage_number.get("position", Vector2.ZERO) + Vector2(0, -18.0 * delta)
@@ -1242,8 +1252,10 @@ func _load_robot_progression() -> void:
 		return
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
-	if parsed is Dictionary:
-		player_profile.load_from_data(parsed)
+	if not parsed is Dictionary:
+		push_error("Failed to parse campaign robot profile.")
+		return
+	player_profile.load_from_data(parsed)
 	var valid_unlocked: Array[String] = []
 	for ability_id in player_profile.robot_progression.unlocked_abilities:
 		var skill_id := str(ability_id)
@@ -1701,6 +1713,50 @@ func choose_robot_growth(ability_id: String) -> void:
 	run_state = RunState.READY
 	start_wave()
 
+func _is_defend_base_mission_active() -> bool:
+	return mission_definition != null and mission_definition.primary_type == "defend_base" and mission_definition.time_limit > 0 and run_state not in [RunState.VICTORY, RunState.DEFEAT] and (wave_running or run_state != RunState.READY)
+
+func _grant_stage_reward() -> void:
+	if stage_reward_granted or StageManager.run_mode != "campaign":
+		return
+	var reward := StageManager.get_reward_definition()
+	if reward == null:
+		return
+	stage_reward_granted = true
+	player_profile.gold += maxi(0, reward.gold)
+	for item_base_id in reward.item_ids:
+		var item := create_item(str(item_base_id))
+		if not item.is_empty():
+			player_profile.inventory.append(item)
+	_save_robot_progression()
+	log_event("STAGE REWARD: +%d Gold, %d Item(s)." % [maxi(0, reward.gold), reward.item_ids.size()])
+
+func _complete_defend_base_mission() -> void:
+	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or base_hp <= 0.0:
+		return
+	wave_running = false
+	play_sfx("ui_confirm")
+	log_event("MISSION CLEAR. Base survived for %d seconds." % mission_definition.time_limit)
+	if StageManager.run_mode != "campaign":
+		run_state = RunState.VICTORY
+		return
+	var next_stage_id := StageManager.get_next_campaign_stage_id()
+	_grant_stage_reward()
+	player_profile.campaign_progression.complete_stage(StageManager.current_stage_id, next_stage_id)
+	_save_robot_progression()
+	if not next_stage_id.is_empty():
+		if not load_stage_map(next_stage_id):
+			push_error("Could not load next campaign Stage '%s'." % next_stage_id)
+			run_state = RunState.DEFEAT
+			play_sfx("ui_cancel")
+			log_event("STAGE LOAD FAILED. Press RESTART to retry the campaign.")
+			return
+		reset_game()
+		log_event("STAGE %d READY. Build defenses before Wave 1." % StageManager.get_current_stage().get("order", 1))
+		return
+	run_state = RunState.VICTORY
+	log_event("CAMPAIGN VICTORY. ALL STAGES CLEAR. Press RESTART to repeat.")
+
 func check_wave_clear() -> void:
 	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or not wave_running: return
 	if not spawn_queue.is_empty() or enemies.any(func(enemy): return enemy.hp > 0.0): return
@@ -1719,12 +1775,17 @@ func check_wave_clear() -> void:
 			run_state = RunState.READY
 			start_wave()
 			return
+		if mission_definition != null and mission_definition.primary_type == "defend_base":
+			run_state = RunState.RUNNING
+			log_event("Defense continues until the mission time limit.")
+			return
 		if StageManager.run_mode != "campaign":
 			run_state = RunState.VICTORY
 			play_sfx("ui_confirm")
 			log_event("STAGE CLEAR. Press RESTART to play again.")
 			return
 		var next_stage_id := StageManager.get_next_campaign_stage_id()
+		_grant_stage_reward()
 		player_profile.campaign_progression.complete_stage(StageManager.current_stage_id, next_stage_id)
 		_save_robot_progression()
 		if not next_stage_id.is_empty():

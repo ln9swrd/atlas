@@ -10,6 +10,9 @@ const SKILL_FILE := "res://content/skills/skills.json"
 const GAMEPLAY_FILE := "res://content/settings/gameplay.json"
 const CAMPAIGN_FILE := "res://content/campaign/main_campaign.json"
 const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
+const MISSION_FILE := "res://content/missions/missions.json"
+const REWARD_FILE := "res://content/rewards/rewards.json"
+const ITEM_FILE := "res://content/items/items.json"
 
 var errors: Array[String] = []
 var warnings: Array[String] = []
@@ -28,6 +31,8 @@ func _run() -> void:
 	var skills := _load_json_dictionary(SKILL_FILE, "SKILL")
 	_validate_skills(skills)
 	_validate_gameplay_settings(skills)
+	_validate_mission_catalog()
+	_validate_reward_catalog()
 	_validate_stage_catalog()
 	_validate_campaign()
 	_validate_stages()
@@ -125,6 +130,52 @@ func _validate_gameplay_settings(skills: Dictionary) -> void:
 		if not bool(skill.get("growth_available", false)):
 			errors.append("GAMEPLAY.skill_slots[%s] references non-growth skill: %s" % [slot, skill_id])
 
+func _validate_mission_catalog() -> void:
+	var missions := _load_json_dictionary(MISSION_FILE, "MISSION")
+	if missions.is_empty():
+		return
+	for mission_id in missions.keys():
+		var mission = missions[mission_id]
+		if not (mission is Dictionary):
+			errors.append("MISSION[%s] is not an object" % mission_id)
+			continue
+		if str(mission.get("id", "")) != str(mission_id):
+			errors.append("MISSION[%s].id does not match catalog key" % mission_id)
+		for key in ["id", "title", "briefing", "primary_type", "target_id", "time_limit"]:
+			if not mission.has(key):
+				errors.append("MISSION[%s] missing required field: %s" % [mission_id, key])
+		var primary_type := str(mission.get("primary_type", ""))
+		if primary_type not in ["defend_base", "clear_encounters"]:
+			errors.append("MISSION[%s] has unsupported primary_type: %s" % [mission_id, primary_type])
+		var time_limit = mission.get("time_limit", null)
+		if not (time_limit is int or time_limit is float) or float(time_limit) < 0.0:
+			errors.append("MISSION[%s].time_limit is invalid" % mission_id)
+		elif primary_type == "defend_base" and float(time_limit) <= 0.0:
+			errors.append("MISSION[%s].time_limit must be greater than 0 for defend_base" % mission_id)
+
+func _validate_reward_catalog() -> void:
+	var rewards := _load_json_dictionary(REWARD_FILE, "REWARD")
+	if rewards.is_empty():
+		return
+	var items := _load_json_dictionary(ITEM_FILE, "ITEM")
+	for reward_id in rewards.keys():
+		var reward = rewards[reward_id]
+		if not (reward is Dictionary):
+			errors.append("REWARD[%s] is not an object" % reward_id); continue
+		if str(reward.get("id", "")) != str(reward_id):
+			errors.append("REWARD[%s].id does not match catalog key" % reward_id)
+		for key in ["id", "gold", "item_ids"]:
+			if not reward.has(key): errors.append("REWARD[%s] missing required field: %s" % [reward_id, key])
+		var gold = reward.get("gold", null)
+		if not (gold is int or gold is float) or float(gold) < 0.0: errors.append("REWARD[%s].gold is invalid" % reward_id)
+		var item_ids = reward.get("item_ids", null)
+		if not (item_ids is Array):
+			errors.append("REWARD[%s].item_ids must be an array" % reward_id)
+		else:
+			for item_id in item_ids:
+				if str(item_id).is_empty() or not items.has(str(item_id)):
+					errors.append("REWARD[%s] references unknown item: %s" % [reward_id, str(item_id)])
+
 func _validate_stage_catalog() -> void:
 	var file := FileAccess.open(STAGE_CATALOG_FILE, FileAccess.READ)
 	if file == null:
@@ -196,8 +247,14 @@ func _validate_stage(stage: Dictionary, path: String) -> void:
 	var order = stage.get("order", null)
 	if not (order is int or order is float) or float(order) < 0.0:
 		errors.append("STAGE[%s].order is invalid" % path)
-	for key in ["stage_id", "order", "name", "map_file", "balance", "encounters"]:
+	for key in ["stage_id", "order", "name", "map_file", "balance", "encounters", "mission_id"]:
 		if not stage.has(key): errors.append("STAGE[%s] missing required field: %s" % [path, key]); return
+	var mission_id := str(stage.get("mission_id", ""))
+	var reward_id := str(stage.get("reward_id", ""))
+	if mission_id.is_empty() or not _catalog_contains(MISSION_FILE, mission_id):
+		errors.append("STAGE[%s].mission_id references unknown mission: %s" % [path, mission_id])
+	if reward_id.is_empty() or not _catalog_contains(REWARD_FILE, reward_id):
+		errors.append("STAGE[%s].reward_id references unknown reward: %s" % [path, reward_id])
 	var map_file := str(stage.get("map_file", ""))
 	if map_file.is_empty() or not FileAccess.file_exists(map_file):
 		errors.append("STAGE[%s].map_file is missing or not found: %s" % [path, map_file])
@@ -310,9 +367,49 @@ func _validate_map_vector(container: Dictionary, key: String, map_file: String, 
 		errors.append("MAP[%s].%s%s must contain positive values" % [map_file, prefix + "." if not prefix.is_empty() else "", key])
 
 func _validate_resource_refs() -> void:
-	for path in [ENEMY_FILE, TOWER_FILE, ROBOT_FILE]:
+	_validate_catalog_visual_refs(ENEMY_FILE, ["sprite_anim"], true)
+	_validate_catalog_visual_refs(ALLIED_UNIT_FILE, ["visuals.default_image", "visuals.sprite"])
+	_validate_catalog_visual_refs(TOWER_FILE, ["sprite_anim", "projectile_anim"])
+	_validate_catalog_visual_refs(ROBOT_FILE, ["default_image", "animations.*"])
+	for path in [ENEMY_FILE, ALLIED_UNIT_FILE, TOWER_FILE, ROBOT_FILE]:
 		_walk_refs(ObjectRepository.load_catalog(path), path)
 
+func _validate_catalog_visual_refs(path: String, fields: Array[String], allow_legacy_sprite_ids: bool = false) -> void:
+	var catalog := ObjectRepository.load_catalog(path)
+	for entry_id in catalog.keys():
+		var entry = catalog[entry_id]
+		if not (entry is Dictionary):
+			continue
+		for field_path in fields:
+			if field_path.ends_with(".*"):
+				var parent_key := field_path.trim_suffix(".*")
+				var parent = entry.get(parent_key, {})
+				if parent is Dictionary:
+					for child_key in parent.keys():
+						_validate_visual_asset_ref(parent[child_key], "%s[%s].%s.%s" % [path, entry_id, parent_key, child_key], allow_legacy_sprite_ids)
+			else:
+				var value = _get_nested_value(entry, field_path)
+				_validate_visual_asset_ref(value, "%s[%s].%s" % [path, entry_id, field_path], allow_legacy_sprite_ids)
+
+func _get_nested_value(value, field_path: String):
+	var current = value
+	for key in field_path.split("."):
+		if not (current is Dictionary) or not current.has(key):
+			return null
+		current = current[key]
+	return current
+
+func _validate_visual_asset_ref(value, source: String, allow_legacy_sprite_id: bool = false) -> void:
+	if not (value is String):
+		return
+	var asset_id: String = value.strip_edges()
+	if asset_id.is_empty() or asset_id.begins_with("res://"):
+		return
+	if VisualAssetRepository.exists(asset_id):
+		return
+	if allow_legacy_sprite_id and ResourceLoader.exists("res://assets/menos/sprites/%s.png" % asset_id):
+		return
+	errors.append("Missing visual asset in %s: %s" % [source, asset_id])
 func _walk_refs(value, source: String) -> void:
 	if value is Dictionary:
 		for key in value.keys():

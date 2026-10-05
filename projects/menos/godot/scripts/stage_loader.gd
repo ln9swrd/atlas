@@ -18,9 +18,14 @@ static func load_stage_data(stage_id_or_path: String) -> Dictionary:
 	if not (json.get_data() is Dictionary): push_error("StageLoader: Expected JSON object in stage file (%s)" % file_path); return {}
 	return parse_and_validate_raw_data(json.get_data(), file_path)
 static func parse_and_validate_raw_data(raw_data: Dictionary, file_path: String = "") -> Dictionary:
-	for key in ["stage_id", "order", "name", "map_file", "balance", "encounters"]:
+	for key in ["stage_id", "order", "name", "map_file", "balance", "encounters", "mission_id", "reward_id"]:
 		if not raw_data.has(key): push_error("StageLoader: Missing required key '%s' in stage data (%s)" % [key, file_path]); return {}
-	if str(raw_data["stage_id"]).is_empty() or str(raw_data["name"]).is_empty(): push_error("StageLoader: stage_id/name must not be empty (%s)" % file_path); return {}
+	if str(raw_data["stage_id"]).is_empty() or str(raw_data["name"]).is_empty() or str(raw_data["mission_id"]).is_empty() or str(raw_data["reward_id"]).is_empty():
+		push_error("StageLoader: stage_id/name/mission_id must not be empty (%s)" % file_path); return {}
+	if MissionDefinitionLoader.load_definition(str(raw_data["mission_id"])) == null:
+		push_error("StageLoader: Referenced mission_id '%s' could not be resolved (%s)" % [str(raw_data["mission_id"]), file_path]); return {}
+	if RewardDefinitionLoader.load_definition(str(raw_data["reward_id"])) == null:
+		push_error("StageLoader: Referenced reward_id '%s' could not be resolved (%s)" % [str(raw_data["reward_id"]), file_path]); return {}
 	if not (raw_data["order"] is int or raw_data["order"] is float): push_error("StageLoader: order must be numeric (%s)" % file_path); return {}
 	var map_file_path: String = str(raw_data["map_file"])
 	if map_file_path.is_empty() or not FileAccess.file_exists(map_file_path): push_error("StageLoader: Referenced map_file not found on disk: '%s' in stage (%s)" % [map_file_path, file_path]); return {}
@@ -65,6 +70,6 @@ static func parse_and_validate_raw_data(raw_data: Dictionary, file_path: String 
 				var group = groups[group_index]
 				if not (group is Array) or group.size() < 4: push_error("StageLoader: Encounter %d Wave %d Group %d must contain enemy, count, interval, and lanes" % [encounter_index + 1, wave_index + 1, group_index + 1]); return {}
 				if str(group[0]).is_empty() or not (group[1] is int or group[1] is float) or float(group[1]) < 0.0 or not (group[2] is int or group[2] is float) or float(group[2]) < 0.0 or not (group[3] is Array): push_error("StageLoader: Encounter %d Wave %d Group %d has invalid fields" % [encounter_index + 1, wave_index + 1, group_index + 1]); return {}
-	var parsed := {"stage_id": str(raw_data["stage_id"]), "order": int(raw_data["order"]), "name": str(raw_data["name"]), "map_file": map_file_path, "initial_gold": int(balance_dict["initial_gold"]), "base_hp": float(balance_dict["base_hp"]), "balance": balance_dict.duplicate(true), "encounters": encounters_raw.duplicate(true), }
+	var parsed := {"stage_id": str(raw_data["stage_id"]), "order": int(raw_data["order"]), "name": str(raw_data["name"]), "map_file": map_file_path, "mission_id": str(raw_data["mission_id"]), "reward_id": str(raw_data["reward_id"]), "initial_gold": int(balance_dict["initial_gold"]), "base_hp": float(balance_dict["base_hp"]), "balance": balance_dict.duplicate(true), "encounters": encounters_raw.duplicate(true), }
 	if raw_data.has("allied_units"): parsed["allied_units"] = raw_data["allied_units"].duplicate(true)
 	return parsed

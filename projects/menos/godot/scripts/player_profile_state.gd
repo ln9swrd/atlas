@@ -4,6 +4,7 @@ extends RefCounted
 var robot_progression: RobotProgressionState = RobotProgressionState.new()
 var campaign_progression: CampaignProgressionState = CampaignProgressionState.new()
 var inventory: Array = []
+var gold: int = 0
 var equipped_items: Dictionary = {
 	"weapon": "",
 	"armor": "",
@@ -13,6 +14,7 @@ var equipped_items: Dictionary = {
 func reset() -> void:
 	robot_progression.reset()
 	campaign_progression.reset()
+	gold = 0
 	inventory.clear()
 	equipped_items = {
 		"weapon": "",
@@ -24,6 +26,7 @@ func load_from_data(data: Dictionary) -> void:
 	reset()
 	robot_progression.load_from_data(data)
 	campaign_progression.load_from_data(data)
+	gold = maxi(0, int(data.get("gold", 0)))
 	var saved_inventory: Variant = data.get("inventory", [])
 	if saved_inventory is Array:
 		inventory = saved_inventory.duplicate(true)
@@ -36,6 +39,7 @@ func to_data() -> Dictionary:
 	var campaign_data := campaign_progression.to_data()
 	for key in campaign_data:
 		data[key] = campaign_data[key]
+	data["gold"] = gold
 	data["inventory"] = inventory.duplicate(true)
 	data["equipped_items"] = equipped_items.duplicate(true)
 	return data

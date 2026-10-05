@@ -1,9 +1,7 @@
 class_name TowerDefinition
-extends RefCounted
+extends ObjectDefinition
 
-var id: String = ""
-var name: String = ""
-var combat: Dictionary = {}
+
 var upgrade: Dictionary = {}
 var visuals: Dictionary = {}
 
