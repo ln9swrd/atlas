@@ -991,7 +991,14 @@ func _update_robot_render_node() -> void:
 		var render_scale := minf(78.0 / frame_size.x, 132.0 / frame_size.y)
 		robot_render_node.scale = Vector2.ONE * render_scale
 		var resolved := VisualAssetResolver.resolve(_robot_animation_value(anim_key))
-		robot_render_node.offset = VISUAL_ASSET_FRAME.anchor_offset(resolved, frame_size)
+		if robot_definition != null and robot_definition.has_geometry():
+			var geometry_result := GeometryResolver.get_render_offset(robot_definition, anim_key, frame_size)
+			if not geometry_result.ok:
+				robot_render_node.visible = false
+				return
+			robot_render_node.offset = geometry_result.offset
+		else:
+			robot_render_node.offset = VISUAL_ASSET_FRAME.anchor_offset(resolved, frame_size, frame_index)
 
 func _clear_allied_render_nodes() -> void:
 	for node in allied_render_nodes.values():

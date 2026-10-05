@@ -27,6 +27,8 @@ var grid_rows := 1
 var grid_frames := 1
 var grid_frame_order := "row_major"
 var grid_anchor := Vector2(0.5, 1.0)
+var grid_frame_anchors: Array = []
+var grid_frame_regions: Array = []
 var frame_select_mode := false
 var selected_frame_index := -1
 
@@ -38,6 +40,10 @@ func set_frame_select_mode(enabled: bool) -> void:
 
 func set_selected_frame(frame_index: int) -> void:
 	selected_frame_index = clampi(frame_index, 0, maxi(0, grid_frames - 1))
+	queue_redraw()
+
+func set_frame_anchors(frame_anchors: Array) -> void:
+	grid_frame_anchors = frame_anchors.duplicate(true)
 	queue_redraw()
 
 func set_source_texture(value: Texture2D) -> void:
@@ -52,12 +58,13 @@ func set_source_texture(value: Texture2D) -> void:
 	_pan_offset = Vector2.ZERO
 	queue_redraw()
 
-func set_grid_metadata(columns: int, rows: int, frames: int, anchor: Vector2, frame_order: String = "row_major") -> void:
+func set_grid_metadata(columns: int, rows: int, frames: int, anchor: Vector2, frame_order: String = "row_major", frame_regions: Array = []) -> void:
 	grid_columns = maxi(1, columns)
 	grid_rows = maxi(1, rows)
 	grid_frames = clampi(frames, 1, grid_columns * grid_rows)
 	grid_frame_order = "column_major" if frame_order == "column_major" else "row_major"
 	grid_anchor = Vector2(clampf(anchor.x, 0.0, 1.0), clampf(anchor.y, 0.0, 1.0))
+	grid_frame_regions = frame_regions.duplicate(true)
 	queue_redraw()
 
 func clear_grid_metadata() -> void:
@@ -66,6 +73,7 @@ func clear_grid_metadata() -> void:
 	grid_frames = 1
 	grid_frame_order = "row_major"
 	grid_anchor = Vector2(0.5, 1.0)
+	grid_frame_regions.clear()
 	queue_redraw()
 
 func begin_image_edit(source_crop: Image, brush_size_px: int = -1) -> void:
@@ -190,51 +198,73 @@ func _draw() -> void:
 		drag_status = " · Selection %d × %d px" % [preview_region.size.x, preview_region.size.y]
 	draw_string(ThemeDB.fallback_font, Vector2(10, size.y - 10), "Zoom %.0f%% · wheel zoom · Space/Alt/middle/right drag pan%s%s" % [_zoom * 100.0, edit_hint, drag_status], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("c2cbd4"))
 
+func _frame_regions_valid() -> bool:
+	if grid_frame_regions.size() != grid_frames:
+		return false
+	for values in grid_frame_regions:
+		if not values is Array or values.size() < 4:
+			return false
+		for value in values.slice(0, 4):
+			if not (value is int or value is float):
+				return false
+		if float(values[2]) <= 0.0 or float(values[3]) <= 0.0:
+			return false
+	return true
+
+func _frame_rect_local(frame_index: int) -> Rect2:
+	var index := clampi(frame_index, 0, maxi(0, grid_frames - 1))
+	if _frame_regions_valid():
+		var values: Array = grid_frame_regions[index]
+		return Rect2(
+			float(values[0]) - float(selected_region.position.x),
+			float(values[1]) - float(selected_region.position.y),
+			float(values[2]),
+			float(values[3])
+		)
+	var column := index % grid_columns
+	var row := index / grid_columns
+	if grid_frame_order == "column_major":
+		column = index / grid_rows
+		row = index % grid_rows
+	var left := floorf(float(selected_region.size.x) * float(column) / float(grid_columns))
+	var right := floorf(float(selected_region.size.x) * float(column + 1) / float(grid_columns))
+	var top := floorf(float(selected_region.size.y) * float(row) / float(grid_rows))
+	var bottom := floorf(float(selected_region.size.y) * float(row + 1) / float(grid_rows))
+	return Rect2(left, top, maxf(1.0, right - left), maxf(1.0, bottom - top))
+
+func _frame_rect_to_view(local_rect: Rect2, selected_rect: Rect2) -> Rect2:
+	if selected_region.size.x <= 0 or selected_region.size.y <= 0:
+		return Rect2()
+	var scale := selected_rect.size / Vector2(selected_region.size)
+	return Rect2(
+		selected_rect.position + local_rect.position * scale,
+		local_rect.size * scale
+	)
+
 func _draw_grid_overlay(selected_rect: Rect2) -> void:
-	if grid_columns <= 1 and grid_rows <= 1:
+	if grid_frames <= 1:
 		var anchor_point := selected_rect.position + selected_rect.size * grid_anchor
 		draw_circle(anchor_point, 4.0, Color("ffd166"))
 		draw_line(anchor_point - Vector2(8, 0), anchor_point + Vector2(8, 0), Color("ffd166"), 1.0)
 		draw_line(anchor_point - Vector2(0, 8), anchor_point + Vector2(0, 8), Color("ffd166"), 1.0)
 		return
-	for column in range(1, grid_columns):
-		var x := selected_rect.position.x + floorf(selected_rect.size.x * float(column) / float(grid_columns))
-		draw_line(Vector2(x, selected_rect.position.y), Vector2(x, selected_rect.end.y), Color(0.95, 0.8, 0.3, 0.7), 1.0)
-	for row in range(1, grid_rows):
-		var y := selected_rect.position.y + floorf(selected_rect.size.y * float(row) / float(grid_rows))
-		draw_line(Vector2(selected_rect.position.x, y), Vector2(selected_rect.end.x, y), Color(0.95, 0.8, 0.3, 0.7), 1.0)
 	for frame_index in range(grid_frames):
-		var column := frame_index % grid_columns
-		var row := frame_index / grid_columns
-		if grid_frame_order == "column_major":
-			column = frame_index / grid_rows
-			row = frame_index % grid_rows
-		var left := floorf(selected_rect.size.x * float(column) / float(grid_columns))
-		var right := floorf(selected_rect.size.x * float(column + 1) / float(grid_columns))
-		var top := floorf(selected_rect.size.y * float(row) / float(grid_rows))
-		var bottom := floorf(selected_rect.size.y * float(row + 1) / float(grid_rows))
-		var cell_rect := Rect2(
-			selected_rect.position + Vector2(left, top),
-			Vector2(maxf(1.0, right - left), maxf(1.0, bottom - top))
-		)
+		var cell_rect := _frame_rect_to_view(_frame_rect_local(frame_index), selected_rect)
 		var cell_border := Color(0.3, 0.85, 1.0, 0.35) if frame_index == 0 else Color(0.9, 0.9, 0.9, 0.18)
 		if frame_select_mode and frame_index == selected_frame_index:
 			cell_border = Color("ff6b6b")
 			draw_rect(cell_rect.grow(-2.0), Color(1.0, 0.35, 0.35, 0.08), true)
 		draw_rect(cell_rect, cell_border, false, 3.0 if frame_select_mode and frame_index == selected_frame_index else 2.0)
-	var anchor_column := 0
-	var anchor_row := 0
-	var anchor_left := floorf(selected_rect.size.x * float(anchor_column) / float(grid_columns))
-	var anchor_right := floorf(selected_rect.size.x * float(anchor_column + 1) / float(grid_columns))
-	var anchor_top := floorf(selected_rect.size.y * float(anchor_row) / float(grid_rows))
-	var anchor_bottom := floorf(selected_rect.size.y * float(anchor_row + 1) / float(grid_rows))
-	var anchor_point := selected_rect.position + Vector2(
-		anchor_left + (anchor_right - anchor_left) * grid_anchor.x,
-		anchor_top + (anchor_bottom - anchor_top) * grid_anchor.y
-	)
-	draw_circle(anchor_point, 4.0, Color("ffd166"))
-	draw_line(anchor_point - Vector2(8, 0), anchor_point + Vector2(8, 0), Color("ffd166"), 1.0)
-	draw_line(anchor_point - Vector2(0, 8), anchor_point + Vector2(0, 8), Color("ffd166"), 1.0)
+		var anchor := grid_anchor
+		if frame_index < grid_frame_anchors.size():
+			var values: Variant = grid_frame_anchors[frame_index]
+			if values is Array and values.size() >= 2:
+				anchor = Vector2(clampf(float(values[0]), 0.0, 1.0), clampf(float(values[1]), 0.0, 1.0))
+		var anchor_point := cell_rect.position + cell_rect.size * anchor
+		var anchor_radius := 5.0 if frame_select_mode and frame_index == selected_frame_index else 3.0
+		draw_circle(anchor_point, anchor_radius, Color("ffd166"))
+		draw_line(anchor_point - Vector2(6, 0), anchor_point + Vector2(6, 0), Color("ffd166"), 1.0)
+		draw_line(anchor_point - Vector2(0, 6), anchor_point + Vector2(0, 6), Color("ffd166"), 1.0)
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -255,22 +285,18 @@ func _gui_input(event: InputEvent) -> void:
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			if mouse_event.pressed and frame_select_mode and not _editing_pixels and _get_image_rect().has_point(mouse_event.position):
 				var region_rect := selected_region
-				if region_rect.size.x > 0 and region_rect.size.y > 0 and (grid_columns > 1 or grid_rows > 1):
+				if region_rect.size.x > 0 and region_rect.size.y > 0 and grid_frames > 1:
 					var pixel_size := Vector2(texture.get_size())
 					var selected_rect := Rect2(_get_image_rect().position + Vector2(region_rect.position) / pixel_size * _get_image_rect().size, Vector2(region_rect.size) / pixel_size * _get_image_rect().size)
-					var local := mouse_event.position - selected_rect.position
 					if selected_rect.has_point(mouse_event.position):
-						var column := clampi(floori(local.x / (selected_rect.size.x / float(grid_columns))), 0, grid_columns - 1)
-						var row := clampi(floori(local.y / (selected_rect.size.y / float(grid_rows))), 0, grid_rows - 1)
-						var frame_index := row * grid_columns + column
-						if grid_frame_order == "column_major":
-							frame_index = column * grid_rows + row
-						if frame_index < grid_frames:
-							selected_frame_index = frame_index
-							frame_selected.emit(frame_index)
-							accept_event()
-							queue_redraw()
-							return
+						var selected_local := (mouse_event.position - selected_rect.position) / selected_rect.size * Vector2(region_rect.size)
+						for frame_index in range(grid_frames):
+							if _frame_rect_local(frame_index).has_point(selected_local):
+								selected_frame_index = frame_index
+								frame_selected.emit(frame_index)
+								accept_event()
+								queue_redraw()
+								return
 			if mouse_event.pressed and _get_image_rect().has_point(mouse_event.position):
 				_last_pointer = mouse_event.position
 				if _pan_input_active():

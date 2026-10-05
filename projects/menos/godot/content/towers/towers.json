@@ -4,12 +4,13 @@
       "attack": "",
       "death": "",
       "hit": "",
-      "idle": ""
+      "idle": "robot.asura.idle"
     },
     "cooldown": 1.0,
     "cost": 50,
     "damage": 10.0,
     "default_image": "",
+    "geometry_mode": "legacy",
     "level2": {
       "cooldown": 0.9,
       "damage": 15.0,

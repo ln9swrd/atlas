@@ -1,4 +1,4 @@
-﻿class_name RobotDefinition
+class_name RobotDefinition
 extends ObjectDefinition
 
 
@@ -16,6 +16,7 @@ static func from_catalog(data: Dictionary) -> RobotDefinition:
 	var definition := RobotDefinition.new()
 	definition.id = str(data.get("id", ""))
 	definition.name = str(data.get("name", ""))
+	definition.apply_geometry_from_catalog(data)
 	definition.faction_id = str(data.get("faction_id", ""))
 	definition.base_stats = {
 		"hp": float(data.get("hp", 0.0)),

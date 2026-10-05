@@ -1,6 +1,7 @@
 class_name TowerEditorMain
 extends Control
 
+const VISUAL_ASSET_FRAME = preload("res://scripts/visual_asset_frame.gd")
 const TOWER_FILE := "res://content/towers/towers.json"
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
@@ -454,29 +455,17 @@ func _animated_texture(path: String, frame: int, fallback_frames: int = 1) -> Te
 	var columns := 1
 	var rows := 1
 	var total_frames := maxi(1, fallback_frames)
-	var frame_order := "row_major"
 	var source_rect := Rect2()
-	var frame_regions: Array = []
 	var resolved := VisualAssetResolver.resolve(path)
 	if resolved != null and not resolved.id.begins_with("legacy:"):
 		source_path = resolved.source
 		columns = maxi(1, resolved.columns)
 		rows = maxi(1, resolved.rows)
 		total_frames = maxi(1, resolved.frames)
-		frame_order = resolved.frame_order
 		source_rect = resolved.region
-		frame_regions = resolved.frame_regions.duplicate(true)
 	var texture := load(source_path) as Texture2D
 	if texture == null:
 		return null
-	if frame_regions.size() >= total_frames:
-		var explicit_index := clampi(frame % total_frames, 0, frame_regions.size() - 1)
-		var explicit: Variant = frame_regions[explicit_index]
-		if explicit is Array and explicit.size() >= 4:
-			var explicit_atlas := AtlasTexture.new()
-			explicit_atlas.atlas = texture
-			explicit_atlas.region = Rect2(float(explicit[0]), float(explicit[1]), float(explicit[2]), float(explicit[3]))
-			return explicit_atlas
 	if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
 		source_rect = Rect2(0.0, 0.0, texture.get_width(), texture.get_height())
 	if total_frames <= 1:
@@ -487,18 +476,10 @@ func _animated_texture(path: String, frame: int, fallback_frames: int = 1) -> Te
 	if total_frames > columns * rows:
 		return null
 	var frame_index := frame % total_frames
-	var column := frame_index % columns
-	var row := frame_index / columns
-	if frame_order == "column_major":
-		column = frame_index / rows
-		row = frame_index % rows
-	var frame_left := source_rect.position.x + floorf(source_rect.size.x * float(column) / float(columns))
-	var frame_right := source_rect.position.x + floorf(source_rect.size.x * float(column + 1) / float(columns))
-	var frame_top := source_rect.position.y + floorf(source_rect.size.y * float(row) / float(rows))
-	var frame_bottom := source_rect.position.y + floorf(source_rect.size.y * float(row + 1) / float(rows))
+	var frame_rect := VISUAL_ASSET_FRAME.region_for(resolved, frame_index, source_rect)
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture
-	atlas.region = Rect2(frame_left, frame_top, maxf(1.0, frame_right - frame_left), maxf(1.0, frame_bottom - frame_top))
+	atlas.region = frame_rect
 	return atlas
 
 func _refresh_animation_previews() -> void:

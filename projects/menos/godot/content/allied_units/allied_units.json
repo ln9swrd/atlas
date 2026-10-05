@@ -1,5 +1,6 @@
 {
   "basic": {
+    "geometry_mode": "legacy",
     "ai": {
       "engagement_range": 72.0,
       "target_preference": "front"
@@ -29,6 +30,7 @@
     }
   },
   "heavy": {
+    "geometry_mode": "legacy",
     "ai": {
       "engagement_range": 90.0,
       "target_preference": "front"
@@ -59,6 +61,7 @@
     }
   },
   "light": {
+    "geometry_mode": "legacy",
     "ai": {
       "engagement_range": 90.0,
       "target_preference": "fast"
@@ -89,6 +92,7 @@
     }
   },
   "ranged": {
+    "geometry_mode": "legacy",
     "ai": {
       "engagement_range": 260.0,
       "target_preference": "fast"
@@ -118,6 +122,7 @@
     }
   },
   "support": {
+    "geometry_mode": "legacy",
     "ai": {
       "role": "support",
       "support_range": 220.0
@@ -150,6 +155,7 @@
     }
   },
   "unit_01": {
+    "geometry_mode": "legacy",
     "ai": {},
     "armor": 0.0,
     "attack_type": "ranged",

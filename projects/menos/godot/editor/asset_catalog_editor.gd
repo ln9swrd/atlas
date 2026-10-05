@@ -582,6 +582,7 @@ func _visual_asset_entry(asset_id: String, data: Dictionary) -> Dictionary:
 		"frame_order": str(data.get("frame_order", "row_major")),
 		"anchor": data.get("anchor", {"mode": "BOTTOM_CENTER", "x": 0.5, "y": 1.0}),
 		"frame_regions": data.get("frame_regions", []).duplicate(true) if data.get("frame_regions", []) is Array else [],
+		"frame_anchors": data.get("frame_anchors", []).duplicate(true) if data.get("frame_anchors", []) is Array else [],
 		"catalog_kind": "visual_asset"
 	}
 
@@ -739,11 +740,25 @@ func _on_asset_selected(index: int) -> void:
 		visual_frames_spin.value = maxi(1, int(entry.get("frames", 1)))
 		visual_columns_spin.value = maxi(1, int(entry.get("columns", entry.get("frames", 1))))
 		visual_rows_spin.value = maxi(1, int(entry.get("rows", 1)))
-		visual_frame_order_option.select(1 if str(entry.get("frame_order", "row_major")) == "column_major" else 0)
+		var frame_order := str(entry.get("frame_order", "row_major"))
+		visual_frame_order_option.select(1 if frame_order == "column_major" else 0)
 		var anchor_data: Variant = entry.get("anchor", {})
+		var anchor := Vector2(0.5, 1.0)
 		if anchor_data is Dictionary:
-			visual_anchor_x_spin.value = clampf(float(anchor_data.get("x", 0.5)), 0.0, 1.0)
-			visual_anchor_y_spin.value = clampf(float(anchor_data.get("y", 1.0)), 0.0, 1.0)
+			anchor = Vector2(clampf(float(anchor_data.get("x", 0.5)), 0.0, 1.0), clampf(float(anchor_data.get("y", 1.0)), 0.0, 1.0))
+			visual_anchor_x_spin.value = anchor.x
+			visual_anchor_y_spin.value = anchor.y
+		var frame_regions: Array = entry.get("frame_regions", []) if entry.get("frame_regions", []) is Array else []
+		region_view.set_grid_metadata(
+			maxi(1, int(entry.get("columns", entry.get("frames", 1)))),
+			maxi(1, int(entry.get("rows", 1))),
+			maxi(1, int(entry.get("frames", 1))),
+			anchor,
+			frame_order,
+			frame_regions
+		)
+		var frame_anchors: Array = entry.get("frame_anchors", []) if entry.get("frame_anchors", []) is Array else []
+		region_view.set_frame_anchors(frame_anchors)
 	else:
 		visual_frames_spin.value = 1
 		visual_columns_spin.value = 1
@@ -751,6 +766,7 @@ func _on_asset_selected(index: int) -> void:
 		visual_frame_order_option.select(0)
 		visual_anchor_x_spin.value = 0.5
 		visual_anchor_y_spin.value = 1.0
+		region_view.clear_grid_metadata()
 	source_path = str(entry.get("source_path", ""))
 	_load_source_for_entry(rect)
 	_update_footprint_display(rect)

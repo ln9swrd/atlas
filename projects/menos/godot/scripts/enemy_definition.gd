@@ -1,4 +1,4 @@
-﻿class_name EnemyDefinition
+class_name EnemyDefinition
 extends ObjectDefinition
 
 
@@ -9,6 +9,7 @@ static func from_catalog(entry_id: String, data: Dictionary) -> EnemyDefinition:
 	var definition := EnemyDefinition.new()
 	definition.id = entry_id
 	definition.name = str(data.get("name", entry_id))
+	definition.apply_geometry_from_catalog(data)
 	definition.combat = {
 		"hp": float(data.get("hp", 0.0)),
 		"speed": float(data.get("speed", 0.0)),

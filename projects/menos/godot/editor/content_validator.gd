@@ -13,6 +13,7 @@ const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
 const MISSION_FILE := "res://content/missions/missions.json"
 const REWARD_FILE := "res://content/rewards/rewards.json"
 const ITEM_FILE := "res://content/items/items.json"
+const VISUAL_ASSET_FILE := "res://content/editor/visual_assets.json"
 
 var errors: Array[String] = []
 var warnings: Array[String] = []
@@ -24,6 +25,7 @@ func run() -> Dictionary:
 	return {"valid": errors.is_empty(), "errors": errors.duplicate(), "warnings": warnings.duplicate()}
 
 func _run() -> void:
+	_validate_visual_asset_catalog()
 	_validate_catalog("ENEMY", ENEMY_FILE, ["name", "hp", "speed", "armor", "base_damage", "reward", "radius", "sprite_anim"])
 	_validate_catalog("ALLIED_UNIT", ALLIED_UNIT_FILE, ["name", "description", "hp", "speed", "armor", "damage", "cooldown", "range", "radius", "attack_type", "reward", "color", "projectile_anim", "robot_damage", "robot_range", "robot_cooldown", "ai", "visuals"])
 	_validate_catalog("TOWER", TOWER_FILE, ["name", "cost", "damage", "cooldown", "range", "preference", "sprite_anim", "level2"])
@@ -38,6 +40,42 @@ func _run() -> void:
 	_validate_stages()
 	_validate_resource_refs()
 
+func _validate_visual_asset_catalog() -> void:
+	var catalog := _load_json_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")
+	if catalog.is_empty():
+		return
+	for asset_id in catalog.keys():
+		var entry = catalog[asset_id]
+		if not (entry is Dictionary):
+			errors.append("VISUAL_ASSET[%s] is not an object" % asset_id)
+			continue
+		var frames_value = entry.get("frames", null)
+		if not (frames_value is int or frames_value is float) or int(frames_value) < 1:
+			errors.append("VISUAL_ASSET[%s].frames is invalid" % asset_id)
+			continue
+		var frames := int(frames_value)
+		var frame_regions = entry.get("frame_regions", [])
+		if frame_regions == null:
+			continue
+		if not (frame_regions is Array):
+			errors.append("VISUAL_ASSET[%s].frame_regions must be an array" % asset_id)
+			continue
+		if frame_regions.is_empty():
+			continue
+		if frame_regions.size() != frames:
+			errors.append("VISUAL_ASSET[%s].frame_regions size %d does not match frames %d" % [asset_id, frame_regions.size(), frames])
+			continue
+		for frame_index in frame_regions.size():
+			var values = frame_regions[frame_index]
+			if not (values is Array) or values.size() < 4:
+				errors.append("VISUAL_ASSET[%s].frame_regions[%d] must be [x, y, width, height]" % [asset_id, frame_index])
+				continue
+			if not (values[0] is int or values[0] is float) or not (values[1] is int or values[1] is float) or not (values[2] is int or values[2] is float) or not (values[3] is int or values[3] is float):
+				errors.append("VISUAL_ASSET[%s].frame_regions[%d] contains non-numeric values" % [asset_id, frame_index])
+				continue
+			if float(values[2]) <= 0.0 or float(values[3]) <= 0.0:
+				errors.append("VISUAL_ASSET[%s].frame_regions[%d] has non-positive size" % [asset_id, frame_index])
+
 func _validate_catalog(label: String, path: String, required: Array[String]) -> void:
 	var parsed := ObjectRepository.load_catalog(path)
 	if parsed.is_empty():
@@ -51,12 +89,52 @@ func _validate_catalog(label: String, path: String, required: Array[String]) -> 
 		for key in required:
 			if not entry.has(key):
 				errors.append("%s[%s] missing required field: %s" % [label, id, key])
+		_validate_geometry(label, str(id), entry)
 		for key in entry.keys():
 			var value = entry[key]
 			if value is float or value is int:
 				if float(value) < 0.0:
 					errors.append("%s[%s].%s is negative" % [label, id, key])
 
+func _validate_geometry(label: String, object_id: String, entry: Dictionary) -> void:
+	if not entry.has("geometry_mode"):
+		errors.append("%s[%s] missing required field: geometry_mode" % [label, object_id])
+		return
+	var mode := str(entry.get("geometry_mode", ""))
+	if mode not in ["legacy", "canonical"]:
+		errors.append("%s[%s].geometry_mode is invalid: %s" % [label, object_id, mode])
+		return
+	if mode == "legacy":
+		return
+	if not entry.has("geometry"):
+		errors.append("%s[%s] canonical geometry_mode requires geometry" % [label, object_id])
+		return
+	var geometry = entry.get("geometry")
+	if not (geometry is Dictionary):
+		errors.append("%s[%s].geometry must be an object" % [label, object_id])
+		return
+	if not geometry.has("canonical_body_center"):
+		errors.append("%s[%s].geometry missing canonical_body_center" % [label, object_id])
+	else:
+		var center = geometry.get("canonical_body_center")
+		if not _is_numeric_pair(center):
+			errors.append("%s[%s].geometry.canonical_body_center must be [x, y] numeric" % [label, object_id])
+	var offsets = geometry.get("animation_offsets", null)
+	if offsets != null:
+		if not (offsets is Dictionary):
+			errors.append("%s[%s].geometry.animation_offsets must be an object" % [label, object_id])
+		else:
+			for animation in offsets.keys():
+				if not _is_numeric_pair(offsets[animation]):
+					errors.append("%s[%s].geometry.animation_offsets[%s] must be [x, y] numeric" % [label, object_id, animation])
+
+func _is_numeric_pair(value: Variant) -> bool:
+	if not (value is Array) or value.size() != 2:
+		return false
+	for component in value:
+		if not (component is int or component is float) or component is bool:
+			return false
+	return true
 func _load_json_dictionary(path: String, label: String) -> Dictionary:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:

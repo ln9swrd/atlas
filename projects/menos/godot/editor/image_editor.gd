@@ -958,6 +958,14 @@ func _load_grid_metadata(entry: Dictionary) -> void:
 	var anchor_mode := str(anchor_data.get("mode", "BOTTOM_CENTER"))
 	var anchor_x := clampf(float(anchor_data.get("x", 0.5)), 0.0, 1.0)
 	var anchor_y := clampf(float(anchor_data.get("y", 1.0)), 0.0, 1.0)
+	var frame_anchors: Array = []
+	var frame_anchors_data: Variant = entry.get("frame_anchors", [])
+	if frame_anchors_data is Array:
+		frame_anchors = frame_anchors_data.duplicate(true)
+	while frame_anchors.size() < frames:
+		frame_anchors.append([anchor_x, anchor_y])
+	if frame_anchors.size() > frames:
+		frame_anchors.resize(frames)
 	columns_spin.value = columns
 	rows_spin.value = rows
 	frames_spin.value = frames
@@ -966,7 +974,8 @@ func _load_grid_metadata(entry: Dictionary) -> void:
 	anchor_mode_option.select(modes.find(anchor_mode) if modes.find(anchor_mode) >= 0 else 4)
 	anchor_x_spin.value = anchor_x
 	anchor_y_spin.value = anchor_y
-	view.set_grid_metadata(columns, rows, frames, Vector2(anchor_x, anchor_y), order)
+	view.set_grid_metadata(columns, rows, frames, Vector2(anchor_x, anchor_y), order, entry.get("frame_regions", []) if entry.get("frame_regions", []) is Array else [])
+	view.set_frame_anchors(frame_anchors)
 	var cell_w := 0.0
 	var cell_h := 0.0
 	var region := _entry_region(entry)
@@ -1021,6 +1030,16 @@ func _apply_grid_metadata() -> void:
 		"BOTTOM_LEFT":
 			anchor_x = 0.0
 			anchor_y = 1.0
+	var frame_anchors: Array = []
+	var existing_frame_anchors: Variant = entry.get("frame_anchors", [])
+	if existing_frame_anchors is Array:
+		frame_anchors = existing_frame_anchors.duplicate(true)
+	while frame_anchors.size() < frames:
+		frame_anchors.append([anchor_x, anchor_y])
+	if frame_anchors.size() > frames:
+		frame_anchors.resize(frames)
+	var selected_anchor_index := clampi(int(frame_index_spin.value) - 1, 0, frames - 1)
+	frame_anchors[selected_anchor_index] = [anchor_x, anchor_y]
 	var catalog_path := "res://content/editor/visual_assets.json"
 	var file := FileAccess.open(catalog_path, FileAccess.READ)
 	if file == null:
@@ -1037,6 +1056,7 @@ func _apply_grid_metadata() -> void:
 	asset["frames"] = frames
 	asset["frame_order"] = order
 	asset["anchor"] = {"mode": anchor_mode, "x": anchor_x, "y": anchor_y}
+	asset["frame_anchors"] = frame_anchors if frames > 1 else []
 	data[str(entry.get("owner_key", ""))] = asset
 	if not _write_json(catalog_path, data):
 		grid_status.text = "Failed to save Grid / Anchor metadata."
@@ -1047,8 +1067,10 @@ func _apply_grid_metadata() -> void:
 	entry["frames"] = frames
 	entry["frame_order"] = order
 	entry["anchor"] = asset["anchor"]
+	entry["frame_anchors"] = frame_anchors
 	entries[current_index] = entry
-	view.set_grid_metadata(columns, rows, frames, Vector2(anchor_x, anchor_y), order)
+	view.set_grid_metadata(columns, rows, frames, Vector2(anchor_x, anchor_y), order, entry.get("frame_regions", []) if entry.get("frame_regions", []) is Array else [])
+	view.set_frame_anchors(frame_anchors)
 	var cell_w := float(region.size.x) / float(columns)
 	var cell_h := float(region.size.y) / float(rows)
 	grid_status.text = "Saved: %d × %d grid | %d frames | Cell %.0f × %.0f | Anchor %s (%.2f, %.2f)" % [columns, rows, frames, cell_w, cell_h, anchor_mode, anchor_x, anchor_y]
@@ -1126,7 +1148,20 @@ func _on_frame_selected(frame_index: int) -> void:
 		return
 	frame_index_spin.value = frame_index + 1
 	view.set_selected_frame(frame_index)
-	frame_transform_status.text = "Selected Frame %d | Arrow keys move the frame | Shift = 10 px" % [frame_index + 1]
+	if current_index >= 0 and current_index < entries.size():
+		var entry: Dictionary = entries[current_index]
+		var anchor_data: Dictionary = entry.get("anchor", {}) if entry.get("anchor", {}) is Dictionary else {}
+		var anchor_x := clampf(float(anchor_data.get("x", 0.5)), 0.0, 1.0)
+		var anchor_y := clampf(float(anchor_data.get("y", 1.0)), 0.0, 1.0)
+		var frame_anchors_data: Variant = entry.get("frame_anchors", [])
+		if frame_anchors_data is Array and frame_index < frame_anchors_data.size():
+			var values: Variant = frame_anchors_data[frame_index]
+			if values is Array and values.size() >= 2:
+				anchor_x = clampf(float(values[0]), 0.0, 1.0)
+				anchor_y = clampf(float(values[1]), 0.0, 1.0)
+		anchor_x_spin.value = anchor_x
+		anchor_y_spin.value = anchor_y
+	frame_transform_status.text = "Selected Frame %d | Anchor %.3f, %.3f | Arrow keys move the frame | Shift = 10 px" % [frame_index + 1, float(anchor_x_spin.value), float(anchor_y_spin.value)]
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not frame_select_mode or frame_transform_active_index < 0:

@@ -1,5 +1,6 @@
 {
 	"giant": {
+		"geometry_mode": "legacy",
 		"armor": 18.0,
 		"attack_cooldown": 2.0,
 		"attack_range": 120.0,
@@ -19,6 +20,7 @@
 		"speed": 7.0
 	},
 	"heavy": {
+		"geometry_mode": "legacy",
 		"armor": 8.0,
 		"attack_cooldown": 1.8,
 		"attack_range": 24.0,
@@ -35,6 +37,7 @@
 		"speed": 14.0
 	},
 	"normal": {
+		"geometry_mode": "legacy",
 		"armor": 0.0,
 		"attack_cooldown": 1.2,
 		"attack_range": 18.0,
@@ -51,6 +54,7 @@
 		"speed": 25.0
 	},
 	"rusher": {
+		"geometry_mode": "legacy",
 		"armor": 0.0,
 		"attack_cooldown": 0.8,
 		"attack_range": 14.0,

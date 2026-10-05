@@ -9,6 +9,7 @@ static func from_catalog(entry_id: String, data: Dictionary) -> TowerDefinition:
 	var definition := TowerDefinition.new()
 	definition.id = entry_id
 	definition.name = str(data.get("name", entry_id))
+	definition.apply_geometry_from_catalog(data)
 	definition.combat = {
 		"cooldown": float(data.get("cooldown", 0.0)),
 		"cost": float(data.get("cost", 0.0)),

@@ -16,6 +16,7 @@ var owner_id: String = ""
 var usage: String = ""
 var team_mask_source: String = ""
 var frame_regions: Array = []
+var frame_anchors: Array = []
 
 static func from_dict(data: Dictionary) -> VisualAssetDefinition:
 	var definition := VisualAssetDefinition.new()
@@ -46,6 +47,9 @@ static func from_dict(data: Dictionary) -> VisualAssetDefinition:
 	var frame_regions_data: Variant = data.get("frame_regions", [])
 	if frame_regions_data is Array:
 		definition.frame_regions = frame_regions_data.duplicate(true)
+	var frame_anchors_data: Variant = data.get("frame_anchors", [])
+	if frame_anchors_data is Array:
+		definition.frame_anchors = frame_anchors_data.duplicate(true)
 	return definition
 
 func to_dict() -> Dictionary:
@@ -66,5 +70,6 @@ func to_dict() -> Dictionary:
 		"owner": owner_id,
 		"usage": usage,
 		"team_mask": {"source": team_mask_source} if not team_mask_source.is_empty() else {},
-		"frame_regions": frame_regions.duplicate(true)
+		"frame_regions": frame_regions.duplicate(true),
+		"frame_anchors": frame_anchors.duplicate(true)
 	}

@@ -1,6 +1,7 @@
 class_name UnitEditorMain
 extends Control
 
+const VISUAL_ASSET_FRAME = preload("res://scripts/visual_asset_frame.gd")
 const UNIT_FILE := "res://content/allied_units/allied_units.json"
 const ENEMY_FILE := "res://content/enemies/enemies.json"
 const BASE_UNIT_TYPES := ["basic", "light", "ranged", "heavy", "support"]
@@ -784,18 +785,10 @@ func _animated_texture(path: String, frame: int, fallback_rect: Array = []) -> T
 	if total_frames > columns * rows:
 		return null
 	var frame_index := frame % total_frames
-	var column := frame_index % columns
-	var row := frame_index / columns
-	if frame_order == "column_major":
-		column = frame_index / rows
-		row = frame_index % rows
-	var frame_left := source_rect.position.x + floorf(source_rect.size.x * float(column) / float(columns))
-	var frame_right := source_rect.position.x + floorf(source_rect.size.x * float(column + 1) / float(columns))
-	var frame_top := source_rect.position.y + floorf(source_rect.size.y * float(row) / float(rows))
-	var frame_bottom := source_rect.position.y + floorf(source_rect.size.y * float(row + 1) / float(rows))
+	var frame_rect := VISUAL_ASSET_FRAME.region_for(resolved, frame_index, source_rect)
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture
-	atlas.region = Rect2(frame_left, frame_top, maxf(1.0, frame_right - frame_left), maxf(1.0, frame_bottom - frame_top))
+	atlas.region = frame_rect
 	return atlas
 
 func _refresh_animation_previews() -> void:

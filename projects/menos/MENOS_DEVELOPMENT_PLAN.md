@@ -370,3 +370,50 @@ Master가 실제 Runtime 결과를 직접 확인.
 상태: PLAN COMPLETE / IMPLEMENTATION NOT STARTED
 
 본 문서 작성 자체는 계획 수립 작업이며 게임 코드, Scene, Asset, Data는 변경하지 않았다.
+
+## Handoff — 2026-10-05 자동공격 토글 / 수동 입력 검증 갱신
+
+**STATUS — PASS / 부분 검증 완료**
+
+**목적**
+자동공격을 수동 모드로 전환하고, 수동 입력 동작이 실제 Runtime 전투 흐름에서 사용할 수 있는지 최소 검증한다.
+
+**기준선**
+- 프로젝트: `D:\Atlas\projects\menos\godot`
+- Godot: `D:\Godot_v4.7.2`
+- PAD Flow: `gpt`
+- 관련 입력 Action: `move_up`
+- 이번 검증에서는 Godot 프로젝트 코드/Asset/Scene/Data를 변경하지 않음.
+- PAD Flow는 테스트를 위해 키 입력 표현을 수정하고 저장함.
+
+**CONFIRMED**
+- Runtime에서 `ATTACK: AUTO`를 `ATTACK: MANUAL`로 전환했다.
+- Godot Input Map에서 W/Up이 `move_up`으로 등록되어 있다.
+- `update_robot_manual_input()`이 수동 이동 입력을 실제 Robot 위치 변경에 연결한다.
+- PAD `gpt` Flow의 Send Keys 입력을 `wwwwwwwwww`에서 `{W:10}`으로 변경했다.
+- Master의 실제 Runtime 테스트에서 자동공격 토글 및 수동 입력동작이 성공했다.
+
+**검증 상태**
+- CODE VERIFIED: PASS
+- EDITOR VERIFIED: PASS — PAD Flow 저장 확인
+- BUILD VERIFIED: NOT VERIFIED
+- PIE VERIFIED: PASS — Master 실제 Runtime 확인
+
+**마리의 판정**
+수동 입력 검증의 해당 목적은 달성했다. 이 결과는 Phase 1의 전체 완료가 아니라, Phase 1 내 수동 조작 검증 항목의 완료로 기록한다.
+
+**변경 사항**
+- 개발계획 문서에 본 검증 결과를 추가.
+- Godot 코드/Asset/Scene/Data 변경 없음.
+- PAD Flow `gpt` 변경은 테스트 범위에서 실제 반영됨.
+
+**미확인 사항**
+- Phase 1의 전체 Canon 전투 루프(공격/타깃/특수/스킬/필살기/AI 아군/지원 시설/보스/승패/재시작)는 별도 PIE 검증 필요.
+
+**OUT OF SCOPE**
+- 추가 공격 입력 자동화
+- 보스/스킬/필살기 추가 검증
+- Phase 2 이후 작업
+
+**판정**
+ACCEPT·STOP. 본 검증 항목은 종료하며 다음 Phase로 자동 진행하지 않는다.

@@ -4,14 +4,14 @@
 
 MENOS Catalog Editor에서 2행 이상의 Sprite Sheet를 정확하게 등록·미리보기하고, Robot Editor의 애니메이션 Preview에서도 동일한 프레임과 위치 기준을 사용하도록 확장한다.
 
-핵심 목표는 단순히 `frames` 수를 늘리는 것이 아니라 **고정 Cell Grid + 공통 Anchor**를 Visual Asset의 명시적 메타데이터로 정의하는 것이다.
+핵심 목표는 단순히 `frames` 수를 늘리는 것이 아니라 **고정 Cell Grid + Anchor 메타데이터**를 Visual Asset의 명시적 기준으로 정의하는 것이다. Anchor는 기본적으로 공통값을 사용하되, Master 결정에 따라 필요할 경우 **프레임별 수동 Anchor Override**를 저장·소비할 수 있어야 한다.
 
 ## 2. 현재 기준선
 
-- Project: `E:\atlas\projects\menos`
-- Godot: `E:\godot 4.7.2`
+- Project: `D:\Atlas\projects\menos`
+- Godot: `D:\Godot_v4.7.2`
 - 기준 Branch: `main`
-- 현재 Working Tree: CLEAN (조사 시점)
+- 현재 Working Tree: 기존 승인 변경사항 및 이번 작업 변경사항이 존재함. 임의 되돌리기 금지.
 - 관련 핵심 파일:
   - `godot/scripts/visual_asset_definition.gd`
   - `godot/editor/image_editor.gd`
@@ -33,21 +33,21 @@ MENOS Catalog Editor에서 2행 이상의 Sprite Sheet를 정확하게 등록·�
 - owner
 - usage
 - frame_regions
-
-아직 다음 정보가 없다.
-
 - columns
 - rows
 - frame_order
 - anchor
+- frame_anchors
+
+현재 공통 Anchor는 legacy/default 기준으로 유지하며, `frame_anchors`가 있으면 선택된 프레임에 대한 수동 Override로 사용한다.
 
 ### 3.2 Robot Editor
 
-현재 `_animated_texture()`는 `region.width / total_frames` 방식으로 프레임 폭을 계산하며 Y 위치를 고정한다.
+기존 1행 전용 프레임 계산 경로는 Grid metadata 기반 Frame Rect 계산으로 확장되었다.
 
-따라서 기본적으로 1행 가로 Sprite Sheet를 전제로 한다.
+현재 Robot runtime은 Grid/Frame Order를 사용하며, Geometry가 없는 경우 `frame_index`를 전달해 공통 Anchor 또는 `frame_anchors`를 소비한다.
 
-2행 Sheet의 경우 실제 프레임 위치를 올바르게 계산하지 못한다.
+따라서 2행 이상 Sheet와 프레임별 수동 Anchor를 코드 경로에서 처리할 수 있다.
 
 ### 3.3 Catalog Editor
 
@@ -205,6 +205,24 @@ This produces adjacent integer cells with no overlap or gap; widths/heights may 
 
 조건을 만족하지 않으면 저장하지 않는다.
 
+### 6.5 Frame별 Anchor Override
+
+프레임별 위치 차이를 수동으로 보정할 수 있도록 `frame_anchors`를 지원한다.
+
+```text
+frame_anchors[frame_index] = [x, y]
+x: 0.0 ~ 1.0
+y: 0.0 ~ 1.0
+```
+
+규칙:
+
+1. `frame_anchors[frame_index]`가 유효하면 해당 프레임의 Anchor로 사용한다.
+2. 해당 항목이 없거나 형식이 잘못되면 기존 공통 `anchor`로 fallback한다.
+3. 자동 Alpha Bounding Box 기반 Anchor 계산은 하지 않는다.
+4. Editor에서는 선택된 프레임의 Anchor X/Y를 수정하고 저장할 수 있어야 한다.
+5. `frame_anchors`는 Production 데이터에 임의 샘플을 삽입하지 않고, 실제 Asset 편집 시에만 저장한다.
+
 ## 7. Robot Editor 개발 범위
 
 Robot Editor는 Catalog의 동일한 Visual Asset 메타데이터를 사용해야 한다.
@@ -217,7 +235,9 @@ Robot Editor는 Catalog의 동일한 Visual Asset 메타데이터를 사용해�
 
 ### 7.2 Anchor 적용
 
-계산된 Cell 안에서 Anchor 위치를 게임 좌표의 공통 기준점으로 사용한다.
+계산된 Cell 안에서 Anchor 위치를 게임 좌표의 기준점으로 사용한다.
+
+공통 Anchor가 있으면 기본값으로 사용하고, `frame_anchors[frame_index]`가 있으면 해당 프레임의 Override를 사용한다.
 
 예:
 
@@ -230,14 +250,15 @@ BOTTOM_CENTER = (60, 120)
 
 ### 7.3 Catalog와 Robot Editor 일치성
 
-동일 Asset에 대해 다음 값이 양쪽에서 반드시 동일해야 한다.
+동일 Asset에 대해 다음 값이 양쪽에서 동일한 기준으로 해석되어야 한다.
 
 - Region
 - Columns
 - Rows
 - Frames
 - Frame Order
-- Anchor
+- 공통 Anchor
+- 존재하는 경우 Frame별 Anchor Override
 
 ## 8. VisualAssetDefinition 변경
 
@@ -250,7 +271,10 @@ frame_order: String
 anchor_mode: String
 anchor_x: float
 anchor_y: float
+frame_anchors: Array
 ```
+
+`frame_anchors`는 선택적이며 각 원소는 `[x, y]` 형식의 Cell 정규화 좌표다.
 
 `from_dict()`와 `to_dict()` 양쪽을 함께 수정한다.
 
@@ -269,14 +293,16 @@ anchor = 기존 동작과 호환되는 기본값
 
 ## 10. frame_regions와의 관계
 
-기존 `frame_regions`는 즉시 제거하지 않는다.
+기존 `frame_regions`는 제거하지 않는다.
 
-첫 구현에서는 다음 우선순위를 적용한다.
+Frame Rect의 Canon은 다음과 같이 정의한다.
 
-1. 명시적 Grid metadata가 있는 Asset → Grid 방식 사용
-2. Grid metadata가 없는 Legacy Asset → 기존 frame_regions 또는 1행 fallback 사용
+1. `frame_regions`가 존재하고 `frames`와 길이가 일치하며 각 Frame Rect가 유효하면, 이를 명시적 Frame Rect로 사용한다.
+2. 유효한 `frame_regions`가 없으면 `columns × rows` Grid에서 Frame Rect를 계산한다.
+3. Grid는 신규 Asset의 기본 Frame Rect 생성 규칙이며, 비균일 또는 명시적 Frame Rect가 필요한 Asset에서는 `frame_regions`가 override 역할을 한다.
+4. 잘못된 `frame_regions`는 Validator에서 오류로 보고해야 하며, Production 데이터를 자동 변환하거나 삭제하지 않는다.
 
-이를 통해 기존 Asset과 새 2행 Asset을 동시에 처리한다.
+이를 통해 기존 비균일 Asset의 실제 Frame Rect를 보존하면서 새 2행 이상 Sprite Sheet는 Grid metadata만으로 처리한다.
 
 ## 11. Alpha Trim 정책
 
@@ -284,49 +310,55 @@ Sprite Animation의 공통 Anchor 안정성을 위해 자동 Alpha Trim을 프�
 
 Region 선택 자체의 Trim 기능은 유지하되, Animation Cell의 좌표와 Anchor는 고정 Cell 기준으로 유지한다.
 
-프레임별 Anchor Override는 이번 개발 범위에서 제외한다.
+프레임별 Anchor Override는 이번 업데이트에서 개발 범위에 포함한다. 단, 자동 Anchor 산출은 범위에 포함하지 않는다.
 
 ## 12. 구현 순서
 
 ### Phase 1 — Data Model
 
-1. VisualAssetDefinition 확장
-2. JSON serialization/deserialization 추가
-3. Legacy default 처리
-4. 데이터 검증 함수 추가
+1. VisualAssetDefinition 확장 — 완료
+2. JSON serialization/deserialization 추가 — 완료
+3. Legacy default 처리 — 완료
+4. 데이터 검증 함수 추가 — 기존 검증 경로와 연계, 별도 전용 함수는 현재 미확인
 
 ### Phase 2 — Catalog Editor
 
-1. Columns/Rows/Frames 입력
-2. Frame Order 입력
-3. Anchor Mode/좌표 입력
-4. Grid Overlay
-5. Frame Highlight
-6. Anchor Marker
-7. 입력값 검증
-8. JSON 저장
+1. Columns/Rows/Frames 입력 — 구현됨
+2. Frame Order 입력 — 구현됨
+3. Anchor Mode/좌표 입력 — 구현됨
+4. Grid Overlay — 구현됨
+5. Frame Highlight — 구현됨
+6. Anchor Marker — 구현됨
+7. 입력값 검증 — 구현 경로 확인
+8. JSON 저장 — 구현됨
+9. Frame 선택 시 해당 Frame의 Anchor 표시 — 구현됨
+10. 선택 Frame의 Anchor X/Y 수정 및 저장 — 구현됨
 
 ### Phase 3 — Robot Editor
 
-1. Grid 기반 Frame Rect 계산
-2. Frame Order 처리
-3. Anchor 계산
-4. Preview 위치 적용
-5. Legacy fallback 유지
+1. Grid 기반 Frame Rect 계산 — 기존 구현 경로에 반영
+2. Frame Order 처리 — 반영
+3. 공통/Frame별 Anchor 계산 — 반영
+4. Preview 위치 적용 — 반영
+5. Legacy fallback 유지 — 반영
+6. Geometry가 존재하는 Robot은 Geometry 경로를 우선하고, 없으면 Visual Asset Anchor 경로를 사용
 
 ### Phase 4 — 최소 검증
 
-1. 1행 Legacy Asset
-2. 2행 Asset
-3. 3행 이상 Asset
-4. Frames < Columns × Rows
-5. BOTTOM_CENTER Anchor
-6. CUSTOM Anchor
-7. 기존 Asset 회귀 확인
+1. 1행 Legacy Asset — 코드 경로 확인
+2. 2행 Asset — 코드 경로 확인
+3. 3행 이상 Asset — 코드 경로 확인 대상
+4. Frames < Columns × Rows — fallback/경계 확인 대상
+5. BOTTOM_CENTER Anchor — 코드 경로 확인
+6. CUSTOM Anchor — 코드 경로 확인
+7. Frame별 Anchor Override — 전용 smoke test 통과
+8. 기존 Asset 회귀 확인 — 기존 broad smoke test는 별도 실패 상태이며 원인은 미확인
+9. 실제 Editor UI에서 Frame 선택 → Anchor 변경 → 저장 → 재로드 — NOT VERIFIED
+10. PIE에서 실제 프레임별 위치 반영 — NOT VERIFIED
 
 ## 13. 최소 성공 조건
 
-다음 조건을 모두 만족하면 구현 성공으로 판정한다.
+구현 경로 기준 성공 조건과 실제 Runtime 검증 조건을 구분한다.
 
 1. Catalog Editor에서 2행 Sprite Sheet를 등록할 수 있다.
 2. Grid가 실제 Cell 경계와 일치한다.
@@ -335,6 +367,9 @@ Region 선택 자체의 Trim 기능은 유지하되, Animation Cell의 좌표와
 5. Robot Editor Preview가 동일한 프레임 순서를 사용한다.
 6. 프레임 간 캐릭터 위치가 Anchor 기준으로 안정적으로 유지된다.
 7. 기존 1행 Asset이 깨지지 않는다.
+8. Frame별 Anchor Override가 지정된 경우 해당 프레임에만 적용되고, 누락 프레임은 공통 Anchor로 fallback한다.
+
+현재 코드/데이터 경로는 위 조건을 만족하는 것으로 검증되었으나, 실제 Editor UI 저장과 PIE는 아직 미검증이다.
 
 ## 14. 검증 상태 기준
 
@@ -366,7 +401,7 @@ Region 선택 자체의 Trim 기능은 유지하되, Animation Cell의 좌표와
 
 - 새로운 Sprite Asset 제작
 - 기존 Asset 이미지 변환
-- 프레임별 Anchor Override
+- 자동 Alpha Bounding Box 기반 Anchor 산출
 - Animation 시스템 전체 개편
 - Runtime Animation 구조의 전면 재설계
 - Catalog UI의 비관련 기능 개선
@@ -384,11 +419,31 @@ RECOMMENDED: YES
 
 BUSINESS VIABLE: 프로젝트 내부 개발 목적 기준으로 판단 가능하며, 외부 사업성 평가는 본 문서 범위에 포함하지 않는다.
 
-## 18. 최종 개발 원칙
+## 18. 현재 진행 상태
 
-**고정 Cell이 프레임의 기준이다.**
+- Data Model: PASS
+- Frame별 Anchor Resolver/fallback: PASS
+- Serialization/Reload: PASS
+- Catalog Editor UI 코드 경로: 구현 완료
+- 실제 Editor UI 입력/저장/재로드: NOT VERIFIED
+- Robot Runtime frame별 Anchor 소비 경로: 코드 확인
+- PIE 실제 위치 반영: NOT VERIFIED
+- 전용 `frame_anchor_smoke_test.gd`: `FRAME_ANCHOR_SMOKE_TEST_PASS`
+- Production `visual_assets.json`: frame별 Anchor 샘플 데이터 미삽입
 
-**Anchor는 Cell 기준의 공통 좌표다.**
+따라서 현재 개발 상태는 **코드·데이터 경로 기준 PASS, 실제 Editor UI 및 PIE 기준 NOT VERIFIED**이다. 실제 UI 검증 없이 Production 완료로 승격하지 않는다.
+
+## 19. 최종 개발 원칙
+
+**Grid는 신규 Asset의 기본 Frame Rect 생성 규칙이다.**
+
+**유효한 명시적 `frame_regions`는 비균일/명시적 Frame Rect가 필요한 Asset의 override다.**
+
+**고정 Cell이 Anchor의 기준이다.**
+
+**Anchor는 Cell 기준의 정규화 좌표다.**
+
+**공통 Anchor는 기본값이고, Frame별 수동 Override는 선택적으로 사용한다.**
 
 **Catalog Editor와 Robot Editor는 동일한 metadata를 소비해야 한다.**
 
