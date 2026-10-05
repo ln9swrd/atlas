@@ -867,6 +867,9 @@ func spawn_enemies() -> void:
 			spawn_position = Vector2(randf_range(segment_rect.position.x, segment_rect.end.x), randf_range(segment_rect.position.y, segment_rect.end.y))
 		enemies.append(EnemyRuntimeState.create(entry.type, lane, spawn_position, float(definition.get_combat_value("hp", 0.0))))
 
+func _gameplay_art_enabled() -> bool:
+	return StageManager.run_mode not in ["campaign", "single"]
+
 func _create_robot_render_node() -> void:
 	if is_instance_valid(robot_render_node):
 		return
@@ -943,6 +946,9 @@ func _robot_animation_frame_count_for_value(sprite_value: String, fallback: int 
 func _update_robot_render_node() -> void:
 	if not is_instance_valid(robot_render_node):
 		return
+	if not _gameplay_art_enabled():
+		robot_render_node.visible = false
+		return
 	if not robot.active or robot_sprite_catalog.is_empty():
 		robot_render_node.visible = false
 		return
@@ -996,6 +1002,8 @@ func _clear_allied_render_nodes() -> void:
 	allied_render_nodes.clear()
 
 func _create_allied_render_node(unit: AlliedUnitRuntimeState) -> void:
+	if not _gameplay_art_enabled():
+		return
 	var sprite := Sprite2D.new()
 	sprite.name = "AlliedUnit_%s" % unit.id
 	sprite.texture = allied_sprite_catalog.get(unit.type, null)
@@ -2009,8 +2017,11 @@ func _draw() -> void:
 	# Tactical Grid Background & Field Control Sidebar
 	# Battle HUD is rendered over the battlefield; it is not a separate sidebar.
 
-	# Catalog terrain assets use the same full source rectangles as Map Editor.
-	_draw_catalog_map_tiles(_runtime_map_data)
+	# Campaign and single-play intentionally disconnect gameplay art.
+	# VFX/effects below remain active.
+	if _gameplay_art_enabled():
+		# Catalog terrain assets use the same full source rectangles as Map Editor.
+		_draw_catalog_map_tiles(_runtime_map_data)
 
 	# Tactical Field Boundary
 	draw_rect(Rect2(MAP_ORIGIN, MAP_PIXEL_SIZE), Color("7ed6ce"), false, 2)
@@ -2023,7 +2034,8 @@ func _draw() -> void:
 		var base_feet := BASE + Vector2(0, 30)
 		draw_oval(base_feet, 54.0, 16.0, Color(0, 0, 0, 0.5))
 		draw_arc(base_feet, 56, 0, TAU, 32, Color("7ed6ce"), 2.5)
-		draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92))
+		if _gameplay_art_enabled():
+			draw_sprite(VISUALS["facility_base"], BASE, Vector2(112, 92))
 		# Base HQ label is intentionally hidden.
 
 	# Placed towers
@@ -2040,7 +2052,8 @@ func _draw() -> void:
 			frame_idx = int(fire_progress * 4.0) % 4
 		draw_oval(tower_feet, 28.0, 10.0, Color(0, 0, 0, 0.45))
 		draw_arc(tower_feet, 30.0, 0, TAU, 24, Color("7ed6ce" if tower.type == "cannon" else "f0a35a"), 2.5)
-		draw_animated_sprite(tower_sprite_catalog.get(tower.type, VISUALS[anim_key]), tower_pos, Vector2(64, 96), frame_idx, 4)
+		if _gameplay_art_enabled():
+			draw_animated_sprite(tower_sprite_catalog.get(tower.type, VISUALS[anim_key]), tower_pos, Vector2(64, 96), frame_idx, 4)
 		if selected_tower == tower.id: draw_arc(tower_feet, 38.0, 0, TAU, 24, Color("d7fff7"), 2.0)
 
 	# Allied Units (Automatic Support Units)
@@ -2099,7 +2112,8 @@ func _draw() -> void:
 		var anim_key: String = "enemy_" + enemy.type + "_anim"
 		var fps: float = 14.0 if enemy.type == "rusher" else (6.0 if enemy.type == "giant" else 10.0)
 		var e_frame: int = int((elapsed + float(enemy.position.x)) * fps) % 8
-		draw_animated_sprite(enemy_sprite_catalog.get(enemy.type, VISUALS[anim_key]), enemy.position, enemy_size, e_frame, 8)
+		if _gameplay_art_enabled():
+			draw_animated_sprite(enemy_sprite_catalog.get(enemy.type, VISUALS[anim_key]), enemy.position, enemy_size, e_frame, 8)
 		
 		# Strategic HP Bar
 		if selected_enemy_index == enemies.find(enemy):
