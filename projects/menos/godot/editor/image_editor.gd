@@ -27,6 +27,7 @@ var target_thumbnail_cache: Dictionary = {}
 var editing := false
 var background_color_button: ColorPickerButton
 var background_tolerance_spin: SpinBox
+var background_connected_only_check: CheckBox
 var usage_label: Label
 var filter_option: OptionButton
 var search_edit: LineEdit
@@ -357,6 +358,10 @@ func _build_ui() -> void:
 	background_tolerance_spin.value = 0.08
 	background_tolerance_spin.custom_minimum_size.x = 90
 	bg_row.add_child(background_tolerance_spin)
+	background_connected_only_check = CheckBox.new()
+	background_connected_only_check.text = "Edge-connected only"
+	background_connected_only_check.tooltip_text = "선택 색상과 가까우면서 이미지 가장자리와 연결된 영역만 투명 처리"
+	bg_row.add_child(background_connected_only_check)
 	var bg_apply := Button.new()
 	bg_apply.text = "Remove Background Color"
 	bg_apply.pressed.connect(_remove_background_color)
@@ -1882,16 +1887,66 @@ func _remove_background_color() -> void:
 	var w := current_image.get_width()
 	var h := current_image.get_height()
 	var changed := 0
-	for y in range(h):
+	if background_connected_only_check.button_pressed:
+		var mask := PackedByteArray()
+		mask.resize(w * h)
+		for y in range(h):
+			for x in range(w):
+				var pixel := current_image.get_pixel(x, y)
+				if pixel.a <= 0.0: continue
+				var dr := pixel.r - target.r
+				var dg := pixel.g - target.g
+				var db := pixel.b - target.b
+				if dr * dr + dg * dg + db * db <= tolerance_sq:
+					mask[y * w + x] = 1
+		var queue := PackedInt32Array()
 		for x in range(w):
-			var pixel := current_image.get_pixel(x, y)
-			if pixel.a <= 0.0: continue
-			var dr := pixel.r - target.r
-			var dg := pixel.g - target.g
-			var db := pixel.b - target.b
-			if dr * dr + dg * dg + db * db <= tolerance_sq:
-				current_image.set_pixel(x, y, Color(pixel.r, pixel.g, pixel.b, 0.0))
+			if mask[x] == 1:
+				mask[x] = 2
+				queue.append(x)
+			var bottom := (h - 1) * w + x
+			if mask[bottom] == 1:
+				mask[bottom] = 2
+				queue.append(bottom)
+		for y in range(h):
+			var left := y * w
+			if mask[left] == 1:
+				mask[left] = 2
+				queue.append(left)
+			var right := y * w + w - 1
+			if mask[right] == 1:
+				mask[right] = 2
+				queue.append(right)
+		var head := 0
+		while head < queue.size():
+			var index := queue[head]
+			head += 1
+			var px := index % w
+			var py := index / w
+			var neighbors: Array[int] = [index - 1, index + 1, index - w, index + w]
+			for neighbor: int in neighbors:
+				if neighbor < 0 or neighbor >= w * h or mask[neighbor] != 1: continue
+				var nx: int = neighbor % w
+				var ny: int = neighbor / w
+				if abs(nx - px) + abs(ny - py) != 1: continue
+				mask[neighbor] = 2
+				queue.append(neighbor)
+		for index in range(mask.size()):
+			if mask[index] == 2:
+				var pixel := current_image.get_pixel(index % w, index / w)
+				current_image.set_pixel(index % w, index / w, Color(pixel.r, pixel.g, pixel.b, 0.0))
 				changed += 1
+	else:
+		for y in range(h):
+			for x in range(w):
+				var pixel := current_image.get_pixel(x, y)
+				if pixel.a <= 0.0: continue
+				var dr := pixel.r - target.r
+				var dg := pixel.g - target.g
+				var db := pixel.b - target.b
+				if dr * dr + dg * dg + db * db <= tolerance_sq:
+					current_image.set_pixel(x, y, Color(pixel.r, pixel.g, pixel.b, 0.0))
+					changed += 1
 	_refresh_view()
 	status.text = "Background removed: %d pixels (tolerance %.2f)" % [changed, tolerance]
 

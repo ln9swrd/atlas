@@ -979,3 +979,138 @@ NEXT DECISION:
 - Godot 4.7.2 headless validation exit 0.
 - 실제 생성 이미지 1장을 대상으로 Runtime Editor에서 시각 결과를 확인하는 PIE/수동 검증은 아직 필요하다.
 - 필요한 경우 Eyedropper / Flood Fill / Edge Alpha 개선 여부를 그 결과로 결정한다.
+
+
+### Phase A 진행 갱신 — 2026-10-05 재개 검증
+STATUS: PASS / CODE + BUILD + EDITOR VERIFIED / PIE PENDING
+
+BASELINE:
+- HEAD: 1167a88b527ff14ba0285ba81ba39a9ec24fc930
+- Branch: main
+- Working Tree: clean at investigation start
+
+CONFIRMED:
+- Image Editor 배경색 투명화 구현은 현재 HEAD에 포함되어 있다.
+- Background Color 선택기, Tolerance(0.00~1.00, 기본 0.08), Remove Background Color 버튼 및 pressed signal 연결이 코드에 존재한다.
+- 현재 제거 알고리즘은 전체 이미지의 불투명 픽셀을 대상으로 선택 색상과 RGB Euclidean distance가 Tolerance 이하이면 Alpha 0으로 변환한다.
+- 기존 Save + Reconnect 경로는 유지된다.
+- Godot 4.7.2에서 res://editor/image_editor.tscn을 headless 실행하여 exit code 0을 확인했다.
+- git diff --check PASS.
+
+VERIFICATION:
+- CODE VERIFIED
+- BUILD VERIFIED: Godot project/editor headless load PASS
+- EDITOR VERIFIED: image_editor.tscn headless scene load PASS, exit code 0
+- PIE VERIFIED: NOT VERIFIED
+
+UNVERIFIED:
+- 실제 Editor 화면에서 배경색 선택 → Tolerance 조절 → 제거 버튼 → Preview 확인의 수동 UI 동작.
+- 실제 생성 이미지 1장에 대한 시각적 가장자리 품질.
+- 실제 Sprite Sheet/Frame Asset에서의 수동 결과.
+
+JUDGMENT:
+- 현재 목적에 필요한 최소 코드 구현과 headless Editor 검증은 충족했다.
+- PIE/수동 시각 검증 없이는 Flood Fill, Eyedropper, Edge Alpha 개선 필요성을 판단하지 않는다.
+- 추가 코드 변경은 현재 목적 대비 정보가치가 낮으므로 STOP.
+
+
+### Phase A 진행 갱신 — 2026-10-05 Edge-connected 옵션
+STATUS: PASS / CODE + BUILD + EDITOR VERIFIED / PIE PENDING
+
+CONFIRMED:
+- 실제 보관 이미지 분석에서 글로벌 색상 제거가 생성 이미지의 큰 영역을 오제거할 수 있음을 확인했다.
+- 계획에 있던 Connected-region vs whole-image 요구를 Editor 옵션으로 추가했다.
+- Image Editor에 "Edge-connected only" 체크박스를 추가했다.
+- 체크 시 선택 색상과 Tolerance 조건을 만족하면서 이미지 가장자리와 4-connected로 연결된 영역만 Alpha 0으로 변경한다.
+- 체크 해제 시 기존 글로벌 색상 제거 동작을 그대로 유지한다.
+- 기존 Asset 원본 파일은 수정하지 않았다.
+- 첫 빌드 검증에서 타입 추론 오류가 발생했으나 명시적 int 타입으로 수정 후 image_editor.tscn headless 실행 exit code 0을 확인했다.
+- git diff --check PASS.
+
+VERIFICATION:
+- CODE VERIFIED
+- BUILD VERIFIED: Godot 4.7.2 image_editor.tscn load PASS
+- EDITOR VERIFIED: headless scene load PASS, exit code 0
+- PIE VERIFIED: NOT VERIFIED
+
+UNVERIFIED:
+- 실제 Editor에서 Edge-connected only 체크 후 버튼을 누르는 UI 동작.
+- 실제 결과 이미지의 경계/안티앨리어싱 품질.
+- Eyedropper 및 Edge Alpha 보정의 필요성.
+
+JUDGMENT:
+- 현재 단계에서 글로벌 제거와 연결영역 제거를 모두 제공하는 것이 기존 동작을 보존하면서 실제 생성 이미지 대응력을 높인다.
+- Eyedropper/Edge Alpha는 실제 PIE 결과를 확인하기 전 추가 구현하지 않는다.
+
+
+### Phase B 조사 갱신 — Tower / Building / Base Runtime 소비 구조
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / DESIGN HOLD
+
+CONFIRMED:
+- TowerDefinition은 ObjectDefinition을 기반으로 하며 combat, upgrade, visuals를 보유한다.
+- TowerRuntimeState는 TowerDefinition을 참조하고 effective_combat을 Runtime 상태로 복사한다.
+- TowerRuntimeState는 get_weapon_definition()을 통해 WeaponDefinition을 생성한다.
+- GameController는 Tower Catalog를 TowerDefinition으로 로드하고, Map의 pre-placed tower slot 및 런타임 배치에서 TowerRuntimeState를 생성한다.
+- update_towers()는 TowerRuntimeState의 WeaponDefinition을 사용해 target을 탐색하고 weapon_fired GameplayEvent를 발생시킨다.
+- Tower 업그레이드는 TowerRuntimeState.effective_combat에 적용되며 현재 LV2까지 지원한다.
+- Map은 tower_placement_area / tower_placement_point를 통해 Tower 배치 공간을 소유한다.
+- Stage는 map_file을 통해 Map을 참조한다.
+- Base는 독립 BaseDefinition 또는 BaseRuntimeState가 현재 존재하지 않는다.
+- Stage balance의 base_hp가 초기 Base HP를 제공하고 GameController의 base_hp가 mutable Runtime 상태를 보유한다.
+- Base 위치는 Map의 goal 데이터로 표현된다.
+
+JUDGMENT:
+- Tower의 Definition → Runtime 소비 경로는 현재 기능적으로 존재한다.
+- Tower를 즉시 새로운 Building 공통 모델로 이관할 필요는 확인되지 않았다.
+- Base는 현재 Stage balance + Map goal + GameController base_hp로 분산되어 있어 Tower와 동일한 Definition 구조가 아니다.
+- Tower/Base를 공통 Building Definition으로 통합하면 데이터 소유권과 Runtime 구조를 함께 변경해야 하므로 현재 작업 범위를 넘어선다.
+- 따라서 Building 공통 모델은 DESIGN HOLD로 유지한다.
+
+UNVERIFIED:
+- 향후 Support/Production/Resource Building이 실제로 필요한 경우 공통 필드의 최소 집합.
+- Tower Editor와 향후 Building Editor의 실제 UI 통합 가치.
+- Base를 독립 객체로 승격해야 할 Canon 요구.
+
+NEXT CANDIDATE:
+- Skill / Special / Finisher Definition → Runtime 소비 구조 READ-ONLY 조사.
+
+
+### Phase D/B 조사 갱신 — Skill / Special / Finisher Definition → Runtime 소비 구조
+STATUS: PASS / READ-ONLY INVESTIGATION COMPLETE / ACCEPT·STOP
+
+CONFIRMED:
+- Skill catalog는 res://content/skills/skills.json의 Dictionary 구조이며 SkillDefinitionLoader가 ContentCatalogLoader를 통해 로드한다.
+- 현재 SkillDefinition 전용 Runtime class는 존재하지 않는다.
+- skills.json에는 base_special, area_attack, heavy_pierce, finisher이 정의되어 있다.
+- growth_available=true인 area_attack / heavy_pierce는 RobotProgressionState.unlocked_abilities를 통해 해금 상태가 저장된다.
+- gameplay.json의 skill_slots가 슬롯 번호와 Skill ID를 연결한다. 현재 slot 1=area_attack, slot 2=heavy_pierce, slot 3=empty이다.
+- GameController는 skill_slots → skills_catalog → RobotProgressionState.has_ability 순서로 Skill을 검증한 뒤 실행한다.
+- area execution은 RobotRuntimeState.area를 cooldown으로 사용하고, target_pierce execution은 RobotRuntimeState.pierce를 cooldown으로 사용한다.
+- 실행 중에는 RobotRuntimeState.special / special_type으로 현재 Skill/Special 연출 상태를 표현한다.
+- 실제 피해 효과는 현재 Skill별 Dictionary effect를 생성해 GameController의 effect 처리 경로에서 소비한다.
+- BASE SPECIAL은 skills_catalog의 base_special 데이터를 직접 소비하며 별도 해금 없이 사용한다.
+- FINISHER는 skills_catalog의 finisher 데이터를 직접 소비하며 RobotRuntimeState.finisher meter를 사용한다. 충전량은 일반 적/giant 적 처치 시 finisher_definition의 charge 값을 사용한다.
+- Content Validator는 Skill ID, growth_available, execution_type, execution_type별 필수 필드, 음수 값, gameplay skill slot 참조를 검증한다.
+- Robot Editor는 Robot의 skill1/2/3/special/finisher 시각 Asset을 관리하지만 Skill gameplay 수치 자체를 편집하는 별도 Skill Editor는 현재 존재하지 않는다.
+
+JUDGMENT:
+- 현재 Skill 시스템은 Dictionary catalog + RobotProgressionState + RobotRuntimeState의 조합으로 목적에 필요한 소비 경로가 이미 완성되어 있다.
+- Skill마다 영속적인 독립 Runtime 객체가 필요하지 않다. 현재 필요한 Runtime 상태는 RobotRuntimeState가 소유하고 있으며 효과 실행은 GameController effect 경로가 담당한다.
+- Finisher와 Base Special은 일반 성장 Skill과 실행 방식이 다르지만 현재 데이터 소비 경로 자체는 정상적으로 분리되어 있다.
+- 별도 SkillDefinition class 또는 SkillRuntimeState를 지금 도입하면 목적 대비 구조 변경 비용이 크다.
+- 별도 Skill Editor도 현재 Canon/요구사항이 없으므로 구현하지 않는다.
+- 현재 조사 목적은 충족되었으므로 ACCEPT·STOP.
+
+UNVERIFIED:
+- 실제 PIE에서 각 Skill의 시각 Asset과 gameplay effect의 1:1 매핑.
+- Skill Editor가 향후 필요할지 여부.
+- 향후 Skill execution_type 종류가 증가할 경우 현재 GameController 분기 구조가 충분한지 여부.
+
+OUT OF SCOPE:
+- Skill Editor 신규 구현
+- SkillDefinition/SkillRuntimeState 신규 class 도입
+- execution_type 확장 또는 GameController 구조 개편
+- PIE 검증
+
+NEXT CANDIDATE:
+- Enemy / Allied Unit / Tower의 공통 ObjectDefinition 소비 규칙과 Validator 기준의 일관성 READ-ONLY 조사.
