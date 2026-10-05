@@ -171,10 +171,23 @@
         174.0
       ]
     },
-    "animations": {},
+    "animations": {
+      "idle": "robot.valkyrie.idle",
+      "move": "robot.valkyrie.move",
+      "attack": "robot.valkyrie.attack",
+      "hit": "robot.valkyrie.hit",
+      "death": "robot.valkyrie.death",
+      "projectile": "robot.valkyrie.projectile",
+      "skill1": "robot.valkyrie.skill1",
+      "skill2": "robot.valkyrie.skill2",
+      "skill3": "robot.valkyrie.skill3",
+      "special": "robot.valkyrie.special",
+      "finisher": "robot.valkyrie.finisher"
+    },
     "color": "e3702dff",
     "cooldown": 0.65,
     "damage": 28.0,
+    "default_image": "robot.valkyrie.profile",
     "default_image_rect": [
       7.0,
       787.0,
@@ -197,11 +210,11 @@
     },
     "range": 180.0,
     "speed": 125.0,
-    "sprite_attack": "",
-    "sprite_idle": "",
-    "sprite_move": "",
-    "sprite_skill": "",
-    "projectile_anim": "",
+    "sprite_attack": "robot.valkyrie.attack",
+    "sprite_idle": "robot.valkyrie.idle",
+    "sprite_move": "robot.valkyrie.move",
+    "sprite_skill": "robot.valkyrie.skill1",
+    "projectile_anim": "robot.valkyrie.projectile",
     "sprite_attack_rect": [
       96.0,
       400.0,

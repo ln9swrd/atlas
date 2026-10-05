@@ -1,1 +1,911 @@
-{}
+{
+  "robot.valkyrie.idle": {
+    "id": "robot.valkyrie.idle",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+    "region": [
+      122,
+      10,
+      936,
+      176
+    ],
+    "frames": 6,
+    "columns": 6,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        122,
+        10,
+        156,
+        176
+      ],
+      [
+        278,
+        10,
+        156,
+        176
+      ],
+      [
+        434,
+        10,
+        156,
+        176
+      ],
+      [
+        590,
+        10,
+        156,
+        176
+      ],
+      [
+        746,
+        10,
+        156,
+        176
+      ],
+      [
+        902,
+        10,
+        156,
+        176
+      ]
+    ]
+  },
+  "robot.valkyrie.move": {
+    "id": "robot.valkyrie.move",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+    "region": [
+      122,
+      242,
+      1248,
+      184
+    ],
+    "frames": 8,
+    "columns": 8,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        122,
+        242,
+        156,
+        184
+      ],
+      [
+        278,
+        242,
+        156,
+        184
+      ],
+      [
+        434,
+        242,
+        156,
+        184
+      ],
+      [
+        590,
+        242,
+        156,
+        184
+      ],
+      [
+        746,
+        242,
+        156,
+        184
+      ],
+      [
+        902,
+        242,
+        156,
+        184
+      ],
+      [
+        1058,
+        242,
+        156,
+        184
+      ],
+      [
+        1214,
+        242,
+        156,
+        184
+      ]
+    ]
+  },
+  "robot.valkyrie.attack": {
+    "id": "robot.valkyrie.attack",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+    "region": [
+      122,
+      463,
+      1248,
+      162
+    ],
+    "frames": 8,
+    "columns": 8,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        122,
+        463,
+        156,
+        162
+      ],
+      [
+        278,
+        463,
+        156,
+        162
+      ],
+      [
+        434,
+        463,
+        156,
+        162
+      ],
+      [
+        590,
+        463,
+        156,
+        162
+      ],
+      [
+        746,
+        463,
+        156,
+        162
+      ],
+      [
+        902,
+        463,
+        156,
+        162
+      ],
+      [
+        1058,
+        463,
+        156,
+        162
+      ],
+      [
+        1214,
+        463,
+        156,
+        162
+      ]
+    ]
+  },
+  "robot.valkyrie.hit": {
+    "id": "robot.valkyrie.hit",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+    "region": [
+      122,
+      651,
+      624,
+      172
+    ],
+    "frames": 4,
+    "columns": 4,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        122,
+        651,
+        156,
+        172
+      ],
+      [
+        278,
+        651,
+        156,
+        172
+      ],
+      [
+        434,
+        651,
+        156,
+        172
+      ],
+      [
+        590,
+        651,
+        156,
+        172
+      ]
+    ]
+  },
+  "robot.valkyrie.death": {
+    "id": "robot.valkyrie.death",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+    "region": [
+      122,
+      853,
+      1248,
+      163
+    ],
+    "frames": 8,
+    "columns": 8,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        122,
+        853,
+        156,
+        163
+      ],
+      [
+        278,
+        853,
+        156,
+        163
+      ],
+      [
+        434,
+        853,
+        156,
+        163
+      ],
+      [
+        590,
+        853,
+        156,
+        163
+      ],
+      [
+        746,
+        853,
+        156,
+        163
+      ],
+      [
+        902,
+        853,
+        156,
+        163
+      ],
+      [
+        1058,
+        853,
+        156,
+        163
+      ],
+      [
+        1214,
+        853,
+        156,
+        163
+      ]
+    ]
+  },
+  "robot.valkyrie.projectile": {
+    "id": "robot.valkyrie.projectile",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      31,
+      83,
+      1486,
+      117
+    ],
+    "frames": 6,
+    "columns": 6,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        31,
+        83,
+        248,
+        117
+      ],
+      [
+        279,
+        83,
+        247,
+        117
+      ],
+      [
+        526,
+        83,
+        248,
+        117
+      ],
+      [
+        774,
+        83,
+        248,
+        117
+      ],
+      [
+        1022,
+        83,
+        247,
+        117
+      ],
+      [
+        1269,
+        83,
+        248,
+        117
+      ]
+    ]
+  },
+  "robot.valkyrie.skill1": {
+    "id": "robot.valkyrie.skill1",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      17,
+      295,
+      1490,
+      185
+    ],
+    "frames": 8,
+    "columns": 8,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        17,
+        295,
+        186,
+        185
+      ],
+      [
+        203,
+        295,
+        187,
+        185
+      ],
+      [
+        390,
+        295,
+        186,
+        185
+      ],
+      [
+        576,
+        295,
+        186,
+        185
+      ],
+      [
+        762,
+        295,
+        186,
+        185
+      ],
+      [
+        948,
+        295,
+        187,
+        185
+      ],
+      [
+        1135,
+        295,
+        186,
+        185
+      ],
+      [
+        1321,
+        295,
+        186,
+        185
+      ]
+    ]
+  },
+  "robot.valkyrie.skill2": {
+    "id": "robot.valkyrie.skill2",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      15,
+      560,
+      1504,
+      172
+    ],
+    "frames": 10,
+    "columns": 10,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        15,
+        560,
+        150,
+        172
+      ],
+      [
+        165,
+        560,
+        151,
+        172
+      ],
+      [
+        316,
+        560,
+        150,
+        172
+      ],
+      [
+        466,
+        560,
+        151,
+        172
+      ],
+      [
+        617,
+        560,
+        150,
+        172
+      ],
+      [
+        767,
+        560,
+        150,
+        172
+      ],
+      [
+        917,
+        560,
+        151,
+        172
+      ],
+      [
+        1068,
+        560,
+        150,
+        172
+      ],
+      [
+        1218,
+        560,
+        151,
+        172
+      ],
+      [
+        1369,
+        560,
+        150,
+        172
+      ]
+    ]
+  },
+  "robot.valkyrie.skill3": {
+    "id": "robot.valkyrie.skill3",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      15,
+      819,
+      1512,
+      165
+    ],
+    "frames": 12,
+    "columns": 12,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        15,
+        819,
+        126,
+        165
+      ],
+      [
+        141,
+        819,
+        126,
+        165
+      ],
+      [
+        267,
+        819,
+        126,
+        165
+      ],
+      [
+        393,
+        819,
+        126,
+        165
+      ],
+      [
+        519,
+        819,
+        126,
+        165
+      ],
+      [
+        645,
+        819,
+        126,
+        165
+      ],
+      [
+        771,
+        819,
+        126,
+        165
+      ],
+      [
+        897,
+        819,
+        126,
+        165
+      ],
+      [
+        1023,
+        819,
+        126,
+        165
+      ],
+      [
+        1149,
+        819,
+        126,
+        165
+      ],
+      [
+        1275,
+        819,
+        126,
+        165
+      ],
+      [
+        1401,
+        819,
+        126,
+        165
+      ]
+    ]
+  },
+  "robot.valkyrie.special": {
+    "id": "robot.valkyrie.special",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+    "region": [
+      0,
+      70,
+      1528,
+      174
+    ],
+    "frames": 14,
+    "columns": 14,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        70,
+        109,
+        174
+      ],
+      [
+        109,
+        70,
+        109,
+        174
+      ],
+      [
+        218,
+        70,
+        109,
+        174
+      ],
+      [
+        327,
+        70,
+        110,
+        174
+      ],
+      [
+        437,
+        70,
+        109,
+        174
+      ],
+      [
+        546,
+        70,
+        109,
+        174
+      ],
+      [
+        655,
+        70,
+        109,
+        174
+      ],
+      [
+        764,
+        70,
+        109,
+        174
+      ],
+      [
+        873,
+        70,
+        109,
+        174
+      ],
+      [
+        982,
+        70,
+        109,
+        174
+      ],
+      [
+        1091,
+        70,
+        110,
+        174
+      ],
+      [
+        1201,
+        70,
+        109,
+        174
+      ],
+      [
+        1310,
+        70,
+        109,
+        174
+      ],
+      [
+        1419,
+        70,
+        109,
+        174
+      ]
+    ]
+  },
+  "robot.valkyrie.finisher": {
+    "id": "robot.valkyrie.finisher",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+    "region": [
+      6,
+      363,
+      1522,
+      348
+    ],
+    "frames": 18,
+    "columns": 9,
+    "rows": 2,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.416667,
+      "y": 0.625
+    },
+    "owner": "valkyrie",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        6,
+        363,
+        169,
+        174
+      ],
+      [
+        175,
+        363,
+        169,
+        174
+      ],
+      [
+        344,
+        363,
+        169,
+        174
+      ],
+      [
+        513,
+        363,
+        169,
+        174
+      ],
+      [
+        682,
+        363,
+        170,
+        174
+      ],
+      [
+        852,
+        363,
+        169,
+        174
+      ],
+      [
+        1021,
+        363,
+        169,
+        174
+      ],
+      [
+        1190,
+        363,
+        169,
+        174
+      ],
+      [
+        1359,
+        363,
+        169,
+        174
+      ],
+      [
+        6,
+        537,
+        169,
+        174
+      ],
+      [
+        175,
+        537,
+        169,
+        174
+      ],
+      [
+        344,
+        537,
+        169,
+        174
+      ],
+      [
+        513,
+        537,
+        169,
+        174
+      ],
+      [
+        682,
+        537,
+        170,
+        174
+      ],
+      [
+        852,
+        537,
+        169,
+        174
+      ],
+      [
+        1021,
+        537,
+        169,
+        174
+      ],
+      [
+        1190,
+        537,
+        169,
+        174
+      ],
+      [
+        1359,
+        537,
+        169,
+        174
+      ]
+    ]
+  },
+  "robot.valkyrie.profile": {
+    "id": "robot.valkyrie.profile",
+    "category": "Robot",
+    "source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+    "region": [
+      7,
+      787,
+      289,
+      234
+    ],
+    "frames": 1,
+    "columns": 1,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "owner": "valkyrie",
+    "usage": "profile",
+    "frame_regions": [
+      [
+        7,
+        787,
+        289,
+        234
+      ]
+    ],
+    "team_mask": {
+      "source": "res://images/robot/valkyrie/profile_team_mask.png"
+    }
+  }
+}
