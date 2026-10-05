@@ -907,5 +907,845 @@
     "team_mask": {
       "source": "res://images/robot/valkyrie/profile_team_mask.png"
     }
+  },
+  "robot.asura.idle": {
+    "id": "robot.asura.idle",
+    "category": "Robot",
+    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      0,
+      14,
+      1536,
+      159
+    ],
+    "frames": 9,
+    "columns": 9,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        14,
+        203,
+        159
+      ],
+      [
+        203,
+        14,
+        183,
+        159
+      ],
+      [
+        386,
+        14,
+        163,
+        159
+      ],
+      [
+        549,
+        14,
+        153,
+        159
+      ],
+      [
+        702,
+        14,
+        173,
+        159
+      ],
+      [
+        875,
+        14,
+        179,
+        159
+      ],
+      [
+        1054,
+        14,
+        159,
+        159
+      ],
+      [
+        1213,
+        14,
+        164,
+        159
+      ],
+      [
+        1377,
+        14,
+        159,
+        159
+      ]
+    ]
+  },
+  "robot.asura.move": {
+    "id": "robot.asura.move",
+    "category": "Robot",
+    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      0,
+      353,
+      1536,
+      135
+    ],
+    "frames": 10,
+    "columns": 10,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        353,
+        154,
+        135
+      ],
+      [
+        154,
+        353,
+        150,
+        135
+      ],
+      [
+        304,
+        353,
+        154,
+        135
+      ],
+      [
+        458,
+        353,
+        154,
+        135
+      ],
+      [
+        612,
+        353,
+        152,
+        135
+      ],
+      [
+        764,
+        353,
+        146,
+        135
+      ],
+      [
+        910,
+        353,
+        150,
+        135
+      ],
+      [
+        1060,
+        353,
+        156,
+        135
+      ],
+      [
+        1216,
+        353,
+        151,
+        135
+      ],
+      [
+        1367,
+        353,
+        155,
+        135
+      ]
+    ]
+  },
+  "robot.asura.attack": {
+    "id": "robot.asura.attack",
+    "category": "Robot",
+    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      0,
+      514,
+      1536,
+      132
+    ],
+    "frames": 8,
+    "columns": 8,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        514,
+        164,
+        132
+      ],
+      [
+        164,
+        514,
+        174,
+        132
+      ],
+      [
+        338,
+        514,
+        174,
+        132
+      ],
+      [
+        512,
+        514,
+        177,
+        132
+      ],
+      [
+        689,
+        514,
+        191,
+        132
+      ],
+      [
+        880,
+        514,
+        184,
+        132
+      ],
+      [
+        1064,
+        514,
+        181,
+        132
+      ],
+      [
+        1245,
+        514,
+        186,
+        132
+      ]
+    ]
+  },
+  "robot.asura.hit": {
+    "id": "robot.asura.hit",
+    "category": "Robot",
+    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      0,
+      674,
+      1536,
+      103
+    ],
+    "frames": 4,
+    "columns": 4,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        674,
+        172,
+        103
+      ],
+      [
+        172,
+        674,
+        162,
+        103
+      ],
+      [
+        334,
+        674,
+        166,
+        103
+      ],
+      [
+        500,
+        674,
+        158,
+        103
+      ]
+    ]
+  },
+  "robot.asura.death": {
+    "id": "robot.asura.death",
+    "category": "Robot",
+    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      0,
+      794,
+      1536,
+      87
+    ],
+    "frames": 9,
+    "columns": 9,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        794,
+        164,
+        87
+      ],
+      [
+        164,
+        794,
+        169,
+        87
+      ],
+      [
+        333,
+        794,
+        158,
+        87
+      ],
+      [
+        491,
+        794,
+        159,
+        87
+      ],
+      [
+        650,
+        794,
+        162,
+        87
+      ],
+      [
+        812,
+        794,
+        164,
+        87
+      ],
+      [
+        976,
+        794,
+        158,
+        87
+      ],
+      [
+        1134,
+        794,
+        162,
+        87
+      ],
+      [
+        1296,
+        794,
+        156,
+        87
+      ]
+    ]
+  },
+  "robot.asura.skill1": {
+    "id": "robot.asura.skill1",
+    "category": "Robot",
+    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+    "region": [
+      0,
+      46,
+      1536,
+      90
+    ],
+    "frames": 10,
+    "columns": 10,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        46,
+        154,
+        90
+      ],
+      [
+        154,
+        46,
+        153,
+        90
+      ],
+      [
+        307,
+        46,
+        154,
+        90
+      ],
+      [
+        461,
+        46,
+        153,
+        90
+      ],
+      [
+        614,
+        46,
+        154,
+        90
+      ],
+      [
+        768,
+        46,
+        154,
+        90
+      ],
+      [
+        922,
+        46,
+        153,
+        90
+      ],
+      [
+        1075,
+        46,
+        154,
+        90
+      ],
+      [
+        1229,
+        46,
+        153,
+        90
+      ],
+      [
+        1382,
+        46,
+        154,
+        90
+      ]
+    ]
+  },
+  "robot.asura.skill2": {
+    "id": "robot.asura.skill2",
+    "category": "Robot",
+    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+    "region": [
+      0,
+      192,
+      1536,
+      94
+    ],
+    "frames": 10,
+    "columns": 10,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        192,
+        154,
+        94
+      ],
+      [
+        154,
+        192,
+        153,
+        94
+      ],
+      [
+        307,
+        192,
+        154,
+        94
+      ],
+      [
+        461,
+        192,
+        153,
+        94
+      ],
+      [
+        614,
+        192,
+        154,
+        94
+      ],
+      [
+        768,
+        192,
+        154,
+        94
+      ],
+      [
+        922,
+        192,
+        153,
+        94
+      ],
+      [
+        1075,
+        192,
+        154,
+        94
+      ],
+      [
+        1229,
+        192,
+        153,
+        94
+      ],
+      [
+        1382,
+        192,
+        154,
+        94
+      ]
+    ]
+  },
+  "robot.asura.skill3": {
+    "id": "robot.asura.skill3",
+    "category": "Robot",
+    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+    "region": [
+      0,
+      305,
+      1536,
+      152
+    ],
+    "frames": 10,
+    "columns": 10,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        305,
+        154,
+        152
+      ],
+      [
+        154,
+        305,
+        153,
+        152
+      ],
+      [
+        307,
+        305,
+        154,
+        152
+      ],
+      [
+        461,
+        305,
+        153,
+        152
+      ],
+      [
+        614,
+        305,
+        154,
+        152
+      ],
+      [
+        768,
+        305,
+        154,
+        152
+      ],
+      [
+        922,
+        305,
+        153,
+        152
+      ],
+      [
+        1075,
+        305,
+        154,
+        152
+      ],
+      [
+        1229,
+        305,
+        153,
+        152
+      ],
+      [
+        1382,
+        305,
+        154,
+        152
+      ]
+    ]
+  },
+  "robot.asura.projectile": {
+    "id": "robot.asura.projectile",
+    "category": "Robot",
+    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+    "region": [
+      0,
+      499,
+      1536,
+      95
+    ],
+    "frames": 6,
+    "columns": 6,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        499,
+        256,
+        95
+      ],
+      [
+        256,
+        499,
+        256,
+        95
+      ],
+      [
+        512,
+        499,
+        256,
+        95
+      ],
+      [
+        768,
+        499,
+        256,
+        95
+      ],
+      [
+        1024,
+        499,
+        256,
+        95
+      ],
+      [
+        1280,
+        499,
+        256,
+        95
+      ]
+    ]
+  },
+  "robot.asura.finisher": {
+    "id": "robot.asura.finisher",
+    "category": "Robot",
+    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+    "region": [
+      0,
+      722,
+      1536,
+      141
+    ],
+    "frames": 10,
+    "columns": 10,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        722,
+        154,
+        141
+      ],
+      [
+        154,
+        722,
+        153,
+        141
+      ],
+      [
+        307,
+        722,
+        154,
+        141
+      ],
+      [
+        461,
+        722,
+        153,
+        141
+      ],
+      [
+        614,
+        722,
+        154,
+        141
+      ],
+      [
+        768,
+        722,
+        154,
+        141
+      ],
+      [
+        922,
+        722,
+        153,
+        141
+      ],
+      [
+        1075,
+        722,
+        154,
+        141
+      ],
+      [
+        1229,
+        722,
+        153,
+        141
+      ],
+      [
+        1382,
+        722,
+        154,
+        141
+      ]
+    ]
+  },
+  "robot.asura.special": {
+    "id": "robot.asura.special",
+    "category": "Robot",
+    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+    "region": [
+      0,
+      878,
+      1536,
+      133
+    ],
+    "frames": 10,
+    "columns": 10,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.539409,
+      "y": 0.471698
+    },
+    "owner": "asura",
+    "usage": "animation",
+    "frame_regions": [
+      [
+        0,
+        878,
+        154,
+        133
+      ],
+      [
+        154,
+        878,
+        153,
+        133
+      ],
+      [
+        307,
+        878,
+        154,
+        133
+      ],
+      [
+        461,
+        878,
+        153,
+        133
+      ],
+      [
+        614,
+        878,
+        154,
+        133
+      ],
+      [
+        768,
+        878,
+        154,
+        133
+      ],
+      [
+        922,
+        878,
+        153,
+        133
+      ],
+      [
+        1075,
+        878,
+        154,
+        133
+      ],
+      [
+        1229,
+        878,
+        153,
+        133
+      ],
+      [
+        1382,
+        878,
+        154,
+        133
+      ]
+    ]
   }
 }

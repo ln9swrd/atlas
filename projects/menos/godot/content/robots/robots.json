@@ -57,13 +57,17 @@
       ]
     },
     "animations": {
-      "attack": "",
-      "finisher": "",
-      "projectile": "",
-      "skill1": "",
-      "skill2": "",
-      "skill3": "",
-      "special": ""
+      "idle": "robot.asura.idle",
+      "move": "robot.asura.move",
+      "attack": "robot.asura.attack",
+      "hit": "robot.asura.hit",
+      "death": "robot.asura.death",
+      "projectile": "robot.asura.projectile",
+      "skill1": "robot.asura.skill1",
+      "skill2": "robot.asura.skill2",
+      "skill3": "robot.asura.skill3",
+      "special": "robot.asura.special",
+      "finisher": "robot.asura.finisher"
     },
     "color": "b7e30fff",
     "cooldown": 0.65,
@@ -88,13 +92,13 @@
       "speed_growth": 0.02,
       "xp_per_level": 100.0
     },
-    "projectile_anim": "legacy:res://images/Unit/basic.png",
+    "projectile_anim": "robot.asura.projectile",
     "range": 180.0,
     "speed": 125.0,
-    "sprite_attack": "",
-    "sprite_idle": "",
-    "sprite_move": "",
-    "sprite_skill": ""
+    "sprite_attack": "robot.asura.attack",
+    "sprite_idle": "robot.asura.idle",
+    "sprite_move": "robot.asura.move",
+    "sprite_skill": "robot.asura.skill1"
   },
   "valkyrie": {
     "animation_rects": {
