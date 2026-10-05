@@ -771,10 +771,10 @@ func _process(delta: float) -> void:
 				hit_event.damage = float(effect.get("damage", 0.0))
 				hit_event.payload = {"source": str(effect.get("source", ""))}
 				_handle_gameplay_event(hit_event)
-				effect["type"] = "impact_explosion"
-				effect.erase("progress")
-				effect["life"] = 0.35
-				effect["max_life"] = 0.35
+
+				# Projectile ends at the hit; do not convert it into a post-impact sprite.
+
+				effect["progress"] = 1.0
 		elif effect.has("damage_delay"):
 			effect["damage_delay"] = float(effect["damage_delay"]) - delta
 			if float(effect["damage_delay"]) <= 0.0 and not effect.get("damage_applied", false):
@@ -1942,7 +1942,7 @@ func select_tower_for_build(type: String) -> void:
 	selected_tower = ""
 	robot_selected = false
 	play_sfx("tower_select")
-	log_event("%s: ?ㅼ튂 ?꾩튂瑜??대┃?섏꽭??" % tower_definitions[type].name)
+	log_event("%s: ??�튂 ?꾩튂????�???�꽭??" % tower_definitions[type].name)
 	queue_redraw()
 
 func build_tower(type: String) -> void:
@@ -2134,8 +2134,7 @@ func _draw() -> void:
 				impact_color = Color("f0a35a")
 			var impact_scale := 1.0 + life_progress * 0.35
 			draw_arc(impact_position, 24.0 * impact_scale, 0, TAU, 20, Color(impact_color, 0.7 * (1.0 - life_progress)), 2.5)
-			var frame_idx: int = int(life_progress * 8.0) % 8
-			draw_animated_sprite(VISUALS["impact_explosion"], impact_position, Vector2(54, 54) * impact_scale, frame_idx, 8)
+			# Projectile/hit visuals use procedural VFX only; no impact sprite art.
 		elif etype == "proj_defender":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
 			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
@@ -2440,11 +2439,11 @@ func draw_robot_growth_choice() -> void:
 	var rect := Rect2(_ui_origin() + Vector2(385, 180), Vector2(500, 185))
 	draw_rect(rect, Color("101f25"), true)
 	draw_rect(rect, Color("7ed6ce"), false, 2)
-	draw_string(ThemeDB.fallback_font, rect.position + Vector2(20, 35), "?⑥씠釉??대━??/ 濡쒕큸 ?λ젰 ?좏깮", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("d7fff7"))
+	draw_string(ThemeDB.fallback_font, rect.position + Vector2(20, 35), "??�씠????�???/ 濡쒕???λ???좏깮", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("d7fff7"))
 	for ability_id in available_robot_growths():
 		var option: Dictionary = skills_catalog[ability_id]
 		var option_rect := Rect2(rect.position + Vector2(20 + available_robot_growths().find(ability_id) * 240, 55), Vector2(220, 78))
-		button(option_rect, "?닿툑 " + option["name"], false)
+		button(option_rect, "??�툑 " + option["name"], false)
 		draw_string(ThemeDB.fallback_font, option_rect.position + Vector2(8, 55), option["description"], HORIZONTAL_ALIGNMENT_LEFT, 205, 10, Color("a9c5c7"))
 
 func button(rect: Rect2, label: String, disabled: bool) -> void:
