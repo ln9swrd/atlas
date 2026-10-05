@@ -354,7 +354,7 @@ func _load_robot_catalog() -> void:
 	if robot_catalog.is_empty():
 		return
 	robot_sprite_catalog.clear()
-	for animation_name in ["idle", "move", "attack", "hit", "death", "projectile", "skill1", "skill2", "skill3", "special", "finisher"]:
+	for animation_name in ["idle", "move", "attack", "hit", "death", "skill1", "skill2", "skill3", "special", "finisher"]:
 		var animation_texture := _texture_from_robot_animation(animation_name)
 		if animation_texture != null:
 			robot_sprite_catalog[animation_name] = animation_texture
@@ -2143,10 +2143,6 @@ func _draw() -> void:
 			var current_p: Vector2 = start_p.lerp(end_p, progress)
 			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
 			var weapon_type := str(effect.get("weapon", "robot"))
-			var projectile_frames := 8
-			if weapon_type == "robot":
-				projectile_frames = _robot_animation_frame_count_for_value(_robot_animation_value("projectile"), 6)
-			var p_frame: int = int(elapsed * 18.0) % projectile_frames
 			var projectile_color := Color("7ed6ce")
 			if weapon_type == "cannon":
 				projectile_color = Color("f0d28a")
