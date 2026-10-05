@@ -145,7 +145,7 @@ func _validate_mission_catalog() -> void:
 			if not mission.has(key):
 				errors.append("MISSION[%s] missing required field: %s" % [mission_id, key])
 		var primary_type := str(mission.get("primary_type", ""))
-		if primary_type not in ["defend_base", "clear_encounters"]:
+		if primary_type not in ["defend_base", "clear_encounters", "defeat_giant"]:
 			errors.append("MISSION[%s] has unsupported primary_type: %s" % [mission_id, primary_type])
 		var time_limit = mission.get("time_limit", null)
 		if not (time_limit is int or time_limit is float) or float(time_limit) < 0.0:

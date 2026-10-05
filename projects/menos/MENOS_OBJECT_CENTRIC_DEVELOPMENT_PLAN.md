@@ -1583,3 +1583,557 @@ STATUS — 조사 완료 / 다음 설계 판단 대기
 - BUILD VERIFIED — 이번 조사에서는 수행하지 않음.
 - EDITOR VERIFIED — 실제 UI 조작은 수행하지 않음.
 - PIE VERIFIED — 수행하지 않음.
+
+
+## 2026-10-05 문서 재검토 및 현재 기준선 갱신
+
+STATUS: ACCEPT·STOP / READ-ONLY REVIEW
+목적: 기존 객체 중심 개발계획을 현재 실제 코드·콘텐츠 구조와 대조하고, 이미 확인된 Runtime/Editor/Validator 사실을 계획에 반영한다. 신규 구현은 수행하지 않는다.
+
+### 현재 기준선
+- HEAD: d783a8b394f2db53488e919dce4285ff5f3ed92c
+- Branch: main
+- Working Tree: 본 문서 갱신 전 기존 변경사항 존재. 기존 변경은 보존한다.
+
+### CONFIRMED — Stage / Mission / Reward 구조
+- Stage JSON은 stage_id, order, name, map_file, balance, mission_id, reward_id, encounters, allied_units를 사용한다.
+- StageLoader와 StageManager를 통해 Map / Mission / Reward / Balance / Encounter가 Runtime으로 전달된다.
+- Stage Editor Save는 Stage JSON과 Mission/Reward Catalog 참조를 함께 다룬다.
+- Map 선택은 map_file 참조를 변경하며 Map Gameplay 데이터를 Stage에 복사하지 않는다.
+- Mission과 Reward는 별도 Definition/Catalog를 유지하는 현재 구조가 객체 중심 계획과 일치한다.
+- 현재 Mission Type UI는 defend_base, clear_encounters를 사용한다.
+- Mission target_id는 저장/로드/편집되지만 현재 GameController의 승리 조건 판정에는 사용되지 않는다. 의미는 UNVERIFIED이며 Canon화하지 않는다.
+
+### CONFIRMED — Runtime Mission
+- defend_base: 지정된 방어 시간까지 생존하는 경로가 구현되어 있다.
+- clear_encounters: 마지막 Encounter/Wave 종료 및 생존 적 소멸을 기준으로 완료하는 경로가 구현되어 있다.
+- Base/HQ HP가 0 이하이면 Mission Type과 관계없이 DEFEAT가 발생한다.
+- Giant은 별도 전투/HP/보상/Finisher Runtime이 있으나 Giant 처치가 독립적인 Mission 승리 조건으로 연결되었다는 근거는 확인되지 않았다.
+- 따라서 Master Canon의 Tower Defense / Elimination / Giant Boss Battle과 현재 Runtime Mission Type은 아직 1:1 대응이 아니다.
+- Giant Boss Battle의 독립 승리 계약은 HOLD이며 임의 구현하지 않는다.
+
+### CONFIRMED — Allied Units
+- StageLoader가 allied_units를 검증한다.
+- GameController가 Stage의 Allied Units를 실제 Runtime 상태로 생성하고 배치/AI/렌더 경로에서 소비한다.
+- 따라서 Allied Units는 dead configuration이 아니다.
+- 현재 Stage Editor에는 Allied Units authoring UI가 없다. 이는 authoring gap이며 즉시 구현하지 않는다.
+
+### CONFIRMED — Player Count / Play Mode
+- Map의 play_modes와 StageManager의 campaign / single / multiplayer는 존재하지만 Player Count를 의미한다고 확인되지 않았다.
+- 현재 코드에서 독립적인 player_count Canon/storage field는 확인되지 않았다.
+- multiplayer를 Player Count 또는 Master의 3개 Gameplay Canon으로 임의 해석하지 않는다.
+- Player Count의 Canon/storage 위치는 HOLD / UNVERIFIED.
+
+### CONFIRMED — Encounter / Wave
+- Stage Editor에서 Encounter, Wave, Enemy Group을 편집할 수 있다.
+- StageLoader가 구조/타입을 검증하고 ContentValidator가 Enemy ID를 Enemy Catalog와 교차 검증한다.
+- GameController가 Encounter/Wave를 spawn queue로 확장하여 Runtime에서 소비한다.
+- 현재 구조는 Stage → Encounter → Wave → Enemy Group → Enemy Object의 조합 구조로 계획과 일치한다.
+
+### CONFIRMED — Map Goal / Base
+- MapLoader가 Map의 goal.position을 Runtime BASE 위치로 연결한다.
+- Enemy가 Base에 도달하면 base_damage만큼 Base HP를 감소시키고 HP 0 이하에서 DEFEAT가 발생한다.
+- gameplay_areas.goal_area는 별도 공간 데이터로 존재하지만 GameController의 실제 패배 판정은 goal.position 기반이다.
+- 두 표현의 의미 중복 가능성은 존재하지만 현재 목적에 필요한 구조 변경 근거는 부족하다.
+
+### CONFIRMED — Stage Cross-Reference Validator
+- Stage mission_id → Mission Catalog 검증.
+- Stage reward_id → Reward Catalog 검증.
+- Stage map_file → 파일 존재 및 Map 구조 검증.
+- Allied Unit ID/count/spawn을 검증.
+- Encounter/Wave Enemy ID/count/interval/lanes 컨테이너를 검증.
+- Map의 goal/spawn/robot spots/tower slots/tiles/objects/gameplay containers를 기본 검증한다.
+- Reward item_ids는 실제 Item Catalog와 교차 검증된다.
+
+### CONFIRMED GAP — Lane Semantics
+- Stage Editor의 lane 값은 left, right, both를 사용한다.
+- Map의 spawn area는 spawn_0, spawn_1 같은 ID를 사용한다.
+- Runtime은 left/right를 동일한 의미의 spawn-area ID로 직접 연결하지 않으며 fallback 경로가 존재한다.
+- both에 대한 전용 동시/분산 spawn 의미도 확인되지 않았다.
+- 특히 map_01.json은 spawn area가 하나이므로 Stage 01의 left/right/both가 실제로 같은 spawn으로 수렴할 수 있다.
+- 이는 Validator의 구조 검증과 Runtime 의미 검증 사이의 GAP이다.
+- Canon 결정 전 코드 수정 금지. HOLD.
+
+### CONFIRMED — Tower / Skill / Weapon
+- TowerDefinition은 ObjectDefinition을 기반으로 combat/upgrade/visual 정보를 가진다.
+- TowerRuntimeState가 Definition을 참조하고 WeaponDefinition을 통해 공격 Runtime을 구성한다.
+- Skill Catalog는 별도로 존재하며 GameController가 Skill 데이터를 직접 소비한다.
+- WeaponDefinition은 독립 Definition 객체지만 현재 별도 Weapon Catalog/Editor 중심 구조는 확인되지 않는다.
+- 현재 3 Gameplay Scope를 위해 즉시 Building/Skill/Weapon 공통 시스템을 새로 만드는 것은 필요하지 않다.
+
+### 계획 판정
+- 객체 중심 방향 자체는 현재 코드 구조와 충돌하지 않는다.
+- Stage / Mission / Reward / Encounter / Wave / Map / Actor / Tower의 분리 경계는 유지한다.
+- 현재 가장 중요한 미해결 Canon은 Mission Type의 3 Gameplay 매핑, Mission target 의미, Player Count, lane semantics이다.
+- 이 네 항목은 구현으로 선행 해결하지 않고 Master Canon 결정 또는 추가 검증 후 처리한다.
+- 현재 목적은 문서 기준선 갱신이며 신규 Runtime/Editor 구현은 하지 않는다.
+
+### Verification
+- CODE VERIFIED: 위 구조/경로를 기존 코드 조사 결과와 대조.
+- BUILD VERIFIED: 이번 문서 재검토에서는 실행하지 않음.
+- EDITOR VERIFIED: 이번 문서 재검토에서는 UI 조작하지 않음.
+- PIE VERIFIED: 이번 문서 재검토에서는 수행하지 않음.
+
+### OUT OF SCOPE
+- Mission Type 코드 전환
+- Giant Boss 승리 조건 구현
+- Player Count 구현
+- Lane semantics 변경
+- Allied Unit Editor 구현
+- Building/Weapon/Skill 공통 시스템 신규 구현
+- Stage/Map/Content Editor 대규모 개편
+
+
+## 2026-10-05 Lane Semantics Runtime 재검증
+
+STATUS: CONFIRMED GAP / IMPLEMENTATION HOLD
+목적: Stage lane 값(left/right/both)이 실제 Runtime spawn 선택에서 어떤 의미로 해석되는지 직접 코드 경로로 재검증한다.
+
+### CONFIRMED
+- Stage Wave Enemy Group은 lanes 배열을 spawn_queue entry에 그대로 저장한다.
+- Runtime spawn_enemies()는 requested_lanes 중 하나를 선택하며, 여러 lane 값을 동시에 생성하는 분기 구조는 없다.
+- requested_lane이 실제 SPAWN_AREAS key와 일치하면 해당 spawn area를 사용할 수 있다.
+- requested_lane이 left/right이고 실제 spawn area key가 없으면 SPAWN_AREAS의 key를 전역 순서로 순환 선택한다.
+- map_01의 실제 spawn area는 spawn_area 타입에서 생성되는 spawn_0 계열 key이며, left/right key가 아니다.
+- 따라서 map_01에서 left와 right는 각각 고유한 좌/우 spawn area를 의미하지 않는다.
+- lanes=[left,right]는 두 lane에서 동시 spawn한다는 의미가 아니다. 적 spawn마다 left 또는 right 요청값을 순차적으로 선택한 뒤, 현재 map의 spawn area fallback을 사용한다.
+- 특히 map_01에는 spawn area가 하나뿐이므로 left/right/both가 실질적으로 같은 spawn area로 수렴한다.
+- Validator는 lanes가 Array인지와 기본 값 형식만 확인하며 left/right/both의 Map spawn area 대응 또는 동시/분산 semantics를 검증하지 않는다.
+
+### 판정
+- 기존 문서의 "Lane Semantics GAP"는 단순 설계 미확인 상태가 아니라 현재 Runtime 구현에서도 의미가 완전히 보장되지 않는 것으로 확인되었다.
+- 다만 최종적으로 lane을 좌/우 추상명으로 유지할지, Map의 실제 spawn area ID를 참조하게 할지는 Master Canon 결정이 필요하다.
+- Canon 결정 전 Runtime/Validator를 수정하지 않는다.
+
+### Verification
+- CODE VERIFIED: GameController spawn_queue → spawn_enemies 경로 직접 확인.
+- BUILD VERIFIED: 이번 조사에서는 실행하지 않음.
+- EDITOR VERIFIED: 이번 조사에서는 UI 조작하지 않음.
+- PIE VERIFIED: 미수행.
+
+### OUT OF SCOPE
+- Lane semantics 구현 변경
+- Map spawn area 추가/삭제
+- Stage JSON 수정
+- Validator 강화
+
+
+## 2026-10-05 Mission Contract / target_id 재검증
+
+STATUS: CODE VERIFIED / HOLD
+목적: Mission Type과 target_id가 현재 콘텐츠 및 Runtime에서 실제 어떤 계약을 갖는지 재검증한다.
+
+### CONFIRMED
+- Mission Catalog에는 mission_stage_01~03이 존재하며 현재 세 Mission 모두 primary_type=`clear_encounters`, target_id=``, time_limit=0이다.
+- Stage 01~03은 각각 해당 Mission ID를 참조한다.
+- ContentValidator가 허용하는 primary_type은 현재 `defend_base`, `clear_encounters` 두 종류뿐이다.
+- `defend_base`는 time_limit > 0을 요구한다.
+- Stage Editor도 현재 동일한 두 Mission Type만 선택 가능하다.
+- MissionDefinition은 target_id를 정상적으로 로드한다.
+- Stage Editor는 target_id를 저장한다.
+- 그러나 GameController 전체 Mission 판정 경로에서 target_id를 읽어 승리 조건을 결정하는 코드는 확인되지 않았다.
+- GameController의 현재 승리 경로는 defend_base의 time_limit 또는 모든 Encounter/Wave 및 생존 Enemy 소멸을 기준으로 한다.
+- Giant은 별도의 boss attack/pattern/runtime state를 가지고 있으나 giant 처치 여부를 Mission 승리 조건으로 연결하는 target_id 기반 판정은 없다.
+- Stage 01~03의 실제 Encounter에는 giant이 포함되지만, 이것만으로 해당 Stage가 Giant Boss Battle이라는 사실을 의미하지 않는다.
+
+### INFERENCE
+- 현재 target_id는 미래 Mission Objective 확장을 위한 저장 필드일 가능성은 있으나, 그 의미를 Enemy ID/Giant ID/Encounter ID 등으로 특정할 직접 근거는 없다.
+- 현재 실제 구현 기준으로는 target_id가 Mission Contract의 실행 변수로 기능하지 않는다.
+
+### 판정
+- `target_id` 의미는 계속 HOLD / UNVERIFIED로 유지한다.
+- 현재 Mission Type의 Runtime 계약은 사실상 `defend_base`와 `clear_encounters` 두 종류다.
+- Master Canon의 Tower Defense / Elimination / Giant Boss Battle을 현재 두 타입에 임의 매핑하지 않는다.
+- 특히 Stage에 giant이 포함된다는 이유만으로 Giant Boss Battle로 판정하지 않는다.
+- Mission 시스템을 확장하려면 먼저 Master가 3 Gameplay의 승리 조건과 target semantics를 결정해야 한다.
+
+### Verification
+- CODE VERIFIED: MissionDefinition / ContentValidator / Stage Editor / GameController / Stage 01~03 직접 대조.
+- BUILD VERIFIED: 미수행.
+- EDITOR VERIFIED: 미수행.
+- PIE VERIFIED: 미수행.
+
+### OUT OF SCOPE
+- Mission Type 추가
+- target_id 의미 확정
+- Giant Boss Victory 구현
+- Stage 01~03 Mission 데이터 변경
+
+
+## 2026-10-05 Player Count / Multiplayer Semantics 재검증
+
+STATUS: CODE VERIFIED GAP / HOLD
+목적: 현재 `play_modes`와 `multiplayer` 데이터가 Player Count 또는 실제 Multiplayer Runtime을 의미하는지 직접 코드 경로로 확인한다.
+
+### CONFIRMED
+- MapLoader는 Map JSON의 `play_modes`와 `multiplayer` Dictionary를 읽어 보존한다.
+- Map Editor는 `campaign`, `single`, `multiplayer` 세 play mode를 편집할 수 있다.
+- Map Editor의 Multiplayer 설정은 alliance 목록, alliance controller, relation, third alliance enabled 등을 저장할 수 있다.
+- 현재 Map의 multiplayer alliance controller 값은 `ai`이며, 구조상 Alliance/Relation 설정을 표현한다.
+- StageManager의 `run_mode`는 현재 `campaign`과 `single` 실행 흐름에서 사용된다.
+- Title Screen에는 Campaign과 Single Play 진입만 존재하며 Multiplayer 실행 경로는 확인되지 않았다.
+- GameController에서 Map의 `multiplayer`, alliance, relation 데이터를 실제 Player Count 또는 네트워크 플레이어 생성/소유권 판정에 사용하는 Runtime 경로는 확인되지 않았다.
+- 프로젝트 전체에서 독립적인 `player_count`, `playerCount`, 또는 동등한 Player Count 저장 필드는 확인되지 않았다.
+- 따라서 `play_modes.multiplayer`는 현재 Player Count가 아니다.
+- 현재 `multiplayer` 데이터는 Map Editor/MapLoader 수준에서 보존되는 설정 데이터이며, 실제 Multiplayer Runtime 계약이 구현되었다고 볼 수 없다.
+
+### INFERENCE
+- `multiplayer.alliances` / `relations`는 향후 AI faction 또는 multiplayer rules 확장을 위한 Map-level 설정으로 보인다.
+- 그러나 현재 구조만으로 실제 인간 Player 수, 팀 수, Controller ownership을 특정할 수 없다.
+
+### 판정
+- Player Count Canon/storage는 **UNVERIFIED / HOLD**.
+- `campaign/single/multiplayer`는 Player Count가 아니라 현재 확인 가능한 실행/Map capability mode로 취급한다.
+- `multiplayer`가 존재한다는 이유만으로 2P/3P/다인 플레이를 지원한다고 문서화하지 않는다.
+- Player Count를 추가하려면 Player identity, controller ownership, team/alliance membership, spawn ownership 중 최소 계약을 먼저 정의해야 한다.
+- 현재 목적에서는 구현하지 않는다.
+
+### Verification
+- CODE VERIFIED: MapLoader / Map Editor / StageManager / Title Screen / GameController 소비 경로 대조.
+- BUILD VERIFIED: 미수행.
+- EDITOR VERIFIED: 코드 경로 조사만 수행.
+- PIE VERIFIED: 미수행.
+
+### OUT OF SCOPE
+- Multiplayer Runtime 구현
+- Network layer 추가
+- Player Count field 추가
+- Alliance/Relation semantics 변경
+- Title Screen Multiplayer UI 추가
+
+
+## 2026-10-05 Allied Units Authoring Gap 재검증
+
+STATUS: CODE VERIFIED GAP / HOLD
+목적: Allied Unit이 실제 Runtime 자산인지와 Stage Editor에서 Stage 배치/구성 authoring이 가능한지 분리 검증한다.
+
+### CONFIRMED
+- Allied Unit에는 별도 Catalog(`content/allied_units/allied_units.json`), `AlliedUnitDefinition`, `AlliedUnitRuntimeState`, `AlliedUnitAI`가 존재한다.
+- GameController는 Allied Unit Catalog를 로드하고 Stage의 `allied_units`를 읽어 Runtime State를 생성하며 Render/AI/공격/회복/피해 처리를 수행한다.
+- StageLoader와 ContentValidator는 Stage의 `allied_units`를 검증한다.
+- Stage 01에는 `basic`, `ranged`, `support`를 각각 count=1, spawn=`robot`으로 참조하는 실제 데이터가 존재한다.
+- 별도 `Unit Editor`가 존재하며 Allied Unit Catalog의 개별 Unit 능력치/AI/Visual/Animation 등을 편집할 수 있다.
+- 그러나 Stage Editor에는 `allied_units`를 추가/삭제/수량/ID/spawn point 등을 authoring하는 UI와 저장 로직이 없다.
+- Stage Editor는 기존 `allied_units` 필드를 Stage JSON에 보존할 수 있지만, 현재 UI를 통해 새 Allied Unit 구성을 만들거나 변경할 수 있다는 근거는 확인되지 않았다.
+
+### 판정
+- Allied Unit 자체는 **CODE VERIFIED / Runtime active**이다.
+- 문제는 Runtime 구현 부재가 아니라 **Stage-level authoring gap**이다.
+- 현재 범위에서는 Editor 구현을 임의 추가하지 않는다. 필요한 authoring 계약(배치 의미, spawn ownership, count, spawn point)을 Master Canon으로 먼저 확정할 필요가 있는지 확인한다.
+- 특히 `spawn=robot`은 현재 Validator/Runtime에서 허용되는 spawn reference지만, 향후 여러 Player/Alliance 또는 다수 robot spawn point를 정의하는 Canon과는 별개로 취급한다.
+
+### Verification
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: 미수행
+- EDITOR VERIFIED: 코드 구조상 authoring UI 부재 확인. 실제 Editor 실행은 미수행.
+- PIE VERIFIED: 미수행
+
+### OUT OF SCOPE
+- Allied Unit Editor 신규 기능 구현
+- Stage Editor Allied Unit UI 구현
+- Spawn ownership / Player Count semantics 결정
+- Allied Unit Catalog 데이터 변경
+
+
+## 2026-10-05 Encounter / Wave Runtime Semantics 재검증
+
+STATUS: CODE VERIFIED GAP / HOLD
+목적: Encounter/Wave/Group 데이터 구조가 Editor에서 authoring되는 방식과 실제 Runtime spawn/clear semantics가 일치하는지 확인한다.
+
+### CONFIRMED
+- Stage Editor는 Encounter → Wave → Group 구조를 직접 authoring한다.
+- Group은 `[enemy_id, count, interval, lanes]` 4요소 구조다.
+- StageLoader/ContentValidator는 Encounter/Wave/Group의 구조, Enemy ID, count, interval, lanes 컨테이너를 검증한다.
+- StageManager는 Encounter별 Wave 배열을 그대로 GameController에 제공한다.
+- GameController의 `start_wave()`는 한 Wave의 모든 Group을 하나의 `spawn_queue`로 펼친다.
+- 같은 Wave 안의 Group들은 병렬 실행되지 않는다. 첫 Group의 모든 count를 interval로 배치한 뒤 `wave_group_gap`을 더하고 다음 Group을 배치한다.
+- 따라서 여러 Group을 같은 Wave에 넣었다고 해서 서로 다른 적군 그룹이 동시에 출현한다는 의미는 아니다.
+- `lanes`가 여러 값이어도 개별 enemy spawn 시 하나의 requested lane만 선택한다. 따라서 `[left,right]`는 현재 Runtime에서 양쪽 동시 생성 계약이 아니다.
+- Wave Clear는 spawn_queue가 비고 살아 있는 Enemy가 없을 때 발생한다.
+- Encounter Clear는 해당 Encounter의 마지막 Wave가 Clear된 뒤 다음 Encounter로 넘어가는 Runtime 상태 전환이다.
+- 마지막 Encounter/Wave 종료 후 `clear_encounters` Mission이면 Victory로 진행한다.
+- `defend_base` Mission이면 마지막 Wave 종료가 Victory가 아니라 Defense 지속으로 이어진다.
+- Wave/Group에 별도 start time, concurrent group flag, spawn phase, encounter objective 등의 필드는 없다.
+
+### INFERENCE
+- 현재 `Wave`는 의미상 "동시 출현 묶음"이라기보다 "순차적으로 실행되는 여러 Spawn Group의 컨테이너"에 가깝다.
+- Stage 01의 `NORMAL / BOTH LANES`, `RUSHER / NORTH PRESSURE` 같은 label은 현재 Runtime이 별도 의미를 해석하지 않는 표시용 텍스트다.
+- 동일 Wave 안의 다중 Group을 동시 압박으로 의도했다면 현재 데이터 구조와 Runtime은 그 의도를 보장하지 않는다.
+
+### 판정
+- Encounter/Wave 기본 구조와 Editor/Runtime 연결은 **CODE VERIFIED**.
+- 그러나 Group 동시성 및 Lane semantics는 Canon과 구현 의미가 일치하는지 **HOLD**.
+- 기존 데이터의 label을 Gameplay Canon으로 승격하지 않는다.
+- 현재 목적에서는 Runtime/Schema를 수정하지 않는다.
+
+### Verification
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+### OUT OF SCOPE
+- Wave concurrency schema 추가
+- Spawn timing schema 변경
+- Lane semantics 구현 변경
+- Stage 01~03 Wave 데이터 변경
+
+
+## 2026-10-05 Lane ↔ Map Spawn Area 재검증
+
+### CONFIRMED
+- Stage Editor의 Lane 선택지는 고정 `left / right / both`다.
+- Stage Editor에서 `both`는 저장 시 `lanes=["left","right"]`로 변환된다.
+- Map Runtime은 `gameplay_areas[].type == "spawn_area"`를 발견할 때 실제 Runtime lane ID를 `spawn_0`, `spawn_1` 등의 형태로 생성한다.
+- `map_01.json`에는 `spawn_area`가 1개뿐이다. 따라서 Runtime의 실제 Spawn Area key는 `spawn_0` 하나다.
+- `map_01.json`에는 legacy `spawns` 데이터가 별도로 확인되지 않으며, 현재 Runtime은 gameplay spawn area를 기준으로 `SPAWN_AREAS`/`LANES`를 구성한다.
+- 따라서 Stage의 `left`, `right`, `both`는 현재 Map의 실제 Spawn Area ID와 직접 연결되어 있지 않다.
+- Runtime에서 `left/right` 요청은 실제 `SPAWN_AREAS`가 존재할 경우 사용 가능한 Spawn Area key를 순환 선택한다. Spawn Area가 하나뿐인 `map_01`에서는 left/right가 모두 `spawn_0`으로 귀결된다.
+- `both`는 Runtime에서 별도 의미로 처리되지 않는다. `[left,right]`의 두 값을 순서대로 하나씩 선택할 뿐이며, map_01에서는 결과적으로 동일한 `spawn_0`을 반복 사용한다.
+
+### 판정
+현재 Lane 데이터와 Map Spawn Area 모델 사이에 **CODE VERIFIED semantic gap**이 있다.
+Stage Editor의 `left/right/both`를 실제 Map Spawn Area 선택으로 간주하면 안 된다.
+특히 map_01의 1개 Spawn Area에서는 좌/우 분리 Spawn이 실제로 존재하지 않는다.
+
+### HOLD
+Canon 결정 전 다음을 구현하지 않는다.
+1. left/right를 특정 Map Spawn Area에 강제 매핑
+2. Map에 Spawn Area를 추가/분리
+3. `both`의 동시 Spawn semantics 구현
+4. Stage schema를 실제 spawn ID 기반으로 변경
+
+### OUT OF SCOPE
+기존 Stage 01~03의 lane 데이터 수정 및 Map geometry 수정.
+
+
+## 2026-10-05 Lane ↔ Map Spawn Contract 재검증
+
+STATUS: CODE VERIFIED GAP / HOLD
+
+### CONFIRMED
+- MapLoader는 legacy `spawns`를 `lanes`로 읽는다.
+- GameController는 `gameplay_areas[].type == spawn_area`를 발견하면 이를 `spawn_0`, `spawn_1` 등의 Runtime ID로 변환한다.
+- 즉 `gameplay_areas.spawn_area`의 ID/name 자체는 `left`/`right` lane ID로 보존되지 않는다.
+- `map_01.json`은 현재 `spawns={}`이고 `spawn_area`는 1개다. 따라서 Runtime에는 사실상 `spawn_0` 하나가 생성된다.
+- `stage_01.json`은 `left/right`를 lanes로 요청한다. 현재 `spawn_0`만 존재하므로 Runtime의 fallback/cycling 경로가 개입한다.
+- `map_02.json`, `map_03.json`은 `spawns.left/right`를 보유하지만 `spawn_area` gameplay area는 없다. 따라서 이 두 맵은 `left/right`가 직접 Runtime lane으로 사용된다.
+- 따라서 동일한 Stage Group의 `[left,right]`가 어떤 Map을 참조하느냐에 따라 전혀 다른 Runtime 경로를 거친다.
+- Map Editor에는 Spawn Area authoring 도구가 존재하지만, 현재 저장 구조에는 legacy `spawns`와 `gameplay_areas.spawn_area`가 공존할 수 있다.
+
+### INFERENCE
+현재 프로젝트에는 두 개의 Spawn 표현이 공존한다.
+1. Legacy named spawn: `spawns.left/right`
+2. Gameplay Spawn Area: `gameplay_areas`의 `spawn_area`
+
+둘 사이에 `left/right ↔ spawn area` 명시적 매핑 계약은 확인되지 않았다.
+
+따라서 현재 Lane semantics의 핵심 문제는 단순히 Stage Group의 `lanes` 값이 아니라 **Map의 Spawn 표현 방식이 통일되어 있지 않다는 것**이다.
+
+### 마리 판정
+- Lane → Spawn mapping은 **CODE VERIFIED GAP**.
+- `left/right/both`의 Canon을 먼저 확정하고 Map spawn representation을 하나의 계약으로 정리해야 한다.
+- 지금 Stage 데이터나 Map 데이터를 수정하면 기존 동작/의도를 임의로 바꿀 위험이 있으므로 구현하지 않는다.
+
+### Verification
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+### OUT OF SCOPE
+- Map JSON 정규화
+- Spawn Area ID 체계 변경
+- Stage lane 데이터 변경
+- Runtime spawn algorithm 변경
+
+
+## 2026-10-05 Enemy Lane / Path Runtime Semantics 재검증
+
+STATUS: CODE VERIFIED GAP / HOLD
+
+### CONFIRMED
+- EnemyRuntimeState는 `lane`, `position`, `start_position`을 저장한다.
+- Enemy 이동은 별도 Path/Route/Waypoint 데이터가 아니라 `start_position → BASE` 직선 보간으로 계산된다.
+- 매 Tick `position.x`를 speed만큼 증가시키고, `(position.x - start.x) / (BASE.x - start.x)`를 progress로 계산한 뒤 `position.y = lerp(start.y, BASE.y, progress)`로 결정한다.
+- 따라서 Lane은 이동 경로 자체가 아니라 **Spawn 시작점 선택에 사용되는 상태값**이다.
+- Spawn Area가 있는 경우 시작 위치는 Area 내부의 랜덤 위치이며, 이후 이동은 해당 위치에서 Base까지의 직선 보간이다.
+- Map의 `movement_area`, `blocked_area`, `obstacle_area`는 현재 확인된 Enemy 이동 계산에 직접 사용되지 않는다.
+- Goal Area 역시 Enemy 도달 판정의 직접 기준이 아니며, 실제 도달 판정은 `BASE.x - 25` 기준이다.
+- 따라서 현재 Runtime에는 Lane별 Path, Waypoint, Nav/Movement Corridor, Goal Area 기반 이동 계약이 없다.
+
+### INFERENCE
+- 현재 `left/right`라는 명칭은 전술적 Lane이라기보다 Spawn 출발 위치를 구분하는 레거시 개념에 가깝다.
+- Master가 의도한 Lane을 실제 전투 경로로 사용하려면 현재 구조만으로는 부족하다.
+- 특히 Map Editor에서 Movement/Blocked/Obstacle Area를 authoring할 수 있다는 사실만으로 Enemy Pathing에 사용된다고 판단하면 안 된다.
+
+### 마리 판정
+- Spawn semantics와 Movement semantics를 분리해야 한다.
+- 현재 목적에서 Pathfinding/Waypoint/Navigation 구현을 추가할 근거는 없다.
+- Lane Canon을 확정하기 전에는 이동 시스템을 수정하지 않는다.
+
+### Verification
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+### OUT OF SCOPE
+- Pathfinding 구현
+- Waypoint/Route schema 추가
+- Navigation 시스템 추가
+- Movement Area/Obstacle Area Runtime 연결
+
+## Handoff ? 2026-10-05 MapLoader / Runtime Spawn Conversion �����
+**STATUS** ? HOLD
+
+**����**
+Map�� Legacy `spawns.left/right`�� Gameplay `spawn_area`�� MapLoader �� Runtime���� ��� ��ȯ�Ǵ��� Ȯ���Ѵ�.
+
+**CONFIRMED**
+- `MapLoader`�� Legacy `spawns`�� �����ϸ� �״�� `parsed.lanes[left/right]` ���·� ��ȯ�Ѵ�.
+- `MapLoader`�� `gameplay_areas`�� ���� �����ϸ� Lane ID�� ��ȯ���� �ʴ´�.
+- Runtime `GameController.apply_map_spatial_data()`�� Gameplay `spawn_area`�� ������� `spawn_0`, `spawn_1` ������ �����Ѵ�.
+- �� `spawn_area`�� ���� ID/name�� Runtime Lane ID�� �������� �ʴ´�.
+- Gameplay Spawn Area�� �ϳ� �̻� �����ϸ� Runtime�� Legacy `lanes`�� ������� �ʰ� Spawn Area ��� `LANES`�� �����Ѵ�.
+- Spawn Area�� ���� ���� `loaded_map.lanes`�� Legacy Lane���� fallback�ȴ�.
+- Stage�� `left/right` ��û�� Spawn Area ��� Map���� ���� �������� ������ Runtime�� Spawn Area ����� ��ȯ �����Ѵ�.
+- ���� ������ Stage Group�� `left/right` �����Ͱ� Map�� ���� Legacy ��ǥ Lane �Ǵ� Spawn Area ��ȯ���� �ؼ��ȴ�.
+
+**INFERENCE**
+���� `left/right`�� Map�� �������� Canonical Lane ID�� �ƴ϶� Runtime���� Map ǥ���� ���� ���ؼ��Ǵ� ��û���� ������.
+
+**���� ����**
+Phase C�� Lane/Spawn ����� ���� ���� ���� Canon ������ �ʿ��� ���´�. ���� ���縸���δ� Ư�� ǥ���� �������� Ȯ������ �ʴ´�. HOLD.
+
+**���� ����**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+**���� ����**
+�ڵ�/Asset ���� ����. ���� �����ϸ� ����.
+
+**OUT OF SCOPE**
+Lane ���� ����, Map JSON ��ȯ, Validator ��ȭ, Stage ������ ����.
+
+## Handoff ? 2026-10-05 Phase C �Ϸ����� ���� ����
+**STATUS** ? HOLD / Phase C �̿Ϸ�
+
+**����**
+���߰�ȹ���� Phase C �Ϸ������� ���� �ڵ�/���� ���¿� �����Ͽ� Phase D ���� ���� ���θ� �����Ѵ�.
+
+**Phase C �Ϸ�����**
+- �ϳ��� Stage�� Map, Mission, Encounter/Wave ��ü�� �����Ѵ�.
+- Stage�� ���� �����ϴ�.
+- Mission �����Ͱ� Stage�� �ߺ� ������� �ʴ´�.
+
+**CONFIRMED ? ����**
+- Stage �� `map_file` ������ �����ϰ� StageLoader/StageManager/GameController�� ���޵ȴ�.
+- Stage �� `mission_id` ������ �����ϰ� Mission Catalog/Definition���� �ؼ��ȴ�.
+- Stage �� `reward_id` ������ RewardDefinition ��ΰ� �����Ǿ� �ִ�.
+- Stage �� Encounter/Wave ������ ���� Runtime spawn queue�� �Һ�ȴ�.
+- Mission �����ʹ� Stage�� �и��� Catalog/Definition���� �����ȴ�.
+- Building ��ġ �����ʹ� Map�� �����ϸ� Runtime Tower ��ġ ��ο� ����ȴ�.
+
+**CONFIRMED GAP ? �Ϸ����� ������ ���� �׸�**
+1. Lane/Spawn Contract: Stage�� `left/right/both` �ǹ̰� Map�� legacy `spawns`�� `gameplay_areas.spawn_area` ���̿��� �ϰ����� �ʴ�.
+2. Mission Contract: ���� Runtime�� `defend_base`�� `clear_encounters`�� �����ϸ� `target_id` �ǹ̰� �Һ���� �ʴ´�. Master Canon�� 3 Gameplay ������ 1:1 ������ Ȯ�ε��� �ʾҴ�.
+3. PIE: ���� Stage ���� ����� Master�� Ȯ���ϴ� PIE VERIFIED�� ���� ����.
+
+**Phase C�� ������ Ȯ�ε� ����**
+- Player Count / Multiplayer�� ���� Canon/storage�� Ȯ�ε��� �ʾ����Ƿ� Phase C �Ϸ����ǿ� ���Ƿ� �������� �ʴ´�.
+- Allied Unit�� Runtime ����� ���������� Stage-level authoring UI�� ����. �̴� ���� Phase C �Ϸ����� ��ü�ʹ� ���� authoring gap�̴�.
+- Building�� `tower_slots` / `tower_placement_area` ����� �߰� Canon Ȯ�� ����̳� ���� Phase C �Ϸ������� ���� ���� ������ �������� �ʴ´�.
+
+**���� ����**
+Phase C�� ��ü ���� ������ Runtime ���� ����� ��κ� �����ߴ�. �׷��� Lane/Spawn ���� Mission Canon�� Ȯ������ �ʾҰ� PIE ������ �����Ƿ� **Phase C �Ϸ�� ������ �� ����. Phase D �������� �ڵ� �������� �ʴ´�.**
+
+**���� ����**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+**���� ����**
+- �ڵ�/Asset ���� ����.
+- �� ���� Handoff�� ������ ���.
+
+**OUT OF SCOPE**
+- Lane ���� ����
+- Map JSON ���̱׷��̼�
+- Mission Type �߰�/����
+- Player Count/Multiplayer ����
+- Allied Unit Stage Editor ����
+- Phase D �ű� ��� ����
+
+**��� �ð�**
+$stamp
+
+## Handoff — 2026-10-05 Mission Contract Canon 승인 반영
+
+STATUS — ACCEPTED / PROPOSAL → MASTER CANON
+
+Master 승인 사항:
+- Tower Defense → `defend_base`
+- Elimination → `clear_encounters`
+- Giant Boss Battle → `defeat_giant`
+
+Mission Contract 제안:
+- Tower Defense Victory: 제한 시간 생존
+- Elimination Victory: 모든 Encounter/Wave 적 제거
+- Giant Boss Battle Victory: Giant 처치
+- 모든 Mission의 기본 Defeat: Base HP <= 0
+
+`target_id`:
+- Tower Defense: 사용하지 않음
+- Elimination: 사용하지 않음
+- Giant Boss Battle: Giant 식별에 사용 가능
+- 일반 Objective 시스템으로 확장하지 않음
+
+범위 원칙:
+- 기존 `defend_base` / `clear_encounters` Runtime은 최대한 보존한다.
+- `defeat_giant`는 기존 Giant Runtime을 활용한다.
+- Mission Contract 확정 전에는 코드/Asset을 변경하지 않는다.
+- 다음 단계는 현재 Runtime과 승인된 Contract의 차이를 최소 단위로 대조한다.
+
+판정:
+- Mission Canon 결정으로 기존 Mission Contract HOLD의 설계 원인은 해소됨.
+- 실제 코드 반영은 별도 검증 후 진행한다.
+- CODE/BUILD/EDITOR/PIE: 현재 변경 검증 전 상태.
+
+## Handoff — 2026-10-05 Mission Contract Runtime Delta 조사
+STATUS — HOLD / 구현 전 파일 잠금
+CONFIRMED — 승인된 Mission Contract와 현재 코드의 차이를 직접 대조했다.
+- `defend_base`: 현재 Runtime과 직접 대응하며 유지 가능.
+- `clear_encounters`: 현재 Runtime과 직접 대응하며 유지 가능.
+- `defeat_giant`: 현재 MissionDefinition에는 없고, Validator/Stage Editor도 허용하지 않는다.
+- Giant 처치 자체는 `damage_enemy()`에서 이미 감지되고 `GIANT NEUTRALIZED` 이벤트도 발생한다. 그러나 현재 Giant 처치 시 Mission Victory 전환은 없다.
+- Giant Mission의 Campaign 보상/다음 Stage 전환은 `defend_base` 완료 경로와 별도 구현이 필요하다.
+- `target_id`는 현재 Runtime에서 승리 조건에 사용되지 않는다. 승인 Canon에서는 Giant 식별 용도로 사용 가능하지만, 현재 Stage에는 Giant Mission이 지정되어 있지 않다.
+TECHNICAL JUDGMENT — `defeat_giant` 추가는 기존 Giant Runtime을 재사용하는 최소 변경으로 가능하다.
+BLOCKER — Godot Editor 프로세스가 `content_validator.gd`와 `stage_editor.gd`를 잠금 중이어서 안전한 코드 저장을 수행하지 않았다. 프로세스 종료/강제 해제는 Master 승인 없이 하지 않는다.
+CHANGES — 코드/Asset 변경 없음. 문서 기록만 추가.
+VERIFICATION — CODE VERIFIED (delta 조사), BUILD/EDITOR/PIE NOT VERIFIED.
+NEXT — 파일 잠금이 해소되면 Validator → Stage Editor → GameController 순서로 최소 변경하고 diff/check/build 검증.
+
+## Handoff — 2026-10-05 defeat_giant Runtime 구현
+STATUS — PASS / CODE + BUILD
+CONFIRMED
+- ContentValidator가 `defeat_giant` Mission Type을 허용한다.
+- Stage Editor가 `defeat_giant`을 Mission Type으로 표시하고 로드한다. 기존 저장 경로의 `primary_type` 저장은 그대로 사용한다.
+- GameController가 Giant 처치 시 `defeat_giant` Mission이면 즉시 Mission Clear 경로로 진입한다.
+- Campaign에서는 기존 Stage reward / progression / next Stage 처리 패턴을 재사용한다.
+- Base HP <= 0 조건은 기존 DEFEAT 경로를 유지한다.
+- 기존 `defend_base` / `clear_encounters` 경로는 변경하지 않았다.
+- `target_id`는 이번 구현에서 강제 사용하지 않았다. 현재 Giant Runtime의 타입 식별(`giant`)으로 Canon 조건을 충족한다.
+VERIFICATION
+- CODE VERIFIED — PASS
+- BUILD VERIFIED — PASS (`Godot 4.7.2 --headless --editor --quit`, exit code 0)
+- EDITOR VERIFIED — NOT VERIFIED
+- PIE VERIFIED — NOT VERIFIED
+DIFF — 의도된 3개 코드 파일만 Mission Contract 변경. 기존 문서 변경은 유지.
+git diff --check — PASS
+CHANGES — `editor/content_validator.gd`, `editor/stage_editor.gd`, `game_controller.gd`
+OUT OF SCOPE — 실제 Mission Catalog에 Giant Boss Mission을 지정하는 Content 변경, PIE Runtime 확인, Player Count, Lane/Spawn Canon.

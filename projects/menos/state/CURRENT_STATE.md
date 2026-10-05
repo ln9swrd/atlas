@@ -646,3 +646,371 @@ STATUS: Core loop (Phases 1-6) is substantially implemented in Browser and Godot
 **í™˜ê²½ ë©”ëª¨** â€” Godot í”„ë¡œì íŠ¸ ìŠ¤ìº”ì—ì„œ ê¸°ì¡´ì˜ ì¤‘ë³µ UID ê²½ê³ ê°€ í™•ì¸ë˜ì—ˆìœ¼ë‚˜, í˜„ì¬ ì „íˆ¬ í™”ë©´ ê°ì‚¬ì˜ í•µì‹¬ ê¸°ëŠ¥ì„ ì°¨ë‹¨í•˜ëŠ” Parse Error/Script ErrorëŠ” í™•ì¸ë˜ì§€ ì•Šì•˜ë‹¤. ì¤‘ë³µ UID ì •ë¦¬ëŠ” ë³„ë„ ì‘ì—…ìœ¼ë¡œ ë‚¨ê¸´ë‹¤.
 
 **í˜„ì‹¤ì„± íŒë‹¨** â€” TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE / COMMERCIAL UI READINESS: UNVERIFIED.
+
+
+## Handoff â€” 2026-10-05 ë¬¸ì„œ ì¬ê²€í†  ê¸°ì¤€ì„  ê°±ì‹ 
+
+**STATUS** â€” PASS / ACCEPTÂ·STOP
+
+**ëª©ì **
+í˜„ì¬ ì‹¤ì œ Stage/Map/Mission/Reward/Encounter/Allied Unit/Runtime/Validator êµ¬ì¡°ë¥¼ ê°ì²´ ì¤‘ì‹¬ ê°œë°œê³„íšê³¼ ëŒ€ì¡°í•˜ê³ , í™•ì¸ëœ ì‚¬ì‹¤ê³¼ ë¯¸í•´ê²° Canonì„ CURRENT_STATEì— ë°˜ì˜í•œë‹¤.
+
+**ê¸°ì¤€ì„ **
+- HEAD: d783a8b394f2db53488e919dce4285ff5f3ed92c
+- Branch: main
+- ê¸°ì¡´ Working Tree ë³€ê²½ì‚¬í•­ì€ ë³´ì¡´.
+- ì´ë²ˆ ì‘ì—…ì—ì„œëŠ” ì½”ë“œ/Asset ë³€ê²½ ì—†ìŒ.
+
+**CONFIRMED**
+- StageëŠ” Mission/Reward/Map/Balance/Encounter/Allied Unitsë¥¼ ì¡°í•©í•˜ëŠ” êµ¬ì¡°ë‹¤.
+- StageLoader/StageManager/GameController ê²½ë¡œì—ì„œ ì´ ë°ì´í„°ê°€ ì‹¤ì œ Runtimeì— ì—°ê²°ëœë‹¤.
+- mission_idì™€ reward_idëŠ” ê°ê° ë³„ë„ Catalogë¥¼ ì°¸ì¡°í•œë‹¤.
+- allied_unitsëŠ” StageLoader ê²€ì¦ë¿ ì•„ë‹ˆë¼ GameController Runtimeì—ì„œ ì‹¤ì œ ì†Œë¹„ëœë‹¤.
+- Encounter/Wave/Enemy Groupì€ Stage Runtime spawn queueë¡œ ì—°ê²°ëœë‹¤.
+- Map goal.positionì€ Runtime Base ìœ„ì¹˜ ë° Base HP defeat ê²½ë¡œì— ì—°ê²°ëœë‹¤.
+- Reward item_idsëŠ” Item Catalogì™€ êµì°¨ ê²€ì¦ëœë‹¤.
+- Mission target_idëŠ” ì €ì¥/ë¡œë“œë˜ì§€ë§Œ í˜„ì¬ ìŠ¹ë¦¬ ì¡°ê±´ íŒì •ì—ëŠ” ì‚¬ìš©ë˜ì§€ ì•ŠëŠ”ë‹¤.
+- Stage laneì€ left/right/both, Map spawnì€ spawn_* êµ¬ì¡°ë¼ ì˜ë¯¸ ì—°ê²°ì— GAPê°€ ìˆë‹¤.
+- Player Countë¥¼ ì˜ë¯¸í•˜ëŠ” ë…ë¦½ í•„ë“œëŠ” í˜„ì¬ í™•ì¸ë˜ì§€ ì•Šì•˜ë‹¤.
+
+**ë¯¸í™•ì¸ / HOLD**
+- Tower Defense / Elimination / Giant Boss Battleì˜ ì •í™•í•œ Mission Type â†” Runtime ê³„ì•½.
+- Giant Boss Battleì˜ ë…ë¦½ ìŠ¹ë¦¬ ì¡°ê±´.
+- Mission target_idì˜ ì •í™•í•œ ì˜ë¯¸.
+- Player Countì˜ Canon ë° ì €ì¥ ìœ„ì¹˜.
+- left/right/bothì˜ ìµœì¢… Spawn semantics.
+
+**ì„¸ë¼ ê¸°ìˆ  íŒë‹¨**
+í˜„ì¬ êµ¬ì¡°ëŠ” ì‹ ê·œ ê³µí†µ ì‹œìŠ¤í…œì„ ë¨¼ì € ë§Œë“œëŠ” ê²ƒë³´ë‹¤ ê¸°ì¡´ Stage â†’ Mission â†’ Encounter/Wave â†’ Runtime ê²½ë¡œë¥¼ ìœ ì§€í•˜ë©´ì„œ ìœ„ ë‹¤ì„¯ ê°€ì§€ ì˜ë¯¸ ê³µë°±ì„ ë¨¼ì € ê²°ì •í•˜ëŠ” í¸ì´ ì•ˆì „í•˜ë‹¤.
+
+**ë§ˆë¦¬ íŒì •**
+ëª©ì  ì¶©ì¡±. í˜„ì¬ ë¬¸ì„œì™€ ì‹¤ì œ êµ¬ì¡° ì‚¬ì´ì˜ í•µì‹¬ ì°¨ì´ë¥¼ ê¸°ë¡í–ˆìœ¼ë©°, í™•ì¸ë˜ì§€ ì•Šì€ ì„¤ê³„ëŠ” Canonìœ¼ë¡œ ìŠ¹ê²©í•˜ì§€ ì•Šì•˜ë‹¤. ACCEPTÂ·STOP.
+
+**ë³€ê²½ ì‚¬í•­**
+- ë¬¸ì„œ 2ê°œë§Œ ê°±ì‹ .
+- ì½”ë“œ/Asset/Editor ë³€ê²½ ì—†ìŒ.
+
+
+## Handoff â€” 2026-10-05 Lane Semantics Runtime ì¬ê²€ì¦
+
+**STATUS** â€” HOLD
+
+**ëª©ì **
+Stageì˜ left/right/both lane ê°’ì´ ì‹¤ì œ Runtimeì—ì„œ ì–´ë–»ê²Œ spawn ìœ„ì¹˜ë¡œ ë³€í™˜ë˜ëŠ”ì§€ ì§ì ‘ í™•ì¸.
+
+**CONFIRMED**
+- Wave groupì˜ lanes ë°°ì—´ì€ spawn queueì— ì €ì¥ëœë‹¤.
+- Runtimeì€ ì—¬ëŸ¬ laneì„ ë™ì‹œì— spawní•˜ì§€ ì•Šê³  ê° enemy spawn ì‹œ requested_lanes ì¤‘ í•˜ë‚˜ë¥¼ ì„ íƒí•œë‹¤.
+- ì‹¤ì œ Map spawn areaëŠ” spawn_0 ê³„ì—´ keyë¡œ ìƒì„±ë˜ë©° left/rightì™€ ì§ì ‘ ì¼ì¹˜í•˜ì§€ ì•ŠëŠ”ë‹¤.
+- left/rightëŠ” ì‹¤ì œ spawn areaê°€ ì—†ì„ ê²½ìš° spawn areaë¥¼ ì „ì—­ ìˆœí™˜ ì„ íƒí•˜ëŠ” fallbackìœ¼ë¡œ ì²˜ë¦¬ëœë‹¤.
+- map_01ì€ spawn areaê°€ í•˜ë‚˜ì´ë¯€ë¡œ left/right/bothê°€ ë™ì¼ spawn areaë¡œ ìˆ˜ë ´í•œë‹¤.
+- lanes=[left,right]ëŠ” ì–‘ìª½ ë™ì‹œ spawnì„ ë³´ì¥í•˜ì§€ ì•ŠëŠ”ë‹¤.
+
+**ì„¸ë¼ ê¸°ìˆ  íŒë‹¨**
+í˜„ì¬ lane í‘œí˜„ê³¼ Runtime spawn area í‘œí˜„ ì‚¬ì´ì— ì˜ë¯¸ ê³„ì•½ì´ ì—†ë‹¤. êµ¬í˜„ ë³€ê²½ë³´ë‹¤ Masterê°€ ìµœì¢… lane Canonì„ ë¨¼ì € ê²°ì •í•´ì•¼ í•œë‹¤.
+
+**ë§ˆë¦¬ íŒì •**
+ê¸°ì¡´ GAPë¥¼ ìœ ì§€í•˜ë˜ ìƒíƒœë¥¼ UNVERIFIEDì—ì„œ **CODE VERIFIED GAP**ìœ¼ë¡œ ìƒí–¥í•œë‹¤. Canon ê²°ì • ì „ ìˆ˜ì •í•˜ì§€ ì•ŠëŠ”ë‹¤. HOLD.
+
+**ê²€ì¦ ìƒíƒœ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+**OUT OF SCOPE**
+Lane êµ¬í˜„ ë³€ê²½, Map ìˆ˜ì •, Stage JSON ìˆ˜ì •, Validator ê°•í™”.
+
+
+## Handoff â€” 2026-10-05 Mission Contract / target_id ì¬ê²€ì¦
+
+**STATUS** â€” HOLD
+
+**CONFIRMED**
+- í˜„ì¬ Mission Catalog 3ê°œëŠ” ëª¨ë‘ `clear_encounters`ì´ê³  `target_id`ëŠ” ë¹„ì–´ ìˆë‹¤.
+- Validatorì™€ Stage Editorê°€ ì§€ì›í•˜ëŠ” Mission Typeì€ `defend_base`, `clear_encounters` ë‘ ì¢…ë¥˜ë‹¤.
+- `defend_base`ëŠ” ì–‘ìˆ˜ time_limitì´ í•„ìš”í•˜ë‹¤.
+- target_idëŠ” Definition ë¡œë“œì™€ Editor ì €ì¥ì—ëŠ” ì¡´ì¬í•˜ì§€ë§Œ GameController Mission íŒì •ì—ëŠ” ì‚¬ìš©ë˜ì§€ ì•ŠëŠ”ë‹¤.
+- í˜„ì¬ Runtime ìŠ¹ë¦¬ ì¡°ê±´ì€ defend_baseì˜ ìƒì¡´ ì‹œê°„ ë˜ëŠ” Encounter/Wave ì „ì²´ ì¢…ë£Œ ë° ìƒì¡´ Enemy ì†Œë©¸ì´ë‹¤.
+- Giantì€ boss runtimeì„ ê°–ì§€ë§Œ Giant ì²˜ì¹˜ê°€ ë…ë¦½ Mission ìŠ¹ë¦¬ ì¡°ê±´ì€ ì•„ë‹ˆë‹¤.
+- Stage 01~03ì— Giantì´ í¬í•¨ë˜ì–´ ìˆìœ¼ë‚˜ ì´ê²ƒë§Œìœ¼ë¡œ Giant Boss Battleì„ì„ ì…ì¦í•˜ì§€ ì•ŠëŠ”ë‹¤.
+
+**INFERENCE**
+- target_idëŠ” í–¥í›„ Objective í™•ì¥ìš© í•„ë“œì¼ ê°€ëŠ¥ì„±ì€ ìˆìœ¼ë‚˜ ì˜ë¯¸ëŠ” íŠ¹ì •í•  ìˆ˜ ì—†ë‹¤.
+
+**ë§ˆë¦¬ íŒì •**
+Mission Contractì˜ ì‹¤ì œ êµ¬í˜„ ë²”ìœ„ë¥¼ CODE VERIFIEDë¡œ í™•ì •í•œë‹¤. 3 Gameplay ë§¤í•‘ê³¼ target_id semanticsëŠ” Canon ê²°ì • ì „ HOLD. êµ¬í˜„í•˜ì§€ ì•ŠëŠ”ë‹¤.
+
+**ê²€ì¦ ìƒíƒœ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+
+## Handoff â€” 2026-10-05 Player Count / Multiplayer Semantics ì¬ê²€ì¦
+
+**STATUS** â€” HOLD
+
+**CONFIRMED**
+- MapLoaderëŠ” `play_modes`ì™€ `multiplayer`ë¥¼ ì½ì–´ ë³´ì¡´í•œë‹¤.
+- Map EditorëŠ” Campaign/Single/Multiplayer modeì™€ alliance/relation ì„¤ì •ì„ ì €ì¥í•  ìˆ˜ ìˆë‹¤.
+- StageManagerì˜ ì‹¤ì œ run_mode ê²½ë¡œëŠ” í˜„ì¬ campaign/single ì¤‘ì‹¬ì´ë‹¤.
+- Title Screenì— Multiplayer ì‹œì‘ ê²½ë¡œëŠ” ì—†ë‹¤.
+- GameControllerê°€ multiplayer/alliance/relationì„ Player Countë‚˜ ë„¤íŠ¸ì›Œí¬ í”Œë ˆì´ì–´ Runtimeìœ¼ë¡œ ì†Œë¹„í•˜ëŠ” ê²½ë¡œëŠ” í™•ì¸ë˜ì§€ ì•Šì•˜ë‹¤.
+- ë…ë¦½ì ì¸ Player Count fieldëŠ” í™•ì¸ë˜ì§€ ì•Šì•˜ë‹¤.
+
+**INFERENCE**
+- multiplayer ë°ì´í„°ëŠ” í–¥í›„ AI faction ë˜ëŠ” multiplayer rule í™•ì¥ì„ ìœ„í•œ Map-level ì„¤ì •ì¼ ê°€ëŠ¥ì„±ì´ ìˆìœ¼ë‚˜ í˜„ì¬ Runtime ê³„ì•½ì€ ì•„ë‹ˆë‹¤.
+
+**ë§ˆë¦¬ íŒì •**
+`play_modes.multiplayer`ë¥¼ Player Countë¡œ í•´ì„í•˜ì§€ ì•ŠëŠ”ë‹¤. Player Count Canon/storageëŠ” UNVERIFIED/HOLDë¡œ ìœ ì§€í•œë‹¤. Multiplayer Runtime êµ¬í˜„ì€ í˜„ì¬ ë²”ìœ„ ë°–ì´ë‹¤.
+
+**ê²€ì¦ ìƒíƒœ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+
+## Handoff â€” 2026-10-05 Allied Units Authoring Gap ì¬ê²€ì¦
+
+**STATUS** â€” HOLD
+
+**CONFIRMED**
+- Allied Unit Catalog/Definition/Runtime/AIê°€ ì‹¤ì œ ì¡´ì¬í•˜ê³  GameControllerì—ì„œ ì†Œë¹„ëœë‹¤.
+- StageLoader/Validatorê°€ `allied_units`ë¥¼ ê²€ì¦í•œë‹¤.
+- Stage 01ì—ëŠ” basic/ranged/support Allied Unitì´ ì‹¤ì œ ì°¸ì¡°ëœë‹¤.
+- Unit EditorëŠ” Allied Unit ìì²´ë¥¼ í¸ì§‘í•œë‹¤.
+- Stage Editorì—ëŠ” Allied Unitì„ authoringí•˜ëŠ” UIê°€ ì—†ë‹¤. ê¸°ì¡´ `allied_units` ë°ì´í„°ëŠ” ë³´ì¡´ ê°€ëŠ¥í•˜ì§€ë§Œ ì‹ ê·œ êµ¬ì„±/ë³€ê²½ UIëŠ” í™•ì¸ë˜ì§€ ì•Šì•˜ë‹¤.
+
+**ë§ˆë¦¬ íŒì •**
+Allied Unitì€ ì£½ì€ ì„¤ì •ì´ ì•„ë‹ˆë¼ CODE VERIFIED Runtime ê¸°ëŠ¥ì´ë‹¤. í˜„ì¬ gapì€ Stage-level authoringì´ë‹¤. Spawn ownership/Player Countì™€ ì—°ê²°ë˜ëŠ” ê³„ì•½ì€ Canon ê²°ì • ì „ êµ¬í˜„í•˜ì§€ ì•ŠëŠ”ë‹¤.
+
+**ê²€ì¦ ìƒíƒœ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+
+## Handoff â€” 2026-10-05 Encounter / Wave Runtime Semantics ì¬ê²€ì¦
+
+**STATUS** â€” HOLD
+
+**CONFIRMED**
+- Encounter â†’ Wave â†’ Group êµ¬ì¡°ëŠ” Stage Editorì—ì„œ ì§ì ‘ í¸ì§‘ëœë‹¤.
+- Groupì€ enemy/count/interval/lanesë¥¼ ê°€ì§„ë‹¤.
+- Runtimeì€ í•œ Waveì˜ Groupë“¤ì„ spawn_queueì— ìˆœì°¨ì ìœ¼ë¡œ í¼ì¹œë‹¤.
+- ê°™ì€ Waveì˜ Groupë“¤ì€ í˜„ì¬ ë™ì‹œì— spawnë˜ì§€ ì•ŠëŠ”ë‹¤.
+- `[left,right]` ì—­ì‹œ ì–‘ìª½ ë™ì‹œ spawnì„ ì˜ë¯¸í•˜ì§€ ì•ŠëŠ”ë‹¤.
+- Wave ClearëŠ” spawn_queue empty + living enemies zeroë‹¤.
+- ë§ˆì§€ë§‰ Encounter/Wave ì™„ë£Œ ì‹œ clear_encountersëŠ” Victory, defend_baseëŠ” Defense ì§€ì†ì´ë‹¤.
+
+**INFERENCE**
+- í˜„ì¬ WaveëŠ” ë™ì‹œ ì¶œí˜„ ë¬¶ìŒë³´ë‹¤ëŠ” ìˆœì°¨ Spawn Group ì»¨í…Œì´ë„ˆì— ê°€ê¹ë‹¤.
+- Wave/Group labelì€ Runtime semanticsë¥¼ ê°–ì§€ ì•ŠëŠ”ë‹¤.
+
+**ë§ˆë¦¬ íŒì •**
+Encounter/Wave ì—°ê²° ìì²´ëŠ” CODE VERIFIED. Group concurrencyì™€ Lane semanticsëŠ” Canon ê²°ì • ì „ HOLD. êµ¬í˜„í•˜ì§€ ì•ŠëŠ”ë‹¤.
+
+**ê²€ì¦ ìƒíƒœ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+
+## Handoff â€” 2026-10-05 Lane â†” Map Spawn Area ì¬ê²€ì¦
+
+**CONFIRMED**
+- Stage Editor Laneì€ `left/right/both` ê³ ì • ì„ íƒì§€ë‹¤.
+- `both`ëŠ” ì €ì¥ ì‹œ `[left,right]`ë‹¤.
+- Map Runtimeì€ gameplay `spawn_area`ë§ˆë‹¤ `spawn_0`, `spawn_1` ë“±ì˜ ì‹¤ì œ keyë¥¼ ìƒì„±í•œë‹¤.
+- `map_01`ì—ëŠ” Spawn Areaê°€ 1ê°œë¿ì´ì–´ì„œ ì‹¤ì œ Runtime Spawn AreaëŠ” `spawn_0` í•˜ë‚˜ë‹¤.
+- ë”°ë¼ì„œ `left/right/both`ëŠ” ì‹¤ì œ Map Spawn Area IDì™€ ì§ì ‘ ì—°ê²°ë˜ì§€ ì•ŠëŠ”ë‹¤.
+- map_01ì—ì„œëŠ” left/right/bothê°€ ì‹¤ì§ˆì ìœ¼ë¡œ ê°™ì€ Spawn Areaë¥¼ ì‚¬ìš©í•œë‹¤.
+
+**ë§ˆë¦¬ íŒì •**
+Lane semanticsëŠ” CODE VERIFIED GAP. Canon ì—†ì´ êµ¬í˜„ ë³€ê²½í•˜ì§€ ì•ŠëŠ”ë‹¤.
+
+**ê²€ì¦ ìƒíƒœ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+
+## Handoff â€” 2026-10-05 Lane â†” Map Spawn Contract ì¬ê²€ì¦
+
+**STATUS** â€” HOLD
+
+**CONFIRMED**
+- Legacy `spawns.left/right`ì™€ `gameplay_areas.spawn_area`ê°€ ë™ì‹œì— ì¡´ì¬í•˜ëŠ” êµ¬ì¡°ë‹¤.
+- `map_01`ì€ spawn area 1ê°œë§Œ ìˆê³  legacy spawnsê°€ ë¹„ì–´ ìˆë‹¤ â†’ Runtime spawn IDëŠ” `spawn_0`.
+- `map_02/03`ì€ legacy `left/right`ê°€ ìˆê³  spawn areaê°€ ì—†ë‹¤ â†’ Runtime laneì€ `left/right`.
+- StageëŠ” `left/right/both`ë¥¼ ìš”ì²­í•˜ë¯€ë¡œ Mapë§ˆë‹¤ ê°™ì€ Stage ë°ì´í„°ê°€ ë‹¤ë¥¸ ê²½ë¡œë¡œ í•´ì„ë  ìˆ˜ ìˆë‹¤.
+- ëª…ì‹œì ì¸ Lane â†’ Spawn Area mapping ê³„ì•½ì€ í™•ì¸ë˜ì§€ ì•Šì•˜ë‹¤.
+
+**ë§ˆë¦¬ íŒì •**
+Lane semanticsëŠ” CODE VERIFIED GAP. Canon í™•ì • ì „ì—ëŠ” ë°ì´í„°/Runtimeì„ ìˆ˜ì •í•˜ì§€ ì•ŠëŠ”ë‹¤.
+
+**ê²€ì¦ ìƒíƒœ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+## Handoff ? 2026-10-05 MapLoader / Runtime Spawn Conversion Àç°ËÁõ
+**STATUS** ? HOLD
+
+**¸ñÀû**
+MapÀÇ Legacy `spawns.left/right`¿Í Gameplay `spawn_area`°¡ MapLoader ¹× Runtime¿¡¼­ ¾î¶»°Ô º¯È¯µÇ´ÂÁö È®Á¤ÇÑ´Ù.
+
+**CONFIRMED**
+- `MapLoader`´Â Legacy `spawns`°¡ Á¸ÀçÇÏ¸é ±×´ë·Î `parsed.lanes[left/right]` ÇüÅÂ·Î º¯È¯ÇÑ´Ù.
+- `MapLoader`´Â `gameplay_areas`¸¦ º°µµ º¸Á¸ÇÏ¸ç Lane ID·Î º¯È¯ÇÏÁö ¾Ê´Â´Ù.
+- Runtime `GameController.apply_map_spatial_data()`°¡ Gameplay `spawn_area`¸¦ ¼ø¼­´ë·Î `spawn_0`, `spawn_1` µîÀ¸·Î »ı¼ºÇÑ´Ù.
+- °¢ `spawn_area`ÀÇ ½ÇÁ¦ ID/nameÀº Runtime Lane ID·Î º¸Á¸µÇÁö ¾Ê´Â´Ù.
+- Gameplay Spawn Area°¡ ÇÏ³ª ÀÌ»ó Á¸ÀçÇÏ¸é RuntimeÀº Legacy `lanes`¸¦ »ç¿ëÇÏÁö ¾Ê°í Spawn Area ±â¹İ `LANES`¸¦ ±¸¼ºÇÑ´Ù.
+- Spawn Area°¡ ¾øÀ» ¶§¸¸ `loaded_map.lanes`°¡ Legacy LaneÀ¸·Î fallbackµÈ´Ù.
+- StageÀÇ `left/right` ¿äÃ»Àº Spawn Area ±â¹İ Map¿¡¼­ Á÷Á¢ ´ëÀÀµÇÁö ¾ÊÀ¸¸ç RuntimeÀÌ Spawn Area ¸ñ·ÏÀ» ¼øÈ¯ ¼±ÅÃÇÑ´Ù.
+- µû¶ó¼­ µ¿ÀÏÇÑ Stage GroupÀÇ `left/right` µ¥ÀÌÅÍ°¡ Map¿¡ µû¶ó Legacy ÁÂÇ¥ Lane ¶Ç´Â Spawn Area ¼øÈ¯À¸·Î ÇØ¼®µÈ´Ù.
+
+**INFERENCE**
+ÇöÀç `left/right`´Â Map°ú µ¶¸³ÀûÀÎ Canonical Lane ID°¡ ¾Æ´Ï¶ó Runtime¿¡¼­ Map Ç¥Çö¿¡ µû¶ó ÀçÇØ¼®µÇ´Â ¿äÃ»°ª¿¡ °¡±õ´Ù.
+
+**¸¶¸® ÆÇÁ¤**
+Phase CÀÇ Lane/Spawn °è¾àÀº ±¸Çö º¯°æ Àü¿¡ Canon °áÁ¤ÀÌ ÇÊ¿äÇÑ »óÅÂ´Ù. ÇöÀç Á¶»ç¸¸À¸·Î´Â Æ¯Á¤ Ç¥ÇöÀ» Á¤´äÀ¸·Î È®Á¤ÇÏÁö ¾Ê´Â´Ù. HOLD.
+
+**°ËÁõ »óÅÂ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+**º¯°æ »çÇ×**
+ÄÚµå/Asset º¯°æ ¾øÀ½. ¹®¼­ ÁøÇà±â·Ï¸¸ °»½Å.
+
+**OUT OF SCOPE**
+Lane ±¸Á¶ ÅëÇÕ, Map JSON º¯È¯, Validator °­È­, Stage µ¥ÀÌÅÍ ¼öÁ¤.
+
+## Handoff ? 2026-10-05 Phase C ¿Ï·áÁ¶°Ç ´ëÁ¶ ÆÇÁ¤
+**STATUS** ? HOLD / Phase C ¹Ì¿Ï·á
+
+**¸ñÀû**
+°³¹ß°èÈ¹¼­ÀÇ Phase C ¿Ï·áÁ¶°ÇÀ» ÇöÀç ÄÚµå/¹®¼­ »óÅÂ¿Í ´ëÁ¶ÇÏ¿© Phase D ÁøÀÔ °¡´É ¿©ºÎ¸¦ ÆÇÁ¤ÇÑ´Ù.
+
+**Phase C ¿Ï·áÁ¶°Ç**
+- ÇÏ³ªÀÇ Stage°¡ Map, Mission, Encounter/Wave °´Ã¼¸¦ ÂüÁ¶ÇÑ´Ù.
+- Stage°¡ ½ÇÇà °¡´ÉÇÏ´Ù.
+- Mission µ¥ÀÌÅÍ°¡ Stage¿¡ Áßº¹ ÀúÀåµÇÁö ¾Ê´Â´Ù.
+
+**CONFIRMED ? ÃæÁ·**
+- Stage ¡æ `map_file` ÂüÁ¶°¡ Á¸ÀçÇÏ°í StageLoader/StageManager/GameController·Î Àü´ŞµÈ´Ù.
+- Stage ¡æ `mission_id` ÂüÁ¶°¡ Á¸ÀçÇÏ°í Mission Catalog/DefinitionÀ¸·Î ÇØ¼®µÈ´Ù.
+- Stage ¡æ `reward_id` ÂüÁ¶¿Í RewardDefinition °æ·Î°¡ ±¸ÇöµÇ¾î ÀÖ´Ù.
+- Stage ¡æ Encounter/Wave ±¸Á¶°¡ Á÷Á¢ Runtime spawn queue·Î ¼ÒºñµÈ´Ù.
+- Mission µ¥ÀÌÅÍ´Â Stage¿Í ºĞ¸®µÈ Catalog/DefinitionÀ¸·Î °ü¸®µÈ´Ù.
+- Building ¹èÄ¡ µ¥ÀÌÅÍ´Â Map¿¡ Á¸ÀçÇÏ¸ç Runtime Tower ¹èÄ¡ °æ·Î¿Í ¿¬°áµÈ´Ù.
+
+**CONFIRMED GAP ? ¿Ï·áÁ¶°Ç ÆÇÁ¤À» ¸·´Â Ç×¸ñ**
+1. Lane/Spawn Contract: StageÀÇ `left/right/both` ÀÇ¹Ì°¡ MapÀÇ legacy `spawns`¿Í `gameplay_areas.spawn_area` »çÀÌ¿¡¼­ ÀÏ°üµÇÁö ¾Ê´Ù.
+2. Mission Contract: ÇöÀç RuntimeÀº `defend_base`¿Í `clear_encounters`¸¸ ±¸ÇöÇÏ¸ç `target_id` ÀÇ¹Ì°¡ ¼ÒºñµÇÁö ¾Ê´Â´Ù. Master CanonÀÇ 3 Gameplay À¯Çü°ú 1:1 ¸ÅÇÎÀº È®ÀÎµÇÁö ¾Ê¾Ò´Ù.
+3. PIE: ½ÇÁ¦ Stage ½ÇÇà °á°ú¸¦ Master°¡ È®ÀÎÇÏ´Â PIE VERIFIED°¡ ¾ÆÁ÷ ¾ø´Ù.
+
+**Phase C¿Í º°µµ·Î È®ÀÎµÈ »çÇ×**
+- Player Count / Multiplayer´Â µ¶¸³ Canon/storage°¡ È®ÀÎµÇÁö ¾Ê¾ÒÀ¸¹Ç·Î Phase C ¿Ï·áÁ¶°Ç¿¡ ÀÓÀÇ·Î Æ÷ÇÔÇÏÁö ¾Ê´Â´Ù.
+- Allied UnitÀº Runtime ±â´ÉÀÌ Á¸ÀçÇÏÁö¸¸ Stage-level authoring UI°¡ ¾ø´Ù. ÀÌ´Â ÇöÀç Phase C ¿Ï·áÁ¶°Ç ÀÚÃ¼¿Í´Â º°µµ authoring gapÀÌ´Ù.
+- BuildingÀÇ `tower_slots` / `tower_placement_area` °ü°è´Â Ãß°¡ Canon È®ÀÎ ´ë»óÀÌ³ª ÇöÀç Phase C ¿Ï·áÁ¶°ÇÀ» Á÷Á¢ ¸·´Â °ÍÀ¸·Î ÆÇÁ¤ÇÏÁö ¾Ê´Â´Ù.
+
+**¸¶¸® ÆÇÁ¤**
+Phase CÀÇ °´Ã¼ ÂüÁ¶ ±¸Á¶¿Í Runtime ¿¬°á ±â¹İÀº ´ëºÎºĞ ÃæÁ·Çß´Ù. ±×·¯³ª Lane/Spawn °è¾à°ú Mission CanonÀÌ È®Á¤µÇÁö ¾Ê¾Ò°í PIE °ËÁõµµ ¾øÀ¸¹Ç·Î **Phase C ¿Ï·á·Î ÆÇÁ¤ÇÒ ¼ö ¾ø´Ù. Phase D ±¸ÇöÀ¸·Î ÀÚµ¿ ÁøÇàÇÏÁö ¾Ê´Â´Ù.**
+
+**°ËÁõ »óÅÂ**
+- CODE VERIFIED: PASS
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+**º¯°æ »çÇ×**
+- ÄÚµå/Asset º¯°æ ¾øÀ½.
+- º» ÆÇÁ¤ Handoff¸¸ ¹®¼­¿¡ ±â·Ï.
+
+**OUT OF SCOPE**
+- Lane ±¸Çö º¯°æ
+- Map JSON ¸¶ÀÌ±×·¹ÀÌ¼Ç
+- Mission Type Ãß°¡/º¯°æ
+- Player Count/Multiplayer ±¸Çö
+- Allied Unit Stage Editor ±¸Çö
+- Phase D ½Å±Ô ±â´É ±¸Çö
+
+**±â·Ï ½Ã°¢**
+$stamp
+
+## Handoff â€” 2026-10-05 Mission Contract Canon ìŠ¹ì¸ ë°˜ì˜
+
+STATUS â€” ACCEPTED / PROPOSAL â†’ MASTER CANON
+
+Master ìŠ¹ì¸ ì‚¬í•­:
+- Tower Defense â†’ `defend_base`
+- Elimination â†’ `clear_encounters`
+- Giant Boss Battle â†’ `defeat_giant`
+
+Mission Contract ì œì•ˆ:
+- Tower Defense Victory: ì œí•œ ì‹œê°„ ìƒì¡´
+- Elimination Victory: ëª¨ë“  Encounter/Wave ì  ì œê±°
+- Giant Boss Battle Victory: Giant ì²˜ì¹˜
+- ëª¨ë“  Missionì˜ ê¸°ë³¸ Defeat: Base HP <= 0
+
+`target_id`:
+- Tower Defense: ì‚¬ìš©í•˜ì§€ ì•ŠìŒ
+- Elimination: ì‚¬ìš©í•˜ì§€ ì•ŠìŒ
+- Giant Boss Battle: Giant ì‹ë³„ì— ì‚¬ìš© ê°€ëŠ¥
+- ì¼ë°˜ Objective ì‹œìŠ¤í…œìœ¼ë¡œ í™•ì¥í•˜ì§€ ì•ŠìŒ
+
+ë²”ìœ„ ì›ì¹™:
+- ê¸°ì¡´ `defend_base` / `clear_encounters` Runtimeì€ ìµœëŒ€í•œ ë³´ì¡´í•œë‹¤.
+- `defeat_giant`ëŠ” ê¸°ì¡´ Giant Runtimeì„ í™œìš©í•œë‹¤.
+- Mission Contract í™•ì • ì „ì—ëŠ” ì½”ë“œ/Assetì„ ë³€ê²½í•˜ì§€ ì•ŠëŠ”ë‹¤.
+- ë‹¤ìŒ ë‹¨ê³„ëŠ” í˜„ì¬ Runtimeê³¼ ìŠ¹ì¸ëœ Contractì˜ ì°¨ì´ë¥¼ ìµœì†Œ ë‹¨ìœ„ë¡œ ëŒ€ì¡°í•œë‹¤.
+
+íŒì •:
+- Mission Canon ê²°ì •ìœ¼ë¡œ ê¸°ì¡´ Mission Contract HOLDì˜ ì„¤ê³„ ì›ì¸ì€ í•´ì†Œë¨.
+- ì‹¤ì œ ì½”ë“œ ë°˜ì˜ì€ ë³„ë„ ê²€ì¦ í›„ ì§„í–‰í•œë‹¤.
+- CODE/BUILD/EDITOR/PIE: í˜„ì¬ ë³€ê²½ ê²€ì¦ ì „ ìƒíƒœ.
+
+## Handoff â€” 2026-10-05 Mission Contract Runtime Delta ì¡°ì‚¬
+STATUS â€” HOLD / êµ¬í˜„ ì „ íŒŒì¼ ì ê¸ˆ
+CONFIRMED â€” ìŠ¹ì¸ëœ Mission Contractì™€ í˜„ì¬ ì½”ë“œì˜ ì°¨ì´ë¥¼ ì§ì ‘ ëŒ€ì¡°í–ˆë‹¤.
+- `defend_base`: í˜„ì¬ Runtimeê³¼ ì§ì ‘ ëŒ€ì‘í•˜ë©° ìœ ì§€ ê°€ëŠ¥.
+- `clear_encounters`: í˜„ì¬ Runtimeê³¼ ì§ì ‘ ëŒ€ì‘í•˜ë©° ìœ ì§€ ê°€ëŠ¥.
+- `defeat_giant`: í˜„ì¬ MissionDefinitionì—ëŠ” ì—†ê³ , Validator/Stage Editorë„ í—ˆìš©í•˜ì§€ ì•ŠëŠ”ë‹¤.
+- Giant ì²˜ì¹˜ ìì²´ëŠ” `damage_enemy()`ì—ì„œ ì´ë¯¸ ê°ì§€ë˜ê³  `GIANT NEUTRALIZED` ì´ë²¤íŠ¸ë„ ë°œìƒí•œë‹¤. ê·¸ëŸ¬ë‚˜ í˜„ì¬ Giant ì²˜ì¹˜ ì‹œ Mission Victory ì „í™˜ì€ ì—†ë‹¤.
+- Giant Missionì˜ Campaign ë³´ìƒ/ë‹¤ìŒ Stage ì „í™˜ì€ `defend_base` ì™„ë£Œ ê²½ë¡œì™€ ë³„ë„ êµ¬í˜„ì´ í•„ìš”í•˜ë‹¤.
+- `target_id`ëŠ” í˜„ì¬ Runtimeì—ì„œ ìŠ¹ë¦¬ ì¡°ê±´ì— ì‚¬ìš©ë˜ì§€ ì•ŠëŠ”ë‹¤. ìŠ¹ì¸ Canonì—ì„œëŠ” Giant ì‹ë³„ ìš©ë„ë¡œ ì‚¬ìš© ê°€ëŠ¥í•˜ì§€ë§Œ, í˜„ì¬ Stageì—ëŠ” Giant Missionì´ ì§€ì •ë˜ì–´ ìˆì§€ ì•Šë‹¤.
+TECHNICAL JUDGMENT â€” `defeat_giant` ì¶”ê°€ëŠ” ê¸°ì¡´ Giant Runtimeì„ ì¬ì‚¬ìš©í•˜ëŠ” ìµœì†Œ ë³€ê²½ìœ¼ë¡œ ê°€ëŠ¥í•˜ë‹¤.
+BLOCKER â€” Godot Editor í”„ë¡œì„¸ìŠ¤ê°€ `content_validator.gd`ì™€ `stage_editor.gd`ë¥¼ ì ê¸ˆ ì¤‘ì´ì–´ì„œ ì•ˆì „í•œ ì½”ë“œ ì €ì¥ì„ ìˆ˜í–‰í•˜ì§€ ì•Šì•˜ë‹¤. í”„ë¡œì„¸ìŠ¤ ì¢…ë£Œ/ê°•ì œ í•´ì œëŠ” Master ìŠ¹ì¸ ì—†ì´ í•˜ì§€ ì•ŠëŠ”ë‹¤.
+CHANGES â€” ì½”ë“œ/Asset ë³€ê²½ ì—†ìŒ. ë¬¸ì„œ ê¸°ë¡ë§Œ ì¶”ê°€.
+VERIFICATION â€” CODE VERIFIED (delta ì¡°ì‚¬), BUILD/EDITOR/PIE NOT VERIFIED.
+NEXT â€” íŒŒì¼ ì ê¸ˆì´ í•´ì†Œë˜ë©´ Validator â†’ Stage Editor â†’ GameController ìˆœì„œë¡œ ìµœì†Œ ë³€ê²½í•˜ê³  diff/check/build ê²€ì¦.
+
+## Handoff â€” 2026-10-05 defeat_giant Runtime êµ¬í˜„
+STATUS â€” PASS / CODE + BUILD
+CONFIRMED
+- ContentValidatorê°€ `defeat_giant` Mission Typeì„ í—ˆìš©í•œë‹¤.
+- Stage Editorê°€ `defeat_giant`ì„ Mission Typeìœ¼ë¡œ í‘œì‹œí•˜ê³  ë¡œë“œí•œë‹¤. ê¸°ì¡´ ì €ì¥ ê²½ë¡œì˜ `primary_type` ì €ì¥ì€ ê·¸ëŒ€ë¡œ ì‚¬ìš©í•œë‹¤.
+- GameControllerê°€ Giant ì²˜ì¹˜ ì‹œ `defeat_giant` Missionì´ë©´ ì¦‰ì‹œ Mission Clear ê²½ë¡œë¡œ ì§„ì…í•œë‹¤.
+- Campaignì—ì„œëŠ” ê¸°ì¡´ Stage reward / progression / next Stage ì²˜ë¦¬ íŒ¨í„´ì„ ì¬ì‚¬ìš©í•œë‹¤.
+- Base HP <= 0 ì¡°ê±´ì€ ê¸°ì¡´ DEFEAT ê²½ë¡œë¥¼ ìœ ì§€í•œë‹¤.
+- ê¸°ì¡´ `defend_base` / `clear_encounters` ê²½ë¡œëŠ” ë³€ê²½í•˜ì§€ ì•Šì•˜ë‹¤.
+- `target_id`ëŠ” ì´ë²ˆ êµ¬í˜„ì—ì„œ ê°•ì œ ì‚¬ìš©í•˜ì§€ ì•Šì•˜ë‹¤. í˜„ì¬ Giant Runtimeì˜ íƒ€ì… ì‹ë³„(`giant`)ìœ¼ë¡œ Canon ì¡°ê±´ì„ ì¶©ì¡±í•œë‹¤.
+VERIFICATION
+- CODE VERIFIED â€” PASS
+- BUILD VERIFIED â€” PASS (`Godot 4.7.2 --headless --editor --quit`, exit code 0)
+- EDITOR VERIFIED â€” NOT VERIFIED
+- PIE VERIFIED â€” NOT VERIFIED
+DIFF â€” ì˜ë„ëœ 3ê°œ ì½”ë“œ íŒŒì¼ë§Œ Mission Contract ë³€ê²½. ê¸°ì¡´ ë¬¸ì„œ ë³€ê²½ì€ ìœ ì§€.
+git diff --check â€” PASS
+CHANGES â€” `editor/content_validator.gd`, `editor/stage_editor.gd`, `game_controller.gd`
+OUT OF SCOPE â€” ì‹¤ì œ Mission Catalogì— Giant Boss Missionì„ ì§€ì •í•˜ëŠ” Content ë³€ê²½, PIE Runtime í™•ì¸, Player Count, Lane/Spawn Canon.

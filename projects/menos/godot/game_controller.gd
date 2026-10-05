@@ -1350,7 +1350,36 @@ func damage_enemy(enemy: EnemyRuntimeState, amount: float, source: String) -> vo
 		gold += float(definition.get_combat_value("reward", 0.0))
 		add_robot_xp(int(definition.get_combat_value("reward", 0.0)))
 		robot["finisher"] = min(float(finisher_definition.get("meter_max", 0.0)), float(robot.state_get("finisher", 0.0)) + float(finisher_definition.get("charge_boss", 0.0)) if enemy.type == "giant" else float(finisher_definition.get("charge_normal", 0.0)))
-		if enemy.type == "giant": log_event("GIANT NEUTRALIZED. ATLAS-01 changed the outcome.")
+		if enemy.type == "giant":
+			log_event("GIANT NEUTRALIZED. ATLAS-01 changed the outcome.")
+			if mission_definition != null and mission_definition.primary_type == "defeat_giant":
+				_complete_defeat_giant_mission()
+
+func _complete_defeat_giant_mission() -> void:
+	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or base_hp <= 0.0:
+		return
+	wave_running = false
+	play_sfx("ui_confirm")
+	log_event("MISSION CLEAR. Giant Boss defeated.")
+	if StageManager.run_mode != "campaign":
+		run_state = RunState.VICTORY
+		return
+	var next_stage_id := StageManager.get_next_campaign_stage_id()
+	_grant_stage_reward()
+	player_profile.campaign_progression.complete_stage(StageManager.current_stage_id, next_stage_id)
+	_save_robot_progression()
+	if not next_stage_id.is_empty():
+		if not load_stage_map(next_stage_id):
+			push_error("Could not load next campaign Stage '%s'." % next_stage_id)
+			run_state = RunState.DEFEAT
+			play_sfx("ui_cancel")
+			log_event("STAGE LOAD FAILED. Press RESTART to retry the campaign.")
+			return
+		reset_game()
+		log_event("STAGE %d READY. Build defenses before Wave 1." % StageManager.get_current_stage().get("order", 1))
+		return
+	run_state = RunState.VICTORY
+	log_event("CAMPAIGN VICTORY. ALL STAGES CLEAR. Press RESTART to repeat.")
 
 func find_target(position: Vector2, range_value: float, preference: String = "") -> EnemyRuntimeState:
 	var candidates: Array[EnemyRuntimeState] = []

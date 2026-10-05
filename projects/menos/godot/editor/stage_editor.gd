@@ -168,7 +168,7 @@ func _build_stage_properties(parent: VBoxContainer) -> void:
 	briefing_row.add_child(mission_briefing_edit)
 
 	mission_type_option = OptionButton.new()
-	for value in ["defend_base", "clear_encounters"]:
+	for value in ["defend_base", "clear_encounters", "defeat_giant"]:
 		mission_type_option.add_item(value)
 	_option_row(parent, "주 임무 유형", mission_type_option)
 	mission_target_edit = _line_row(parent, "대상 ID")
@@ -331,7 +331,7 @@ func _load_mission_fields() -> void:
 	mission_title_edit.text = mission.title if mission != null else ""
 	mission_briefing_edit.text = mission.briefing if mission != null else ""
 	var mission_type := mission.primary_type if mission != null else "clear_encounters"
-	mission_type_option.select(max(0, ["defend_base", "clear_encounters"].find(mission_type)))
+	mission_type_option.select(max(0, ["defend_base", "clear_encounters", "defeat_giant"].find(mission_type)))
 	mission_target_edit.text = mission.target_id if mission != null else ""
 	mission_time_spin.value = mission.time_limit if mission != null else 0
 	reward_id_edit.text = str(stage_data.get("reward_id", ""))

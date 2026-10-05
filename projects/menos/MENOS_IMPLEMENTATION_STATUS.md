@@ -216,3 +216,28 @@ OUT OF SCOPE — Canon 전환 구현, 코드 수정, Asset 수정, 밸런스 결
 현실성 판단 — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE. 다만 실제 구현 순서는 Canon 전투 전환 범위를 먼저 확정한 뒤 진행해야 한다.
 
 다음 단계 — Master 지시 전 자동 진행하지 않는다.
+
+## 2026-10-05 Gameplay Definition / Map 책임 갱신
+
+STATUS: DOCUMENTATION BASELINE UPDATE
+
+CONFIRMED:
+- Master가 지정한 현재 Mission Type은 Tower Defense, Elimination, Giant Boss Battle 세 가지다.
+- 세 가지는 Gameplay Mode가 아니라 Mission Type이다.
+- Stage Editor는 현재 Map + Mission + Encounter/Wave + Stage 설정을 함께 편집하는 Gameplay Definition 중심 도구다.
+- Map Editor와 Map JSON은 이미 Gameplay 환경 요소를 관리한다.
+- Map Gameplay 요소에는 Spawn Area, Movement Area, Blocked Area, Obstacle Area, Tower Placement Area/Point, Goal Area, Robot Position Point가 확인된다.
+- StageLoader는 Stage가 map_file로 Map을 참조하고 mission_id로 Mission을 참조하도록 검증한다.
+
+DESIGN BOUNDARY:
+- Map: 재사용 가능한 맵 구조와 맵 종속 Gameplay 공간/지점
+- Stage: 선택한 Map에서 실행할 Mission과 Encounter/Wave 및 Stage별 설정
+- Mission: 목표/승패 의미와 Mission Type
+- Runtime: 정의된 Stage를 실행
+
+UNVERIFIED:
+- 1인/2인 등 Player Count의 최종 데이터 소유 위치
+- 기존 campaign / single / multiplayer와 Player Count의 관계
+- 세 Mission Type의 최종 Runtime 판정 계약
+
+이번 갱신에서는 코드/Asset/Scene/Data를 변경하지 않았다.

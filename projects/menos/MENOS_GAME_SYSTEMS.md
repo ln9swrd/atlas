@@ -235,3 +235,51 @@ GIANT additionally has robot damage 20, robot range 120, and robot attack cooldo
 - Editor and runtime behavior: NOT VERIFIED in this task.
 - PIE: NOT VERIFIED by this audit; no runtime result is asserted.
 - Files changed by this task: this document only. No gameplay code, assets, or project settings were changed.
+
+## 13. Gameplay Definition 정합성 갱신 — 2026-10-05
+
+STATUS: CURRENT DESIGN REFERENCE / Master 최신 결정 반영
+
+기존의 Map = 공간 / Mission = 규칙 / Stage = 조합 구분을 유지하되, 실제 구현 조사 결과를 반영하여 Map이 일부 Gameplay 환경 정의를 소유한다는 점을 명시한다.
+
+### Map
+Map은 단순 전투 배경이 아니라 재사용 가능한 전장 및 Gameplay 환경을 정의한다.
+
+현재 확인된 Map Gameplay 데이터:
+- Spawn Area
+- Movement Area
+- Blocked Area
+- Obstacle Area
+- Tower Placement Area / Point
+- Goal Area
+- Robot Position Point
+
+### Stage
+Stage는 선택한 Map 위에서 실제 플레이 구성을 정의하는 중심 단위다.
+
+Stage는 현재 다음을 연결한다.
+- Map
+- Mission
+- Encounter / Wave / Spawn
+- Stage Balance
+- Reward
+
+### Mission
+현재 Master가 확정한 Mission Type 범위는 다음 세 가지다.
+- Tower Defense
+- Elimination / LoL 스타일 섬멸전
+- Giant Boss Battle
+
+이들은 Run Mode가 아니라 Mission Type이다.
+
+### Run Mode / Player Count
+기존 campaign / single / multiplayer 데이터는 현재 코드에 존재하지만 Mission Type과 동일한 개념으로 해석하지 않는다.
+Player Count(1인/2인 등)의 최종 소유 위치와 Run Mode의 정확한 의미는 UNVERIFIED이며 별도 설계가 필요하다.
+
+### 책임 경계
+Map = 맵에 종속되고 재사용 가능한 Gameplay 환경
+Stage = 특정 Map에서 수행할 실제 Gameplay 구성
+Mission = 목표/승패 의미
+Runtime = 위 정의의 실행
+
+이 섹션은 기존 문서의 제안 내용을 최신 조사 결과에 맞춰 보정한 현재 기준이다. 기존 역사적 계획은 소급 삭제하지 않는다.
