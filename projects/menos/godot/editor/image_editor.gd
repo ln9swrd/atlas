@@ -709,6 +709,8 @@ func _scan_robot_images(seen: Dictionary) -> void:
 		var robot_name := str(data[key].get("name", key))
 		for field in ["sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "default_image", "projectile_anim"]:
 			var image_path := str(data[key].get(field, ""))
+			if VisualAssetResolver.get_asset(image_path) != null:
+				continue
 			if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
 			var usage := "Robot asset"
@@ -723,6 +725,8 @@ func _scan_robot_images(seen: Dictionary) -> void:
 		if animations is Dictionary:
 			for animation_name in animations:
 				var animation_path := str(animations[animation_name])
+				if VisualAssetResolver.get_asset(animation_path) != null:
+					continue
 				if animation_path.is_empty() or seen.has(animation_path): continue
 				seen[animation_path] = true
 				entries.append({"label": "Robot / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "Robot animation %s" % str(animation_name), "category": "Robot"})
