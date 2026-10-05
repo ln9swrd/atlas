@@ -28,8 +28,6 @@ const VISUALS := {
 	"atlas_attack": preload("res://assets/menos/sprites/atlas_attack.png"),
 	"atlas_move": preload("res://assets/menos/sprites/atlas_move.png"),
 	"atlas_skill": preload("res://assets/menos/sprites/atlas_skill.png"),
-	"bullet_defender": preload("res://assets/menos/sprites/bullet_defender.png"),
-	"bullet_threat": preload("res://assets/menos/sprites/bullet_threat.png"),
 	"impact_explosion": preload("res://assets/menos/sprites/impact_explosion.png"),
 	"tower_cannon_anim": preload("res://assets/menos/sprites/tower_cannon_anim.png"),
 	"tower_gatling_anim": preload("res://assets/menos/sprites/tower_gatling_anim.png"),
@@ -94,16 +92,13 @@ var enemy_definitions: Dictionary = {}
 var enemy_weapon_definitions: Dictionary = {}
 var enemy_robot_weapon_definitions: Dictionary = {}
 var enemy_sprite_catalog: Dictionary = {}
-var enemy_projectile_catalog: Dictionary = {}
 var tower_catalog: Dictionary = {}
 var tower_definitions: Dictionary = {}
 var tower_sprite_catalog: Dictionary = {}
-var tower_projectile_catalog: Dictionary = {}
 var robot_catalog: Dictionary = {}
 var robot_definition: RobotDefinition
 var robot_weapon_definition: WeaponDefinition
 var robot_sprite_catalog: Dictionary = {}
-var robot_projectile_catalog: Dictionary = {}
 var robot_render_node: Sprite2D
 var robot_render_material: ShaderMaterial
 var towers: Array = []

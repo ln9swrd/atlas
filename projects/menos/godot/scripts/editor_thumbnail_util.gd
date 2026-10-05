@@ -52,14 +52,20 @@ static func create(value: String, fallback_region: Rect2 = Rect2(), fallback_fra
 	var image := source_texture.get_image()
 	if image == null:
 		return null
+	# Normalize the source before region/alpha analysis. Valkyrie and other catalog sheets can
+	# arrive as RGB/RGBA variants depending on the imported PNG format.
+	if image.get_format() != Image.FORMAT_RGBA8:
+		image.convert(Image.FORMAT_RGBA8)
 	var region_image := image.get_region(clipped)
 	if region_image == null:
 		return null
 	var used := region_image.get_used_rect()
+	# A fully opaque/RGB source has no alpha bounds; use the selected frame itself in that case.
+	if used.size.x <= 0 or used.size.y <= 0:
+		used = Rect2i(Vector2i.ZERO, region_image.get_size())
 	if used.size.x <= 0 or used.size.y <= 0:
 		return null
 	var cropped := region_image.get_region(used)
-	# Catalog sources can be RGB/RGBA with different Image formats. Normalize before blitting to the RGBA canvas.
 	if cropped.get_format() != Image.FORMAT_RGBA8:
 		cropped.convert(Image.FORMAT_RGBA8)
 	var height := maxi(1, target_height)
