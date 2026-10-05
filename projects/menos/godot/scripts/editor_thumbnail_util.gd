@@ -59,6 +59,9 @@ static func create(value: String, fallback_region: Rect2 = Rect2(), fallback_fra
 	if used.size.x <= 0 or used.size.y <= 0:
 		return null
 	var cropped := region_image.get_region(used)
+	# Catalog sources can be RGB/RGBA with different Image formats. Normalize before blitting to the RGBA canvas.
+	if cropped.get_format() != Image.FORMAT_RGBA8:
+		cropped.convert(Image.FORMAT_RGBA8)
 	var height := maxi(1, target_height)
 	var width := maxi(1, int(round(float(cropped.get_width()) * float(height) / float(cropped.get_height()))))
 	if width > canvas_size:

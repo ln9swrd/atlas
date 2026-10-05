@@ -2167,18 +2167,17 @@ func _draw() -> void:
 			var trail_start := current_p - Vector2.from_angle(angle - PI / 2.0) * 22.0
 			draw_line(trail_start, current_p, Color(projectile_color, 0.55), 3.0)
 			draw_circle(current_p, 5.0, Color(projectile_color, 0.85))
-			var projectile_texture: Texture2D = (robot_projectile_catalog.get("robot", VISUALS["bullet_defender"]) if weapon_type == "robot" else tower_projectile_catalog.get(weapon_type, VISUALS["bullet_defender"])) as Texture2D
-			draw_rotated_animated_sprite(projectile_texture, current_p, Vector2(36, 44), angle, p_frame, projectile_frames)
+			# Gameplay projectile art is disconnected; keep only procedural VFX.
 		elif etype == "proj_threat":
 			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
 			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
 			var end_p: Vector2 = effect.get("target", Vector2.ZERO)
 			var current_p: Vector2 = start_p.lerp(end_p, progress)
 			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
-			var p_frame: int = int(elapsed * 16.0) % 6
-			var enemy_type := str(effect.get("enemy_type", "giant"))
-			var projectile_texture: Texture2D = enemy_projectile_catalog.get(enemy_type, VISUALS["bullet_threat"]) as Texture2D
-			draw_rotated_animated_sprite(projectile_texture, current_p, Vector2(40, 48), angle, p_frame, 6)
+			var projectile_color := Color("e46b6b")
+			var trail_start := current_p - Vector2.from_angle(angle - PI / 2.0) * 24.0
+			draw_line(trail_start, current_p, Color(projectile_color, 0.55), 3.0)
+			draw_circle(current_p, 5.0, Color(projectile_color, 0.85))
 
 	# Player Unit ATLAS-01 Robot (Heroic Strategic Unit Base & Visibility)
 	if robot.active:

@@ -1,1784 +1,1784 @@
 {
-  "robot.valkyrie.idle": {
-    "id": "robot.valkyrie.idle",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "region": [
-      122,
-      10,
-      936,
-      176
-    ],
-    "frames": 6,
-    "columns": 6,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        122,
-        10,
-        156,
-        176
-      ],
-      [
-        278,
-        10,
-        156,
-        176
-      ],
-      [
-        434,
-        10,
-        156,
-        176
-      ],
-      [
-        590,
-        10,
-        156,
-        176
-      ],
-      [
-        746,
-        10,
-        156,
-        176
-      ],
-      [
-        902,
-        10,
-        156,
-        176
-      ]
-    ]
-  },
-  "robot.valkyrie.move": {
-    "id": "robot.valkyrie.move",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "region": [
-      122,
-      242,
-      1248,
-      184
-    ],
-    "frames": 8,
-    "columns": 8,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        122,
-        242,
-        156,
-        184
-      ],
-      [
-        278,
-        242,
-        156,
-        184
-      ],
-      [
-        434,
-        242,
-        156,
-        184
-      ],
-      [
-        590,
-        242,
-        156,
-        184
-      ],
-      [
-        746,
-        242,
-        156,
-        184
-      ],
-      [
-        902,
-        242,
-        156,
-        184
-      ],
-      [
-        1058,
-        242,
-        156,
-        184
-      ],
-      [
-        1214,
-        242,
-        156,
-        184
-      ]
-    ]
-  },
-  "robot.valkyrie.attack": {
-    "id": "robot.valkyrie.attack",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "region": [
-      122,
-      463,
-      1248,
-      162
-    ],
-    "frames": 8,
-    "columns": 8,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        122,
-        463,
-        156,
-        162
-      ],
-      [
-        278,
-        463,
-        156,
-        162
-      ],
-      [
-        434,
-        463,
-        156,
-        162
-      ],
-      [
-        590,
-        463,
-        156,
-        162
-      ],
-      [
-        746,
-        463,
-        156,
-        162
-      ],
-      [
-        902,
-        463,
-        156,
-        162
-      ],
-      [
-        1058,
-        463,
-        156,
-        162
-      ],
-      [
-        1214,
-        463,
-        156,
-        162
-      ]
-    ]
-  },
-  "robot.valkyrie.hit": {
-    "id": "robot.valkyrie.hit",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "region": [
-      122,
-      651,
-      624,
-      172
-    ],
-    "frames": 4,
-    "columns": 4,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        122,
-        651,
-        156,
-        172
-      ],
-      [
-        278,
-        651,
-        156,
-        172
-      ],
-      [
-        434,
-        651,
-        156,
-        172
-      ],
-      [
-        590,
-        651,
-        156,
-        172
-      ]
-    ]
-  },
-  "robot.valkyrie.death": {
-    "id": "robot.valkyrie.death",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
-    "region": [
-      122,
-      853,
-      1248,
-      163
-    ],
-    "frames": 8,
-    "columns": 8,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        122,
-        853,
-        156,
-        163
-      ],
-      [
-        278,
-        853,
-        156,
-        163
-      ],
-      [
-        434,
-        853,
-        156,
-        163
-      ],
-      [
-        590,
-        853,
-        156,
-        163
-      ],
-      [
-        746,
-        853,
-        156,
-        163
-      ],
-      [
-        902,
-        853,
-        156,
-        163
-      ],
-      [
-        1058,
-        853,
-        156,
-        163
-      ],
-      [
-        1214,
-        853,
-        156,
-        163
-      ]
-    ]
-  },
-  "robot.valkyrie.projectile": {
-    "id": "robot.valkyrie.projectile",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      31,
-      83,
-      1486,
-      117
-    ],
-    "frames": 6,
-    "columns": 6,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        31,
-        83,
-        248,
-        117
-      ],
-      [
-        279,
-        83,
-        247,
-        117
-      ],
-      [
-        526,
-        83,
-        248,
-        117
-      ],
-      [
-        774,
-        83,
-        248,
-        117
-      ],
-      [
-        1022,
-        83,
-        247,
-        117
-      ],
-      [
-        1269,
-        83,
-        248,
-        117
-      ]
-    ]
-  },
-  "robot.valkyrie.skill1": {
-    "id": "robot.valkyrie.skill1",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      17,
-      295,
-      1490,
-      185
-    ],
-    "frames": 8,
-    "columns": 8,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        17,
-        295,
-        186,
-        185
-      ],
-      [
-        203,
-        295,
-        187,
-        185
-      ],
-      [
-        390,
-        295,
-        186,
-        185
-      ],
-      [
-        576,
-        295,
-        186,
-        185
-      ],
-      [
-        762,
-        295,
-        186,
-        185
-      ],
-      [
-        948,
-        295,
-        187,
-        185
-      ],
-      [
-        1135,
-        295,
-        186,
-        185
-      ],
-      [
-        1321,
-        295,
-        186,
-        185
-      ]
-    ]
-  },
-  "robot.valkyrie.skill2": {
-    "id": "robot.valkyrie.skill2",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      15,
-      560,
-      1504,
-      172
-    ],
-    "frames": 10,
-    "columns": 10,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        15,
-        560,
-        150,
-        172
-      ],
-      [
-        165,
-        560,
-        151,
-        172
-      ],
-      [
-        316,
-        560,
-        150,
-        172
-      ],
-      [
-        466,
-        560,
-        151,
-        172
-      ],
-      [
-        617,
-        560,
-        150,
-        172
-      ],
-      [
-        767,
-        560,
-        150,
-        172
-      ],
-      [
-        917,
-        560,
-        151,
-        172
-      ],
-      [
-        1068,
-        560,
-        150,
-        172
-      ],
-      [
-        1218,
-        560,
-        151,
-        172
-      ],
-      [
-        1369,
-        560,
-        150,
-        172
-      ]
-    ]
-  },
-  "robot.valkyrie.skill3": {
-    "id": "robot.valkyrie.skill3",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      15,
-      819,
-      1512,
-      165
-    ],
-    "frames": 12,
-    "columns": 12,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        15,
-        819,
-        126,
-        165
-      ],
-      [
-        141,
-        819,
-        126,
-        165
-      ],
-      [
-        267,
-        819,
-        126,
-        165
-      ],
-      [
-        393,
-        819,
-        126,
-        165
-      ],
-      [
-        519,
-        819,
-        126,
-        165
-      ],
-      [
-        645,
-        819,
-        126,
-        165
-      ],
-      [
-        771,
-        819,
-        126,
-        165
-      ],
-      [
-        897,
-        819,
-        126,
-        165
-      ],
-      [
-        1023,
-        819,
-        126,
-        165
-      ],
-      [
-        1149,
-        819,
-        126,
-        165
-      ],
-      [
-        1275,
-        819,
-        126,
-        165
-      ],
-      [
-        1401,
-        819,
-        126,
-        165
-      ]
-    ]
-  },
-  "robot.valkyrie.special": {
-    "id": "robot.valkyrie.special",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-    "region": [
-      0,
-      70,
-      1528,
-      174
-    ],
-    "frames": 14,
-    "columns": 14,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        70,
-        109,
-        174
-      ],
-      [
-        109,
-        70,
-        109,
-        174
-      ],
-      [
-        218,
-        70,
-        109,
-        174
-      ],
-      [
-        327,
-        70,
-        110,
-        174
-      ],
-      [
-        437,
-        70,
-        109,
-        174
-      ],
-      [
-        546,
-        70,
-        109,
-        174
-      ],
-      [
-        655,
-        70,
-        109,
-        174
-      ],
-      [
-        764,
-        70,
-        109,
-        174
-      ],
-      [
-        873,
-        70,
-        109,
-        174
-      ],
-      [
-        982,
-        70,
-        109,
-        174
-      ],
-      [
-        1091,
-        70,
-        110,
-        174
-      ],
-      [
-        1201,
-        70,
-        109,
-        174
-      ],
-      [
-        1310,
-        70,
-        109,
-        174
-      ],
-      [
-        1419,
-        70,
-        109,
-        174
-      ]
-    ]
-  },
-  "robot.valkyrie.finisher": {
-    "id": "robot.valkyrie.finisher",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-    "region": [
-      6,
-      363,
-      1522,
-      348
-    ],
-    "frames": 18,
-    "columns": 9,
-    "rows": 2,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.416667,
-      "y": 0.625
-    },
-    "owner": "valkyrie",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        6,
-        363,
-        169,
-        174
-      ],
-      [
-        175,
-        363,
-        169,
-        174
-      ],
-      [
-        344,
-        363,
-        169,
-        174
-      ],
-      [
-        513,
-        363,
-        169,
-        174
-      ],
-      [
-        682,
-        363,
-        170,
-        174
-      ],
-      [
-        852,
-        363,
-        169,
-        174
-      ],
-      [
-        1021,
-        363,
-        169,
-        174
-      ],
-      [
-        1190,
-        363,
-        169,
-        174
-      ],
-      [
-        1359,
-        363,
-        169,
-        174
-      ],
-      [
-        6,
-        537,
-        169,
-        174
-      ],
-      [
-        175,
-        537,
-        169,
-        174
-      ],
-      [
-        344,
-        537,
-        169,
-        174
-      ],
-      [
-        513,
-        537,
-        169,
-        174
-      ],
-      [
-        682,
-        537,
-        170,
-        174
-      ],
-      [
-        852,
-        537,
-        169,
-        174
-      ],
-      [
-        1021,
-        537,
-        169,
-        174
-      ],
-      [
-        1190,
-        537,
-        169,
-        174
-      ],
-      [
-        1359,
-        537,
-        169,
-        174
-      ]
-    ]
-  },
-  "robot.valkyrie.profile": {
-    "id": "robot.valkyrie.profile",
-    "category": "Robot",
-    "source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
-    "region": [
-      7,
-      787,
-      289,
-      234
-    ],
-    "frames": 1,
-    "columns": 1,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "owner": "valkyrie",
-    "usage": "profile",
-    "frame_regions": [
-      [
-        7,
-        787,
-        289,
-        234
-      ]
-    ],
-    "team_mask": {
-      "source": "res://images/robot/valkyrie/profile_team_mask.png"
-    }
-  },
-  "robot.asura.profile": {
-    "id": "robot.asura.profile",
-    "category": "Robot",
-    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      14,
-      159,
-      134,
-      131
-    ],
-    "frames": 1,
-    "columns": 1,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "owner": "asura",
-    "usage": "profile",
-    "frame_regions": [
-      [
-        14,
-        159,
-        134,
-        131
-      ]
-    ],
-    "team_mask": {
-      "source": "res://images/robot/asura/profile_team_mask.png"
-    }
-  },
-  "robot.asura.idle": {
-    "id": "robot.asura.idle",
-    "category": "Robot",
-    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      0,
-      14,
-      1536,
-      159
-    ],
-    "frames": 9,
-    "columns": 9,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        14,
-        203,
-        159
-      ],
-      [
-        203,
-        14,
-        183,
-        159
-      ],
-      [
-        386,
-        14,
-        163,
-        159
-      ],
-      [
-        549,
-        14,
-        153,
-        159
-      ],
-      [
-        702,
-        14,
-        173,
-        159
-      ],
-      [
-        875,
-        14,
-        179,
-        159
-      ],
-      [
-        1054,
-        14,
-        159,
-        159
-      ],
-      [
-        1213,
-        14,
-        164,
-        159
-      ],
-      [
-        1377,
-        14,
-        159,
-        159
-      ]
-    ]
-  },
-  "robot.asura.move": {
-    "id": "robot.asura.move",
-    "category": "Robot",
-    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      0,
-      353,
-      1536,
-      135
-    ],
-    "frames": 10,
-    "columns": 10,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        353,
-        154,
-        135
-      ],
-      [
-        154,
-        353,
-        150,
-        135
-      ],
-      [
-        304,
-        353,
-        154,
-        135
-      ],
-      [
-        458,
-        353,
-        154,
-        135
-      ],
-      [
-        612,
-        353,
-        152,
-        135
-      ],
-      [
-        764,
-        353,
-        146,
-        135
-      ],
-      [
-        910,
-        353,
-        150,
-        135
-      ],
-      [
-        1060,
-        353,
-        156,
-        135
-      ],
-      [
-        1216,
-        353,
-        151,
-        135
-      ],
-      [
-        1367,
-        353,
-        155,
-        135
-      ]
-    ]
-  },
-  "robot.asura.attack": {
-    "id": "robot.asura.attack",
-    "category": "Robot",
-    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      0,
-      514,
-      1536,
-      132
-    ],
-    "frames": 8,
-    "columns": 8,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        514,
-        164,
-        132
-      ],
-      [
-        164,
-        514,
-        174,
-        132
-      ],
-      [
-        338,
-        514,
-        174,
-        132
-      ],
-      [
-        512,
-        514,
-        177,
-        132
-      ],
-      [
-        689,
-        514,
-        191,
-        132
-      ],
-      [
-        880,
-        514,
-        184,
-        132
-      ],
-      [
-        1064,
-        514,
-        181,
-        132
-      ],
-      [
-        1245,
-        514,
-        186,
-        132
-      ]
-    ]
-  },
-  "robot.asura.hit": {
-    "id": "robot.asura.hit",
-    "category": "Robot",
-    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      0,
-      674,
-      1536,
-      103
-    ],
-    "frames": 4,
-    "columns": 4,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        674,
-        172,
-        103
-      ],
-      [
-        172,
-        674,
-        162,
-        103
-      ],
-      [
-        334,
-        674,
-        166,
-        103
-      ],
-      [
-        500,
-        674,
-        158,
-        103
-      ]
-    ]
-  },
-  "robot.asura.death": {
-    "id": "robot.asura.death",
-    "category": "Robot",
-    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
-    "region": [
-      0,
-      794,
-      1536,
-      87
-    ],
-    "frames": 9,
-    "columns": 9,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        794,
-        164,
-        87
-      ],
-      [
-        164,
-        794,
-        169,
-        87
-      ],
-      [
-        333,
-        794,
-        158,
-        87
-      ],
-      [
-        491,
-        794,
-        159,
-        87
-      ],
-      [
-        650,
-        794,
-        162,
-        87
-      ],
-      [
-        812,
-        794,
-        164,
-        87
-      ],
-      [
-        976,
-        794,
-        158,
-        87
-      ],
-      [
-        1134,
-        794,
-        162,
-        87
-      ],
-      [
-        1296,
-        794,
-        156,
-        87
-      ]
-    ]
-  },
-  "robot.asura.skill1": {
-    "id": "robot.asura.skill1",
-    "category": "Robot",
-    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
-    "region": [
-      0,
-      46,
-      1536,
-      90
-    ],
-    "frames": 10,
-    "columns": 10,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        46,
-        154,
-        90
-      ],
-      [
-        154,
-        46,
-        153,
-        90
-      ],
-      [
-        307,
-        46,
-        154,
-        90
-      ],
-      [
-        461,
-        46,
-        153,
-        90
-      ],
-      [
-        614,
-        46,
-        154,
-        90
-      ],
-      [
-        768,
-        46,
-        154,
-        90
-      ],
-      [
-        922,
-        46,
-        153,
-        90
-      ],
-      [
-        1075,
-        46,
-        154,
-        90
-      ],
-      [
-        1229,
-        46,
-        153,
-        90
-      ],
-      [
-        1382,
-        46,
-        154,
-        90
-      ]
-    ]
-  },
-  "robot.asura.skill2": {
-    "id": "robot.asura.skill2",
-    "category": "Robot",
-    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
-    "region": [
-      0,
-      192,
-      1536,
-      94
-    ],
-    "frames": 10,
-    "columns": 10,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        192,
-        154,
-        94
-      ],
-      [
-        154,
-        192,
-        153,
-        94
-      ],
-      [
-        307,
-        192,
-        154,
-        94
-      ],
-      [
-        461,
-        192,
-        153,
-        94
-      ],
-      [
-        614,
-        192,
-        154,
-        94
-      ],
-      [
-        768,
-        192,
-        154,
-        94
-      ],
-      [
-        922,
-        192,
-        153,
-        94
-      ],
-      [
-        1075,
-        192,
-        154,
-        94
-      ],
-      [
-        1229,
-        192,
-        153,
-        94
-      ],
-      [
-        1382,
-        192,
-        154,
-        94
-      ]
-    ]
-  },
-  "robot.asura.skill3": {
-    "id": "robot.asura.skill3",
-    "category": "Robot",
-    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
-    "region": [
-      0,
-      305,
-      1536,
-      152
-    ],
-    "frames": 10,
-    "columns": 10,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        305,
-        154,
-        152
-      ],
-      [
-        154,
-        305,
-        153,
-        152
-      ],
-      [
-        307,
-        305,
-        154,
-        152
-      ],
-      [
-        461,
-        305,
-        153,
-        152
-      ],
-      [
-        614,
-        305,
-        154,
-        152
-      ],
-      [
-        768,
-        305,
-        154,
-        152
-      ],
-      [
-        922,
-        305,
-        153,
-        152
-      ],
-      [
-        1075,
-        305,
-        154,
-        152
-      ],
-      [
-        1229,
-        305,
-        153,
-        152
-      ],
-      [
-        1382,
-        305,
-        154,
-        152
-      ]
-    ]
-  },
-  "robot.asura.projectile": {
-    "id": "robot.asura.projectile",
-    "category": "Robot",
-    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
-    "region": [
-      0,
-      499,
-      1536,
-      95
-    ],
-    "frames": 6,
-    "columns": 6,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        499,
-        256,
-        95
-      ],
-      [
-        256,
-        499,
-        256,
-        95
-      ],
-      [
-        512,
-        499,
-        256,
-        95
-      ],
-      [
-        768,
-        499,
-        256,
-        95
-      ],
-      [
-        1024,
-        499,
-        256,
-        95
-      ],
-      [
-        1280,
-        499,
-        256,
-        95
-      ]
-    ]
-  },
-  "robot.asura.finisher": {
-    "id": "robot.asura.finisher",
-    "category": "Robot",
-    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
-    "region": [
-      0,
-      722,
-      1536,
-      141
-    ],
-    "frames": 10,
-    "columns": 10,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        722,
-        154,
-        141
-      ],
-      [
-        154,
-        722,
-        153,
-        141
-      ],
-      [
-        307,
-        722,
-        154,
-        141
-      ],
-      [
-        461,
-        722,
-        153,
-        141
-      ],
-      [
-        614,
-        722,
-        154,
-        141
-      ],
-      [
-        768,
-        722,
-        154,
-        141
-      ],
-      [
-        922,
-        722,
-        153,
-        141
-      ],
-      [
-        1075,
-        722,
-        154,
-        141
-      ],
-      [
-        1229,
-        722,
-        153,
-        141
-      ],
-      [
-        1382,
-        722,
-        154,
-        141
-      ]
-    ]
-  },
-  "robot.asura.special": {
-    "id": "robot.asura.special",
-    "category": "Robot",
-    "source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
-    "region": [
-      0,
-      878,
-      1536,
-      133
-    ],
-    "frames": 10,
-    "columns": 10,
-    "rows": 1,
-    "frame_order": "row_major",
-    "anchor": {
-      "mode": "CUSTOM",
-      "x": 0.539409,
-      "y": 0.471698
-    },
-    "owner": "asura",
-    "usage": "animation",
-    "frame_regions": [
-      [
-        0,
-        878,
-        154,
-        133
-      ],
-      [
-        154,
-        878,
-        153,
-        133
-      ],
-      [
-        307,
-        878,
-        154,
-        133
-      ],
-      [
-        461,
-        878,
-        153,
-        133
-      ],
-      [
-        614,
-        878,
-        154,
-        133
-      ],
-      [
-        768,
-        878,
-        154,
-        133
-      ],
-      [
-        922,
-        878,
-        153,
-        133
-      ],
-      [
-        1075,
-        878,
-        154,
-        133
-      ],
-      [
-        1229,
-        878,
-        153,
-        133
-      ],
-      [
-        1382,
-        878,
-        154,
-        133
-      ]
-    ]
-  }
+	"robot.asura.attack": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 8.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				514.0,
+				164.0,
+				132.0
+			],
+			[
+				164.0,
+				514.0,
+				174.0,
+				132.0
+			],
+			[
+				338.0,
+				514.0,
+				174.0,
+				132.0
+			],
+			[
+				512.0,
+				514.0,
+				177.0,
+				132.0
+			],
+			[
+				689.0,
+				514.0,
+				191.0,
+				132.0
+			],
+			[
+				880.0,
+				514.0,
+				184.0,
+				132.0
+			],
+			[
+				1064.0,
+				514.0,
+				181.0,
+				132.0
+			],
+			[
+				1245.0,
+				514.0,
+				186.0,
+				132.0
+			]
+		],
+		"frames": 8.0,
+		"id": "robot.asura.attack",
+		"owner": "asura",
+		"region": [
+			0.0,
+			514.0,
+			1536.0,
+			132.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.asura.death": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 9.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				794.0,
+				164.0,
+				87.0
+			],
+			[
+				164.0,
+				794.0,
+				169.0,
+				87.0
+			],
+			[
+				333.0,
+				794.0,
+				158.0,
+				87.0
+			],
+			[
+				491.0,
+				794.0,
+				159.0,
+				87.0
+			],
+			[
+				650.0,
+				794.0,
+				162.0,
+				87.0
+			],
+			[
+				812.0,
+				794.0,
+				164.0,
+				87.0
+			],
+			[
+				976.0,
+				794.0,
+				158.0,
+				87.0
+			],
+			[
+				1134.0,
+				794.0,
+				162.0,
+				87.0
+			],
+			[
+				1296.0,
+				794.0,
+				156.0,
+				87.0
+			]
+		],
+		"frames": 9.0,
+		"id": "robot.asura.death",
+		"owner": "asura",
+		"region": [
+			0.0,
+			794.0,
+			1536.0,
+			87.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.asura.finisher": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 10.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				722.0,
+				154.0,
+				141.0
+			],
+			[
+				154.0,
+				722.0,
+				153.0,
+				141.0
+			],
+			[
+				307.0,
+				722.0,
+				154.0,
+				141.0
+			],
+			[
+				461.0,
+				722.0,
+				153.0,
+				141.0
+			],
+			[
+				614.0,
+				722.0,
+				154.0,
+				141.0
+			],
+			[
+				768.0,
+				722.0,
+				154.0,
+				141.0
+			],
+			[
+				922.0,
+				722.0,
+				153.0,
+				141.0
+			],
+			[
+				1075.0,
+				722.0,
+				154.0,
+				141.0
+			],
+			[
+				1229.0,
+				722.0,
+				153.0,
+				141.0
+			],
+			[
+				1382.0,
+				722.0,
+				154.0,
+				141.0
+			]
+		],
+		"frames": 10.0,
+		"id": "robot.asura.finisher",
+		"owner": "asura",
+		"region": [
+			0.0,
+			722.0,
+			1536.0,
+			141.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "animation"
+	},
+	"robot.asura.hit": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 4.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				674.0,
+				172.0,
+				103.0
+			],
+			[
+				172.0,
+				674.0,
+				162.0,
+				103.0
+			],
+			[
+				334.0,
+				674.0,
+				166.0,
+				103.0
+			],
+			[
+				500.0,
+				674.0,
+				158.0,
+				103.0
+			]
+		],
+		"frames": 4.0,
+		"id": "robot.asura.hit",
+		"owner": "asura",
+		"region": [
+			0.0,
+			674.0,
+			1536.0,
+			103.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.asura.idle": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 9.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				14.0,
+				203.0,
+				159.0
+			],
+			[
+				203.0,
+				14.0,
+				183.0,
+				159.0
+			],
+			[
+				386.0,
+				14.0,
+				163.0,
+				159.0
+			],
+			[
+				549.0,
+				14.0,
+				153.0,
+				159.0
+			],
+			[
+				702.0,
+				14.0,
+				173.0,
+				159.0
+			],
+			[
+				875.0,
+				14.0,
+				179.0,
+				159.0
+			],
+			[
+				1054.0,
+				14.0,
+				159.0,
+				159.0
+			],
+			[
+				1213.0,
+				14.0,
+				164.0,
+				159.0
+			],
+			[
+				1377.0,
+				14.0,
+				159.0,
+				159.0
+			]
+		],
+		"frames": 9.0,
+		"id": "robot.asura.idle",
+		"owner": "asura",
+		"region": [
+			0.0,
+			14.0,
+			1536.0,
+			159.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.asura.move": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 10.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				353.0,
+				154.0,
+				135.0
+			],
+			[
+				154.0,
+				353.0,
+				150.0,
+				135.0
+			],
+			[
+				304.0,
+				353.0,
+				154.0,
+				135.0
+			],
+			[
+				458.0,
+				353.0,
+				154.0,
+				135.0
+			],
+			[
+				612.0,
+				353.0,
+				152.0,
+				135.0
+			],
+			[
+				764.0,
+				353.0,
+				146.0,
+				135.0
+			],
+			[
+				910.0,
+				353.0,
+				150.0,
+				135.0
+			],
+			[
+				1060.0,
+				353.0,
+				156.0,
+				135.0
+			],
+			[
+				1216.0,
+				353.0,
+				151.0,
+				135.0
+			],
+			[
+				1367.0,
+				353.0,
+				155.0,
+				135.0
+			]
+		],
+		"frames": 10.0,
+		"id": "robot.asura.move",
+		"owner": "asura",
+		"region": [
+			0.0,
+			353.0,
+			1536.0,
+			135.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.asura.profile": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.5,
+			"y": 0.5
+		},
+		"category": "Robot",
+		"columns": 1.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				14.0,
+				159.0,
+				134.0,
+				131.0
+			]
+		],
+		"frames": 1.0,
+		"id": "robot.asura.profile",
+		"owner": "asura",
+		"region": [
+			14.0,
+			159.0,
+			134.0,
+			131.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+		"team_mask": {
+			"source": "res://images/robot/asura/profile_team_mask.png"
+		},
+		"usage": "profile"
+	},
+	"robot.asura.projectile": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.5,
+			"y": 0.5
+		},
+		"category": "Robot",
+		"columns": 6.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				499.0,
+				256.0,
+				95.0
+			],
+			[
+				256.0,
+				499.0,
+				256.0,
+				95.0
+			],
+			[
+				512.0,
+				499.0,
+				256.0,
+				95.0
+			],
+			[
+				768.0,
+				499.0,
+				256.0,
+				95.0
+			],
+			[
+				1024.0,
+				499.0,
+				256.0,
+				95.0
+			],
+			[
+				1280.0,
+				499.0,
+				256.0,
+				95.0
+			]
+		],
+		"frames": 6.0,
+		"id": "robot.asura.projectile",
+		"owner": "asura",
+		"region": [
+			0.0,
+			499.0,
+			1536.0,
+			95.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "animation"
+	},
+	"robot.asura.skill1": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 10.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				46.0,
+				154.0,
+				90.0
+			],
+			[
+				154.0,
+				46.0,
+				153.0,
+				90.0
+			],
+			[
+				307.0,
+				46.0,
+				154.0,
+				90.0
+			],
+			[
+				461.0,
+				46.0,
+				153.0,
+				90.0
+			],
+			[
+				614.0,
+				46.0,
+				154.0,
+				90.0
+			],
+			[
+				768.0,
+				46.0,
+				154.0,
+				90.0
+			],
+			[
+				922.0,
+				46.0,
+				153.0,
+				90.0
+			],
+			[
+				1075.0,
+				46.0,
+				154.0,
+				90.0
+			],
+			[
+				1229.0,
+				46.0,
+				153.0,
+				90.0
+			],
+			[
+				1382.0,
+				46.0,
+				154.0,
+				90.0
+			]
+		],
+		"frames": 10.0,
+		"id": "robot.asura.skill1",
+		"owner": "asura",
+		"region": [
+			0.0,
+			46.0,
+			1536.0,
+			90.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "animation"
+	},
+	"robot.asura.skill2": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 10.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				192.0,
+				154.0,
+				94.0
+			],
+			[
+				154.0,
+				192.0,
+				153.0,
+				94.0
+			],
+			[
+				307.0,
+				192.0,
+				154.0,
+				94.0
+			],
+			[
+				461.0,
+				192.0,
+				153.0,
+				94.0
+			],
+			[
+				614.0,
+				192.0,
+				154.0,
+				94.0
+			],
+			[
+				768.0,
+				192.0,
+				154.0,
+				94.0
+			],
+			[
+				922.0,
+				192.0,
+				153.0,
+				94.0
+			],
+			[
+				1075.0,
+				192.0,
+				154.0,
+				94.0
+			],
+			[
+				1229.0,
+				192.0,
+				153.0,
+				94.0
+			],
+			[
+				1382.0,
+				192.0,
+				154.0,
+				94.0
+			]
+		],
+		"frames": 10.0,
+		"id": "robot.asura.skill2",
+		"owner": "asura",
+		"region": [
+			0.0,
+			192.0,
+			1536.0,
+			94.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "animation"
+	},
+	"robot.asura.skill3": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 10.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				305.0,
+				154.0,
+				152.0
+			],
+			[
+				154.0,
+				305.0,
+				153.0,
+				152.0
+			],
+			[
+				307.0,
+				305.0,
+				154.0,
+				152.0
+			],
+			[
+				461.0,
+				305.0,
+				153.0,
+				152.0
+			],
+			[
+				614.0,
+				305.0,
+				154.0,
+				152.0
+			],
+			[
+				768.0,
+				305.0,
+				154.0,
+				152.0
+			],
+			[
+				922.0,
+				305.0,
+				153.0,
+				152.0
+			],
+			[
+				1075.0,
+				305.0,
+				154.0,
+				152.0
+			],
+			[
+				1229.0,
+				305.0,
+				153.0,
+				152.0
+			],
+			[
+				1382.0,
+				305.0,
+				154.0,
+				152.0
+			]
+		],
+		"frames": 10.0,
+		"id": "robot.asura.skill3",
+		"owner": "asura",
+		"region": [
+			0.0,
+			305.0,
+			1536.0,
+			152.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "animation"
+	},
+	"robot.asura.special": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.539409,
+			"y": 0.471698
+		},
+		"category": "Robot",
+		"columns": 10.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				878.0,
+				154.0,
+				133.0
+			],
+			[
+				154.0,
+				878.0,
+				153.0,
+				133.0
+			],
+			[
+				307.0,
+				878.0,
+				154.0,
+				133.0
+			],
+			[
+				461.0,
+				878.0,
+				153.0,
+				133.0
+			],
+			[
+				614.0,
+				878.0,
+				154.0,
+				133.0
+			],
+			[
+				768.0,
+				878.0,
+				154.0,
+				133.0
+			],
+			[
+				922.0,
+				878.0,
+				153.0,
+				133.0
+			],
+			[
+				1075.0,
+				878.0,
+				154.0,
+				133.0
+			],
+			[
+				1229.0,
+				878.0,
+				153.0,
+				133.0
+			],
+			[
+				1382.0,
+				878.0,
+				154.0,
+				133.0
+			]
+		],
+		"frames": 10.0,
+		"id": "robot.asura.special",
+		"owner": "asura",
+		"region": [
+			0.0,
+			878.0,
+			1536.0,
+			133.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/asura/네온 그린 메카 스킬 스프라이트 시트.png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.attack": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 8.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				122.0,
+				463.0,
+				156.0,
+				162.0
+			],
+			[
+				278.0,
+				463.0,
+				156.0,
+				162.0
+			],
+			[
+				434.0,
+				463.0,
+				156.0,
+				162.0
+			],
+			[
+				590.0,
+				463.0,
+				156.0,
+				162.0
+			],
+			[
+				746.0,
+				463.0,
+				156.0,
+				162.0
+			],
+			[
+				902.0,
+				463.0,
+				156.0,
+				162.0
+			],
+			[
+				1058.0,
+				463.0,
+				156.0,
+				162.0
+			],
+			[
+				1214.0,
+				463.0,
+				156.0,
+				162.0
+			]
+		],
+		"frames": 8.0,
+		"id": "robot.valkyrie.attack",
+		"owner": "valkyrie",
+		"region": [
+			122.0,
+			463.0,
+			1248.0,
+			162.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.death": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 8.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				122.0,
+				853.0,
+				156.0,
+				163.0
+			],
+			[
+				278.0,
+				853.0,
+				156.0,
+				163.0
+			],
+			[
+				434.0,
+				853.0,
+				156.0,
+				163.0
+			],
+			[
+				590.0,
+				853.0,
+				156.0,
+				163.0
+			],
+			[
+				746.0,
+				853.0,
+				156.0,
+				163.0
+			],
+			[
+				902.0,
+				853.0,
+				156.0,
+				163.0
+			],
+			[
+				1058.0,
+				853.0,
+				156.0,
+				163.0
+			],
+			[
+				1214.0,
+				853.0,
+				156.0,
+				163.0
+			]
+		],
+		"frames": 8.0,
+		"id": "robot.valkyrie.death",
+		"owner": "valkyrie",
+		"region": [
+			122.0,
+			853.0,
+			1248.0,
+			163.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.finisher": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 9.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				6.0,
+				363.0,
+				169.0,
+				174.0
+			],
+			[
+				175.0,
+				363.0,
+				169.0,
+				174.0
+			],
+			[
+				344.0,
+				363.0,
+				169.0,
+				174.0
+			],
+			[
+				513.0,
+				363.0,
+				169.0,
+				174.0
+			],
+			[
+				682.0,
+				363.0,
+				170.0,
+				174.0
+			],
+			[
+				852.0,
+				363.0,
+				169.0,
+				174.0
+			],
+			[
+				1021.0,
+				363.0,
+				169.0,
+				174.0
+			],
+			[
+				1190.0,
+				363.0,
+				169.0,
+				174.0
+			],
+			[
+				1359.0,
+				363.0,
+				169.0,
+				174.0
+			],
+			[
+				6.0,
+				537.0,
+				169.0,
+				174.0
+			],
+			[
+				175.0,
+				537.0,
+				169.0,
+				174.0
+			],
+			[
+				344.0,
+				537.0,
+				169.0,
+				174.0
+			],
+			[
+				513.0,
+				537.0,
+				169.0,
+				174.0
+			],
+			[
+				682.0,
+				537.0,
+				170.0,
+				174.0
+			],
+			[
+				852.0,
+				537.0,
+				169.0,
+				174.0
+			],
+			[
+				1021.0,
+				537.0,
+				169.0,
+				174.0
+			],
+			[
+				1190.0,
+				537.0,
+				169.0,
+				174.0
+			],
+			[
+				1359.0,
+				537.0,
+				169.0,
+				174.0
+			]
+		],
+		"frames": 18.0,
+		"id": "robot.valkyrie.finisher",
+		"owner": "valkyrie",
+		"region": [
+			6.0,
+			363.0,
+			1522.0,
+			348.0
+		],
+		"rows": 2.0,
+		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.hit": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 4.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				122.0,
+				651.0,
+				156.0,
+				172.0
+			],
+			[
+				278.0,
+				651.0,
+				156.0,
+				172.0
+			],
+			[
+				434.0,
+				651.0,
+				156.0,
+				172.0
+			],
+			[
+				590.0,
+				651.0,
+				156.0,
+				172.0
+			]
+		],
+		"frames": 4.0,
+		"id": "robot.valkyrie.hit",
+		"owner": "valkyrie",
+		"region": [
+			122.0,
+			651.0,
+			624.0,
+			172.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.idle": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 6.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				122.0,
+				10.0,
+				156.0,
+				176.0
+			],
+			[
+				278.0,
+				10.0,
+				156.0,
+				176.0
+			],
+			[
+				434.0,
+				10.0,
+				156.0,
+				176.0
+			],
+			[
+				590.0,
+				10.0,
+				156.0,
+				176.0
+			],
+			[
+				746.0,
+				10.0,
+				156.0,
+				176.0
+			],
+			[
+				902.0,
+				10.0,
+				156.0,
+				176.0
+			]
+		],
+		"frames": 6.0,
+		"id": "robot.valkyrie.idle",
+		"owner": "valkyrie",
+		"region": [
+			122.0,
+			10.0,
+			936.0,
+			176.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.move": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 8.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				122.0,
+				242.0,
+				156.0,
+				184.0
+			],
+			[
+				278.0,
+				242.0,
+				156.0,
+				184.0
+			],
+			[
+				434.0,
+				242.0,
+				156.0,
+				184.0
+			],
+			[
+				590.0,
+				242.0,
+				156.0,
+				184.0
+			],
+			[
+				746.0,
+				242.0,
+				156.0,
+				184.0
+			],
+			[
+				902.0,
+				242.0,
+				156.0,
+				184.0
+			],
+			[
+				1058.0,
+				242.0,
+				156.0,
+				184.0
+			],
+			[
+				1214.0,
+				242.0,
+				156.0,
+				184.0
+			]
+		],
+		"frames": 8.0,
+		"id": "robot.valkyrie.move",
+		"owner": "valkyrie",
+		"region": [
+			122.0,
+			242.0,
+			1248.0,
+			184.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 소녀 애니메이션 스프라이트 시트 (2).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.profile": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.5,
+			"y": 0.5
+		},
+		"category": "Robot",
+		"columns": 1.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				7.0,
+				787.0,
+				289.0,
+				234.0
+			]
+		],
+		"frames": 1.0,
+		"id": "robot.valkyrie.profile",
+		"owner": "valkyrie",
+		"region": [
+			7.0,
+			787.0,
+			289.0,
+			234.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+		"team_mask": {
+			"source": "res://images/robot/valkyrie/profile_team_mask.png"
+		},
+		"usage": "profile"
+	},
+	"robot.valkyrie.projectile": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.5,
+			"y": 0.5
+		},
+		"category": "Robot",
+		"columns": 6.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				31.0,
+				83.0,
+				248.0,
+				117.0
+			],
+			[
+				279.0,
+				83.0,
+				247.0,
+				117.0
+			],
+			[
+				526.0,
+				83.0,
+				248.0,
+				117.0
+			],
+			[
+				774.0,
+				83.0,
+				248.0,
+				117.0
+			],
+			[
+				1022.0,
+				83.0,
+				247.0,
+				117.0
+			],
+			[
+				1269.0,
+				83.0,
+				248.0,
+				117.0
+			]
+		],
+		"frames": 6.0,
+		"id": "robot.valkyrie.projectile",
+		"owner": "valkyrie",
+		"region": [
+			31.0,
+			83.0,
+			1486.0,
+			117.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.skill1": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 8.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				17.0,
+				295.0,
+				186.0,
+				185.0
+			],
+			[
+				203.0,
+				295.0,
+				187.0,
+				185.0
+			],
+			[
+				390.0,
+				295.0,
+				186.0,
+				185.0
+			],
+			[
+				576.0,
+				295.0,
+				186.0,
+				185.0
+			],
+			[
+				762.0,
+				295.0,
+				186.0,
+				185.0
+			],
+			[
+				948.0,
+				295.0,
+				187.0,
+				185.0
+			],
+			[
+				1135.0,
+				295.0,
+				186.0,
+				185.0
+			],
+			[
+				1321.0,
+				295.0,
+				186.0,
+				185.0
+			]
+		],
+		"frames": 8.0,
+		"id": "robot.valkyrie.skill1",
+		"owner": "valkyrie",
+		"region": [
+			17.0,
+			295.0,
+			1490.0,
+			185.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.skill2": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 10.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				15.0,
+				560.0,
+				150.0,
+				172.0
+			],
+			[
+				165.0,
+				560.0,
+				151.0,
+				172.0
+			],
+			[
+				316.0,
+				560.0,
+				150.0,
+				172.0
+			],
+			[
+				466.0,
+				560.0,
+				151.0,
+				172.0
+			],
+			[
+				617.0,
+				560.0,
+				150.0,
+				172.0
+			],
+			[
+				767.0,
+				560.0,
+				150.0,
+				172.0
+			],
+			[
+				917.0,
+				560.0,
+				151.0,
+				172.0
+			],
+			[
+				1068.0,
+				560.0,
+				150.0,
+				172.0
+			],
+			[
+				1218.0,
+				560.0,
+				151.0,
+				172.0
+			],
+			[
+				1369.0,
+				560.0,
+				150.0,
+				172.0
+			]
+		],
+		"frames": 10.0,
+		"id": "robot.valkyrie.skill2",
+		"owner": "valkyrie",
+		"region": [
+			15.0,
+			560.0,
+			1504.0,
+			172.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.skill3": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 12.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				15.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				141.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				267.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				393.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				519.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				645.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				771.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				897.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				1023.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				1149.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				1275.0,
+				819.0,
+				126.0,
+				165.0
+			],
+			[
+				1401.0,
+				819.0,
+				126.0,
+				165.0
+			]
+		],
+		"frames": 12.0,
+		"id": "robot.valkyrie.skill3",
+		"owner": "valkyrie",
+		"region": [
+			15.0,
+			819.0,
+			1512.0,
+			165.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 스킬 애니메이션 스프라이트 시트 (1).png",
+		"usage": "animation"
+	},
+	"robot.valkyrie.special": {
+		"anchor": {
+			"mode": "CUSTOM",
+			"x": 0.416667,
+			"y": 0.625
+		},
+		"category": "Robot",
+		"columns": 14.0,
+		"frame_order": "row_major",
+		"frame_regions": [
+			[
+				0.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				109.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				218.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				327.0,
+				70.0,
+				110.0,
+				174.0
+			],
+			[
+				437.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				546.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				655.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				764.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				873.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				982.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				1091.0,
+				70.0,
+				110.0,
+				174.0
+			],
+			[
+				1201.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				1310.0,
+				70.0,
+				109.0,
+				174.0
+			],
+			[
+				1419.0,
+				70.0,
+				109.0,
+				174.0
+			]
+		],
+		"frames": 14.0,
+		"id": "robot.valkyrie.special",
+		"owner": "valkyrie",
+		"region": [
+			0.0,
+			70.0,
+			1528.0,
+			174.0
+		],
+		"rows": 1.0,
+		"source": "res://images/robot/valkyrie/치비 메카 스프라이트 액션 시트.png",
+		"usage": "animation"
+	}
 }
