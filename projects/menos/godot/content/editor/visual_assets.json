@@ -908,6 +908,39 @@
       "source": "res://images/robot/valkyrie/profile_team_mask.png"
     }
   },
+  "robot.asura.profile": {
+    "id": "robot.asura.profile",
+    "category": "Robot",
+    "source": "res://images/robot/asura/치비 메카 로봇 애니메이션 스프라이트 시트 (1).png",
+    "region": [
+      14,
+      159,
+      134,
+      131
+    ],
+    "frames": 1,
+    "columns": 1,
+    "rows": 1,
+    "frame_order": "row_major",
+    "anchor": {
+      "mode": "CUSTOM",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "owner": "asura",
+    "usage": "profile",
+    "frame_regions": [
+      [
+        14,
+        159,
+        134,
+        131
+      ]
+    ],
+    "team_mask": {
+      "source": "res://images/robot/asura/profile_team_mask.png"
+    }
+  },
   "robot.asura.idle": {
     "id": "robot.asura.idle",
     "category": "Robot",

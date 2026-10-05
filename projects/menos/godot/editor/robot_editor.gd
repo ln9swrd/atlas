@@ -794,6 +794,16 @@ func _apply_preview_color() -> void:
 	material.set_shader_parameter("use_team_mask", mask_valid)
 	if mask_valid:
 		material.set_shader_parameter("team_mask", mask_texture)
+		if profile_asset != null and profile_asset.region.size.x > 0.0 and profile_asset.region.size.y > 0.0:
+			var source_path: String = ProjectSettings.globalize_path(profile_asset.source) if profile_asset.source.begins_with("res://") else profile_asset.source
+			var source_image: Image = Image.load_from_file(source_path)
+			if source_image != null and source_image.get_width() > 0 and source_image.get_height() > 0:
+				material.set_shader_parameter("mask_region_uv", Vector4(
+					profile_asset.region.position.x / float(source_image.get_width()),
+					profile_asset.region.position.y / float(source_image.get_height()),
+					profile_asset.region.size.x / float(source_image.get_width()),
+					profile_asset.region.size.y / float(source_image.get_height())
+				))
 
 func _refresh_robot_preview() -> void:
 	if not robot_preview:
