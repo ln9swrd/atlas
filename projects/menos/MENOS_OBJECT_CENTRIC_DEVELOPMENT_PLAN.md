@@ -2965,3 +2965,29 @@ STATUS — ACCEPTED / 제작 규격 정의
 - Normal Map/2D Light 신규 구현
 - Sprite 자동 변환 도구 제작
 - 기존 Asset 좌우 방향 체계의 일괄 변경
+
+## Handoff — 2026-10-05 Object Reference / Faction Dependency 구조
+
+STATUS — HOLD / Canon 결정 필요
+
+**확인 결과**
+- Stage → Mission / Map / Reward / Allied Unit / Encounter 구조는 현재 구현되어 있다.
+- Encounter → Wave → Group → Enemy ID 구조가 Stage 내부에 존재한다.
+- RobotDefinition에는 `faction_id`가 존재하지만 현재 Robot Catalog 데이터에는 실질적인 연결값이 없다.
+- Faction Catalog는 현재 비어 있다.
+- Enemy / Allied Unit / Tower Definition에는 현재 Faction 참조가 확인되지 않았다.
+
+**구조 방향 제안**
+- Faction은 독립 Definition으로 유지한다.
+- Object Definition은 Faction ID를 참조하고, Faction은 Object 데이터를 복제하지 않는다.
+- Faction Editor는 소속 관계를 관리하고 개별 Object 데이터는 각 Object Editor/Catalog가 관리한다.
+- Stage는 Faction을 직접 소유하지 않는 방향을 우선 검토한다.
+
+**Canon 미확정**
+- 적용 대상 Object 범위
+- Tower/Building Faction 규칙
+- Player Faction과 Stage 관계
+- Faction Member 저장 방식
+
+**판정**
+구조상 중요한 참조 계약이지만 Canon 결정이 필요한 영역이다. 구현 없이 HOLD한다.

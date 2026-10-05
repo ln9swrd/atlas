@@ -1310,3 +1310,58 @@ MENOS 신규 Sprite 제작에서 이미지 생성 모델과 관계없이 동일�
 - Asset 변환
 - Godot Lighting/Normal Map 구현
 - PIE
+
+## Handoff — 2026-10-05 Object Reference / Dependency 구조 조사
+
+STATUS — HOLD / 구조 판정 필요
+
+**목적**
+MENOS 핵심 Object 간 소유·참조 방향을 확인하고 현재 구현과 목표 구조의 차이를 식별한다.
+
+**CONFIRMED**
+- Stage는 현재 `mission_id`, `map_file`, `reward_id`, `allied_units`, `encounters`를 직접 참조한다.
+- Encounter/Wave/Group는 Stage 내부에 구성되어 있으며 Group의 enemy ID를 통해 Enemy Catalog를 간접 참조한다.
+- Robot은 `RobotDefinition.faction_id` 필드를 가지고 있으나 현재 `robots.json`의 Asura/Valkyrie 데이터에는 해당 값이 없다.
+- `factions.json`은 현재 `{}`로 비어 있다.
+- EnemyDefinition에는 현재 Faction 참조 필드가 없다.
+- AlliedUnitDefinition에는 현재 Faction 참조 필드가 없다.
+- TowerDefinition에는 현재 Faction 참조 필드가 없다.
+- Stage는 현재 Faction을 직접 참조하지 않는다.
+- ObjectRepository는 Robot/Enemy/Allied Unit/Tower를 각각 별도 Catalog에서 로드한다.
+- StageManager는 Stage → Mission/Reward/Map/Encounter 관계를 직접 소비한다.
+
+**구조 판정**
+현재 구현은 Object Definition과 Stage Composition이 분리되어 있으나 Faction 관계는 아직 실질적인 참조 계약으로 연결되지 않았다.
+
+**PROPOSAL**
+- Faction은 Robot/Enemy/Allied Unit/Tower의 공통 소속 정보를 정의하는 독립 Object로 둔다.
+- 개별 Object Definition은 Faction ID를 참조하고 Faction이 Object Definition 자체를 복제하거나 소유하지 않도록 한다.
+- Stage는 Faction 자체를 직접 소유하지 않고, Stage에 배치되는 Object가 자신의 Faction을 참조하는 방향을 우선 검토한다.
+- Faction Editor는 Faction Definition과 Member Object의 관계를 관리하되, 실제 Robot/Enemy/Unit/Tower Definition 데이터는 각 Object Editor/Catalog가 소유한다.
+- Enemy의 Faction 연결 방식과 Tower의 Faction 연결 필요 여부는 아직 Canon 확정 대상이므로 구현하지 않는다.
+
+**UNVERIFIED / DESIGN HOLD**
+- Faction이 반드시 Robot/Enemy/Allied Unit/Tower 모두에 적용되어야 하는지
+- Tower/Building의 Faction 소속 규칙
+- Stage에서 플레이어 Faction을 별도 참조해야 하는지
+- Enemy와 Ally 관계를 Faction 관계로 직접 대체할 수 있는지
+- Faction Member 목록을 Faction Catalog에 저장할지, Object의 faction_id를 역조회할지
+
+**검증 상태**
+- DATA: CONFIRMED
+- CODE: CONFIRMED (참조 필드/Repository/Stage 소비 경로 확인)
+- EDITOR: NOT VERIFIED
+- BUILD: NOT VERIFIED
+- PIE: NOT VERIFIED
+
+**변경 사항**
+- 진행기록만 갱신. 코드/Asset/Editor/Runtime 변경 없음.
+
+**판정**
+Faction 참조 구조는 현재 구현 상태와 목표 구조 사이에 Canon 결정이 필요한 상태다. 임의 구현하지 않고 HOLD한다.
+
+**OUT OF SCOPE**
+- Faction Catalog 데이터 생성
+- Faction Editor 수정
+- Object Definition에 신규 faction_id 일괄 추가
+- Stage/Enemy/Tower 데이터 변경
