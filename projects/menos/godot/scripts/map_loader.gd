@@ -1,7 +1,19 @@
 class_name MapLoader
 extends RefCounted
 
+const SQLITE_PATH := "res://content/menos.sqlite"
+const SQLITE_MAP_TABLES := {
+	"res://content/maps/map_01.json": "map_01",
+	"res://content/maps/map_01_src.json": "map_01_src",
+	"res://content/maps/map_02.json": "map_02",
+	"res://content/maps/map_03.json": "map_03"
+}
+
 static func load_map_data(file_path: String) -> Dictionary:
+	var table := _sqlite_map_table(file_path)
+	if not table.is_empty():
+		return _load_sqlite_map_data(table)
+
 	if not FileAccess.file_exists(file_path):
 		push_error("MapLoader: Map data file not found at path: %s" % file_path)
 		return {}
@@ -208,12 +220,97 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 			elif slot_data is Vector2:
 				raw_data["tower_slots"][k] = [slot_data.x, slot_data.y]
 
+	var json_string := JSON.stringify(raw_data, "  ")
+	var sqlite_table := _sqlite_map_table(file_path)
+	if not sqlite_table.is_empty():
+		return _save_sqlite_map_data(sqlite_table, json_string)
+
 	var file := FileAccess.open(file_path, FileAccess.WRITE)
 	if file == null:
 		push_error("MapLoader: Failed to open file for writing at: %s" % file_path)
 		return false
 
-	var json_string := JSON.stringify(raw_data, "  ")
 	file.store_string(json_string)
 	file.close()
+	return true
+
+static func _sqlite_map_table(file_path: String) -> String:
+	return str(SQLITE_MAP_TABLES.get(file_path.replace("\\", "/"), ""))
+
+static func _load_sqlite_map_data(table: String) -> Dictionary:
+	var db = SQLite.new()
+	db.path = SQLITE_PATH
+	db.read_only = true
+	db.foreign_keys = true
+	db.verbosity_level = 0
+	if not db.open_db():
+		push_error("MapLoader: Failed to open SQLite database for reading: %s" % SQLITE_PATH)
+		return {}
+
+	var query_ok: bool = db.query_with_bindings('SELECT raw_json FROM "%s" WHERE document_id = ?' % table, [table])
+	if not query_ok:
+		push_error("MapLoader: SQLite map query failed for table: %s" % table)
+		db.close_db()
+		return {}
+	var rows: Array = db.query_result.duplicate(true)
+	db.close_db()
+	if rows.size() != 1:
+		push_error("MapLoader: Expected exactly one SQLite map document in table: %s" % table)
+		return {}
+
+	var raw_data: Variant = JSON.parse_string(str(rows[0].get("raw_json", "")))
+	if not (raw_data is Dictionary):
+		push_error("MapLoader: Invalid JSON map document in table: %s" % table)
+		return {}
+	return parse_raw_data(raw_data)
+
+static func _save_sqlite_map_data(table: String, json_string: String) -> bool:
+	var db = SQLite.new()
+	db.path = SQLITE_PATH
+	db.read_only = false
+	db.foreign_keys = true
+	db.verbosity_level = 0
+	if not db.open_db():
+		push_error("MapLoader: Failed to open SQLite database for writing: %s" % SQLITE_PATH)
+		return false
+
+	if not db.query("BEGIN IMMEDIATE TRANSACTION"):
+		push_error("MapLoader: Failed to begin SQLite map save transaction")
+		db.close_db()
+		return false
+
+	var rows_ok: bool = db.query_with_bindings('SELECT document_id FROM "%s" WHERE document_id = ?' % table, [table])
+	if not rows_ok or db.query_result.size() != 1:
+		push_error("MapLoader: Expected exactly one matching SQLite map document in table: %s" % table)
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+
+	var update_ok: bool = db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE document_id = ?' % table, [json_string, table])
+	if not update_ok:
+		push_error("MapLoader: SQLite map update failed for table: %s" % table)
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+
+	var changes_ok: bool = db.query("SELECT changes() AS rows_changed")
+	if not changes_ok or db.query_result.size() != 1 or int(db.query_result[0].get("rows_changed", 0)) != 1:
+		push_error("MapLoader: SQLite map save did not update exactly one row in table: %s" % table)
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+
+	var verify_ok: bool = db.query_with_bindings('SELECT raw_json FROM "%s" WHERE document_id = ?' % table, [table])
+	if not verify_ok or db.query_result.size() != 1 or str(db.query_result[0].get("raw_json", "")) != json_string:
+		push_error("MapLoader: SQLite map save verification failed for table: %s" % table)
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+
+	if not db.query("COMMIT"):
+		push_error("MapLoader: Failed to commit SQLite map save transaction")
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+	db.close_db()
 	return true

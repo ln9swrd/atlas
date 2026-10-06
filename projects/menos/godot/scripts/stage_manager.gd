@@ -20,13 +20,8 @@ static func begin_run(mode: String, stage_id: String = "") -> void:
 
 static func _load_stage_catalog() -> void:
 	all_stage_ids.clear()
-	var file := FileAccess.open("res://content/stages/stage_catalog.json", FileAccess.READ)
-	if file == null:
-		push_error("StageManager: Failed to open stage catalog.")
-		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not parsed is Dictionary or not parsed.has("stages") or not parsed["stages"] is Array:
+	var parsed := ContentCatalogLoader.load_document("res://content/stages/stage_catalog.json")
+	if parsed.is_empty() or not parsed.has("stages") or not parsed["stages"] is Array:
 		push_error("StageManager: Invalid stage catalog.")
 		return
 	for stage_id in parsed["stages"]:
@@ -40,13 +35,8 @@ static func get_all_stage_ids() -> Array[String]:
 
 static func _load_campaign_data() -> void:
 	campaign_stage_ids.clear()
-	var file := FileAccess.open("res://content/campaign/main_campaign.json", FileAccess.READ)
-	if file == null:
-		push_error("StageManager: Failed to open campaign data.")
-		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not parsed is Dictionary or not parsed.has("stages") or not parsed["stages"] is Array:
+	var parsed := ContentCatalogLoader.load_document("res://content/campaign/main_campaign.json")
+	if parsed.is_empty() or not parsed.has("stages") or not parsed["stages"] is Array:
 		push_error("StageManager: Invalid campaign data.")
 		return
 	for stage_id in parsed["stages"]:

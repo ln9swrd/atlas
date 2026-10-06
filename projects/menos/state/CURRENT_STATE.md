@@ -1365,3 +1365,53 @@ Faction 참조 구조는 현재 구현 상태와 목표 구조 사이에 Canon �
 - Faction Editor 수정
 - Object Definition에 신규 faction_id 일괄 추가
 - Stage/Enemy/Tower 데이터 변경
+
+
+## Handoff — 2026-10-06 MENOS DOCUMENTATION BASELINE UPDATE
+
+STATUS — PASS
+
+목적 — 현재 구현 상태와 MENOS 문서 기준을 현재 repository baseline 및 JSON→SQLite 전환 정책에 맞춰 정합화.
+
+기준선
+- Branch: `main`
+- HEAD: `178cac776cfa21d3446e5a199ad7db5025f64589`
+- Working Tree: 기존 변경사항 다수 존재. 보존함.
+
+CONFIRMED
+- Core Combat Canon과 현재 코드의 주요 구조는 대체로 정합하다.
+- 직접 조종, 기본 공격, 타깃 전환, 특수공격, 스킬 슬롯, 필살기, XP/레벨, AI 아군, Giant 보스 패턴, 고정형 Tower 지원, Campaign/Stage/Map 경로가 코드상 확인되어 있다.
+- BUILD/전체 EDITOR Acceptance/PIE는 아직 최종 검증되지 않았다.
+- JSON은 당분간 Authoritative Source로 유지한다.
+- SQLite 전환은 콘텐츠 타입별 1개씩 진행하며 Robot을 첫 대상으로 한다.
+- Robot JSON과 SQLite 데이터는 현재 의미상 동일하다.
+- Robot SQLite Sync 함수는 존재하지만 Editor Save 자동 Sync는 적용하지 않는다.
+
+DOCUMENT UPDATE
+- `MENOS_IMPLEMENTATION_STATUS.md`
+- `MENOS_DEVELOPMENT_PLAN.md`
+- `MENOS_REQUIRED_IMPLEMENTATION_GAPS.md`
+- `MENOS_MASTER_IMPLEMENTATION_ROADMAP.md`
+에 2026-10-06 현재 기준선을 추가했다.
+
+검증 상태
+- 문서: UPDATED / VERIFIED
+- CODE: 기존 확인 결과 유지
+- BUILD: UNVERIFIED
+- EDITOR: UNVERIFIED
+- PIE: UNVERIFIED
+
+변경 사항
+- 문서만 수정.
+- 코드/Asset/Scene/Data/Canon 변경 없음.
+- 기존 Working Tree 변경사항 보존.
+- Commit/Push 없음.
+
+OUT OF SCOPE
+- PIE 실행
+- Robot SQLite Sync 실제 실행 검증
+- 다른 콘텐츠 타입 SQLite 전환
+- 코드/Asset 수정
+- Canon 변경
+
+판정 — 문서 정합성 갱신 목적은 달성했다. 추가 작업은 Master 요청 전 자동 진행하지 않는다.

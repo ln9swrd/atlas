@@ -290,3 +290,39 @@ Verification boundary:
 - PIE VERIFIED: NOT VERIFIED. Master runtime acceptance remains required.
 
 No code, scene, asset, or Canon changes were made by this tooling audit. Do not revert pre-existing Working Tree changes.
+
+
+## 2026-10-06 DOCUMENT UPDATE — CURRENT REPOSITORY BASELINE
+
+이 섹션은 이전 문서의 HEAD/Working Tree 스냅샷보다 우선하는 현재 문서 기준선이다. Canon을 변경하지 않는다.
+
+- Project: MENOS
+- Branch: `main`
+- HEAD: `178cac776cfa21d3446e5a199ad7db5025f64589`
+- Working Tree: 기존 변경사항 다수 존재. 이번 문서 갱신은 기존 변경을 수정/되돌리지 않는다.
+- Godot: `D:\\Godot_v4.7.2-stable`, `4.7.2.stable.official.ed1daf0bf`
+- Core implementation assessment: 직접 조종, 기본 공격, 타깃 전환, 특수공격, 스킬 슬롯, 필살기, XP/레벨, AlliedUnitAI, Giant 보스 패턴, 고정형 Tower 지원, Campaign/Stage/Map 경로가 코드상 확인됨.
+- BUILD VERIFIED: UNVERIFIED
+- EDITOR VERIFIED: 전체 수동 Acceptance 기준 UNVERIFIED
+- PIE VERIFIED: UNVERIFIED
+- 따라서 현재 핵심 공백은 신규 핵심 전투 코드의 존재 여부보다 Runtime/PIE 검증 경계에 있다.
+
+### JSON → SQLite 콘텐츠 파이프라인 기준선
+
+- JSON은 당분간 Authoritative Source로 유지한다.
+- SQLite 전환은 콘텐츠 타입별로 하나씩 수행한다.
+- 첫 대상은 Robot이다.
+- 현재 Robot JSON과 SQLite의 의미상 데이터 비교 결과는 동일하다. `asura`, `valkyrie` 두 항목이 일치한다.
+- `ContentCatalogLoader`는 Robot JSON 경로 요청을 SQLite `robots` 테이블에서 읽도록 연결되어 있다.
+- `ObjectPersistence.sync_catalog_to_sqlite()`는 Robot에 한정된 동기화 경로를 추가했으나 Editor Save에 자동 연결하지 않는다.
+- Editor Save → 자동 SQLite 갱신은 Canon상 아직 적용하지 않는다.
+- Robot Sync 실제 실행 및 Runtime/PIE 검증은 별도 검증 항목이며, 확인 전에는 VERIFIED로 표시하지 않는다.
+- 다른 콘텐츠 타입의 SQLite 전환은 수행하지 않는다.
+
+### 문서 정합성 판정
+
+- 오래된 HEAD/Working Tree 기록은 역사적 기록으로 보존한다.
+- 현재 상태 판단에는 본 섹션의 2026-10-06 기준선을 사용한다.
+- Canon 변경 없음.
+- 코드/Asset/Scene/Data 변경 없음.
+- Commit/Push 없음.
