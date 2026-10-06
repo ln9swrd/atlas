@@ -166,7 +166,52 @@ B안 — Robot Position Point는 단순 위치점이고 실제 Robot 선택은 �
 - 여러 Robot을 같은 위치에 Spawn할 수 있는지
 - Robot Catalog UI를 공통 Browser로 만들 시점
 - legacy robot_spots를 장기적으로 제거할지
-## 16. 현재 판정
+## 16. Workshop 사용자 제작 콘텐츠 확장안
+
+STATUS — PROPOSAL / NOT CANON
+
+현재 Map Editor를 Steam Workshop용 사용자 제작 도구로 확장할 경우의 1차 범위는 **Map + Stage 제작/공유**로 제한하는 방향을 권장한다.
+
+사용자용 Editor는 내부 Authoring Editor와 기능 범위를 분리한다.
+
+허용 후보:
+- Map 공간 구성
+- Gameplay Area / Point
+- Spawn Point / Area
+- Base / Robot Start Position
+- Tower Placement
+- 제한된 Wave 구성
+- 기존 Catalog의 Enemy / Robot / Tower 선택
+- Mission Type 선택
+- Preview / Validate / Publish
+
+제한 후보:
+- 기존 Catalog Definition의 원본 스탯 수정
+- 임의 AI 또는 실행 로직 추가
+- 임의 파일 경로 및 외부 참조
+- 실행 파일 또는 네이티브 모듈 추가
+- 임의 Asset 실행
+
+데이터는 기존 Catalog의 stable ID를 참조한다. 사용자 Map/Stage 데이터에 Robot/Enemy/Tower Definition을 복제하여 능력치를 덮어쓰는 구조는 사용하지 않는다.
+
+권장 파이프라인:
+
+```text
+Workshop Map Editor
+→ Validate
+→ Export
+→ Steam Workshop Publish
+→ Subscribe / Download
+→ Validate Again
+→ Map List
+→ Play
+```
+
+Workshop 콘텐츠는 신뢰할 수 없는 입력으로 취급하며, 다운로드 또는 구독 사실만으로 Runtime 실행을 허용하지 않는다.
+
+Steam SDK/API의 구체적인 구현 방식, Workshop 파일 포맷, 최종 공개 권한은 구현 전 별도 설계 및 검증이 필요하다.
+
+## 17. 현재 판정
 STATUS — HOLD
 목적: 개발계획 문서화 및 결정 전 조사.
 조사 결과: Map Editor에는 Robot Definition 교체 기능이 없으며 Robot Position Point는 위치 정보 중심으로 구현되어 있다.

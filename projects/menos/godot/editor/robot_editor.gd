@@ -10,6 +10,7 @@ const ROBOT_COLOR_SHADER = preload("res://shaders/robot_profile_color.gdshader")
 
 var robot_data: Dictionary = {}
 var selected_type := ""
+var selected_odb_pk := 0
 var robot_list: OptionButton
 var name_edit: LineEdit
 var faction_option: OptionButton
@@ -71,8 +72,9 @@ func _ready() -> void:
 	var pending_robot := IMAGE_STATE.selection_owner_key if IMAGE_STATE.selection_pending and IMAGE_STATE.selection_owner_kind == "robot" else ""
 	var initial_index := 0
 	if not pending_robot.is_empty():
+		var pending_pk := ContentCatalogLoader.resolve_odb_pk_from_legacy("robot", pending_robot)
 		for i in range(robot_list.item_count):
-			if str(robot_list.get_item_metadata(i)) == pending_robot:
+			if int(robot_list.get_item_metadata(i)) == pending_pk:
 				initial_index = i
 				break
 	if robot_list.item_count > 0:
@@ -101,7 +103,7 @@ func _build_ui() -> void:
 	reload_btn.pressed.connect(_load_data)
 	header.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "SAVE JSON"
+	save_btn.text = "SAVE"
 	save_btn.pressed.connect(_save_data)
 	header.add_child(save_btn)
 	var delete_btn := Button.new()
@@ -174,6 +176,7 @@ func _build_ui() -> void:
 	properties_grid.add_theme_constant_override("v_separation", 4)
 	content.add_child(properties_grid)
 	id_edit = _line_grid_row(properties_grid, "ID")
+	id_edit.editable = false
 	name_edit = _line_grid_row(properties_grid, "Name")
 	faction_option = _faction_grid_row(properties_grid)
 	hp_spin = _spin_grid_row(properties_grid, "HP", 1, 999999, 1, 220)
@@ -461,14 +464,17 @@ func _refresh_robot_list() -> void:
 		var data: Dictionary = robot_data.get(robot_type, {})
 		if not (data is Dictionary):
 			continue
+		var odb_pk := ContentCatalogLoader.resolve_odb_pk_from_legacy("robot", robot_type)
+		if odb_pk <= 0:
+			continue
 		robot_list.add_item(str(data.get("name", robot_type.to_upper())))
-		robot_list.set_item_metadata(robot_list.item_count - 1, robot_type)
+		robot_list.set_item_metadata(robot_list.item_count - 1, odb_pk)
 
 func _on_robot_selected(index: int) -> void:
 	if index < 0 or index >= robot_list.item_count:
 		return
-	selected_type = str(robot_list.get_item_metadata(index))
-	id_edit.editable = true
+	selected_odb_pk = int(robot_list.get_item_metadata(index))
+	selected_type = ContentCatalogLoader.resolve_odb_pk("robot", selected_odb_pk)
 	var data: Dictionary = robot_data.get(selected_type, {})
 	var robot_name := str(data.get("name", selected_type.to_upper()))
 	id_edit.text = str(data.get("id", selected_type))
@@ -678,14 +684,17 @@ func _confirm_delete_robot() -> void:
 	dialog.popup_centered(Vector2i(480, 180))
 
 func _delete_robot(dialog: ConfirmationDialog) -> void:
-	robot_data.erase(selected_type)
-	if not ObjectPersistence.save_catalog(ROBOT_FILE, robot_data):
+	if selected_odb_pk <= 0 or selected_type.is_empty():
+		dialog.queue_free()
+		return
+	if not ObjectPersistence.delete_catalog_entry_by_odb_pk(ROBOT_FILE, "robot", selected_odb_pk):
 		_set_status("FAILED to write JSON.")
 		dialog.queue_free()
 		return
 	ObjectRepository.reload()
 	selected_type = ""
-	_refresh_robot_list()
+	selected_odb_pk = 0
+	_load_data()
 	if robot_list.item_count > 0:
 		robot_list.select(0)
 		_on_robot_selected(0)
@@ -696,8 +705,8 @@ func _save_data() -> void:
 	if selected_type.is_empty():
 		_set_status("No robot selected.")
 		return
-	if name_edit.text.strip_edges().is_empty() or id_edit.text.strip_edges().is_empty():
-		_set_status("ID and name are required.")
+	if selected_odb_pk <= 0 or name_edit.text.strip_edges().is_empty() or id_edit.text.strip_edges().is_empty():
+		_set_status("ODB PK, ID and name are required.")
 		return
 	var data: Dictionary = robot_data.get(selected_type, {}).duplicate(true)
 	data["id"] = id_edit.text.strip_edges()
@@ -725,13 +734,13 @@ func _save_data() -> void:
 	data["sprite_skill"] = animations.get("skill1", "")
 	data["projectile_anim"] = animations.get("projectile", "")
 	robot_data[selected_type] = data
-	if not ObjectPersistence.save_catalog(ROBOT_FILE, robot_data):
+	if not ObjectPersistence.save_catalog_entry_by_odb_pk(ROBOT_FILE, selected_odb_pk, data):
 		_set_status("FAILED to save JSON.")
 		return
 	ObjectRepository.reload()
 	_refresh_robot_list()
 	for i in range(robot_list.item_count):
-		if str(robot_list.get_item_metadata(i)) == selected_type:
+		if int(robot_list.get_item_metadata(i)) == selected_odb_pk:
 			robot_list.select(i)
 			break
 	_set_status("SAVED: " + ROBOT_FILE)
