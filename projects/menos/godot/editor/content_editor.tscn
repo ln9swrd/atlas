@@ -29,7 +29,7 @@ layout_mode = 2
 [node name="Title" type="Label" parent="MainLayout/TopMenu/Buttons" unique_id=957360317]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "MENOS 콘텐츠"
+text = "MENOS_CONTENT"
 vertical_alignment = 1
 
 [node name="Separator" type="VSeparator" parent="MainLayout/TopMenu/Buttons" unique_id=1157000197]
@@ -38,60 +38,83 @@ layout_mode = 2
 [node name="BtnMap" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=561051811]
 layout_mode = 2
 toggle_mode = true
-text = "맵 에디터"
+text = "MAP_EDITOR"
 
 [node name="BtnStage" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=288277843]
 layout_mode = 2
 toggle_mode = true
-text = "스테이지 에디터"
-
-[node name="BtnRobot" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2066593495]
-layout_mode = 2
-toggle_mode = true
-text = "로봇 에디터"
-
-[node name="BtnUnit" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1479768450]
-layout_mode = 2
-toggle_mode = true
-text = "유닛 에디터"
-
-[node name="BtnTower" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2002715580]
-layout_mode = 2
-toggle_mode = true
-text = "타워 에디터"
-
-[node name="BtnCatalog" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1846618544]
-layout_mode = 2
-toggle_mode = true
-text = "카다로그 에디터"
-
-[node name="BtnFaction" type="Button" parent="MainLayout/TopMenu/Buttons"]
-layout_mode = 2
-toggle_mode = true
-text = "Faction"
-
-[node name="BtnSkill" type="Button" parent="MainLayout/TopMenu/Buttons"]
-layout_mode = 2
-toggle_mode = true
-text = "Skill"
+text = "STAGE_EDITOR"
 
 [node name="BtnMission" type="Button" parent="MainLayout/TopMenu/Buttons"]
 layout_mode = 2
 toggle_mode = true
-text = "Mission"
+text = "MISSION_EDITOR"
 
 [node name="BtnCampaign" type="Button" parent="MainLayout/TopMenu/Buttons"]
 layout_mode = 2
 toggle_mode = true
-text = "Campaign"
+text = "CAMPAIGN_EDITOR"
 
-[node name="Spacer" type="Control" parent="MainLayout/TopMenu/Buttons" unique_id=1447405296]
+[node name="BtnFaction" type="Button" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+toggle_mode = true
+text = "FACTION_EDITOR"
+
+[node name="BtnRobot" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2066593495]
+layout_mode = 2
+toggle_mode = true
+text = "ROBOT_EDITOR"
+
+[node name="BtnUnit" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1479768450]
+layout_mode = 2
+toggle_mode = true
+text = "UNIT_EDITOR"
+
+[node name="BtnTower" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=2002715580]
+layout_mode = 2
+toggle_mode = true
+text = "TOWER_EDITOR"
+
+[node name="BtnBuilding" type="Button" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+toggle_mode = true
+text = "BUILDING_EDITOR"
+
+[node name="BtnSkill" type="Button" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+toggle_mode = true
+text = "SKILL_EDITOR"
+
+[node name="BtnCatalog" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1846618544]
+layout_mode = 2
+toggle_mode = true
+text = "CATALOG_EDITOR"
+
+[node name="BtnSettings" type="Button" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+text = "SETTINGS"
+
+[node name="Spacer" type="Control" parent="MainLayout/TopMenu/Buttons" unique_id=1447400197]
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="LanguageLabel" type="Label" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+text = "LANGUAGE"
+vertical_alignment = 1
+
+[node name="LanguageOption" type="OptionButton" parent="MainLayout/TopMenu/Buttons"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "KOREAN"
+popup/item_0/id = 0
+popup/item_1/text = "ENGLISH"
+popup/item_1/id = 1
+
 [node name="BtnQuit" type="Button" parent="MainLayout/TopMenu/Buttons" unique_id=1357660297]
 layout_mode = 2
-text = "종료"
+text = "QUIT"
 
 [node name="Content" type="Control" parent="MainLayout" unique_id=1915151087]
 clip_contents = true

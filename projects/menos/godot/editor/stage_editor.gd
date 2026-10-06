@@ -67,7 +67,7 @@ func _build_ui() -> void:
 	load_btn.pressed.connect(_load_selected_stage)
 	top.add_child(load_btn)
 	var save_btn := Button.new()
-	save_btn.text = "Save JSON"
+	save_btn.text = "Save"
 	save_btn.pressed.connect(_save_stage)
 	top.add_child(save_btn)
 	var delete_btn := Button.new()

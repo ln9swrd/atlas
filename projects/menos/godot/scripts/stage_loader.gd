@@ -17,10 +17,12 @@ static func parse_and_validate_raw_data(raw_data: Dictionary, file_path: String 
 		if not raw_data.has(key): push_error("StageLoader: Missing required key '%s' in stage data (%s)" % [key, file_path]); return {}
 	if str(raw_data["stage_id"]).is_empty() or str(raw_data["name"]).is_empty() or str(raw_data["mission_id"]).is_empty() or str(raw_data["reward_id"]).is_empty():
 		push_error("StageLoader: stage_id/name/mission_id must not be empty (%s)" % file_path); return {}
-	if MissionDefinitionLoader.load_definition(str(raw_data["mission_id"])) == null:
-		push_error("StageLoader: Referenced mission_id '%s' could not be resolved (%s)" % [str(raw_data["mission_id"]), file_path]); return {}
-	if RewardDefinitionLoader.load_definition(str(raw_data["reward_id"])) == null:
-		push_error("StageLoader: Referenced reward_id '%s' could not be resolved (%s)" % [str(raw_data["reward_id"]), file_path]); return {}
+	var mission_ref := str(int(raw_data["mission_id"])) if (raw_data["mission_id"] is int or raw_data["mission_id"] is float) else str(raw_data["mission_id"])
+	if MissionDefinitionLoader.load_definition(mission_ref) == null:
+		push_error("StageLoader: Referenced mission_id '%s' could not be resolved (%s)" % [mission_ref, file_path]); return {}
+	var reward_ref := str(int(raw_data["reward_id"])) if (raw_data["reward_id"] is int or raw_data["reward_id"] is float) else str(raw_data["reward_id"])
+	if RewardDefinitionLoader.load_definition(reward_ref) == null:
+		push_error("StageLoader: Referenced reward_id '%s' could not be resolved (%s)" % [reward_ref, file_path]); return {}
 	if not (raw_data["order"] is int or raw_data["order"] is float): push_error("StageLoader: order must be numeric (%s)" % file_path); return {}
 	var map_file_path: String = str(raw_data["map_file"])
 	if map_file_path.is_empty(): push_error("StageLoader: Referenced map_file is empty (%s)" % file_path); return {}
@@ -44,6 +46,12 @@ static func parse_and_validate_raw_data(raw_data: Dictionary, file_path: String 
 				else:
 					push_error("StageLoader: allied_units[%d].id is required (%s)" % [allied_index + 1, file_path])
 				return {}
+			if allied.get("id") is int or allied.get("id") is float:
+				var resolved_unit_id := ContentCatalogLoader.resolve_odb_pk("unit", int(allied.get("id")))
+				if resolved_unit_id.is_empty():
+					push_error("StageLoader: allied_units[%d].id references unknown unit ODB PK (%s)" % [allied_index + 1, str(allied.get("id"))])
+					return {}
+				allied["id"] = resolved_unit_id
 			var count = allied.get("count", null)
 			if not (count is int or count is float) or float(count) < 0.0 or str(allied.get("spawn", "")).is_empty():
 				push_error("StageLoader: allied_units[%d] has invalid count/spawn (%s)" % [allied_index + 1, file_path])

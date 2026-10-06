@@ -200,7 +200,7 @@ func _is_numeric_pair(value: Variant) -> bool:
 func _load_catalog_dictionary(identifier: String, label: String) -> Dictionary:
 	var parsed := ContentCatalogLoader.load_dictionary_catalog(identifier)
 	if parsed.is_empty():
-		errors.append("%s catalog missing or empty in SQLite: %s" % [label, path])
+		errors.append("%s catalog missing or empty in SQLite: %s" % [label, identifier])
 	return parsed
 
 func _validate_skills(skills: Dictionary) -> void:
@@ -253,6 +253,8 @@ func _validate_gameplay_settings(skills: Dictionary) -> void:
 			errors.append("GAMEPLAY.skill_slots missing slot: %s" % slot)
 			continue
 		var skill_id := str(slots[slot])
+		if slots[slot] is int or slots[slot] is float:
+			skill_id = ContentCatalogLoader.resolve_odb_pk("skill", int(slots[slot]))
 		if skill_id.is_empty():
 			continue
 		if not skills.has(skill_id):
@@ -390,6 +392,8 @@ func _validate_stage(stage: Dictionary, path: String) -> void:
 			if not (allied is Dictionary):
 				errors.append("STAGE[%s].allied_units[%d] must be an object" % [path, allied_index]); continue
 			var allied_id := str(allied.get("id", ""))
+			if allied.get("id") is int or allied.get("id") is float:
+				allied_id = ContentCatalogLoader.resolve_odb_pk("unit", int(allied.get("id")))
 			if allied_id.is_empty() or not _catalog_contains(ALLIED_UNIT_FILE, allied_id):
 				errors.append("STAGE[%s].allied_units[%d] references unknown allied unit: %s" % [path, allied_index, allied_id])
 			var allied_count = allied.get("count", null)

@@ -76,3 +76,12 @@ All previous Handoff records, including their original HEAD/Branch/Verification/
 ## Current State Rule
 
 When this file conflicts with an older Handoff, use this file for current project state and HANDOFF_HISTORY.md for historical evidence. Canon remains governed by MENOS_COMBAT_CANON.md.
+
+
+## ODB PK Migration Status (2026-10-07)
+
+- Approved migration sequence is complete for the currently existing independent content types.
+- PASS / ACCEPT·STOP: Robot, Unit, Tower, Skill, Stage, Mission, Campaign, Reward, Building.
+- HOLD / no change: Faction, Map, Wave / Encounter, BGM, SFX, VFX.
+- Current allocated/verified ODB PK range ends at 24 (Building verification allocation). No future PKs are preallocated.
+- The migration audit is closed for the current scope. Further normalization of HOLD items requires a new Master-directed task and must not start automatically.

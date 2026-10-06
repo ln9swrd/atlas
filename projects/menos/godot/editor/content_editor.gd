@@ -6,6 +6,7 @@ const MAP_EDITOR_SCENE := "res://editor/map_editor.tscn"
 const STAGE_EDITOR_SCENE := "res://editor/stage_editor.tscn"
 const UNIT_EDITOR_SCENE := "res://editor/unit_editor.tscn"
 const TOWER_EDITOR_SCENE := "res://editor/tower_editor.tscn"
+const BUILDING_EDITOR_SCENE := "res://editor/building_editor.tscn"
 const ROBOT_EDITOR_SCENE := "res://editor/robot_editor.tscn"
 const IMAGE_EDITOR_SCENE := "res://editor/image_editor.tscn"
 const FACTION_EDITOR_SCENE := "res://editor/faction_editor.tscn"
@@ -18,22 +19,44 @@ var current_editor: Node = null
 var content_host: Control
 var current_editor_scene := ""
 var previous_editor_scene := MAP_EDITOR_SCENE
+const SETTINGS_PATH := "user://menos_settings.cfg"
 
 func _ready() -> void:
 	_apply_editor_theme()
+	_setup_language()
 	content_host = $MainLayout/Content
 	$MainLayout/TopMenu/Buttons/BtnMap.pressed.connect(_open_map_editor)
 	$MainLayout/TopMenu/Buttons/BtnStage.pressed.connect(_open_stage_editor)
 	$MainLayout/TopMenu/Buttons/BtnUnit.pressed.connect(_open_unit_editor)
 	$MainLayout/TopMenu/Buttons/BtnTower.pressed.connect(_open_tower_editor)
+	$MainLayout/TopMenu/Buttons/BtnBuilding.pressed.connect(_open_building_editor)
 	$MainLayout/TopMenu/Buttons/BtnRobot.pressed.connect(_open_robot_editor)
 	$MainLayout/TopMenu/Buttons/BtnCatalog.pressed.connect(_open_image_editor)
 	$MainLayout/TopMenu/Buttons/BtnFaction.pressed.connect(_open_faction_editor)
 	$MainLayout/TopMenu/Buttons/BtnSkill.pressed.connect(_open_skill_editor)
 	$MainLayout/TopMenu/Buttons/BtnMission.pressed.connect(_open_mission_editor)
 	$MainLayout/TopMenu/Buttons/BtnCampaign.pressed.connect(_open_campaign_editor)
-	$MainLayout/TopMenu/Buttons/BtnQuit.pressed.connect(_quit)
 	_open_map_editor()
+
+func _setup_language() -> void:
+	var language_option: OptionButton = $MainLayout/TopMenu/Buttons/LanguageOption
+	var config := ConfigFile.new()
+	var locale := "en"
+	if config.load(SETTINGS_PATH) == OK:
+		locale = str(config.get_value("localization", "language", "en"))
+	if locale != "ko" and locale != "en":
+		locale = "en"
+	TranslationServer.set_locale(locale)
+	language_option.select(0 if locale == "ko" else 1)
+	language_option.item_selected.connect(_on_language_selected)
+
+func _on_language_selected(index: int) -> void:
+	var locale := "ko" if index == 0 else "en"
+	TranslationServer.set_locale(locale)
+	var config := ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	config.set_value("localization", "language", locale)
+	config.save(SETTINGS_PATH)
 
 func _apply_editor_theme() -> void:
 	var editor_theme := Theme.new()
@@ -103,6 +126,10 @@ func _open_unit_editor() -> void:
 func _open_tower_editor() -> void:
 	_load_editor(TOWER_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnTower)
+
+func _open_building_editor() -> void:
+	_load_editor(BUILDING_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnBuilding)
 
 func _open_robot_editor() -> void:
 	_load_editor(ROBOT_EDITOR_SCENE)
@@ -196,6 +223,8 @@ func _set_active_button_for_scene(scene_path: String) -> void:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnUnit)
 	elif scene_path == TOWER_EDITOR_SCENE:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnTower)
+	elif scene_path == BUILDING_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnBuilding)
 	elif scene_path == ROBOT_EDITOR_SCENE:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnRobot)
 	elif scene_path == IMAGE_EDITOR_SCENE:
@@ -214,6 +243,7 @@ func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnStage.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnStage
 	$MainLayout/TopMenu/Buttons/BtnUnit.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnUnit
 	$MainLayout/TopMenu/Buttons/BtnTower.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnTower
+	$MainLayout/TopMenu/Buttons/BtnBuilding.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnBuilding
 	$MainLayout/TopMenu/Buttons/BtnRobot.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnRobot
 	$MainLayout/TopMenu/Buttons/BtnCatalog.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnCatalog
 	$MainLayout/TopMenu/Buttons/BtnFaction.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnFaction

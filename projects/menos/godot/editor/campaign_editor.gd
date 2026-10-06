@@ -29,6 +29,8 @@ func _stage_ids_from_document() -> Array[String]:
 	if value is Array:
 		for entry in value:
 			var stage_id := str(entry).strip_edges()
+			if entry is int or entry is float:
+				stage_id = ContentCatalogLoader.resolve_odb_pk("stage", int(entry))
 			if not stage_id.is_empty():
 				result.append(stage_id)
 	return result
@@ -55,7 +57,14 @@ func _save() -> void:
 	var next_document := document.duplicate(true)
 	next_document["campaign_id"] = CAMPAIGN_ID
 	next_document["name"] = name
-	next_document["stages"] = stage_ids
+	var stage_pks: Array[int] = []
+	for stage_id in stage_ids:
+		var stage_pk := ContentCatalogLoader.resolve_odb_pk("stage", int(stage_id)) if stage_id.is_valid_int() else -1
+		if stage_pk < 1:
+			status_label.text = "ERROR: stage has no ODB PK: %s" % stage_id
+			return
+		stage_pks.append(stage_pk)
+	next_document["stages"] = stage_pks
 	if not ObjectPersistence.save_content_document("campaign", next_document):
 		status_label.text = "ERROR: SQLite save failed"
 		return

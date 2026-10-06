@@ -430,11 +430,11 @@ text = "Status: Ready"
 
 [node name="BtnLoad" type="Button" parent="BottomBar/HBox" unique_id=1029332109]
 layout_mode = 2
-text = "Load JSON"
+text = "Load"
 
 [node name="BtnSave" type="Button" parent="BottomBar/HBox" unique_id=241038104]
 layout_mode = 2
-text = "Save JSON"
+text = "Save"
 
 [node name="BtnAssetCatalog" type="Button" parent="BottomBar/HBox"]
 layout_mode = 2

@@ -305,8 +305,19 @@ System  System   System
 - Content Editor
   - Map Editor
   - Stage Editor
+- 향후 사용자용 Workshop Map Editor
+  - Map
+  - Stage
+  - Mission
+  - Wave
+  - 기존 Catalog 선택
+  - Preview
+  - Validate
+  - Publish
 
 현재 구현된 Content Editor는 기존 Map Editor와 Stage Editor를 호스팅하는 얇은 Shell이다.
+
+사용자용 Workshop Editor는 내부 Authoring Editor와 기능 범위를 동일하게 두지 않는 방향을 제안한다. 사용자 콘텐츠는 기존 Catalog의 안정적인 ID를 참조하고, 게임 규칙과 Definition을 임의로 재정의하지 않는 구조를 우선한다.
 
 선택적 화면:
 - Robot Upgrade / Customization
@@ -363,3 +374,209 @@ PROPOSAL — 상위 화면/기능 구조 설계 초안.
 - Git Commit / Push
 
 이 문서는 이후 설계 논의를 위한 기준점이며, Master의 명시적 확정 전까지 Canon이 아니다.
+
+
+## 2026-10-06 Gameplay Settings / Content Editor 화면 경계
+
+STATUS — PROPOSAL / NOT CANON
+
+Content Editor는 개별 콘텐츠 정의를 편집하고, Gameplay/Settings Editor는 게임 전체에 적용되는 전역 규칙과 기능 활성화 정책을 편집한다.
+
+### Gameplay / Settings Editor 후보
+
+- Game Rules
+- Combat Rules
+- Player Control
+- Camera
+- HUD
+- Progression
+- Economy
+- Shop / Marketplace
+- Steam / Workshop / 결제
+- Save
+- Audio
+- Accessibility
+- Debug
+
+### Content Editor 후보
+
+- Robot
+- Enemy
+- Tower
+- Faction
+- Skill / Ability
+- Item
+- Mission
+- Campaign
+- Map
+- Stage
+- Wave / Encounter
+- Reward
+- Shop Product
+- Audio / VFX Reference
+
+원칙: Content Definition은 무엇이 존재하는가, Gameplay Rule은 그것들이 어떤 규칙으로 작동하는가를 정의한다. 개별 콘텐츠의 능력치와 Stage 구성은 Gameplay/Settings 화면에서 직접 편집하지 않는다.
+
+
+## 2026-10-06 Content Editor / Runtime UI 다국어 경계
+
+STATUS — CANON / Master 결정 반영
+
+MENOS의 다국어 지원은 게임 Runtime뿐 아니라 Content Editor UI에도 적용한다. 기본 언어는 English이며, 사용자의 언어 선택에 따라 Editor UI와 콘텐츠 텍스트가 대응한다.
+
+### 화면 책임
+
+Gameplay / Settings:
+- Language 선택
+- Default Language
+- Fallback 정책
+
+Content Editor:
+- 현재 선택 언어에 맞는 UI 표시
+- 콘텐츠 이름/설명/미션/스킬 등의 번역 표시
+- 번역 문자열을 직접 소유하지 않고 Localization String ID를 사용
+
+Localization:
+- 실제 언어별 문자열을 별도 데이터로 관리
+
+### 원칙
+
+Content Editor의 영어 UI를 단순히 코드에서 다른 언어 문자열로 교체하는 방식으로 관리하지 않는다. UI 문자열을 Localization String ID로 분리하여 동일한 언어 설정 체계를 사용한다.
+
+예:
+editor.save / editor.cancel / editor.validate / editor.field.hp
+
+Runtime 콘텐츠 역시 동일한 방식으로 String ID를 참조한다. Editor와 Runtime에서 동일한 콘텐츠 문구를 중복 관리하지 않는다.
+
+## 2026-10-06 Settings 화면 반영
+
+STATUS — PROPOSAL / 현재 구현 반영
+
+메인 화면 Settings는 전역 설정 화면으로 취급한다.
+
+현재 대상:
+- BGM Volume
+- SFX Volume
+- Language
+
+언어 설정은 기존 Localization 책임 경계를 따른다. Audio 설정은 Settings가 소유하고 Runtime Audio Bus에 적용한다.
+
+## 2026-10-06 Content Editor 메뉴 전환 성능 조사
+
+STATUS — HOLD / READ-ONLY 조사 결과
+
+Content Editor 상단 메뉴는 선택된 Editor Scene을 매번 새로 로드하고 기존 Editor를 제거하는 구조다.
+
+전환 흐름:
+```
+Menu Click
+  ↓
+_load_editor()
+  ↓
+queue_free(previous editor)
+  ↓
+load(PackedScene)
+  ↓
+instantiate()
+  ↓
+add_child()
+  ↓
+child _ready()
+  ↓
+Catalog / File / Image load + UI build
+```
+
+CONFIRMED — 위 구조와 일부 Editor의 동기 초기화 작업은 코드에서 확인되었다.
+
+HIGH CONFIDENCE — 이 재생성 구조가 메뉴 클릭 지연의 주요 원인일 가능성이 높다.
+
+UNVERIFIED — Editor별 실제 지연 시간과 개별 작업의 비용은 아직 계측하지 않았다.
+
+따라서 다음 구조 변경은 계측 후 결정한다. 우선 검증은 메뉴별 전환 시간을 측정하는 최소 계측으로 제한한다. 목적 달성 전까지 자동으로 캐시 구조나 비동기 로딩을 도입하지 않는다.
+
+
+## 2026-10-06 VFX Editor 화면 / Runtime 경계
+
+STATUS — PROPOSAL / NOT CANON
+
+VFX는 Content Editor의 독립 콘텐츠 유형으로 관리하는 방향을 제안한다.
+
+```text
+Content Editor
+  └─ VFX Editor
+       ↓
+   VFX Catalog
+       ↓
+ Runtime VFX System
+```
+
+VFX Editor는 VFX의 ODB PK, 변경 가능한 이름/제목, 분류, 지속시간, Sprite/Texture 참조, Particle, Shader, Animation, Light, Sound 참조 및 Runtime 재생 조건 등을 정의·관리한다.
+
+실제 VFX Asset 제작과 VFX 데이터 정의는 분리한다. Godot의 GPUParticles2D/CPUParticles2D, Shader, AnimationPlayer, AnimatedSprite2D 등의 시스템을 사용하여 효과를 구성할 수 있지만, 완성된 VFX Asset Library가 기본 제공되는 것은 아니다.
+
+PROPOSAL — VFX 데이터는 JSON/SQLite 등으로 정의하고 Runtime VFX System이 해당 정의를 실행하는 데이터 기반 구조를 우선 검토한다. Robot/Skill/Building 등은 VFX ODB PK를 참조하는 방식으로 연결하는 것을 권장한다.
+
+현재 상태에서는 VFX Schema와 Runtime 소비 경로를 먼저 조사한다. VFX Editor 구현이나 기존 콘텐츠에 VFX 필드를 추가하는 작업은 Schema 확정 전까지 수행하지 않는다.
+
+
+## 2026-10-06 SFX Editor 화면 / Runtime 경계
+
+STATUS — PROPOSAL / NOT CANON
+
+SFX는 Content Editor의 독립 콘텐츠 유형으로 관리하는 방향을 제안한다.
+
+```text
+Content Editor
+  └─ SFX Editor
+       ↓
+   SFX Catalog
+       ↓
+ Runtime Audio System
+       ↓
+      SFX Bus
+```
+
+SFX Editor는 SFX의 ODB PK, 변경 가능한 이름/제목, 분류, Audio Asset 참조, 볼륨, 피치, 루프, 2D/3D 재생 유형, 거리 감쇠, 우선순위 및 동시 재생 제한 등을 정의·관리한다.
+
+역할을 다음과 같이 분리한다.
+- Gameplay / Settings: 전역 SFX Volume 및 SFX Bus 정책
+- SFX Content: 개별 소리의 정의와 Asset 참조
+- Gameplay Runtime: 게임 이벤트와 SFX ODB PK의 연결 및 재생 요청
+
+Robot/Enemy/Tower/Building/Skill 등의 Content는 Audio 파일명을 직접 참조하지 않고 SFX ODB PK를 참조하는 방향을 권장한다.
+
+PROPOSAL — SFX 데이터는 JSON/SQLite 등의 데이터 정의로 관리하고 Runtime Audio System이 이를 실행하는 데이터 기반 구조를 우선 검토한다.
+
+현재 상태에서는 SFX Schema와 기존 Audio 재생 경로를 먼저 조사한다. SFX Editor 구현이나 기존 Content에 SFX 필드를 추가하는 작업은 Schema 확정 전까지 수행하지 않는다.
+
+
+## 2026-10-06 BGM Editor 화면 / Runtime 경계
+
+STATUS — PROPOSAL / NOT CANON
+
+BGM은 Content Editor의 독립 콘텐츠 유형으로 관리하는 방향을 제안한다.
+
+```text
+Content Editor
+  └─ BGM Editor
+       ↓
+   BGM Catalog
+       ↓
+ Runtime Audio System
+       ↓
+      BGM Bus
+```
+
+BGM Editor는 BGM의 ODB PK, 변경 가능한 이름/제목, 분류, Audio Asset 참조, 볼륨, 피치, Loop, Fade In/Out, 우선순위 및 Transition 방식을 정의·관리한다.
+
+역할을 다음과 같이 분리한다.
+- Gameplay / Settings: 전역 BGM Volume 및 BGM Bus 정책
+- BGM Content: 개별 음악의 정의와 Asset 참조
+- Gameplay Runtime: 현재 상황과 BGM ODB PK의 연결 및 재생 요청
+- Runtime Audio System: 실제 재생, Loop, Fade 및 Transition 처리
+
+Mission/Campaign/Battle 등의 Content는 Audio 파일명을 직접 참조하지 않고 BGM ODB PK를 참조하는 방향을 권장한다.
+
+PROPOSAL — BGM 데이터는 JSON/SQLite 등의 데이터 정의로 관리하고 Runtime Audio System이 이를 실행하는 데이터 기반 구조를 우선 검토한다.
+
+현재 상태에서는 BGM Schema와 기존 Audio 재생 경로를 먼저 조사한다. BGM Editor 구현이나 기존 Content에 BGM 필드를 추가하는 작업은 Schema 확정 전까지 수행하지 않는다.

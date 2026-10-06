@@ -92,7 +92,7 @@ func _build_ui() -> void:
 	reload_btn.pressed.connect(_load_data)
 	header.add_child(reload_btn)
 	var save_btn := Button.new()
-	save_btn.text = "SAVE JSON"
+	save_btn.text = "SAVE"
 	save_btn.pressed.connect(_save_data)
 	header.add_child(save_btn)
 	var new_btn := Button.new()

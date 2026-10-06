@@ -50,7 +50,7 @@ static func load_dictionary_catalog(path: String) -> Dictionary:
 		push_error("ContentCatalogLoader: no rows for table: %s" % table)
 		return {}
 
-	if rows.size() == 1 and rows[0].has("raw_json"):
+	if rows.size() == 1 and rows[0].has("raw_json") and not rows[0].has("odb_pk"):
 		var payload = JSON.parse_string(str(rows[0]["raw_json"]))
 		if payload is Dictionary:
 			var catalog: Dictionary = {}
@@ -117,6 +117,26 @@ static func load_content(path: String) -> Variant:
 		return load_document(path)
 	var catalog := load_dictionary_catalog(path)
 	return catalog
+static func resolve_odb_pk(content_type: String, odb_pk: int) -> String:
+	var db = _get_db()
+	if db == null or odb_pk <= 0:
+		return ""
+	if not db.query_with_bindings("SELECT legacy_id FROM odb_registry WHERE content_type = ? AND odb_pk = ? LIMIT 1", [content_type, odb_pk]):
+		return ""
+	if db.query_result.is_empty():
+		return ""
+	return str(db.query_result[0].get("legacy_id", ""))
+
+static func resolve_odb_pk_from_legacy(content_type: String, legacy_id: String) -> int:
+	var db = _get_db()
+	if db == null or legacy_id.is_empty():
+		return 0
+	if not db.query_with_bindings("SELECT odb_pk FROM odb_registry WHERE content_type = ? AND legacy_id = ? LIMIT 1", [content_type, legacy_id]):
+		return 0
+	if db.query_result.is_empty():
+		return 0
+	return int(db.query_result[0].get("odb_pk", 0))
+
 static func load_single_entry(path: String, entry_id: String) -> Dictionary:
 	var catalog := load_dictionary_catalog(path)
 	if not catalog.has(entry_id):

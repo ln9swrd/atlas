@@ -132,6 +132,9 @@ var robot_auto_attack := true
 var camera_edge_margin := float(ConfigRepository.get_gameplay_value("camera", "edge_margin", 28.0))
 var camera_edge_speed := float(ConfigRepository.get_gameplay_value("camera", "edge_speed", 720.0))
 var bottom_hud_height := float(ConfigRepository.get_gameplay_value("camera", "bottom_hud_height", 188.0))
+const CAMERA_ZOOM_MIN := 0.6
+const CAMERA_ZOOM_MAX := 2.0
+const CAMERA_ZOOM_STEP := 0.1
 var damage_numbers: Array = []
 var effects: Array = []
 
@@ -377,6 +380,15 @@ func _load_combat_definitions() -> void:
 	wave_auto_start_delay = float(gameplay_settings.get("wave_auto_start", {}).get("delay", 0.0))
 	wave_group_gap = float(gameplay_settings.get("wave_group_gap", {}).get("delay", 0.0))
 	skill_slot_definitions = gameplay_settings.get("skill_slots", {}).duplicate(true)
+	for slot_key in skill_slot_definitions.keys():
+		var slot_value = skill_slot_definitions[slot_key]
+		if slot_value is int or slot_value is float:
+			var resolved_skill_id := ContentCatalogLoader.resolve_odb_pk("skill", int(slot_value))
+			if resolved_skill_id.is_empty():
+				push_error("Unknown Skill ODB PK in skill slot %s: %s" % [str(slot_key), str(slot_value)])
+				skill_slot_definitions[slot_key] = ""
+			else:
+				skill_slot_definitions[slot_key] = resolved_skill_id
 
 func _load_tower_catalog() -> void:
 	tower_catalog = ContentCatalogLoader.load_dictionary_catalog("towers")
@@ -689,6 +701,7 @@ func play_sfx(id: String) -> void:
 	if not SFX_STREAMS.has(id): return
 	var player := AudioStreamPlayer.new()
 	player.stream = SFX_STREAMS[id]
+	player.bus = "SFX"
 	player.finished.connect(player.queue_free)
 	add_child(player)
 	player.play()
@@ -1826,7 +1839,8 @@ func _camera_target_clamped(target: Vector2) -> Vector2:
 	var viewport_size := get_viewport_rect().size
 	# Camera bounds use the gameplay-safe area rather than the HUD-covered area.
 	var gameplay_viewport_size := Vector2(viewport_size.x, max(1.0, viewport_size.y - bottom_hud_height))
-	var half_view := gameplay_viewport_size * 0.5
+	var camera_zoom: float = get_parent().get_node("Camera2D").zoom.x if get_parent().has_node("Camera2D") else 1.0
+	var half_view := gameplay_viewport_size * 0.5 / maxf(camera_zoom, 0.001)
 	var min_x := MAP_ORIGIN.x + half_view.x
 	var max_x := MAP_ORIGIN.x + MAP_PIXEL_SIZE.x - half_view.x
 	var min_y := MAP_ORIGIN.y + half_view.y
@@ -1864,6 +1878,20 @@ func update_camera_edge_scroll(delta: float) -> void:
 func get_minimap_screen_rect() -> Rect2:
 	var viewport_size := get_viewport_rect().size
 	return Rect2(Vector2(viewport_size.x - 238.0, viewport_size.y - 150.0), Vector2(220, 112))
+
+func zoom_camera_at_mouse(direction: float, mouse_position: Vector2) -> void:
+	if not get_parent().has_node("Camera2D"):
+		return
+	var camera: Camera2D = get_parent().get_node("Camera2D")
+	var old_zoom := camera.zoom.x
+	var new_zoom := clampf(old_zoom + direction * CAMERA_ZOOM_STEP, CAMERA_ZOOM_MIN, CAMERA_ZOOM_MAX)
+	if is_equal_approx(old_zoom, new_zoom):
+		return
+	var world_before := get_global_mouse_position()
+	camera.zoom = Vector2.ONE * new_zoom
+	var world_after := get_global_mouse_position()
+	camera.position = _camera_target_clamped(camera.position + world_before - world_after)
+	queue_redraw()
 
 func center_camera_on_base() -> void:
 	if not get_parent().has_node("Camera2D"):
@@ -1912,6 +1940,14 @@ func _input(event: InputEvent) -> void:
 			return
 	if event.is_action_pressed("finisher"):
 		try_finisher()
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		zoom_camera_at_mouse(1.0, event.position)
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		zoom_camera_at_mouse(-1.0, event.position)
 		get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_MIDDLE:

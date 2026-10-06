@@ -56,5 +56,3 @@ func _delete_mission() -> void:
 	catalog.erase(selected_id)
 	if not ObjectPersistence.save_catalog("missions", catalog): status_label.text = "ERROR: SQLite delete failed"; return
 	var deleted_id := selected_id; _load_catalog(); _refresh_list(); _clear_editor(); status_label.text = "Deleted from SQLite: %s" % deleted_id
-
-\n

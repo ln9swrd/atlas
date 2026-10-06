@@ -10,11 +10,13 @@ const GAME_SCENE := "res://main.tscn"
 @onready var quit_button: Button = $CenterContainer/MainPanel/Content/Actions/Quit
 @onready var settings_button: Button = $CenterContainer/MainPanel/Content/Settings
 var transition_started := false
+var campaign_start_disabled := true
 var single_mode_selected := false
 
 func _ready() -> void:
 	set_process_input(true)
 	start_button.pressed.connect(_on_start_campaign_pressed)
+	start_button.disabled = campaign_start_disabled
 	single_button.pressed.connect(_on_start_single_pressed)
 	_populate_maps()
 	map_select.item_selected.connect(_on_map_selected)
@@ -127,13 +129,15 @@ func _on_start_single_pressed() -> void:
 	if transition_started: return
 	single_mode_selected = not single_mode_selected
 	map_select.visible = single_mode_selected
-	stage_select.visible = single_mode_selected
+	stage_select.visible = false
 	stage_info.visible = single_mode_selected
 	if single_mode_selected:
 		start_button.text = tr("START SINGLE PLAY")
+		start_button.disabled = map_select.item_count == 0 or stage_select.item_count == 0
 		single_button.text = tr("SINGLE PLAY SELECTED")
 	else:
 		start_button.text = tr("START CAMPAIGN")
+		start_button.disabled = campaign_start_disabled
 		single_button.text = tr("SINGLE PLAY")
 	if single_mode_selected:
 		map_select.grab_focus()
@@ -144,10 +148,10 @@ func _on_start_campaign_pressed() -> void:
 	if transition_started: return
 	transition_started = true
 	var mode := "single" if single_mode_selected else "campaign"
-	if single_mode_selected and (map_select.selected < 0 or stage_select.selected < 0):
+	if single_mode_selected and (map_select.selected < 0 or stage_select.item_count == 0):
 		transition_started = false
 		return
-	var selected_stage := str(stage_select.get_item_metadata(stage_select.selected)) if single_mode_selected and stage_select.selected >= 0 else "stage_01"
+	var selected_stage := str(stage_select.get_item_metadata(0)) if single_mode_selected and stage_select.item_count > 0 else "stage_01"
 	StageManager.begin_run(mode, selected_stage)
 	var error := get_tree().change_scene_to_file(GAME_SCENE)
 	if error != OK:
