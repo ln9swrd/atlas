@@ -28,10 +28,7 @@ func _run() -> void:
 	map_data["gameplay_points"] = []
 	if not _check(_save_and_check_map(map_data, source_map), "MapLoader did not preserve legacy or unknown map data"):
 		return
-	var catalog_file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
-	if not _check(catalog_file != null, "Could not open Asset Catalog"):
-		return
-	var catalog_data: Variant = JSON.parse_string(catalog_file.get_as_text())
+	var catalog_data: Variant = ContentCatalogLoader.load_document("asset_catalog")
 	var basic_meadow: Dictionary = {}
 	if catalog_data is Dictionary:
 		for entry in catalog_data.get("assets", []):
@@ -340,13 +337,9 @@ func _save_and_check_map(map_data: Dictionary, original_map: Dictionary) -> bool
 	if loaded.get("robot_spots", {}).get("CENTER") != expected_robot_spot or loaded.get("slots", {}).get("L1") != expected_tower_slot:
 		push_error("Legacy robot/tower fields changed during round trip")
 		return false
-	var file := FileAccess.open(TEST_MAP_PATH, FileAccess.READ)
-	if file == null:
-		push_error("Could not read serialized fixture")
-		return false
-	var serialized: Variant = JSON.parse_string(file.get_as_text())
+	var serialized: Variant = MapLoader.load_map_data(TEST_MAP_PATH)
 	if not serialized is Dictionary:
-		push_error("Serialized fixture is not a JSON object")
+		push_error("Could not read SQLite map document after round trip")
 		return false
 	if serialized.get("custom_runtime_metadata") != original_map.get("custom_runtime_metadata"):
 		push_error("Unknown top-level field was lost")
@@ -354,8 +347,8 @@ func _save_and_check_map(map_data: Dictionary, original_map: Dictionary) -> bool
 	if serialized.get("goal", {}).get("custom_goal_flag") != "keep":
 		push_error("Unknown goal field was lost")
 		return false
-	var expected_tiles: Variant = JSON.parse_string(JSON.stringify(map_data.get("tiles", {})))
-	var expected_objects: Variant = JSON.parse_string(JSON.stringify(map_data.get("objects", [])))
+	var expected_tiles: Variant = map_data.get("tiles", {}).duplicate(true)
+	var expected_objects: Variant = map_data.get("objects", []).duplicate(true)
 	if serialized.get("tiles") != expected_tiles or serialized.get("objects") != expected_objects:
 		push_error("Visual asset map data changed during round trip")
 		return false

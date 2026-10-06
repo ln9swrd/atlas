@@ -1,7 +1,7 @@
 class_name RewardDefinitionLoader
 extends RefCounted
 
-const CATALOG_PATH := "res://content/rewards/rewards.json"
+const CATALOG_PATH := "rewards"
 
 static func load_catalog() -> Dictionary:
 	return ContentCatalogLoader.load_dictionary_catalog(CATALOG_PATH)

@@ -7,13 +7,14 @@ static var _db
 
 static func _table_from_path(path: String) -> String:
 	var normalized := path.replace("\\", "/")
-	if not normalized.begins_with("res://content/") or not normalized.ends_with(".json"):
-		return ""
-	var relative := normalized.trim_prefix("res://content/")
-	var parts := relative.split("/")
-	if parts.size() < 2:
-		return ""
-	return parts[parts.size() - 1].get_basename()
+	if not normalized.begins_with("res://content/"):
+		return normalized
+	if normalized.begins_with("res://content/") and normalized.ends_with(".json"):
+		var relative := normalized.trim_prefix("res://content/")
+		var parts := relative.split("/")
+		if parts.size() >= 2:
+			return parts[parts.size() - 1].get_basename()
+	return normalized
 
 static func _get_db():
 	if _db != null:
@@ -111,6 +112,11 @@ static func load_document(path: String) -> Dictionary:
 		return {}
 	return payload.duplicate(true)
 
+static func load_content(path: String) -> Variant:
+	if _table_from_path(path) != "":
+		return load_document(path)
+	var catalog := load_dictionary_catalog(path)
+	return catalog
 static func load_single_entry(path: String, entry_id: String) -> Dictionary:
 	var catalog := load_dictionary_catalog(path)
 	if not catalog.has(entry_id):

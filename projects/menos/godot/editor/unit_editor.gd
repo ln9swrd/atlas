@@ -2,8 +2,8 @@ class_name UnitEditorMain
 extends Control
 
 const VISUAL_ASSET_FRAME = preload("res://scripts/visual_asset_frame.gd")
-const UNIT_FILE := "res://content/allied_units/allied_units.json"
-const ENEMY_FILE := "res://content/enemies/enemies.json"
+const UNIT_FILE := "allied_units"
+const ENEMY_FILE := "enemies"
 const BASE_UNIT_TYPES := ["basic", "light", "ranged", "heavy", "support"]
 const UNIT_DESCRIPTIONS := {
 	"basic": "기본 전투형 유닛. 공격과 생존의 균형을 갖춘 표준형입니다.",
@@ -484,13 +484,7 @@ func _confirm_delete_unit() -> void:
 func _delete_unit(dialog: ConfirmationDialog) -> void:
 	var source := str(unit_sources.get(selected_type, "unit"))
 	var target_file := ENEMY_FILE if source == "enemy" else UNIT_FILE
-	var catalog: Dictionary = {}
-	var file := FileAccess.open(target_file, FileAccess.READ)
-	if file != null:
-		var parsed = JSON.parse_string(file.get_as_text())
-		file.close()
-		if parsed is Dictionary:
-			catalog = parsed
+	var catalog: Dictionary = ObjectRepository.load_catalog(target_file)
 	if not catalog.has(selected_type):
 		_set_status("FAILED: selected unit was not found in source JSON.")
 		dialog.queue_free()
@@ -664,13 +658,7 @@ func _save_data() -> void:
 	unit_data[selected_type] = data
 	var source := str(unit_sources.get(selected_type, "unit"))
 	var target_file := ENEMY_FILE if source == "enemy" else UNIT_FILE
-	var catalog: Dictionary = {}
-	var target_read := FileAccess.open(target_file, FileAccess.READ)
-	if target_read:
-		var parsed_target = JSON.parse_string(target_read.get_as_text())
-		target_read.close()
-		if parsed_target is Dictionary:
-			catalog = parsed_target
+	var catalog: Dictionary = ObjectRepository.load_catalog(target_file)
 	if source == "enemy":
 		var enemy_data: Dictionary = data.duplicate(true)
 		var enemy_visuals: Dictionary = enemy_data.get("visuals", {}).duplicate(true)

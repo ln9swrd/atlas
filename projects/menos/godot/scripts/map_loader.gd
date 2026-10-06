@@ -3,40 +3,34 @@ extends RefCounted
 
 const SQLITE_PATH := "res://content/menos.sqlite"
 const SQLITE_MAP_TABLES := {
+	"map_01": "map_01",
+	"map_01_src": "map_01_src",
+	"map_02": "map_02",
+	"map_03": "map_03"
+}
+const LEGACY_MAP_PATHS := {
 	"res://content/maps/map_01.json": "map_01",
 	"res://content/maps/map_01_src.json": "map_01_src",
 	"res://content/maps/map_02.json": "map_02",
 	"res://content/maps/map_03.json": "map_03"
 }
 
+static func list_map_paths() -> Array[String]:
+	var paths: Array[String] = []
+	for path in SQLITE_MAP_TABLES.keys():
+		if str(path).ends_with("_src"):
+			continue
+		paths.append(str(path))
+	paths.sort()
+	return paths
+
 static func load_map_data(file_path: String) -> Dictionary:
 	var table := _sqlite_map_table(file_path)
 	if not table.is_empty():
 		return _load_sqlite_map_data(table)
 
-	if not FileAccess.file_exists(file_path):
-		push_error("MapLoader: Map data file not found at path: %s" % file_path)
-		return {}
-
-	var file := FileAccess.open(file_path, FileAccess.READ)
-	if file == null:
-		push_error("MapLoader: Failed to open map data file at path: %s" % file_path)
-		return {}
-
-	var json_text := file.get_as_text()
-	file.close()
-
-	var json := JSON.new()
-	var parse_result: Error = json.parse(json_text)
-	if parse_result != OK:
-		push_error("MapLoader: JSON parse error '%s' at line %d" % [json.get_error_message(), json.get_error_line()])
-		return {}
-
-	var data: Variant = json.get_data()
-	if not (data is Dictionary):
-		push_error("MapLoader: Expected JSON object in map file: %s" % file_path)
-		return {}
-	return parse_raw_data(data)
+	push_error("MapLoader: No SQLite map table mapping for path: %s" % file_path)
+	return {}
 
 static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 	var parsed := {}
@@ -225,17 +219,16 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 	if not sqlite_table.is_empty():
 		return _save_sqlite_map_data(sqlite_table, json_string)
 
-	var file := FileAccess.open(file_path, FileAccess.WRITE)
-	if file == null:
-		push_error("MapLoader: Failed to open file for writing at: %s" % file_path)
-		return false
-
-	file.store_string(json_string)
-	file.close()
-	return true
+	push_error("MapLoader: No SQLite map table mapping for path: %s" % file_path)
+	return false
 
 static func _sqlite_map_table(file_path: String) -> String:
-	return str(SQLITE_MAP_TABLES.get(file_path.replace("\\", "/"), ""))
+	var normalized := file_path.replace("\\", "/")
+	if SQLITE_MAP_TABLES.has(normalized):
+		return str(SQLITE_MAP_TABLES[normalized])
+	if LEGACY_MAP_PATHS.has(normalized):
+		return str(LEGACY_MAP_PATHS[normalized])
+	return ""
 
 static func _load_sqlite_map_data(table: String) -> Dictionary:
 	var db = SQLite.new()

@@ -1,7 +1,7 @@
 # MENOS 개발계획 — Canon 기준 재정립판
 
-> 작성일: 2026-09-30
-> 상태: MASTER REQUESTED PLAN / 실행 전 계획
+> 작성일: 2026-10-06
+> 상태: MASTER APPROVED / CURRENT EXECUTION PLAN
 > 기준: Master 승인 Canon + 현재 실제 구현 상태
 > 목적: 이미 구현된 기능을 다시 개발하지 않고, 실제 구현 공백을 최소 작업 단위로 완성한다.
 
@@ -29,8 +29,8 @@ Canon과 기존 문서가 충돌하면 Canon을 따른다.
 ## 3. 현재 기준선
 
 - Branch: `main`
-- HEAD: `8cc4e5ab321fb20db9f432bda8a13594f253244a`
-- Working Tree: 이미지 중복/부적합 Asset 격리 작업의 기존 변경사항 존재
+- HEAD / Working Tree: 현재 상태 문서 및 작업 시작 시점의 실제 기준선을 사용한다.
+- 기존 Working Tree 변경사항은 보존하며 임의로 수정/되돌리지 않는다.
 - 게임 코드/Asset/Scene/Data는 이번 계획 작성에서 변경하지 않는다.
 
 현재 확인된 구현:
@@ -70,78 +70,37 @@ PIE는 현재 검증하지 않는다.
 ### 4.6 성공하면 멈춘다
 한 Phase의 성공 조건을 만족하면 자동으로 다음 Phase를 시작하지 않는다.
 
-## 5. 최종 구현 공백
+## 5. 현재 검증 공백
 
-현재 실제 구현이 필요한 항목은 5개로 관리한다.
+현재 핵심 시스템은 코드상 최소 구현이 확인되어 있으며, 이 5개 항목은 신규 개발 목록이 아니라 **Runtime 수락 및 결함 판정 기준**으로 관리한다.
 
-### GAP-01 — Pilot 중심 전투 HUD
-우선순위: P0
+### GAP-01 — Giant Boss 행동
+- 현재 상태: CODE VERIFIED / 최소 구현 확인
+- PIE: UNVERIFIED
+- 수락 기준: 기존 직접조작으로 보스전이 성립하고, 보스의 공격 패턴과 대응 가능한 빈틈이 실제 Runtime에서 확인된다.
 
-필요 작업:
-- Robot HP / 에너지 / XP / 레벨을 핵심 정보로 재배치
-- 현재 타깃과 타깃 HP 명확화
-- 기본 공격 / 특수무기 / 스킬 / 필살기 상태 표시
-- 쿨다운 및 사용 가능 상태 표시
-- Tower 건설/업그레이드 UI의 주 전투 HUD 의존성 제거
+### GAP-02 — Pilot 중심 전투 HUD
+- 현재 상태: CODE VERIFIED / 최소 구현 확인
+- PIE: UNVERIFIED
+- 수락 기준: Robot HP/자원/XP/레벨, 타깃, 사용 가능한 전투 행동을 실제 전투 화면에서 확인할 수 있다.
 
-완료 기준:
-- 전투 화면의 시각적 중심이 플레이어 Robot이다.
-- 현재 사용 가능한 전투 행동을 HUD만으로 파악할 수 있다.
-
-### GAP-02 — 보스전 전용 행동
-우선순위: P0
-
-필요 작업:
-- Giant 전용 공격 패턴 또는 상태 전환
-- 공격을 피하거나 대응할 수 있는 명확한 빈틈
-- 보스 타깃 고정/상태 표시
-- 기존 이동/공격/특수/필살기와 보스 행동 연결
-
-완료 기준:
-- 별도 조작 없이 기존 전투 조작으로 1:1 보스전이 성립한다.
-- 보스가 단순 HP 증가형 적으로 끝나지 않는다.
-
-### GAP-03 — Tower의 고정형 지원 시설 전환
-우선순위: P1
-
-필요 작업:
-- Tower 자동 공격 구조 유지
-- 플레이어의 반복적인 직접 Tower 운영 의존성 제거
-- 지원 시설로서 역할 정의
-- 필요한 경우 스테이지에 미리 배치되거나 제한된 위치에 설치되도록 정리
-- 1~2종 지원 역할을 먼저 검증
-
-주의:
-- Tower 시스템을 삭제하지 않는다.
-- 구체적인 배치/업그레이드 정책은 Master가 결정한다.
-
-완료 기준:
-- 플레이어가 Tower를 관리하지 않아도 Robot 직접 전투가 성립한다.
-- Tower가 전투의 주체가 아니라 Robot을 보조한다.
+### GAP-03 — Tower의 고정형 지원 시설
+- 현재 상태: CODE VERIFIED / 최소 구현 확인
+- PIE: UNVERIFIED
+- 수락 기준: Tower가 Robot 직접조작을 방해하지 않고 자동 지원 시설로 기능한다.
+- Master 결정 없이 배치/업그레이드 정책을 새로 확정하지 않는다.
 
 ### GAP-04 — 공격→피격→피해 연출 동기화
-우선순위: P2
-
-필요 작업:
-- 기본 투사체 도착 시점과 피해 판정 연결
-- 피격 반응 및 피해 표시 시점 정렬
-- 필요한 공격 유형부터 최소 범위로 적용
-
-완료 기준:
-- 화면에서 발사 → 도착 → 피격 → 피해가 자연스럽게 연결된다.
+- 현재 상태: CODE VERIFIED / Runtime 미검증
+- PIE: UNVERIFIED
+- 수락 기준: 발사 → 도착 → 피격 → 피해의 순서와 시점이 실제 Runtime에서 납득 가능하게 연결된다.
 
 ### GAP-05 — Campaign 1 Canon 통합
-우선순위: P0
+- 현재 상태: CODE VERIFIED / 최소 통합 확인
+- PIE: UNVERIFIED
+- 수락 기준: Campaign 1 최소 1개 Stage를 시작 → 전투 → 성장 → 승리/패배 → 진행까지 실제 Runtime에서 확인한다.
 
-필요 작업:
-- 기존 Stage/Map/전투/성장/승패 시스템 연결
-- Pilot HUD 반영
-- 지원 시설 반영
-- 보스전 반영
-- Campaign 1 최소 1개 스테이지의 시작→전투→성장→승패→진행 루프 완성
-
-완료 기준:
-- Campaign 1 최소 1개 스테이지를 새 Canon으로 처음부터 끝까지 플레이할 수 있다.
+이 항목들은 구현 공백 문서와 동일한 번호를 사용한다. 상태가 변경되면 `MENOS_REQUIRED_IMPLEMENTATION_GAPS.md`와 `state/CURRENT_STATE.md`를 함께 갱신한다.
 
 ## 6. 개발 Phase
 
@@ -160,97 +119,81 @@ PIE는 현재 검증하지 않는다.
 
 판정: PASS 후 STOP.
 
-### Phase 1 — Pilot HUD
-목적: 플레이어 직접조종 중심의 전투 인터페이스를 확립한다.
+### Phase 1 — Core Runtime Acceptance
+목적: 현재 구현된 Canon-aligned core loop를 실제 Runtime에서 최소 범위로 수락 검증한다.
 
-작업:
-- 기존 HUD 구조 조사
-- Robot 상태 표시 우선순위 재배치
-- 타깃 정보 정리
-- 공격/특수/필살기 액션 상태 정리
-- Tower 관련 주 조작 UI 축소/분리
-
-검증:
-- CODE
-- EDITOR
-- 가능하면 최소 실행 확인
-- PIE는 Master 확인 전까지 UNVERIFIED
+대상:
+- 직접 이동
+- 기본 공격 / 특수공격 / 스킬 / 필살기
+- 타깃 및 타깃 전환
+- Pilot HUD
+- AI 아군
+- 고정형 Tower 지원
+- Giant Boss
 
 완료 조건:
-- HUD가 Pilot 중심으로 동작한다.
+- Master가 실제 Runtime에서 핵심 전투 루프를 확인한다.
+- 확인 결과를 관찰 사실만으로 기록한다.
+- PIE VERIFIED는 Master의 직접 Runtime 확인 후에만 선언한다.
 
-### Phase 2 — 보스전
-목적: 같은 직접조작 체계로 일반전과 보스전을 모두 성립시킨다.
+### Phase 2 — Combat Timing Acceptance
+목적: GAP-04의 공격→피격→피해 연결을 실제 Runtime에서 검증한다.
 
-작업:
-- 기존 Giant 구현 READ-ONLY 분석
-- 보스 상태/공격 패턴 추가
-- 빈틈 또는 대응 창 구현
-- 타깃/HUD 연계
-- 승패 조건과 기존 Stage 구조 연결
-
-검증:
-- CODE
-- 관련 Stage/Enemy Data
-- 가능하면 Build
-- PIE는 Master 확인 전까지 UNVERIFIED
+대상:
+- 기본 공격 1종
+- 투사체 도착
+- 피해 판정
+- 피격 반응
+- 피해 표시
 
 완료 조건:
-- 보스전 전용 행동이 실제 전투 시스템에 연결된다.
+- 발사 → 도착 → 피격 → 피해의 순서가 Runtime에서 확인된다.
 
-### Phase 3 — Tower 지원 시설 전환
-목적: Tower Defense 운영이 아닌 Robot 지원 구조로 역할을 정리한다.
+### Phase 3 — Campaign 1 Acceptance
+목적: 현재 구현된 시스템을 Campaign 1 최소 1개 Stage의 실제 플레이 루프로 검증한다.
 
-작업:
-- 기존 Tower 자동 공격 코드 보존
-- 직접 운영에 필요한 입력 경로 조사
-- Canon과 충돌하는 주 조작 제거/축소
-- 지원 역할 최소 1~2종 구성
-- Stage에서 실제 사용 가능한 데이터 구조 확인
-
-주의:
-- Tower 전체 삭제 금지
-- 배치/업그레이드 정책을 임의로 확정하지 않음
-
-완료 조건:
-- Robot 직접조종을 방해하지 않고 Tower가 자동 지원한다.
-
-### Phase 4 — 공격/피격 연출 보강
-목적: 전투의 시각적 인과성을 확보한다.
-
-작업:
-- 기본 공격 1종을 대상으로 투사체와 피해 시점 연결
-- 피격 반응과 피해 표시 동기화
-- 결과가 유효하면 필요한 공격 유형으로 최소 확장
-
-완료 조건:
-- 기본 공격에서 발사와 피해가 시각적으로 납득 가능하다.
-
-### Phase 5 — Campaign 1 통합
-목적: 개별 시스템을 하나의 실제 게임 루프로 통합한다.
-
-작업:
-- Campaign 1 Stage 선정
-- 기존 Map/Stage/Enemy/Robot 데이터 재사용
-- Phase 1~4 결과 통합
+대상:
 - 전투 시작
 - 일반전
-- XP/레벨업
-- 보스전
-- 승리/패배
-- 결과 및 Campaign 진행 연결
+- XP / 레벨업
+- AI 아군
+- Tower 지원
+- Boss
+- 승리 / 패배
+- Campaign 진행
 
 완료 조건:
-- Campaign 1 최소 1개 스테이지가 처음부터 끝까지 Canon 구조로 연결된다.
+- 최소 1개 Stage를 처음부터 끝까지 실제 Runtime에서 확인한다.
+
+### Phase 4 — Defect-driven Correction
+목적: Phase 1~3의 Runtime 검증에서 실제로 발견된 결함만 최소 수정한다.
+
+원칙:
+- 관찰된 결함만 대상으로 한다.
+- 원인 확인 후 최소 변경한다.
+- 변경 후 Diff와 필요한 Runtime 검증을 수행한다.
+- 새로운 기능이나 밸런스 설계를 자동 추가하지 않는다.
+
+완료 조건:
+- 발견된 결함이 수정되고 해당 검증이 재통과한다.
+
+### Phase 5 — Acceptance Close
+목적: 현재 개발계획의 1차 완료 여부를 판정한다.
+
+판정 기준:
+- GAP-01~05의 구현/검증 상태를 실제 결과로 갱신한다.
+- 미검증 항목은 UNVERIFIED로 남긴다.
+- 새로운 범위가 필요하면 별도 Master 결정 대상으로 분리한다.
+- 목적 달성 시 ACCEPT·STOP한다.
 
 ## 7. Phase 의존관계
 
 기준 순서:
 `Phase 0 → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5`
 
-이 순서는 기술적 의존성을 줄이기 위한 제안이다. Master가 별도 순서를 지정하면 Master의 결정이 우선한다.
+이 순서는 현재 검증 경계를 기준으로 한 실행 제안이다. Master가 별도 순서를 지정하면 Master의 결정이 우선한다.
 
-특히 Phase 5 이전에 대규모 신규 콘텐츠를 만들지 않는다.
+중요: Phase 1~3에서 실제 결함이 발견되지 않는 한 신규 구현을 자동 시작하지 않는다.
 
 ## 8. 이번 개발에서 하지 않는 것
 
@@ -359,146 +302,16 @@ Master가 실제 Runtime 결과를 직접 확인.
 
 ## 14. 최종 판정
 
-현재 개발계획은 과거의 '처음부터 전체 게임을 만드는 로드맵'을 폐기하고, 실제 구현 상태를 기준으로 **5개의 구현 공백을 닫는 단계적 계획**으로 재정립한다.
+현재 개발계획은 신규 핵심 시스템을 순차적으로 만드는 로드맵이 아니라, 이미 코드상 확인된 구현을 Runtime에서 수락하고 실제 결함만 수정하는 실행계획으로 운용한다.
 
-핵심 순서는:
+현재 실행 순서:
 
-**Pilot HUD → Boss → Support Tower → 전투 연출 → Campaign 1 통합**
+**Core Runtime Acceptance → Combat Timing Acceptance → Campaign 1 Acceptance → Defect-driven Correction → Acceptance Close**
 
-이미 구현된 이동/공격/타깃/특수/필살기/XP/AI 아군/Stage 구조를 다시 개발하지 않는다.
+이미 구현된 이동/공격/타깃/특수/필살기/XP/AI 아군/Tower/Boss/Campaign 경로를 검증 전에 다시 개발하지 않는다.
 
-상태: PLAN COMPLETE / IMPLEMENTATION NOT STARTED
+현재 주요 미검증 경계는 BUILD / 전체 EDITOR Acceptance / PIE이며, 실제 Runtime에서 결함이 확인될 경우에만 수정 작업을 생성한다.
 
-본 문서 작성 자체는 계획 수립 작업이며 게임 코드, Scene, Asset, Data는 변경하지 않았다.
+상태: PLAN ACTIVE / RUNTIME ACCEPTANCE PENDING
 
-## Handoff — 2026-10-05 자동공격 토글 / 수동 입력 검증 갱신
-
-**STATUS — PASS / 부분 검증 완료**
-
-**목적**
-자동공격을 수동 모드로 전환하고, 수동 입력 동작이 실제 Runtime 전투 흐름에서 사용할 수 있는지 최소 검증한다.
-
-**기준선**
-- 프로젝트: `D:\Atlas\projects\menos\godot`
-- Godot: `D:\Godot_v4.7.2`
-- PAD Flow: `gpt`
-- 관련 입력 Action: `move_up`
-- 이번 검증에서는 Godot 프로젝트 코드/Asset/Scene/Data를 변경하지 않음.
-- PAD Flow는 테스트를 위해 키 입력 표현을 수정하고 저장함.
-
-**CONFIRMED**
-- Runtime에서 `ATTACK: AUTO`를 `ATTACK: MANUAL`로 전환했다.
-- Godot Input Map에서 W/Up이 `move_up`으로 등록되어 있다.
-- `update_robot_manual_input()`이 수동 이동 입력을 실제 Robot 위치 변경에 연결한다.
-- PAD `gpt` Flow의 Send Keys 입력을 `wwwwwwwwww`에서 `{W:10}`으로 변경했다.
-- Master의 실제 Runtime 테스트에서 자동공격 토글 및 수동 입력동작이 성공했다.
-
-**검증 상태**
-- CODE VERIFIED: PASS
-- EDITOR VERIFIED: PASS — PAD Flow 저장 확인
-- BUILD VERIFIED: NOT VERIFIED
-- PIE VERIFIED: PASS — Master 실제 Runtime 확인
-
-**마리의 판정**
-수동 입력 검증의 해당 목적은 달성했다. 이 결과는 Phase 1의 전체 완료가 아니라, Phase 1 내 수동 조작 검증 항목의 완료로 기록한다.
-
-**변경 사항**
-- 개발계획 문서에 본 검증 결과를 추가.
-- Godot 코드/Asset/Scene/Data 변경 없음.
-- PAD Flow `gpt` 변경은 테스트 범위에서 실제 반영됨.
-
-**미확인 사항**
-- Phase 1의 전체 Canon 전투 루프(공격/타깃/특수/스킬/필살기/AI 아군/지원 시설/보스/승패/재시작)는 별도 PIE 검증 필요.
-
-**OUT OF SCOPE**
-- 추가 공격 입력 자동화
-- 보스/스킬/필살기 추가 검증
-- Phase 2 이후 작업
-
-**판정**
-ACCEPT·STOP. 본 검증 항목은 종료하며 다음 Phase로 자동 진행하지 않는다.
-
-## 2026-10-06 CURRENT IMPLEMENTATION AUDIT — AUTHORITATIVE CURRENT STATE
-
-This section supersedes older HEAD/Working Tree snapshots in this document. It does not change Canon.
-
-- Project: MENOS
-- Branch: `main`
-- HEAD: `7c97acc97be9262b50fe84b691de9b0dbdbd94e5`
-- Working Tree at audit start: CLEAN.
-- Godot: `D:\Godot_v4.7.2-stable`, version `4.7.2.stable.official`.
-- Directly confirmed implementation: manual robot movement, basic attack, special attack, skill slots, finisher, target switching, XP/level progression, AlliedUnitAI, Giant boss attack patterns, Tower auto support, Campaign/Stage/Map loading paths.
-- GAP-01 HUD: CODE VERIFIED / minimum implementation present; PIE not verified in this audit.
-- GAP-02 Giant boss behavior: CODE VERIFIED / minimum implementation present; PIE not verified in this audit.
-- GAP-03 fixed Tower support: CODE VERIFIED / minimum implementation present; PIE not verified in this audit.
-- GAP-04 attack-to-hit-to-damage timing: CODE VERIFIED; PIE UNVERIFIED.
-- GAP-05 Campaign 1 minimum integration: CODE VERIFIED / minimum integration present; full start-to-finish PIE UNVERIFIED.
-- BUILD VERIFIED: UNVERIFIED in this audit.
-- EDITOR VERIFIED: UNVERIFIED as a full manual Editor acceptance pass.
-- PIE VERIFIED: NOT VERIFIED. Master runtime acceptance remains required.
-
-The Godot process used during this audit regenerated tracked `.import` metadata. Those generated changes were reverted after verification because the working tree was CLEAN before the audit. No code, scene, asset, or Canon change was retained by this audit.
-
-Conclusion: implementation documents are now aligned to the current repository baseline. The remaining verification boundary is Runtime/PIE, not a newly identified core-code gap.
-## 2026-10-06 PIE TOOLING / ENVIRONMENT BASELINE
-
-This section records the verified local tooling required for Godot PIE testing. It does not change Canon or gameplay scope.
-
-- Godot: `D:\Godot_v4.7.2-stable`, `4.7.2.stable.official.ed1daf0bf` — REQUIRED / VERIFIED.
-- VS Code: `1.140.0` — development/log inspection / VERIFIED.
-- Git: `2.54.0` — baseline and diff inspection / VERIFIED.
-- Git LFS: `3.7.1` — repository asset support / VERIFIED.
-- PowerShell: Windows PowerShell `5.1.19041.6456` — execution/automation / VERIFIED.
-- Python: `3.14.5` — optional tooling / VERIFIED.
-- Node.js: `22.23.3`, npm `10.9.9` — optional tooling / VERIFIED.
-- ripgrep: `15.2.0` — code/log search / VERIFIED.
-- fd: `10.5.0` — file discovery / VERIFIED.
-- jq: `1.8.2` — JSON inspection / VERIFIED.
-- GitHub CLI: `2.102.0` — repository operations / VERIFIED.
-- 7-Zip: `19.00 (x64)` — archive utility installed; `7z` is not on PATH.
-
-PIE does not require CMake, Ninja, Make, MSBuild, or PowerShell 7 for the current GDScript-only MENOS project. No additional program is currently required for PIE execution.
-
-Verification boundary:
-- CODE VERIFIED: existing implementation audit remains valid.
-- BUILD VERIFIED: NOT VERIFIED.
-- EDITOR VERIFIED: NOT VERIFIED as a full manual acceptance pass.
-- PIE VERIFIED: NOT VERIFIED. Master runtime acceptance remains required.
-
-No code, scene, asset, or Canon changes were made by this tooling audit. Do not revert pre-existing Working Tree changes.
-
-
-## 2026-10-06 DOCUMENT UPDATE — CURRENT REPOSITORY BASELINE
-
-이 섹션은 이전 문서의 HEAD/Working Tree 스냅샷보다 우선하는 현재 문서 기준선이다. Canon을 변경하지 않는다.
-
-- Project: MENOS
-- Branch: `main`
-- HEAD: `178cac776cfa21d3446e5a199ad7db5025f64589`
-- Working Tree: 기존 변경사항 다수 존재. 이번 문서 갱신은 기존 변경을 수정/되돌리지 않는다.
-- Godot: `D:\\Godot_v4.7.2-stable`, `4.7.2.stable.official.ed1daf0bf`
-- Core implementation assessment: 직접 조종, 기본 공격, 타깃 전환, 특수공격, 스킬 슬롯, 필살기, XP/레벨, AlliedUnitAI, Giant 보스 패턴, 고정형 Tower 지원, Campaign/Stage/Map 경로가 코드상 확인됨.
-- BUILD VERIFIED: UNVERIFIED
-- EDITOR VERIFIED: 전체 수동 Acceptance 기준 UNVERIFIED
-- PIE VERIFIED: UNVERIFIED
-- 따라서 현재 핵심 공백은 신규 핵심 전투 코드의 존재 여부보다 Runtime/PIE 검증 경계에 있다.
-
-### JSON → SQLite 콘텐츠 파이프라인 기준선
-
-- JSON은 당분간 Authoritative Source로 유지한다.
-- SQLite 전환은 콘텐츠 타입별로 하나씩 수행한다.
-- 첫 대상은 Robot이다.
-- 현재 Robot JSON과 SQLite의 의미상 데이터 비교 결과는 동일하다. `asura`, `valkyrie` 두 항목이 일치한다.
-- `ContentCatalogLoader`는 Robot JSON 경로 요청을 SQLite `robots` 테이블에서 읽도록 연결되어 있다.
-- `ObjectPersistence.sync_catalog_to_sqlite()`는 Robot에 한정된 동기화 경로를 추가했으나 Editor Save에 자동 연결하지 않는다.
-- Editor Save → 자동 SQLite 갱신은 Canon상 아직 적용하지 않는다.
-- Robot Sync 실제 실행 및 Runtime/PIE 검증은 별도 검증 항목이며, 확인 전에는 VERIFIED로 표시하지 않는다.
-- 다른 콘텐츠 타입의 SQLite 전환은 수행하지 않는다.
-
-### 문서 정합성 판정
-
-- 오래된 HEAD/Working Tree 기록은 역사적 기록으로 보존한다.
-- 현재 상태 판단에는 본 섹션의 2026-10-06 기준선을 사용한다.
-- Canon 변경 없음.
-- 코드/Asset/Scene/Data 변경 없음.
-- Commit/Push 없음.
+본 계획 갱신에서는 게임 코드, Scene, Asset, Data, Canon을 변경하지 않는다.

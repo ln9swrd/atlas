@@ -20,7 +20,7 @@ static func begin_run(mode: String, stage_id: String = "") -> void:
 
 static func _load_stage_catalog() -> void:
 	all_stage_ids.clear()
-	var parsed := ContentCatalogLoader.load_document("res://content/stages/stage_catalog.json")
+	var parsed := ContentCatalogLoader.load_document("stage_catalog")
 	if parsed.is_empty() or not parsed.has("stages") or not parsed["stages"] is Array:
 		push_error("StageManager: Invalid stage catalog.")
 		return
@@ -35,7 +35,7 @@ static func get_all_stage_ids() -> Array[String]:
 
 static func _load_campaign_data() -> void:
 	campaign_stage_ids.clear()
-	var parsed := ContentCatalogLoader.load_document("res://content/campaign/main_campaign.json")
+	var parsed := ContentCatalogLoader.load_document("campaign")
 	if parsed.is_empty() or not parsed.has("stages") or not parsed["stages"] is Array:
 		push_error("StageManager: Invalid campaign data.")
 		return

@@ -1,4 +1,4 @@
-﻿# MENOS — GDScript JSON → SQLite 전환 대상 조사
+# MENOS — GDScript JSON → SQLite 전환 대상 조사
 
 ## 목적
 현재 godot/**/*.gd의 JSON 직접 접근 및 JSON 기반 Loader/Repository 호출을 조사하여 SQLite 전환 대상을 수집한다. 본 문서는 조사 문서이며 코드 전환은 수행하지 않는다.
@@ -125,3 +125,17 @@ STATUS — PASS
 검증 상태 — CODE 조사 VERIFIED / Runtime SQLite 전환 NOT VERIFIED.
 OUT OF SCOPE — 코드 전환, schema 정규화, JSON 삭제, PIE 검증.
 현실성 — TECHNICALLY POSSIBLE / PRACTICALLY FEASIBLE.
+
+## 2026-10-06 Migration Completion Update
+
+- MENOS-created Content JSON files under `godot/content/` have been removed; current count is 0.
+- `godot/content/menos.sqlite` is the authoritative Content Canon.
+- Final direct-JSON audit: no MENOS Content JSON file read/write path remains in runtime/editor GDScript.
+- Robot, Unit, Tower, Stage, Map, and Asset Catalog Editors were statically verified to consume SQLite-backed repositories/loaders.
+- All six Editor scenes were headlessly launched successfully.
+- Tower Editor had one confirmed empty `sprite_anim` resource-load edge case; the minimum guard was applied and the scene was revalidated with exit code 0 and no Godot error output.
+- JSON retained in GDScript is limited to JSON serialization/parsing of SQLite fields, compatibility path mapping, UI wording/filter text, and intentionally separate `user://` state.
+- Runtime/manual PIE acceptance remains separate and is not claimed by this migration audit.
+
+STATUS: PASS
+VERIFICATION: CODE VERIFIED / EDITOR SCENE RUNTIME VERIFIED / PIE VERIFIED = NOT CLAIMED

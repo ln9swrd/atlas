@@ -1,7 +1,7 @@
 # MENOS Asset Production Pipeline Development Plan
 
 > 작성일: 2026-10-06
-> 상태: PROPOSAL — Master 승인 후 순차 실행
+> 상태: SPECIALIZED EXECUTION PLAN / CURRENT STATUS RECORDED
 > 목적: 원본 아트부터 Catalog Editor, Visual Asset, Animation, Runtime까지의 Asset 제작·관리·검증 흐름을 하나의 명확한 파이프라인으로 정의한다.
 
 ## 1. 목적

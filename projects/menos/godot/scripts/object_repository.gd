@@ -1,10 +1,10 @@
 ﻿class_name ObjectRepository
 extends RefCounted
 
-const ROBOT_CATALOG_PATH := "res://content/robots/robots.json"
-const UNIT_CATALOG_PATH := "res://content/allied_units/allied_units.json"
-const ENEMY_CATALOG_PATH := "res://content/enemies/enemies.json"
-const TOWER_CATALOG_PATH := "res://content/towers/towers.json"
+const ROBOT_CATALOG_PATH := "robots"
+const UNIT_CATALOG_PATH := "allied_units"
+const ENEMY_CATALOG_PATH := "enemies"
+const TOWER_CATALOG_PATH := "towers"
 
 static var _robot_catalog: Dictionary = {}
 static var _unit_catalog: Dictionary = {}

@@ -2,7 +2,7 @@ extends Window
 
 signal catalog_saved(selected_asset_id: String)
 
-const CATALOG_PATH := "res://content/editor/asset_catalog.json"
+const CATALOG_PATH := "asset_catalog"
 const TILE_GROUPS := ["Boundary", "Bridge", "City", "Decoration", "Etc", "Facility", "Forest", "Ground", "Military", "Obstacle", "Other", "Prop", "River", "Sea", "Structure"]
 const OBJECT_GROUPS := ["Combat", "Decoration", "Ground", "Industrial", "Obstacle", "Other", "Prop", "Structure", "Terrain"]
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
@@ -625,7 +625,7 @@ func _save_visual_asset() -> void:
 	status_label.text = "Visual Asset 저장 완료: " + asset_id
 
 func _write_visual_assets() -> bool:
-	var path := "res://content/editor/visual_assets.json"
+	var path := "visual_assets"
 	if not ObjectPersistence.save_catalog(path, visual_assets):
 		return false
 	VisualAssetRepository.reload()
@@ -846,31 +846,48 @@ func _rebuild_usage_cache() -> void:
 	usage_cache.clear()
 	_scan_usage_directory("res://content")
 
-func _scan_usage_directory(path: String) -> void:
-	var dir := DirAccess.open(path)
-	if dir == null:
-		return
-	for file_name in dir.get_files():
-		if not file_name.to_lower().ends_with(".json"):
-			continue
-		if file_name in ["asset_catalog.json", "visual_assets.json"]:
-			continue
-		var file_path := path.path_join(file_name)
-		var file := FileAccess.open(file_path, FileAccess.READ)
-		if file == null:
-			continue
-		var text := file.get_as_text()
-		file.close()
-		for asset_id in entries.map(func(value: Dictionary) -> String: return str(value.get("asset_id", ""))):
+func _scan_usage_directory(_path: String) -> void:
+	var content_paths := [
+		"robots",
+		"allied_units",
+		"enemies",
+		"towers",
+		"factions",
+		"skills",
+		"items",
+		"missions",
+		"rewards",
+		"stage_catalog",
+		"campaign",
+		"visual_assets",
+		"asset_catalog"
+	]
+	for path in MapLoader.list_map_paths():
+		content_paths.append(path)
+	for path in content_paths:
+		var data: Variant = ContentCatalogLoader.load_content(path)
+		_scan_usage_value(data, path.get_file().get_basename())
+	for stage_id in StageManager.get_all_stage_ids():
+		var stage_path := str(stage_id)
+		_scan_usage_value(StageLoader.load_stage_data(stage_path), str(stage_id))
+
+func _scan_usage_value(value: Variant, source_name: String) -> void:
+	if value is Dictionary:
+		for key in value.keys():
+			_scan_usage_value(value[key], source_name)
+	elif value is Array:
+		for item in value:
+			_scan_usage_value(item, source_name)
+	elif value is String:
+		var text := str(value)
+		for entry in entries:
+			var asset_id := str(entry.get("asset_id", ""))
 			if asset_id.is_empty() or not text.contains(asset_id):
 				continue
 			var refs: Array = usage_cache.get(asset_id, [])
-			var short_name := file_name.get_basename()
-			if not refs.has(short_name):
-				refs.append(short_name)
+			if not refs.has(source_name):
+				refs.append(source_name)
 			usage_cache[asset_id] = refs
-	for directory_name in dir.get_directories():
-		_scan_usage_directory(path.path_join(directory_name))
 
 func _catalog_usage_text(entry: Dictionary) -> String:
 	var asset_id := str(entry.get("asset_id", ""))
@@ -969,14 +986,7 @@ func _load_catalog() -> void:
 	selected_index = -1
 	usage_cache.clear()
 	_load_visual_assets()
-	if not FileAccess.file_exists(CATALOG_PATH):
-		_refresh_list()
-		return
-	var file := FileAccess.open(CATALOG_PATH, FileAccess.READ)
-	if file == null:
-		status_label.text = "Could not open asset catalog."
-		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	var parsed: Variant = ContentCatalogLoader.load_document(CATALOG_PATH)
 	if parsed is Dictionary and parsed.get("assets", []) is Array:
 		for value in parsed.assets:
 			if value is Dictionary:
@@ -991,21 +1001,15 @@ func _load_catalog() -> void:
 	status_label.text = "Loaded %d catalog entries." % entries.size()
 
 func _save_catalog() -> bool:
-	var directory := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://content/editor"))
-	if directory != OK:
-		status_label.text = "Could not create catalog directory. Error %d" % directory
-		return false
-	var file := FileAccess.open(CATALOG_PATH, FileAccess.WRITE)
-	if file == null:
-		status_label.text = "Could not write catalog. Error %d" % FileAccess.get_open_error()
-		return false
 	var catalog_assets: Array[Dictionary] = []
 	for entry in entries:
 		if str(entry.get("catalog_kind", "")) != "visual_asset":
 			catalog_assets.append(entry.duplicate(true))
-	file.store_string(JSON.stringify({"schema_version": 1, "assets": catalog_assets}, "	") + "\n")
-	file.close()
-	status_label.text = "Saved %d catalog assets to %s" % [catalog_assets.size(), CATALOG_PATH]
+	var catalog := {"schema_version": 1, "assets": catalog_assets}
+	if not ObjectPersistence.save_content_document(CATALOG_PATH, catalog):
+		status_label.text = "Could not save catalog to SQLite."
+		return false
+	status_label.text = "Saved %d catalog assets to SQLite" % catalog_assets.size()
 	var selected_asset_id := ""
 	if selected_index >= 0 and selected_index < entries.size():
 		selected_asset_id = str(entries[selected_index].get("asset_id", ""))

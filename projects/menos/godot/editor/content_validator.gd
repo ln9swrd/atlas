@@ -1,19 +1,19 @@
-class_name ContentValidator
+﻿class_name ContentValidator
 extends RefCounted
 
 const ROOT := "res://"
-const ENEMY_FILE := "res://content/enemies/enemies.json"
-const ALLIED_UNIT_FILE := "res://content/allied_units/allied_units.json"
-const TOWER_FILE := "res://content/towers/towers.json"
-const ROBOT_FILE := "res://content/robots/robots.json"
-const SKILL_FILE := "res://content/skills/skills.json"
-const GAMEPLAY_FILE := "res://content/settings/gameplay.json"
-const CAMPAIGN_FILE := "res://content/campaign/main_campaign.json"
-const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
-const MISSION_FILE := "res://content/missions/missions.json"
-const REWARD_FILE := "res://content/rewards/rewards.json"
-const ITEM_FILE := "res://content/items/items.json"
-const VISUAL_ASSET_FILE := "res://content/editor/visual_assets.json"
+const ENEMY_FILE := "enemies"
+const ALLIED_UNIT_FILE := "allied_units"
+const TOWER_FILE := "towers"
+const ROBOT_FILE := "robots"
+const SKILL_FILE := "skills"
+const GAMEPLAY_FILE := "gameplay"
+const CAMPAIGN_FILE := "campaign"
+const STAGE_CATALOG_FILE := "stage_catalog"
+const MISSION_FILE := "missions"
+const REWARD_FILE := "rewards"
+const ITEM_FILE := "items"
+const VISUAL_ASSET_FILE := "visual_assets"
 
 var errors: Array[String] = []
 var warnings: Array[String] = []
@@ -31,7 +31,7 @@ func _run() -> void:
 	_validate_catalog("ALLIED_UNIT", ALLIED_UNIT_FILE, ["name", "description", "hp", "speed", "armor", "damage", "cooldown", "range", "radius", "attack_type", "reward", "color", "projectile_anim", "robot_damage", "robot_range", "robot_cooldown", "ai", "visuals"])
 	_validate_catalog("TOWER", TOWER_FILE, ["name", "cost", "damage", "cooldown", "range", "preference", "sprite_anim", "level2"])
 	_validate_catalog("ROBOT", ROBOT_FILE, ["id", "name", "hp", "speed", "damage", "cooldown", "range", "sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "projectile_anim", "progression", "energy"])
-	var skills := _load_json_dictionary(SKILL_FILE, "SKILL")
+	var skills := _load_catalog_dictionary(SKILL_FILE, "SKILL")
 	_validate_skills(skills)
 	_validate_gameplay_settings(skills)
 	_validate_mission_catalog()
@@ -42,7 +42,7 @@ func _run() -> void:
 	_validate_resource_refs()
 
 func _validate_visual_asset_catalog() -> void:
-	var catalog := _load_json_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")
+	var catalog := _load_catalog_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")
 	if catalog.is_empty():
 		return
 	for asset_id in catalog.keys():
@@ -109,10 +109,10 @@ func _validate_visual_asset_catalog() -> void:
 				errors.append("VISUAL_ASSET[%s].frame_regions[%d] is outside source bounds" % [asset_id, frame_index])
 
 func _validate_animation_asset_refs() -> void:
-	var visual_catalog := _load_json_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")
+	var visual_catalog := _load_catalog_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")
 	if visual_catalog.is_empty():
 		return
-	var robot_catalog := _load_json_dictionary(ROBOT_FILE, "ROBOT_ANIMATION")
+	var robot_catalog := _load_catalog_dictionary(ROBOT_FILE, "ROBOT_ANIMATION")
 	for robot_id in robot_catalog.keys():
 		var robot = robot_catalog[robot_id]
 		if not (robot is Dictionary):
@@ -126,7 +126,7 @@ func _validate_animation_asset_refs() -> void:
 				if not value.begins_with("res://") and not visual_catalog.has(value):
 					errors.append("ROBOT[%s].animations[%s] references missing Visual Asset: %s" % [robot_id, animation_name, value])
 
-	var allied_catalog := _load_json_dictionary(ALLIED_UNIT_FILE, "ALLIED_UNIT_ANIMATION")
+	var allied_catalog := _load_catalog_dictionary(ALLIED_UNIT_FILE, "ALLIED_UNIT_ANIMATION")
 	for unit_id in allied_catalog.keys():
 		var unit = allied_catalog[unit_id]
 		if not (unit is Dictionary):
@@ -197,16 +197,10 @@ func _is_numeric_pair(value: Variant) -> bool:
 		if not (component is int or component is float) or component is bool:
 			return false
 	return true
-func _load_json_dictionary(path: String, label: String) -> Dictionary:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		errors.append("%s catalog missing: %s" % [label, path])
-		return {}
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not (parsed is Dictionary):
-		errors.append("%s data is not an object: %s" % [label, path])
-		return {}
+func _load_catalog_dictionary(identifier: String, label: String) -> Dictionary:
+	var parsed := ContentCatalogLoader.load_dictionary_catalog(identifier)
+	if parsed.is_empty():
+		errors.append("%s catalog missing or empty in SQLite: %s" % [label, path])
 	return parsed
 
 func _validate_skills(skills: Dictionary) -> void:
@@ -242,7 +236,7 @@ func _validate_skills(skills: Dictionary) -> void:
 					errors.append("SKILL[%s].%s is negative" % [skill_id, key])
 
 func _validate_gameplay_settings(skills: Dictionary) -> void:
-	var gameplay := _load_json_dictionary(GAMEPLAY_FILE, "GAMEPLAY")
+	var gameplay := _load_catalog_dictionary(GAMEPLAY_FILE, "GAMEPLAY")
 	if gameplay.is_empty():
 		return
 	var wave_group_gap = gameplay.get("wave_group_gap", {})
@@ -271,7 +265,7 @@ func _validate_gameplay_settings(skills: Dictionary) -> void:
 			errors.append("GAMEPLAY.skill_slots[%s] references non-growth skill: %s" % [slot, skill_id])
 
 func _validate_mission_catalog() -> void:
-	var missions := _load_json_dictionary(MISSION_FILE, "MISSION")
+	var missions := _load_catalog_dictionary(MISSION_FILE, "MISSION")
 	if missions.is_empty():
 		return
 	for mission_id in missions.keys():
@@ -294,10 +288,10 @@ func _validate_mission_catalog() -> void:
 			errors.append("MISSION[%s].time_limit must be greater than 0 for defend_base" % mission_id)
 
 func _validate_reward_catalog() -> void:
-	var rewards := _load_json_dictionary(REWARD_FILE, "REWARD")
+	var rewards := _load_catalog_dictionary(REWARD_FILE, "REWARD")
 	if rewards.is_empty():
 		return
-	var items := _load_json_dictionary(ITEM_FILE, "ITEM")
+	var items := _load_catalog_dictionary(ITEM_FILE, "ITEM")
 	for reward_id in rewards.keys():
 		var reward = rewards[reward_id]
 		if not (reward is Dictionary):
@@ -317,70 +311,57 @@ func _validate_reward_catalog() -> void:
 					errors.append("REWARD[%s] references unknown item: %s" % [reward_id, str(item_id)])
 
 func _validate_stage_catalog() -> void:
-	var file := FileAccess.open(STAGE_CATALOG_FILE, FileAccess.READ)
-	if file == null:
-		errors.append("STAGE CATALOG file missing: %s" % STAGE_CATALOG_FILE)
-		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not (parsed is Dictionary) or not (parsed.get("stages", []) is Array) or parsed["stages"].is_empty():
-		errors.append("STAGE CATALOG stages must be a non-empty array: %s" % STAGE_CATALOG_FILE)
+	var parsed: Dictionary = ContentCatalogLoader.load_document(STAGE_CATALOG_FILE)
+	var stages = parsed.get("stages", [])
+	if not (stages is Array) or stages.is_empty():
+		errors.append("STAGE CATALOG stages must be a non-empty array in SQLite: %s" % STAGE_CATALOG_FILE)
 		return
 	var seen := {}
-	for index in parsed["stages"].size():
-		var stage_id := str(parsed["stages"][index])
+	for index in stages.size():
+		var stage_id := str(stages[index])
 		if stage_id.is_empty() or seen.has(stage_id):
 			errors.append("STAGE CATALOG stages[%d] is empty or duplicated: %s" % [index, stage_id])
-		elif not FileAccess.file_exists(StageLoader.resolve_stage_path(stage_id)):
-			errors.append("STAGE CATALOG stages[%d] references missing stage: %s" % [index, stage_id])
+		elif ContentCatalogLoader.load_document(StageLoader.resolve_stage_path(stage_id)).is_empty():
+			errors.append("STAGE CATALOG stages[%d] references missing stage in SQLite: %s" % [index, stage_id])
 		seen[stage_id] = true
 
 func _validate_campaign() -> void:
-	var file := FileAccess.open(CAMPAIGN_FILE, FileAccess.READ)
-	if file == null:
-		errors.append("CAMPAIGN file missing: %s" % CAMPAIGN_FILE)
-		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not (parsed is Dictionary) or not (parsed.get("stages", []) is Array) or parsed["stages"].is_empty():
-		errors.append("CAMPAIGN stages must be a non-empty array: %s" % CAMPAIGN_FILE)
+	var parsed: Dictionary = ContentCatalogLoader.load_document(CAMPAIGN_FILE)
+	var stages = parsed.get("stages", [])
+	if not (stages is Array) or stages.is_empty():
+		errors.append("CAMPAIGN stages must be a non-empty array in SQLite: %s" % CAMPAIGN_FILE)
 		return
 	var catalog_ids := _load_stage_catalog_ids()
-	for index in parsed["stages"].size():
-		var stage_id := str(parsed["stages"][index])
-		if stage_id.is_empty() or not FileAccess.file_exists(StageLoader.resolve_stage_path(stage_id)):
-			errors.append("CAMPAIGN stages[%d] references missing stage: %s" % [index, stage_id])
+	for index in stages.size():
+		var stage_id := str(stages[index])
+		if stage_id.is_empty() or ContentCatalogLoader.load_document(StageLoader.resolve_stage_path(stage_id)).is_empty():
+			errors.append("CAMPAIGN stages[%d] references missing stage in SQLite: %s" % [index, stage_id])
 		elif not catalog_ids.has(stage_id):
 			errors.append("CAMPAIGN stages[%d] is not present in STAGE CATALOG: %s" % [index, stage_id])
 
 func _load_stage_catalog_ids() -> Dictionary:
 	var ids := {}
-	var file := FileAccess.open(STAGE_CATALOG_FILE, FileAccess.READ)
-	if file == null:
+	var parsed: Dictionary = ContentCatalogLoader.load_document(STAGE_CATALOG_FILE)
+	var stages = parsed.get("stages", [])
+	if not (stages is Array):
 		return ids
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not (parsed is Dictionary) or not (parsed.get("stages", []) is Array):
-		return ids
-	for stage_id in parsed["stages"]:
+	for stage_id in stages:
 		var id := str(stage_id)
 		if not id.is_empty():
 			ids[id] = true
 	return ids
 
 func _validate_stages() -> void:
-	var dir := DirAccess.open("res://content/stages/")
-	if dir == null: errors.append("STAGE directory missing"); return
-	dir.list_dir_begin()
-	var file := dir.get_next()
-	while not file.is_empty():
-		if not dir.current_is_dir() and file.ends_with(".json"):
-			var path := "res://content/stages/" + file
-			if path != STAGE_CATALOG_FILE:
-				var parsed = _load_json_dictionary(path, "STAGE")
-				if not parsed.is_empty(): _validate_stage(parsed, path)
-		file = dir.get_next()
-	dir.list_dir_end()
+	var catalog: Dictionary = ContentCatalogLoader.load_document(STAGE_CATALOG_FILE)
+	var stages = catalog.get("stages", [])
+	if not (stages is Array):
+		return
+	for stage_id in stages:
+		var id := str(stage_id)
+		var path := StageLoader.resolve_stage_path(id)
+		var parsed := ContentCatalogLoader.load_document(path)
+		if not parsed.is_empty():
+			_validate_stage(parsed, path)
 
 func _validate_stage(stage: Dictionary, path: String) -> void:
 	var stage_id := str(stage.get("stage_id", ""))
@@ -396,8 +377,8 @@ func _validate_stage(stage: Dictionary, path: String) -> void:
 	if reward_id.is_empty() or not _catalog_contains(REWARD_FILE, reward_id):
 		errors.append("STAGE[%s].reward_id references unknown reward: %s" % [path, reward_id])
 	var map_file := str(stage.get("map_file", ""))
-	if map_file.is_empty() or not FileAccess.file_exists(map_file):
-		errors.append("STAGE[%s].map_file is missing or not found: %s" % [path, map_file])
+	if map_file.is_empty():
+		errors.append("STAGE[%s].map_file is missing: %s" % [path, map_file])
 	else:
 		_validate_map_file(map_file, path)
 	var allied_units = stage.get("allied_units", [])
@@ -447,12 +428,8 @@ func _validate_stage(stage: Dictionary, path: String) -> void:
 
 func _map_has_allied_spawn(map_file: String, spawn_id: String) -> bool:
 	var lookup_id := spawn_id.substr(6) if spawn_id.begins_with("point:") else spawn_id
-	var file := FileAccess.open(map_file, FileAccess.READ)
-	if file == null:
-		return false
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not (parsed is Dictionary):
+	var parsed: Dictionary = MapLoader.load_map_data(map_file)
+	if parsed.is_empty():
 		return false
 	var robot_spots = parsed.get("robot_spots", {})
 	if robot_spots is Dictionary and robot_spots.has(lookup_id):
@@ -468,14 +445,9 @@ func _catalog_contains(path: String, entry_id: String) -> bool:
 	return ObjectRepository.load_catalog(path).has(entry_id)
 
 func _validate_map_file(map_file: String, stage_path: String) -> void:
-	var file := FileAccess.open(map_file, FileAccess.READ)
-	if file == null:
-		errors.append("MAP referenced by STAGE[%s] cannot be opened: %s" % [stage_path, map_file])
-		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not (parsed is Dictionary):
-		errors.append("MAP referenced by STAGE[%s] is not an object: %s" % [stage_path, map_file])
+	var parsed: Dictionary = MapLoader.load_map_data(map_file)
+	if parsed.is_empty():
+		errors.append("MAP referenced by STAGE[%s] cannot be loaded from SQLite: %s" % [stage_path, map_file])
 		return
 	for key in ["map_id", "name", "map_size", "tile_size", "map_origin", "map_pixel_size", "goal"]:
 		if not parsed.has(key):
@@ -561,3 +533,5 @@ func _walk_refs(value, source: String) -> void:
 	elif value is Array:
 		for child in value:
 			_walk_refs(child, source)
+
+\r\n

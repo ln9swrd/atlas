@@ -3,12 +3,12 @@ extends Control
 
 signal request_map_editor_for_path(map_path: String)
 
-const STAGE_DIR := "res://content/stages/"
-const STAGE_CATALOG_FILE := "res://content/stages/stage_catalog.json"
-const MISSION_CATALOG_FILE := "res://content/missions/missions.json"
-const REWARD_CATALOG_FILE := "res://content/rewards/rewards.json"
-const MAP_DIR := "res://content/maps/"
-const ASSET_CATALOG_FILE := "res://content/editor/asset_catalog.json"
+const STAGE_DIR := ""
+const STAGE_CATALOG_FILE := "stage_catalog"
+const MISSION_CATALOG_FILE := "missions"
+const REWARD_CATALOG_FILE := "rewards"
+const MAP_DIR := ""
+const ASSET_CATALOG_FILE := "asset_catalog"
 const LANES := ["left", "right", "both"]
 var current_path := ""
 var stage_data: Dictionary = {}
@@ -40,7 +40,7 @@ var encounters_box: VBoxContainer
 var status_label: Label
 
 func _ready() -> void:
-	enemy_types = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json").keys()
+	enemy_types = ContentCatalogLoader.load_dictionary_catalog("enemies").keys()
 	enemy_types.sort()
 	_build_ui()
 	_refresh_stage_list()
@@ -231,35 +231,18 @@ func _option_row(parent: VBoxContainer, label_text: String, option: OptionButton
 
 func _refresh_stage_list() -> void:
 	stage_list.clear()
-	var dir := DirAccess.open(STAGE_DIR)
-	if dir == null: return
-	var files: Array[String] = []
-	dir.list_dir_begin()
-	var file := dir.get_next()
-	while not file.is_empty():
-		if not dir.current_is_dir() and file.ends_with(".json") and STAGE_DIR + file != STAGE_CATALOG_FILE: files.append(file)
-		file = dir.get_next()
-	dir.list_dir_end()
-	files.sort()
-	for f in files:
-		stage_list.add_item(f.get_basename())
-		stage_list.set_item_metadata(stage_list.item_count - 1, STAGE_DIR + f)
+	var catalog := ContentCatalogLoader.load_document(STAGE_CATALOG_FILE)
+	for stage_id in catalog.get("stages", []):
+		var id := str(stage_id)
+		stage_list.add_item(id)
+		stage_list.set_item_metadata(stage_list.item_count - 1, id)
 
 func _refresh_map_options(selected_path: String) -> void:
 	map_option.clear()
-	var dir := DirAccess.open(MAP_DIR)
-	if dir == null: return
-	var files: Array[String] = []
-	dir.list_dir_begin()
-	var file := dir.get_next()
-	while not file.is_empty():
-		if not dir.current_is_dir() and file.ends_with(".json"): files.append(file)
-		file = dir.get_next()
-	dir.list_dir_end()
-	files.sort()
+	var paths := MapLoader.list_map_paths()
 	var selected := 0
-	for f in files:
-		var path := MAP_DIR + f
+	for path in paths:
+		var f := path.get_file()
 		map_option.add_item(f)
 		map_option.set_item_metadata(map_option.item_count - 1, path)
 		if path == selected_path: selected = map_option.item_count - 1
@@ -275,10 +258,7 @@ func _on_map_option_selected(index: int) -> void:
 
 func _load_map_preview_assets() -> void:
 	map_preview_assets.clear()
-	var file := FileAccess.open(ASSET_CATALOG_FILE, FileAccess.READ)
-	if file == null:
-		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	var parsed: Variant = ContentCatalogLoader.load_document(ASSET_CATALOG_FILE)
 	if not parsed is Dictionary or not parsed.get("assets", []) is Array:
 		return
 	for value in parsed.get("assets", []):
@@ -475,7 +455,7 @@ func _delete_group(ei: int, wi: int, gi: int) -> void:
 	_rebuild_encounters()
 
 func _confirm_delete_stage() -> void:
-	if current_path.is_empty() or not FileAccess.file_exists(current_path):
+	if current_path.is_empty():
 		_set_status("No stage selected.")
 		return
 	var dialog := ConfirmationDialog.new()
@@ -488,22 +468,23 @@ func _confirm_delete_stage() -> void:
 
 func _delete_stage(dialog: ConfirmationDialog) -> void:
 	var stage_id := str(stage_data.get("stage_id", current_path.get_file().get_basename()))
-	var absolute_path := ProjectSettings.globalize_path(current_path)
-	if not FileAccess.file_exists(current_path) or DirAccess.remove_absolute(absolute_path) != OK:
-		_set_status("FAILED to delete stage file.")
+	var catalog := ContentCatalogLoader.load_document(STAGE_CATALOG_FILE)
+	if catalog.is_empty():
+		_set_status("FAILED to load stage catalog from SQLite.")
 		dialog.queue_free()
 		return
-	var catalog_file := FileAccess.open(STAGE_CATALOG_FILE, FileAccess.READ)
-	if catalog_file != null:
-		var parsed = JSON.parse_string(catalog_file.get_as_text())
-		catalog_file.close()
-		if parsed is Dictionary and parsed.get("stages", []) is Array:
-			var stages: Array = parsed["stages"]
-			stages.erase(stage_id)
-			var catalog_out := FileAccess.open(STAGE_CATALOG_FILE, FileAccess.WRITE)
-			if catalog_out != null:
-				catalog_out.store_string(JSON.stringify(parsed, "  "))
-				catalog_out.close()
+	var stages: Array = catalog.get("stages", [])
+	stages.erase(stage_id)
+	catalog["stages"] = stages
+	if not ObjectPersistence.save_content_document(STAGE_CATALOG_FILE, catalog):
+		_set_status("FAILED to update stage catalog in SQLite.")
+		dialog.queue_free()
+		return
+	var stage_table := stage_id
+	if not ObjectPersistence.delete_content_document(current_path):
+		_set_status("FAILED to delete stage from SQLite: " + stage_table)
+		dialog.queue_free()
+		return
 	current_path = ""
 	stage_data = {}
 	_refresh_stage_list()
@@ -526,12 +507,7 @@ func _save_mission() -> bool:
 		"target_id": mission_target_edit.text.strip_edges(),
 		"time_limit": int(mission_time_spin.value)
 	}
-	var file := FileAccess.open(MISSION_CATALOG_FILE, FileAccess.WRITE)
-	if file == null:
-		_set_status("FAILED to open Mission catalog for writing."); return false
-	file.store_string(JSON.stringify(catalog, "  "))
-	file.close()
-	return true
+	return ObjectPersistence.save_catalog(MISSION_CATALOG_FILE, catalog)
 
 func _save_reward() -> bool:
 	var reward_id := reward_id_edit.text.strip_edges()
@@ -548,12 +524,7 @@ func _save_reward() -> bool:
 		"gold": int(reward_gold_spin.value),
 		"item_ids": item_ids
 	}
-	var file := FileAccess.open(REWARD_CATALOG_FILE, FileAccess.WRITE)
-	if file == null:
-		_set_status("FAILED to open Reward catalog for writing."); return false
-	file.store_string(JSON.stringify(catalog, "  "))
-	file.close()
-	return true
+	return ObjectPersistence.save_catalog(REWARD_CATALOG_FILE, catalog)
 
 func _save_stage() -> void:
 	if current_path.is_empty() or id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty():
@@ -576,11 +547,10 @@ func _save_stage() -> void:
 	stage_data["mission_id"] = mission_id_edit.text.strip_edges()
 	stage_data["reward_id"] = reward_id_edit.text.strip_edges()
 	stage_data.erase("mission")
-	var file := FileAccess.open(current_path, FileAccess.WRITE)
-	if file == null: _set_status("FAILED to open file for writing."); return
-	file.store_string(JSON.stringify(stage_data, "  "))
-	file.close()
-	_set_status("SAVED: " + current_path)
+	if not ObjectPersistence.save_content_document(current_path, stage_data):
+		_set_status("FAILED to save Stage to SQLite: " + current_path)
+		return
+	_set_status("SAVED TO SQLITE: " + current_path)
 
 func _set_status(message: String) -> void:
 	if status_label: status_label.text = "Status: " + message

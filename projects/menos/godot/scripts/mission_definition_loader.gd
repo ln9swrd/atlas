@@ -1,7 +1,7 @@
 class_name MissionDefinitionLoader
 extends RefCounted
 
-const CATALOG_PATH := "res://content/missions/missions.json"
+const CATALOG_PATH := "missions"
 
 static func load_catalog() -> Dictionary:
 	return ContentCatalogLoader.load_dictionary_catalog(CATALOG_PATH)

@@ -1,7 +1,7 @@
 class_name VisualAssetRepository
 extends RefCounted
 
-const CATALOG_PATH := "res://content/editor/visual_assets.json"
+const CATALOG_PATH := "visual_assets"
 
 static var _catalog: Dictionary = {}
 static var _loaded := false
@@ -10,13 +10,8 @@ static func _ensure_loaded() -> void:
 	if _loaded:
 		return
 	_loaded = true
-	if not FileAccess.file_exists(CATALOG_PATH):
-		return
-	var file := FileAccess.open(CATALOG_PATH, FileAccess.READ)
-	if file == null:
-		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	if parsed is Dictionary:
+	var parsed := ContentCatalogLoader.load_dictionary_catalog(CATALOG_PATH)
+	if not parsed.is_empty():
 		_catalog = parsed
 
 static func reload() -> void:

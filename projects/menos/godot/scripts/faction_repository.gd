@@ -1,7 +1,7 @@
 class_name FactionRepository
 extends RefCounted
 
-const CATALOG_PATH := "res://content/factions/factions.json"
+const CATALOG_PATH := "factions"
 
 static var _catalog: Dictionary = {}
 static var _loaded := false

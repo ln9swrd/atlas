@@ -1,7 +1,7 @@
 # MENOS Catalog Editor Development Plan
 
 > 작성일: 2026-10-06
-> 상태: PROPOSAL — Master 승인 후 순차 실행
+> 상태: SPECIALIZED EXECUTION PLAN / CURRENT STATUS RECORDED
 > 목적: MENOS Catalog Editor를 단일 이미지와 Sprite Sheet를 안전하게 편집하고, Visual Asset의 Frame/Anchor/Team Mask/Variant를 일관되게 관리할 수 있는 제작 도구로 완성한다.
 
 ## 1. 범위

@@ -1,7 +1,7 @@
-# MENOS 실제 구현 필요 항목 목록
+# MENOS 현재 구현 필요 항목 목록
 
-상태: PROPOSAL / IMPLEMENTATION GAP LIST
-작성일: 2026-09-30
+상태: CURRENT RUNTIME ACCEPTANCE GAP LIST
+작성일: 2026-10-06
 
 ## 1. 목적
 
@@ -198,88 +198,3 @@ STATUS — PASS
 변경 사항 — GAP-04 상태 및 현재 검증 경계를 갱신.
 
 판정 — B 범위의 코드 구현 완료. 추가 전투 구조 변경은 자동 진행하지 않는다.
-
-## 2026-10-06 CURRENT IMPLEMENTATION AUDIT — AUTHORITATIVE CURRENT STATE
-
-This section supersedes older HEAD/Working Tree snapshots in this document. It does not change Canon.
-
-- Project: MENOS
-- Branch: `main`
-- HEAD: `7c97acc97be9262b50fe84b691de9b0dbdbd94e5`
-- Working Tree at audit start: CLEAN.
-- Godot: `D:\Godot_v4.7.2-stable`, version `4.7.2.stable.official`.
-- Directly confirmed implementation: manual robot movement, basic attack, special attack, skill slots, finisher, target switching, XP/level progression, AlliedUnitAI, Giant boss attack patterns, Tower auto support, Campaign/Stage/Map loading paths.
-- GAP-01 HUD: CODE VERIFIED / minimum implementation present; PIE not verified in this audit.
-- GAP-02 Giant boss behavior: CODE VERIFIED / minimum implementation present; PIE not verified in this audit.
-- GAP-03 fixed Tower support: CODE VERIFIED / minimum implementation present; PIE not verified in this audit.
-- GAP-04 attack-to-hit-to-damage timing: CODE VERIFIED; PIE UNVERIFIED.
-- GAP-05 Campaign 1 minimum integration: CODE VERIFIED / minimum integration present; full start-to-finish PIE UNVERIFIED.
-- BUILD VERIFIED: UNVERIFIED in this audit.
-- EDITOR VERIFIED: UNVERIFIED as a full manual Editor acceptance pass.
-- PIE VERIFIED: NOT VERIFIED. Master runtime acceptance remains required.
-
-The Godot process used during this audit regenerated tracked `.import` metadata. Those generated changes were reverted after verification because the working tree was CLEAN before the audit. No code, scene, asset, or Canon change was retained by this audit.
-
-Conclusion: implementation documents are now aligned to the current repository baseline. The remaining verification boundary is Runtime/PIE, not a newly identified core-code gap.
-## 2026-10-06 PIE TOOLING / ENVIRONMENT BASELINE
-
-This section records the verified local tooling required for Godot PIE testing. It does not change Canon or gameplay scope.
-
-- Godot: `D:\Godot_v4.7.2-stable`, `4.7.2.stable.official.ed1daf0bf` — REQUIRED / VERIFIED.
-- VS Code: `1.140.0` — development/log inspection / VERIFIED.
-- Git: `2.54.0` — baseline and diff inspection / VERIFIED.
-- Git LFS: `3.7.1` — repository asset support / VERIFIED.
-- PowerShell: Windows PowerShell `5.1.19041.6456` — execution/automation / VERIFIED.
-- Python: `3.14.5` — optional tooling / VERIFIED.
-- Node.js: `22.23.3`, npm `10.9.9` — optional tooling / VERIFIED.
-- ripgrep: `15.2.0` — code/log search / VERIFIED.
-- fd: `10.5.0` — file discovery / VERIFIED.
-- jq: `1.8.2` — JSON inspection / VERIFIED.
-- GitHub CLI: `2.102.0` — repository operations / VERIFIED.
-- 7-Zip: `19.00 (x64)` — archive utility installed; `7z` is not on PATH.
-
-PIE does not require CMake, Ninja, Make, MSBuild, or PowerShell 7 for the current GDScript-only MENOS project. No additional program is currently required for PIE execution.
-
-Verification boundary:
-- CODE VERIFIED: existing implementation audit remains valid.
-- BUILD VERIFIED: NOT VERIFIED.
-- EDITOR VERIFIED: NOT VERIFIED as a full manual acceptance pass.
-- PIE VERIFIED: NOT VERIFIED. Master runtime acceptance remains required.
-
-No code, scene, asset, or Canon changes were made by this tooling audit. Do not revert pre-existing Working Tree changes.
-
-
-## 2026-10-06 DOCUMENT UPDATE — CURRENT REPOSITORY BASELINE
-
-이 섹션은 이전 문서의 HEAD/Working Tree 스냅샷보다 우선하는 현재 문서 기준선이다. Canon을 변경하지 않는다.
-
-- Project: MENOS
-- Branch: `main`
-- HEAD: `178cac776cfa21d3446e5a199ad7db5025f64589`
-- Working Tree: 기존 변경사항 다수 존재. 이번 문서 갱신은 기존 변경을 수정/되돌리지 않는다.
-- Godot: `D:\\Godot_v4.7.2-stable`, `4.7.2.stable.official.ed1daf0bf`
-- Core implementation assessment: 직접 조종, 기본 공격, 타깃 전환, 특수공격, 스킬 슬롯, 필살기, XP/레벨, AlliedUnitAI, Giant 보스 패턴, 고정형 Tower 지원, Campaign/Stage/Map 경로가 코드상 확인됨.
-- BUILD VERIFIED: UNVERIFIED
-- EDITOR VERIFIED: 전체 수동 Acceptance 기준 UNVERIFIED
-- PIE VERIFIED: UNVERIFIED
-- 따라서 현재 핵심 공백은 신규 핵심 전투 코드의 존재 여부보다 Runtime/PIE 검증 경계에 있다.
-
-### JSON → SQLite 콘텐츠 파이프라인 기준선
-
-- JSON은 당분간 Authoritative Source로 유지한다.
-- SQLite 전환은 콘텐츠 타입별로 하나씩 수행한다.
-- 첫 대상은 Robot이다.
-- 현재 Robot JSON과 SQLite의 의미상 데이터 비교 결과는 동일하다. `asura`, `valkyrie` 두 항목이 일치한다.
-- `ContentCatalogLoader`는 Robot JSON 경로 요청을 SQLite `robots` 테이블에서 읽도록 연결되어 있다.
-- `ObjectPersistence.sync_catalog_to_sqlite()`는 Robot에 한정된 동기화 경로를 추가했으나 Editor Save에 자동 연결하지 않는다.
-- Editor Save → 자동 SQLite 갱신은 Canon상 아직 적용하지 않는다.
-- Robot Sync 실제 실행 및 Runtime/PIE 검증은 별도 검증 항목이며, 확인 전에는 VERIFIED로 표시하지 않는다.
-- 다른 콘텐츠 타입의 SQLite 전환은 수행하지 않는다.
-
-### 문서 정합성 판정
-
-- 오래된 HEAD/Working Tree 기록은 역사적 기록으로 보존한다.
-- 현재 상태 판단에는 본 섹션의 2026-10-06 기준선을 사용한다.
-- Canon 변경 없음.
-- 코드/Asset/Scene/Data 변경 없음.
-- Commit/Push 없음.

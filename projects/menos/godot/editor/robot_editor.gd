@@ -1,7 +1,7 @@
 class_name RobotEditorMain
 extends Control
 
-const ROBOT_FILE := "res://content/robots/robots.json"
+const ROBOT_FILE := "robots"
 const EDITOR_THUMBNAIL_UTIL = preload("res://scripts/editor_thumbnail_util.gd")
 const VISUAL_ASSET_FRAME = preload("res://scripts/visual_asset_frame.gd")
 const VISUAL_ASSET_PREVIEW = preload("res://editor/visual_asset_preview.gd")
@@ -1060,23 +1060,14 @@ func _generate_profile_team_mask() -> void:
 	_set_status("Generated team mask: %s" % mask_resource)
 
 func _set_profile_team_mask_source(asset_id: String, mask_source: String) -> bool:
-	const catalog_path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(catalog_path, FileAccess.READ)
-	if file == null:
+	const catalog_path := "visual_assets"
+	var catalog := ContentCatalogLoader.load_dictionary_catalog(catalog_path)
+	if not catalog.has(asset_id) or not (catalog[asset_id] is Dictionary):
 		return false
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not (parsed is Dictionary) or not (parsed.get(asset_id, null) is Dictionary):
-		return false
-	var entry: Dictionary = parsed[asset_id]
+	var entry: Dictionary = catalog[asset_id].duplicate(true)
 	entry["team_mask"] = {"source": mask_source}
-	parsed[asset_id] = entry
-	file = FileAccess.open(catalog_path, FileAccess.WRITE)
-	if file == null:
-		return false
-	file.store_string(JSON.stringify(parsed, "\t"))
-	file.close()
-	return true
+	return ObjectPersistence.save_catalog_entry(catalog_path, asset_id, entry)
+
 
 func _set_status(message: String) -> void:
 	if status_label:

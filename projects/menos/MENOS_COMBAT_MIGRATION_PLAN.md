@@ -1,6 +1,6 @@
 # MENOS 전투 구조 전환 계획
 
-상태: MASTER REQUESTED PLAN / 실행 전 설계 문서
+상태: HISTORICAL MIGRATION PLAN / CURRENT EXECUTION AUTHORITY IS MENOS_DEVELOPMENT_PLAN.md
 작성일: 2026-09-29
 기준 Canon: MENOS_COMBAT_CANON.md
 목적: 기존 Tower Defense/지휘관 중심 PoC를 폐기하지 않고, Master가 확정한 "슈퍼로봇 직접 조종" 전투 구조로 단계적으로 전환하기 위한 실행 기준을 고정한다.

@@ -2,7 +2,7 @@ class_name TowerEditorMain
 extends Control
 
 const VISUAL_ASSET_FRAME = preload("res://scripts/visual_asset_frame.gd")
-const TOWER_FILE := "res://content/towers/towers.json"
+const TOWER_FILE := "towers"
 const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var tower_data: Dictionary = {}
@@ -246,7 +246,9 @@ func _refresh_tower_list() -> void:
 		if not data is Dictionary:
 			continue
 		tower_list.add_item(str(data.get("name", tower_type.to_upper())))
-		tower_list.set_item_icon(tower_list.item_count - 1, load(str(data.get("sprite_anim", ""))) as Texture2D)
+		var sprite_path := str(data.get("sprite_anim", ""))
+		var sprite_texture: Texture2D = load(sprite_path) as Texture2D if not sprite_path.is_empty() else null
+		tower_list.set_item_icon(tower_list.item_count - 1, sprite_texture)
 		tower_list.set_item_metadata(tower_list.item_count - 1, tower_type)
 
 func _on_tower_selected(index: int) -> void:

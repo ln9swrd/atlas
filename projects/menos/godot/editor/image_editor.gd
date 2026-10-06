@@ -1,4 +1,15 @@
 extends Control
+func _load_catalog_data(path: String) -> Dictionary:
+	return ObjectRepository.load_catalog(path)
+
+func _save_catalog_data(path: String, data: Dictionary) -> bool:
+	return ObjectPersistence.save_catalog(path, data)
+
+func _load_document_data(path: String) -> Dictionary:
+	return ContentCatalogLoader.load_document(path)
+
+func _save_document_data(path: String, data: Dictionary) -> bool:
+	return ObjectPersistence.save_content_document(path, data)
 const REGION_VIEW_SCRIPT := preload("res://editor/asset_region_view.gd")
 const LOADER := preload("res://editor/image_texture_loader.gd")
 const IMAGE_STATE := preload("res://editor/image_editor_state.gd")
@@ -97,19 +108,15 @@ func _use_selected_asset() -> void:
 	request_previous_editor.emit()
 
 func _update_visual_asset_region(asset_id: String, source_path_value: String, rect: Rect2i) -> bool:
-	var path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return false
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary or not data.has(asset_id) or not data[asset_id] is Dictionary:
+	var path := "visual_assets"
+	var data := _load_catalog_data(path)
+	if not data.has(asset_id) or not data[asset_id] is Dictionary:
 		return false
 	var asset: Dictionary = data[asset_id]
 	asset["source"] = source_path_value
 	asset["region"] = [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
 	data[asset_id] = asset
-	return _write_json(path, data)
+	return _save_catalog_data(path, data)
 
 func _ready() -> void:
 	# Snapshot the semantic ID supplied by the originating editor. Catalog browsing
@@ -554,12 +561,12 @@ func _add_button(parent: HBoxContainer, text_value: String, callback: Callable) 
 func _scan_connected_images() -> void:
 	entries.clear()
 	var seen := {}
-	_scan_json_images("res://content/towers/towers.json", "towers", "sprite_anim", "Tower sprite animation", "Tower", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "Allied Unit", "visuals.sprite", "Sprite", "Unit", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "Allied Unit", "visuals.default_image", "Profile Image", "Unit", seen)
-	_scan_json_images("res://content/allied_units/allied_units.json", "Allied Unit", "projectile_anim", "Projectile", "Unit", seen)
-	_scan_json_images("res://content/enemies/enemies.json", "Enemy", "sprite_anim", "Sprite", "Enemy", seen)
-	_scan_json_images("res://content/enemies/enemies.json", "Enemy", "projectile_anim", "Projectile", "Enemy", seen)
+	_scan_json_images("towers", "towers", "sprite_anim", "Tower sprite animation", "Tower", seen)
+	_scan_json_images("allied_units", "Allied Unit", "visuals.sprite", "Sprite", "Unit", seen)
+	_scan_json_images("allied_units", "Allied Unit", "visuals.default_image", "Profile Image", "Unit", seen)
+	_scan_json_images("allied_units", "Allied Unit", "projectile_anim", "Projectile", "Unit", seen)
+	_scan_json_images("enemies", "Enemy", "sprite_anim", "Sprite", "Enemy", seen)
+	_scan_json_images("enemies", "Enemy", "projectile_anim", "Projectile", "Enemy", seen)
 	_scan_allied_animations(seen)
 	_scan_robot_images(seen)
 	_scan_catalog(seen)
@@ -671,36 +678,16 @@ func _rename_catalog_tree_item() -> void:
 
 func _rename_visual_asset_id(old_id: String, new_id: String) -> bool:
 	if old_id.is_empty() or new_id.is_empty():
-		status.text = "Visual Asset ID is required."
-		return false
+		status.text = "Visual Asset ID is required."; return false
 	if new_id.find("/") >= 0 or new_id.find("\\") >= 0:
-		status.text = "Visual Asset ID contains invalid characters."
-		return false
-	var catalog_path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(catalog_path, FileAccess.READ)
-	if file == null:
-		status.text = "Visual Asset Catalog could not be loaded."
-		return false
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary or not data.has(old_id):
-		status.text = "Visual Asset not found: " + old_id
-		return false
-	if data.has(new_id):
-		status.text = "Visual Asset ID already exists: " + new_id
-		return false
-	var asset: Dictionary = data[old_id]
-	data.erase(old_id)
-	asset["id"] = new_id
-	data[new_id] = asset
-	if not _write_json(catalog_path, data):
-		status.text = "Visual Asset ID saved."
-		return false
-	VisualAssetResolver.reload()
-	if IMAGE_STATE.selection_asset_id == old_id:
-		IMAGE_STATE.selection_asset_id = new_id
-	status.text = "Visual Asset ID: %s -> %s" % [old_id, new_id]
-	return true
+		status.text = "Visual Asset ID contains invalid characters."; return false
+	var path := "visual_assets"; var data := _load_catalog_data(path)
+	if not data.has(old_id): status.text = "Visual Asset not found: " + old_id; return false
+	if data.has(new_id): status.text = "Visual Asset ID already exists: " + new_id; return false
+	var asset: Dictionary = data[old_id]; data.erase(old_id); asset["id"] = new_id; data[new_id] = asset
+	if not _save_catalog_data(path, data): return false
+	VisualAssetResolver.reload(); IMAGE_STATE.selection_asset_id = new_id if IMAGE_STATE.selection_asset_id == old_id else IMAGE_STATE.selection_asset_id
+	status.text = "Visual Asset ID: %s -> %s" % [old_id, new_id]; return true
 
 func _get_catalog_thumbnail(entry: Dictionary) -> Texture2D:
 	var value := str(entry.get("owner_key", "")) if str(entry.get("owner_kind", "")) == "visual_asset" else str(entry.get("path", ""))
@@ -738,192 +725,84 @@ func _audit_image_references() -> void:
 	dialog.popup_centered(Vector2i(760, 520))
 
 func _scan_json_images(path: String, kind: String, field: String, usage: String, category: String, seen: Dictionary) -> void:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null: return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary: return
+	var data := _load_catalog_data(path)
 	for key in data:
 		if not data[key] is Dictionary: continue
 		var value: Variant = data[key]
 		for part in field.split("."):
-			if value is Dictionary:
-				value = value.get(part, "")
-			else:
-				value = ""
+			if value is Dictionary: value = value.get(part, "")
+			else: value = ""
 		var image_path := str(value)
 		if image_path.is_empty(): continue
 		if not ResourceLoader.exists(image_path):
 			var alias_path := "res://assets/menos/sprites/%s.png" % image_path
-			if ResourceLoader.exists(alias_path):
-				image_path = alias_path
+			if ResourceLoader.exists(alias_path): image_path = alias_path
 		if seen.has(image_path): continue
 		seen[image_path] = true
 		entries.append({"label": "%s / %s" % [kind, str(data[key].get("name", key))], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": category})
 
 func _scan_allied_animations(seen: Dictionary) -> void:
-	var path := "res://content/allied_units/allied_units.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null: return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary: return
+	var path := "allied_units"; var data := _load_catalog_data(path)
 	for key in data:
 		if not data[key] is Dictionary: continue
-		var visuals: Dictionary = data[key].get("visuals", {})
-		if not visuals is Dictionary: continue
-		var animations: Dictionary = visuals.get("animations", {})
+		var unit: Dictionary = data[key]; var animations: Dictionary = unit.get("visuals", {}).get("animations", {})
 		if not animations is Dictionary: continue
 		for animation_name in animations:
-			var image_path := str(animations[animation_name])
-			if image_path.is_empty() or seen.has(image_path): continue
+			var image_path := str(animations[animation_name]); if image_path.is_empty() or seen.has(image_path): continue
 			seen[image_path] = true
-			entries.append({"label": "Unit / %s / %s" % [str(data[key].get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "Unit animation %s" % str(animation_name), "category": "Unit"})
+			entries.append({"label": "Unit / %s / %s" % [str(unit.get("name", key)), str(animation_name)], "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "visuals.animations." + str(animation_name), "usage": "Unit animation %s" % str(animation_name), "category": "Unit"})
 
 func _scan_robot_images(seen: Dictionary) -> void:
-	var path := "res://content/robots/robots.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null: return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary: return
+	var path := "robots"; var data := _load_catalog_data(path)
 	for key in data:
 		if not data[key] is Dictionary: continue
-		var robot_name := str(data[key].get("name", key))
+		var robot: Dictionary = data[key]; var robot_name := str(robot.get("name", key))
 		for field in ["sprite_idle", "sprite_attack", "sprite_move", "sprite_skill", "default_image", "projectile_anim"]:
-			var image_path := str(data[key].get(field, ""))
-			if VisualAssetResolver.get_asset(image_path) != null:
-				continue
-			if image_path.is_empty() or seen.has(image_path): continue
+			var image_path := str(robot.get(field, "")); if image_path.is_empty() or seen.has(image_path): continue
+			if VisualAssetResolver.get_asset(image_path) != null: continue
 			seen[image_path] = true
-			var usage := "Robot asset"
-			match field:
-				"sprite_attack": usage = "Robot attack"
-				"default_image": usage = "Profile Image"
-				"sprite_move": usage = "Robot move"
-				"sprite_skill": usage = "Robot skill"
-				"projectile_anim": usage = "Robot projectile"
-			entries.append({"label": "Robot / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": usage, "category": "Robot"})
-		var animations: Dictionary = data[key].get("animations", {})
+			entries.append({"label": "Robot / %s" % robot_name, "path": image_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": field, "usage": field, "category": "Robot"})
+		var animations: Dictionary = robot.get("animations", {})
 		if animations is Dictionary:
 			for animation_name in animations:
-				var animation_path := str(animations[animation_name])
-				if VisualAssetResolver.get_asset(animation_path) != null:
-					continue
-				if animation_path.is_empty() or seen.has(animation_path): continue
+				var animation_path := str(animations[animation_name]); if animation_path.is_empty() or seen.has(animation_path): continue
+				if VisualAssetResolver.get_asset(animation_path) != null: continue
 				seen[animation_path] = true
 				entries.append({"label": "Robot / %s / %s" % [robot_name, str(animation_name)], "path": animation_path, "owner": path, "owner_kind": "json", "owner_key": str(key), "field": "animations." + str(animation_name), "usage": "Robot animation %s" % str(animation_name), "category": "Robot"})
 
 func _scan_catalog(seen: Dictionary) -> void:
-	var path := "res://content/editor/asset_catalog.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null: return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary: return
-	var assets: Array = data.get("assets", [])
+	var path := "asset_catalog"; var data := _load_document_data(path); var assets: Array = data.get("assets", [])
 	for asset in assets:
 		if not asset is Dictionary: continue
-		var image_path := str(asset.get("source_path", ""))
-		if image_path.is_empty() or seen.has(image_path): continue
+		var image_path := str(asset.get("source_path", "")); if image_path.is_empty() or seen.has(image_path): continue
 		seen[image_path] = true
 		entries.append({"label": "Allied Unit / %s" % str(asset.get("display_name", asset.get("asset_id", "Asset"))), "path": image_path, "owner": path, "owner_kind": "catalog", "owner_key": str(asset.get("asset_id", "")), "field": "source_path", "usage": "%s / %s" % [str(asset.get("group", "Unit")), str(asset.get("kind", "asset"))], "category": "Map"})
+
 func _scan_visual_assets(seen: Dictionary) -> void:
-	var path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary:
-		return
+	var path := "visual_assets"; var data := _load_catalog_data(path)
 	for asset_id in data:
-		var asset = data[asset_id]
-		if not asset is Dictionary:
-			continue
-		var image_path := str(asset.get("source", ""))
-		if image_path.is_empty():
-			continue
-		# Visual Assets are distinct catalog entries even when they share a source image.
-		var region_data: Array = asset.get("region", [])
-		var region_text := ""
-		if region_data.size() >= 4:
-			region_text = " [%s,%s %sx%s]" % [region_data[0], region_data[1], region_data[2], region_data[3]]
-		entries.append({
-			"label": "Visual Asset / %s" % str(asset.get("id", asset_id)),
-			"path": image_path,
-			"region": region_data,
-			"frames": maxi(1, int(asset.get("frames", 1))),
-			"columns": maxi(1, int(asset.get("columns", asset.get("frames", 1)))),
-			"rows": maxi(1, int(asset.get("rows", 1))),
-			"frame_order": str(asset.get("frame_order", "row_major")),
-			"anchor": asset.get("anchor", {"mode": "BOTTOM_CENTER", "x": 0.5, "y": 1.0}),
-			"owner": path,
-			"owner_kind": "visual_asset",
-			"owner_key": str(asset_id),
-			"field": "source",
-			"usage": "Visual Asset%s" % region_text,
-			"asset_owner": str(asset.get("owner", "")),
-			"asset_usage": str(asset.get("usage", "")),
-			"category": str(asset.get("category", "Other"))
-		})
+		var asset = data[asset_id]; if not asset is Dictionary: continue
+		var image_path := str(asset.get("source", "")); if image_path.is_empty(): continue
+		var region_data: Array = asset.get("region", []); var region_text := ""
+		if region_data.size() >= 4: region_text = " [%d,%d %dx%d]" % [int(region_data[0]), int(region_data[1]), int(region_data[2]), int(region_data[3])]
+		entries.append({"label": "Visual Asset / %s" % str(asset.get("name", asset_id)), "path": image_path, "region": region_data, "frames": maxi(1,int(asset.get("frames",1))), "columns": maxi(1,int(asset.get("columns",asset.get("frames",1)))), "rows": maxi(1,int(asset.get("rows",1))), "frame_order": str(asset.get("frame_order","row_major")), "anchor": asset.get("anchor", {"mode":"BOTTOM_CENTER","x":0.5,"y":1.0}), "owner": path, "owner_kind":"visual_asset", "owner_key":str(asset_id), "field":"source", "usage":"Visual Asset%s" % region_text, "asset_owner":str(asset.get("owner","")), "asset_usage":str(asset.get("usage","")), "category":str(asset.get("category","Other"))})
 
 func _refresh_visual_asset_usage_from_robot_refs() -> void:
-	var path := "res://content/robots/robots.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary:
-		return
-	var usage_by_asset: Dictionary = {}
+	var data := _load_catalog_data("robots"); var usage_by_asset: Dictionary = {}
 	for robot_key in data:
-		if not data[robot_key] is Dictionary:
-			continue
-		var robot: Dictionary = data[robot_key]
-		var robot_name := str(robot.get("name", robot_key))
-		var usages: Array[String] = []
-		var fields := {
-			"default_image": "profile",
-			"sprite_idle": "idle",
-			"sprite_move": "move",
-			"sprite_attack": "attack",
-			"sprite_skill": "skill",
-			"projectile_anim": "projectile"
-		}
+		if not data[robot_key] is Dictionary: continue
+		var robot: Dictionary = data[robot_key]; var robot_name := str(robot.get("name", robot_key))
+		var fields := {"default_image":"profile", "sprite_idle":"idle", "sprite_move":"move", "sprite_attack":"attack", "sprite_skill":"skill", "projectile_anim":"projectile"}
 		for field in fields:
-			var asset_id := str(robot.get(field, "")).strip_edges()
-			if asset_id.is_empty():
-				continue
-			var usage_name := str(fields[field])
-			if not usages.has(usage_name):
-				usages.append(usage_name)
-			usage_by_asset[asset_id] = str(usage_by_asset.get(asset_id, ""))
-			if not usage_by_asset[asset_id].is_empty():
-				usage_by_asset[asset_id] += ", "
-			usage_by_asset[asset_id] += "%s:%s" % [robot_name, usage_name]
+			var asset_id := str(robot.get(field, "")).strip_edges(); if asset_id.is_empty(): continue
+			usage_by_asset[asset_id] = str(usage_by_asset.get(asset_id,"")); if not usage_by_asset[asset_id].is_empty(): usage_by_asset[asset_id] += ", "; usage_by_asset[asset_id] += "%s:%s" % [robot_name, str(fields[field])]
 		var animations: Dictionary = robot.get("animations", {})
 		if animations is Dictionary:
 			for animation_name in animations:
-				var asset_id := str(animations[animation_name]).strip_edges()
-				if asset_id.is_empty():
-					continue
-				var usage_text := "%s:%s" % [robot_name, str(animation_name)]
-				usage_by_asset[asset_id] = str(usage_by_asset.get(asset_id, ""))
-				if not usage_by_asset[asset_id].is_empty():
-					usage_by_asset[asset_id] += ", "
-				usage_by_asset[asset_id] += usage_text
+				var asset_id := str(animations[animation_name]).strip_edges(); if asset_id.is_empty(): continue
+				usage_by_asset[asset_id] = str(usage_by_asset.get(asset_id,"")); if not usage_by_asset[asset_id].is_empty(): usage_by_asset[asset_id] += ", "; usage_by_asset[asset_id] += "%s:%s" % [robot_name, str(animation_name)]
 	for entry in entries:
-		if str(entry.get("owner_kind", "")) != "visual_asset":
-			continue
-		var asset_id := str(entry.get("owner_key", ""))
-		if usage_by_asset.has(asset_id):
-			entry["asset_owner"] = "robot"
-			entry["asset_usage"] = str(usage_by_asset[asset_id])
-		else:
-			entry["asset_owner"] = str(entry.get("asset_owner", ""))
-			entry["asset_usage"] = str(entry.get("asset_usage", ""))
+		if str(entry.get("owner_kind","")) == "visual_asset" and usage_by_asset.has(str(entry.get("owner_key",""))): entry["asset_owner"]="robot"; entry["asset_usage"]=str(usage_by_asset[entry.get("owner_key")])
 
 func _scan_main_preloads(seen: Dictionary) -> void:
 	var path := "res://main.gd"
@@ -1044,84 +923,24 @@ func _load_grid_metadata(entry: Dictionary) -> void:
 		frame_transform_status.text = "Select a frame number, then adjust X/Y and scale. Each frame keeps its own transform."
 
 func _apply_grid_metadata() -> void:
-	if current_index < 0 or current_index >= entries.size():
-		grid_status.text = "Select a Visual Asset first."
-		return
+	if current_index < 0 or current_index >= entries.size(): grid_status.text = "Select a Visual Asset first."; return
 	var entry: Dictionary = entries[current_index]
-	if str(entry.get("owner_kind", "")) != "visual_asset":
-		grid_status.text = "Grid / Anchor metadata can only be saved for Visual Assets."
-		return
-	var columns := maxi(1, int(columns_spin.value))
-	var rows := maxi(1, int(rows_spin.value))
-	var frames := maxi(1, int(frames_spin.value))
-	var region := _entry_region(entry)
-	if frames > columns * rows:
-		grid_status.text = "Invalid: Frames cannot exceed Columns × Rows."
-		return
-	if region.size.x <= 0 or region.size.y <= 0:
-		grid_status.text = "Invalid: Region must have positive width and height."
-		return
-	var order := "column_major" if frame_order_option.selected == 1 else "row_major"
-	var anchor_mode := anchor_mode_option.get_item_text(anchor_mode_option.selected)
-	var anchor_x := clampf(float(anchor_x_spin.value), 0.0, 1.0)
-	var anchor_y := clampf(float(anchor_y_spin.value), 0.0, 1.0)
+	if str(entry.get("owner_kind", "")) != "visual_asset": grid_status.text = "Grid / Anchor metadata can only be saved for Visual Assets."; return
+	var columns := maxi(1, int(columns_spin.value)); var rows := maxi(1, int(rows_spin.value)); var frames := maxi(1, int(frames_spin.value)); var region := _entry_region(entry)
+	if frames > columns * rows or region.size.x <= 0 or region.size.y <= 0: grid_status.text = "Invalid grid or region."; return
+	var order := "column_major" if frame_order_option.selected == 1 else "row_major"; var anchor_mode := anchor_mode_option.get_item_text(anchor_mode_option.selected); var anchor_x := clampf(float(anchor_x_spin.value),0.0,1.0); var anchor_y := clampf(float(anchor_y_spin.value),0.0,1.0)
 	match anchor_mode:
-		"BOTTOM_CENTER":
-			anchor_x = 0.5
-			anchor_y = 1.0
-		"CENTER":
-			anchor_x = 0.5
-			anchor_y = 0.5
-		"CENTER_LEFT":
-			anchor_x = 0.0
-			anchor_y = 0.5
-		"BOTTOM_LEFT":
-			anchor_x = 0.0
-			anchor_y = 1.0
-	var frame_anchors: Array = []
-	var existing_frame_anchors: Variant = entry.get("frame_anchors", [])
-	if existing_frame_anchors is Array:
-		frame_anchors = existing_frame_anchors.duplicate(true)
-	while frame_anchors.size() < frames:
-		frame_anchors.append([anchor_x, anchor_y])
-	if frame_anchors.size() > frames:
-		frame_anchors.resize(frames)
-	var selected_anchor_index := clampi(int(frame_index_spin.value) - 1, 0, frames - 1)
-	frame_anchors[selected_anchor_index] = [anchor_x, anchor_y]
-	var catalog_path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(catalog_path, FileAccess.READ)
-	if file == null:
-		grid_status.text = "Cannot open Visual Asset Catalog."
-		return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary or not data.has(str(entry.get("owner_key", ""))):
-		grid_status.text = "Visual Asset not found in Catalog."
-		return
-	var asset: Dictionary = data[str(entry.get("owner_key", ""))]
-	asset["columns"] = columns
-	asset["rows"] = rows
-	asset["frames"] = frames
-	asset["frame_order"] = order
-	asset["anchor"] = {"mode": anchor_mode, "x": anchor_x, "y": anchor_y}
-	asset["frame_anchors"] = frame_anchors if frames > 1 else []
-	data[str(entry.get("owner_key", ""))] = asset
-	if not _write_json(catalog_path, data):
-		grid_status.text = "Failed to save Grid / Anchor metadata."
-		return
-	VisualAssetResolver.reload()
-	entry["columns"] = columns
-	entry["rows"] = rows
-	entry["frames"] = frames
-	entry["frame_order"] = order
-	entry["anchor"] = asset["anchor"]
-	entry["frame_anchors"] = frame_anchors
-	entries[current_index] = entry
-	view.set_grid_metadata(columns, rows, frames, Vector2(anchor_x, anchor_y), order, entry.get("frame_regions", []) if entry.get("frame_regions", []) is Array else [])
-	view.set_frame_anchors(frame_anchors)
-	var cell_w := float(region.size.x) / float(columns)
-	var cell_h := float(region.size.y) / float(rows)
-	grid_status.text = "Saved: %d × %d grid | %d frames | Cell %.0f × %.0f | Anchor %s (%.2f, %.2f)" % [columns, rows, frames, cell_w, cell_h, anchor_mode, anchor_x, anchor_y]
+		"BOTTOM_CENTER": anchor_x=0.5; anchor_y=1.0
+		"CENTER": anchor_x=0.5; anchor_y=0.5
+		"CENTER_LEFT": anchor_x=0.0; anchor_y=0.5
+		"BOTTOM_LEFT": anchor_x=0.0; anchor_y=1.0
+	var frame_anchors: Array = entry.get("frame_anchors", []).duplicate(true); while frame_anchors.size() < frames: frame_anchors.append([anchor_x,anchor_y]); if frame_anchors.size() > frames: frame_anchors.resize(frames)
+	frame_anchors[clampi(int(frame_index_spin.value)-1,0,frames-1)] = [anchor_x,anchor_y]
+	var path := "visual_assets"; var data := _load_catalog_data(path); var asset_id := str(entry.get("owner_key",""))
+	if not data.has(asset_id): grid_status.text = "Visual Asset not found in Catalog."; return
+	var asset: Dictionary = data[asset_id]; asset["columns"]=columns; asset["rows"]=rows; asset["frames"]=frames; asset["frame_order"]=order; asset["anchor"]={"mode":anchor_mode,"x":anchor_x,"y":anchor_y}; asset["frame_anchors"]=frame_anchors if frames>1 else []; data[asset_id]=asset
+	if not _save_catalog_data(path,data): grid_status.text="Failed to save Grid / Anchor metadata."; return
+	VisualAssetResolver.reload(); entry["columns"]=columns; entry["rows"]=rows; entry["frames"]=frames; entry["frame_order"]=order; entry["anchor"]=asset["anchor"]; entry["frame_anchors"]=frame_anchors; entries[current_index]=entry; view.set_grid_metadata(columns,rows,frames,Vector2(anchor_x,anchor_y),order,entry.get("frame_regions",[]) if entry.get("frame_regions",[]) is Array else []); view.set_frame_anchors(frame_anchors); grid_status.text="Saved: %d ? %d grid | %d frames | Anchor %s (%.2f, %.2f)" % [columns,rows,frames,anchor_mode,anchor_x,anchor_y]
 
 func _on_frame_transform_changed(_value: float = 0.0) -> void:
 	if current_image == null or current_image.is_empty():
@@ -1412,10 +1231,10 @@ func _delete_managed_asset(target: String, dialog: ConfirmationDialog) -> void:
 	if _delete_visual_asset_definition(target):
 		changed_files.append("visual_assets.json")
 	for path in [
-		"res://content/towers/towers.json",
-		"res://content/allied_units/allied_units.json",
-		"res://content/enemies/enemies.json",
-		"res://content/robots/robots.json"
+		"towers",
+		"allied_units",
+		"enemies",
+		"robots"
 	]:
 		var result := _remove_json_references(path, target)
 		if result == 1:
@@ -1444,51 +1263,23 @@ func _delete_managed_asset(target: String, dialog: ConfirmationDialog) -> void:
 		status.text = "Deleted from managed catalogs: %s" % target
 
 func _delete_visual_asset_definition(asset_id: String) -> bool:
-	var path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return false
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary or not data.has(asset_id):
-		return false
-	data.erase(asset_id)
-	return _write_json(path, data)
+	var path := "visual_assets"; var data := _load_catalog_data(path)
+	if not data.has(asset_id): return false
+	data.erase(asset_id); return _save_catalog_data(path,data)
 
 func _remove_json_references(path: String, target: String) -> int:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return -1
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if data == null:
-		return -1
-	if not _remove_matching_values(data, target):
-		return 0
-	return 1 if _write_json(path, data) else -1
+	var data := _load_catalog_data(path)
+	if data.is_empty(): return -1
+	if not _remove_matching_values(data,target): return 0
+	return 1 if _save_catalog_data(path,data) else -1
 
 func _remove_asset_catalog_references(target: String) -> int:
-	var path := "res://content/editor/asset_catalog.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return -1
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary:
-		return -1
-	var assets: Array = data.get("assets", [])
-	var changed := false
-	for index in range(assets.size() - 1, -1, -1):
-		var asset = assets[index]
-		if not asset is Dictionary:
-			continue
-		if str(asset.get("asset_id", "")) == target or str(asset.get("source_path", "")) == target:
-			assets.remove_at(index)
-			changed = true
-	if not changed:
-		return 0
-	data["assets"] = assets
-	return 1 if _write_json(path, data) else -1
+	var path := "asset_catalog"; var data := _load_document_data(path); var assets: Array = data.get("assets",[]); var changed := false
+	for index in range(assets.size()-1,-1,-1):
+		var asset=assets[index]
+		if asset is Dictionary and (str(asset.get("asset_id",""))==target or str(asset.get("source_path",""))==target): assets.remove_at(index); changed=true
+	if not changed: return 0
+	data["assets"]=assets; return 1 if _save_document_data(path,data) else -1
 
 func _remove_main_preload_reference(target: String) -> int:
 	var path := "res://main.gd"
@@ -1513,70 +1304,24 @@ func _remove_main_preload_reference(target: String) -> int:
 	return 1
 
 func _resolve_visual_asset_id(entry: Dictionary) -> String:
-	var file := FileAccess.open("res://content/editor/visual_assets.json", FileAccess.READ)
-	if file == null:
-		return ""
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary:
-		return ""
-	# ALL rows can originate from robots.json, catalog, or other references.
-	# Their owner_key is not necessarily the Visual Asset ID. The actual
-	# reference path is the primary candidate, while owner_key/id are fallbacks.
-	var candidates: Array[String] = []
-	for key in ["path", "owner_key", "id"]:
-		var candidate := str(entry.get(key, "")).strip_edges()
-		if not candidate.is_empty() and not candidates.has(candidate):
-			candidates.append(candidate)
-	for candidate in candidates:
-		if data.has(candidate):
-			return candidate
+	var data := _load_catalog_data("visual_assets")
+	for key in ["path","owner_key","id"]:
+		var candidate := str(entry.get(key,"")).strip_edges(); if not candidate.is_empty() and data.has(candidate): return candidate
 	return ""
 
 func _delete_visual_asset(asset_id: String, dialog: ConfirmationDialog) -> void:
-	var catalog_path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(catalog_path, FileAccess.READ)
-	if file == null:
-		status.text = "Visual Asset Catalog could not be loaded."
-		dialog.queue_free()
-		return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary or not data.has(asset_id):
-		status.text = "Visual Asset not found: " + asset_id
-		dialog.queue_free()
-		return
+	var path := "visual_assets"; var data := _load_catalog_data(path)
+	if not data.has(asset_id): status.text="Visual Asset not found: "+asset_id; dialog.queue_free(); return
 	data.erase(asset_id)
-	if not _write_json(catalog_path, data):
-		status.text = "Failed to update Visual Asset Catalog."
-		dialog.queue_free()
-		return
-	if not _remove_visual_asset_robot_references(asset_id):
-		status.text = "Visual Asset deleted, but some robot references could not be removed: " + asset_id
-		VisualAssetResolver.reload()
-		_scan_connected_images()
-		current_index = -1
-		dialog.queue_free()
-		return
-	VisualAssetResolver.reload()
-	_scan_connected_images()
-	current_index = -1
-	status.text = "Visual Asset and all robot references deleted: " + asset_id
-	dialog.queue_free()
+	if not _save_catalog_data(path,data): status.text="Failed to update Visual Asset Catalog."; dialog.queue_free(); return
+	if not _remove_visual_asset_robot_references(asset_id): status.text="Visual Asset deleted, but some robot references could not be removed: "+asset_id
+	VisualAssetResolver.reload(); _scan_connected_images(); current_index=-1; dialog.queue_free()
 
 func _remove_visual_asset_robot_references(asset_id: String) -> bool:
-	var robots_path := "res://content/robots/robots.json"
-	var file := FileAccess.open(robots_path, FileAccess.READ)
-	if file == null:
-		return false
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary:
-		return false
-	var changed := _remove_matching_values(data, asset_id)
-	if not changed:
-		return true
-	return _write_json(robots_path, data)
+	var path := "robots"; var data := _load_catalog_data(path)
+	if data.is_empty(): return false
+	if not _remove_matching_values(data,asset_id): return true
+	return _save_catalog_data(path,data)
 
 func _remove_matching_values(value: Variant, target: String) -> bool:
 	var changed := false
@@ -1624,136 +1369,28 @@ func _create_visual_asset_from_full_image() -> void:
 	_create_visual_asset(Rect2i(0, 0, current_image.get_width(), current_image.get_height()))
 
 func _create_visual_asset(rect: Rect2i) -> void:
-	var catalog_path := "res://content/editor/visual_assets.json"
-	var data: Variant = {}
-	if FileAccess.file_exists(catalog_path):
-		var file := FileAccess.open(catalog_path, FileAccess.READ)
-		if file != null:
-			data = JSON.parse_string(file.get_as_text())
-			file.close()
-	if not data is Dictionary:
-		data = {}
-	var base_name := current_path.get_file().get_basename().to_snake_case()
-	if base_name.is_empty():
-		base_name = "image"
-	var inherited_frames := 1
-	var inherited_category := "Other"
-	if current_index >= 0 and current_index < entries.size():
-		var source_entry: Dictionary = entries[current_index]
-		if str(source_entry.get("owner_kind", "")) == "visual_asset":
-			var source_asset_id := str(source_entry.get("owner_key", ""))
-			var source_definition := VisualAssetResolver.get_asset(source_asset_id)
-			if source_definition != null:
-				inherited_frames = source_definition.frames
-				inherited_category = source_definition.category
-	var owner_kind := str(IMAGE_STATE.selection_owner_kind)
-	var owner_key := str(IMAGE_STATE.selection_owner_key)
-	var owner_usage := str(IMAGE_STATE.selection_usage)
-	var registered_frames := maxi(1, int(IMAGE_STATE.selection_frames))
-	var base_id := "image." + base_name
-	if owner_kind == "robot" and not owner_key.is_empty() and not owner_usage.is_empty():
-		base_id = "robot.%s.%s" % [owner_key, owner_usage]
-		inherited_category = "Robot"
-		registered_frames = maxi(registered_frames, inherited_frames)
-	var assets: Dictionary = data
-	# Registration from another editor is valid only when that editor supplied
-	# the exact semantic Visual Asset ID. Never derive a new ID from the source image.
-	var asset_id := originating_asset_id.strip_edges()
-	if asset_id.is_empty():
-		status.text = "Registration blocked: no Visual Asset ID was supplied by the originating editor."
-		return
-	var asset_definition: Dictionary = {
-		"id": asset_id,
-		"category": inherited_category,
-		"source": current_path,
-		"region": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
-		"frames": registered_frames,
-		"columns": registered_frames,
-		"rows": 1,
-		"frame_order": "row_major",
-		"anchor": {"mode": "BOTTOM_CENTER", "x": 0.5, "y": 1.0},
-		"owner": ("%s.%s" % [owner_kind, owner_key]) if not owner_kind.is_empty() and not owner_key.is_empty() else "",
-		"usage": owner_usage if not owner_usage.is_empty() else "visual_asset_catalog"
-	}
-	# Profile team-color masks belong to the Profile Visual Asset definition.
-	# The mask uses the same atlas coordinates as the profile region, so only its
-	# source needs to be stored; Robot Editor can resolve the exact asset later.
-	if owner_kind == "robot" and owner_usage == "profile" and not owner_key.is_empty():
-		var mask_path := "res://images/robot/%s/profile_team_mask.png" % owner_key
-		if FileAccess.file_exists(mask_path):
-			asset_definition["team_mask"] = {"source": mask_path}
-	assets[asset_id] = asset_definition
-	if not _write_json(catalog_path, assets):
-		status.text = "Failed to write Visual Asset Catalog: %s" % catalog_path
-		return
-	VisualAssetResolver.reload()
-	_scan_connected_images()
-	var created_index := -1
-	for index in range(entries.size()):
-		var entry: Dictionary = entries[index]
-		if str(entry.get("owner_kind", "")) == "visual_asset" and str(entry.get("owner_key", "")) == asset_id:
-			created_index = index
-			break
-	if created_index >= 0:
-		for list_index in range(filtered_indices.size()):
-			if filtered_indices[list_index] == created_index:
-				list.select(list_index)
-				_select_entry(list_index)
-				break
-	else:
-		_select_path(current_path)
-	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_target.is_empty():
-		IMAGE_STATE.apply_selection(asset_id)
-		status.text = "Visual Asset registration complete: %s | region %d x %d px" % [asset_id, rect.size.x, rect.size.y]
-		request_previous_editor.emit()
-	else:
-		status.text = "Visual Asset registration complete: %s | region %d x %d px" % [asset_id, rect.size.x, rect.size.y]
+	var path := "visual_assets"; var assets := _load_catalog_data(path); var inherited_category := "Other"; var registered_frames := maxi(1,int(IMAGE_STATE.selection_frames))
+	if current_index >= 0 and current_index < entries.size() and str(entries[current_index].get("owner_kind","")) == "visual_asset":
+		var source_asset := VisualAssetResolver.get_asset(str(entries[current_index].get("owner_key",""))); if source_asset != null: inherited_category=source_asset.category; registered_frames=maxi(registered_frames,source_asset.frames)
+	var owner_kind:=str(IMAGE_STATE.selection_owner_kind); var owner_key:=str(IMAGE_STATE.selection_owner_key); var owner_usage:=str(IMAGE_STATE.selection_usage); var asset_id:=originating_asset_id.strip_edges()
+	if asset_id.is_empty(): status.text="Registration blocked: no Visual Asset ID was supplied by the originating editor."; return
+	var definition: Dictionary={"id":asset_id,"category":inherited_category,"source":current_path,"region":[rect.position.x,rect.position.y,rect.size.x,rect.size.y],"frames":registered_frames,"columns":registered_frames,"rows":1,"frame_order":"row_major","anchor":{"mode":"BOTTOM_CENTER","x":0.5,"y":1.0},"owner":("%s.%s"%[owner_kind,owner_key]) if not owner_kind.is_empty() and not owner_key.is_empty() else "","usage":owner_usage if not owner_usage.is_empty() else "visual_asset_catalog"}
+	assets[asset_id]=definition
+	if not _save_catalog_data(path,assets): status.text="Failed to write Visual Asset Catalog: %s"%path; return
+	VisualAssetResolver.reload(); _scan_connected_images(); _select_path(current_path)
+	if IMAGE_STATE.selection_pending and not IMAGE_STATE.selection_target.is_empty(): IMAGE_STATE.apply_selection(asset_id); request_previous_editor.emit()
+	status.text="Visual Asset registration complete: %s | region %d x %d px"%[asset_id,rect.size.x,rect.size.y]
 
 func _add_current_image_to_asset_catalog() -> void:
-	if not _require_image():
-		return
-	var output := _save_current_image_copy()
-	if output.is_empty():
-		status.text = "The selected catalog source is not a valid PNG."
-		return
-	var catalog_path := "res://content/editor/asset_catalog.json"
-	var data: Variant = {}
-	if FileAccess.file_exists(catalog_path):
-		var file := FileAccess.open(catalog_path, FileAccess.READ)
-		if file != null:
-			data = JSON.parse_string(file.get_as_text())
-			file.close()
-	if not data is Dictionary:
-		data = {}
-	var assets: Array = data.get("assets", []) if data.get("assets", []) is Array else []
-	var base_id := "asset.image." + current_path.get_file().get_basename().to_snake_case()
-	if base_id == "asset.image.":
-		base_id = "asset.image.generated"
-	var asset_id := IMAGE_STATE.selection_asset_id if not IMAGE_STATE.selection_asset_id.is_empty() else base_id
-	var suffix := 1
-	while _catalog_asset_id_exists(assets, asset_id):
-		asset_id = "%s.%02d" % [base_id, suffix]
-		suffix += 1
-	var display_name := current_path.get_file().get_basename().replace("_", " ").capitalize()
-	var width := current_image.get_width()
-	var height := current_image.get_height()
-	assets.append({
-		"asset_id": asset_id,
-		"kind": "object",
-		"group": "Other",
-		"display_name": display_name,
-		"source_path": output,
-		"source_rect_px": [0, 0, width, height],
-		"footprint_tiles": [maxi(1, ceili(float(width) / 32.0)), maxi(1, ceili(float(height) / 32.0))]
-	})
-	data["schema_version"] = int(data.get("schema_version", 1))
-	data["assets"] = assets
-	if not _write_json(catalog_path, data):
-		status.text = "PNG import failed for Asset Catalog: %s" % output
-		return
-	_scan_connected_images()
-	_select_path(output)
-	status.text = "Asset Catalog registration failed: %s" % output
+	if not _require_image(): return
+	var output:=_save_current_image_copy(); if output.is_empty(): status.text="The selected catalog source is not a valid PNG."; return
+	var path:="asset_catalog"; var data:=_load_document_data(path); var assets:Array=data.get("assets",[]) if data.get("assets",[]) is Array else []
+	var base_id:="asset.image."+current_path.get_file().get_basename().to_snake_case(); if base_id=="asset.image.": base_id="asset.image.generated"
+	var asset_id:=IMAGE_STATE.selection_asset_id if not IMAGE_STATE.selection_asset_id.is_empty() else base_id; var suffix:=1
+	while _catalog_asset_id_exists(assets,asset_id): asset_id="%s.%02d"%[base_id,suffix]; suffix+=1
+	var width:=current_image.get_width(); var height:=current_image.get_height(); assets.append({"asset_id":asset_id,"kind":"object","group":"Other","display_name":current_path.get_file().get_basename().replace("_"," ").capitalize(),"source_path":output,"source_rect_px":[0,0,width,height],"footprint_tiles":[maxi(1,ceili(float(width)/32.0)),maxi(1,ceili(float(height)/32.0))]}); data["schema_version"]=int(data.get("schema_version",1)); data["assets"]=assets
+	if not _save_document_data(path,data): status.text="PNG import failed for Asset Catalog: %s"%output; return
+	_scan_connected_images(); _select_path(output); status.text="Asset Catalog registration complete: %s"%asset_id
 
 func _catalog_asset_id_exists(assets: Array, asset_id: String) -> bool:
 	for asset in assets:
@@ -1855,7 +1492,7 @@ func _replace_source_region_as_unit() -> void:
 	var entry: Dictionary = entries[current_index]
 	var owner_path := str(entry.get("owner", ""))
 	var owner_key := str(entry.get("owner_key", ""))
-	if str(entry.get("owner_kind", "")) != "json" or (owner_path != "res://content/towers/towers.json" and owner_path != "res://content/allied_units/allied_units.json"):
+	if str(entry.get("owner_kind", "")) != "json" or (owner_path != "towers" and owner_path != "allied_units"):
 		status.text = "The edited image is not connected to a source reference."
 		return
 	if editing: _finish_erase()
@@ -1874,7 +1511,7 @@ func _replace_source_region_as_unit() -> void:
 	var frame_size := Vector2i(int(default_size[0]), int(default_size[1])) if default_size.size() >= 2 else Vector2i(60, 90)
 	var frame_count := int(unit_sheet.get("default_frame_count", 4))
 	var unit_label := "Unit"
-	if owner_path == "res://content/allied_units/allied_units.json":
+	if owner_path == "allied_units":
 		var configured_sizes: Dictionary = unit_sheet.get("allied_unit_frame_sizes", {})
 		var size_data: Array = configured_sizes.get(owner_key, default_size)
 		frame_size = Vector2i(int(size_data[0]), int(size_data[1])) if size_data.size() >= 2 else Vector2i(60, 90)
@@ -2390,98 +2027,30 @@ func _validate_visual_asset_image_alignment(entry: Dictionary, image: Image) -> 
 
 func _save_variant() -> void:
 	if not _require_image(): return
-	if editing: _finish_erase()
-	if current_index < 0 or current_index >= entries.size():
-		status.text = "Variant save requires a selected Visual Asset."
-		return
-	var entry: Dictionary = entries[current_index]
-	if str(entry.get("owner_kind", "")) != "visual_asset":
-		status.text = "Variant save requires a Visual Asset entry."
-		return
-	if not _validate_visual_asset_image_alignment(entry, current_image):
-		return
-	var base_id := str(entry.get("owner_key", originating_asset_id)).strip_edges()
-	if base_id.is_empty():
-		status.text = "Variant save blocked: missing Visual Asset ID."
-		return
-	var safe_id := base_id.replace("/", "_").replace("\\\\", "_").replace(".", "_")
-	var output := "%s/%s_variant_%d.png" % [EDITED_DIR, safe_id, Time.get_ticks_usec()]
-	var dir := ProjectSettings.globalize_path(EDITED_DIR)
-	var err := DirAccess.make_dir_recursive_absolute(dir)
-	if err != OK or current_image.save_png(ProjectSettings.globalize_path(output)) != OK:
-		status.text = "Variant PNG save failed."
-		return
-	var catalog_path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(catalog_path, FileAccess.READ)
-	if file == null:
-		status.text = "Visual Asset catalog unavailable."
-		return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary:
-		status.text = "Visual Asset catalog is invalid."
-		return
-	var variant_id := "%s.variant.%d" % [base_id, Time.get_ticks_usec()]
-	var variant: Dictionary = entry.duplicate(true)
-	variant["id"] = variant_id
-	variant["source"] = output
-	variant["variant_of"] = base_id
-	variant["usage"] = "%s_variant" % str(entry.get("usage", "visual_asset"))
-	data[variant_id] = variant
-	if not _write_json(catalog_path, data):
-		status.text = "Variant catalog registration failed."
-		return
-	VisualAssetResolver.reload()
-	status.text = "Variant saved: %s" % variant_id
+	if current_index<0 or current_index>=entries.size() or str(entries[current_index].get("owner_kind",""))!="visual_asset": status.text="Variant save requires a Visual Asset entry."; return
+	var entry:Dictionary=entries[current_index]; if not _validate_visual_asset_image_alignment(entry,current_image): return
+	var base_id:=str(entry.get("owner_key",originating_asset_id)).strip_edges(); if base_id.is_empty(): status.text="Variant save blocked: missing Visual Asset ID."; return
+	var safe_id:=base_id.replace("/","_").replace("\\","_").replace(".","_"); var output:="%s/%s_variant_%d.png"%[EDITED_DIR,safe_id,Time.get_ticks_usec()]; var dir:=ProjectSettings.globalize_path(EDITED_DIR); var err:=DirAccess.make_dir_recursive_absolute(dir)
+	if err!=OK or current_image.save_png(ProjectSettings.globalize_path(output))!=OK: status.text="Variant PNG save failed."; return
+	var path:="visual_assets"; var data:=_load_catalog_data(path); var variant_id:="%s.variant.%d"%[base_id,Time.get_ticks_usec()]; var variant:Dictionary=entry.duplicate(true); variant["id"]=variant_id; variant["source"]=output; variant["variant_of"]=base_id; variant["usage"]="%s_variant"%str(entry.get("usage","visual_asset")); data[variant_id]=variant
+	if not _save_catalog_data(path,data): status.text="Variant catalog registration failed."; return
+	VisualAssetResolver.reload(); status.text="Variant saved: %s"%variant_id
 
 func _generate_team_mask() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
-	if current_index < 0 or current_index >= entries.size():
-		status.text = "Team Mask requires a selected Visual Asset."
-		return
-	var entry: Dictionary = entries[current_index]
-	if str(entry.get("owner_kind", "")) != "visual_asset":
-		status.text = "Team Mask requires a Visual Asset entry."
-		return
-	if not _validate_visual_asset_image_alignment(entry, current_image):
-		return
-	var asset_id := str(entry.get("owner_key", originating_asset_id)).strip_edges()
-	if asset_id.is_empty():
-		status.text = "Team Mask blocked: missing Visual Asset ID."
-		return
-	var mask := Image.create(current_image.get_width(), current_image.get_height(), false, Image.FORMAT_RGBA8)
+	if current_index<0 or current_index>=entries.size() or str(entries[current_index].get("owner_kind",""))!="visual_asset": status.text="Team Mask requires a Visual Asset entry."; return
+	var entry:Dictionary=entries[current_index]; if not _validate_visual_asset_image_alignment(entry,current_image): return
+	var asset_id:=str(entry.get("owner_key",originating_asset_id)).strip_edges(); if asset_id.is_empty(): status.text="Team Mask blocked: missing Visual Asset ID."; return
+	var mask:=Image.create(current_image.get_width(),current_image.get_height(),false,Image.FORMAT_RGBA8)
 	for y in range(current_image.get_height()):
-		for x in range(current_image.get_width()):
-			var pixel := current_image.get_pixel(x, y)
-			var value := clampf(pixel.a, 0.0, 1.0)
-			mask.set_pixel(x, y, Color(value, value, value, 1.0))
-	var safe_id := asset_id.replace("/", "_").replace("\\\\", "_").replace(".", "_")
-	var mask_dir := "res://content/editor/team_masks"
-	var mask_path := "%s/%s_team_mask.png" % [mask_dir, safe_id]
-	var dir := ProjectSettings.globalize_path(mask_dir)
-	var err := DirAccess.make_dir_recursive_absolute(dir)
-	if err != OK or mask.save_png(ProjectSettings.globalize_path(mask_path)) != OK:
-		status.text = "Team Mask save failed."
-		return
-	var catalog_path := "res://content/editor/visual_assets.json"
-	var file := FileAccess.open(catalog_path, FileAccess.READ)
-	if file == null:
-		status.text = "Visual Asset catalog unavailable."
-		return
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary or not data.has(asset_id):
-		status.text = "Visual Asset entry not found: %s" % asset_id
-		return
-	var definition: Dictionary = data[asset_id]
-	definition["team_mask"] = {"source": mask_path}
-	data[asset_id] = definition
-	if not _write_json(catalog_path, data):
-		status.text = "Team Mask catalog registration failed."
-		return
-	VisualAssetResolver.reload()
-	status.text = "Team Mask saved and linked: %s" % mask_path
+		for x in range(current_image.get_width()): var value:=clampf(current_image.get_pixel(x,y).a,0.0,1.0); mask.set_pixel(x,y,Color(value,value,value,1.0))
+	var safe_id:=asset_id.replace("/","_").replace("\\","_").replace(".","_"); var mask_dir:="res://content/editor/team_masks"; var mask_path:="%s/%s_team_mask.png"%[mask_dir,safe_id]; var err:=DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(mask_dir))
+	if err!=OK or mask.save_png(ProjectSettings.globalize_path(mask_path))!=OK: status.text="Team Mask save failed."; return
+	var path:="visual_assets"; var data:=_load_catalog_data(path); if not data.has(asset_id): status.text="Visual Asset entry not found: %s"%asset_id; return
+	var definition:Dictionary=data[asset_id]; definition["team_mask"]={"source":mask_path}; data[asset_id]=definition
+	if not _save_catalog_data(path,data): status.text="Team Mask catalog registration failed."; return
+	VisualAssetResolver.reload(); status.text="Team Mask saved and linked: %s"%mask_path
 
 func _save_reconnect() -> void:
 	if not _require_image(): return
@@ -2520,14 +2089,8 @@ func _save_source_reference(path: String, rect: Rect2i) -> bool:
 	return false
 
 func _replace_json_reference(path: String, key: String, field: String, source_path_value: String, rect: Rect2i) -> bool:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null: return false
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary or not data.has(key): return false
-	_set_nested_value(data[key], field, source_path_value)
-	_set_nested_value(data[key], _field_suffix(field, "_rect"), [rect.position.x, rect.position.y, rect.size.x, rect.size.y])
-	return _write_json(path, data)
+	var data:=_load_catalog_data(path); if not data.has(key): return false
+	_set_nested_value(data[key],field,source_path_value); _set_nested_value(data[key],_field_suffix(field,"_rect"),[rect.position.x,rect.position.y,rect.size.x,rect.size.y]); return _save_catalog_data(path,data)
 
 func _field_suffix(field: String, suffix: String) -> String:
 	var parts := field.split(".")
@@ -2555,18 +2118,9 @@ func _erase_nested_value(root: Dictionary, field: String) -> void:
 	target.erase(str(parts[parts.size() - 1]))
 
 func _replace_catalog_reference(asset_id: String, source_path_value: String, rect: Rect2i) -> bool:
-	var path := "res://content/editor/asset_catalog.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null: return false
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary: return false
-	var assets: Array = data.get("assets", [])
+	var path:="asset_catalog"; var data:=_load_document_data(path); var assets:Array=data.get("assets",[])
 	for asset in assets:
-		if asset is Dictionary and str(asset.get("asset_id", "")) == asset_id:
-			asset["source_path"] = source_path_value
-			asset["source_rect_px"] = [rect.position.x, rect.position.y, rect.size.x, rect.size.y]
-			return _write_json(path, data)
+		if asset is Dictionary and str(asset.get("asset_id",""))==asset_id: asset["source_path"]=source_path_value; asset["source_rect_px"]=[rect.position.x,rect.position.y,rect.size.x,rect.size.y]; data["assets"]=assets; return _save_document_data(path,data)
 	return false
 
 func _reconnect_entry(new_path: String) -> bool:
@@ -2582,30 +2136,13 @@ func _reconnect_entry(new_path: String) -> bool:
 	return false
 
 func _replace_json_value(path: String, key: String, field: String, new_path: String) -> bool:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null: return false
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary or not data.has(key): return false
-	_set_nested_value(data[key], field, new_path)
-	# ????+ ???????ㅻ깹????????怨뺤른????黎앸럽??筌???????????耀붾굝???????袁⑸즴筌??PNG?????????ㅻ깹?????????????????살몝????遺얘턁?????????????????대첉?????????쇰뮡????????饔낅떽??????
-	# ??PNG ????????????????쎛 ????????黎앸럽??筌??????????????利?????롮쾸?椰???????곌퇈?????筌뤾쑬???????????꾩룆梨띰쭕????????遺얘턁????????????????繹먮굞彛?????饔낅떽??????
-	_erase_nested_value(data[key], _field_suffix(field, "_rect"))
-	return _write_json(path, data)
+	var data:=_load_catalog_data(path); if not data.has(key): return false
+	_set_nested_value(data[key],field,new_path); _erase_nested_value(data[key],_field_suffix(field,"_rect")); return _save_catalog_data(path,data)
 
 func _replace_catalog_value(asset_id: String, new_path: String) -> bool:
-	var path := "res://content/editor/asset_catalog.json"
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null: return false
-	var data = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary: return false
-	var assets: Array = data.get("assets", [])
+	var path:="asset_catalog"; var data:=_load_document_data(path); var assets:Array=data.get("assets",[])
 	for asset in assets:
-		if asset is Dictionary and str(asset.get("asset_id", "")) == asset_id:
-			asset["source_path"] = new_path
-			asset["source_rect_px"] = [0, 0, current_image.get_width(), current_image.get_height()]
-			return _write_json(path, data)
+		if asset is Dictionary and str(asset.get("asset_id",""))==asset_id: asset["source_path"]=new_path; asset["source_rect_px"]=[0,0,current_image.get_width(),current_image.get_height()]; data["assets"]=assets; return _save_document_data(path,data)
 	return false
 
 func _replace_main_path(old_path: String, new_path: String) -> bool:
@@ -2618,12 +2155,5 @@ func _replace_main_path(old_path: String, new_path: String) -> bool:
 	var out := FileAccess.open(ProjectSettings.globalize_path("res://main.gd"), FileAccess.WRITE)
 	if out == null: return false
 	out.store_string(text)
-	out.close()
-	return true
-
-func _write_json(path: String, data: Variant) -> bool:
-	var out := FileAccess.open(ProjectSettings.globalize_path(path), FileAccess.WRITE)
-	if out == null: return false
-	out.store_string(JSON.stringify(data, "\t"))
 	out.close()
 	return true

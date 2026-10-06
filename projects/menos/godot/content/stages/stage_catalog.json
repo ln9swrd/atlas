@@ -1,9 +1,0 @@
-{
-  "catalog_id": "stage_catalog",
-  "name": "MENOS Stage Catalog",
-  "stages": [
-    "stage_01",
-    "stage_02",
-    "stage_03"
-  ]
-}

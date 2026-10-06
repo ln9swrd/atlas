@@ -1,94 +1,142 @@
-﻿class_name ObjectPersistence
+class_name ObjectPersistence
 extends RefCounted
 
 const SQLITE_PATH := "res://content/menos.sqlite"
-const ROBOT_CATALOG_PATH := "res://content/robots/robots.json"
 
 static func load_catalog(path: String) -> Dictionary:
 	return ContentCatalogLoader.load_dictionary_catalog(path)
 
-static func save_catalog(path: String, catalog: Dictionary) -> bool:
-	var absolute_path := ProjectSettings.globalize_path(path)
-	var parent_dir := absolute_path.get_base_dir()
-	var dir_error := DirAccess.make_dir_recursive_absolute(parent_dir)
-	if dir_error != OK:
-		push_error("ObjectPersistence: failed to create directory: %s" % error_string(dir_error))
+static func save_content_document(path: String, document: Variant) -> bool:
+	if path.is_empty():
+		push_error("ObjectPersistence: unsupported content document path: %s" % path)
 		return false
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		push_error("ObjectPersistence: failed to open for writing: %s" % path)
-		return false
-	var json_text := JSON.stringify(catalog, "  ")
-	file.store_string(json_text)
-	file.flush()
-	var write_error := file.get_error()
-	file.close()
-	if write_error != OK:
-		push_error("ObjectPersistence: failed to write %s" % path)
-		return false
-	return _verify_text(path, json_text)
+	return _sync_document_to_sqlite(path, JSON.stringify(document, "  "))
 
-static func sync_catalog_to_sqlite(path: String, catalog: Dictionary) -> bool:
-	if path != ROBOT_CATALOG_PATH:
-		push_error("ObjectPersistence: SQLite sync currently supports robots catalog only: %s" % path)
+static func delete_content_document(path: String) -> bool:
+	var table := _sqlite_table_for_path(path)
+	if table.is_empty():
+		push_error("ObjectPersistence: no SQLite table mapping for %s" % path)
 		return false
-
-	var json_text := JSON.stringify(catalog, "  ")
-	var db = SQLite.new()
-	db.path = SQLITE_PATH
-	db.read_only = false
-	db.foreign_keys = true
-	db.verbosity_level = 0
-	if not db.open_db():
-		push_error("ObjectPersistence: failed to open SQLite database for writing: %s" % SQLITE_PATH)
-		return false
-
+	var db = _open_db(false)
+	if db == null: return false
 	if not db.query("BEGIN IMMEDIATE TRANSACTION"):
-		push_error("ObjectPersistence: failed to begin SQLite sync transaction")
-		db.close_db()
-		return false
-
-	var rows_ok: bool = db.query_with_bindings('SELECT document_id FROM "robots" WHERE document_id = ?', ["robots"])
-	if not rows_ok or db.query_result.size() != 1:
-		push_error("ObjectPersistence: expected exactly one robots SQLite document")
-		db.query("ROLLBACK")
-		db.close_db()
-		return false
-
-	var update_ok: bool = db.query_with_bindings('UPDATE "robots" SET raw_json = ? WHERE document_id = ?', [json_text, "robots"])
-	if not update_ok:
-		push_error("ObjectPersistence: robots SQLite update failed")
-		db.query("ROLLBACK")
-		db.close_db()
-		return false
-
-	var changes_ok: bool = db.query("SELECT changes() AS rows_changed")
-	if not changes_ok or db.query_result.size() != 1 or int(db.query_result[0].get("rows_changed", 0)) != 1:
-		push_error("ObjectPersistence: robots SQLite sync did not update exactly one row")
-		db.query("ROLLBACK")
-		db.close_db()
-		return false
-
-	var verify_ok: bool = db.query_with_bindings('SELECT raw_json FROM "robots" WHERE document_id = ?', ["robots"])
-	if not verify_ok or db.query_result.size() != 1 or str(db.query_result[0].get("raw_json", "")) != json_text:
-		push_error("ObjectPersistence: robots SQLite sync verification failed")
-		db.query("ROLLBACK")
-		db.close_db()
-		return false
-
+		db.close_db(); return false
+	var ok: bool = db.query_with_bindings('DELETE FROM "%s" WHERE rowid = (SELECT rowid FROM "%s" LIMIT 1)' % [table, table], [])
+	if not ok:
+		db.query("ROLLBACK"); db.close_db(); return false
 	if not db.query("COMMIT"):
-		push_error("ObjectPersistence: failed to commit robots SQLite sync")
-		db.query("ROLLBACK")
-		db.close_db()
-		return false
+		db.query("ROLLBACK"); db.close_db(); return false
 	db.close_db()
 	return true
 
-static func _verify_text(path: String, expected_text: String) -> bool:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		push_error("ObjectPersistence: failed to reopen for verification: %s" % path)
+static func save_catalog(path: String, catalog: Dictionary) -> bool:
+	if path.is_empty():
+		push_error("ObjectPersistence: unsupported content catalog path: %s" % path)
 		return false
-	var actual_text := file.get_as_text()
-	file.close()
-	return actual_text.strip_edges() == expected_text.strip_edges()
+	var json_text := JSON.stringify(catalog, "  ")
+	return _sync_catalog_to_sqlite(path, catalog, json_text)
+
+static func save_catalog_entry(path: String, entry_id: String, entry: Dictionary) -> bool:
+	var catalog := ContentCatalogLoader.load_dictionary_catalog(path)
+	if catalog.is_empty() and not entry_id.is_empty():
+		push_error("ObjectPersistence: failed to load catalog for entry update: %s" % path)
+		return false
+	catalog[entry_id] = entry.duplicate(true)
+	return save_catalog(path, catalog)
+
+static func sync_catalog_to_sqlite(path: String, catalog: Dictionary) -> bool:
+	if path.is_empty():
+		push_error("ObjectPersistence: unsupported content catalog path: %s" % path)
+		return false
+	return _sync_catalog_to_sqlite(path, catalog, JSON.stringify(catalog, "  "))
+
+static func _sqlite_table_for_path(path: String) -> String:
+	var normalized := path.replace("\\", "/")
+	if normalized == "res://content/campaign/main_campaign.json":
+		return "campaign"
+	if normalized.begins_with("res://content/") and normalized.ends_with(".json"):
+		return normalized.trim_prefix("res://content/").get_file().get_basename()
+	return normalized
+
+static func _open_db(read_only: bool):
+	var db = SQLite.new()
+	db.path = SQLITE_PATH
+	db.read_only = read_only
+	db.foreign_keys = true
+	db.verbosity_level = 0
+	if not db.open_db():
+		push_error("ObjectPersistence: failed to open SQLite database: %s" % SQLITE_PATH)
+		return null
+	return db
+
+static func _sync_catalog_to_sqlite(path: String, catalog: Dictionary, json_text: String) -> bool:
+	var table := _sqlite_table_for_path(path)
+	if table.is_empty():
+		push_error("ObjectPersistence: no SQLite table mapping for %s" % path)
+		return false
+	var db = _open_db(false)
+	if db == null: return false
+	if not db.query("BEGIN IMMEDIATE TRANSACTION"):
+		db.close_db(); return false
+	if not db.query_with_bindings('SELECT * FROM "%s"' % table, []):
+		db.query("ROLLBACK"); db.close_db(); return false
+	var rows: Array = db.query_result.duplicate(true)
+	var ok := true
+	if rows.size() <= 1:
+		ok = db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE rowid = (SELECT rowid FROM "%s" LIMIT 1)' % [table, table], [json_text])
+	else:
+		var key_column := "id" if rows[0].has("id") else "document_id"
+		var existing: Dictionary = {}
+		for row in rows: existing[str(row.get(key_column, ""))] = true
+		for entry_id in catalog.keys():
+			var id := str(entry_id)
+			var entry: Dictionary = catalog[entry_id] if catalog[entry_id] is Dictionary else {}
+			if existing.has(id):
+				ok = db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE "%s" = ?' % [table, key_column], [JSON.stringify(entry, "  "), id])
+			else:
+				var columns: Array[String] = [key_column, "raw_json"]
+				var values: Array = [id, JSON.stringify(entry, "  ")]
+				if table == "allied_units":
+					columns.append("ai_json"); values.append(JSON.stringify(entry.get("ai", {})))
+					columns.append("visuals_json"); values.append(JSON.stringify(entry.get("visuals", {})))
+				var placeholders: Array[String] = []
+				for _i in columns.size(): placeholders.append("?")
+				ok = db.query_with_bindings('INSERT INTO "%s" (%s) VALUES (%s)' % [table, ",".join(columns), ",".join(placeholders)], values)
+			if not ok: break
+		for row in rows:
+			var id := str(row.get(key_column, ""))
+			if not catalog.has(id):
+				ok = db.query_with_bindings('DELETE FROM "%s" WHERE "%s" = ?' % [table, key_column], [id])
+				if not ok: break
+	if not ok:
+		db.query("ROLLBACK"); db.close_db(); return false
+	if not db.query("COMMIT"):
+		db.query("ROLLBACK"); db.close_db(); return false
+	db.close_db()
+	return true
+
+static func _sync_document_to_sqlite(path: String, json_text: String) -> bool:
+	var table := _sqlite_table_for_path(path)
+	if table.is_empty():
+		push_error("ObjectPersistence: no SQLite table mapping for %s" % path)
+		return false
+	var db = _open_db(false)
+	if db == null: return false
+	if not db.query("BEGIN IMMEDIATE TRANSACTION"):
+		db.close_db(); return false
+	if not db.query_with_bindings('SELECT rowid FROM "%s" LIMIT 2' % table, []):
+		db.query("ROLLBACK"); db.close_db(); return false
+	if db.query_result.size() != 1:
+		push_error("ObjectPersistence: expected exactly one SQLite document row in table '%s'" % table)
+		db.query("ROLLBACK"); db.close_db(); return false
+	var rowid = db.query_result[0]["rowid"]
+	if not db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE rowid = ?' % table, [json_text, rowid]):
+		db.query("ROLLBACK"); db.close_db(); return false
+	if not db.query_with_bindings('SELECT raw_json FROM "%s" WHERE rowid = ?' % table, [rowid]):
+		db.query("ROLLBACK"); db.close_db(); return false
+	if db.query_result.size() != 1 or str(db.query_result[0].get("raw_json", "")) != json_text:
+		db.query("ROLLBACK"); db.close_db(); return false
+	if not db.query("COMMIT"):
+		db.query("ROLLBACK"); db.close_db(); return false
+	db.close_db()
+	return true

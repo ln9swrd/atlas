@@ -66,21 +66,12 @@ func _input(event: InputEvent) -> void:
 
 func _populate_maps() -> void:
 	map_select.clear()
-	var dir := DirAccess.open("res://content/maps/")
-	if dir == null:
-		return
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while not file_name.is_empty():
-		if not dir.current_is_dir() and file_name.ends_with(".json") and file_name != "map_01_src.json":
-			var path := "res://content/maps/" + file_name
-			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
-			var map_id: String = file_name.get_basename()
-			var map_name: String = str(parsed.get("name", map_id)) if parsed is Dictionary else map_id
-			map_select.add_item(map_name)
-			map_select.set_item_metadata(map_select.item_count - 1, path)
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for path in MapLoader.list_map_paths():
+		var parsed := MapLoader.load_map_data(path)
+		var map_id: String = path.get_file().get_basename()
+		var map_name: String = str(parsed.get("name", map_id)) if parsed is Dictionary else map_id
+		map_select.add_item(map_name)
+		map_select.set_item_metadata(map_select.item_count - 1, path)
 
 func _on_map_selected(_index: int) -> void:
 	_populate_missions_for_selected_map()

@@ -1,8 +1,8 @@
 class_name ConfigRepository
 extends RefCounted
 
-const EDITOR_SETTINGS_PATH := "res://content/settings/editor.json"
-const GAMEPLAY_SETTINGS_PATH := "res://content/settings/gameplay.json"
+const EDITOR_SETTINGS_PATH := "editor"
+const GAMEPLAY_SETTINGS_PATH := "gameplay"
 
 static var _cache: Dictionary = {}
 

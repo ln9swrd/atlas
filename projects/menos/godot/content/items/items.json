@@ -1,5 +1,0 @@
-{
-  "weapon": {"name":"WEAPON","slot":"weapon","size":[2,2],"base_stats":{"damage":4.0},"prefixes":[{"name":"MIGHTY","stat":"damage","min":3,"max":8},{"name":"RAPID","stat":"speed","min":0.03,"max":0.08}],"suffixes":[{"name":"OF RANGE","stat":"range","min":8,"max":18},{"name":"OF THE HUNTER","stat":"damage","min":2,"max":5}]},
-  "armor": {"name":"ARMOR","slot":"armor","size":[2,3],"base_stats":{"hp":20.0},"prefixes":[{"name":"STURDY","stat":"hp","min":15,"max":35},{"name":"HARDENED","stat":"hp","min":8,"max":20}],"suffixes":[{"name":"OF SPEED","stat":"speed","min":0.02,"max":0.05},{"name":"OF REACH","stat":"range","min":5,"max":12}]},
-  "core": {"name":"CORE","slot":"core","size":[2,2],"base_stats":{"hp":12.0,"damage":2.0},"prefixes":[{"name":"POWERFUL","stat":"damage","min":3,"max":7},{"name":"REINFORCED","stat":"hp","min":10,"max":25}],"suffixes":[{"name":"OF PRECISION","stat":"range","min":6,"max":15},{"name":"OF MOTION","stat":"speed","min":0.02,"max":0.05}]}
-}

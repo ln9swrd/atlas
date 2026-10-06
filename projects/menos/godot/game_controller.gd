@@ -112,7 +112,7 @@ var inventory_open := false
 var inventory_cols := int(ConfigRepository.get_gameplay_value("inventory", "columns", 6))
 var inventory_rows := int(ConfigRepository.get_gameplay_value("inventory", "rows", 4))
 const ROBOT_PROFILE_PATH := "user://menos_campaign_robot_profile.json"
-const ITEM_CATALOG_PATH := "res://content/items/items.json"
+const ITEM_CATALOG_PATH := "items"
 var skills_catalog: Dictionary = {}
 var gameplay_settings: Dictionary = {}
 var skill_slot_definitions: Dictionary = {}
@@ -217,7 +217,7 @@ func _texture_from_catalog_entry(data: Dictionary, field: String) -> Texture2D:
 	return atlas
 
 func _load_allied_unit_catalog() -> void:
-	allied_unit_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/allied_units/allied_units.json")
+	allied_unit_catalog = ContentCatalogLoader.load_dictionary_catalog("allied_units")
 	allied_unit_definitions.clear()
 	allied_sprite_catalog.clear()
 	for unit_id in allied_unit_catalog.keys():
@@ -229,7 +229,7 @@ func _load_allied_unit_catalog() -> void:
 		allied_sprite_catalog[unit_id] = profile_texture
 
 func _load_enemy_catalog() -> void:
-	enemy_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/enemies/enemies.json")
+	enemy_catalog = ContentCatalogLoader.load_dictionary_catalog("enemies")
 	enemy_definitions.clear()
 	for enemy_id in enemy_catalog.keys():
 		enemy_definitions[enemy_id] = EnemyDefinition.from_catalog(str(enemy_id), enemy_catalog[enemy_id])
@@ -348,7 +348,7 @@ func _texture_from_catalog_value(sprite_value: String, rect_values: Variant = []
 	return atlas
 
 func _load_robot_catalog() -> void:
-	var catalog := ContentCatalogLoader.load_dictionary_catalog("res://content/robots/robots.json")
+	var catalog := ContentCatalogLoader.load_dictionary_catalog("robots")
 	var selected_robot_id := str(ConfigRepository.get_gameplay_value("runtime", "default_robot_id", "valkyrie"))
 	if not catalog.has(selected_robot_id):
 		push_error("Default robot '%s' is missing from the Robot Catalog." % selected_robot_id)
@@ -379,7 +379,7 @@ func _load_combat_definitions() -> void:
 	skill_slot_definitions = gameplay_settings.get("skill_slots", {}).duplicate(true)
 
 func _load_tower_catalog() -> void:
-	tower_catalog = ContentCatalogLoader.load_dictionary_catalog("res://content/towers/towers.json")
+	tower_catalog = ContentCatalogLoader.load_dictionary_catalog("towers")
 	tower_definitions.clear()
 	for tower_id in tower_catalog:
 		tower_definitions[tower_id] = TowerDefinition.from_catalog(str(tower_id), tower_catalog[tower_id])
@@ -480,12 +480,8 @@ func apply_map_spatial_data(loaded_map: Dictionary) -> void:
 func _load_map_catalog_assets() -> void:
 	if not _map_catalog_assets.is_empty():
 		return
-	var file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
-	if file == null:
-		return
-	var data: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not data is Dictionary:
+	var data: Dictionary = ContentCatalogLoader.load_document("asset_catalog")
+	if data.is_empty():
 		return
 	var assets: Variant = data.get("assets", [])
 	if not assets is Array:
@@ -627,13 +623,8 @@ func build_map_from_data(map_data: Dictionary) -> bool:
 func _resolve_catalog_tile(layer_node: TileMapLayer, asset_id: String) -> Array:
 	if _catalog_tile_cache.has(asset_id):
 		return _catalog_tile_cache[asset_id]
-	var file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
-	if file == null:
-		_catalog_tile_cache[asset_id] = []
-		return []
-	var catalog_data: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not catalog_data is Dictionary:
+	var catalog_data: Dictionary = ContentCatalogLoader.load_document("asset_catalog")
+	if catalog_data.is_empty():
 		_catalog_tile_cache[asset_id] = []
 		return []
 	var assets: Variant = catalog_data.get("assets", [])
@@ -1260,13 +1251,8 @@ func _load_robot_progression() -> void:
 	player_profile.reset()
 	if StageManager.run_mode != "campaign":
 		return
-	var file := FileAccess.open(ROBOT_PROFILE_PATH, FileAccess.READ)
-	if file == null:
-		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not parsed is Dictionary:
-		push_error("Failed to parse campaign robot profile.")
+	var parsed: Dictionary = PlayerProfileRepository.load_profile()
+	if parsed.is_empty():
 		return
 	player_profile.load_from_data(parsed)
 	var valid_unlocked: Array[String] = []
@@ -1285,12 +1271,8 @@ func _load_robot_progression() -> void:
 	_save_robot_progression()
 
 func create_item(base_id: String) -> Dictionary:
-	var file := FileAccess.open(ITEM_CATALOG_PATH, FileAccess.READ)
-	if file == null:
-		return {}
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not parsed is Dictionary or not parsed.has(base_id):
+	var parsed: Dictionary = ContentCatalogLoader.load_dictionary_catalog(ITEM_CATALOG_PATH)
+	if not parsed.has(base_id):
 		return {}
 	var base: Dictionary = parsed[base_id]
 	var stats: Dictionary = base.get("base_stats", {}).duplicate(true)
@@ -1324,13 +1306,9 @@ func equip_item(item_id: String) -> bool:
 func _save_robot_progression() -> void:
 	if StageManager.run_mode != "campaign":
 		return
-	var file := FileAccess.open(ROBOT_PROFILE_PATH, FileAccess.WRITE)
-	if file == null:
-		push_error("Failed to save campaign robot profile.")
-		return
 	var save_data := player_profile.to_data()
-	file.store_string(JSON.stringify(save_data, "  "))
-	file.close()
+	if not PlayerProfileRepository.save_profile(save_data):
+		push_error("Failed to save campaign robot profile to SQLite.")
 
 func add_robot_xp(amount: int) -> void:
 	if StageManager.run_mode != "campaign" or amount <= 0:

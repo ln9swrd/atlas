@@ -59,7 +59,7 @@ var map_height_spin: SpinBox
 var option_layer_view: OptionButton
 var gameplay_visibility_toggle: CheckButton
 
-var current_map_path := "res://map_data/northbridge_sector_01.json"
+var current_map_path := "map_01"
 var current_map_data := {}
 var catalog_entries: Array[Dictionary] = []
 var preview_texture_cache: Dictionary = {}
@@ -122,13 +122,9 @@ func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: 
 	var desired_asset_id := selected_asset_id
 	if not preferred_asset_id.is_empty() or force_clear_selection:
 		desired_asset_id = preferred_asset_id
-	var file := FileAccess.open("res://content/editor/asset_catalog.json", FileAccess.READ)
-	if file == null:
-		update_status("Could not open asset catalog")
-		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	var parsed: Variant = ContentCatalogLoader.load_document("asset_catalog")
 	if not parsed is Dictionary or not parsed.get("assets", []) is Array:
-		update_status("Invalid asset catalog JSON")
+		update_status("Invalid asset catalog in SQLite")
 		return
 	catalog_entries.clear()
 	asset_preview.texture = null
@@ -590,21 +586,13 @@ func load_map(path: String) -> void:
 
 func _find_linked_stages(map_path: String) -> Array[String]:
 	var result: Array[String] = []
-	var dir := DirAccess.open("res://content/stages/")
-	if dir == null:
-		return result
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while not file_name.is_empty():
-		if not dir.current_is_dir() and file_name.ends_with(".json") and file_name != "stage_catalog.json":
-			var file := FileAccess.open("res://content/stages/" + file_name, FileAccess.READ)
-			if file:
-				var parsed: Variant = JSON.parse_string(file.get_as_text())
-				file.close()
-				if parsed is Dictionary and str(parsed.get("map_file", "")) == map_path:
-					result.append(str(parsed.get("stage_id", file_name.get_basename())))
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	var catalog: Dictionary = ContentCatalogLoader.load_document("stage_catalog")
+	for stage_id in catalog.get("stages", []):
+		var id := str(stage_id)
+		var stage_path := id
+		var stage_data := StageLoader.load_stage_data(stage_path)
+		if not stage_data.is_empty() and str(stage_data.get("map_file", "")) == map_path:
+			result.append(str(stage_data.get("stage_id", id)))
 	result.sort()
 	return result
 
@@ -627,29 +615,22 @@ func _on_file_dialog_visibility_changed() -> void:
 		_save_file_dialog_favorites()
 
 func _load_file_dialog_favorites() -> void:
-	if not FileAccess.file_exists(FILE_DIALOG_FAVORITES_PATH):
-		return
-	var file := FileAccess.open(FILE_DIALOG_FAVORITES_PATH, FileAccess.READ)
-	if file == null:
-		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if not parsed is Array:
+	var settings := ContentCatalogLoader.load_document("editor")
+	var values: Variant = settings.get("map_editor_file_dialog_favorites", [])
+	if not values is Array:
 		return
 	var favorites := PackedStringArray()
-	for favorite in parsed:
+	for favorite in values:
 		var path := str(favorite)
 		if not path.is_empty() and not favorites.has(path):
 			favorites.append(path)
 	FileDialog.set_favorite_list(favorites)
 
 func _save_file_dialog_favorites() -> void:
-	var favorites := FileDialog.get_favorite_list()
-	var file := FileAccess.open(FILE_DIALOG_FAVORITES_PATH, FileAccess.WRITE)
-	if file == null:
-		return
-	file.store_string(JSON.stringify(favorites, "  "))
-	file.close()
+	var settings := ContentCatalogLoader.load_document("editor")
+	settings["map_editor_file_dialog_favorites"] = Array(FileDialog.get_favorite_list())
+	if not ObjectPersistence.save_content_document("editor", settings):
+		push_warning("MapEditor: failed to save file dialog favorites to SQLite")
 
 func set_dialog_path(dialog: FileDialog) -> void:
 	_save_file_dialog_favorites()
