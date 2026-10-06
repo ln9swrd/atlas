@@ -879,40 +879,46 @@ func _create_robot_render_node() -> void:
 	robot_render_node.material = robot_render_material
 	add_child(robot_render_node)
 
-func _asura_team_mask_for_frame(anim_key: String, frame: int) -> Texture2D:
-	if str(robot_catalog.get("id", "")) != "asura":
-		return null
-	var rect := Rect2()
+func _team_mask_for_animation_frame(anim_key: String, frame: int) -> Texture2D:
 	var resolved := VisualAssetResolver.resolve(_robot_animation_value(anim_key))
-	if resolved != null and not resolved.id.begins_with("legacy:"):
-		rect = resolved.region
-	var rects: Dictionary = robot_catalog.get("animation_rects", {}) if robot_catalog.get("animation_rects", {}) is Dictionary else {}
-	var rect_values: Variant = rects.get(anim_key, [])
-	if anim_key == "skill" and not rects.has("skill"):
-		rect_values = rects.get("skill1", [])
-	if rect_values is Array and rect_values.size() >= 4:
-		rect = Rect2(
-			float(rect_values[0]),
-			float(rect_values[1]),
-			float(rect_values[2]),
-			float(rect_values[3])
-		)
-	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+	if resolved == null or resolved.id.begins_with("legacy:") or resolved.team_mask_source.is_empty():
 		return null
-	var frame_count := _robot_animation_frame_count(anim_key)
+	var mask_path := resolved.team_mask_source
+	var mask_texture := ResourceLoader.load(mask_path) as Texture2D
+	if mask_texture == null:
+		return null
+	var source_texture := ResourceLoader.load(resolved.source) as Texture2D
+	if source_texture == null:
+		return null
+	if mask_texture.get_width() <= 0 or mask_texture.get_height() <= 0:
+		return null
+	var frame_count := maxi(1, resolved.frames)
 	var frame_index: int = posmod(frame, frame_count)
-	var frame_rect := _robot_frame_rect(anim_key, frame_index, resolved, rect)
-	var image_size := Vector2i(ASURA_TEAM_MASK.get_width(), ASURA_TEAM_MASK.get_height())
+	var frame_rect := VisualAssetFrame.region_for(resolved, frame_index, resolved.region)
+	if frame_rect.size.x <= 0.0 or frame_rect.size.y <= 0.0:
+		return null
+	var mask_rect := Rect2()
+	var mask_size := Vector2(mask_texture.get_width(), mask_texture.get_height())
+	var frame_size := frame_rect.size
+	var source_size := Vector2(source_texture.get_width(), source_texture.get_height())
+	if mask_size == source_size:
+		mask_rect = frame_rect
+	elif mask_size == frame_size:
+		mask_rect = Rect2(Vector2.ZERO, frame_size)
+	elif mask_size == resolved.region.size:
+		mask_rect = Rect2(frame_rect.position - resolved.region.position, frame_size)
+	else:
+		return null
 	var pixel_rect := Rect2i(
-		int(round(frame_rect.position.x)),
-		int(round(frame_rect.position.y)),
-		int(round(frame_rect.size.x)),
-		int(round(frame_rect.size.y))
+		int(round(mask_rect.position.x)),
+		int(round(mask_rect.position.y)),
+		int(round(mask_rect.size.x)),
+		int(round(mask_rect.size.y))
 	)
-	if pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0 or pixel_rect.position.x < 0 or pixel_rect.position.y < 0 or pixel_rect.end.x > image_size.x or pixel_rect.end.y > image_size.y:
+	if pixel_rect.size.x <= 0 or pixel_rect.size.y <= 0 or pixel_rect.position.x < 0 or pixel_rect.position.y < 0 or pixel_rect.end.x > mask_texture.get_width() or pixel_rect.end.y > mask_texture.get_height():
 		return null
 	var mask_atlas := AtlasTexture.new()
-	mask_atlas.atlas = ASURA_TEAM_MASK
+	mask_atlas.atlas = mask_texture
 	mask_atlas.region = Rect2(pixel_rect.position, pixel_rect.size)
 	return mask_atlas
 
@@ -981,7 +987,7 @@ func _update_robot_render_node() -> void:
 	robot_render_node.rotation = 0.0
 	if robot_render_material != null:
 		robot_render_material.set_shader_parameter("team_color", robot_definition.color if robot_definition != null else Color.WHITE)
-		var team_mask := _asura_team_mask_for_frame(anim_key, frame_index)
+		var team_mask := _team_mask_for_animation_frame(anim_key, frame_index)
 		robot_render_material.set_shader_parameter("use_team_mask", team_mask != null)
 		if team_mask != null:
 			robot_render_material.set_shader_parameter("team_mask", team_mask)

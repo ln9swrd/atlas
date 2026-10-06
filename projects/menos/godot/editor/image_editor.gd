@@ -26,6 +26,9 @@ var source_thumbnail_cache: Dictionary = {}
 var target_thumbnail_cache: Dictionary = {}
 var editing := false
 var background_color_button: ColorPickerButton
+var background_sample_button: Button
+var background_replace_color_button: ColorPickerButton
+var background_team_alpha_spin: SpinBox
 var background_tolerance_spin: SpinBox
 var background_connected_only_check: CheckBox
 var usage_label: Label
@@ -49,6 +52,7 @@ var frame_transform_active_index := -1
 var frame_transform_values: Dictionary = {}
 var frame_transform_syncing := false
 var frame_select_mode := false
+var scope_option: OptionButton
 var filtered_indices: Array[int] = []
 
 signal request_content_editor
@@ -339,6 +343,8 @@ func _build_ui() -> void:
 	_add_button(tools, "Rotate Counterclockwise", _rotate_ccw)
 	_add_button(tools, "Trim Transparent Pixels", _trim_alpha)
 	_add_button(tools, "Save + Reconnect", _save_reconnect)
+	_add_button(tools, "Save Variant", _save_variant)
+	_add_button(tools, "Generate Team Mask", _generate_team_mask)
 	var bg_row := HBoxContainer.new()
 	right.add_child(bg_row)
 	var bg_label := Label.new()
@@ -348,6 +354,12 @@ func _build_ui() -> void:
 	background_color_button.color = Color.WHITE
 	background_color_button.tooltip_text = "투명 처리할 배경색"
 	bg_row.add_child(background_color_button)
+	background_sample_button = Button.new()
+	background_sample_button.text = "Eyedropper"
+	background_sample_button.tooltip_text = "이미지에서 클릭한 픽셀의 색상을 배경색으로 선택"
+	background_sample_button.pressed.connect(_toggle_background_eyedropper)
+	bg_row.add_child(background_sample_button)
+	view.color_picked.connect(_on_background_color_picked)
 	var bg_tolerance_label := Label.new()
 	bg_tolerance_label.text = "Tolerance"
 	bg_row.add_child(bg_tolerance_label)
@@ -358,6 +370,24 @@ func _build_ui() -> void:
 	background_tolerance_spin.value = 0.08
 	background_tolerance_spin.custom_minimum_size.x = 90
 	bg_row.add_child(background_tolerance_spin)
+	var replace_label := Label.new()
+	replace_label.text = "Replace"
+	bg_row.add_child(replace_label)
+	background_replace_color_button = ColorPickerButton.new()
+	background_replace_color_button.color = Color(1, 1, 1, 1)
+	background_replace_color_button.tooltip_text = "선택한 배경색을 치환할 색상"
+	bg_row.add_child(background_replace_color_button)
+	var team_alpha_label := Label.new()
+	team_alpha_label.text = "Team Alpha"
+	bg_row.add_child(team_alpha_label)
+	background_team_alpha_spin = SpinBox.new()
+	background_team_alpha_spin.min_value = 0.0
+	background_team_alpha_spin.max_value = 1.0
+	background_team_alpha_spin.step = 0.01
+	background_team_alpha_spin.value = 1.0
+	background_team_alpha_spin.custom_minimum_size.x = 75
+	background_team_alpha_spin.tooltip_text = "선택 색상에 적용할 Alpha 값"
+	bg_row.add_child(background_team_alpha_spin)
 	background_connected_only_check = CheckBox.new()
 	background_connected_only_check.text = "Edge-connected only"
 	background_connected_only_check.tooltip_text = "선택 색상과 가까우면서 이미지 가장자리와 연결된 영역만 투명 처리"
@@ -366,6 +396,24 @@ func _build_ui() -> void:
 	bg_apply.text = "Remove Background Color"
 	bg_apply.pressed.connect(_remove_background_color)
 	bg_row.add_child(bg_apply)
+	var bg_replace := Button.new()
+	bg_replace.text = "Replace Color"
+	bg_replace.pressed.connect(_replace_background_color)
+	bg_row.add_child(bg_replace)
+	var bg_team_alpha := Button.new()
+	bg_team_alpha.text = "Set Team Alpha"
+	bg_team_alpha.pressed.connect(_set_team_color_alpha)
+	bg_row.add_child(bg_team_alpha)
+	var scope_label := Label.new()
+	scope_label.text = "Scope"
+	bg_row.add_child(scope_label)
+	scope_option = OptionButton.new()
+	scope_option.add_item("Entire Image")
+	scope_option.add_item("Selected Frame")
+	scope_option.add_item("All Frames")
+	scope_option.select(0)
+	scope_option.tooltip_text = "색상/Alpha 처리를 전체 이미지, 선택 프레임, 모든 프레임 중 하나로 제한합니다."
+	bg_row.add_child(scope_option)
 	var resize_row := HBoxContainer.new()
 	right.add_child(resize_row)
 	var resize_label := Label.new()
@@ -1913,7 +1961,146 @@ func _rotate_ccw() -> void:
 	current_image.rotate_90(COUNTERCLOCKWISE)
 	_refresh_view()
 
+func _toggle_background_eyedropper() -> void:
+	if not _require_image():
+		return
+	var enabled := not view.is_color_pick_mode()
+	view.set_color_pick_mode(enabled)
+	background_sample_button.text = "Eyedropper ON" if enabled else "Eyedropper"
+	status.text = "이미지에서 색상을 클릭하세요." if enabled else "Eyedropper disabled."
+
+func _on_background_color_picked(color: Color) -> void:
+	background_color_button.color = color
+	view.set_color_pick_mode(false)
+	background_sample_button.text = "Eyedropper"
+	status.text = "Background color sampled: #%s" % color.to_html(false)
+
 func _remove_background_color() -> void:
+	_process_scoped_color_operation("remove")
+
+func _replace_background_color() -> void:
+	_process_scoped_color_operation("replace")
+
+func _set_team_color_alpha() -> void:
+	_process_scoped_color_operation("alpha")
+
+func _scope_regions() -> Array[Rect2i]:
+	var regions: Array[Rect2i] = []
+	if scope_option == null or scope_option.selected == 0:
+		regions.append(Rect2i(0, 0, current_image.get_width(), current_image.get_height()))
+		return regions
+	var entry: Dictionary = entries[current_index] if current_index >= 0 and current_index < entries.size() else {}
+	var base_region := _entry_region(entry)
+	var frame_data: Variant = entry.get("frame_regions", [])
+	var frame_regions: Array = frame_data if frame_data is Array else []
+	var frames := maxi(1, int(entry.get("frames", 1)))
+	if frame_regions.size() < frames:
+		frame_regions.clear()
+		var columns := maxi(1, int(entry.get("columns", frames)))
+		var rows := maxi(1, int(entry.get("rows", 1)))
+		var cell_w := maxi(1, floori(float(base_region.size.x) / float(columns)))
+		var cell_h := maxi(1, floori(float(base_region.size.y) / float(rows)))
+		for index in range(frames):
+			var column := index % columns
+			var row := index / columns
+			if str(entry.get("frame_order", "row_major")) == "column_major":
+				column = index / rows
+				row = index % rows
+			frame_regions.append([base_region.position.x + column * cell_w, base_region.position.y + row * cell_h, cell_w, cell_h])
+	if scope_option.selected == 1:
+		var selected := clampi(int(frame_index_spin.value) - 1, 0, frames - 1)
+		if selected < frame_regions.size():
+			var values: Array = frame_regions[selected]
+			if values.size() >= 4:
+				regions.append(Rect2i(int(values[0]), int(values[1]), int(values[2]), int(values[3])))
+	else:
+		for values in frame_regions:
+			if values is Array and values.size() >= 4:
+				regions.append(Rect2i(int(values[0]), int(values[1]), int(values[2]), int(values[3])))
+	if regions.is_empty():
+		regions.append(base_region)
+	return regions
+
+func _process_scoped_color_operation(operation: String) -> void:
+	if not _require_image(): return
+	if editing: _finish_erase()
+	var target := background_color_button.color
+	var replacement := background_replace_color_button.color
+	var target_alpha := clampf(float(background_team_alpha_spin.value), 0.0, 1.0)
+	var tolerance := float(background_tolerance_spin.value)
+	var tolerance_sq := tolerance * tolerance
+	var changed := 0
+	for raw_region in _scope_regions():
+		var region := raw_region.intersection(Rect2i(0, 0, current_image.get_width(), current_image.get_height()))
+		if region.size.x <= 0 or region.size.y <= 0:
+			continue
+		var rw := region.size.x
+		var rh := region.size.y
+		var mask := PackedByteArray()
+		mask.resize(rw * rh)
+		for y in range(rh):
+			for x in range(rw):
+				var pixel := current_image.get_pixel(region.position.x + x, region.position.y + y)
+				if pixel.a <= 0.0: continue
+				var dr := pixel.r - target.r
+				var dg := pixel.g - target.g
+				var db := pixel.b - target.b
+				if dr * dr + dg * dg + db * db <= tolerance_sq:
+					mask[y * rw + x] = 1
+		if background_connected_only_check.button_pressed:
+			var queue := PackedInt32Array()
+			for x in range(rw):
+				if mask[x] == 1:
+					mask[x] = 2
+					queue.append(x)
+				var bottom := (rh - 1) * rw + x
+				if mask[bottom] == 1:
+					mask[bottom] = 2
+					queue.append(bottom)
+			for y in range(rh):
+				var left := y * rw
+				if mask[left] == 1:
+					mask[left] = 2
+					queue.append(left)
+				var right := y * rw + rw - 1
+				if mask[right] == 1:
+					mask[right] = 2
+					queue.append(right)
+			var head := 0
+			while head < queue.size():
+				var index := queue[head]
+				head += 1
+				var px := index % rw
+				var py := index / rw
+				var neighbors: Array[int] = [index - 1, index + 1, index - rw, index + rw]
+				for neighbor: int in neighbors:
+					if neighbor < 0 or neighbor >= rw * rh or mask[neighbor] != 1: continue
+					var nx: int = neighbor % rw
+					var ny: int = neighbor / rw
+					if abs(nx - px) + abs(ny - py) != 1: continue
+					mask[neighbor] = 2
+					queue.append(neighbor)
+		else:
+			for index in range(mask.size()):
+				if mask[index] == 1:
+					mask[index] = 2
+		for index in range(mask.size()):
+			if mask[index] != 2: continue
+			var x := index % rw
+			var y := index / rw
+			var pixel := current_image.get_pixel(region.position.x + x, region.position.y + y)
+			match operation:
+				"remove":
+					current_image.set_pixel(region.position.x + x, region.position.y + y, Color(pixel.r, pixel.g, pixel.b, 0.0))
+				"replace":
+					current_image.set_pixel(region.position.x + x, region.position.y + y, Color(replacement.r, replacement.g, replacement.b, pixel.a))
+				"alpha":
+					current_image.set_pixel(region.position.x + x, region.position.y + y, Color(pixel.r, pixel.g, pixel.b, target_alpha))
+			changed += 1
+	_refresh_view()
+	status.text = "%s: %d pixels | Scope: %s" % [operation.capitalize(), changed, scope_option.get_item_text(scope_option.selected)]
+
+func _remove_background_color_legacy() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
 	var target := background_color_button.color
@@ -1985,6 +2172,164 @@ func _remove_background_color() -> void:
 	_refresh_view()
 	status.text = "Background removed: %d pixels (tolerance %.2f)" % [changed, tolerance]
 
+func _replace_background_color_legacy() -> void:
+	if not _require_image():
+		return
+	if editing:
+		_finish_erase()
+	var target := background_color_button.color
+	var replacement := background_replace_color_button.color
+	var tolerance := float(background_tolerance_spin.value)
+	var tolerance_sq := tolerance * tolerance
+	var w := current_image.get_width()
+	var h := current_image.get_height()
+	var changed := 0
+	if background_connected_only_check.button_pressed:
+		var mask := PackedByteArray()
+		mask.resize(w * h)
+		for y in range(h):
+			for x in range(w):
+				var pixel := current_image.get_pixel(x, y)
+				if pixel.a <= 0.0:
+					continue
+				var dr := pixel.r - target.r
+				var dg := pixel.g - target.g
+				var db := pixel.b - target.b
+				if dr * dr + dg * dg + db * db <= tolerance_sq:
+					mask[y * w + x] = 1
+		var queue := PackedInt32Array()
+		for x in range(w):
+			if mask[x] == 1:
+				mask[x] = 2
+				queue.append(x)
+			var bottom := (h - 1) * w + x
+			if mask[bottom] == 1:
+				mask[bottom] = 2
+				queue.append(bottom)
+		for y in range(h):
+			var left := y * w
+			if mask[left] == 1:
+				mask[left] = 2
+				queue.append(left)
+			var right := y * w + w - 1
+			if mask[right] == 1:
+				mask[right] = 2
+				queue.append(right)
+		var head := 0
+		while head < queue.size():
+			var index := queue[head]
+			head += 1
+			var px := index % w
+			var py := index / w
+			var neighbors: Array[int] = [index - 1, index + 1, index - w, index + w]
+			for neighbor: int in neighbors:
+				if neighbor < 0 or neighbor >= w * h or mask[neighbor] != 1:
+					continue
+				var nx: int = neighbor % w
+				var ny: int = neighbor / w
+				if abs(nx - px) + abs(ny - py) != 1:
+					continue
+				mask[neighbor] = 2
+				queue.append(neighbor)
+		for index in range(mask.size()):
+			if mask[index] == 2:
+				var pixel := current_image.get_pixel(index % w, index / w)
+				current_image.set_pixel(index % w, index / w, Color(replacement.r, replacement.g, replacement.b, pixel.a))
+				changed += 1
+	else:
+		for y in range(h):
+			for x in range(w):
+				var pixel := current_image.get_pixel(x, y)
+				if pixel.a <= 0.0:
+					continue
+				var dr := pixel.r - target.r
+				var dg := pixel.g - target.g
+				var db := pixel.b - target.b
+				if dr * dr + dg * dg + db * db <= tolerance_sq:
+					current_image.set_pixel(x, y, Color(replacement.r, replacement.g, replacement.b, pixel.a))
+					changed += 1
+	_refresh_view()
+	status.text = "Color replaced: %d pixels (tolerance %.2f)" % [changed, tolerance]
+
+func _set_team_color_alpha_legacy() -> void:
+	if not _require_image():
+		return
+	if editing:
+		_finish_erase()
+	var target := background_color_button.color
+	var target_alpha := clampf(float(background_team_alpha_spin.value), 0.0, 1.0)
+	var tolerance := float(background_tolerance_spin.value)
+	var tolerance_sq := tolerance * tolerance
+	var w := current_image.get_width()
+	var h := current_image.get_height()
+	var changed := 0
+	if background_connected_only_check.button_pressed:
+		var mask := PackedByteArray()
+		mask.resize(w * h)
+		for y in range(h):
+			for x in range(w):
+				var pixel := current_image.get_pixel(x, y)
+				if pixel.a <= 0.0:
+					continue
+				var dr := pixel.r - target.r
+				var dg := pixel.g - target.g
+				var db := pixel.b - target.b
+				if dr * dr + dg * dg + db * db <= tolerance_sq:
+					mask[y * w + x] = 1
+		var queue := PackedInt32Array()
+		for x in range(w):
+			if mask[x] == 1:
+				mask[x] = 2
+				queue.append(x)
+			var bottom := (h - 1) * w + x
+			if mask[bottom] == 1:
+				mask[bottom] = 2
+				queue.append(bottom)
+		for y in range(h):
+			var left := y * w
+			if mask[left] == 1:
+				mask[left] = 2
+				queue.append(left)
+			var right := y * w + w - 1
+			if mask[right] == 1:
+				mask[right] = 2
+				queue.append(right)
+		var head := 0
+		while head < queue.size():
+			var index := queue[head]
+			head += 1
+			var px := index % w
+			var py := index / w
+			var neighbors: Array[int] = [index - 1, index + 1, index - w, index + w]
+			for neighbor: int in neighbors:
+				if neighbor < 0 or neighbor >= w * h or mask[neighbor] != 1:
+					continue
+				var nx: int = neighbor % w
+				var ny: int = neighbor / w
+				if abs(nx - px) + abs(ny - py) != 1:
+					continue
+				mask[neighbor] = 2
+				queue.append(neighbor)
+		for index in range(mask.size()):
+			if mask[index] == 2:
+				var pixel := current_image.get_pixel(index % w, index / w)
+				current_image.set_pixel(index % w, index / w, Color(pixel.r, pixel.g, pixel.b, target_alpha))
+				changed += 1
+	else:
+		for y in range(h):
+			for x in range(w):
+				var pixel := current_image.get_pixel(x, y)
+				if pixel.a <= 0.0:
+					continue
+				var dr := pixel.r - target.r
+				var dg := pixel.g - target.g
+				var db := pixel.b - target.b
+				if dr * dr + dg * dg + db * db <= tolerance_sq:
+					current_image.set_pixel(x, y, Color(pixel.r, pixel.g, pixel.b, target_alpha))
+					changed += 1
+	_refresh_view()
+	status.text = "Team alpha set: %d pixels (alpha %.2f, tolerance %.2f)" % [changed, target_alpha, tolerance]
+
 func _trim_alpha() -> void:
 	if not _require_image(): return
 	if editing: _finish_erase()
@@ -2011,6 +2356,132 @@ func _visible_bounds(image: Image) -> Rect2i:
 				max_y = maxi(max_y, y)
 	if max_x < 0: return Rect2i()
 	return Rect2i(min_x, min_y, max_x - min_x + 1, max_y - min_y + 1)
+
+func _validate_visual_asset_image_alignment(entry: Dictionary, image: Image) -> bool:
+	if image == null:
+		status.text = "Asset validation failed: edited image is unavailable."
+		return false
+	var source_path_value := str(entry.get("path", entry.get("source", "")))
+	if source_path_value.is_empty():
+		status.text = "Asset validation failed: source path is missing."
+		return false
+	var source_texture := LOADER.load_texture(source_path_value)
+	if source_texture == null:
+		status.text = "Asset validation failed: source image is unavailable."
+		return false
+	if image.get_width() != source_texture.get_width() or image.get_height() != source_texture.get_height():
+		status.text = "Asset validation failed: edited image size %d x %d differs from source %d x %d." % [image.get_width(), image.get_height(), source_texture.get_width(), source_texture.get_height()]
+		return false
+	var frame_count := maxi(1, int(entry.get("frames", 1)))
+	var frame_regions: Variant = entry.get("frame_regions", [])
+	if frame_count > 1:
+		if not frame_regions is Array or frame_regions.size() != frame_count:
+			status.text = "Asset validation failed: Frame count and Frame Region count do not match."
+			return false
+		for value in frame_regions:
+			if not value is Array or value.size() < 4:
+				status.text = "Asset validation failed: invalid Frame Region."
+				return false
+			var region := Rect2i(int(value[0]), int(value[1]), int(value[2]), int(value[3]))
+			if region.size.x <= 0 or region.size.y <= 0 or not Rect2i(0, 0, image.get_width(), image.get_height()).encloses(region):
+				status.text = "Asset validation failed: Frame Region is outside the source image."
+				return false
+	return true
+
+func _save_variant() -> void:
+	if not _require_image(): return
+	if editing: _finish_erase()
+	if current_index < 0 or current_index >= entries.size():
+		status.text = "Variant save requires a selected Visual Asset."
+		return
+	var entry: Dictionary = entries[current_index]
+	if str(entry.get("owner_kind", "")) != "visual_asset":
+		status.text = "Variant save requires a Visual Asset entry."
+		return
+	if not _validate_visual_asset_image_alignment(entry, current_image):
+		return
+	var base_id := str(entry.get("owner_key", originating_asset_id)).strip_edges()
+	if base_id.is_empty():
+		status.text = "Variant save blocked: missing Visual Asset ID."
+		return
+	var safe_id := base_id.replace("/", "_").replace("\\\\", "_").replace(".", "_")
+	var output := "%s/%s_variant_%d.png" % [EDITED_DIR, safe_id, Time.get_ticks_usec()]
+	var dir := ProjectSettings.globalize_path(EDITED_DIR)
+	var err := DirAccess.make_dir_recursive_absolute(dir)
+	if err != OK or current_image.save_png(ProjectSettings.globalize_path(output)) != OK:
+		status.text = "Variant PNG save failed."
+		return
+	var catalog_path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(catalog_path, FileAccess.READ)
+	if file == null:
+		status.text = "Visual Asset catalog unavailable."
+		return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary:
+		status.text = "Visual Asset catalog is invalid."
+		return
+	var variant_id := "%s.variant.%d" % [base_id, Time.get_ticks_usec()]
+	var variant: Dictionary = entry.duplicate(true)
+	variant["id"] = variant_id
+	variant["source"] = output
+	variant["variant_of"] = base_id
+	variant["usage"] = "%s_variant" % str(entry.get("usage", "visual_asset"))
+	data[variant_id] = variant
+	if not _write_json(catalog_path, data):
+		status.text = "Variant catalog registration failed."
+		return
+	VisualAssetResolver.reload()
+	status.text = "Variant saved: %s" % variant_id
+
+func _generate_team_mask() -> void:
+	if not _require_image(): return
+	if editing: _finish_erase()
+	if current_index < 0 or current_index >= entries.size():
+		status.text = "Team Mask requires a selected Visual Asset."
+		return
+	var entry: Dictionary = entries[current_index]
+	if str(entry.get("owner_kind", "")) != "visual_asset":
+		status.text = "Team Mask requires a Visual Asset entry."
+		return
+	if not _validate_visual_asset_image_alignment(entry, current_image):
+		return
+	var asset_id := str(entry.get("owner_key", originating_asset_id)).strip_edges()
+	if asset_id.is_empty():
+		status.text = "Team Mask blocked: missing Visual Asset ID."
+		return
+	var mask := Image.create(current_image.get_width(), current_image.get_height(), false, Image.FORMAT_RGBA8)
+	for y in range(current_image.get_height()):
+		for x in range(current_image.get_width()):
+			var pixel := current_image.get_pixel(x, y)
+			var value := clampf(pixel.a, 0.0, 1.0)
+			mask.set_pixel(x, y, Color(value, value, value, 1.0))
+	var safe_id := asset_id.replace("/", "_").replace("\\\\", "_").replace(".", "_")
+	var mask_dir := "res://content/editor/team_masks"
+	var mask_path := "%s/%s_team_mask.png" % [mask_dir, safe_id]
+	var dir := ProjectSettings.globalize_path(mask_dir)
+	var err := DirAccess.make_dir_recursive_absolute(dir)
+	if err != OK or mask.save_png(ProjectSettings.globalize_path(mask_path)) != OK:
+		status.text = "Team Mask save failed."
+		return
+	var catalog_path := "res://content/editor/visual_assets.json"
+	var file := FileAccess.open(catalog_path, FileAccess.READ)
+	if file == null:
+		status.text = "Visual Asset catalog unavailable."
+		return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not data is Dictionary or not data.has(asset_id):
+		status.text = "Visual Asset entry not found: %s" % asset_id
+		return
+	var definition: Dictionary = data[asset_id]
+	definition["team_mask"] = {"source": mask_path}
+	data[asset_id] = definition
+	if not _write_json(catalog_path, data):
+		status.text = "Team Mask catalog registration failed."
+		return
+	VisualAssetResolver.reload()
+	status.text = "Team Mask saved and linked: %s" % mask_path
 
 func _save_reconnect() -> void:
 	if not _require_image(): return

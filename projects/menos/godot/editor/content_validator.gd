@@ -26,6 +26,7 @@ func run() -> Dictionary:
 
 func _run() -> void:
 	_validate_visual_asset_catalog()
+	_validate_animation_asset_refs()
 	_validate_catalog("ENEMY", ENEMY_FILE, ["name", "hp", "speed", "armor", "base_damage", "reward", "radius", "sprite_anim"])
 	_validate_catalog("ALLIED_UNIT", ALLIED_UNIT_FILE, ["name", "description", "hp", "speed", "armor", "damage", "cooldown", "range", "radius", "attack_type", "reward", "color", "projectile_anim", "robot_damage", "robot_range", "robot_cooldown", "ai", "visuals"])
 	_validate_catalog("TOWER", TOWER_FILE, ["name", "cost", "damage", "cooldown", "range", "preference", "sprite_anim", "level2"])
@@ -54,6 +55,30 @@ func _validate_visual_asset_catalog() -> void:
 			errors.append("VISUAL_ASSET[%s].frames is invalid" % asset_id)
 			continue
 		var frames := int(frames_value)
+		var source_path := str(entry.get("source", "")).strip_edges()
+		if source_path.is_empty() or not ResourceLoader.exists(source_path):
+			errors.append("VISUAL_ASSET[%s].source is missing or unresolved: %s" % [asset_id, source_path])
+		else:
+			var source_texture := ResourceLoader.load(source_path) as Texture2D
+			if source_texture == null:
+				errors.append("VISUAL_ASSET[%s].source is not a texture: %s" % [asset_id, source_path])
+			else:
+				var source_size := Vector2(source_texture.get_width(), source_texture.get_height())
+				var declared_region: Array = entry.get("region", [])
+				if declared_region.size() >= 4:
+					var base_region := Rect2(float(declared_region[0]), float(declared_region[1]), float(declared_region[2]), float(declared_region[3]))
+					if base_region.size.x <= 0.0 or base_region.size.y <= 0.0 or not Rect2(Vector2.ZERO, source_size).encloses(base_region):
+						errors.append("VISUAL_ASSET[%s].region is outside source bounds" % asset_id)
+				var mask_data: Variant = entry.get("team_mask", {})
+				if mask_data is Dictionary:
+					var mask_path := str(mask_data.get("source", "")).strip_edges()
+					if not mask_path.is_empty():
+						if not ResourceLoader.exists(mask_path):
+							errors.append("VISUAL_ASSET[%s].team_mask.source is unresolved: %s" % [asset_id, mask_path])
+						else:
+							var mask_texture := ResourceLoader.load(mask_path) as Texture2D
+							if mask_texture == null or mask_texture.get_width() != source_texture.get_width() or mask_texture.get_height() != source_texture.get_height():
+								errors.append("VISUAL_ASSET[%s].team_mask.source size does not match source" % asset_id)
 		var frame_regions = entry.get("frame_regions", [])
 		if frame_regions == null:
 			continue
@@ -75,6 +100,43 @@ func _validate_visual_asset_catalog() -> void:
 				continue
 			if float(values[2]) <= 0.0 or float(values[3]) <= 0.0:
 				errors.append("VISUAL_ASSET[%s].frame_regions[%d] has non-positive size" % [asset_id, frame_index])
+				continue
+			if source_path.is_empty() or not ResourceLoader.exists(source_path):
+				continue
+			var frame_rect := Rect2(float(values[0]), float(values[1]), float(values[2]), float(values[3]))
+			var frame_texture := ResourceLoader.load(source_path) as Texture2D
+			if frame_texture != null and not Rect2(Vector2.ZERO, Vector2(frame_texture.get_width(), frame_texture.get_height())).encloses(frame_rect):
+				errors.append("VISUAL_ASSET[%s].frame_regions[%d] is outside source bounds" % [asset_id, frame_index])
+
+func _validate_animation_asset_refs() -> void:
+	var visual_catalog := _load_json_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")
+	if visual_catalog.is_empty():
+		return
+	var robot_catalog := _load_json_dictionary(ROBOT_FILE, "ROBOT_ANIMATION")
+	for robot_id in robot_catalog.keys():
+		var robot = robot_catalog[robot_id]
+		if not (robot is Dictionary):
+			continue
+		var animations: Variant = robot.get("animations", {})
+		if animations is Dictionary:
+			for animation_name in animations.keys():
+				var value := str(animations[animation_name]).strip_edges()
+				if value.is_empty():
+					continue
+				if not value.begins_with("res://") and not visual_catalog.has(value):
+					errors.append("ROBOT[%s].animations[%s] references missing Visual Asset: %s" % [robot_id, animation_name, value])
+
+	var allied_catalog := _load_json_dictionary(ALLIED_UNIT_FILE, "ALLIED_UNIT_ANIMATION")
+	for unit_id in allied_catalog.keys():
+		var unit = allied_catalog[unit_id]
+		if not (unit is Dictionary):
+			continue
+		for key in ["projectile_anim"]:
+			var value := str(unit.get(key, "")).strip_edges()
+			if value.begins_with("res://") or value.is_empty():
+				continue
+			if not visual_catalog.has(value):
+				errors.append("ALLIED_UNIT[%s].%s references missing Visual Asset: %s" % [unit_id, key, value])
 
 func _validate_catalog(label: String, path: String, required: Array[String]) -> void:
 	var parsed := ObjectRepository.load_catalog(path)

@@ -5,6 +5,7 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 
 signal region_changed(rect: Rect2i)
 signal frame_selected(frame_index: int)
+signal color_picked(color: Color)
 
 var texture: Texture2D
 var selected_region := Rect2i()
@@ -31,6 +32,14 @@ var grid_frame_anchors: Array = []
 var grid_frame_regions: Array = []
 var frame_select_mode := false
 var selected_frame_index := -1
+var _color_pick_mode := false
+
+func set_color_pick_mode(enabled: bool) -> void:
+	_color_pick_mode = enabled
+	queue_redraw()
+
+func is_color_pick_mode() -> bool:
+	return _color_pick_mode
 
 func set_frame_select_mode(enabled: bool) -> void:
 	frame_select_mode = enabled
@@ -283,6 +292,16 @@ func _gui_input(event: InputEvent) -> void:
 			accept_event()
 			return
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			if mouse_event.pressed and _color_pick_mode and _get_image_rect().has_point(mouse_event.position):
+				var image_rect := _get_image_rect()
+				var image_size := Vector2(texture.get_size())
+				var pixel := Vector2i(((mouse_event.position - image_rect.position) / image_rect.size * image_size).floor())
+				pixel.x = clampi(pixel.x, 0, int(image_size.x) - 1)
+				pixel.y = clampi(pixel.y, 0, int(image_size.y) - 1)
+				var sampled := texture.get_image().get_pixel(pixel.x, pixel.y)
+				color_picked.emit(sampled)
+				accept_event()
+				return
 			if mouse_event.pressed and frame_select_mode and not _editing_pixels and _get_image_rect().has_point(mouse_event.position):
 				var region_rect := selected_region
 				if region_rect.size.x > 0 and region_rect.size.y > 0 and grid_frames > 1:
