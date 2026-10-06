@@ -315,3 +315,18 @@ Master가 실제 Runtime 결과를 직접 확인.
 상태: PLAN ACTIVE / RUNTIME ACCEPTANCE PENDING
 
 본 계획 갱신에서는 게임 코드, Scene, Asset, Data, Canon을 변경하지 않는다.
+
+
+## 2026-10-06 Data-Centric Editor Implementation Plan Update
+
+Master-directed implementation scope:
+- Implement: Faction Editor, Skill/Ability Editor, Mission/Objective Editor, Campaign Editor, Gameplay/Settings Editor, Settings Window, BGM data/management, SFX data/management, VFX data/management.
+- Hold: Item Editor, Reward Editor, art/visual asset production or expansion.
+- Implementation priority: Faction -> Skill/Ability -> Mission/Objective -> Campaign -> Gameplay/Settings -> Settings Window -> BGM -> SFX -> VFX.
+- SQLite remains the authoritative Runtime/Editor content source.
+- Audio/VFX work is data, reference, validation, and Runtime integration first; asset production is out of scope.
+- Each editor is to reuse the existing Repository/Loader/ObjectPersistence/Validator patterns where applicable.
+
+Implementation started with Faction Editor as the first task. Faction Editor currently provides SQLite-backed list/create/update/delete for faction id, name, and color data. Alliance relation modeling and Runtime consumption remain to be implemented after the existing data contract is confirmed.
+
+Item/Reward editors and art/visual production remain HOLD.

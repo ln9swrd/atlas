@@ -8,6 +8,11 @@ const UNIT_EDITOR_SCENE := "res://editor/unit_editor.tscn"
 const TOWER_EDITOR_SCENE := "res://editor/tower_editor.tscn"
 const ROBOT_EDITOR_SCENE := "res://editor/robot_editor.tscn"
 const IMAGE_EDITOR_SCENE := "res://editor/image_editor.tscn"
+const FACTION_EDITOR_SCENE := "res://editor/faction_editor.tscn"
+const SKILL_EDITOR_SCENE := "res://editor/skill_editor.tscn"
+const MISSION_EDITOR_SCENE := "res://editor/mission_editor.tscn"
+const CAMPAIGN_EDITOR_SCENE := "res://editor/campaign_editor.tscn"
+
 
 var current_editor: Node = null
 var content_host: Control
@@ -23,6 +28,10 @@ func _ready() -> void:
 	$MainLayout/TopMenu/Buttons/BtnTower.pressed.connect(_open_tower_editor)
 	$MainLayout/TopMenu/Buttons/BtnRobot.pressed.connect(_open_robot_editor)
 	$MainLayout/TopMenu/Buttons/BtnCatalog.pressed.connect(_open_image_editor)
+	$MainLayout/TopMenu/Buttons/BtnFaction.pressed.connect(_open_faction_editor)
+	$MainLayout/TopMenu/Buttons/BtnSkill.pressed.connect(_open_skill_editor)
+	$MainLayout/TopMenu/Buttons/BtnMission.pressed.connect(_open_mission_editor)
+	$MainLayout/TopMenu/Buttons/BtnCampaign.pressed.connect(_open_campaign_editor)
 	$MainLayout/TopMenu/Buttons/BtnQuit.pressed.connect(_quit)
 	_open_map_editor()
 
@@ -98,6 +107,22 @@ func _open_tower_editor() -> void:
 func _open_robot_editor() -> void:
 	_load_editor(ROBOT_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnRobot)
+
+func _open_faction_editor() -> void:
+	_load_editor(FACTION_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnFaction)
+
+func _open_skill_editor() -> void:
+	_load_editor(SKILL_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnSkill)
+
+func _open_mission_editor() -> void:
+	_load_editor(MISSION_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnMission)
+
+func _open_campaign_editor() -> void:
+	_load_editor(CAMPAIGN_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnCampaign)
 
 func _open_image_editor() -> void:
 	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():
@@ -175,6 +200,14 @@ func _set_active_button_for_scene(scene_path: String) -> void:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnRobot)
 	elif scene_path == IMAGE_EDITOR_SCENE:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnCatalog)
+	elif scene_path == FACTION_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnFaction)
+	elif scene_path == SKILL_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnSkill)
+	elif scene_path == MISSION_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnMission)
+	elif scene_path == CAMPAIGN_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnCampaign)
 
 func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnMap.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMap
@@ -183,6 +216,10 @@ func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnTower.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnTower
 	$MainLayout/TopMenu/Buttons/BtnRobot.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnRobot
 	$MainLayout/TopMenu/Buttons/BtnCatalog.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnCatalog
+	$MainLayout/TopMenu/Buttons/BtnFaction.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnFaction
+	$MainLayout/TopMenu/Buttons/BtnSkill.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnSkill
+	$MainLayout/TopMenu/Buttons/BtnMission.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMission
+	$MainLayout/TopMenu/Buttons/BtnCampaign.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnCampaign
 
 func _quit() -> void:
 	get_tree().quit()
