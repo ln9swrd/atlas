@@ -76,7 +76,7 @@ func _save() -> void:
 func _parse_stage_ids() -> Array[String]:
 	var result: Array[String] = []
 	for line in stages_edit.text.split("\n"):
-		var stage_id := line.strip_edges()
+		var stage_id: String = line.strip_edges()
 		if stage_id.is_empty():
 			continue
 		if not result.has(stage_id):
