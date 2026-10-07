@@ -181,7 +181,7 @@ Pilot 중심 HUD의 코드 경로가 존재한다.
   - Campaign 1 start-to-finish: 3 stages, Giant encounter, final Campaign Victory
 - 위 자동화/headless 검증은 PIE VERIFIED로 승격하지 않는다.
 - 실제 화면 가독성/연출과 Master 직접 PIE acceptance는 별도 경계로 유지한다.
-- Campaign smoke 실행 중 RewardDefinitionLoader에서 reward `21.0`, `22.0`, `23.0` 참조 오류가 확인되었으며 수정하지 않았다.
+- Campaign smoke에서 확인된 reward `21.0`, `22.0`, `23.0` 참조 문제는 StageLoader의 정규화된 reward reference 사용으로 수정했다.
 
 중요: 자동화/headless PASS는 PIE VERIFIED와 동일하지 않다.
 
@@ -398,7 +398,7 @@ Commit/Push는 Master가 명시적으로 승인한 경우에만 수행한다.
 - Wave / 일반 적 전투
 - Giant 등장 및 처치
 - 최종 Campaign Victory
-- Campaign smoke에서 RewardDefinitionLoader의 `21.0`, `22.0`, `23.0` 참조 오류가 확인됨. 해당 데이터 문제는 별도 이슈로 남기고 수정하지 않음.
+- Campaign smoke에서 확인된 reward `21.0`, `22.0`, `23.0` 참조 문제는 StageLoader의 정규화된 reward reference 사용으로 수정함.
 
 ## 14. 문서 상태 관리
 

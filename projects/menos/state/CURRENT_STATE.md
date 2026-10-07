@@ -6,9 +6,9 @@
 ## 1. 기준선
 
 - Branch: `main`
-- HEAD: `2ba7a5fc910ac2fdfd80beb9e17b180253666c18`
+- 기준 HEAD (code): `4d0e1743`
 - Remote: `upstream/main`과 동일
-- Working Tree: 문서 및 smoke test 추가 변경 확인, Commit 전 상태
+- Working Tree: 현재 문서 갱신 변경 확인, Commit 전 상태
 - Godot: `4.7.2.stable.official`
 - Runtime Content DB: `godot/content/menos.sqlite`
 - Combat Canon: `MENOS_COMBAT_CANON.md`
@@ -70,7 +70,7 @@
 - Campaign 1 integrated background smoke PASS: 3 stages, Giant, final Campaign Victory
 - 자동화 및 background/headless 검증은 PIE VERIFIED로 승격하지 않는다.
 - 실제 화면 가독성/연출과 Master 직접 PIE acceptance는 미확인이다.
-- Campaign smoke에서 RewardDefinitionLoader의 `21.0`, `22.0`, `23.0` 참조 오류가 확인되었으며 수정하지 않았다.
+- Campaign smoke에서 확인된 reward `21.0`, `22.0`, `23.0` 참조 문제는 StageLoader의 정규화된 reward reference 사용으로 수정했다.
 
 ## 4. 현재 Acceptance Gap
 
