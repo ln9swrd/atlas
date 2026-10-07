@@ -695,6 +695,26 @@ Archive와 Backup은 별도 개념으로 유지한다.
 - 기존 구조와 변경 상태가 문서화됨
 - Legacy 데이터와 신규 구조의 경계가 명확함
 
+## Phase 0.1 — 문서 / 기준선 정합성 보정
+
+목적:
+현재 실제 프로젝트 상태와 기존 개발계획 사이의 문서 드리프트를 제거하고, 이후 migration 계획이 오래된 데이터 권위나 Git 기준선을 참조하지 않도록 한다.
+
+범위:
+- 실제 `main` / `upstream/main` HEAD를 개발계획의 기준선으로 갱신 (`81bf4c147635510c1221533b69eaf3d5e8e0e568`)
+
+- `state/CURRENT_STATE.md`와 `docs/MENOS_MASTER_REFERENCE.md`의 Git 기준선 정합성 확보
+- 현재 Content authoritative source인 `godot/content/menos.sqlite`를 기준으로 개발계획의 데이터 권위 표현을 정리
+- 과거 `content/editor/*.json`, `visual_assets.json` 중심 계획은 Legacy / historical reference로 명시
+- 현재 `godot/docs/`의 개발계획은 실행 권한 문서인지 역사적 계획인지 상태를 명시
+- Localization은 현재 Master 결정인 Godot `TranslationServer` + gettext `.po`를 최종 authority로 반영하고 초기 JSON PoC를 historical/prototype으로 취급
+
+성공 조건:
+- 개발계획에서 현재 authority와 Legacy authority가 혼동되지 않는다.
+- 최신 Git 기준선과 상태 문서의 기준선이 일치한다.
+- SQLite/TranslationServer authority가 현재 계획에 명시된다.
+- 문서 정합성 작업으로 코드/Asset/Content 자체는 변경하지 않는다.
+
 ## Phase 1 — 공통 Model / Repository 경계
 
 목적:
@@ -791,6 +811,16 @@ Editor가 직접 파일을 관리하는 구조를 제거할 기반 마련.
 - 계산 Rule과 Content Value가 분리됨
 
 ## Phase 5 — SQLite Backend
+
+**현재 상태 보정 — 2026-10-07**
+
+현재 MENOS Runtime/Editor Content의 authoritative source는 이미 `godot/content/menos.sqlite`이다. 따라서 본 Phase는 "JSON에서 SQLite로 신규 전환"을 목표로 해석하지 않는다.
+
+기존 JSON 중심 개발계획은 historical migration record로 취급하며, 새 Content Schema/Repository를 설계할 때 SQLite authority와 충돌하는 별도 JSON authority를 만들지 않는다.
+
+현재 필요한 작업은 SQLite authority를 유지한 상태에서 Schema/Repository/Reference Integrity/Revision/Backup을 검증·보강하는 것이다.
+
+
 
 목적:
 정규화된 Content Model을 안정적인 DB 저장소로 이전.

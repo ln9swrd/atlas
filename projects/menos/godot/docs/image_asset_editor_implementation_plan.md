@@ -1,5 +1,7 @@
 # MENOS Image / Asset Editor 개선 구현 계획
 
+> 정합성 주의: 이 문서는 초기 JSON 기반 Asset Editor/Visual Asset 설계와 구현 이력을 보존하는 역사 기록이다. 현재 Content authoritative source는 `godot/content/menos.sqlite`이며, 이 문서의 `content/editor/visual_assets.json` 권위 서술은 현재 구현 기준으로 사용하지 않는다. 현재 Asset/Visual Asset 작업은 SQLite-backed Repository/Definition 경계를 우선 확인한다.
+
 ## 1. 목적
 
 Image Editor가 단순 이미지 편집기인지 카탈로그 관리 도구인지 구분하기 어려운 현재 UX를 정리한다.

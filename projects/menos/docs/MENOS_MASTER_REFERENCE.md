@@ -467,7 +467,7 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 
 - Project: MENOS
 - Branch: `main`
-- 최신 작업 기준 HEAD: `017d3431ee38263b212b9ad7fc537dc5635d4151`
+- 최신 작업 기준 HEAD: `81bf4c147635510c1221533b69eaf3d5e8e0e568`
 - Godot: `4.7.2.stable.official`
 - Runtime Content DB: `godot/content/menos.sqlite`
 - Current State: `state/CURRENT_STATE.md`

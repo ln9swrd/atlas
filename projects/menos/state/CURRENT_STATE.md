@@ -8,5 +8,5 @@
 - `README.md` now points to the consolidated document set.
 - Specialized Beam prompt/guideline documents remain in `docs/` because they are current operational references rather than superseded project plans.
 - No gameplay code, Asset, Scene, or Data was changed by the documentation consolidation.
-- Current verified Git baseline after consolidation: `main` / `017d3431ee38263b212b9ad7fc537dc5635d4151`.
+- Current verified Git baseline: `main` / `81bf4c147635510c1221533b69eaf3d5e8e0e568`.
 - File-structure policy: preserve the current project directory responsibilities; do not create parallel structures or move existing assets/code unless directly required and explicitly scoped.

@@ -11,13 +11,14 @@ MENOS Catalog Editor에서 2행 이상의 Sprite Sheet를 정확하게 등록·�
 - Project: `D:\Atlas\projects\menos`
 - Godot: `D:\Godot_v4.7.2`
 - 기준 Branch: `main`
-- 현재 Working Tree: 기존 승인 변경사항 및 이번 작업 변경사항이 존재함. 임의 되돌리기 금지.
+- 현재 Working Tree: 문서 정합성 보정 변경사항이 존재하며, 기존 변경사항은 임의로 되돌리지 않는다.
 - 관련 핵심 파일:
   - `godot/scripts/visual_asset_definition.gd`
   - `godot/editor/image_editor.gd`
   - `godot/editor/asset_region_view.gd`
   - `godot/editor/robot_editor.gd`
-  - `content/editor/visual_assets.json`
+  - `godot/content/menos.sqlite`
+- `content/editor/visual_assets.json`은 과거/Legacy 계획에서 사용된 데이터 표현이며 현재 Content authority로 취급하지 않는다.
 
 ## 3. 확인된 현재 문제
 
@@ -262,6 +263,11 @@ BOTTOM_CENTER = (60, 120)
 
 ## 8. VisualAssetDefinition 변경
 
+**Authority 정합성 — 2026-10-07**
+
+이 개발계획에서 말하는 `VisualAssetDefinition`은 현재 SQLite-backed Repository/Definition 경로의 논리 모델을 의미한다. Production Content의 authoritative storage는 `godot/content/menos.sqlite`이며, 과거 `visual_assets.json`을 직접 Production 저장소로 사용하는 것으로 해석하지 않는다.
+
+
 `visual_asset_definition.gd`에 다음 필드를 추가한다.
 
 ```text
@@ -330,7 +336,7 @@ Region 선택 자체의 Trim 기능은 유지하되, Animation Cell의 좌표와
 5. Frame Highlight — 구현됨
 6. Anchor Marker — 구현됨
 7. 입력값 검증 — 구현 경로 확인
-8. JSON 저장 — 구현됨
+8. SQLite-backed Repository 저장 — 구현 경로 기준으로 취급하며, Production Content를 `visual_assets.json`에 직접 저장하는 것으로 해석하지 않는다.
 9. Frame 선택 시 해당 Frame의 Anchor 표시 — 구현됨
 10. 선택 Frame의 Anchor X/Y 수정 및 저장 — 구현됨
 
@@ -429,7 +435,8 @@ BUSINESS VIABLE: 프로젝트 내부 개발 목적 기준으로 판단 가능하
 - Robot Runtime frame별 Anchor 소비 경로: 코드 확인
 - PIE 실제 위치 반영: NOT VERIFIED
 - 전용 `frame_anchor_smoke_test.gd`: `FRAME_ANCHOR_SMOKE_TEST_PASS`
-- Production `visual_assets.json`: frame별 Anchor 샘플 데이터 미삽입
+- Production SQLite Content: frame별 Anchor 샘플 데이터는 실제 Asset 편집 시에만 반영하며, 본 개발계획이 임의의 샘플 Production 데이터를 삽입하지 않는다.
+- Legacy `visual_assets.json`: 과거 개발계획/Prototype 기록으로만 취급
 
 따라서 현재 개발 상태는 **코드·데이터 경로 기준 PASS, 실제 Editor UI 및 PIE 기준 NOT VERIFIED**이다. 실제 UI 검증 없이 Production 완료로 승격하지 않는다.
 

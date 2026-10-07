@@ -3,7 +3,9 @@
 - 작성일: 2026-10-04
 - 기준 HEAD: 8498b495
 - 기준 Branch: main
-- 상태: MIGRATION IN PROGRESS / Phase 1~3 일부 완료
+- 상태: LEGACY / HISTORICAL — 현재 실행 기준이 아님
+
+> 정합성 주의: 이 문서는 2026-10-07 이전 JSON 기반 조사/계획을 보존한 역사 기록이다. 현재 Content authoritative source는 `godot/content/menos.sqlite`이며, 이 문서의 JSON 권위/마이그레이션 서술은 현재 구현 기준으로 사용하지 않는다. 후속 외부화 설계가 필요할 경우 현재 SQLite 권위와 충돌하지 않는 별도 계획으로 수립한다.
 
 ## 1. 목적
 
@@ -290,10 +292,10 @@ migration 완료 후 사용되지 않는 const와 중복 값을 제거한다.
 ## 9. 현재 검증 상태
 
 CONFIRMED
-- 현재 HEAD: `8498b495`
-- Branch: `main`
-- Working Tree: clean
-- `upstream/main`과 HEAD가 일치한다.
+- 문서 작성 당시 HEAD: `8498b495`
+- 문서 작성 당시 Branch: `main`
+- 문서 작성 당시 Working Tree: clean
+- 위 기준은 역사 기록이며 현재 Git 기준선으로 사용하지 않는다.
 - Godot 4.7.2 headless Editor load: PASS / exit code 0
 - `git diff --check`: PASS
 - `ROBOT_ANIMATION_FRAMES`, `TOWER_ANIMATION_FRAMES`, `PROJECTILE_ANIMATION_FRAMES`, `ENEMY_SPRITE_SIZES`, `ENEMY_TYPES`, `TOWER_TYPES`의 기존 GDScript 상수 참조가 제거되었다.

@@ -399,17 +399,30 @@ ENGINE/API TEXT    → 코드 유지
 **CANON** — Master 승인 전에는 아님.
 
 **OUT OF SCOPE** — 제3언어, 외부 번역 서비스, 자동 번역, 콘텐츠 이름의 완전한 다국어화.
+## 17.1 Authority 정합성 보정 — 2026-10-07
+
+이 문서 앞부분의 JSON + `LocalizationRepository` 구조는 초기 PoC 설계다. 현재 Master 결정은 **Godot `TranslationServer` + gettext `.po`**를 최종 localization authority로 사용하는 것이다.
+
+따라서 이후 구현계획에서는 `ko.json` / `en.json`을 Production authority로 생성·확장하지 않으며, 기존 JSON PoC는 역사적/Prototype 기록으로만 취급한다.
+
+현재 authoritative localization 경로:
+```text
+locale/en.po
+locale/ko.po
+        ↓
+Godot TranslationServer
+        ↓
+Runtime / Editor
+```
+
 ## 18. 구현 진행 결과 및 아키텍처 결정 게이트
 
-현재까지 다음 기반 PoC를 구현하고 실제 실행 검증했다.
+초기 JSON + `LocalizationRepository` PoC는 과거에 구현/검증되었으나 현재 최종 authority가 아니다.
 
-- content/localization/ko.json
-- content/localization/en.json
-- scripts/localization_repository.gd
-- SettingsManager와 기존 언어 설정 연동
-- Settings 화면과 Title 화면의 일부 메시지를 localization key 조회로 전환
-- ko / en key set 검증
-- 실제 Godot headless 실행에서 한국어/영어 메시지 조회 검증
+- `content/localization/ko.json` / `en.json`: historical/prototype
+- `scripts/localization_repository.gd`: historical/prototype
+- 현재 최종 경로: `locale/en.po`, `locale/ko.po` + Godot `TranslationServer`
+- Settings/Title의 일부 `tr()` 전환은 현재 최종 구조의 기반으로 취급한다.
 
 **CODE VERIFIED** — LocalizationRepository.message()가 실제 실행에서 ko=설정, en=SETTINGS를 반환하고 두 locale의 key set 검증이 통과했다.
 
