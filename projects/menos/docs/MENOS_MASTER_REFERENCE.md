@@ -173,8 +173,15 @@ Pilot 중심 HUD의 코드 경로가 존재한다.
 ### PIE / Runtime
 - 실제 GUI Runtime에서 Title → Single Play → Stage 1 → Wave 1/2 진입 확인
 - Enemy animation Asset path 문제 수정 후 실제 Runtime에서 오류 재현되지 않음
-- 2026-10-07 전투 Runtime Smoke는 background/headless 방식으로 PASS
-- 전체 Campaign start-to-finish와 모든 전투 행동의 Master 직접 PIE acceptance는 아직 전체 완료로 선언하지 않음
+- 2026-10-07 background/headless smoke 검증:
+  - Giant Boss pattern cycle / damage
+  - Attack → Projectile → Hit → Damage timing
+  - Pilot HUD runtime state/layout linkage
+  - Fixed Tower automatic attack / upgrade
+  - Campaign 1 start-to-finish: 3 stages, Giant encounter, final Campaign Victory
+- 위 자동화/headless 검증은 PIE VERIFIED로 승격하지 않는다.
+- 실제 화면 가독성/연출과 Master 직접 PIE acceptance는 별도 경계로 유지한다.
+- Campaign smoke 실행 중 RewardDefinitionLoader에서 reward `21.0`, `22.0`, `23.0` 참조 오류가 확인되었으며 수정하지 않았다.
 
 중요: 자동화/headless PASS는 PIE VERIFIED와 동일하지 않다.
 
@@ -361,25 +368,24 @@ Commit/Push는 Master가 명시적으로 승인한 경우에만 수행한다.
 ## 13. 현재 Acceptance Gap
 
 ### GAP-01 — Giant Boss
-상태: 최소 구현 CODE VERIFIED / 전체 Runtime acceptance 미완료
+상태: background Runtime Smoke PASS / PIE VERIFIED 미확인
 
-검증 대상:
-- 공격 패턴
-- wind-up / telegraph
-- Robot과의 교전
-- 대응 가능한 빈틈
+검증:
+- CANNON SHOT / CRUSHING BLAST / CHARGE 패턴 cycle
+- wind-up / damage 경로
+- Giant 피해 배율
 
 ### GAP-02 — Pilot HUD
-상태: CODE VERIFIED / 실제 전투 가독성 acceptance 미완료
+상태: background Runtime Smoke PASS / 실제 전투 가독성 및 PIE VERIFIED 미확인
 
 ### GAP-03 — Fixed Tower
-상태: 최소 구현 CODE VERIFIED
+상태: background Runtime Smoke PASS / PIE VERIFIED 미확인
 - 사전 배치
 - 자동 공격
-- 플레이어 직접 Tower 운영 최소화
+- Level 2 upgrade
 
 ### GAP-04 — Attack → Hit → Damage Timing
-상태: CODE VERIFIED / Runtime 시각 품질 미완료
+상태: background Runtime Smoke PASS / PIE VERIFIED 미확인
 
 최소 기준:
 ```text
@@ -387,7 +393,12 @@ Commit/Push는 Master가 명시적으로 승인한 경우에만 수행한다.
 ```
 
 ### GAP-05 — Campaign 1
-상태: 최소 통합 CODE VERIFIED / 전체 start-to-finish Runtime acceptance 미완료
+상태: background integrated Runtime Smoke PASS / PIE VERIFIED 미확인
+- 3개 Campaign Stage 순회
+- Wave / 일반 적 전투
+- Giant 등장 및 처치
+- 최종 Campaign Victory
+- Campaign smoke에서 RewardDefinitionLoader의 `21.0`, `22.0`, `23.0` 참조 오류가 확인됨. 해당 데이터 문제는 별도 이슈로 남기고 수정하지 않음.
 
 ## 14. 문서 상태 관리
 
@@ -467,7 +478,7 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 
 - Project: MENOS
 - Branch: `main`
-- 최신 작업 기준 HEAD: `81bf4c147635510c1221533b69eaf3d5e8e0e568`
+- 최신 작업 기준 HEAD: `2ba7a5fc910ac2fdfd80beb9e17b180253666c18`
 - Godot: `4.7.2.stable.official`
 - Runtime Content DB: `godot/content/menos.sqlite`
 - Current State: `state/CURRENT_STATE.md`
