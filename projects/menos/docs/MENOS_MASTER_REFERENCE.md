@@ -478,7 +478,7 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 
 - Project: MENOS
 - Branch: `main`
-- 최신 작업 기준 HEAD: `2ba7a5fc910ac2fdfd80beb9e17b180253666c18`
+- Git HEAD: 실제 현재 커밋 SHA는 Git `main` HEAD를 권위 원천으로 사용하며 이 문서에는 고정하지 않는다.
 - Godot: `4.7.2.stable.official`
 - Runtime Content DB: `godot/content/menos.sqlite`
 - Current State: `state/CURRENT_STATE.md`

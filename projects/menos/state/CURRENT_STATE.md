@@ -6,9 +6,9 @@
 ## 1. 기준선
 
 - Branch: `main`
-- 기준 HEAD (code): `4d0e1743`
-- Remote: `upstream/main`과 동일
-- Working Tree: 현재 문서 갱신 변경 확인, Commit 전 상태
+- Git HEAD: `main` branch의 실제 HEAD는 Git이 권위 원천이며 문서에는 고정 SHA를 기록하지 않는다.
+- Remote: `upstream/main`과 동기화된 상태를 유지한다.
+- Working Tree: 현재 검증 기준에서는 clean 상태를 목표로 한다.
 - Godot: `4.7.2.stable.official`
 - Runtime Content DB: `godot/content/menos.sqlite`
 - Combat Canon: `MENOS_COMBAT_CANON.md`
