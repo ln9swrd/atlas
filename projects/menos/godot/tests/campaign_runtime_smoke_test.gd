@@ -16,6 +16,7 @@ func _run() -> void:
 	var visited: Array[String] = []
 	var giant_seen := false
 	var giant_defeated := false
+	var impact_vfx_instance_seen := false
 	var victory := false
 
 	for step in range(1200):
@@ -29,6 +30,7 @@ func _run() -> void:
 			if enemy.type == "giant":
 				giant_seen = true
 				controller.damage_enemy(enemy, 100000.0, "campaign_smoke")
+				impact_vfx_instance_seen = impact_vfx_instance_seen or not controller.vfx_instances.is_empty()
 				giant_defeated = true
 			else:
 				controller.damage_enemy(enemy, 100000.0, "campaign_smoke")
@@ -40,7 +42,8 @@ func _run() -> void:
 	assert(visited.size() >= StageManager.get_available_stage_ids().size())
 	assert(giant_seen)
 	assert(giant_defeated)
+	assert(impact_vfx_instance_seen)
 	assert(victory)
 	assert(controller.run_state == controller.RunState.VICTORY)
-	print("CAMPAIGN_RUNTIME_SMOKE_PASS stages=%d giant=%s" % [visited.size(), str(giant_seen)])
+	print("CAMPAIGN_RUNTIME_SMOKE_PASS stages=%d giant=%s impact_vfx=%s" % [visited.size(), str(giant_seen), str(impact_vfx_instance_seen)])
 	quit(0)

@@ -110,6 +110,19 @@ static func get_base_hp() -> float:
 		return 0.0
 	return float(stage["base_hp"])
 
+static func get_gameplay_settings() -> Dictionary:
+	var stage := get_current_stage()
+	var gameplay: Variant = stage.get("gameplay", {})
+	return gameplay.duplicate(true) if gameplay is Dictionary else {}
+
+static func get_wave_auto_start_delay(default_delay: float) -> float:
+	var gameplay := get_gameplay_settings()
+	return maxf(0.0, float(gameplay.get("wave_auto_start_delay", default_delay)))
+
+static func get_wave_group_gap(default_gap: float) -> float:
+	var gameplay := get_gameplay_settings()
+	return maxf(0.0, float(gameplay.get("wave_group_gap", default_gap)))
+
 static func get_encounters() -> Array:
 	return get_current_stage().get("encounters", [])
 

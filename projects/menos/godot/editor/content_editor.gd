@@ -13,6 +13,7 @@ const FACTION_EDITOR_SCENE := "res://editor/faction_editor.tscn"
 const SKILL_EDITOR_SCENE := "res://editor/skill_editor.tscn"
 const MISSION_EDITOR_SCENE := "res://editor/mission_editor.tscn"
 const CAMPAIGN_EDITOR_SCENE := "res://editor/campaign_editor.tscn"
+const VFX_EDITOR_SCENE := "res://editor/vfx_editor.tscn"
 
 
 var current_editor: Node = null
@@ -36,6 +37,7 @@ func _ready() -> void:
 	$MainLayout/TopMenu/Buttons/BtnSkill.pressed.connect(_open_skill_editor)
 	$MainLayout/TopMenu/Buttons/BtnMission.pressed.connect(_open_mission_editor)
 	$MainLayout/TopMenu/Buttons/BtnCampaign.pressed.connect(_open_campaign_editor)
+	$MainLayout/TopMenu/Buttons/BtnVFX.pressed.connect(_open_vfx_editor)
 	_open_map_editor()
 
 func _setup_language() -> void:
@@ -151,6 +153,10 @@ func _open_campaign_editor() -> void:
 	_load_editor(CAMPAIGN_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnCampaign)
 
+func _open_vfx_editor() -> void:
+	_load_editor(VFX_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnVFX)
+
 func _open_image_editor() -> void:
 	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():
 		previous_editor_scene = current_editor_scene
@@ -237,6 +243,8 @@ func _set_active_button_for_scene(scene_path: String) -> void:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnMission)
 	elif scene_path == CAMPAIGN_EDITOR_SCENE:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnCampaign)
+	elif scene_path == VFX_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnVFX)
 
 func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnMap.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMap
@@ -250,6 +258,7 @@ func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnSkill.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnSkill
 	$MainLayout/TopMenu/Buttons/BtnMission.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMission
 	$MainLayout/TopMenu/Buttons/BtnCampaign.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnCampaign
+	$MainLayout/TopMenu/Buttons/BtnVFX.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnVFX
 
 func _quit() -> void:
 	get_tree().quit()

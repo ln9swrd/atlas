@@ -25,6 +25,8 @@
 
 ### Runtime
 - Stage → Encounter → Wave → Group → Enemy 실행 경로가 존재한다.
+- Stage Editor가 Encounter/Wave/Enemy Group과 함께 Stage별 Wave Auto Start, Wave Group Gap, Allied Support를 편집할 수 있다.
+- Single Play와 Campaign 모두 선택/진행된 Stage 데이터를 동일 Runtime 경로에서 소비한다.
 - Robot 직접 이동, 기본 공격, 타깃 선택, Special, Skill, Finisher가 구현되어 있다.
 - AI Allied Unit과 사전 배치 Fixed Tower의 자동 지원 경로가 존재한다.
 - Giant Runtime과 Victory / Defeat / Restart 경로가 존재한다.

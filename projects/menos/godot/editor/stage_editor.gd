@@ -29,6 +29,10 @@ var mission_time_spin: SpinBox
 var reward_id_edit: LineEdit
 var reward_gold_spin: SpinBox
 var reward_item_ids_edit: LineEdit
+var wave_auto_start_spin: SpinBox
+var wave_group_gap_spin: SpinBox
+var allied_units_box: VBoxContainer
+var allied_unit_types: Array = []
 var map_open_button: Button
 var map_preview_container: SubViewportContainer
 var map_preview_viewport: SubViewport
@@ -42,6 +46,7 @@ var status_label: Label
 func _ready() -> void:
 	enemy_types = ContentCatalogLoader.load_dictionary_catalog("enemies").keys()
 	enemy_types.sort()
+	allied_unit_types = _load_allied_unit_types()
 	_build_ui()
 	_refresh_stage_list()
 	if stage_list.item_count > 0:
@@ -150,6 +155,29 @@ func _build_stage_properties(parent: VBoxContainer) -> void:
 	hp_spin = _spin_row(parent, "Base HP", 1, 999999, 10, 100)
 
 	parent.add_child(HSeparator.new())
+	var gameplay_header := Label.new()
+	gameplay_header.text = "Gameplay Control"
+	gameplay_header.add_theme_font_size_override("font_size", 16)
+	parent.add_child(gameplay_header)
+	wave_auto_start_spin = _spin_row(parent, "Wave Auto Start (s)", 0, 120, 0.1, 2.5)
+	wave_group_gap_spin = _spin_row(parent, "Wave Group Gap (s)", 0, 60, 0.05, 0.3)
+	var gameplay_note := Label.new()
+	gameplay_note.text = "Stage-specific pacing overrides the global Gameplay settings."
+	gameplay_note.modulate = Color("9fb2aa")
+	parent.add_child(gameplay_note)
+	var allied_header := Label.new()
+	allied_header.text = "Allied Support"
+	allied_header.add_theme_font_size_override("font_size", 14)
+	parent.add_child(allied_header)
+	allied_units_box = VBoxContainer.new()
+	allied_units_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(allied_units_box)
+	var add_allied := Button.new()
+	add_allied.text = "+ Add Allied Unit"
+	add_allied.pressed.connect(_add_allied_unit)
+	parent.add_child(add_allied)
+
+	parent.add_child(HSeparator.new())
 	var mission_header := Label.new()
 	mission_header.text = "Mission / 미션"
 	mission_header.add_theme_font_size_override("font_size", 16)
@@ -229,6 +257,70 @@ func _option_row(parent: VBoxContainer, label_text: String, option: OptionButton
 	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(option)
 
+func _load_allied_unit_types() -> Array:
+	var catalog := ContentCatalogLoader.load_dictionary_catalog("allied_units")
+	var ids: Array = catalog.keys()
+	ids.sort()
+	return ids
+
+func _load_stage_gameplay_fields() -> void:
+	var gameplay: Dictionary = stage_data.get("gameplay", {}) if stage_data.get("gameplay", {}) is Dictionary else {}
+	wave_auto_start_spin.value = float(gameplay.get("wave_auto_start_delay", 2.5))
+	wave_group_gap_spin.value = float(gameplay.get("wave_group_gap", 0.3))
+	_rebuild_allied_units()
+
+func _rebuild_allied_units() -> void:
+	if allied_units_box == null:
+		return
+	for child in allied_units_box.get_children():
+		child.queue_free()
+	var units: Array = stage_data.get("allied_units", []) if stage_data.get("allied_units", []) is Array else []
+	for index in units.size():
+		_build_allied_unit_row(index)
+
+func _build_allied_unit_row(index: int) -> void:
+	var units: Array = stage_data.get("allied_units", [])
+	if index < 0 or index >= units.size() or not units[index] is Dictionary:
+		return
+	var entry: Dictionary = units[index]
+	var row := HBoxContainer.new()
+	allied_units_box.add_child(row)
+	var unit := OptionButton.new()
+	for unit_id in allied_unit_types:
+		unit.add_item(str(unit_id).to_upper())
+	var selected_unit := str(entry.get("id", allied_unit_types[0] if not allied_unit_types.is_empty() else ""))
+	unit.select(max(0, allied_unit_types.find(selected_unit)))
+	unit.item_selected.connect(func(v): stage_data["allied_units"][index]["id"] = str(allied_unit_types[v]))
+	unit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(unit)
+	var count := SpinBox.new()
+	count.min_value = 1
+	count.max_value = 20
+	count.step = 1
+	count.value = int(entry.get("count", 1))
+	count.value_changed.connect(func(v): stage_data["allied_units"][index]["count"] = int(v))
+	row.add_child(count)
+	var spawn := LineEdit.new()
+	spawn.text = str(entry.get("spawn", "robot"))
+	spawn.placeholder_text = "robot or gameplay point id"
+	spawn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spawn.text_changed.connect(func(v): stage_data["allied_units"][index]["spawn"] = v)
+	row.add_child(spawn)
+	var del := Button.new()
+	del.text = "Delete"
+	del.pressed.connect(func():
+		stage_data["allied_units"].remove_at(index)
+		_rebuild_allied_units()
+	)
+	row.add_child(del)
+
+func _add_allied_unit() -> void:
+	if not stage_data.has("allied_units") or not stage_data["allied_units"] is Array:
+		stage_data["allied_units"] = []
+	var default_id := str(allied_unit_types[0]) if not allied_unit_types.is_empty() else ""
+	stage_data["allied_units"].append({"id": default_id, "count": 1, "spawn": "robot"})
+	_rebuild_allied_units()
+
 func _refresh_stage_list() -> void:
 	stage_list.clear()
 	var catalog := ContentCatalogLoader.load_document(STAGE_CATALOG_FILE)
@@ -301,6 +393,7 @@ func _load_selected_stage() -> void:
 	var balance: Dictionary = stage_data.get("balance", {}) if stage_data.get("balance", {}) is Dictionary else {}
 	gold_spin.value = int(balance.get("initial_gold", 180))
 	hp_spin.value = float(balance.get("base_hp", 100.0))
+	_load_stage_gameplay_fields()
 	_load_mission_fields()
 	_rebuild_encounters()
 
@@ -542,6 +635,12 @@ func _save_stage() -> void:
 	stage_data["name"] = name_edit.text
 	stage_data["map_file"] = str(map_option.get_item_metadata(map_option.selected))
 	stage_data["balance"] = {"initial_gold": int(gold_spin.value), "base_hp": float(hp_spin.value)}
+	stage_data["gameplay"] = {
+		"wave_auto_start_delay": float(wave_auto_start_spin.value),
+		"wave_group_gap": float(wave_group_gap_spin.value)
+	}
+	if not stage_data.has("allied_units") or not stage_data["allied_units"] is Array:
+		stage_data["allied_units"] = []
 	if not _save_mission(): return
 	if not _save_reward(): return
 	stage_data["mission_id"] = mission_id_edit.text.strip_edges()

@@ -67,7 +67,9 @@ Runtime
 책임 경계:
 - Map: 재사용 가능한 전장 구조와 맵 종속 Gameplay 공간/지점
 - Mission: 목표와 승패 의미
-- Stage: Map + Mission + Encounter/Wave + Stage별 설정의 실제 실행 단위
+- Stage: Map + Mission + Encounter/Wave + Stage-specific gameplay controls
+- Stage gameplay controls: Wave Auto Start / Wave Group Gap / Allied Support
+- Single Play and Campaign both execute the selected Stage through the same StageManager/StageLoader/GameController path
 - Campaign: Stage의 순서와 진행
 - Runtime: 위 정의를 실행
 

@@ -14,6 +14,8 @@ const MISSION_FILE := "missions"
 const REWARD_FILE := "rewards"
 const ITEM_FILE := "items"
 const VISUAL_ASSET_FILE := "visual_assets"
+const VFX_VALIDATOR = preload("res://editor/vfx_validator.gd")
+var vfx_validator = VFX_VALIDATOR.new()
 
 var errors: Array[String] = []
 var warnings: Array[String] = []
@@ -25,6 +27,7 @@ func run() -> Dictionary:
 	return {"valid": errors.is_empty(), "errors": errors.duplicate(), "warnings": warnings.duplicate()}
 
 func _run() -> void:
+	_validate_vfx_catalog()
 	_validate_visual_asset_catalog()
 	_validate_animation_asset_refs()
 	_validate_catalog("ENEMY", ENEMY_FILE, ["name", "hp", "speed", "armor", "base_damage", "reward", "radius", "sprite_anim"])
@@ -40,6 +43,9 @@ func _run() -> void:
 	_validate_campaign()
 	_validate_stages()
 	_validate_resource_refs()
+
+func _validate_vfx_catalog() -> void:
+	vfx_validator.validate_vfx_catalog(errors, warnings)
 
 func _validate_visual_asset_catalog() -> void:
 	var catalog := _load_catalog_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")

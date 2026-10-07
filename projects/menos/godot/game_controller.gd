@@ -8,6 +8,8 @@ var _runtime_map_data: Dictionary = {}
 const ALLIED_UNIT_COLOR_SHADER := preload("res://shaders/allied_unit_color.gdshader")
 const ROBOT_COLOR_SHADER := preload("res://shaders/robot_profile_color.gdshader")
 const VISUAL_ASSET_FRAME := preload("res://scripts/visual_asset_frame.gd")
+const VFXRuntimeInstanceScript = preload("res://scripts/vfx_runtime_instance.gd")
+const VFXDefinitionRepositoryScript = preload("res://scripts/vfx_definition_repository.gd")
 const ASURA_TEAM_MASK := preload("res://images/robot/asura/profile_team_mask.png")
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
@@ -137,6 +139,8 @@ const CAMERA_ZOOM_MAX := 2.0
 const CAMERA_ZOOM_STEP := 0.1
 var damage_numbers: Array = []
 var effects: Array = []
+var vfx_instances: Array = []
+var _vfx_instance_counter := 0
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -382,8 +386,10 @@ func _load_combat_definitions() -> void:
 	if gameplay_settings.is_empty() or skills_catalog.is_empty() or robot_progression_definition.is_empty() or robot_energy_definition.is_empty() or finisher_definition.is_empty():
 		push_error("Combat definitions are incomplete; runtime configuration cannot start.")
 		return
-	wave_auto_start_delay = float(gameplay_settings.get("wave_auto_start", {}).get("delay", 0.0))
-	wave_group_gap = float(gameplay_settings.get("wave_group_gap", {}).get("delay", 0.0))
+	var default_wave_auto_start_delay := float(gameplay_settings.get("wave_auto_start", {}).get("delay", 0.0))
+	var default_wave_group_gap := float(gameplay_settings.get("wave_group_gap", {}).get("delay", 0.0))
+	wave_auto_start_delay = StageManager.get_wave_auto_start_delay(default_wave_auto_start_delay)
+	wave_group_gap = StageManager.get_wave_group_gap(default_wave_group_gap)
 	skill_slot_definitions = gameplay_settings.get("skill_slots", {}).duplicate(true)
 	for slot_key in skill_slot_definitions.keys():
 		var slot_value = skill_slot_definitions[slot_key]
@@ -411,6 +417,10 @@ func _load_tower_catalog() -> void:
 func load_stage_map(stage_id: String) -> bool:
 	if StageManager.load_stage(stage_id).is_empty():
 		return false
+	var default_wave_auto_start_delay := float(gameplay_settings.get("wave_auto_start", {}).get("delay", 0.0))
+	var default_wave_group_gap := float(gameplay_settings.get("wave_group_gap", {}).get("delay", 0.0))
+	wave_auto_start_delay = StageManager.get_wave_auto_start_delay(default_wave_auto_start_delay)
+	wave_group_gap = StageManager.get_wave_group_gap(default_wave_group_gap)
 	var loaded_map := MapLoader.load_map_data(StageManager.get_map_file())
 	if loaded_map.is_empty():
 		return false
@@ -750,6 +760,37 @@ func instantiate_preplaced_towers() -> void:
 func log_event(text: String) -> void:
 	feed.push_front(text); feed = feed.slice(0, 5); queue_redraw()
 
+func _append_effect(effect: Dictionary) -> void:
+	effects.append(effect)
+	var effect_type := str(effect.get("type", ""))
+	var vfx_id := ""
+	if effect_type == "impact_explosion":
+		vfx_id = "impact_explosion"
+	elif effect_type == "proj_defender":
+		vfx_id = "projectile_defender"
+	elif effect_type == "proj_threat":
+		vfx_id = "projectile_threat"
+	else:
+		return
+	var definition = VFXDefinitionRepositoryScript.get_definition(vfx_id)
+	if definition == null:
+		return
+	_vfx_instance_counter += 1
+	var instance = VFXRuntimeInstanceScript.new()
+	instance.configure(definition, {
+		"instance_id": "%s_%d" % [vfx_id, _vfx_instance_counter],
+		"position": effect.get("position", Vector2.ZERO)
+	})
+	if effect_type in ["proj_defender", "proj_threat"]:
+		instance.bind_effect(effect)
+	instance.play()
+	vfx_instances.append(instance)
+
+func _update_vfx_instances(delta: float) -> void:
+	for instance in vfx_instances:
+		instance.tick(delta)
+	vfx_instances = vfx_instances.filter(func(instance): return not instance.is_complete())
+
 func _process(delta: float) -> void:
 	elapsed += delta
 	update_camera_edge_scroll(delta)
@@ -821,6 +862,7 @@ func _process(delta: float) -> void:
 		else:
 			effect["life"] = float(effect["life"]) - delta
 	effects = effects.filter(func(item): return (item.has("progress") and float(item.get("progress", 0.0)) < 1.0) or (not item.has("progress") and float(item.get("life", 0.0)) > 0.0))
+	_update_vfx_instances(delta)
 	queue_redraw()
 
 func start_wave() -> void:
@@ -1123,7 +1165,7 @@ func damage_robot(amount: float) -> void:
 	if not robot.active: return
 	robot.hp = max(0.0, robot.hp - amount)
 	robot["flash"] = 0.12
-	effects.append({"position": robot.position, "type": "giantHit", "life": 0.28})
+	_append_effect({"position": robot.position, "type": "giantHit", "life": 0.28})
 	if robot.hp <= 0.0:
 		robot.hp = 0.0; robot.active = false; robot_selected = false; log_event("ATLAS-01 destroyed. Base defense remains active.")
 
@@ -1143,18 +1185,18 @@ func update_giant_boss_attack(delta: float, enemy: EnemyRuntimeState) -> bool:
 		event.position = robot.position
 		match enemy.boss_pattern_index:
 			0:
-				effects.append({"type": "proj_threat", "start": enemy.position, "target": robot.position, "target_actor": robot, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type, "source": "enemy", "weapon": enemy.type, "damage": weapon.damage})
+				_append_effect({"type": "proj_threat", "start": enemy.position, "target": robot.position, "target_actor": robot, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type, "source": "enemy", "weapon": enemy.type, "damage": weapon.damage})
 				log_event("GIANT: CANNON SHOT.")
 			1:
 				event.damage = weapon.damage * 1.55
 				event.position = enemy.boss_charge_target
 				log_event("GIANT: CRUSHING BLAST.")
-				effects.append({"type": "giantHit", "position": enemy.boss_charge_target, "life": 0.35})
+				_append_effect({"type": "giantHit", "position": enemy.boss_charge_target, "life": 0.35})
 			2:
 				enemy.position = enemy.boss_charge_target
 				event.damage = weapon.damage * 2.0
 				log_event("GIANT: CHARGE.")
-				effects.append({"type": "giantHit", "position": enemy.position, "life": 0.45})
+				_append_effect({"type": "giantHit", "position": enemy.position, "life": 0.45})
 		event.payload = {"source": enemy.type}
 		if enemy.boss_pattern_index != 0:
 			_handle_gameplay_event(event)
@@ -1193,9 +1235,9 @@ func update_enemy_attack(delta: float, enemy: EnemyRuntimeState, data: Dictionar
 	var target_position: Vector2 = target.position
 	var damage := weapon.damage
 	if attack_type == "ranged":
-		effects.append({"type": "proj_threat", "start": enemy.position, "target": target_position, "target_enemy": target, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type, "source": "enemy", "weapon": enemy.type, "damage": damage})
+		_append_effect({"type": "proj_threat", "start": enemy.position, "target": target_position, "target_enemy": target, "progress": 0.0, "speed": 4.0, "enemy_type": enemy.type, "source": "enemy", "weapon": enemy.type, "damage": damage})
 	else:
-		effects.append({"type": "impact_explosion", "position": target_position, "target_enemy": target, "damage_delay": 0.08, "damage": damage, "source": enemy.type, "life": 0.08, "max_life": 0.08})
+		_append_effect({"type": "impact_explosion", "position": target_position, "target_enemy": target, "damage_delay": 0.08, "damage": damage, "source": enemy.type, "life": 0.08, "max_life": 0.08})
 	enemy.attack_timer = max(0.05, weapon.cooldown)
 	log_event("%s fired %s." % [data.name, "RANGED" if attack_type == "ranged" else "MELEE"])
 	return true
@@ -1353,7 +1395,7 @@ func damage_enemy(enemy: EnemyRuntimeState, amount: float, source: String) -> vo
 	var definition: EnemyDefinition = enemy_definitions[enemy.type]
 	var dealt: float = max(1.0, amount - float(definition.get_combat_value("armor", 0.0)))
 	enemy.hp -= dealt; enemy.flash = 0.12
-	effects.append({"position": enemy.position, "type": "impact_explosion", "life": 0.35, "max_life": 0.35, "source": source})
+	_append_effect({"position": enemy.position, "type": "impact_explosion", "life": 0.35, "max_life": 0.35, "source": source})
 	damage_numbers.append({"position": enemy.position + Vector2(0, -32), "value": int(dealt), "life": 0.7, "max_life": 0.7})
 	if enemy.hp <= 0.0:
 		gold += float(definition.get_combat_value("reward", 0.0))
@@ -1535,7 +1577,7 @@ func _handle_gameplay_event(event: GameplayEvent) -> void:
 				var target_enemy: Variant = event.target
 				if target_enemy == null:
 					return
-				effects.append({
+				_append_effect({
 					"type": "proj_defender",
 					"start": event.position,
 					"target": event.payload.get("target_position", event.position),
@@ -1645,7 +1687,7 @@ func try_finisher() -> bool:
 	if targets.is_empty():
 		log_event("FINISHER requires enemies in range.")
 		return false
-	effects.append({"position": robot.position, "type": "area", "life": float(finisher_definition.get("duration", 0.0)), "damage_delay": 0.28, "damage_targets": targets, "damage": float(finisher_definition.get("damage", 0.0)), "source": "finisher"})
+	_append_effect({"position": robot.position, "type": "area", "life": float(finisher_definition.get("duration", 0.0)), "damage_delay": 0.28, "damage_targets": targets, "damage": float(finisher_definition.get("damage", 0.0)), "source": "finisher"})
 	robot["special"] = float(finisher_definition.get("duration", 0.0))
 	robot["special_type"] = "finisher"
 	robot["finisher"] = 0.0
@@ -1671,7 +1713,7 @@ func try_special_attack() -> bool:
 			if enemy is EnemyRuntimeState and enemy.hp > 0.0 and enemy.position.distance_to(robot.position) <= float(base_special.get("radius", 0.0)):
 				nearby_base.append(enemy)
 		if not nearby_base.is_empty():
-			effects.append({"position": robot.position, "type": "area", "life": float(base_special.get("duration", 0.0)), "damage_delay": 0.22, "damage_targets": nearby_base, "damage": float(base_special.get("damage", 0.0)), "source": "base_special"})
+			_append_effect({"position": robot.position, "type": "area", "life": float(base_special.get("duration", 0.0)), "damage_delay": 0.22, "damage_targets": nearby_base, "damage": float(base_special.get("damage", 0.0)), "source": "base_special"})
 			robot["special"] = float(base_special.get("duration", 0.0))
 			robot["special_type"] = "base_special"
 			robot["energy"] = max(0.0, float(robot.state_get("energy", float(robot_energy_definition.get("max", 0.0)))) - float(base_special.get("energy_cost", 0.0)))
@@ -1709,7 +1751,7 @@ func try_skill_slot(slot: int) -> bool:
 		if nearby.size() < int(skill.get("threshold", 1)):
 			log_event("%s requires %d nearby enemies." % [str(skill.get("name", skill_id)), int(skill.get("threshold", 1))])
 			return false
-		effects.append({"position": robot.position, "type": "area", "life": float(skill.get("duration", 0.0)), "damage_delay": 0.22, "damage_targets": nearby, "damage": float(skill.get("damage", 0.0)), "source": skill_id})
+		_append_effect({"position": robot.position, "type": "area", "life": float(skill.get("duration", 0.0)), "damage_delay": 0.22, "damage_targets": nearby, "damage": float(skill.get("damage", 0.0)), "source": skill_id})
 		robot["special"] = float(skill.get("duration", 0.0))
 		robot["special_type"] = skill_id
 		robot["energy"] = max(0.0, float(robot.state_get("energy", 0.0)) - float(skill.get("energy_cost", 0.0)))
@@ -1723,7 +1765,7 @@ func try_skill_slot(slot: int) -> bool:
 		if heavy == null:
 			log_event("%s requires a Heavy or Giant in range." % str(skill.get("name", skill_id)))
 			return false
-		effects.append({"position": heavy.position, "type": "pierce", "life": float(skill.get("duration", 0.0)), "damage_delay": 0.22, "target_enemy": heavy, "damage": float(skill.get("damage", 0.0)), "source": skill_id})
+		_append_effect({"position": heavy.position, "type": "pierce", "life": float(skill.get("duration", 0.0)), "damage_delay": 0.22, "target_enemy": heavy, "damage": float(skill.get("damage", 0.0)), "source": skill_id})
 		robot["special"] = float(skill.get("duration", 0.0))
 		robot["special_type"] = skill_id
 		robot["energy"] = max(0.0, float(robot.state_get("energy", 0.0)) - float(skill.get("energy_cost", 0.0)))
@@ -2237,12 +2279,28 @@ func _draw() -> void:
 		draw_rect(Rect2(hp_position, Vector2(hp_width, 5)), Color("3a1c1a"))
 		draw_rect(Rect2(hp_position, Vector2(hp_width * max(0.0, enemy.hp / enemy.max_hp), 5)), enemy_accent)
 
-	# Effects
+	# Generic VFX Runtime Instances
+	for instance in vfx_instances:
+		for command in instance.render_commands():
+			var command_type := str(command.get("type", ""))
+			var command_position: Vector2 = command.get("position", Vector2.ZERO)
+			var command_scale := maxf(0.01, float(command.get("scale", 1.0)))
+			var command_opacity := clampf(float(command.get("opacity", 1.0)), 0.0, 1.0)
+			if command_type == "ring":
+				draw_arc(command_position, 36.0 * command_scale, 0.0, TAU, 48, Color(0.95, 0.7, 0.25, command_opacity), 4.0)
+			elif command_type in ["line", "trail", "beam"]:
+				var direction := Vector2(cos(float(command.get("rotation", 0.0))), sin(float(command.get("rotation", 0.0))))
+				var trail_length := 45.0 if command_type != "trail" else 28.0
+				var projectile_color := Color("7ed6ce") if str(command.get("resource", "")) == "defender" else Color("e46b6b")
+				draw_line(command_position - direction * trail_length * command_scale, command_position, Color(projectile_color, 0.55 * command_opacity), 3.0 * command_scale)
+				draw_circle(command_position, 5.0 * command_scale, Color(projectile_color, 0.85 * command_opacity))
+
+	# Legacy Effects not yet migrated to Generic VFX Runtime
 	for effect in effects:
 		var etype: String = str(effect.get("type", ""))
 		if etype == "giantHit":
 			draw_arc(effect.get("position", Vector2.ZERO), 35.0, 0, TAU, 16, Color("ef7068"), 3.0)
-		elif etype == "impact_explosion" or etype in ["cannon", "gatling", "robot", "area", "pierce"]:
+		elif etype in ["cannon", "gatling", "robot", "area", "pierce"]:
 			var life_progress: float = 1.0 - clampf(float(effect.get("life", 0.0)) / max(0.01, float(effect.get("max_life", 0.35))), 0.0, 1.0)
 			var impact_position: Vector2 = effect.get("position", Vector2.ZERO)
 			var impact_color := Color("7ed6ce")
@@ -2257,32 +2315,9 @@ func _draw() -> void:
 			var impact_scale := 1.0 + life_progress * 0.35
 			draw_arc(impact_position, 24.0 * impact_scale, 0, TAU, 20, Color(impact_color, 0.7 * (1.0 - life_progress)), 2.5)
 			# Projectile/hit visuals use procedural VFX only; no impact sprite art.
-		elif etype == "proj_defender":
-			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
-			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
-			var end_p: Vector2 = effect.get("target", Vector2.ZERO)
-			var current_p: Vector2 = start_p.lerp(end_p, progress)
-			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
-			var weapon_type := str(effect.get("weapon", "robot"))
-			var projectile_color := Color("7ed6ce")
-			if weapon_type == "cannon":
-				projectile_color = Color("f0d28a")
-			elif weapon_type == "gatling":
-				projectile_color = Color("f0a35a")
-			var trail_start := current_p - Vector2.from_angle(angle - PI / 2.0) * 22.0
-			draw_line(trail_start, current_p, Color(projectile_color, 0.55), 3.0)
-			draw_circle(current_p, 5.0, Color(projectile_color, 0.85))
-			# Gameplay projectile art is disconnected; keep only procedural VFX.
-		elif etype == "proj_threat":
-			var progress: float = clampf(float(effect.get("progress", 0.0)), 0.0, 1.0)
-			var start_p: Vector2 = effect.get("start", Vector2.ZERO)
-			var end_p: Vector2 = effect.get("target", Vector2.ZERO)
-			var current_p: Vector2 = start_p.lerp(end_p, progress)
-			var angle: float = start_p.angle_to_point(end_p) + PI / 2.0
-			var projectile_color := Color("e46b6b")
-			var trail_start := current_p - Vector2.from_angle(angle - PI / 2.0) * 24.0
-			draw_line(trail_start, current_p, Color(projectile_color, 0.55), 3.0)
-			draw_circle(current_p, 5.0, Color(projectile_color, 0.85))
+		elif etype in ["proj_defender", "proj_threat"]:
+			# Projectile visuals are rendered by Generic VFX Runtime Instances.
+			pass
 
 	# Player Unit ATLAS-01 Robot (Heroic Strategic Unit Base & Visibility)
 	if robot.active:

@@ -59,7 +59,7 @@ func _save() -> void:
 	next_document["name"] = name
 	var stage_pks: Array[int] = []
 	for stage_id in stage_ids:
-		var stage_pk := ContentCatalogLoader.resolve_odb_pk("stage", int(stage_id)) if stage_id.is_valid_int() else -1
+		var stage_pk: int = ContentCatalogLoader.resolve_odb_pk("stage", int(stage_id)) if stage_id.is_valid_int() else -1
 		if stage_pk < 1:
 			status_label.text = "ERROR: stage has no ODB PK: %s" % stage_id
 			return
