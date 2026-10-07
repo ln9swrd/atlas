@@ -3,7 +3,7 @@
 > **역할 (플랫폼):** Atlas 전체 상태 · **어떤 프로젝트가 SoR인지** 라우팅.  
 > 제품 상세 작업 상태(Done/Next/HOLD)는 **기록하지 않는다** → `projects/<name>/state/CURRENT_STATE.md`.
 
-ACTIVE_TARGET: **idle** (platform)  
+ACTIVE_TARGET: **menos** (project)
 PRODUCT: excelion SoR = **`projects/excelion/`**  
 STANDALONE: `ln9swrd/excelion` = **CLOSED** (2026-08-05)
 

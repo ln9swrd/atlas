@@ -406,6 +406,31 @@ Commit/Push는 Master가 명시적으로 승인한 경우에만 수행한다.
 
 Archive 문서는 현재 설계/실행 권한이 없다. 역사적 근거가 필요한 경우에만 참조한다.
 
+## 14.1 파일 구조 유지 원칙
+
+현재 실제 파일 구조를 기준 구조로 유지한다. 기존 디렉터리의 책임을 임의로 재편하거나 같은 종류의 파일을 새로운 병렬 디렉터리로 분산하지 않는다.
+
+주요 책임 경계:
+- 프로젝트 루트: Canon, README, 상태/운영 문서, 역사적 Browser PoC
+- `godot/`: 실제 Godot 프로젝트
+- `godot/editor/`: Content Editor
+- `godot/scripts/`: Runtime/Repository/Loader/Definition 코드
+- `godot/ui/`: Runtime UI
+- `godot/content/`: SQLite 및 Editor Content 데이터
+- `godot/images/`: Runtime/Visual Asset
+- `godot/sound/`: Runtime Audio Asset
+- `godot/shaders/`: Shader
+- `godot/map_data/`: Map 데이터
+- `godot/tests/`: 자동화/백그라운드 검증 코드
+- `godot/builds/`: 생성 Build 산출물
+- `docs/`: 현재 운영·설계·생성 프롬프트 문서
+- `state/`: 현재 상태 및 Handoff
+- `archive/`: 폐기/과거 문서 및 역사 자료
+
+파일을 새 위치에 만들 필요가 생기면 기존 책임 경계를 먼저 재사용한다. 구조 변경이 목적에 직접 필요하지 않으면 이동/이름변경/병합을 하지 않는다. 특히 Asset, Content, Editor, Runtime 코드를 임의의 새 병렬 구조로 분리하지 않는다.
+
+생성 프롬프트도 기존 `docs/` 체계를 우선 사용하며, 이미지/VFX/SFX/BGM/VOICE/스프레드시트 등 생산 유형별 하위 구조가 실제로 필요해질 때만 추가한다.
+
 ## 15. 폐기/충돌 문서의 처리 원칙
 
 다음과 같은 과거 서술은 현재 기준으로 자동 적용하지 않는다.
@@ -442,7 +467,7 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 
 - Project: MENOS
 - Branch: `main`
-- 최신 작업 기준 HEAD: `e23c7ca538df7353b287f4575f28b25c7efdfdf2`
+- 최신 작업 기준 HEAD: `017d3431ee38263b212b9ad7fc537dc5635d4151`
 - Godot: `4.7.2.stable.official`
 - Runtime Content DB: `godot/content/menos.sqlite`
 - Current State: `state/CURRENT_STATE.md`
