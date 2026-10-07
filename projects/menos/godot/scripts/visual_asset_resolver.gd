@@ -19,10 +19,15 @@ static func _legacy_source(source: String) -> VisualAssetDefinition:
 	var asset := VisualAssetDefinition.new()
 	asset.id = "legacy:" + source
 	asset.category = "Runtime"
-	asset.source = source
+	var legacy_sprite_path := "res://assets/menos/sprites/%s.png" % source
+	if ResourceLoader.exists(legacy_sprite_path):
+		asset.source = legacy_sprite_path
+		asset.usage = "legacy_sprite"
+	else:
+		asset.source = source
+		asset.usage = "legacy_source"
 	asset.region = Rect2()
 	asset.frames = 1
-	asset.usage = "legacy_source"
 	return asset
 
 static func list_ids(category: String = "") -> Array[String]:

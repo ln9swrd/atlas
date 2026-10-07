@@ -90,6 +90,30 @@ layout_mode = 2
 toggle_mode = true
 text = "CATALOG_EDITOR"
 
+[node name="BtnVFX" type="Button" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+text = "VFX"
+tooltip_text = "VFX editor"
+disabled = true
+
+[node name="BtnSFX" type="Button" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+text = "SFX"
+tooltip_text = "SFX editor"
+disabled = true
+
+[node name="BtnBGM" type="Button" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+text = "BGM"
+tooltip_text = "BGM editor"
+disabled = true
+
+[node name="BtnVoice" type="Button" parent="MainLayout/TopMenu/Buttons"]
+layout_mode = 2
+text = "VOICE"
+tooltip_text = "Voice editor"
+disabled = true
+
 [node name="BtnSettings" type="Button" parent="MainLayout/TopMenu/Buttons"]
 layout_mode = 2
 text = "SETTINGS"

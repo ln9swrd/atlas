@@ -10,7 +10,7 @@ const GAME_SCENE := "res://main.tscn"
 @onready var quit_button: Button = $CenterContainer/MainPanel/Content/Actions/Quit
 @onready var settings_button: Button = $CenterContainer/MainPanel/Content/Settings
 var transition_started := false
-var campaign_start_disabled := true
+var campaign_start_disabled := false
 var single_mode_selected := false
 
 func _ready() -> void:

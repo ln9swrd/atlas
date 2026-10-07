@@ -1,26 +1,21 @@
-# MENOS PoC
+# MENOS
 
-A Godot 4 tactical defense prototype validating whether robot positioning creates meaningful decisions. A browser version remains available as a quick fallback.
+MENOS is a Godot 4.7.2 single-player super-robot combat project. The current Master Canon defines the player as the pilot directly controlling one super robot; AI allies and fixed support facilities assist the player.
+
+## Current project documents
+
+- `MENOS_COMBAT_CANON.md` — Master-approved combat Canon
+- `docs/MENOS_MASTER_REFERENCE.md` — consolidated current project reference
+- `state/CURRENT_STATE.md` — current implementation and verification state
+- `MENOS_WORK_METHOD_COPILOT_WORKER_SERA.md` — project work method
+- `archive/docs_consolidated_2026-10-07/` — superseded plans and historical design documents
+
+When documents conflict, use the Canon first, then CURRENT_STATE, then the Master Reference. Archived documents are historical evidence only.
 
 ## Godot
 
-Open `godot/project.godot` with Godot 4.7.2 and press F6/F5. The game uses no external assets.
+Open `godot/project.godot` with Godot 4.7.2. Windows Release export and exported EXE headless startup were verified on 2026-10-07.
 
-- Click empty slots, then use BUILD CANNON or BUILD GATLING.
-- Launch ATLAS-01 and click LEFT, CENTER, or RIGHT to spend movement commands.
-- Start all four waves and compare the same tower setup with different robot positions.
-- Press `R` or click RESTART to repeat an experiment.
+## Historical browser PoC
 
-## Run
-
-Open `index.html` directly in a browser. No build step or external asset download is required.
-
-## Experiment
-
-1. Build towers in the six marked slots.
-2. Launch Atlas-01.
-3. Click LEFT, CENTER, or RIGHT lane markers to spend movement commands.
-4. Restart and repeat the same tower/wave setup with a different robot position.
-5. Compare base HP, gold, and the event feed.
-
-The simulation uses data definitions in `data.js`; combat and rendering live in `game.js`.
+`index.html`, `data.js`, and `game.js` remain in the repository as earlier experimental material. They are not the current gameplay authority.

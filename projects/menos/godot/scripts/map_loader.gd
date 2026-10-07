@@ -2,6 +2,17 @@ class_name MapLoader
 extends RefCounted
 
 const SQLITE_PATH := "res://content/menos.sqlite"
+static var _sqlite_path_override := ""
+
+static func set_sqlite_path_for_tests(path: String) -> void:
+	_sqlite_path_override = path
+
+static func clear_sqlite_path_override() -> void:
+	_sqlite_path_override = ""
+
+static func _database_path() -> String:
+	return _sqlite_path_override if not _sqlite_path_override.is_empty() else SQLITE_PATH
+
 const SQLITE_MAP_TABLES := {
 	"map_01": "map_01",
 	"map_01_src": "map_01_src",
@@ -232,7 +243,7 @@ static func _sqlite_map_table(file_path: String) -> String:
 
 static func _load_sqlite_map_data(table: String) -> Dictionary:
 	var db = SQLite.new()
-	db.path = SQLITE_PATH
+	db.path = _database_path()
 	db.read_only = true
 	db.foreign_keys = true
 	db.verbosity_level = 0
@@ -259,7 +270,7 @@ static func _load_sqlite_map_data(table: String) -> Dictionary:
 
 static func _save_sqlite_map_data(table: String, json_string: String) -> bool:
 	var db = SQLite.new()
-	db.path = SQLITE_PATH
+	db.path = _database_path()
 	db.read_only = false
 	db.foreign_keys = true
 	db.verbosity_level = 0

@@ -40,8 +40,13 @@ static func _load_campaign_data() -> void:
 		push_error("StageManager: Invalid campaign data.")
 		return
 	for stage_id in parsed["stages"]:
-		if not str(stage_id).is_empty():
-			campaign_stage_ids.append(str(stage_id))
+		var normalized_id := str(stage_id).strip_edges()
+		if normalized_id.is_valid_int():
+			normalized_id = ContentCatalogLoader.resolve_odb_pk("stage", int(normalized_id))
+		elif normalized_id.is_valid_float() and is_equal_approx(float(normalized_id), round(float(normalized_id))):
+			normalized_id = ContentCatalogLoader.resolve_odb_pk("stage", int(float(normalized_id)))
+		if not normalized_id.is_empty():
+			campaign_stage_ids.append(normalized_id)
 
 static func get_available_stage_ids() -> Array[String]:
 	if campaign_stage_ids.is_empty():

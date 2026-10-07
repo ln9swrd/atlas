@@ -179,6 +179,11 @@ func _setup_camera() -> void:
 	camera.position_smoothing_enabled = true
 	camera.position_smoothing_speed = 8.0
 
+func _resolved_catalog_source(value: String, resolved: VisualAssetDefinition) -> String:
+	if resolved != null and not resolved.source.is_empty() and ResourceLoader.exists(resolved.source):
+		return resolved.source
+	return value
+
 func _texture_from_catalog_entry(data: Dictionary, field: String) -> Texture2D:
 	var sprite_value := str(data.get(field, ""))
 	if sprite_value.is_empty():
@@ -188,8 +193,8 @@ func _texture_from_catalog_entry(data: Dictionary, field: String) -> Texture2D:
 	var resolved_region := Rect2()
 	var resolved_frames := 1
 	var resolved := VisualAssetResolver.resolve(sprite_value)
+	source_path = _resolved_catalog_source(sprite_value, resolved)
 	if resolved != null and not resolved.id.begins_with("legacy:"):
-		source_path = resolved.source
 		resolved_region = resolved.region
 		resolved_frames = maxi(1, resolved.frames)
 
@@ -288,8 +293,8 @@ func _texture_from_robot_animation_frame(anim_key: String, frame: int) -> Textur
 	var rect := Rect2()
 	var resolved := VisualAssetResolver.resolve(value)
 	var frame_count := 1
+	source_path = _resolved_catalog_source(value, resolved)
 	if resolved != null and not resolved.id.begins_with("legacy:"):
-		source_path = resolved.source
 		rect = resolved.region
 		frame_count = maxi(1, resolved.frames)
 	var rects: Dictionary = robot_catalog.get("animation_rects", {}) if robot_catalog.get("animation_rects", {}) is Dictionary else {}
@@ -325,8 +330,8 @@ func _texture_from_catalog_value(sprite_value: String, rect_values: Variant = []
 	var source_path := sprite_value
 	var resolved_region := Rect2()
 	var resolved := VisualAssetResolver.resolve(sprite_value)
+	source_path = _resolved_catalog_source(sprite_value, resolved)
 	if resolved != null and not resolved.id.begins_with("legacy:"):
-		source_path = resolved.source
 		resolved_region = resolved.region
 	var base_texture: Texture2D = load(source_path) as Texture2D
 	if base_texture == null:

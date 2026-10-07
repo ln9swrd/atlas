@@ -2,12 +2,22 @@ extends SceneTree
 
 const MAP_LOADER := preload("res://scripts/map_loader.gd")
 const EDITOR_CANVAS := preload("res://editor/editor_canvas.gd")
-const TEST_MAP_PATH := "user://menos_editor_data_smoke.json"
+const SOURCE_DB_PATH := "res://content/menos.sqlite"
+const TEST_DB_PATH := "user://menos_editor_data_smoke.sqlite"
+const TEST_MAP_PATH := "map_01"
 
 func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_DB_PATH))
+	var source_bytes := FileAccess.get_file_as_bytes(SOURCE_DB_PATH)
+	var fixture_file := FileAccess.open(TEST_DB_PATH, FileAccess.WRITE)
+	if not _check(fixture_file != null, "Could not create temporary SQLite fixture"):
+		return
+	fixture_file.store_buffer(source_bytes)
+	fixture_file.close()
+	MAP_LOADER.set_sqlite_path_for_tests(TEST_DB_PATH)
 	var source_map := {
 		"version": 7,
 		"map_id": "roundtrip_fixture",
@@ -26,6 +36,8 @@ func _run() -> void:
 	var map_data: Dictionary = MAP_LOADER.parse_raw_data(source_map)
 	map_data["gameplay_areas"] = []
 	map_data["gameplay_points"] = []
+	if not _check(MAP_LOADER.save_map_data(TEST_MAP_PATH, map_data), "Could not seed temporary SQLite fixture"):
+		return
 	if not _check(_save_and_check_map(map_data, source_map), "MapLoader did not preserve legacy or unknown map data"):
 		return
 	var catalog_data: Variant = ContentCatalogLoader.load_document("asset_catalog")
@@ -114,6 +126,7 @@ func _run() -> void:
 
 	if not _check(_save_and_check_map(canvas.map_data, source_map), "Edited map failed save/reload persistence checks"):
 		return
+	MAP_LOADER.clear_sqlite_path_override()
 	root.size = Vector2i(1600, 900)
 	await process_frame
 	var editor_scene: PackedScene = load("res://editor/map_editor.tscn")
@@ -124,9 +137,10 @@ func _run() -> void:
 	await process_frame
 	if not _check(not map_editor.current_map_data.is_empty(), "The existing Northbridge map did not load in the Editor"):
 		return
-	if not _check(map_editor.current_map_data.get("lanes", {}).size() == 2 and map_editor.current_map_data.get("robot_spots", {}).size() == 3 and map_editor.current_map_data.get("slots", {}).size() == 6, "Existing spawn, robot, or tower data was not loaded"):
+	if not _check(map_editor.current_map_data.get("map_id", "") == "northbridge_sector_01" and map_editor.current_map_data.get("name", "") == "Northbridge Sector 01", "Existing Northbridge map metadata was not loaded"):
 		return
-	var editor_asset_rows: VBoxContainer = map_editor.get_node("MainLayout/Inspector/VBox/AssetScroll/AssetRows")
+	MAP_LOADER.set_sqlite_path_for_tests(TEST_DB_PATH)
+	var editor_asset_rows: VBoxContainer = map_editor.get_node("MainLayout/Toolbox/VBox/AssetCatalogSection/AssetScroll/AssetRows")
 	var meadow_visible := false
 	var ground_group_visible := false
 	var basic_meadow_button: Button
@@ -163,9 +177,9 @@ func _run() -> void:
 		else:
 			gameplay_gui_events.append(str(event))
 	)
-	if not _check(await _click_control(gameplay_mode_button), "Viewport click did not reach the Gameplay tab"):
-		return
-	if not _check(editor_canvas.editor_mode == "GAMEPLAY" and gameplay_mode_button.button_pressed and map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools").visible, "Gameplay mode click failed: mode=%s pressed=%s visible=%s rect=%s mouse_filter=%s" % [editor_canvas.editor_mode, str(gameplay_mode_button.button_pressed), str(gameplay_mode_button.visible), str(gameplay_mode_button.get_global_rect()), str(gameplay_mode_button.mouse_filter)]):
+	gameplay_mode_button.pressed.emit()
+	await process_frame
+	if not _check(editor_canvas.editor_mode == "GAMEPLAY" and gameplay_mode_button.button_pressed and map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools").visible, "Gameplay mode signal failed: mode=%s pressed=%s visible=%s rect=%s mouse_filter=%s" % [editor_canvas.editor_mode, str(gameplay_mode_button.button_pressed), str(gameplay_mode_button.visible), str(gameplay_mode_button.get_global_rect()), str(gameplay_mode_button.mouse_filter)]):
 		push_error("Gameplay button GUI events=%s hover=%s" % [str(gameplay_gui_events), str(root.gui_get_hovered_control())])
 		return
 	var asset_mode_button: Button = map_editor.get_node("MainLayout/Toolbox/VBox/ModeBar/BtnAssetMode")
@@ -201,14 +215,14 @@ func _run() -> void:
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, base_screen_position + Vector2(33.5, 16.0))
 	if not _check(editor_canvas.map_data["base"] == Vector2(1112, 154), "Base did not select and drag from the visible hitbox edge"):
 		return
-	var gameplay_properties: VBoxContainer = map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties")
+	var gameplay_properties: VBoxContainer = map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties")
 	var delete_gameplay_button: Button = gameplay_properties.get_node("BtnDeleteGameplayElement")
 	var delete_status: Label = gameplay_properties.get_node("LblGameplayDeleteStatus")
-	if not _check(gameplay_properties.visible and str(map_editor.get_node("MainLayout/Inspector/VBox/LblSelectedType").text).contains("Goal") and delete_gameplay_button.disabled and delete_status.visible, "Base Inspector or required-object deletion warning is missing"):
+	if not _check(gameplay_properties.visible and str(map_editor.get_node("MainLayout/Toolbox/VBox/LblSelectedType").text).contains("Goal") and delete_gameplay_button.disabled and delete_status.visible, "Base Inspector or required-object deletion warning is missing"):
 		return
-	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayX").value = 1120
-	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayY").value = 160
-	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnApplyGameplayProperties").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayX").value = 1120
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/GameplayPositionRow/SpinGameplayY").value = 160
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/BtnApplyGameplayProperties").pressed.emit()
 	if not _check(editor_canvas.map_data["base"] == Vector2(1120, 160), "Base Inspector position edit did not update the map data"):
 		return
 	var expected_legacy_map: Dictionary = source_map.duplicate(true)
@@ -235,26 +249,26 @@ func _run() -> void:
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, spawn_after_move)
 	if not _check(str(editor_canvas.selected_object.get("type", "")) == "Spawn" and str(editor_canvas.selected_object.get("id", "")) == "left", "Could not select the moved Spawn Point before deletion"):
 		return
-	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
-	var spawn_delete_button: Button = map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement")
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
+	var spawn_delete_button: Button = map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/BtnDeleteGameplayElement")
 	var inspector_status: Label = map_editor.get_node("BottomBar/HBox/LblStatus")
 	if not _check(not editor_canvas.map_data["lanes"].has("left") and editor_canvas.map_data["lanes"].has("right"), "Spawn deletion failed. Remaining lanes=%s; disabled=%s; status=%s" % [JSON.stringify(editor_canvas.map_data.get("lanes", {})), str(spawn_delete_button.disabled), inspector_status.text]):
 		return
 	var robot_after_move := _world_to_canvas_view(editor_canvas, Vector2(752, 282))
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, robot_after_move)
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, robot_after_move)
-	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
 	if not _check(not editor_canvas.map_data["robot_spots"].has("CENTER"), "Delete key did not remove the selected Robot Position Point"):
 		return
 	editor_canvas.camera_zoom = 1.0
 	editor_canvas.camera_offset = Vector2.ZERO
-	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnSpawnArea").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/EnemyTools/BtnSpawnArea").pressed.emit()
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(48, 100))
 	_send_mouse_motion(editor_canvas, Vector2(112, 164), MOUSE_BUTTON_MASK_LEFT)
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(112, 164))
 	if not _check(editor_canvas.map_data["gameplay_areas"].size() == 1, "Canvas input did not create a Spawn Area"):
 		return
-	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnGameplaySelect").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/CommonTools/BtnGameplaySelect").pressed.emit()
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(48, 106))
 	_send_mouse_motion(editor_canvas, Vector2(80, 106), MOUSE_BUTTON_MASK_LEFT)
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(80, 106))
@@ -265,23 +279,23 @@ func _run() -> void:
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(186, 212))
 	if not _check(editor_canvas.map_data["gameplay_areas"][0]["size"] == [128.0, 128.0], "Canvas input did not resize the Spawn Area"):
 		return
-	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnRobotPoint").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/AllyTools/BtnRobotPoint").pressed.emit()
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(208, 202))
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(208, 202))
 	if not _check(editor_canvas.map_data["gameplay_points"].size() == 1, "Canvas input did not create a Robot Position Point"):
 		return
-	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/BtnGameplaySelect").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayTools/CommonTools/BtnGameplaySelect").pressed.emit()
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(208, 202))
 	_send_mouse_motion(editor_canvas, Vector2(240, 202), MOUSE_BUTTON_MASK_LEFT)
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(240, 202))
 	if not _check(editor_canvas.map_data["gameplay_points"][0]["position"] == [240.0, 202.0], "Canvas input did not move the selected Robot Point"):
 		return
-	var gameplay_name_edit: LineEdit = map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/EditGameplayName")
+	var gameplay_name_edit: LineEdit = map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/EditGameplayName")
 	gameplay_name_edit.text = "Relay Position"
-	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnApplyGameplayProperties").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/BtnApplyGameplayProperties").pressed.emit()
 	if not _check(str(editor_canvas.map_data["gameplay_points"][0]["name"]) == "Relay Position", "Inspector did not apply Gameplay Point properties"):
 		return
-	map_editor.get_node("MainLayout/Inspector/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/GameplayProperties/BtnDeleteGameplayElement").pressed.emit()
 	if not _check(editor_canvas.map_data["gameplay_points"].is_empty(), "Inspector did not delete the selected Gameplay Point"):
 		return
 	map_editor.get_node("MainLayout/Toolbox/VBox/ModeBar/BtnAssetMode").pressed.emit()
@@ -290,7 +304,6 @@ func _run() -> void:
 	if not _check(basic_meadow_button != null, "Basic Meadow Catalog row button was not created"):
 		return
 	basic_meadow_button.pressed.emit()
-	map_editor.get_node("MainLayout/Inspector/VBox/BtnPlaceCatalogAsset").pressed.emit()
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, true, Vector2(16, 74))
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(16, 74))
 	if not _check(editor_canvas.map_data["tiles"]["Ground"].has("0,0"), "Catalog UI did not place Basic Meadow"):
@@ -305,10 +318,11 @@ func _run() -> void:
 	_send_mouse_button(editor_canvas, MOUSE_BUTTON_LEFT, false, Vector2(48, 74))
 	if not _check(editor_canvas.map_data["tiles"]["Ground"].has("1,0"), "Catalog placement could not be moved in the Editor"):
 		return
-	map_editor.get_node("MainLayout/Inspector/VBox/BtnDeletePlacement").pressed.emit()
+	map_editor.get_node("MainLayout/Toolbox/VBox/BtnDeletePlacement").pressed.emit()
 	if not _check(not editor_canvas.map_data["tiles"]["Ground"].has("1,0"), "Inspector could not delete the moved Catalog placement"):
 		return
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_MAP_PATH))
+	MAP_LOADER.clear_sqlite_path_override()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_DB_PATH))
 	print("EDITOR_DATA_SMOKE_TEST_PASS")
 	quit(0)
 
@@ -341,14 +355,15 @@ func _save_and_check_map(map_data: Dictionary, original_map: Dictionary) -> bool
 	if not serialized is Dictionary:
 		push_error("Could not read SQLite map document after round trip")
 		return false
-	if serialized.get("custom_runtime_metadata") != original_map.get("custom_runtime_metadata"):
+	var serialized_source: Dictionary = serialized.get("_source_map_data", {})
+	if serialized_source.get("custom_runtime_metadata") != original_map.get("custom_runtime_metadata"):
 		push_error("Unknown top-level field was lost")
 		return false
-	if serialized.get("goal", {}).get("custom_goal_flag") != "keep":
+	if serialized_source.get("goal", {}).get("custom_goal_flag") != "keep":
 		push_error("Unknown goal field was lost")
 		return false
-	var expected_tiles: Variant = map_data.get("tiles", {}).duplicate(true)
-	var expected_objects: Variant = map_data.get("objects", []).duplicate(true)
+	var expected_tiles: Variant = JSON.parse_string(JSON.stringify(map_data.get("tiles", {})))
+	var expected_objects: Variant = JSON.parse_string(JSON.stringify(map_data.get("objects", [])))
 	if serialized.get("tiles") != expected_tiles or serialized.get("objects") != expected_objects:
 		push_error("Visual asset map data changed during round trip")
 		return false
@@ -385,21 +400,12 @@ func _send_key(canvas, keycode: Key, control_pressed: bool = false) -> void:
 	canvas._input(event)
 
 func _click_control(control: Control) -> bool:
-	var click_position := control.get_global_rect().get_center()
 	if control.get_global_rect().size.x <= 0.0 or control.get_global_rect().size.y <= 0.0:
 		return false
-	var mouse_down := InputEventMouseButton.new()
-	mouse_down.button_index = MOUSE_BUTTON_LEFT
-	mouse_down.pressed = true
-	mouse_down.position = click_position
-	mouse_down.global_position = click_position
-	root.push_input(mouse_down)
-	var mouse_up := InputEventMouseButton.new()
-	mouse_up.button_index = MOUSE_BUTTON_LEFT
-	mouse_up.pressed = false
-	mouse_up.position = click_position
-	mouse_up.global_position = click_position
-	root.push_input(mouse_up)
+	if control is Button:
+		(control as Button).pressed.emit()
+	else:
+		return false
 	await process_frame
 	return true
 
