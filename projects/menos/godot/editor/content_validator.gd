@@ -416,6 +416,9 @@ func _validate_stage(stage: Dictionary, path: String) -> void:
 		errors.append("STAGE[%s].map_file is missing: %s" % [path, map_file])
 	else:
 		_validate_map_file(map_file, path)
+		var reference_map := MapLoader.load_map_data(map_file)
+		for reference_error in StageLoader.validate_gameplay_references(stage, reference_map):
+			errors.append("STAGE[%s] %s" % [path, reference_error])
 	var allied_units = stage.get("allied_units", [])
 	if not (allied_units is Array):
 		errors.append("STAGE[%s].allied_units must be an array" % path)
@@ -453,9 +456,6 @@ func _validate_stage(stage: Dictionary, path: String) -> void:
 				var group = wave["groups"][group_index]
 				if not (group is Array) or group.size() < 4:
 					errors.append("STAGE[%s] group %d/%d/%d is invalid" % [path, encounter_index, wave_index, group_index]); continue
-				var enemy_id := str(group[0])
-				if enemy_id.is_empty() or not _catalog_contains(ENEMY_FILE, enemy_id):
-					errors.append("STAGE[%s] group %d/%d/%d references unknown enemy: %s" % [path, encounter_index, wave_index, group_index, enemy_id])
 				if not (group[1] is int or group[1] is float) or float(group[1]) < 0.0:
 					errors.append("STAGE[%s] group %d/%d/%d count is invalid" % [path, encounter_index, wave_index, group_index])
 				if not (group[2] is int or group[2] is float) or float(group[2]) < 0.0:

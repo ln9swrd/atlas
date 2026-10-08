@@ -7,6 +7,7 @@ static var run_mode: String = "campaign"
 static var selected_stage_id: String = ""
 static var campaign_stage_ids: Array[String] = []
 static var all_stage_ids: Array[String] = []
+static var campaign_load_error := ""
 
 static func begin_run(mode: String, stage_id: String = "") -> void:
 	run_mode = mode
@@ -25,8 +26,13 @@ static func _load_stage_catalog() -> void:
 		push_error("StageManager: Invalid stage catalog.")
 		return
 	for stage_id in parsed["stages"]:
-		if not str(stage_id).is_empty():
-			all_stage_ids.append(str(stage_id))
+		var normalized_id := str(stage_id).strip_edges()
+		if normalized_id.is_valid_int():
+			normalized_id = ContentCatalogLoader.resolve_odb_pk("stage", int(normalized_id))
+		elif normalized_id.is_valid_float() and is_equal_approx(float(normalized_id), round(float(normalized_id))):
+			normalized_id = ContentCatalogLoader.resolve_odb_pk("stage", int(float(normalized_id)))
+		if not normalized_id.is_empty():
+			all_stage_ids.append(normalized_id)
 
 static func get_all_stage_ids() -> Array[String]:
 	if all_stage_ids.is_empty():
@@ -35,18 +41,43 @@ static func get_all_stage_ids() -> Array[String]:
 
 static func _load_campaign_data() -> void:
 	campaign_stage_ids.clear()
+	campaign_load_error = ""
 	var parsed := ContentCatalogLoader.load_document("campaign")
-	if parsed.is_empty() or not parsed.has("stages") or not parsed["stages"] is Array:
-		push_error("StageManager: Invalid campaign data.")
+	if parsed.is_empty() or not parsed.has("stages") or not parsed["stages"] is Array or parsed["stages"].is_empty():
+		campaign_load_error = "Campaign data must contain a non-empty stages array."
+		push_error("StageManager: %s" % campaign_load_error)
 		return
+	var stage_catalog_ids := get_all_stage_ids()
+	var seen: Dictionary = {}
 	for stage_id in parsed["stages"]:
 		var normalized_id := str(stage_id).strip_edges()
 		if normalized_id.is_valid_int():
 			normalized_id = ContentCatalogLoader.resolve_odb_pk("stage", int(normalized_id))
 		elif normalized_id.is_valid_float() and is_equal_approx(float(normalized_id), round(float(normalized_id))):
 			normalized_id = ContentCatalogLoader.resolve_odb_pk("stage", int(float(normalized_id)))
-		if not normalized_id.is_empty():
-			campaign_stage_ids.append(normalized_id)
+		if normalized_id.is_empty() or seen.has(normalized_id):
+			campaign_load_error = "Campaign contains an unresolved or duplicate Stage reference: %s" % str(stage_id)
+			push_error("StageManager: %s" % campaign_load_error)
+			campaign_stage_ids.clear()
+			return
+		if not stage_catalog_ids.has(normalized_id):
+			campaign_load_error = "Campaign references a Stage absent from the Stage Catalog: %s" % normalized_id
+			push_error("StageManager: %s" % campaign_load_error)
+			campaign_stage_ids.clear()
+			return
+		seen[normalized_id] = true
+		campaign_stage_ids.append(normalized_id)
+
+static func validate_campaign() -> bool:
+	_load_campaign_data()
+	if not campaign_load_error.is_empty():
+		return false
+	for stage_id in campaign_stage_ids:
+		if StageLoader.load_stage_data(stage_id).is_empty():
+			campaign_load_error = "Campaign Stage failed runtime validation: %s" % stage_id
+			push_error("StageManager: %s" % campaign_load_error)
+			return false
+	return not campaign_stage_ids.is_empty()
 
 static func get_available_stage_ids() -> Array[String]:
 	if campaign_stage_ids.is_empty():
@@ -136,6 +167,7 @@ static func get_waves(encounter_index: int = 0) -> Array:
 static func reset_session() -> void:
 	campaign_stage_ids.clear()
 	all_stage_ids.clear()
+	campaign_load_error = ""
 	run_mode = "campaign"
 	selected_stage_id = ""
 	current_stage_id = ""

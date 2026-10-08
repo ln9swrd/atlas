@@ -31,6 +31,20 @@ static func parse_and_validate_raw_data(raw_data: Dictionary, file_path: String 
 	if not (raw_data["order"] is int or raw_data["order"] is float): push_error("StageLoader: order must be numeric (%s)" % file_path); return {}
 	var map_file_path: String = str(raw_data["map_file"])
 	if map_file_path.is_empty(): push_error("StageLoader: Referenced map_file is empty (%s)" % file_path); return {}
+	var map_data := MapLoader.load_map_data(map_file_path)
+	if map_data.is_empty():
+		push_error("StageLoader: Referenced map_file '%s' could not be loaded (%s)" % [map_file_path, file_path])
+		return {}
+	for key in ["map_tiles", "map_origin", "map_pixel_size", "base"]:
+		if not map_data.has(key):
+			push_error("StageLoader: Referenced map '%s' is missing required gameplay field '%s' (%s)" % [map_file_path, key, file_path])
+			return {}
+	if not (map_data["map_tiles"] is Vector2i) or not (map_data["map_origin"] is Vector2) or not (map_data["map_pixel_size"] is Vector2) or not (map_data["base"] is Vector2):
+		push_error("StageLoader: Referenced map '%s' has invalid gameplay geometry (%s)" % [map_file_path, file_path])
+		return {}
+	if map_data["map_tiles"].x <= 0 or map_data["map_tiles"].y <= 0 or map_data["map_pixel_size"].x <= 0.0 or map_data["map_pixel_size"].y <= 0.0:
+		push_error("StageLoader: Referenced map '%s' has non-positive gameplay geometry (%s)" % [map_file_path, file_path])
+		return {}
 	var balance_raw = raw_data.get("balance", null)
 	if not (balance_raw is Dictionary): push_error("StageLoader: balance must be a Dictionary in stage (%s)" % file_path); return {}
 	var balance_dict: Dictionary = balance_raw
@@ -78,6 +92,11 @@ static func parse_and_validate_raw_data(raw_data: Dictionary, file_path: String 
 				var group = groups[group_index]
 				if not (group is Array) or group.size() < 4: push_error("StageLoader: Encounter %d Wave %d Group %d must contain enemy, count, interval, and lanes" % [encounter_index + 1, wave_index + 1, group_index + 1]); return {}
 				if str(group[0]).is_empty() or not (group[1] is int or group[1] is float) or float(group[1]) < 0.0 or not (group[2] is int or group[2] is float) or float(group[2]) < 0.0 or not (group[3] is Array): push_error("StageLoader: Encounter %d Wave %d Group %d has invalid fields" % [encounter_index + 1, wave_index + 1, group_index + 1]); return {}
+	var reference_errors := validate_gameplay_references(raw_data, map_data)
+	if not reference_errors.is_empty():
+		for error in reference_errors:
+			push_error("StageLoader: %s (%s)" % [error, file_path])
+		return {}
 	var parsed := {"stage_id": str(raw_data["stage_id"]), "order": int(raw_data["order"]), "name": str(raw_data["name"]), "map_file": map_file_path, "mission_id": mission_ref, "reward_id": reward_ref, "initial_gold": int(balance_dict["initial_gold"]), "base_hp": float(balance_dict["base_hp"]), "balance": balance_dict.duplicate(true), "encounters": encounters_raw.duplicate(true), }
 	if raw_data.has("allied_units"): parsed["allied_units"] = raw_data["allied_units"].duplicate(true)
 	if raw_data.has("gameplay"):
@@ -95,3 +114,72 @@ static func parse_and_validate_raw_data(raw_data: Dictionary, file_path: String 
 				return {}
 		parsed["gameplay"] = gameplay.duplicate(true)
 	return parsed
+
+static func validate_gameplay_references(stage_data: Dictionary, map_data: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	var enemy_catalog := ContentCatalogLoader.load_dictionary_catalog("enemies")
+	var has_giant := false
+	var mission_ref := str(stage_data.get("mission_id", ""))
+	if mission_ref.is_valid_int():
+		mission_ref = ContentCatalogLoader.resolve_odb_pk("mission", int(mission_ref))
+	var mission := MissionDefinitionLoader.load_definition(mission_ref) if not mission_ref.is_empty() else null
+
+	var lane_ids: Dictionary = {}
+	var spawn_area_count := 0
+	var map_lanes: Variant = map_data.get("lanes", {})
+	if map_lanes is Dictionary:
+		for lane_id in map_lanes:
+			lane_ids[str(lane_id)] = true
+	var gameplay_areas: Variant = map_data.get("gameplay_areas", [])
+	if gameplay_areas is Array:
+		for area in gameplay_areas:
+			if not area is Dictionary or not bool(area.get("enabled", true)) or str(area.get("type", "")) != "spawn_area":
+				continue
+			var position: Variant = area.get("position", [])
+			var size: Variant = area.get("size", [])
+			if not position is Array or position.size() < 2 or not size is Array or size.size() < 2:
+				continue
+			lane_ids["spawn_%d" % spawn_area_count] = true
+			spawn_area_count += 1
+	if lane_ids.is_empty():
+		errors.append("Map has no usable enemy spawn lanes: %s" % str(stage_data.get("map_file", "")))
+
+	var encounters: Variant = stage_data.get("encounters", [])
+	if encounters is Array:
+		for encounter_index in encounters.size():
+			var encounter: Variant = encounters[encounter_index]
+			if not encounter is Dictionary:
+				continue
+			var waves: Variant = encounter.get("waves", [])
+			if not waves is Array:
+				continue
+			for wave_index in waves.size():
+				var wave: Variant = waves[wave_index]
+				if not wave is Dictionary:
+					continue
+				var groups: Variant = wave.get("groups", [])
+				if not groups is Array:
+					continue
+				for group_index in groups.size():
+					var group: Variant = groups[group_index]
+					if not group is Array or group.size() < 4:
+						continue
+					var enemy_id := str(group[0]).strip_edges()
+					if enemy_id.is_empty() or not enemy_catalog.has(enemy_id):
+						errors.append("Encounter %d Wave %d Group %d references unknown enemy: %s" % [encounter_index + 1, wave_index + 1, group_index + 1, enemy_id])
+						continue
+					var count_value: Variant = group[1]
+					if enemy_id == "giant" and (count_value is int or count_value is float) and float(count_value) > 0.0:
+						has_giant = true
+					var requested_lanes: Variant = group[3]
+					if not requested_lanes is Array:
+						continue
+					for lane_value in requested_lanes:
+						var lane_id := str(lane_value).strip_edges()
+						var lane_is_valid := lane_ids.has(lane_id) or (lane_id in ["left", "right"] and spawn_area_count > 0)
+						if lane_id.is_empty() or not lane_is_valid:
+							errors.append("Encounter %d Wave %d Group %d references unknown map lane: %s" % [encounter_index + 1, wave_index + 1, group_index + 1, lane_id])
+
+	if mission != null and mission.primary_type == "defeat_giant" and not has_giant:
+		errors.append("defeat_giant mission requires at least one Giant in the Stage waves")
+	return errors

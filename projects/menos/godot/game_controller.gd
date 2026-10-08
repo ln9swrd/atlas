@@ -149,6 +149,9 @@ var vfx_instances: Array = []
 var _vfx_instance_counter := 0
 var _bgm_controller: BGMController = null
 var _voice_pilot_played := false
+var _runtime_stage_load_error := ""
+var _completed_mission_stage_id := ""
+var _mission_objective_failed := false
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -158,13 +161,22 @@ func _ready() -> void:
 	_load_robot_catalog()
 	_load_combat_definitions()
 	_load_robot_progression()
+	var stage_loaded := false
 	if StageManager.run_mode == "single":
-		if not load_stage_map(StageManager.selected_stage_id):
-			build_first_battle_map()
+		stage_loaded = load_stage_map(StageManager.selected_stage_id)
 	else:
 		StageManager.reset_session()
-		if not load_stage_map("stage_01"):
-			build_first_battle_map()
+		if not StageManager.validate_campaign():
+			_runtime_stage_load_error = StageManager.campaign_load_error
+			push_error("GameController: Campaign validation failed: %s" % _runtime_stage_load_error)
+			queue_redraw()
+			return
+		stage_loaded = load_stage_map("stage_01")
+	if not stage_loaded:
+		_runtime_stage_load_error = "The selected Stage or its gameplay data could not be loaded."
+		push_error("GameController: %s" % _runtime_stage_load_error)
+		queue_redraw()
+		return
 	_bgm_controller = BGMControllerScript.new()
 	add_child(_bgm_controller)
 	reset_game()
@@ -478,12 +490,14 @@ func load_stage_map(stage_id: String) -> bool:
 	if get_parent().has_node("Camera2D"):
 		_setup_camera()
 	if not build_map_from_data(loaded_map):
-		build_first_battle_map()
+		push_error("GameController: Failed to construct Stage Map '%s'." % StageManager.get_map_file())
+		return false
 	return true
 
 func restart_run() -> void:
 	var mode := StageManager.run_mode
 	var stage_id := StageManager.selected_stage_id if mode == "single" else "stage_01"
+	_completed_mission_stage_id = ""
 	StageManager.begin_run(mode, stage_id)
 	if not load_stage_map(stage_id):
 		push_error("Could not reload stage '%s'." % stage_id)
@@ -784,6 +798,7 @@ func reset_game() -> void:
 	mission_definition = StageManager.get_mission_definition()
 	mission_elapsed = 0.0
 	stage_reward_granted = false
+	_mission_objective_failed = false
 	spawn_clock = 0.0; spawn_queue.clear(); enemies.clear(); allied_units.clear(); towers.clear(); effects.clear(); damage_numbers.clear(); selected_slot = ""; selected_slot_position = Vector2.ZERO; selected_tower = ""; pending_tower_type = ""; robot_selected = false
 	wave_auto_start_timer = wave_auto_start_delay
 	var initial_robot_spot := ""
@@ -852,6 +867,8 @@ func _update_vfx_instances(delta: float) -> void:
 	vfx_instances = vfx_instances.filter(func(instance): return not instance.is_complete())
 
 func _process(delta: float) -> void:
+	if not _runtime_stage_load_error.is_empty():
+		return
 	elapsed += delta
 	update_camera_edge_scroll(delta)
 	update_robot_manual_input(delta)
@@ -1470,8 +1487,9 @@ func damage_enemy(enemy: EnemyRuntimeState, amount: float, source: String) -> vo
 				_complete_defeat_giant_mission()
 
 func _complete_defeat_giant_mission() -> void:
-	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or base_hp <= 0.0:
+	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or base_hp <= 0.0 or _completed_mission_stage_id == StageManager.current_stage_id:
 		return
+	_completed_mission_stage_id = StageManager.current_stage_id
 	wave_running = false
 	play_sfx("ui_confirm")
 	log_event("MISSION CLEAR. Giant Boss defeated.")
@@ -1875,8 +1893,9 @@ func _grant_stage_reward() -> void:
 	log_event("STAGE REWARD: +%d Gold, %d Item(s)." % [maxi(0, reward.gold), reward.item_ids.size()])
 
 func _complete_defend_base_mission() -> void:
-	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or base_hp <= 0.0:
+	if run_state == RunState.DEFEAT or run_state == RunState.VICTORY or base_hp <= 0.0 or _completed_mission_stage_id == StageManager.current_stage_id:
 		return
+	_completed_mission_stage_id = StageManager.current_stage_id
 	wave_running = false
 	play_sfx("ui_confirm")
 	log_event("MISSION CLEAR. Base survived for %d seconds." % mission_definition.time_limit)
@@ -1922,6 +1941,16 @@ func check_wave_clear() -> void:
 			run_state = RunState.RUNNING
 			log_event("Defense continues until the mission time limit.")
 			return
+		if mission_definition != null and mission_definition.primary_type == "defeat_giant" and _completed_mission_stage_id != StageManager.current_stage_id:
+			wave_running = false
+			run_state = RunState.DEFEAT
+			_mission_objective_failed = true
+			push_error("GameController: defeat_giant Stage ended before the Giant objective was completed.")
+			log_event("MISSION OBJECTIVE NOT MET. Giant was not defeated.")
+			return
+		if _completed_mission_stage_id == StageManager.current_stage_id:
+			return
+		_completed_mission_stage_id = StageManager.current_stage_id
 		if StageManager.run_mode != "campaign":
 			run_state = RunState.VICTORY
 			play_sfx("ui_confirm")
@@ -2022,6 +2051,8 @@ func center_camera_from_minimap(screen_position: Vector2) -> void:
 	queue_redraw()
 
 func _input(event: InputEvent) -> void:
+	if not _runtime_stage_load_error.is_empty():
+		return
 	if event.is_action_pressed("select_target"):
 		switch_robot_target(-1 if event is InputEventKey and event.shift_pressed else 1)
 		get_viewport().set_input_as_handled()
@@ -2229,6 +2260,11 @@ func draw_oval(center: Vector2, rx: float, ry: float, color: Color) -> void:
 	draw_polygon(points, PackedColorArray([color]))
 
 func _draw() -> void:
+	if not _runtime_stage_load_error.is_empty():
+		var viewport_rect := get_viewport_rect()
+		draw_rect(viewport_rect, Color("071014"))
+		draw_string(ThemeDB.fallback_font, viewport_rect.position + viewport_rect.size * 0.5 + Vector2(-300, 0), "STAGE LOAD FAILED: %s" % _runtime_stage_load_error, HORIZONTAL_ALIGNMENT_CENTER, 600, 16, Color("ffb4a9"))
+		return
 	# Tactical Grid Background & Field Control Sidebar
 	# Battle HUD is rendered over the battlefield; it is not a separate sidebar.
 
@@ -2624,7 +2660,7 @@ func draw_ui2() -> void:
 		draw_rect(overlay, Color(0.01, 0.025, 0.03, 0.72), true)
 		var status_texture: Texture2D = VISUALS["status_victory"] if run_state == RunState.VICTORY else VISUALS["status_defeat"]
 		draw_sprite(status_texture, screen_origin + viewport_size * 0.5 + Vector2(0, -28), Vector2(300, 100))
-		var result_text := "CAMPAIGN VICTORY" if run_state == RunState.VICTORY else "BASE DEFENSE FAILED"
+		var result_text := "CAMPAIGN VICTORY" if run_state == RunState.VICTORY else ("MISSION OBJECTIVE NOT MET" if _mission_objective_failed else "BASE DEFENSE FAILED")
 		draw_string(ThemeDB.fallback_font, screen_origin + viewport_size * 0.5 + Vector2(-180, 48), result_text, HORIZONTAL_ALIGNMENT_CENTER, 360, 18, Color("d7fff7"))
 		draw_string(ThemeDB.fallback_font, screen_origin + viewport_size * 0.5 + Vector2(-180, 78), "RESTART TO PLAY AGAIN", HORIZONTAL_ALIGNMENT_CENTER, 360, 11, Color("a9c5c7"))
 
