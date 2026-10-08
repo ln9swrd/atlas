@@ -428,6 +428,22 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Status: Ready"
 
+[node name="MapSelector" type="OptionButton" parent="BottomBar/HBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+
+[node name="BtnNewMap" type="Button" parent="BottomBar/HBox"]
+layout_mode = 2
+text = "New Map"
+
+[node name="BtnDuplicateMap" type="Button" parent="BottomBar/HBox"]
+layout_mode = 2
+text = "Duplicate"
+
+[node name="BtnDeleteMap" type="Button" parent="BottomBar/HBox"]
+layout_mode = 2
+text = "Delete"
+
 [node name="BtnLoad" type="Button" parent="BottomBar/HBox" unique_id=1029332109]
 layout_mode = 2
 text = "Load"
@@ -435,6 +451,14 @@ text = "Load"
 [node name="BtnSave" type="Button" parent="BottomBar/HBox" unique_id=241038104]
 layout_mode = 2
 text = "Save"
+
+[node name="BtnRedo" type="Button" parent="BottomBar/HBox"]
+layout_mode = 2
+text = "Redo"
+
+[node name="BtnValidate" type="Button" parent="BottomBar/HBox"]
+layout_mode = 2
+text = "Validate"
 
 [node name="BtnAssetCatalog" type="Button" parent="BottomBar/HBox"]
 layout_mode = 2
@@ -460,6 +484,8 @@ filters = PackedStringArray("*.json ; JSON Maps")
 [connection signal="value_changed" from="MainLayout/Toolbox/VBox/EraserSize/SpinEraserSize" to="." method="_on_eraser_size_value_changed"]
 [connection signal="pressed" from="BottomBar/HBox/BtnLoad" to="." method="_on_btn_load_pressed"]
 [connection signal="pressed" from="BottomBar/HBox/BtnSave" to="." method="_on_btn_save_pressed"]
+[connection signal="pressed" from="BottomBar/HBox/BtnRedo" to="." method="_on_btn_redo_pressed"]
+[connection signal="pressed" from="BottomBar/HBox/BtnValidate" to="." method="_on_btn_validate_pressed"]
 [connection signal="pressed" from="BottomBar/HBox/BtnAssetCatalog" to="." method="_on_btn_asset_catalog_pressed"]
 [connection signal="file_selected" from="OpenMapDialog" to="." method="_on_open_map_file_selected"]
 [connection signal="file_selected" from="SaveMapDialog" to="." method="_on_save_map_file_selected"]

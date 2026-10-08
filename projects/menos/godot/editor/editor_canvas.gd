@@ -72,6 +72,7 @@ var resize_start_footprint := Vector2i.ONE
 var resize_start_world := Vector2.ZERO
 var pan_start_pos := Vector2.ZERO
 var undo_history: Array[Dictionary] = []
+var redo_history: Array[Dictionary] = []
 var edit_stroke_snapshot: Dictionary = {}
 var edit_stroke_active := false
 var edit_stroke_changed := false
@@ -113,6 +114,7 @@ func set_map_data(data: Dictionary) -> void:
 				"third": {"ally": "hostile", "enemy": "hostile"}
 			}
 	undo_history.clear()
+	redo_history.clear()
 	_fit_map_to_viewport.call_deferred()
 	edit_stroke_snapshot.clear()
 	edit_stroke_active = false
@@ -279,6 +281,24 @@ func _catalog_asset_has_transparency(asset: Dictionary) -> bool:
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
+		if key_event.pressed and not key_event.echo and key_event.ctrl_pressed and key_event.shift_pressed and key_event.keycode == KEY_Z:
+			if _has_text_input_focus():
+				return
+			if edit_stroke_active:
+				_finish_edit_stroke()
+			if not redo_history.is_empty():
+				_redo_last_edit()
+				get_viewport().set_input_as_handled()
+			return
+		if key_event.pressed and not key_event.echo and key_event.ctrl_pressed and not key_event.shift_pressed and key_event.keycode == KEY_Y:
+			if _has_text_input_focus():
+				return
+			if edit_stroke_active:
+				_finish_edit_stroke()
+			if not redo_history.is_empty():
+				_redo_last_edit()
+				get_viewport().set_input_as_handled()
+			return
 		if key_event.pressed and not key_event.echo and key_event.ctrl_pressed and not key_event.shift_pressed and key_event.keycode == KEY_Z:
 			if _has_text_input_focus():
 				return
@@ -473,6 +493,7 @@ func _finish_edit_stroke() -> void:
 		undo_history.append(edit_stroke_snapshot)
 		if undo_history.size() > max_undo_history:
 			undo_history.pop_front()
+		redo_history.clear()
 	edit_stroke_snapshot = {}
 	edit_stroke_active = false
 	edit_stroke_changed = false
@@ -484,11 +505,34 @@ func _mark_map_data_changed() -> void:
 	queue_redraw()
 
 func _undo_last_edit() -> void:
+	if undo_history.is_empty():
+		return
+	redo_history.append(map_data.duplicate(true))
 	map_data = undo_history.pop_back().duplicate(true)
 	selected_object.clear()
 	object_selected.emit({})
 	map_data_changed.emit()
 	queue_redraw()
+
+func _redo_last_edit() -> void:
+	if redo_history.is_empty():
+		return
+	undo_history.append(map_data.duplicate(true))
+	map_data = redo_history.pop_back().duplicate(true)
+	selected_object.clear()
+	object_selected.emit({})
+	map_data_changed.emit()
+	queue_redraw()
+
+func redo_last_edit() -> void:
+	if edit_stroke_active:
+		_finish_edit_stroke()
+	_redo_last_edit()
+
+func undo_last_edit() -> void:
+	if edit_stroke_active:
+		_finish_edit_stroke()
+	_undo_last_edit()
 
 func viewport_to_canvas_position(viewport_position: Vector2) -> Vector2:
 	return get_global_transform_with_canvas().affine_inverse() * viewport_position

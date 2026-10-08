@@ -241,3 +241,48 @@ Map robot_id → Runtime RobotDefinition 선택 → 해당 Robot의 Visual/Weapo
 이다.
 여기서 "Robot Position Point마다 Robot을 지정한다"는 의미를 Canon으로 확정할지, 또는 별도의 Robot Spawn/Unit 배치 데이터로 분리할지는 Master 결정이 필요하다.
 이 결정 전에는 코드 수정으로 진행하지 않는다.
+
+
+## 20. Map Editor P0 authoring 보완 구현 — 2026-10-08
+
+STATUS — IMPLEMENTED / CODE VERIFIED / BUILD VERIFIED / EDITOR DATA VERIFIED / PIE NOT VERIFIED
+
+이번 단계에서 기존 Map Editor의 P0 후보 중 Runtime 의미를 변경하지 않는 편집 안전성/검증 항목을 보완했다.
+
+### CONFIRMED — 구현 사항
+- Editor Canvas에 Redo history를 추가했다.
+- Ctrl+Y 및 Ctrl+Shift+Z Redo 단축키를 지원한다.
+- Undo 시 현재 상태를 Redo history에 저장한다.
+- 새로운 편집이 발생하면 Redo history를 비운다.
+- Map Load 시 Undo/Redo history를 초기화한다.
+- Map Editor에 Redo 버튼을 추가했다.
+- Map Editor에 Validate 버튼을 추가했다.
+- Map Validation은 Map ID, Map Bounds/32px 좌표 정합성, Gameplay Area/Point ID 중복, Gameplay Area/Point Bounds, Area Reference, Catalog Asset Reference, Map Object Bounds, Required Base, legacy Spawn/Robot Spot Bounds, Stage Usage를 검사한다.
+- Validation 결과는 Error/Warning으로 구분하여 표시한다.
+- Map Editor의 Dirty State를 명시적으로 추적한다.
+- 변경 후 상태에 [UNSAVED]를 표시한다.
+- Unsaved Map이 있는 상태에서는 Load를 차단하여 작업 유실을 방지한다.
+- Save 성공 후 Dirty State를 해제한다.
+
+### 검증
+- 기존 editor_data_smoke_test.gd: PASS
+- 신규 임시 Map Editor P0 smoke: PASS
+  - Map Validation: errors=0, warnings=0
+  - Undo → Redo: PASS
+  - Dirty State: PASS
+  - Unsaved Load Guard: PASS
+- git diff --check: PASS
+- Godot headless Editor load/check: PASS
+- 실제 GUI/PIE 관찰은 수행하지 않음.
+
+### 범위 제한
+다음 기능은 이번 단계에서 구현하지 않았다.
+- New Map / Map Duplicate / Map Delete workflow
+- Multi-select / Area Copy-Paste
+- Production Lock
+- 명시적 Grid Snap On/Off UX
+- Robot Definition 교체
+- Runtime Robot Spawn 의미 변경
+
+특히 Robot Position Point의 robot_id 의미는 기존 문서의 HOLD 결정을 유지한다.
+Master 승인 없이 Runtime Robot Definition 선택 구조를 변경하지 않는다.

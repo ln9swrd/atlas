@@ -32,6 +32,15 @@ static func list_map_paths() -> Array[String]:
 		if str(path).ends_with("_src"):
 			continue
 		paths.append(str(path))
+	var db = _open_db(true)
+	if db != null:
+		if db.query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'map_documents'") and db.query_result.size() == 1:
+			if db.query("SELECT map_id FROM map_documents ORDER BY map_id"):
+				for row in db.query_result:
+					var id := str(row.get("map_id", ""))
+					if not id.is_empty() and not paths.has(id):
+						paths.append(id)
+		db.close_db()
 	paths.sort()
 	return paths
 
@@ -39,9 +48,7 @@ static func load_map_data(file_path: String) -> Dictionary:
 	var table := _sqlite_map_table(file_path)
 	if not table.is_empty():
 		return _load_sqlite_map_data(table)
-
-	push_error("MapLoader: No SQLite map table mapping for path: %s" % file_path)
-	return {}
+	return _load_dynamic_map_data(file_path)
 
 static func parse_raw_data(raw_data: Dictionary) -> Dictionary:
 	var parsed := {}
@@ -172,7 +179,74 @@ static func _vector2i_from_value(value: Variant, fallback: Vector2i) -> Vector2i
 		return Vector2i(int(value[0]), int(value[1]))
 	return fallback
 
+static func _map_data_to_raw(map_data: Dictionary) -> Dictionary:
+	var source: Variant = map_data.get("_source_map_data", {})
+	var raw: Dictionary = source.duplicate(true) if source is Dictionary else {}
+	raw["version"] = map_data.get("version", 1)
+	raw["map_id"] = map_data.get("map_id", "")
+	raw["name"] = map_data.get("name", "")
+	raw["play_modes"] = map_data.get("play_modes", ["campaign", "single", "multiplayer"])
+	raw["multiplayer"] = map_data.get("multiplayer", {})
+	var tiles_value: Variant = map_data.get("map_tiles", map_data.get("map_size", [36, 24]))
+	if tiles_value is Vector2i:
+		raw["map_size"] = [tiles_value.x, tiles_value.y]
+	elif tiles_value is Array and tiles_value.size() >= 2:
+		raw["map_size"] = [int(tiles_value[0]), int(tiles_value[1])]
+	var origin_value: Variant = map_data.get("map_origin", [0, 58])
+	if origin_value is Vector2:
+		raw["map_origin"] = [origin_value.x, origin_value.y]
+	var pixel_value: Variant = map_data.get("map_pixel_size", [1152, 768])
+	if pixel_value is Vector2:
+		raw["map_pixel_size"] = [pixel_value.x, pixel_value.y]
+	var goal: Dictionary = raw.get("goal", {}).duplicate(true) if raw.get("goal", {}) is Dictionary else {}
+	var base_value: Variant = map_data.get("base", null)
+	if base_value is Vector2:
+		goal["id"] = str(goal.get("id", "base_hq"))
+		goal["position"] = [base_value.x, base_value.y]
+	raw["goal"] = goal
+	raw["spawns"] = {}
+	for key in map_data.get("lanes", {}):
+		var pos: Variant = map_data["lanes"][key]
+		if pos is Vector2:
+			raw["spawns"][key] = [pos.x, pos.y]
+	raw["robot_spots"] = {}
+	for key in map_data.get("robot_spots", {}):
+		var pos: Variant = map_data["robot_spots"][key]
+		if pos is Vector2:
+			raw["robot_spots"][key] = [pos.x, pos.y]
+	raw["tower_slots"] = {}
+	for key in map_data.get("slots", {}):
+		var slot: Variant = map_data["slots"][key]
+		if slot is Dictionary:
+			var slot_raw: Dictionary = slot.duplicate(true)
+			var pos: Variant = slot_raw.get("position", null)
+			if pos is Vector2:
+				slot_raw["position"] = [pos.x, pos.y]
+			raw["tower_slots"][key] = slot_raw
+		elif slot is Vector2:
+			raw["tower_slots"][key] = [slot.x, slot.y]
+	raw["tiles"] = map_data.get("tiles", {})
+	raw["objects"] = map_data.get("objects", [])
+	raw["asset_footprint_defaults"] = map_data.get("asset_footprint_defaults", {})
+	raw["gameplay_areas"] = map_data.get("gameplay_areas", [])
+	raw["gameplay_points"] = map_data.get("gameplay_points", [])
+	return raw
+
 static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
+	if _sqlite_map_table(file_path).is_empty():
+		var db = _open_db(false)
+		if db == null:
+			return false
+		if not _ensure_dynamic_store(db):
+			db.close_db()
+			return false
+		var json_string := JSON.stringify(_map_data_to_raw(map_data), "  ")
+		var ok: bool = db.query_with_bindings("UPDATE map_documents SET raw_json = ? WHERE map_id = ?", [json_string, file_path])
+		db.close_db()
+		return ok
+	return _save_fixed_map_data(file_path, map_data)
+
+static func _save_fixed_map_data(file_path: String, map_data: Dictionary) -> bool:
 	var map_tiles_vec: Vector2i = _vector2i_from_value(map_data.get("map_tiles", [36, 24]), Vector2i(36, 24))
 	var map_origin_vec: Vector2 = _vector2_from_value(map_data.get("map_origin", [0, 58]), Vector2(0, 58))
 	var map_pixel_vec: Vector2 = _vector2_from_value(map_data.get("map_pixel_size", [1152, 768]), Vector2(1152, 768))
@@ -232,6 +306,77 @@ static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
 
 	push_error("MapLoader: No SQLite map table mapping for path: %s" % file_path)
 	return false
+
+static func _open_db(read_only: bool):
+	var db = SQLite.new()
+	db.path = _database_path()
+	db.read_only = read_only
+	db.foreign_keys = true
+	db.verbosity_level = 0
+	if not db.open_db():
+		return null
+	return db
+
+static func _ensure_dynamic_store(db) -> bool:
+	return db.query("CREATE TABLE IF NOT EXISTS map_documents (map_id TEXT PRIMARY KEY, raw_json TEXT NOT NULL)")
+
+static func _load_dynamic_map_data(map_id: String) -> Dictionary:
+	var db = _open_db(true)
+	if db == null:
+		return {}
+	if not db.query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'map_documents'") or db.query_result.is_empty():
+		db.close_db()
+		return {}
+	if not db.query_with_bindings("SELECT raw_json FROM map_documents WHERE map_id = ?", [map_id]):
+		db.close_db()
+		return {}
+	var rows: Array = db.query_result.duplicate(true)
+	db.close_db()
+	if rows.size() != 1:
+		return {}
+	var raw_data: Variant = JSON.parse_string(str(rows[0].get("raw_json", "")))
+	return parse_raw_data(raw_data) if raw_data is Dictionary else {}
+
+static func create_map(map_id: String, map_data: Dictionary) -> bool:
+	var id := map_id.strip_edges()
+	if id.is_empty() or not id.is_valid_filename() or id in SQLITE_MAP_TABLES:
+		return false
+	if not load_map_data(id).is_empty():
+		return false
+	var data: Dictionary = _map_data_to_raw(map_data)
+	data["map_id"] = id
+	data["name"] = map_data.get("name", data.get("name", id))
+	var db = _open_db(false)
+	if db == null:
+		return false
+	if not _ensure_dynamic_store(db):
+		db.close_db()
+		return false
+	var ok: bool = db.query_with_bindings("INSERT INTO map_documents(map_id, raw_json) VALUES(?, ?)", [id, JSON.stringify(data, "  ")])
+	db.close_db()
+	return ok
+
+static func duplicate_map(source_id: String, new_id: String, new_name: String = "") -> bool:
+	var data := load_map_data(source_id)
+	if data.is_empty():
+		return false
+	data["map_id"] = new_id
+	if not new_name.strip_edges().is_empty():
+		data["name"] = new_name.strip_edges()
+	return create_map(new_id, data)
+
+static func delete_map(map_id: String) -> bool:
+	if SQLITE_MAP_TABLES.has(map_id):
+		return false
+	var db = _open_db(false)
+	if db == null:
+		return false
+	if not _ensure_dynamic_store(db):
+		db.close_db()
+		return false
+	var ok := db.query_with_bindings("DELETE FROM map_documents WHERE map_id = ?", [map_id])
+	db.close_db()
+	return ok
 
 static func _sqlite_map_table(file_path: String) -> String:
 	var normalized := file_path.replace("\\", "/")

@@ -52,6 +52,12 @@ const IMAGE_TEXTURE_LOADER := preload("res://editor/image_texture_loader.gd")
 @onready var third_alliance: CheckButton = $MainLayout/Toolbox/VBox/ThirdAlliance
 @onready var map_mode_hint: Label = $MainLayout/Toolbox/VBox/MapModeHint
 @onready var asset_catalog_window: Window = $AssetCatalogWindow
+@onready var btn_redo: Button = $BottomBar/HBox/BtnRedo
+@onready var btn_validate: Button = $BottomBar/HBox/BtnValidate
+@onready var map_selector: OptionButton = $BottomBar/HBox/MapSelector
+@onready var btn_new_map: Button = $BottomBar/HBox/BtnNewMap
+@onready var btn_duplicate_map: Button = $BottomBar/HBox/BtnDuplicateMap
+@onready var btn_delete_map: Button = $BottomBar/HBox/BtnDeleteMap
 
 var map_size_panel: PanelContainer
 var map_width_spin: SpinBox
@@ -61,6 +67,7 @@ var gameplay_visibility_toggle: CheckButton
 
 var current_map_path := "map_01"
 var current_map_data := {}
+var map_dirty := false
 var catalog_entries: Array[Dictionary] = []
 var preview_texture_cache: Dictionary = {}
 var selected_asset_id := ""
@@ -116,6 +123,11 @@ func _ready() -> void:
 	_load_file_dialog_favorites()
 	if not initial_map_path.is_empty():
 		current_map_path = initial_map_path
+	btn_new_map.pressed.connect(_on_btn_new_map_pressed)
+	btn_duplicate_map.pressed.connect(_on_btn_duplicate_map_pressed)
+	btn_delete_map.pressed.connect(_on_btn_delete_map_pressed)
+	map_selector.item_selected.connect(_on_map_selector_item_selected)
+	_refresh_map_selector(current_map_path)
 	load_map(current_map_path)
 
 func load_asset_catalog(preferred_asset_id: String = "", force_clear_selection: bool = false) -> void:
@@ -568,6 +580,9 @@ func _update_map_mode_status() -> void:
 	update_status("Map mode: %s" % mode_text)
 
 func load_map(path: String) -> void:
+	if map_dirty:
+		update_status("Load blocked: unsaved changes exist. Save the current map first.")
+		return
 	current_map_path = path
 	current_map_data = MapLoader.load_map_data(path)
 	if current_map_data.is_empty():
@@ -576,6 +591,7 @@ func load_map(path: String) -> void:
 
 	if canvas:
 		canvas.set_map_data(current_map_data)
+	map_dirty = false
 	_sync_map_size_controls()
 	_sync_map_play_mode_controls()
 	var linked_stages := _find_linked_stages(path)
@@ -606,6 +622,7 @@ func save_map() -> void:
 
 	var success := MapLoader.save_map_data(current_map_path, current_map_data)
 	if success:
+		map_dirty = false
 		update_status("SAVED map successfully to: " + current_map_path)
 	else:
 		update_status("FAILED to save map to: " + current_map_path)
@@ -642,7 +659,164 @@ func set_dialog_path(dialog: FileDialog) -> void:
 
 func update_status(text: String) -> void:
 	if lbl_status:
-		lbl_status.text = "Status: " + text
+		var dirty_suffix := " [UNSAVED]" if map_dirty else ""
+		lbl_status.text = "Status: " + text + dirty_suffix
+
+func _on_btn_redo_pressed() -> void:
+	if canvas == null:
+		return
+	var before := canvas.map_data.duplicate(true)
+	canvas.redo_last_edit()
+	if JSON.stringify(before) != JSON.stringify(canvas.map_data):
+		current_map_data = canvas.map_data
+		map_dirty = true
+		update_status("Redo applied.")
+
+func validate_map() -> Dictionary:
+	var errors: Array[String] = []
+	var warnings: Array[String] = []
+	if current_map_data.is_empty():
+		errors.append("Map data is not loaded.")
+		return {"errors": errors, "warnings": warnings}
+
+	var map_id := str(current_map_data.get("map_id", current_map_path))
+	if map_id.strip_edges().is_empty():
+		errors.append("Map ID is empty.")
+	var map_name := str(current_map_data.get("name", ""))
+	if map_name.strip_edges().is_empty():
+		warnings.append("Map display name is empty.")
+
+	var map_tiles_value: Variant = current_map_data.get("map_tiles", current_map_data.get("map_size", [36, 24]))
+	var map_tiles := Vector2i(0, 0)
+	if map_tiles_value is Vector2i:
+		map_tiles = map_tiles_value
+	elif map_tiles_value is Array and map_tiles_value.size() >= 2:
+		map_tiles = Vector2i(int(map_tiles_value[0]), int(map_tiles_value[1]))
+	if map_tiles.x <= 0 or map_tiles.y <= 0:
+		errors.append("Map tile size must be positive.")
+
+	var origin := _map_data_position(current_map_data.get("map_origin", [0, 58]), Vector2.ZERO)
+	var pixel_size := _map_data_position(current_map_data.get("map_pixel_size", [map_tiles.x * 32, map_tiles.y * 32]), Vector2.ZERO)
+	var expected_size := Vector2(map_tiles) * 32.0
+	if pixel_size != expected_size:
+		errors.append("Map pixel size does not match map tile size (32px grid).")
+	var bounds := Rect2(origin, pixel_size)
+
+	var ids: Dictionary = {}
+	for area_value in current_map_data.get("gameplay_areas", []):
+		if not area_value is Dictionary:
+			errors.append("Invalid gameplay area entry.")
+			continue
+		var area: Dictionary = area_value
+		var area_id := str(area.get("id", ""))
+		if area_id.is_empty():
+			errors.append("Gameplay Area has an empty ID.")
+		elif ids.has(area_id):
+			errors.append("Duplicate gameplay ID: " + area_id)
+		else:
+			ids[area_id] = true
+		var area_pos := _map_data_position(area.get("position", [0, 0]), Vector2.ZERO)
+		var area_size := _map_data_position(area.get("size", [32, 32]), Vector2(32, 32))
+		if area_size.x <= 0 or area_size.y <= 0:
+			errors.append("Gameplay Area has invalid size: " + area_id)
+		elif not bounds.encloses(Rect2(area_pos, area_size)):
+			errors.append("Gameplay Area is outside Map Bounds: " + area_id)
+
+	for point_value in current_map_data.get("gameplay_points", []):
+		if not point_value is Dictionary:
+			errors.append("Invalid gameplay point entry.")
+			continue
+		var point: Dictionary = point_value
+		var point_id := str(point.get("id", ""))
+		if point_id.is_empty():
+			errors.append("Gameplay Point has an empty ID.")
+		elif ids.has(point_id):
+			errors.append("Duplicate gameplay ID: " + point_id)
+		else:
+			ids[point_id] = true
+		var point_pos := _map_data_position(point.get("position", [0, 0]), Vector2.ZERO)
+		if not bounds.has_point(point_pos):
+			errors.append("Gameplay Point is outside Map Bounds: " + point_id)
+		var area_id := str(point.get("area_id", ""))
+		if not area_id.is_empty() and not ids.has(area_id) and not _gameplay_area_id_exists(area_id):
+			errors.append("Gameplay Point references a missing Area: " + point_id)
+
+	var catalog_ids: Dictionary = {}
+	for entry in catalog_entries:
+		var asset_id := str(entry.get("asset_id", ""))
+		if not asset_id.is_empty():
+			catalog_ids[asset_id] = true
+	for object_value in current_map_data.get("objects", []):
+		if not object_value is Dictionary:
+			errors.append("Invalid map object entry.")
+			continue
+		var object_data: Dictionary = object_value
+		var asset_id := str(object_data.get("asset_id", ""))
+		if asset_id.is_empty():
+			errors.append("Map object has an empty Asset ID.")
+		elif not catalog_ids.has(asset_id):
+			errors.append("Map object references missing Catalog Asset: " + asset_id)
+		var object_pos := _map_data_position(object_data.get("position", [0, 0]), Vector2.ZERO)
+		var footprint_value: Variant = object_data.get("footprint_tiles", object_data.get("footprint", [1, 1]))
+		var footprint := _map_data_position(footprint_value, Vector2.ONE) * 32.0
+		if not bounds.encloses(Rect2(object_pos, footprint)):
+			errors.append("Map object is outside Map Bounds: " + asset_id)
+
+	var base_value: Variant = current_map_data.get("base", null)
+	if base_value == null:
+		errors.append("Required Base position is missing.")
+	else:
+		var base_pos := _map_data_position(base_value, Vector2.ZERO)
+		if not bounds.has_point(base_pos):
+			errors.append("Required Base position is outside Map Bounds.")
+
+	for legacy_field in ["spawns", "robot_spots"]:
+		var legacy_points: Variant = current_map_data.get(legacy_field, {})
+		if legacy_points is Dictionary:
+			for legacy_id in legacy_points.keys():
+				var legacy_value: Variant = legacy_points[legacy_id]
+				var legacy_pos := _map_data_position(legacy_value if not legacy_value is Dictionary else legacy_value.get("position", [0, 0]), Vector2.ZERO)
+				if not bounds.has_point(legacy_pos):
+					errors.append("%s is outside Map Bounds: %s" % [legacy_field, str(legacy_id)])
+
+	var linked_stages := _find_linked_stages(current_map_path)
+	if linked_stages.is_empty():
+		warnings.append("No Stage currently references this Map.")
+	return {"errors": errors, "warnings": warnings}
+
+func _gameplay_area_id_exists(area_id: String) -> bool:
+	for area_value in current_map_data.get("gameplay_areas", []):
+		if area_value is Dictionary and str(area_value.get("id", "")) == area_id:
+			return true
+	return false
+
+func _on_btn_validate_pressed() -> void:
+	var result := validate_map()
+	var errors: Array = result.get("errors", [])
+	var warnings: Array = result.get("warnings", [])
+	var lines: Array[String] = ["MAP VALIDATION", "", "Errors: %d" % errors.size(), "Warnings: %d" % warnings.size()]
+	if not errors.is_empty():
+		lines.append("")
+		lines.append("ERRORS")
+		for message in errors:
+			lines.append("• " + str(message))
+	if not warnings.is_empty():
+		lines.append("")
+		lines.append("WARNINGS")
+		for message in warnings:
+			lines.append("• " + str(message))
+	var dialog := AcceptDialog.new()
+	dialog.title = "Map Validation"
+	dialog.dialog_text = "\n".join(lines)
+	dialog.min_size = Vector2i(760, 520)
+	add_child(dialog)
+	dialog.confirmed.connect(dialog.queue_free)
+	dialog.close_requested.connect(dialog.queue_free)
+	dialog.popup_centered()
+	if errors.is_empty():
+		update_status("Validation PASS: %d warning(s)." % warnings.size())
+	else:
+		update_status("Validation FAIL: %d error(s), %d warning(s)." % [errors.size(), warnings.size()])
 
 func _on_object_selected(info: Dictionary) -> void:
 	var placement_type := str(info.get("type", ""))
@@ -799,7 +973,8 @@ func _on_delete_placement_pressed() -> void:
 func _on_map_data_changed() -> void:
 	if canvas:
 		current_map_data = canvas.map_data
-	update_status("Map edited (Unsaved changes)")
+	map_dirty = true
+	update_status("Map edited")
 
 func update_tool_label(tool_name: String) -> void:
 	if lbl_current_tool:
@@ -874,7 +1049,139 @@ func set_asset_preview(entry: Dictionary) -> void:
 	lbl_asset_preview_status.text = "Source region: %d x %d px / original aspect ratio" % [int(rect.size.x), int(rect.size.y)]
 
 
+func _refresh_map_selector(preferred_id: String = "") -> void:
+	if not map_selector:
+		return
+	map_selector.clear()
+	var paths := MapLoader.list_map_paths()
+	var selected := -1
+	for path in paths:
+		map_selector.add_item(str(path))
+		if str(path) == preferred_id:
+			selected = map_selector.item_count - 1
+	if selected >= 0:
+		map_selector.select(selected)
+
+func _on_map_selector_item_selected(index: int) -> void:
+	if index < 0 or index >= map_selector.item_count:
+		return
+	var path := map_selector.get_item_text(index)
+	load_map(path)
+
+func _default_new_map_data() -> Dictionary:
+	var source := current_map_data.duplicate(true)
+	if source.is_empty():
+		source = MapLoader.load_map_data("map_01")
+	var data := source.duplicate(true)
+	data["map_id"] = ""
+	data["name"] = "New Map"
+	data["tiles"] = {"Ground": {}}
+	data["objects"] = []
+	data["gameplay_areas"] = []
+	data["gameplay_points"] = []
+	data["lanes"] = {}
+	data["robot_spots"] = {}
+	data["slots"] = {}
+	return data
+
+func _find_map_references(map_id: String) -> Array[String]:
+	var result: Array[String] = []
+	var catalog: Dictionary = ContentCatalogLoader.load_document("stage_catalog")
+	for stage_id in catalog.get("stages", []):
+		var id := str(stage_id)
+		var stage_data := StageLoader.load_stage_data(id)
+		if not stage_data.is_empty() and str(stage_data.get("map_file", "")) == map_id:
+			result.append(str(stage_data.get("stage_id", id)))
+	result.sort()
+	return result
+
+func _prompt_map_identity(title: String, default_id: String, default_name: String, duplicate_source: String = "") -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = title
+	dialog.size = Vector2i(460, 210)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	var id_edit := LineEdit.new()
+	id_edit.placeholder_text = "Map ID"
+	id_edit.text = default_id
+	var name_edit := LineEdit.new()
+	name_edit.placeholder_text = "Display Name"
+	name_edit.text = default_name
+	box.add_child(Label.new())
+	box.get_child(0).text = "Map ID"
+	box.add_child(id_edit)
+	var name_label := Label.new()
+	name_label.text = "Display Name"
+	box.add_child(name_label)
+	box.add_child(name_edit)
+	dialog.add_child(box)
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		var id := id_edit.text.strip_edges()
+		var name := name_edit.text.strip_edges()
+		if id.is_empty() or not id.is_valid_filename():
+			update_status("Invalid Map ID. Use filename-safe characters.")
+			dialog.queue_free()
+			return
+		var ok := MapLoader.duplicate_map(duplicate_source, id, name) if not duplicate_source.is_empty() else MapLoader.create_map(id, _default_new_map_data())
+		if not ok:
+			update_status("Map creation failed or Map ID already exists: " + id)
+		else:
+			current_map_path = id
+			_refresh_map_selector(id)
+			load_map(id)
+		dialog.queue_free())
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered()
+
+func _on_btn_new_map_pressed() -> void:
+	if map_dirty:
+		update_status("New Map blocked: unsaved changes exist. Save the current map first.")
+		return
+	_prompt_map_identity("New Map", "map_new", "New Map")
+
+func _on_btn_duplicate_map_pressed() -> void:
+	if map_dirty:
+		update_status("Duplicate blocked: unsaved changes exist. Save the current map first.")
+		return
+	if current_map_data.is_empty():
+		update_status("Duplicate blocked: no map loaded.")
+		return
+	var base_id := str(current_map_data.get("map_id", current_map_path)) + "_copy"
+	_prompt_map_identity("Duplicate Map", base_id, str(current_map_data.get("name", "")) + " Copy", current_map_path)
+
+func _on_btn_delete_map_pressed() -> void:
+	if map_dirty:
+		update_status("Delete blocked: unsaved changes exist. Save the current map first.")
+		return
+	var refs := _find_map_references(current_map_path)
+	if not refs.is_empty():
+		update_status("Delete blocked: map is referenced by stages: " + ", ".join(refs))
+		return
+	if current_map_path in ["map_01", "map_02", "map_03"]:
+		update_status("Delete blocked: canonical maps are protected.")
+		return
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Delete Map"
+	dialog.dialog_text = "Delete map '" + current_map_path + "' permanently?"
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		if MapLoader.delete_map(current_map_path):
+			var paths := MapLoader.list_map_paths()
+			var next_id := paths[0] if not paths.is_empty() else "map_01"
+			current_map_path = next_id
+			_refresh_map_selector(next_id)
+			load_map(next_id)
+		else:
+			update_status("Delete failed: " + current_map_path)
+		dialog.queue_free())
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered()
+
 func _on_btn_load_pressed() -> void:
+	if map_dirty:
+		update_status("Load blocked: unsaved changes exist. Save the current map first.")
+		return
 	set_dialog_path(open_map_dialog)
 	open_map_dialog.popup_centered(Vector2i(900, 640))
 
