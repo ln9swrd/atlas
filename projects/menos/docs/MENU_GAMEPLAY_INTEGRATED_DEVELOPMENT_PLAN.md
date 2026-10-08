@@ -810,3 +810,140 @@ Master listening and approval of the actual pilot Voice Asset. Until accepted, d
 ### PROPOSAL
 
 If accepted, the next minimum work is Dialogue/Subtitle runtime linkage and one actual gameplay/dialogue event verification. Record exact script + generation prompt as provenance before creating further Voice assets.
+
+
+## 26. 2026-10-08 Current Roadmap Reconciliation
+
+STATUS: PASS - P1 Gameplay is implemented, verified, committed, and pushed.
+
+CONFIRMED:
+- Campaign 1 Production Acceptance remains approved; do not reopen.
+- Gameplay P1 commit 94b53fe3 is pushed to main.
+- Settings P0 implementation/E2E is complete; Master PIE observation remains separate.
+- Presentation P0 pilot work exists for VFX/SFX/BGM/Voice; additional asset expansion remains gated by Master acceptance.
+- Map Editor P0 already contains Undo/Redo, Dirty State, Unsaved Load Guard, Validation, bounds/reference checks, and Required Base protection.
+- Map Editor currently has no dedicated New Map / Duplicate Map / Delete Map workflow.
+
+ROADMAP DECISION:
+1. Reconcile project state documentation.
+2. Complete only low-risk Map Editor P0 authoring gaps that do not change Canon semantics.
+3. Stop at the first point requiring a design decision: map identity/ID generation, delete policy, Production Lock semantics, or robot_id meaning.
+4. Then establish the Common Authoring Contract before broadening semantic editors.
+
+MAP EDITOR NEXT GATE:
+- New Map: requires authoritative Map ID/name generation and initial schema defaults.
+- Duplicate Map: requires ID collision/renaming policy.
+- Delete Map: requires reference-protection policy and whether deletion is soft/hard.
+- Grid Snap UX: can proceed only if existing 32px grid semantics are retained without Canon change.
+
+OUT OF SCOPE:
+- Reward Gold economy semantics.
+- Campaign 1 feature expansion.
+- Production Lock implementation.
+- robot_id semantic redesign.
+- Additional Voice/BGM/SFX/VFX production expansion before their acceptance gates.
+
+PROPOSAL:
+Proceed with state reconciliation now. Then investigate the existing Map data schema and Editor persistence path to determine whether Grid Snap UX can be implemented without a decision. Hold before New/Duplicate/Delete if authoritative identity/deletion semantics are not already defined.
+
+
+## 27. 2026-10-08 Map Editor P0 Investigation Gate
+
+PROGRESS
+- Current Map Editor and MapLoader were inspected READ-ONLY.
+- Map persistence is SQLite-backed through a fixed table mapping: map_01, map_01_src, map_02, map_03.
+- Save updates exactly one existing document row; the current loader has no generic map creation, duplication, or deletion API.
+- Map ID and display name are validated fields and are persisted inside the raw map document, but table identity is also used as the document key.
+- The editor already uses a fixed 32px grid throughout placement, selection, resize, gameplay points, and rendering. There is no separate free-position mode requiring a Snap toggle.
+
+CONFIRMED:
+- New Map is not a simple UI addition; it requires a canonical map identity/document creation policy and likely persistence schema support.
+- Duplicate Map requires a unique map ID/table/document identity policy.
+- Delete Map requires reference protection plus a hard-delete/soft-delete decision.
+- Grid Snap On/Off is not currently a missing core function; placement is intrinsically cell/grid based at 32px.
+
+DECISION GATE:
+A Master/Canon decision is required before implementing Map New/Duplicate/Delete. The current fixed-table persistence model prevents safely adding CRUD semantics without deciding the authoritative map identity and deletion/reference policy.
+
+PROPOSAL:
+Do not modify Map Editor CRUD yet. Treat the current 32px grid behavior as sufficient for P0 and move to the Common Authoring Contract only after the map identity/deletion policy is decided. If Master wants Map CRUD next, first define whether maps remain fixed ODB-backed documents or become generic map records with stable IDs and reference-aware deletion.
+
+
+## 28. 2026-10-08 Map CRUD Implementation Gate
+
+STATUS: PASS — Master approved the recommended Map CRUD policy and implementation proceeded.
+
+CANON/APPROVED POLICY:
+- Stable Map ID is the authoritative identity exposed to authoring and runtime references.
+- Existing canonical maps remain protected and are not hard-deleted.
+- New/Duplicate maps are stored in a generic SQLite `map_documents` table keyed by `map_id`.
+- Existing fixed Map tables remain compatible; migration of existing canonical tables is not required.
+- Delete is hard-delete for author-created dynamic maps only.
+- Delete is blocked when any Stage directly references the Map.
+- 32px cell/grid placement remains intrinsic; no Snap On/Off mode is introduced.
+
+IMPLEMENTED:
+- MapLoader lists fixed canonical maps plus dynamic map_documents records.
+- New Map creates a dynamic record from the existing Map schema defaults with empty authoring content.
+- Duplicate Map clones an existing map into a new stable ID/name.
+- Dynamic Map Save serializes editor Vector2/Vector2i data back to the established raw JSON schema.
+- Delete Map enforces canonical protection and Stage reference protection.
+- Map Editor now provides Map selector, New Map, Duplicate, and Delete controls.
+- Unsaved changes continue to block map switching/CRUD.
+
+VERIFICATION:
+- CODE VERIFIED: PASS — Godot headless editor load/compile.
+- MAP_CRUD_SMOKE_PASS.
+- MAP_NEW_SMOKE_PASS.
+- MAP_DYNAMIC_SAVE_SMOKE_PASS.
+- Existing project SQLite was not mutated by these tests; tests used copied databases.
+- PIE VERIFIED: NOT VERIFIED.
+
+NEXT DECISION GATE:
+- Map CRUD policy is now implemented. Before commit/push, inspect the full diff and determine whether the Common Authoring Contract should be the next implementation area.
+- No additional Map CRUD semantics should be added automatically.
+
+PROPOSAL:
+Proceed to final diff review and Map Editor P0 regression verification. If PASS, stop at the commit/push approval gate rather than expanding scope.
+
+
+## 2026-10-08 P0 E2E Decision Gate — Catalog → Object → Runtime
+
+STATUS: HOLD — implementation expansion not authorized until the minimum Object → Runtime Visual E2E is verified.
+
+### Master Decision
+
+Master accepted the following P0 verification policy:
+
+1. Verify one minimum E2E path independently for Robot, Unit, and Tower:
+   `Catalog Visual Asset → Object Editor → Save → Reload → Runtime display`
+2. Do not require every Object to call `VisualAssetResolver` directly if its actual Runtime consumption path is functionally valid.
+3. If a specific Object has a broken Runtime display path, isolate that Object as the implementation target rather than redesigning the common Catalog contract.
+4. Building Runtime semantics remain HOLD and are not expanded by this verification.
+
+### CONFIRMED
+
+- Catalog/Visual Asset authoring and Map/Catalog smoke verification are PASS.
+- `EDITOR_DATA_SMOKE_TEST_PASS`.
+- `FIXED_TOWER_SMOKE_PASS`.
+- `CAMPAIGN_RUNTIME_SMOKE_PASS stages=3 giant=true impact_vfx=true`.
+- ContentValidator validates Visual Asset references for Enemy, Allied Unit, Tower, and Robot.
+- Robot Definition contains an explicit `VisualAssetResolver.resolve()` path.
+- Tower/Allied Unit definitions retain Visual Asset IDs/strings, but their actual Runtime visual consumption path has not yet been accepted as common Resolver E2E.
+
+### VERIFICATION
+
+- CODE VERIFIED: Catalog/Object reference and validation infrastructure confirmed.
+- BUILD VERIFIED: Relevant headless smoke scripts pass.
+- EDITOR VERIFIED: Catalog/Map authoring smoke passes.
+- PIE VERIFIED: UNVERIFIED.
+- Robot/Unit/Tower Catalog → Runtime Visual E2E: UNVERIFIED.
+- Building Runtime semantics: HOLD.
+
+### PROPOSAL
+
+At the next execution opportunity, run only the minimum Robot/Unit/Tower Visual E2E required above. Do not introduce a common Resolver refactor unless the runtime verification demonstrates an actual broken path.
+
+Success criterion: each tested Object can load its Catalog Visual Asset after Save/Reload and display it through its existing Runtime path.
+
+If all three pass, ACCEPT/STOP this gate. If one fails, investigate only that Object's Runtime consumer and report the smallest required change.
