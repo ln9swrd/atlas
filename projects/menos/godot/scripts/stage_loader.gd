@@ -4,7 +4,12 @@ const STAGE_DIRECTORY := "res://content/stages/"
 static func resolve_stage_path(stage_id_or_path: String) -> String:
 	if stage_id_or_path.begins_with("res://") or stage_id_or_path.begins_with("user://"):
 		return stage_id_or_path
-	return stage_id_or_path
+	var normalized := stage_id_or_path.strip_edges()
+	if normalized.is_valid_int():
+		var resolved := ContentCatalogLoader.resolve_odb_pk("stage", int(normalized))
+		if not resolved.is_empty():
+			return resolved
+	return normalized
 static func load_stage_data(stage_id_or_path: String) -> Dictionary:
 	var file_path := resolve_stage_path(stage_id_or_path)
 	var raw_data: Dictionary = ContentCatalogLoader.load_document(file_path)

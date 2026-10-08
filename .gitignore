@@ -56,6 +56,8 @@ projects/menos/godot/builds/
 *.mp3
 *.flac
 *.wav
+# Local Voice generation tool/model cache; never commit the external runtime bundle
+_ppaso_voice/
 *.zip
 *.glb
 *.stl

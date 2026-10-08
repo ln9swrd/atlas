@@ -1,0 +1,110 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://editor/sfx_editor.gd" id="1"]
+
+[node name="SFXEditor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Preview" type="AudioStreamPlayer" parent="."]
+bus = "SFX"
+
+[node name="Root" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="Label" parent="Root"]
+layout_mode = 2
+text = "SFX EDITOR — Definition / Preview"
+
+[node name="Body" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ListPanel" type="VBoxContainer" parent="Root/Body"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="List" type="ItemList" parent="Root/Body/ListPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Root/Body/ListPanel"]
+layout_mode = 2
+
+[node name="New" type="Button" parent="Root/Body/ListPanel/Buttons"]
+layout_mode = 2
+text = "New"
+
+[node name="Refresh" type="Button" parent="Root/Body/ListPanel/Buttons"]
+layout_mode = 2
+text = "Refresh"
+
+[node name="Editor" type="PanelContainer" parent="Root/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Fields" type="VBoxContainer" parent="Root/Body/Editor"]
+layout_mode = 2
+
+[node name="ID" type="LineEdit" parent="Root/Body/Editor/Fields"]
+layout_mode = 2
+placeholder_text = "SFX ID"
+
+[node name="Name" type="LineEdit" parent="Root/Body/Editor/Fields"]
+layout_mode = 2
+placeholder_text = "Name"
+
+[node name="Category" type="LineEdit" parent="Root/Body/Editor/Fields"]
+layout_mode = 2
+placeholder_text = "Category"
+
+[node name="AudioAsset" type="LineEdit" parent="Root/Body/Editor/Fields"]
+layout_mode = 2
+placeholder_text = "Audio Asset res://..."
+
+[node name="Volume" type="SpinBox" parent="Root/Body/Editor/Fields"]
+layout_mode = 2
+min_value = 0.0
+max_value = 2.0
+step = 0.01
+value = 1.0
+
+[node name="Pitch" type="SpinBox" parent="Root/Body/Editor/Fields"]
+layout_mode = 2
+min_value = 0.01
+max_value = 4.0
+step = 0.01
+value = 1.0
+
+[node name="Bus" type="LineEdit" parent="Root/Body/Editor/Fields"]
+layout_mode = 2
+text = "SFX"
+
+[node name="Buttons" type="HBoxContainer" parent="Root/Body/Editor"]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="Root/Body/Editor/Buttons"]
+layout_mode = 2
+text = "Save"
+
+[node name="Delete" type="Button" parent="Root/Body/Editor/Buttons"]
+layout_mode = 2
+text = "Delete"
+
+[node name="Preview" type="Button" parent="Root/Body/Editor/Buttons"]
+layout_mode = 2
+text = "Preview"
+
+[node name="Status" type="Label" parent="Root"]
+layout_mode = 2
+text = "Ready"

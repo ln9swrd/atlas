@@ -16,8 +16,8 @@ func _init() -> void:
 	instance.get_node("MainLayout/Body/Editor/Fields/Composition/ComponentType").text = "Sprite"
 	instance.get_node("MainLayout/Body/Editor/Fields/Composition/ComponentResource").text = "impact_explosion"
 	instance.get_node("MainLayout/Body/Editor/Fields/Composition/ComponentButtons/Add").emit_signal("pressed")
-	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/Duration").value = 0.75
-	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/Loop").button_pressed = true
+	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/Controls/Duration").value = 0.75
+	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/Controls/Loop").button_pressed = true
 	instance.get_node("MainLayout/Body/Editor/Fields/Buttons/Save").emit_signal("pressed")
 	await process_frame
 	var definition = RepositoryScript.get_definition("p1_smoke_vfx")

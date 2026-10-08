@@ -10,6 +10,12 @@ const ROBOT_COLOR_SHADER := preload("res://shaders/robot_profile_color.gdshader"
 const VISUAL_ASSET_FRAME := preload("res://scripts/visual_asset_frame.gd")
 const VFXRuntimeInstanceScript = preload("res://scripts/vfx_runtime_instance.gd")
 const VFXDefinitionRepositoryScript = preload("res://scripts/vfx_definition_repository.gd")
+const SFXDefinitionRepositoryScript = preload("res://scripts/sfx_definition_repository.gd")
+const SFXRuntimeAdapterScript = preload("res://scripts/sfx_runtime_adapter.gd")
+const BGMControllerScript = preload("res://scripts/bgm_controller.gd")
+const VoiceDefinitionRepositoryScript = preload("res://scripts/voice_definition_repository.gd")
+const VoiceRuntimeAdapterScript = preload("res://scripts/voice_runtime_adapter.gd")
+const VOICE_PILOT_ID := "VOICE_PILOT_FACTION_01_ATTACK_01_KO"
 const ASURA_TEAM_MASK := preload("res://images/robot/asura/profile_team_mask.png")
 const VISUALS := {
 	"floor_tile": preload("res://assets/menos/environment/tile_dark_floor.tres"),
@@ -141,6 +147,8 @@ var damage_numbers: Array = []
 var effects: Array = []
 var vfx_instances: Array = []
 var _vfx_instance_counter := 0
+var _bgm_controller: BGMController = null
+var _voice_pilot_played := false
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -157,10 +165,51 @@ func _ready() -> void:
 		StageManager.reset_session()
 		if not load_stage_map("stage_01"):
 			build_first_battle_map()
+	_bgm_controller = BGMControllerScript.new()
+	add_child(_bgm_controller)
 	reset_game()
 	_create_robot_render_node()
 	_setup_camera()
 	queue_redraw()
+
+func _bgm_faction() -> String:
+	var faction := str(robot_catalog.get("faction", ""))
+	return faction if not faction.is_empty() else "FACTION_01"
+
+func _play_bgm_context(context: String) -> void:
+	if _bgm_controller == null:
+		return
+	var faction := _bgm_faction()
+	var target_ids := BGMDefinitionRepository.list(faction, context)
+	if target_ids.is_empty():
+		return
+	if _bgm_controller.current_id() == target_ids[0]:
+		return
+	_bgm_controller.play_definition(target_ids[0])
+
+func _sync_bgm_to_run_state() -> void:
+	match run_state:
+		RunState.VICTORY:
+			_play_bgm_context("VICTORY")
+		RunState.DEFEAT:
+			_play_bgm_context("DEFEAT")
+		RunState.RUNNING:
+			_play_bgm_context("COMBAT")
+		_:
+			_play_bgm_context("NORMAL")
+
+func _play_voice_pilot_once() -> bool:
+	if _voice_pilot_played:
+		return false
+	var definition = VoiceDefinitionRepositoryScript.get_definition(VOICE_PILOT_ID)
+	if definition == null:
+		return false
+	var adapter = VoiceRuntimeAdapterScript.new()
+	adapter.configure(definition)
+	if not adapter.play(self):
+		return false
+	_voice_pilot_played = true
+	return true
 
 
 func _setup_camera() -> void:
@@ -713,7 +762,16 @@ func build_first_battle_map() -> void:
 		road.set_cell(Vector2i(x, upper_y), MAP_TILE_SOURCE_ROAD, Vector2i.ZERO)
 
 func play_sfx(id: String) -> void:
-	if not SFX_STREAMS.has(id): return
+	if not SFX_STREAMS.has(id):
+		return
+	var asset_path := str(SFX_STREAMS[id].resource_path)
+	var definition = SFXDefinitionRepositoryScript.get_runtime_definition(id, asset_path)
+	if definition != null:
+		var adapter = SFXRuntimeAdapterScript.new()
+		adapter.configure(definition)
+		if adapter.play(self):
+			return
+	# Legacy fail-safe: preserve the existing playback path if Definition/Asset resolution fails.
 	var player := AudioStreamPlayer.new()
 	player.stream = SFX_STREAMS[id]
 	player.bus = "SFX"
@@ -740,7 +798,9 @@ func reset_game() -> void:
 	instantiate_preplaced_towers()
 	if robot_progression == null:
 		robot_progression = RobotProgressionState.new()
-	feed.clear(); log_event("Stage support facilities are pre-deployed. Wave 1 starts automatically.")
+	feed.clear()
+	_play_bgm_context("NORMAL")
+	log_event("Stage support facilities are pre-deployed. Wave 1 starts automatically.")
 
 func instantiate_preplaced_towers() -> void:
 	for slot_id in SLOTS:
@@ -799,6 +859,7 @@ func _process(delta: float) -> void:
 		wave_auto_start_timer -= delta
 		if wave_auto_start_timer <= 0.0:
 			start_wave()
+	_sync_bgm_to_run_state()
 	_update_robot_render_node()
 	if wave_running:
 		spawn_clock += delta
@@ -881,8 +942,10 @@ func start_wave() -> void:
 			spawn_queue.append({"type": group[0], "delay": offset + index * group[2], "lanes": group[3]})
 		offset += group[1] * group[2] + wave_group_gap
 	spawn_clock = 0.0; SPAWN_AREA_SEQUENCE.clear(); wave_running = true; run_state = RunState.RUNNING; wave_clear = false
+	_play_bgm_context("COMBAT")
 	spawn_allied_units()
 	play_sfx("wave_start")
+	_play_voice_pilot_once()
 	log_event("WAVE %d STARTED: %s" % [wave, waves_data[wave - 1]["label"]])
 
 func spawn_enemies() -> void:

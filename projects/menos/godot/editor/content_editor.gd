@@ -14,6 +14,8 @@ const SKILL_EDITOR_SCENE := "res://editor/skill_editor.tscn"
 const MISSION_EDITOR_SCENE := "res://editor/mission_editor.tscn"
 const CAMPAIGN_EDITOR_SCENE := "res://editor/campaign_editor.tscn"
 const VFX_EDITOR_SCENE := "res://editor/vfx_editor.tscn"
+const SFX_EDITOR_SCENE := "res://editor/sfx_editor.tscn"
+const VOICE_EDITOR_SCENE := "res://editor/voice_editor.tscn"
 
 
 var current_editor: Node = null
@@ -38,6 +40,8 @@ func _ready() -> void:
 	$MainLayout/TopMenu/Buttons/BtnMission.pressed.connect(_open_mission_editor)
 	$MainLayout/TopMenu/Buttons/BtnCampaign.pressed.connect(_open_campaign_editor)
 	$MainLayout/TopMenu/Buttons/BtnVFX.pressed.connect(_open_vfx_editor)
+	$MainLayout/TopMenu/Buttons/BtnSFX.pressed.connect(_open_sfx_editor)
+	$MainLayout/TopMenu/Buttons/BtnVoice.pressed.connect(_open_voice_editor)
 	_open_map_editor()
 
 func _setup_language() -> void:
@@ -156,6 +160,14 @@ func _open_campaign_editor() -> void:
 func _open_vfx_editor() -> void:
 	_load_editor(VFX_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnVFX)
+
+func _open_sfx_editor() -> void:
+	_load_editor(SFX_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnSFX)
+
+func _open_voice_editor() -> void:
+	_load_editor(VOICE_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnVoice)
 
 func _open_image_editor() -> void:
 	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():

@@ -1,5 +1,36 @@
 # MENOS Voice Production Pipeline
 
+## 0. 현재 구현 상태
+
+STATUS: PROPOSAL / NOT IMPLEMENTED
+
+현재 Content Editor의 VOICE 메뉴는 disabled 상태이며, 프로젝트에서 전용 Voice Editor, Voice Definition, Voice Profile Catalog, Dialogue Catalog, Voice Runtime Adapter/Repository, Subtitle/Localization Runtime Link는 구현되어 있지 않다. SQLite에도 Voice/Dialogue 전용 테이블은 현재 존재하지 않는다.
+
+따라서 이 문서는 현재 구현을 설명하는 문서가 아니라 향후 Voice 구현을 위한 Production / Authoring / Runtime 설계안이다. 기존 SFX/BGM Runtime 구현과 혼동하지 않는다.
+
+## 0.1 P0 구현 원칙
+
+Voice P0는 전체 캐릭터/진영 Voice를 한 번에 제작하지 않는다. 하나의 Dialogue를 대상으로 다음 End-to-End 경로를 먼저 검증한다.
+
+`Dialogue ID → Voice Profile → Voice Asset → Voice Definition → Runtime Binding → Voice Playback → Subtitle/Dialogue Link`
+
+Voice가 없어도 Gameplay가 중단되지 않는 Silent Fallback을 기본 정책으로 한다. Dialogue/Subtitle 자체와 Voice Asset을 분리하여 관리한다.
+
+P0 최소 Definition 필드는 다음으로 제한한다.
+
+- ID
+- Dialogue ID
+- Voice Profile ID
+- Voice Asset
+- Language
+- Volume
+- Bus
+- Priority
+- State
+
+Intro/Outro, 고급 Spatial Audio, 복잡한 Queue/Concurrency, 다국어 전체 세트, Production Lock 등은 P1 이후로 둔다.
+
+
 ## 1. 목적
 
 MENOS Voice의 생성, 관리, 등록, Runtime 적용을 위한 Production 파이프라인을 정의한다.
@@ -601,3 +632,107 @@ STATUS: PROPOSAL
 본 문서는 MENOS Voice Production / Authoring / Runtime 연결 설계안이다.
 
 PROPOSAL ≠ CANON
+
+
+## 22. 2026-10-08 P0 Technical Foundation Progress
+
+The previously proposed Voice P0 path has now been implemented through the technical authoring/runtime foundation.
+
+CONFIRMED:
+- Voice Definition, Loader, Repository, Validator, Runtime Adapter, and Voice Editor are implemented.
+- Content Editor VOICE entry is enabled.
+- SQLite voice_definitions catalog exists with one Draft pilot.
+- Missing Voice Asset is non-blocking and resolves through Silent Fallback.
+- Background smoke tests for validation, repository persistence, runtime fallback, editor entry, and Content Editor entry PASS.
+
+UNVERIFIED:
+- Actual Voice Asset generation/source approval.
+- Actual playback/listening.
+- PIE verification.
+- Production Acceptance / Production Lock.
+
+DECISION GATE:
+Master must provide or approve the first Voice Asset and approve its performance before further Voice content expansion.
+
+PROPOSAL:
+Do not expand Voice to all three Factions, multiple characters, or multiple languages until the single pilot is accepted. Keep generation-tool choice non-Canon and re-check current commercial/usage terms at the time of actual production.
+
+
+## 23. 2026-10-08 P0 Asset Progress
+
+CONFIRMED:
+- Master approved continuation at the P0 Voice asset decision gate.
+- Pilot asset `godot/sound/VOICE_PILOT_FACTION_01_ATTACK_01_KO.wav` exists and is linked by the pilot Voice Definition.
+- Technical inspection: 22.05 kHz, mono, 16-bit PCM, 1.242 s, peak 0.3929, RMS 0.0429, no clipping samples detected.
+- Background validation, repository, runtime fallback, editor entry, and Content Editor entry smoke tests PASS.
+- The local source/tool evidence is `D:\Atlas\_ppaso_voice`; its README describes a Korean single-speaker TTS model and its repository LICENSE is Apache 2.0.
+
+UNVERIFIED:
+- Exact generation command.
+- Exact script text used for the pilot.
+- Exact generation prompt/conditions.
+- Master listening, pronunciation, acting, character suitability, PIE playback, Production Acceptance, and Production Lock.
+
+DECISION GATE:
+Master listening of the actual pilot asset.
+
+PROPOSAL:
+- Do not expand Voice coverage before the pilot is accepted.
+- Before generating the next asset, record Script Text, Voice Profile, Generation Tool/Model, Generation Prompt, Conditions, and source revision in a sidecar/provenance record.
+- After pilot acceptance, verify one actual Dialogue → Voice → Subtitle/Dialogue runtime path before scaling content.
+
+
+## 24. 2026-10-08 Runtime Asset Verification Progress
+
+CONFIRMED:
+- Godot 4.7.2 reimported `VOICE_PILOT_FACTION_01_ATTACK_01_KO.wav` successfully and produced the corresponding import metadata.
+
+## 25. 2026-10-08 Minimum Runtime Integration Progress
+
+- Confirmed actual SQLite `voice_definitions` catalog contains `VOICE_PILOT_FACTION_01_ATTACK_01_KO` and resolves `res://sound/VOICE_PILOT_FACTION_01_ATTACK_01_KO.wav`.
+- Added the minimum gameplay Runtime path: `GameController.start_wave()` invokes the Voice pilot once through `VoiceDefinitionRepository` → `VoiceRuntimeAdapter` → `AudioStreamPlayer`.
+- Added `godot/tests/voice_runtime_integration_smoke_test.gd`; headless integration verification PASS against the actual `start_wave()` path.
+- This is a pilot runtime trigger, not a finalized Dialogue/Subtitle architecture.
+- PIE / human listening / Production Acceptance remain UNVERIFIED.
+- The actual project resource now loads as an `AudioStream` with duration 1.24226757369615 seconds.
+- A temporary background runtime check created an `AudioStreamPlayer`, entered it into the scene tree, invoked `play()`, and completed without a runtime load/play API failure.
+- Existing Voice validation, repository, editor-entry, and Content Editor smoke tests remain PASS.
+
+LIMITATION:
+- Headless runtime playback verifies resource loading and playback invocation, not human auditory quality or physical speaker output.
+- PIE VERIFIED remains UNVERIFIED until the actual game is run and the Master observes the result.
+
+DECISION GATE:
+Actual Master listening / PIE observation remains the minimum remaining Voice acceptance check.
+
+PROPOSAL:
+- Keep the pilot as the sole Voice production candidate until acceptance.
+- After acceptance, add exactly one Dialogue -> Voice -> subtitle/runtime presentation E2E case before expanding Voice coverage.
+
+
+## 26. 2026-10-08 Voice P0 Master Approval
+
+CONFIRMED:
+- Master approved the actual Voice P0 pilot asset `VOICE_PILOT_FACTION_01_ATTACK_01_KO`.
+- The pilot is now an APPROVED Production Candidate for the current Voice P0 scope.
+- The approval does not expand Voice coverage, establish a full Dialogue/Subtitle architecture, or define the complete 3-Faction Voice set.
+- Existing technical/runtime integration remains the approved minimum implementation path.
+
+VERIFICATION STATUS:
+- CODE VERIFIED — Voice Definition/Repository/Runtime Adapter and the minimum Wave-start trigger are implemented and smoke-tested.
+- BUILD VERIFIED — project/export validation completed successfully.
+- EDITOR VERIFIED — Voice Editor and Content Editor Voice entry validated in background.
+- PIE VERIFIED — not independently promoted from automated/background verification.
+- Master Voice Approval — APPROVED for the P0 pilot candidate.
+
+PRODUCTION BOUNDARY:
+- Keep the current pilot as the sole approved Voice candidate until a new Master decision expands scope.
+- Do not generate additional Voice assets automatically.
+- Do not introduce full Dialogue/Subtitle architecture automatically.
+- Production Lock and broader Voice coverage remain separate future decisions.
+
+PROPOSAL:
+- When Voice work resumes, first establish one authoritative Dialogue record and its exact script/provenance, then verify one Dialogue → Voice → Subtitle/Presentation E2E path.
+- Record exact Script Text, Voice Profile, Generation Tool/Model, Generation Prompt, Conditions, and source revision before producing additional assets.
+
+STATUS: PASS — Voice P0 pilot approved; scope remains locked.

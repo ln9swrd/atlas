@@ -7651,3 +7651,624 @@ RUNTIME REGRESSION VERIFIED — PASS
 PIE VERIFIED — NOT VERIFIED
 
 HOLD — 다음 Runtime Migration 대상 결정 필요
+
+## VFX Editor — 2026-10-08 현재 구현 재검증 및 다음 구현 P0
+
+### STATUS
+
+**HOLD — SPEC REVIEW COMPLETE / IMPLEMENTATION NOT STARTED**
+
+### CONFIRMED
+
+현재 VFX는 SFX/BGM/VOICE와 달리 Authoring/Runtime 계층이 실제 코드로 존재한다.
+
+- Content Editor 전용 vfx_editor.tscn / vfx_editor.gd 존재
+- VFXDefinition 존재
+- VFXDefinitionRepository / VFXDefinitionLoader 존재
+- vfx_definitions SQLite Catalog 존재
+- vfx_validator.gd 존재
+- VFXRuntimeAdapter / VFXRuntimeInstance 존재
+- impact_explosion Pilot Definition이 SQLite Catalog에 존재하며 status는 Validated
+- Editor Preview도 동일 VFXRuntimeAdapter를 사용하여 Render Command를 생성한다.
+- Content Editor의 BtnVFX는 현재 disabled = true이며, Content Editor 코드에는 _open_vfx_editor() 연결이 이미 존재한다.
+
+### 구조적 판정
+
+현재 VFX는 이미 P0 Core Authoring의 대부분과 Runtime Adapter 경계가 구현된 상태다. 따라서 다음 작업에서 새로운 Generic VFX Core를 다시 만드는 것은 범위 중복이다.
+
+현재 구조를 기준으로 다음 경계를 유지한다.
+
+Visual Asset → VFX Component → VFX Definition → VFX Repository/Loader → VFX Runtime Adapter → VFX Runtime Instance → Renderer
+
+Gameplay 연결은 별도 책임으로 유지한다.
+
+Gameplay Event → VFX Reference/Trigger → VFX Instance
+
+VFX Definition이 Damage, 승패, Skill Gameplay Rule을 직접 소유하지 않는다.
+
+### P0 다음 구현 범위
+
+1. Content Editor의 VFX 메뉴 활성화
+2. 기존 VFX Editor Scene을 Content Editor에서 정상 전환
+3. 기존 SQLite vfx_definitions Catalog의 List / New / Save / Delete / Refresh 경로 확인
+4. 기존 Validator를 Save/Load 경계에서 계속 사용
+5. impact_explosion을 기준으로 Definition → Load → Adapter → Instance → Runtime Render까지 한 개 End-to-End 경로 검증
+6. 기존 procedural Runtime effect를 즉시 폐기하지 않고 Adapter 경계에서 재사용
+
+### P0 Definition 최소 기준
+
+현재 구현 필드 중 다음을 P0 핵심으로 취급한다.
+
+- ID
+- Name
+- Category
+- Schema Version
+- Revision
+- Status
+- Components
+- Timeline: Duration / Playback / Tracks / Keys
+- Transform: Space / Anchor / Offset / Rotation / Scale
+- Visual Resource References
+- Priority / Concurrency / Max Instances
+
+Description은 Authoring 편의 필드로 유지한다.
+
+### P1 이후로 유지
+
+다음은 현재 P0 활성화의 선행조건으로 만들지 않는다.
+
+- Particle 전용 Authoring
+- Shader / Material Authoring
+- 고급 Target/Attachment 상속
+- Variant / Override 시스템 확장
+- Dependency / Usage UI
+- Deterministic Random
+- LOD / 플랫폼별 Variant
+- Package / Hot Reload / Compare-Diff
+- 복잡한 Event Sequencer
+
+### 중요 검증 경계
+
+- Catalog Smoke PASS ≠ Editor GUI acceptance
+- Runtime Adapter Smoke PASS ≠ 실제 게임 전투 연출 acceptance
+- Editor Preview PASS ≠ Production Runtime PASS
+- 자동화/Background Runtime PASS ≠ PIE VERIFIED
+
+최소 Acceptance는 다음 순서로 한다.
+
+Content Editor VFX 메뉴 진입 → Existing Definition 선택 → Preview → Save/Reload → Runtime Adapter/Instance 실행 → 실제 전투 Event 1개 연결 확인
+
+### UNVERIFIED
+
+- Content Editor에서 VFX 메뉴를 실제 GUI로 활성화한 뒤 전환되는지
+- impact_explosion의 실제 Production Asset 연결 상태
+- VFX Definition과 실제 Combat Event의 정규화된 VFX Reference 연결 방식
+- Sprite 기반 VFX가 실제 Runtime Renderer에서 최종 시각 Asset으로 표시되는지
+- Master의 실제 PIE acceptance
+
+### OUT OF SCOPE
+
+- 새로운 VFX Core 재설계
+- SQLite Schema 전면 재설계
+- 전체 전투 Skill/Projectile의 VFX Reference 일괄 추가
+- 외부 VFX Asset 제작/수입
+- 기존 procedural effect 전면 교체
+- Production Canon 승격
+
+### 현실성 판단
+
+TECHNICALLY POSSIBLE: 현재 구현 기반으로 즉시 이어갈 수 있다.
+
+PRACTICALLY FEASIBLE: 기존 코드/데이터 경계를 유지한 채 작은 범위로 완료 가능하다.
+
+RECOMMENDED: VFX 메뉴 활성화 → 기존 impact_explosion 기반 Editor/Runtime End-to-End 검증을 다음 최소 단위로 수행한다.
+
+CANON: VFX 구조와 Asset/Character별 구체적 연출은 Master 승인 전까지 PROPOSAL이다.
+
+### 판정
+
+**ACCEPT·STOP — 스펙 재검토 완료. 다음 구현은 신규 Core 개발이 아니라 기존 VFX Editor를 Content Editor에 정식 연결하고 단일 Pilot을 End-to-End 검증하는 것이 적절하다.**
+
+
+## Remaining Media Editor Menus — SFX / BGM / VOICE P0 통합 스펙 재검토
+
+### 현재 범위
+
+VFX 다음 Content Editor 전용 미디어 메뉴는 SFX, BGM, VOICE 3개다. 세 메뉴 모두 현재 disabled 상태이며, 동일한 Audio Core로 묶더라도 Authoring Definition과 Runtime 정책은 도메인별로 분리한다.
+
+### SFX — P0
+
+현재 상태: Legacy Runtime/Asset + SFX Audio Bus/Settings는 존재하지만 전용 SFX Definition/Editor/Catalog/Binding 계층은 없다.
+
+최소 경로:
+`Gameplay Event → SFX Binding → SFX Definition → Audio Asset → SFX Playback`
+
+P0 최소 범위:
+- SFX Editor 메뉴 활성화
+- SFX Definition Catalog/Repository
+- ID / Category / Audio Asset / Volume / Pitch / Bus / Playback / Priority / Concurrency / Status
+- 기존 SFX_STREAMS 및 play_sfx()를 Adapter/Binding 경계로 흡수
+- 기존 `ui_click` 등 Legacy SFX의 동작 보존
+- Missing SFX Fail-safe
+- Coverage Validator
+- `ROBOT_LASER_FIRE` 단일 Pilot End-to-End
+
+판정: 세 메뉴 중 첫 구현 대상으로 권장한다. 기존 Runtime이 있어 변경 범위와 판별력이 가장 낮은 위험으로 확보된다.
+
+### BGM — P0
+
+현재 상태: BGM Audio Bus/Volume Setting은 존재하지만 BGM Definition/Editor/Catalog/Repository/Loader/Runtime Playback/Binding은 확인되지 않았다.
+
+최소 경로:
+`Game State + Faction + Context → BGM Binding → BGM Definition → Audio Asset → BGM Controller`
+
+P0 Context는 전체 3 Faction × 5 Context를 즉시 제작 대상으로 확정하지 않는다. 최소 Pilot은 한 Faction의 대표 Context 하나로 검증한다. 권장 Pilot: `FACTION_01 / COMBAT`.
+
+P0 최소 Definition:
+- ID
+- Faction
+- Context
+- Audio Asset
+- Loop / Loop Point
+- Volume / Bus
+- Transition / Crossfade
+- Variant
+- Status
+
+Normal → Combat → Victory/Defeat 중 최소 전환 하나까지 검증한다. Boss 및 전체 Faction Set은 P1 이후로 둔다.
+
+판정: SFX Pilot 성공 후 두 번째 구현 대상으로 권장한다.
+
+### VOICE — P0
+
+현재 상태: Voice Editor/Definition/Profile/Dialogue Catalog/Runtime Adapter/Repository/Subtitle-Link가 모두 미구현이며 SQLite에도 Voice/Dialogue 전용 테이블이 없다.
+
+최소 경로:
+`Dialogue ID → Voice Profile → Voice Asset → Voice Definition → Runtime Binding → Voice Playback → Subtitle/Localization Link`
+
+P0 최소 Definition:
+- ID
+- Dialogue ID
+- Voice Profile ID
+- Voice Asset
+- Language
+- Volume / Bus
+- Priority
+- State
+
+Voice가 없어도 Gameplay는 중단하지 않는다. Silent Fallback을 기본으로 한다. Subtitle/Dialogue와 Voice Asset은 직접 결합하지 않고 Dialogue ID를 안정적인 연결 키로 사용한다.
+
+판정: BGM 기반이 확보된 뒤 세 번째 구현 대상으로 권장한다. Character Voice Canon은 Master 승인 전까지 확정하지 않는다.
+
+### 공통 금지사항
+
+- 세 메뉴를 동시에 구현하지 않는다.
+- Audio Core를 만든다는 이유로 VFX 구조를 재설계하지 않는다.
+- Gameplay Timing/판정을 Audio 시스템 때문에 변경하지 않는다.
+- Source Asset과 Production Asset을 덮어쓰지 않는다.
+- 외부 Source/생성 서비스는 Master 승인 없이 Canon으로 고정하지 않는다.
+- 자동화 Smoke PASS를 PIE VERIFIED로 승격하지 않는다.
+
+### 권장 구현 순서
+
+`VFX P0 acceptance → SFX P0 Pilot → BGM P0 Pilot → VOICE P0 Pilot`
+
+각 단계의 End-to-End acceptance가 PASS하면 다음 메뉴로 이동하며, 성공한 메뉴를 다시 확장 구현하지 않는다.
+
+### 상태
+
+**PROPOSAL — 통합 P0 구현 스펙. Master 승인 전까지 Canon이 아니다.**
+
+## Content Authoring Menu Production Review
+
+이 절은 실제 제작자가 각 메뉴를 사용하여 콘텐츠를 처음부터 끝까지 만든다는 관점에서 재검토한 통합 스펙이다. 현재 구현 상태와 앞으로 필요한 P0 Authoring 경계를 함께 정의하며, PROPOSAL이고 Canon이 아니다.
+
+제작 파이프라인:
+Source Image / Data → Catalog / Asset Definition → Game Object Authoring → Stage / Mission / Campaign Assembly → Runtime Validation
+
+### 1. 책임 경계
+
+| 메뉴 | 제작자가 만드는 것 | 책임지지 않는 것 |
+|---|---|---|
+| MAP EDITOR | 실제 플레이 공간, 배치, 게임플레이 좌표 | 개별 객체의 원본 이미지 제작 |
+| STAGE EDITOR | 한 판의 플레이 시뮬레이션 데이터 | 캠페인 전체 순서 |
+| MISSION EDITOR | 승리/목표 규칙 | 스테이지 웨이브 |
+| CAMPAIGN EDITOR | 스테이지 진행 순서 | 스테이지 상세 밸런스 |
+| FACTION EDITOR | 세력 정체성과 소속 ID | 개별 전투 수치 |
+| ROBOT EDITOR | Robot 정의와 이미지 슬롯 연결 | 원본 이미지 픽셀 편집 |
+| UNIT EDITOR | Allied Unit 정의와 이미지/애니메이션 연결 | 원본 이미지 생성/수정 |
+| TOWER EDITOR | Tower 정의, 공격/비용/업그레이드와 이미지 연결 | 원본 이미지 생성/수정 |
+| BUILDING EDITOR | Building 정의와 HP/이미지 연결 | 원본 이미지 생성/수정 |
+| CATALOG EDITOR | 모든 Source Image / Visual Asset의 등록·영역·수정·생성 | 게임플레이 수치 |
+
+핵심 원칙은 이미지 자체의 Authoring과 게임 객체의 Semantic Authoring을 분리하는 것이다.
+
+### 2. CATALOG EDITOR
+
+실제 사용 흐름:
+Source Image 선택 → 이미지 확인 → Region 선택 → Visual Asset 등록 → Crop/Variant/Anchor 수정 → 저장 → 사용하는 메뉴로 반환
+
+P0:
+- Source Image Browser
+- 이미지 미리보기
+- Region 선택
+- Visual Asset ID 생성/수정
+- Source + Region 저장
+- Visual Asset Preview
+- Crop / Variant
+- Grid / Anchor
+- 원본을 직접 덮어쓰지 않는 Edited Asset
+- 사용처 Owner / Usage 표시
+- 참조 중인 Asset 삭제 경고
+- Catalog / Resolver Reload
+
+데이터 경계:
+Source Image → Visual Asset → Consumer Reference
+
+Visual Asset 최소 정보:
+- Asset ID
+- Source Image
+- Region X/Y/W/H
+- Anchor
+- Variant
+- Category
+- Owner / Usage
+- Status
+
+제작 규칙:
+- 원본 Source Sheet는 보존한다.
+- 동일 이미지를 여러 객체가 공유할 수 있다.
+- 이미지 픽셀 수정, Crop, Region, Anchor는 Catalog/Image 계층에서 처리한다.
+- HP/Damage/Cost/Range 등 게임 수치는 Catalog가 소유하지 않는다.
+
+성공 조건:
+Catalog Asset 생성 → 객체 메뉴에서 선택 → Preview → Save/Reload → 동일 Asset 재해석
+
+### 3. MAP EDITOR
+
+실제 사용 흐름:
+Catalog에서 Map용 Visual Asset 준비 → Map 생성 → Map 크기/좌표계 설정 → 배경/타일/오브젝트 배치 → Spawn/Goal/Robot/Tower Gameplay Point 배치 → 저장 → Stage에서 선택
+
+P0:
+- Map ID / Name
+- Map Size
+- Map Origin / Pixel Size
+- Background / Tile Asset
+- Map Visual Asset 배치
+- Object 배치
+- Goal / Base
+- Enemy Spawn / Lane
+- Robot Position Point
+- Tower Placement Slot / Area
+- Gameplay Area / Point
+- Play Mode
+- Map Preview
+- Save / Reload
+
+현재 MapLoader가 Map Size, Origin, Pixel Size, Goal, Spawns, Robot Spots, Tower Slots, Tiles, Objects, Gameplay Areas/Points를 해석하므로 이 구조를 기준선으로 유지한다.
+
+책임:
+Catalog는 이미지를 준비하고, Map Editor는 준비된 이미지를 맵 공간에 배치하며, Stage Editor는 그 맵에서 어떤 전투를 실행할지 정의한다.
+
+성공 조건:
+Catalog Asset → Map 배치 → Save → Reload → 좌표/Gameplay Point 유지 → Stage에서 Map 선택
+
+### 4. STAGE EDITOR
+
+Stage는 맵 파일이 아니라 한 번의 플레이 세션을 재현하기 위한 실행 데이터 묶음이다.
+
+실제 사용 흐름:
+Map 선택 → Mission 선택 → Reward 선택 → 초기 자원/HP → Allied Units → Encounter → Wave → Enemy Group → Gameplay Timing → 저장 → Runtime Simulation
+
+P0:
+- Stage ID / Order / Name
+- Map Reference
+- Mission Reference
+- Reward Reference
+- Initial Gold
+- Base HP
+- Allied Units + Count + Spawn
+- Encounters
+- Waves
+- Enemy Groups
+- Enemy Count
+- Spawn Interval
+- Lane
+- Wave Auto Start Delay
+- Wave Group Gap
+
+현재 StageLoader가 Mission/Reward/Map 참조, Balance, Allied Units, Encounters/Waves/Groups, Gameplay Timing을 검증하므로 Authoring 계약의 기준으로 삼는다.
+
+핵심:
+- Map Preview 제공
+- Mission/Reward/Unit/Enemy는 자유 문자열보다 Catalog 선택을 우선
+- Wave 구조 검증
+- Save 후 Reload
+- 실제 Runtime Loader와 동일한 데이터 복원 확인
+
+성공 조건:
+Stage → Map/Mission/Reward → Wave 구성 → Save → Reload → StageLoader 검증 → 동일 전투 조건 Runtime 재현
+
+### 5. MISSION EDITOR
+
+Mission은 Stage의 Wave 데이터가 아니라 플레이어가 달성해야 할 목표의 의미를 정의한다.
+
+현재 기본 유형:
+- defend_base
+- clear_encounters
+- defeat_giant
+
+P0:
+- Mission ID
+- Title
+- Briefing
+- Primary Type
+- Target ID
+- Time Limit
+- Status
+
+흐름:
+Mission Type → Target → 제한시간 → Save → Stage에서 Reference
+
+Mission Editor는 적 스폰 수, Wave Interval, Map 위치를 소유하지 않는다.
+
+성공 조건:
+Mission Save → Loader Read → Stage Reference → Runtime 목표 판정 가능
+
+### 6. CAMPAIGN EDITOR
+
+Campaign은 게임 플레이 데이터를 만드는 메뉴가 아니라 진행 구조를 조립하는 메뉴다.
+
+현재 핵심:
+campaign_id + ordered stages
+
+P0:
+- Campaign ID
+- Campaign Name
+- Ordered Stage List
+- Stage Reference Validation
+
+흐름:
+Stage 제작 완료 → Campaign에 추가 → 순서 변경 → Save → Stage 존재/ODB PK 검증 → Runtime 진행
+
+Campaign Editor는 Stage 내부 Wave/Mission을 수정하지 않는다.
+
+성공 조건:
+유효한 Stage 목록 → 순서 저장 → Reload → 동일 순서 복원 → 순차 진행 가능
+
+### 7. FACTION EDITOR
+
+Faction은 Robot, Unit, BGM, Voice 등 여러 콘텐츠가 공유할 수 있는 상위 소속 ID다.
+
+현재 최소 구현:
+- Faction ID
+- Name
+
+P0:
+- Faction ID
+- Name
+- Display/Authoring Metadata
+- Status
+
+P1 후보:
+- Icon / Banner Visual Asset
+- Theme/BGM Reference
+- Voice Profile Group
+- Color/Presentation Metadata
+- Content Membership Summary
+
+Faction Editor는 소속을 정의하지만 Robot/Unit의 전투 수치를 수정하지 않는다.
+
+성공 조건:
+Faction 생성 → Robot/Unit에서 선택 → 삭제/변경 시 참조 영향 검증
+
+### 8. ROBOT EDITOR
+
+Robot Editor는 이미지 편집기가 아니라 Robot이라는 게임 객체를 완성하는 Semantic Authoring 메뉴다.
+
+실제 사용 흐름:
+Catalog에서 Robot 이미지/Animation 준비 → Robot 생성 → Faction 선택 → 전투 수치 → Profile/Animation 연결 → Preview → Save → Runtime Resolver 확인
+
+P0:
+- Robot ID / Type
+- Name
+- Faction
+- HP
+- Speed
+- Damage
+- Range
+- Profile Image
+- Idle / Move / Attack / Hit / Death
+- Projectile
+- Skill Animation Slots
+- Preview
+- Reference Validation
+
+현재 구현에는 base animation idle/move/attack/hit/death/projectile와 skill1/skill2/skill3/special/finisher 슬롯, Faction/HP/Speed/Damage/Range가 있으므로 이를 기준선으로 삼는다.
+
+제작 규칙:
+- Robot Editor는 픽셀을 직접 편집하지 않는다.
+- Select Asset은 Catalog/Visual Asset 선택 경로여야 한다.
+- Profile과 Animation은 별도 슬롯이지만 Asset을 공유할 수 있다.
+- 필수 Animation 누락은 Save 검증 대상이다.
+
+성공 조건:
+Catalog Asset → Robot 슬롯 → Preview → Save/Reload → VisualAssetResolver → Runtime Robot
+
+### 9. UNIT EDITOR
+
+Unit은 Robot 자체가 아니라 전투에 배치되는 Allied Unit 정의다.
+
+현재 구조에 Basic/Light/Ranged/Heavy/Support와 HP/Speed/Base Damage/Attack Type/Attack Range, Robot Damage/Range, Sprite/Profile/Projectile/Idle/Move/Attack/Hit/Death가 존재한다.
+
+P0:
+- Unit ID / Type
+- Name / Description
+- HP
+- Speed
+- Base Damage
+- Attack Type
+- Attack Range
+- Runtime 계약에 존재하는 Robot Damage / Robot Range
+- Sprite
+- Profile Image
+- Projectile
+- Idle / Move / Attack / Hit / Death
+- Sprite Region / Anchor
+- Asset Reference Validation
+
+흐름:
+Catalog Asset → Unit 생성 → 수치/역할 → Animation → Preview → Save → Stage Allied Unit에서 사용
+
+Unit Editor는 Stage의 수량이나 Spawn Point를 소유하지 않는다.
+
+성공 조건:
+Unit Definition → Stage에서 ID 선택 → Spawn → Runtime 동일 이미지/수치
+
+### 10. TOWER EDITOR
+
+Tower는 게임플레이 정의와 Visual Reference를 한 화면에서 관리하되 이미지 픽셀 수정은 Catalog로 넘긴다.
+
+P0:
+- Tower ID / Type
+- Name
+- Build Cost
+- Damage
+- Range
+- Target Preference
+- Basic Image
+- Idle / Attack / Hit / Death
+- Projectile
+- Upgrade Cost
+- Level 2 Damage
+- Level 2 Range
+- Preview
+- Asset Validation
+
+현재 구현에 이 필드와 Image Management / Animation Preview가 존재한다.
+
+흐름:
+Catalog Asset → Tower 생성 → Cost/Damage/Range/Target → Animation/Projectile → Upgrade → Preview → Save → Map Tower Slot
+
+성공 조건:
+Tower Definition → Map Tower Slot → Runtime Tower → 이미지/공격/업그레이드 일치
+
+### 11. BUILDING EDITOR
+
+Building은 Tower와 같은 개념으로 취급하지 않는다. Tower는 전투 배치/공격 시스템이고 Building은 구조물/목표물/환경 객체의 정의가 될 수 있다.
+
+현재 최소 필드:
+- ODB PK
+- Building ID
+- Name
+- Category
+- HP
+- Sprite Asset
+
+P0 흐름:
+Building 생성 → Name/Category/HP → Catalog Visual Asset → Preview → Save → Map 사용
+
+P1 후보:
+- Footprint
+- Collision
+- Interaction
+- Destruction State
+- Damageable/Indestructible
+- Team/Faction Ownership
+- Animation
+
+최종 Runtime 의미가 확정되지 않은 항목은 Canon화하지 않는다.
+
+성공 조건:
+Building Definition → Map 배치 → Runtime에서 HP/Visual Reference 정상 해석
+
+### 12. 실제 제작 순서
+
+실제 콘텐츠 하나를 처음부터 만든다면 기본 흐름은 다음이다.
+
+CATALOG
+→ FACTION
+→ ROBOT / UNIT / TOWER / BUILDING
+→ MAP
+→ MISSION
+→ STAGE
+→ CAMPAIGN
+→ Runtime Validation
+
+Faction이 필요 없는 객체는 생략한다.
+
+의존성:
+- Catalog Asset은 객체보다 먼저 준비할 수 있다.
+- Robot/Unit/Tower/Building은 Map보다 먼저 정의한다.
+- Map은 위치와 공간을 정의한다.
+- Mission은 목표 의미를 정의한다.
+- Stage는 Map + Mission + Units + Encounters + Balance를 조립한다.
+- Campaign은 Stage를 순서대로 조립한다.
+
+### 13. 공통 Authoring 계약
+
+모든 메뉴는 최소한 다음을 제공해야 한다.
+
+1. List / Select
+2. New / Duplicate 정책
+3. Edit
+4. Save
+5. Reload
+6. Delete 또는 삭제 제한
+7. 현재 ID 표시
+8. Reference 선택 UI
+9. Preview
+10. Validation
+11. Save 후 Loader와 동일한 데이터 경로 검증
+12. 오류 원인 표시
+
+Save PASS는 Runtime 유효성을 의미하지 않는다.
+
+검증 계층:
+Authoring Validation → Reference Validation → Persistence Validation → Loader Validation → Runtime Validation
+
+### 14. 책임 중복 금지
+
+- Catalog는 Robot/Unit/Tower/Building의 HP/Damage/Cost를 소유하지 않는다.
+- 객체 Editor는 원본 이미지 파일을 직접 덮어쓰지 않는다.
+- Map Editor는 Stage Wave를 소유하지 않는다.
+- Stage Editor는 Campaign 순서를 소유하지 않는다.
+- Mission Editor는 Wave Spawn을 소유하지 않는다.
+- Campaign Editor는 Stage 내부 밸런스를 소유하지 않는다.
+- Faction Editor는 개별 전투 수치를 소유하지 않는다.
+- Visual Asset ID와 게임 객체 ID를 동일 식별자로 강제하지 않는다.
+
+### 15. P0 우선순위 재평가
+
+의존성 관점의 권장 우선순위:
+1. CATALOG
+2. ROBOT / UNIT / TOWER / BUILDING
+3. MAP EDITOR
+4. MISSION
+5. STAGE
+6. CAMPAIGN
+7. FACTION 확장
+
+이것은 구현 Canon이 아니다. 실제 개발 순서는 각 메뉴의 기존 구현과 Runtime 연결 상태를 먼저 검증한 뒤 결정한다.
+
+### 16. 검증 상태
+
+CONFIRMED:
+- 전용 Editor Scene/Script가 대부분 존재한다.
+- Content Editor에 Map/Stage/Mission/Campaign/Faction/Robot/Unit/Tower/Building/Catalog 연결 코드가 존재한다.
+- Catalog/Image Editor는 Visual Asset 등록, Region, Anchor, Variant, Image 편집을 상당 부분 지원한다.
+- MapLoader와 StageLoader는 Runtime 데이터 계약 및 구조 검증을 가진다.
+- Robot/Unit/Tower는 Visual Asset/Animation 슬롯과 게임플레이 필드를 함께 Authoring한다.
+- Building은 별도 Repository/SQLite schema를 사용한다.
+
+UNVERIFIED:
+- 각 메뉴의 실제 GUI 최초 제작부터 Runtime까지 E2E 성공 여부
+- Catalog Visual Asset의 모든 객체 메뉴 재사용 일관성
+- 모든 메뉴의 Save → Reload → Runtime 경계 일치
+- Building의 최종 Runtime 의미와 Map/Stage 연결 계약
+- Campaign 저장 데이터와 실제 순차 Runtime 진행의 완전한 일치
+
+PROPOSAL:
+향후 메뉴 보완은 기능 수를 늘리기보다 위 E2E 제작 경로의 끊어진 연결을 먼저 제거한다.
+
+Status: PROPOSAL / NOT CANON

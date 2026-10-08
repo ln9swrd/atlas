@@ -4,6 +4,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	StageManager.begin_run("single", "stage_01")
 	var controller_script = load("res://game_controller.gd")
 	var main_scene: PackedScene = load("res://main.tscn")
 	var main = main_scene.instantiate()

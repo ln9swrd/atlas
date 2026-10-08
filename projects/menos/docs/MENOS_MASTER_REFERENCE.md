@@ -232,9 +232,9 @@ ODB PK 원칙:
 ### 현재 VFX / SFX / BGM / VOICE
 Content Editor 상단에 4개 메뉴가 존재한다.
 
-현재 전용 Editor Scene이 확인되지 않아 메뉴는 비활성 상태다. 임시 Scene 연결은 하지 않았다.
-
-이는 메뉴 구조 준비 상태이며 해당 Content Editor 구현 완료를 의미하지 않는다.
+VFX has a dedicated Editor Scene and Definition/Repository/Loader/Validator/Runtime Adapter/Runtime Instance implementation. The Content Editor VFX menu button remains disabled.
+SFX / BGM / VOICE currently remain disabled menu entries. SFX has a legacy Runtime/Asset path and SFX audio bus/settings, but no dedicated SFX Authoring/Definition/Content Editor implementation. BGM has a BGM audio bus/volume setting, but no dedicated BGM Asset/Definition/Content Editor/Runtime playback implementation. VOICE remains menu-level preparation; no dedicated Voice Asset/Definition/Content Editor/Runtime dialogue implementation is currently established.
+The VFX implementation is therefore beyond menu preparation; SFX has partial Runtime/Asset implementation, while BGM/VOICE remain menu-level preparation.
 
 ## 8. Asset Production Pipeline
 
@@ -288,7 +288,7 @@ Content Definition과 Runtime 재생을 분리한다.
 - Runtime Audio/VFX System: 실제 재생/표현
 - Gameplay/Settings: 전역 볼륨/활성화/정책
 
-현재 VFX/SFX/BGM은 메뉴 수준 준비 상태이며 Schema/Runtime 연결은 별도 범위다.
+VFX is implemented through Definition/Repository/Loader/Editor/Validator/Runtime Adapter/Runtime Instance and uses the SQLite `vfx_definitions` Catalog. The `impact_explosion` Runtime Pilot is implemented. The Content Editor VFX menu entry remains disabled. The next VFX P0 target is Content Editor activation/integration plus one authored VFX end-to-end acceptance path, preserving the existing Adapter/Instance boundary. Remaining media menus are SFX, BGM, and VOICE: SFX has legacy direct-file Runtime playback plus SFX bus/settings but no Definition/Authoring Catalog; BGM has bus/settings only and no Definition/Authoring/Runtime playback; VOICE has no dedicated Definition/Authoring/Runtime dialogue layer. Recommended implementation order is VFX acceptance → SFX Pilot → BGM Pilot → VOICE Pilot. Each menu remains a separate implementation scope.
 
 ## 9. UI / 화면 구조
 
@@ -487,3 +487,11 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 - Canon: `MENOS_COMBAT_CANON.md`
 
 기존 Working Tree 변경사항은 통폐합 작업에서 임의로 수정/되돌리지 않는다.
+
+## Content Editor Authoring Boundary Re-review
+
+실제 제작자 관점에서 Content Editor의 주요 메뉴를 재검토했다. Catalog는 Source Image/Visual Asset의 공통 Authoring 계층, Robot/Unit/Tower/Building은 Semantic Game Object Authoring, Map은 공간/배치, Mission은 목표, Stage는 단일 플레이 시뮬레이션 데이터, Campaign은 진행 구조, Faction은 상위 소속을 담당하는 것으로 정리했다.
+
+상세 P0 필드와 메뉴 간 책임 경계는 CONTENT_EDITOR_RUNTIME_AUTHORING_REQUIREMENTS.md의 Content Authoring Menu Production Review를 기준으로 한다.
+
+Status: PROPOSAL / NOT CANON

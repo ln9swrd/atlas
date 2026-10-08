@@ -1,103 +1,281 @@
 # MENOS Current State
 
-작성일: 2026-10-07
-상태: CURRENT IMPLEMENTATION STATE
+?�성?? 2026-10-07
+?�태: CURRENT IMPLEMENTATION STATE
 
-## 1. 기준선
+## 1. 기�???
 
 - Branch: `main`
-- Git HEAD: `main` branch의 실제 HEAD는 Git이 권위 원천이며 문서에는 고정 SHA를 기록하지 않는다.
-- Remote: `upstream/main`과 동기화된 상태를 유지한다.
-- Working Tree: 현재 검증 기준에서는 clean 상태를 목표로 한다.
+- Git HEAD: `main` branch???�제 HEAD??Git??권위 ?�천?�며 문서?�는 고정 SHA�?기록?��? ?�는??
+- Remote: `upstream/main`�??�기?�된 ?�태�??��??�다.
+- Working Tree: ?�재 검�?기�??�서??clean ?�태�?목표�??�다.
 - Godot: `4.7.2.stable.official`
 - Runtime Content DB: `godot/content/menos.sqlite`
 - Combat Canon: `MENOS_COMBAT_CANON.md`
 - Integrated Reference: `docs/MENOS_MASTER_REFERENCE.md`
 
-## 2. 실제 구현 상태
+## 2. ?�제 구현 ?�태
 
 ### Content / Data
-- 현재 Content authority는 `godot/content/menos.sqlite`다.
-- MENOS-created `godot/content/**/*.json`는 현재 0개다.
-- Robot / Unit / Tower / Stage / Map / Asset Catalog / Faction / Mission / Reward / Skill은 SQLite-backed Repository/Loader 경로를 사용한다.
-- Content 저장은 `ObjectPersistence`를 통해 SQLite에 반영한다.
-- 사용자 저장 데이터(`user://`)는 Content DB와 분리한다.
+- ?�재 Content authority??`godot/content/menos.sqlite`??
+- MENOS-created `godot/content/**/*.json`???�재 0개다.
+- Robot / Unit / Tower / Stage / Map / Asset Catalog / Faction / Mission / Reward / Skill?� SQLite-backed Repository/Loader 경로�??�용?�다.
+- Content ?�?��? `ObjectPersistence`�??�해 SQLite??반영?�다.
+- ?�용???�???�이??`user://`)??Content DB?� 분리?�다.
 
 ### Runtime
-- Stage → Encounter → Wave → Group → Enemy 실행 경로가 존재한다.
-- Stage Editor가 Encounter/Wave/Enemy Group과 함께 Stage별 Wave Auto Start, Wave Group Gap, Allied Support를 편집할 수 있다.
-- Single Play와 Campaign 모두 선택/진행된 Stage 데이터를 동일 Runtime 경로에서 소비한다.
-- Robot 직접 이동, 기본 공격, 타깃 선택, Special, Skill, Finisher가 구현되어 있다.
-- AI Allied Unit과 사전 배치 Fixed Tower의 자동 지원 경로가 존재한다.
-- Giant Runtime과 Victory / Defeat / Restart 경로가 존재한다.
-- Campaign Stage 전환과 Reward 처리 경로가 존재한다.
-- Combat damage path는 `weapon_fired → projectile/effect → damage_requested → damage_*` 구조다.
+- Stage ??Encounter ??Wave ??Group ??Enemy ?�행 경로가 존재?�다.
+- Stage Editor가 Encounter/Wave/Enemy Group�??�께 Stage�?Wave Auto Start, Wave Group Gap, Allied Support�??�집?????�다.
+- Single Play?� Campaign 모두 ?�택/진행??Stage ?�이?��? ?�일 Runtime 경로?�서 ?�비?�다.
+- Robot 직접 ?�동, 기본 공격, ?��??�택, Special, Skill, Finisher가 구현?�어 ?�다.
+- AI Allied Unit�??�전 배치 Fixed Tower???�동 지??경로가 존재?�다.
+- Giant Runtime�?Victory / Defeat / Restart 경로가 존재?�다.
+- Campaign Stage ?�환�?Reward 처리 경로가 존재?�다.
+- Combat damage path??`weapon_fired ??projectile/effect ??damage_requested ??damage_*` 구조??
 
 ### Editor
-- Content Editor 및 개별 Content Editor들이 존재한다.
-- Faction / Skill Editor의 SQLite 소비 경로가 확인되었다.
-- Asset Catalog / Image Editor가 Visual Asset 메타데이터를 관리한다.
-- VFX / SFX / BGM / VOICE 메뉴는 표시되지만 현재 전용 Editor Scene이 없어 비활성 상태다.
+- Content Editor �?개별 Content Editor?�이 존재?�다.
+- Faction / Skill Editor??SQLite ?�비 경로가 ?�인?�었??
+- Asset Catalog / Image Editor가 Visual Asset 메�??�이?��? 관리한??
+- VFX Definition/Repository/Loader/Validator/Runtime Adapter/Runtime Instance are implemented and use the SQLite `vfx_definitions` Catalog. The Content Editor VFX menu button is now enabled and its opener/scene path passed background smoke validation. SFX menu button is disabled; SFX has legacy direct-file Runtime playback plus SFX bus/settings, but no dedicated Definition/Authoring layer. BGM menu button is disabled; BGM currently has bus/settings only, with no dedicated Definition/Authoring/Runtime playback layer. VOICE menu button is disabled; no dedicated Voice Definition/Authoring/Runtime dialogue layer is currently established. Recommended menu implementation order remains VFX acceptance ??SFX Pilot ??BGM Pilot ??VOICE Pilot.
 
 ### Localization
-- `locale/en.po`, `locale/ko.po`가 Localization source다.
-- Runtime / Editor는 Godot `TranslationServer` 경로를 사용한다.
-- 과거 JSON Localization 계획은 현재 실행 권한이 없다.
+- `locale/en.po`, `locale/ko.po`가 Localization source??
+- Runtime / Editor??Godot `TranslationServer` 경로�??�용?�다.
+- 과거 JSON Localization 계획?� ?�재 ?�행 권한???�다.
 
-## 3. 검증 상태
+## 3. 검�??�태
 
 ### CODE VERIFIED
 - Core combat event/damage path
 - Robot / Enemy / Giant / Tower Runtime path
 - Campaign / Stage / Map data connection
 - SQLite Content loader/repository path
-- Content Editor 메뉴 및 주요 SQLite 소비 경로
+- Content Editor 메뉴 �?주요 SQLite ?�비 경로
 
 ### BUILD VERIFIED
-- Windows Release Export 성공
-- `godot/builds/MENOS-test-release.exe` 생성
+- Windows Release Export ?�공
+- `godot/builds/MENOS-test-release.exe` ?�성
 - Exported EXE headless startup exit 0
-- `content/menos.sqlite` PCK 포함 확인
+- `content/menos.sqlite` PCK ?�함 ?�인
 
 ### EDITOR VERIFIED
-- Content Editor GUI 실행
-- Faction / Skill Editor 전환
-- VFX / SFX / BGM / VOICE 메뉴 표시 및 비활성 상태 확인
+- Content Editor GUI ?�행
+- Faction / Skill Editor ?�환
+- VFX Authoring/Runtime code and Editor Scene are implemented. The Content Editor VFX menu button is enabled and background entry validation passes. SFX/BGM/VOICE menu buttons are disabled; SFX legacy Runtime/bus/settings are present, while BGM has bus/settings only.
 - Content Editor headless initialization PASS
 
 ### RUNTIME / PIE
-- Title → Single Play → Stage 1 → Wave 진입 경로 확인
+- Title ??Single Play ??Stage 1 ??Wave 진입 경로 ?�인
 - Background Combat Runtime Smoke PASS
 - Giant / Combat Timing / Pilot HUD / Fixed Tower background smoke PASS
 - Campaign 1 integrated background smoke PASS: 3 stages, Giant, final Campaign Victory
-- 자동화 및 background/headless 검증은 PIE VERIFIED로 승격하지 않는다.
-- 실제 화면 가독성/연출과 Master 직접 PIE acceptance는 미확인이다.
-- Campaign smoke에서 확인된 reward `21.0`, `22.0`, `23.0` 참조 문제는 StageLoader의 정규화된 reward reference 사용으로 수정했다.
+- ?�동??�?background/headless 검증�? PIE VERIFIED�??�격?��? ?�는??
+- ?�제 ?�면 가?�성/?�출�?Master 직접 PIE acceptance??미확?�이??
+- Campaign smoke?�서 ?�인??reward `21.0`, `22.0`, `23.0` 참조 문제??StageLoader???�규?�된 reward reference ?�용?�로 ?�정?�다.
 
-## 4. 현재 Acceptance Gap
+## 4. ?�재 Acceptance Gap
 
-- Giant Boss: background Runtime Smoke PASS / PIE VERIFIED 미확인
-- Pilot HUD: background Runtime Smoke PASS / 실제 전투 가독성 및 PIE VERIFIED 미확인
-- Fixed Tower: background Runtime Smoke PASS / PIE VERIFIED 미확인
-- Attack → Hit → Damage: background Runtime Smoke PASS / PIE VERIFIED 미확인
+- Giant Boss: background Runtime Smoke PASS / PIE VERIFIED 미확??
+- Pilot HUD: background Runtime Smoke PASS / ?�제 ?�투 가?�성 �?PIE VERIFIED 미확??
+- Fixed Tower: background Runtime Smoke PASS / PIE VERIFIED 미확??
+- Attack ??Hit ??Damage: background Runtime Smoke PASS / PIE VERIFIED 미확??
 - Campaign 1: integrated background Runtime Smoke PASS
 
-## 5. 문서 정합성
+## 5. 문서 ?�합??
 
-- `docs/MENOS_MASTER_REFERENCE.md`는 현재 구현과 Canon을 연결하는 통합 기준이다.
-- `state/HANDOFF_HISTORY.md`는 역사적 Handoff 기록이다.
-- `archive/docs_consolidated_2026-10-07/`는 역사 자료이며 현재 실행 권한이 없다.
-- 과거 JSON authority, 구형 Tower Defense 중심 구조, 과거 Git HEAD를 현재 사실로 재사용하지 않는다.
-- 현재 파일 구조 책임 경계를 유지하며 병렬 구조를 임의로 만들지 않는다.
+- `docs/MENOS_MASTER_REFERENCE.md`???�재 구현�?Canon???�결?�는 ?�합 기�??�다.
+- `state/HANDOFF_HISTORY.md`????��??Handoff 기록?�다.
+- `archive/docs_consolidated_2026-10-07/`????�� ?�료?�며 ?�재 ?�행 권한???�다.
+- 과거 JSON authority, 구형 Tower Defense 중심 구조, 과거 Git HEAD�??�재 ?�실�??�사?�하지 ?�는??
+- ?�재 ?�일 구조 책임 경계�??��??�며 병렬 구조�??�의�?만들지 ?�는??
 
-## 6. 최근 코드 ↔ 문서 정합성 조사
+## 6. 최근 코드 ??문서 ?�합??조사
 
-2026-10-07 코드 ↔ 문서 대조 결과:
-- SQLite authority: 코드와 문서 일치
-- Visual Asset Repository / Resolver 구조: 코드와 문서 일치
-- Localization `.po → TranslationServer`: 코드와 문서 일치
-- VFX / SFX / BGM / VOICE 비활성 메뉴 상태: 코드와 문서 일치
-- Campaign / Stage / Wave / Combat damage path: 코드와 문서 일치
-- 기존 문서의 HEAD 표기만 실제 HEAD보다 뒤처져 있어 현재 기준선으로 갱신함.
+2026-10-07 코드 ??문서 ?��?결과:
+- SQLite authority: 코드?� 문서 ?�치
+- Visual Asset Repository / Resolver 구조: 코드?� 문서 ?�치
+- Localization `.po ??TranslationServer`: 코드?� 문서 ?�치
+- VFX Definition/Repository/Loader/Validator/Runtime Adapter/Runtime Instance and dedicated VFX Editor Scene are implemented; SQLite `vfx_definitions` contains the `impact_explosion` pilot. The Content Editor VFX menu button is enabled and its entry path passed background validation. One authored VFX definition and Runtime adapter/instance path also passed smoke validation. SFX has legacy Runtime/bus/settings but no Definition/Authoring layer. BGM has bus/settings but no Definition/Authoring/Runtime playback layer. Voice has no dedicated Definition/Authoring/Runtime dialogue layer. SFX/BGM/VOICE menu entries remain disabled.
+- Campaign / Stage / Wave / Combat damage path: 코드?� 문서 ?�치
+- 기존 문서??HEAD ?�기�??�제 HEAD보다 ?�처???�어 ?�재 기�??�으�?갱신??
 
-판정: 현재 조사 범위에서 기능 구현을 잘못 기술한 핵심 문서 오류는 발견되지 않았으며, 기준선/현재 상태 표현을 보완했다.
+?�정: ?�재 조사 범위?�서 기능 구현???�못 기술???�심 문서 ?�류??발견?��? ?�았?�며, 기�????�재 ?�태 ?�현??보완?�다.
+
+## Content Editor Authoring Re-review
+
+?�제 콘텐�??�작 ?�름 기�??�로 주요 메뉴 책임???�정?�했??
+
+CATALOG ??Game Object Authoring ??MAP ??MISSION ??STAGE ??CAMPAIGN ??Runtime Validation
+
+Catalog??Visual Asset??관리하�?객체 Editor??게임 ?��?/?�치�?관리한?? Map?� 공간�?배치�? Mission?� 목표�? Stage?????�의 ?�행 ?�이?��?, Campaign?� Stage ?�서�??�당?�다. ?�세 ?�펙?� docs/CONTENT_EDITOR_RUNTIME_AUTHORING_REQUIREMENTS.md??기록?�다.
+
+Status: PROPOSAL / NOT CANON
+
+## 2026-10-08 Development Progress
+
+- Background/headless validation is the Canon test method for screen-related verification.
+- Content validation is now PASS with 0 errors / 0 warnings after ODB PK normalization and Map/Team Mask validator alignment.
+- Combat timing, Fixed Tower, Pilot HUD, Map/Catalog, Campaign Runtime, and VFX authoring/runtime smoke paths PASS.
+- Content Editor VFX entry is enabled and background entry smoke PASS.
+- PIE VERIFIED remains unconfirmed; automated/background PASS is not promoted to PIE.
+- SFX P0 authoring + technical pilot is implemented through ROBOT_LASER_FIRE: approved CC0 source provenance recorded, runtime WAV imported, SQLite Definition registered, SFX Editor enabled, Save/Reload/Delete validation PASS, Content Validation 0 errors/0 warnings, and Definition?�Adapter?�AudioStream resolution verified. Master listening/Production Acceptance remains unverified.
+- The temporary VFX SQLite test side-effect was restored to HEAD after approved Editor shutdown. The current SQLite modification is intentional: it registers the ROBOT_LASER_FIRE SFX pilot Definition.
+
+Status: HOLD ??SFX technical pilot PASS; Master listening/Production Acceptance and PIE VERIFIED remain unconfirmed.
+
+## 2026-10-08 SFX Production Candidate Progress
+- Existing SFX IDs expanded through Definition binding.
+- Four unresolved local SFX assets replaced with CC0 Kenney Interface Sounds candidates.
+- Provenance recorded in `godot/sound/ATTRIBUTION.md`.
+- SFX technical/authoring validation remains PASS.
+- PIE/audio listening acceptance remains UNVERIFIED.
+- Next decision gate: Master listening/Production Acceptance of the SFX candidate set.
+
+## 2026-10-08 BGM P0 Pilot Progress
+- BGM technical foundation implemented.
+- Faction 01 pilot assets registered for Normal/Combat/Victory/Defeat.
+- CC0 provenance recorded.
+- Automated technical/runtime-controller verification PASS.
+- Master listening / Production Acceptance remains UNVERIFIED.
+
+
+## 2026-10-08 BGM Runtime Binding Progress
+
+CONFIRMED:
+- `game_controller.gd` now owns a `BGMController` instance for the active run.
+- BGM faction resolution uses the Robot Catalog faction and falls back to `FACTION_01` for the current pilot.
+- Run-state synchronization maps `RUNNING → COMBAT`, `READY/GROWTH → NORMAL`, `VICTORY → VICTORY`, and `DEFEAT → DEFEAT`.
+- Stage reset explicitly selects NORMAL; wave start explicitly selects COMBAT.
+- Existing gameplay authority and legacy SFX behavior were not changed.
+- Godot project headless initialization PASS.
+- BGM validation PASS (0 warnings), Definition/Adapter PASS, Runtime Controller PASS.
+- Combat Timing and Pilot HUD smoke regressions PASS.
+- `git diff --check` PASS.
+
+VERIFICATION:
+- CODE VERIFIED — BGMController binding and run-state mapping inspected.
+- BUILD VERIFIED — Godot 4.7.2 headless project initialization and smoke scripts PASS.
+- EDITOR VERIFIED — BGM definitions/assets resolve through the existing repository/loader path.
+- PIE VERIFIED — UNVERIFIED.
+- Actual audio listening / Production Acceptance — UNVERIFIED.
+
+KNOWN TEST WARNING:
+- BGM Runtime Controller smoke exits with ObjectDB/resource cleanup warnings. The functional test prints PASS and exits successfully, but cleanup warnings remain unresolved and are not treated as a clean zero-warning result.
+
+PROPOSAL:
+- Do not expand BGM beyond the four-context pilot until Master confirms actual listening/Production Acceptance.
+- After acceptance, keep the state-driven binding and add only the required Faction/Context definitions.
+- Crossfade is currently a Definition field; actual crossfade playback is not yet implemented.
+
+STATUS: PASS — BGM runtime-state binding foundation; acceptance gate remains Master listening/PIE.
+
+## 2026-10-08 Voice P0 Technical Foundation Progress
+
+CONFIRMED:
+- Voice P0 authoring foundation implemented: Definition, Loader, Repository, Validator, Runtime Adapter, and Voice Editor scene.
+- Content Editor VOICE entry is enabled and background entry smoke PASS.
+- SQLite voice_definitions catalog exists with one Draft pilot definition: VOICE_PILOT_FACTION_01_ATTACK_01_KO.
+- Pilot definition intentionally has no Voice Asset yet; validator reports one warning and preserves Silent Fallback policy.
+- Repository Save/Reload/Delete smoke PASS.
+- Runtime Adapter Silent Fallback smoke PASS.
+- Voice Editor entry smoke PASS.
+- Content Editor Voice entry smoke PASS.
+- No external Voice source was introduced.
+
+VERIFICATION:
+- CODE VERIFIED — P0 Voice structure inspected and smoke-tested.
+- BUILD VERIFIED — Godot 4.7.2 headless script compilation/execution paths PASS.
+- EDITOR VERIFIED — Voice Editor scene instantiates and Content Editor VOICE button resolves.
+- PIE VERIFIED — UNVERIFIED.
+- Actual Voice playback/listening — UNVERIFIED.
+
+DECISION GATE:
+- Master must provide/approve the first actual Voice Asset and its Voice Profile/Dialogue performance before Voice Production Acceptance.
+
+PROPOSAL:
+- Keep P0 to one Dialogue/Voice Profile pilot.
+- Do not create 3-Faction character voice sets before the pilot is accepted.
+- Keep missing Voice non-blocking through Silent Fallback.
+- Use a dedicated Voice bus later if/when separate Voice volume control is required; current pilot uses Master because the project has no dedicated Voice bus.
+- Do not introduce external generated voice assets without Master approval of the source/tool and production terms.
+
+STATUS: HOLD — Voice technical foundation PASS; actual voice asset and Master listening acceptance are the next decision gate.
+
+
+## 2026-10-08 Voice P0 Asset Progress
+
+CONFIRMED:
+- Master approved continuation at the Voice decision gate.
+- Actual pilot asset exists: `godot/sound/VOICE_PILOT_FACTION_01_ATTACK_01_KO.wav`.
+- SQLite pilot Definition now resolves to `res://sound/VOICE_PILOT_FACTION_01_ATTACK_01_KO.wav`.
+- Technical audio inspection: 22.05 kHz, mono, 16-bit PCM, 1.242 s, peak 0.3929, RMS 0.0429, no clipping samples detected.
+- Background Voice validation/repository/runtime/editor/Content Editor smoke suite PASS with exit code 0.
+- Voice source/tool evidence: local Ppaso-TTS repository at `D:\Atlas\_ppaso_voice`; repository LICENSE is Apache 2.0 and README identifies a Korean single-speaker TTS model. Exact generation command, script text, and generation prompt were not recovered.
+
+UNVERIFIED:
+- Master listening / pronunciation / acting / character suitability.
+- PIE observation of actual Voice playback.
+- Production Acceptance / Production Lock.
+- Exact source-generation record and prompt provenance.
+
+DECISION GATE:
+- Master listening of the pilot Voice Asset is now the minimum remaining acceptance decision. Do not expand Voice content before that decision.
+
+PROPOSAL:
+- Keep the single pilot as the acceptance target.
+- Record the exact script and generation prompt before any additional Voice asset is produced.
+- If the pilot is accepted, add subtitle/dialogue runtime linkage as the next minimum verification rather than expanding character/language coverage.
+
+STATUS: HOLD — technical Voice asset integration PASS; Master listening/PIE/Production Acceptance remains open.
+
+
+## 2026-10-08 Voice Runtime Asset Verification Progress
+
+CONFIRMED:
+- Godot 4.7.2 reimported the Voice pilot WAV successfully.
+- The project resource loads as AudioStream and runtime playback invocation completes in a background headless check.
+- Voice validation/repository/editor-entry/Content Editor smoke tests PASS.
+
+UNVERIFIED:
+- Human listening quality, pronunciation, acting, character suitability.
+- PIE VERIFIED and Production Acceptance.
+
+PROPOSAL:
+- Do not expand Voice coverage before pilot acceptance.
+- After acceptance, verify one Dialogue -> Voice -> subtitle/runtime E2E path before scaling.
+
+
+## 2026-10-08 Voice Minimum Runtime Integration
+
+- CONFIRMED: `godot/content/menos.sqlite` `voice_definitions` catalog contains `VOICE_PILOT_FACTION_01_ATTACK_01_KO` with `voice_asset=res://sound/VOICE_PILOT_FACTION_01_ATTACK_01_KO.wav`.
+- CONFIRMED: `game_controller.gd` now resolves the pilot through `VoiceDefinitionRepository` and plays it once through `VoiceRuntimeAdapter` / `AudioStreamPlayer` at first Wave start.
+- CODE VERIFIED: Godot headless integration test `voice_runtime_integration_smoke_test.gd` passed.
+- BUILD/EDITOR VERIFIED: project initialization/editor scan passed after the runtime change.
+- PIE VERIFIED: NOT VERIFIED.
+- Production Acceptance / human listening: NOT VERIFIED.
+- CONFIRMED: SQLite currently contains only `voice_definitions`; no `dialogue_definitions` / Dialogue Catalog table exists. The pilot `dialogue_id` is therefore an identifier for future linkage, not a resolved Dialogue record.
+- PROPOSAL: Keep this as a single pilot trigger. Do not add Dialogue/Subtitle architecture or expand Voice asset coverage until Master accepts the pilot playback.
+- PROPOSAL: Before Production Lock, recover or recreate exact pilot script/generation provenance and establish one authoritative Dialogue record; do not infer either from the current Voice Definition.
+
+
+## 2026-10-08 Voice P0 Master Approval
+
+CONFIRMED:
+- Master approved the actual Voice P0 pilot asset `VOICE_PILOT_FACTION_01_ATTACK_01_KO`.
+- Voice P0 pilot status is now APPROVED as a Production Candidate within the current scope.
+- Existing Voice Definition/Repository/Runtime Adapter and minimum Wave-start runtime trigger remain the approved implementation boundary.
+- No additional Voice assets, full Dialogue/Subtitle architecture, or 3-Faction Voice expansion were authorized by this approval.
+
+VERIFICATION:
+- CODE VERIFIED: PASS.
+- BUILD VERIFIED: PASS.
+- EDITOR VERIFIED: PASS.
+- PIE VERIFIED: NOT VERIFIED as a separate Master runtime observation.
+- Master Voice Approval: APPROVED for the P0 pilot candidate.
+
+PROPOSAL:
+- On the next Voice work request, establish one authoritative Dialogue record and exact script/provenance, then verify one Dialogue -> Voice -> Subtitle/Presentation E2E path before scaling Voice coverage.
+- Record exact Script Text, Voice Profile, Generation Tool/Model, Generation Prompt, Conditions, and source revision before producing additional Voice assets.
+
+STATUS: PASS — Voice P0 pilot approved; scope remains locked.

@@ -15,6 +15,7 @@ const REWARD_FILE := "rewards"
 const ITEM_FILE := "items"
 const VISUAL_ASSET_FILE := "visual_assets"
 const VFX_VALIDATOR = preload("res://editor/vfx_validator.gd")
+const SFX_VALIDATOR = preload("res://editor/sfx_validator.gd")
 var vfx_validator = VFX_VALIDATOR.new()
 
 var errors: Array[String] = []
@@ -28,6 +29,7 @@ func run() -> Dictionary:
 
 func _run() -> void:
 	_validate_vfx_catalog()
+	_validate_sfx_catalog()
 	_validate_visual_asset_catalog()
 	_validate_animation_asset_refs()
 	_validate_catalog("ENEMY", ENEMY_FILE, ["name", "hp", "speed", "armor", "base_damage", "reward", "radius", "sprite_anim"])
@@ -46,6 +48,9 @@ func _run() -> void:
 
 func _validate_vfx_catalog() -> void:
 	vfx_validator.validate_vfx_catalog(errors, warnings)
+
+func _validate_sfx_catalog() -> void:
+	SFX_VALIDATOR.validate_catalog(errors, warnings)
 
 func _validate_visual_asset_catalog() -> void:
 	var catalog := _load_catalog_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")
@@ -83,8 +88,8 @@ func _validate_visual_asset_catalog() -> void:
 							errors.append("VISUAL_ASSET[%s].team_mask.source is unresolved: %s" % [asset_id, mask_path])
 						else:
 							var mask_texture := ResourceLoader.load(mask_path) as Texture2D
-							if mask_texture == null or mask_texture.get_width() != source_texture.get_width() or mask_texture.get_height() != source_texture.get_height():
-								errors.append("VISUAL_ASSET[%s].team_mask.source size does not match source" % asset_id)
+							if mask_texture == null or not _team_mask_size_supported(mask_texture, source_texture, entry):
+								errors.append("VISUAL_ASSET[%s].team_mask.source size is incompatible with source/frame/region" % asset_id)
 		var frame_regions = entry.get("frame_regions", [])
 		if frame_regions == null:
 			continue
@@ -113,6 +118,23 @@ func _validate_visual_asset_catalog() -> void:
 			var frame_texture := ResourceLoader.load(source_path) as Texture2D
 			if frame_texture != null and not Rect2(Vector2.ZERO, Vector2(frame_texture.get_width(), frame_texture.get_height())).encloses(frame_rect):
 				errors.append("VISUAL_ASSET[%s].frame_regions[%d] is outside source bounds" % [asset_id, frame_index])
+
+func _team_mask_size_supported(mask_texture: Texture2D, source_texture: Texture2D, entry: Dictionary) -> bool:
+	var mask_size := Vector2(mask_texture.get_width(), mask_texture.get_height())
+	var source_size := Vector2(source_texture.get_width(), source_texture.get_height())
+	if mask_size == source_size:
+		return true
+	var region_data: Variant = entry.get("region", [])
+	if region_data is Array and region_data.size() >= 4:
+		var region_size := Vector2(float(region_data[2]), float(region_data[3]))
+		if mask_size == region_size:
+			return true
+	var frame_regions: Variant = entry.get("frame_regions", [])
+	if frame_regions is Array:
+		for values in frame_regions:
+			if values is Array and values.size() >= 4 and mask_size == Vector2(float(values[2]), float(values[3])):
+				return true
+	return false
 
 func _validate_animation_asset_refs() -> void:
 	var visual_catalog := _load_catalog_dictionary(VISUAL_ASSET_FILE, "VISUAL_ASSET")
@@ -318,6 +340,11 @@ func _validate_reward_catalog() -> void:
 				if str(item_id).is_empty() or not items.has(str(item_id)):
 					errors.append("REWARD[%s] references unknown item: %s" % [reward_id, str(item_id)])
 
+func _normalize_odb_reference(value: Variant, content_type: String) -> String:
+	if value is int or value is float:
+		return ContentCatalogLoader.resolve_odb_pk(content_type, int(value))
+	return str(value).strip_edges()
+
 func _validate_stage_catalog() -> void:
 	var parsed: Dictionary = ContentCatalogLoader.load_document(STAGE_CATALOG_FILE)
 	var stages = parsed.get("stages", [])
@@ -326,7 +353,7 @@ func _validate_stage_catalog() -> void:
 		return
 	var seen := {}
 	for index in stages.size():
-		var stage_id := str(stages[index])
+		var stage_id := _normalize_odb_reference(stages[index], "stage")
 		if stage_id.is_empty() or seen.has(stage_id):
 			errors.append("STAGE CATALOG stages[%d] is empty or duplicated: %s" % [index, stage_id])
 		elif ContentCatalogLoader.load_document(StageLoader.resolve_stage_path(stage_id)).is_empty():
@@ -341,7 +368,7 @@ func _validate_campaign() -> void:
 		return
 	var catalog_ids := _load_stage_catalog_ids()
 	for index in stages.size():
-		var stage_id := str(stages[index])
+		var stage_id := _normalize_odb_reference(stages[index], "stage")
 		if stage_id.is_empty() or ContentCatalogLoader.load_document(StageLoader.resolve_stage_path(stage_id)).is_empty():
 			errors.append("CAMPAIGN stages[%d] references missing stage in SQLite: %s" % [index, stage_id])
 		elif not catalog_ids.has(stage_id):
@@ -354,7 +381,7 @@ func _load_stage_catalog_ids() -> Dictionary:
 	if not (stages is Array):
 		return ids
 	for stage_id in stages:
-		var id := str(stage_id)
+		var id := _normalize_odb_reference(stage_id, "stage")
 		if not id.is_empty():
 			ids[id] = true
 	return ids
@@ -365,7 +392,7 @@ func _validate_stages() -> void:
 	if not (stages is Array):
 		return
 	for stage_id in stages:
-		var id := str(stage_id)
+		var id := _normalize_odb_reference(stage_id, "stage")
 		var path := StageLoader.resolve_stage_path(id)
 		var parsed := ContentCatalogLoader.load_document(path)
 		if not parsed.is_empty():
@@ -378,8 +405,8 @@ func _validate_stage(stage: Dictionary, path: String) -> void:
 		errors.append("STAGE[%s].order is invalid" % path)
 	for key in ["stage_id", "order", "name", "map_file", "balance", "encounters", "mission_id"]:
 		if not stage.has(key): errors.append("STAGE[%s] missing required field: %s" % [path, key]); return
-	var mission_id := str(stage.get("mission_id", ""))
-	var reward_id := str(stage.get("reward_id", ""))
+	var mission_id := _normalize_odb_reference(stage.get("mission_id", ""), "mission")
+	var reward_id := _normalize_odb_reference(stage.get("reward_id", ""), "reward")
 	if mission_id.is_empty() or not _catalog_contains(MISSION_FILE, mission_id):
 		errors.append("STAGE[%s].mission_id references unknown mission: %s" % [path, mission_id])
 	if reward_id.is_empty() or not _catalog_contains(REWARD_FILE, reward_id):
@@ -459,33 +486,47 @@ func _validate_map_file(map_file: String, stage_path: String) -> void:
 	if parsed.is_empty():
 		errors.append("MAP referenced by STAGE[%s] cannot be loaded from SQLite: %s" % [stage_path, map_file])
 		return
-	for key in ["map_id", "name", "map_size", "tile_size", "map_origin", "map_pixel_size", "goal"]:
+	for key in ["map_id", "name", "map_tiles", "map_origin", "map_pixel_size", "base"]:
 		if not parsed.has(key):
-			errors.append("MAP[%s] missing required field: %s" % [map_file, key])
-	_validate_map_vector(parsed, "map_size", map_file, true)
-	_validate_map_vector(parsed, "tile_size", map_file, true)
+			errors.append("MAP[%s] missing normalized field: %s" % [map_file, key])
+	_validate_map_vector(parsed, "map_tiles", map_file, true)
 	_validate_map_vector(parsed, "map_origin", map_file, false)
 	_validate_map_vector(parsed, "map_pixel_size", map_file, true)
-	var goal = parsed.get("goal", {})
-	if not (goal is Dictionary):
-		errors.append("MAP[%s].goal must be an object" % map_file)
-	elif not goal.has("position"):
-		errors.append("MAP[%s].goal.position is required" % map_file)
-	else:
-		_validate_map_vector(goal, "position", map_file, false, "goal")
-	for key in ["spawns", "robot_spots", "tower_slots"]:
+	if not (parsed.get("base", null) is Vector2):
+		errors.append("MAP[%s].base is required and must be Vector2" % map_file)
+	for key in ["lanes", "robot_spots", "slots"]:
 		if parsed.has(key) and not (parsed[key] is Dictionary):
 			errors.append("MAP[%s].%s must be an object" % [map_file, key])
 	for key in ["tiles", "objects", "gameplay_areas", "gameplay_points"]:
 		if parsed.has(key) and not (parsed[key] is Dictionary or parsed[key] is Array):
 			errors.append("MAP[%s].%s has invalid container type" % [map_file, key])
+	var source_data: Variant = parsed.get("_source_map_data", {})
+	if source_data is Dictionary:
+		for key in ["map_size", "tile_size", "goal"]:
+			if not source_data.has(key):
+				errors.append("MAP[%s] source data missing required field: %s" % [map_file, key])
+		_validate_map_vector(source_data, "map_size", map_file, true)
+		_validate_map_vector(source_data, "tile_size", map_file, true)
+		var goal: Variant = source_data.get("goal", {})
+		if not (goal is Dictionary) or not goal.has("position"):
+			errors.append("MAP[%s].goal.position is required in source data" % map_file)
+		elif goal is Dictionary:
+			_validate_map_vector(goal, "position", map_file, false, "goal")
 
 func _validate_map_vector(container: Dictionary, key: String, map_file: String, positive: bool, prefix: String = "") -> void:
 	var value = container.get(key, null)
-	if not (value is Array) or value.size() < 2:
-		errors.append("MAP[%s].%s%s must be an array with 2 values" % [map_file, prefix + "." if not prefix.is_empty() else "", key])
+	var x := 0.0
+	var y := 0.0
+	if value is Vector2 or value is Vector2i:
+		x = float(value.x)
+		y = float(value.y)
+	elif value is Array and value.size() >= 2:
+		x = float(value[0])
+		y = float(value[1])
+	else:
+		errors.append("MAP[%s].%s%s must be a 2D vector" % [map_file, prefix + "." if not prefix.is_empty() else "", key])
 		return
-	if positive and (float(value[0]) <= 0.0 or float(value[1]) <= 0.0):
+	if positive and (x <= 0.0 or y <= 0.0):
 		errors.append("MAP[%s].%s%s must contain positive values" % [map_file, prefix + "." if not prefix.is_empty() else "", key])
 
 func _validate_resource_refs() -> void:
