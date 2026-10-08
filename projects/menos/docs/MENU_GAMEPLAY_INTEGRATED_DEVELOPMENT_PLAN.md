@@ -1,10 +1,10 @@
-﻿# MENOS — MENU / GAMEPLAY / CONTENT SYSTEM INTEGRATED DEVELOPMENT PLAN
+# MENOS — MENU / GAMEPLAY / CONTENT SYSTEM INTEGRATED DEVELOPMENT PLAN
 
-Status: PROPOSAL — 종합 재검토 결과를 기준으로 한 단계적 개발계획. Canon 변경 아님.
+Status: PROPOSAL — Content Editor 1차 완성을 우선하는 종합 개발계획. Canon 변경 아님.
 
 ## 1. 목적
 
-현재까지 정의한 Content Editor 메뉴, Gameplay Runtime/UI, Settings, VFX/SFX/BGM/Voice 기능을 하나의 제작-실행 파이프라인으로 통합하고, 중복 구현과 범위 확장을 막으면서 실제 콘텐츠 제작자가 처음 Asset을 만들고 Campaign을 플레이하는 지점까지 단계적으로 완성한다.
+현재까지 정의한 Content Editor 구현·검증 스펙을 개발계획에 통합하고, 먼저 Content Editor의 1차 완성을 달성한다. 1차 완성은 15개 Authoring 메뉴의 공통 편집/검증/저장/재로드 기준과 핵심 참조·Runtime E2E를 확보하는 것을 의미하며, 미확정 Gameplay 의미론이나 Presentation Production 확장은 자동으로 포함하지 않는다.
 
 핵심 목표는 개별 메뉴의 완성도가 아니라 다음 E2E 경로의 안정성이다.
 
@@ -547,7 +547,7 @@ CONFIRMED:
 4. Content Editor VFX menu
    - BtnVFX를 활성화.
    - 기존 _open_vfx_editor() opener 및 vfx_editor.tscn 존재를 background smoke test로 검증.
-   - SFX/BGM/Voice는 아직 disabled 상태를 유지.
+   - 이 기록 시점에서는 SFX/BGM/Voice가 아직 disabled 상태였다. 이후 구현 진행에서 각 entry가 활성화되었으며, 아래 후속 기록이 현재 상태를 갱신한다.
 
 5. Core Runtime smoke tests
    - StageManager.begin_run("single", "stage_01")를 test fixture 초기화에 추가하여 테스트 시작 시 발생하던 빈 Stage reference 오류를 제거.
@@ -593,7 +593,7 @@ CONFIRMED:
 - Existing legacy SFX path remains as fail-safe; gameplay timing/decision logic is not changed.
 - Missing SFX Definition/Asset does not stop gameplay.
 - Definition/Adapter round-trip and existing Combat/Fixed Tower/HUD smoke paths pass.
-- SFX menu remains disabled because the authoring UI is not yet required for the current pilot gate.
+- 이 기록은 SFX authoring UI 구현 전의 infrastructure 단계이다. 이후 `SFX Authoring / Validation P0` 진행에서 SFX Editor와 Content Editor SFX entry가 활성화되었다.
 
 ### 검증
 
@@ -947,6 +947,462 @@ At the next execution opportunity, run only the minimum Robot/Unit/Tower Visual 
 Success criterion: each tested Object can load its Catalog Visual Asset after Save/Reload and display it through its existing Runtime path.
 
 If all three pass, ACCEPT/STOP this gate. If one fails, investigate only that Object's Runtime consumer and report the smallest required change.
+
+## 29. Content Editor 1차 완성 개발계획 — 2026-10-08
+
+### 29.1 목표
+
+**목표: Content Editor의 1차 완성**
+
+Content Editor 15개 Authoring 메뉴를 대상으로 구현과 검증에 필요한 공통 규칙과 메뉴별 최소 Runtime 계약을 하나의 개발선으로 통합한다.
+
+대상:
+MAP / STAGE / MISSION / CAMPAIGN / FACTION / ROBOT / UNIT / TOWER / BUILDING / SKILL / CATALOG / VFX / SFX / BGM / VOICE
+
+Settings / Language / Quit은 Content Editor 1차 완성 범위에서 제외하고 Runtime Settings 계획으로 관리한다.
+
+### 29.2 1차 완성의 정의
+
+Content Editor 메뉴 하나의 최소 완료 기준은 다음이다.
+
+Edit → Validate → Save → Reload → Verify
+
+필수 공통 조건:
+- Editor entry가 존재한다.
+- Definition / Repository / Loader 경로가 확인된다.
+- Validation이 존재하고 저장 전 적용된다.
+- Save → Reload 후 동일 데이터가 유지된다.
+- 참조 ID가 실제 Loader에서 동일하게 해석된다.
+- Runtime 소비 메뉴는 최소 1개의 실제 소비 경로를 검증한다.
+- Editor Preview PASS는 Save/Loader/Runtime PASS로 승격하지 않는다.
+- 자동화/백그라운드 PASS는 PIE VERIFIED로 승격하지 않는다.
+
+### 29.3 P0 공통 Authoring Contract
+
+1. Select / New / Edit / Save / Reload / Delete의 동작을 명확히 한다.
+2. Duplicate ID는 저장을 거부한다.
+3. 참조 중인 데이터의 삭제는 기본적으로 거부한다.
+4. P0에서는 ID 자동 변경과 자동 참조 갱신을 사용하지 않는다.
+5. Save/Reload 실패 시 기존 정상 데이터가 손상되지 않아야 한다.
+6. Dirty 상태에서 Reload/Close/전환 시 미저장 변경을 명확히 처리한다.
+7. 오류는 대상 메뉴와 필드를 식별할 수 있어야 한다.
+8. Loader-equivalent validation을 통과한 데이터만 Runtime 소비 단계로 보낸다.
+
+이 공통 계약은 Master 승인에 따라 **CANON**이다. P0 전체 Content Editor 메뉴에 적용한다.
+
+### 29.4 Master 결정이 필요한 항목의 처리 순서
+
+**즉시 결정해야 하는 공통 항목**
+- Common Authoring Contract 채택 여부
+- ID 변경/삭제/참조 보호 정책
+- Localization Default / Fallback 언어
+
+**해당 메뉴 Runtime 검증 직전에 결정**
+- Mission target_id 의미
+- Unit 6번째 Role
+- Robot Command A/P/H/M 및 Skill Runtime 계약
+- Tower EMP 중첩/재적용/Upgrade 영향
+- Building Repair / Gate / ownership 규칙
+- Skill Execution / Effect / Cost / Cooldown / Animation 계약
+- Catalog Visual Asset Runtime contract: Source / Region / Frame / Anchor; Scale is owned by Runtime Object / Presentation.
+
+**1차 완성 이후 후순위**
+- Campaign Chapter / Story Runtime
+- Faction Color의 Runtime 의미
+- Production Gate 상태 모델
+- Asset Editor 통합 UI 범위
+- Wave / Encounter / Enemy Group / Reward 독립 Editor 분리
+- Editor UI Localization 전체 적용
+- Presentation Production 확장
+
+### 29.5 구현 순서
+
+#### Phase CE-0 — 공통 Authoring 기반
+
+목표: 모든 메뉴의 검증 방법을 동일하게 만든다.
+
+작업:
+- 공통 CRUD 동작 점검
+- Save / Reload / Dirty / Recovery
+- Duplicate ID / Reference 보호
+- Validation / Loader-equivalent validation
+- 오류 표시 기준
+
+Gate:
+동일한 테스트 데이터에 대해 Edit → Validate → Save → Reload → Verify가 재현된다.
+
+#### Phase CE-1 — MAP / CATALOG 기반
+
+MAP:
+- 현재 승인된 New / Duplicate / Delete 정책 유지
+- Reference protection
+- Save → Reload
+- Runtime Map Load
+- 32px grid semantics 유지
+
+CATALOG:
+- Asset registration
+- metadata / validation
+- Save → Reload
+- Robot / Unit / Tower의 Visual Asset 소비 경로 검증
+
+Gate:
+- MAP CRUD E2E PASS
+- CATALOG → Object → Runtime Visual E2E의 최소 3개 경로(Robot / Unit / Tower) PASS
+
+#### Phase CE-2 — Semantic Object Editor
+
+순서:
+FACTION → ROBOT → UNIT → TOWER → BUILDING → SKILL
+
+공통:
+- Definition / Reference
+- Save / Reload
+- Validation
+- Runtime 소비 경로
+
+메뉴별 최소 검증:
+- Faction: ID / Name / Registry / Reference
+- Robot: Faction / Stats / Visual / Skill refs / 최소 Runtime load
+- Unit: Faction / Role / Combat / Visual / Spawn/AI
+- Tower: Target / Attack / Level 2 / Visual / Runtime
+- Building: Base / Gate / Repair 기본 구조
+- Skill: 현재 구조와 참조를 먼저 검증하고, Runtime 의미론은 결정 후 최소 구현
+
+Gate:
+각 메뉴의 Save → Reload → Runtime 소비 경로가 확인된다. 의미가 미확정인 항목은 HOLD로 남기고 임의 결정하지 않는다.
+
+#### Phase CE-3 — Scenario Editor
+
+순서:
+MISSION → STAGE → CAMPAIGN
+
+MAP은 CE-1에서 기반을 제공한다.
+
+검증:
+- Mission Type / target / Time Limit
+- Stage의 Map / Mission / Wave / Enemy reference
+- Campaign Ordered Stage reference
+- Save → Reload → Loader
+
+Gate:
+MAP → MISSION → STAGE → CAMPAIGN 구조가 Reload 후 동일하게 Loader에서 해석된다.
+
+#### Phase CE-4 — Presentation Authoring P0
+
+대상:
+VFX / SFX / BGM / VOICE
+
+범위:
+- 기존 P0 Definition / Validator / Editor / Adapter 기반을 검증한다.
+- 새 Asset 수량을 목표로 하지 않는다.
+- Master Production Acceptance가 필요한 항목은 기술 검증과 분리한다.
+
+Gate:
+각 도메인의 P0 technical path가 PASS하고, Production Acceptance 미완료는 별도 상태로 남긴다.
+
+#### Phase CE-5 — Content Editor 통합 E2E
+
+최소 Authoring E2E:
+Catalog → Robot → Tower → Map → Mission → Stage → Campaign
+
+보조 경로:
+Catalog → Unit
+Catalog → Building
+Faction → Object reference
+Skill → Robot reference
+
+Runtime E2E:
+Campaign → Stage → Wave → Combat → Mission → Victory/Defeat
+
+Gate:
+- CODE VERIFIED
+- BUILD VERIFIED
+- EDITOR VERIFIED
+- 필요한 메뉴의 Runtime 소비 경로 VERIFIED
+- Master의 실제 Runtime 관찰이 필요한 경우 PIE VERIFIED를 별도 판정
+
+### 29.6 1차 완성 판정 기준
+
+**ACCEPT**
+- 15개 메뉴의 Editor entry가 존재한다.
+- 공통 Authoring Contract가 적용된다.
+- Save → Reload와 Reference integrity가 핵심 메뉴에서 재현된다.
+- Catalog → Object → Runtime 핵심 Visual E2E가 통과한다.
+- Scenario Authoring이 Loader를 통해 Runtime 진입까지 연결된다.
+- VFX/SFX/BGM/VOICE P0 technical path의 상태가 명확히 판정된다.
+
+**HOLD**
+- 핵심 Runtime 의미가 결정되지 않은 경우.
+- ID / Delete / Reference 정책이 확정되지 않은 경우.
+- 기존 데이터 손상 가능성이 발견된 경우.
+- 검증 결과가 예상과 다른 경우.
+
+**STOP**
+- 1차 완성 기준을 충족하면 추가 Editor 기능을 자동으로 확장하지 않는다.
+
+### 29.7 1차 완성 이후로 명시적으로 미루는 것
+
+- Story / Dialogue 선행 구현
+- Production Lock 전체 구현
+- Undo/Redo 고도화
+- Template / Advanced Duplicate
+- 전체 Presentation Asset expansion
+- 3 Faction × 5 BGM 전체 제작
+- 다국어 Voice expansion
+- 새로운 Gameplay feature
+
+필요성이 실제 검증으로 확인된 항목만 Master 승인 후 재개한다.
+
+### 29.8 현재 Gate
+
+현재 문서 기준 다음 작업은 **CE-0 공통 Authoring 기반과 CE-1 MAP/CATALOG 검증**이다.
+
+Common Authoring Contract / ID 변경·삭제·참조 보호 정책은 Master 승인에 따라 **CANON**이다. Localization 기준은 별도 결정 전까지 UNRESOLVED로 유지한다.
+
+현재 확인된 별도 HOLD:
+- Robot / Unit / Tower Catalog → Runtime Visual E2E 미검증
+- Building Runtime semantics
+- Mission target_id 최종 의미
+- Unit 6번째 Role
+- Robot Command/Skill Runtime contract
+- Tower EMP rules
+- Skill Runtime contract
+
+### 29.9 기준 문서
+
+이 개발계획의 Content Editor 1차 완성 범위와 우선순위는 다음 문서를 함께 참조한다.
+
+- docs/CONTENT_EDITOR_IMPLEMENTATION_VERIFICATION_DECISION_MATRIX.md — 현재 결정사항/검증 기준 요약
+- docs/MENOS_MASTER_REFERENCE.md — 프로젝트 Master Reference
+- docs/BGM_PRODUCTION_PIPELINE.md
+- docs/SFX_PRODUCTION_PIPELINE.md
+- docs/VOICE_PRODUCTION_PIPELINE.md
+
+역사 문서는 docs/archive/content-editor/에 보존하며 현재 개발 기준으로 사용하지 않는다.
+
+### 29.10 판정
+
+**STATUS — PASS (개발계획 업데이트)**
+
+**CONFIRMED** — Content Editor 15개 메뉴의 구현/검증 기준과 공통 Authoring Contract 후보를 별도 결정 매트릭스로 정리했다.
+
+**PROPOSAL** — 위 CE-0~CE-5 순서로 Content Editor 1차 완성을 우선한다.
+
+**UNVERIFIED** — 일부 메뉴의 실제 Runtime 소비와 PIE 상태.
+
+**OUT OF SCOPE** — Commit/Push, 새 Gameplay feature, Production Asset 대량 확장.
+
+**다음 Gate** — 승인된 Common Authoring Contract / ID 정책을 CE-0 구현에 적용하고 CE-1 MAP/CATALOG 검증으로 진행한다. 추가 Canon 변경은 Master 승인 없이 수행하지 않는다.
+
+## 30. 2026-10-08 CE-0 실행 감사 — Common Authoring Contract 적용성
+
+### PROGRESS
+
+CE-0 진입을 위해 현재 Editor 구현을 READ-ONLY로 대조했다.
+
+### CONFIRMED
+
+- Content Editor는 15개 메뉴 Scene routing을 보유한다.
+- `_set_active_button_for_scene()`에는 SFX/VOICE 분기가 누락되어 있었다.
+- SFX/VOICE 메뉴 자체의 opener는 존재하며, active-state 누락은 별도 UI 회귀 문제로 확인되었다.
+- ContentValidator는 Loader-equivalent validation의 기반을 이미 제공한다.
+- 여러 Editor가 SQLite/ObjectPersistence를 직접 호출하는 현재 구조가 존재한다.
+- 현재 일부 Editor는 저장과 동시에 데이터를 영구 반영하며, 공통 Dirty → Save → Reload 계약이 통일되어 있지 않다.
+- 일부 Editor에는 현재 Canon과 충돌하는 ID 변경/삭제 동작이 존재한다.
+- 특히 Catalog/Image Editor의 Visual Asset ID rename 및 삭제 경로가 확인되었다.
+- Faction, Mission, Skill, Tower, Unit, Stage 등에도 직접 delete/save 경로가 존재한다.
+- 참조 중 삭제를 공통적으로 차단하는 단일 reference-protection 계층은 현재 확인되지 않았다.
+- Godot 실행 파일의 현재 알려진 경로에서는 headless Build/Runtime 재검증을 수행하지 못했다. 따라서 이번 단계의 BUILD/PIE 상태는 NOT VERIFIED이다.
+
+### CODE CHANGE
+
+Content Editor의 scene 복귀 경로에서 누락된 SFX/VOICE active-state 분기를 추가했다.
+
+변경 파일:
+- `godot/editor/content_editor.gd`
+
+### VERIFICATION
+
+- `git diff --check`: PASS
+- 코드 변경 Diff: 의도한 2개 active-state 분기만 포함
+- CODE VERIFIED: 부분 PASS — 변경 경로 확인
+- BUILD VERIFIED: NOT VERIFIED
+- EDITOR VERIFIED: NOT VERIFIED
+- PIE VERIFIED: NOT VERIFIED
+
+### DECISION GATE
+
+공통 Canon을 실제 기존 Editor에 적용하려면 다음 구현 설계가 필요하다.
+
+1. **Reference Protection 구현 위치**
+   - 메뉴별 개별 검사로 분산할지
+   - 공통 Reference/Usage 검사 계층으로 통합할지
+
+2. **Save/Reload/Dirty 경계**
+   - 현재의 즉시 SQLite 저장 구조를 유지하면서 Dirty/Recovery를 추가할지
+   - Editor-local working copy를 두고 명시적 Save에서만 영구 반영할지
+
+이는 단순 버그 수정이 아니라 15개 Editor의 공통 Authoring architecture에 영향을 주므로, 여기서 임의 설계하지 않고 HOLD한다.
+
+### PROPOSAL
+
+**공통 Reference/Usage 검사 계층 + Editor-local working copy**를 기본 방향으로 검토하는 것이 가장 안전합니다. 각 Editor는 편집 중 데이터를 메모리에서 보유하고, Validate → Save 시에만 Persistence를 호출하며, Delete는 공통 Usage 검사 결과가 비어 있을 때만 허용하는 구조입니다. 다만 기존 Editor별 Persistence 차이가 있으므로 실제 구현 전 최소 2개 대표 Editor(MAP/CATALOG)로 PoC하여 회귀 범위를 측정하는 것이 적절합니다.
+
+성공 기준은 기존 데이터 손상 없이 Edit → Validate → Save → Reload → Verify와 참조 중 Delete 거부를 동일하게 재현하는 것입니다.
+
+### 30.1 CE-0 PoC 결과
+
+**CONFIRMED**
+- MAP Editor는 이미 `current_map_data + map_dirty` 형태의 Editor-local working copy를 사용하고 있습니다.
+- MAP의 Load/New/Duplicate/Delete는 dirty 상태에서 차단합니다.
+- MAP Delete는 Stage reference를 검사하여 참조 중 삭제를 거부합니다.
+- MAP Save는 이번 CE-0 적용으로 Loader 저장 전 `validate_map()`을 통과하도록 변경했습니다.
+- MAP Save As는 기존 Map ID 변경으로 해석될 수 있으므로 Canon에 따라 다른 ID로의 Save As를 차단하도록 변경했습니다.
+- Catalog Editor도 `entries`를 메모리에서 편집한 후 명시적 Save에서 catalog persistence를 수행하는 구조를 이미 갖고 있습니다.
+- Catalog의 Visual Asset은 별도 `visual_assets` persistence를 사용하며, 현재 Visual Asset Save/Update/Delete 일부가 즉시 별도 저장소에 반영됩니다.
+- 따라서 Catalog 전체에 Editor-local working copy 계약을 완전히 적용하려면 Catalog와 Visual Asset의 두 persistence 경계를 하나의 Save transaction으로 다루는 추가 설계가 필요합니다.
+
+**VERIFICATION**
+- MAP 변경 Diff는 의도한 validation-before-save 및 ID 변경 차단만 포함합니다.
+- `git diff --check`: PASS
+- 실제 Godot Build/Editor/PIE: NOT VERIFIED
+
+**DECISION GATE**
+Catalog의 일반 Asset Catalog와 Visual Asset Catalog가 서로 다른 persistence 경계를 가지므로, 이를 하나의 Save transaction으로 묶는 방법은 현재 단계에서 추가 설계가 필요합니다. 데이터 손상 방지를 위해 이 부분은 임의 구현하지 않고 HOLD합니다.
+
+### 30.1 PoC 결과 — CATALOG Reference Protection
+
+**CONFIRMED**
+- CATALOG Editor에는 이미 content 경로를 순회하여 Visual Asset ID의 사용처를 수집하는 `usage_cache`가 존재한다.
+- 따라서 별도의 전역 DB Reference Scanner를 즉시 추가하지 않고 기존 Usage Cache를 Canon의 Delete/ID 변경 보호에 연결할 수 있다.
+- Visual Asset ID 변경 시 참조가 존재하면 변경을 거부하도록 구현했다.
+- Visual Asset 삭제 시 참조가 존재하면 삭제를 거부하도록 구현했다.
+- MAP Editor는 이미 `map_dirty`를 사용하여 미저장 상태에서 Load를 차단하고 Save 후 Dirty를 해제하는 working-copy 패턴을 보유한다.
+
+**CODE CHANGE**
+- `godot/editor/asset_catalog_editor.gd`
+  - Visual Asset ID rename: 참조 중이면 거부
+  - Visual Asset delete: 참조 중이면 거부
+
+**UNVERIFIED**
+- 실제 Editor에서 참조 중 Visual Asset을 Rename/Delete했을 때 UI가 기대대로 차단되는지
+- CATALOG 전체의 Save → Reload → Verify가 실제 Runtime/Editor에서 재현되는지
+- Visual Asset의 현재 즉시 Persistence 경로를 working-copy + 명시적 Save 구조로 전환할 때의 영향 범위
+
+### 30.2 DECISION GATE
+
+CATALOG에는 일반 Asset Catalog와 Visual Asset Catalog가 서로 다른 Persistence 경로를 사용한다. 일반 Asset은 명시적 Save를 사용하지만 Visual Asset의 New/Update/Rename/Delete 일부는 현재 즉시 Persistence한다.
+
+따라서 **working-copy Canon을 Visual Asset까지 일관되게 적용할지**, 또는 기존 Visual Asset 즉시 저장을 유지하면서 Dirty/Recovery 계약만 보강할지를 여기서 결정해야 한다.
+
+기존 즉시 Persistence 경로를 폐기하고 Visual Asset까지 working-copy + 명시적 Save 모델로 통일했습니다.
+
+**IMPLEMENTED / VERIFIED**
+- Visual Asset의 New/Update/Rename/Delete를 즉시 Persistence하지 않고 Editor working copy에 반영하도록 변경했습니다.
+- 변경 시 `catalog_dirty`를 설정하고 Reload는 Dirty 상태에서 차단합니다.
+- 일반 Catalog와 Visual Asset은 명시적 Save에서 하나의 SQLite transaction으로 저장합니다.
+- 두 persistence 단계 중 하나라도 실패하거나 저장 후 read-back 검증이 실패하면 ROLLBACK합니다.
+- Save 성공 후 Repository/Resolver를 reload하고 Dirty를 해제합니다.
+- Visual Asset Rename/Delete의 참조 보호를 유지합니다.
+- Godot 4.7.2 headless Editor 초기화와 smoke test를 통과했습니다.
+
+**VERIFICATION UPDATE**
+- Catalog Editor scene을 실제 Godot process에서 instantiate하여 Visual Asset New → Dirty → Rename → Dirty → Reload 차단 → Close 차단 → Save → Reload → Delete → Save → Reload → Close 흐름을 자동 E2E 검증했습니다.
+- `CATALOG_AUTHORING_E2E_PASS` 및 exit code 0을 확인했습니다.
+- 이는 Editor authoring-path 검증이며 Master의 실제 화면 확인을 의미하지 않으므로 PIE VERIFIED로 승격하지 않습니다.
+- Save 실패를 의도적으로 주입하여 ROLLBACK을 확인하는 failure-injection 테스트는 아직 수행하지 않았습니다.
+
+### 30.3 ROBOT Authoring Contract PoC
+
+**IMPLEMENTED / VERIFIED**
+- ROBOT Editor에 Editor-local working copy와 `robot_dirty`를 적용했습니다.
+- Robot Property 변경은 Dirty로 표시되며 명시적 SAVE 전에는 Persistence하지 않습니다.
+- Dirty 상태에서 RELOAD와 다른 Robot 선택을 차단합니다.
+- New Robot은 working copy에만 추가하고 SAVE에서 전체 Robot Catalog를 transaction으로 저장합니다.
+- Delete Robot은 working copy에서만 삭제하고 SAVE에서 Persistence합니다.
+- P0 Robot ID 변경은 계속 금지합니다.
+- Robot Catalog 저장 시 삭제된 Robot의 `odb_registry` mapping도 동일 transaction에서 제거하도록 Persistence를 보강했습니다.
+- Save 성공 후 Repository reload를 수행하여 저장 결과를 다시 읽습니다.
+- 빈 Visual Asset 경로를 Preview에서 load하지 않도록 최소 방어를 추가했습니다.
+
+**VERIFICATION UPDATE**
+- 실제 Godot process에서 Robot Editor를 instantiate하여 Property Edit → Dirty → Reload 차단 → Save → New → Dirty → Save → ODB mapping 확인 → Delete → Dirty → Save → ODB mapping 제거 흐름을 E2E 검증했습니다.
+- `ROBOT_AUTHORING_E2E_PASS` 및 exit code 0을 확인했습니다.
+- 테스트 중 실제 SQLite는 임시 백업 후 원상복구했습니다.
+- `git diff --check`: PASS
+- Godot 4.7.2 headless Editor initialization: PASS
+- 자동 E2E는 PIE VERIFIED가 아닙니다.
+
+**REMAINING ISSUE — HOLD CANDIDATE**
+- ROBOT Editor의 `GENERATE MASK` 기능은 Robot working copy가 아니라 Visual Asset Catalog를 직접 Persistence하는 별도 cross-editor 경로를 사용합니다.
+- 이는 일반 Robot Property Authoring Contract와 다른 persistence 경계를 만듭니다.
+- 해당 기능을 Robot working copy에 포함할지, 또는 Visual Asset 변경은 Catalog Editor에서만 수행하도록 분리할지 결정이 필요합니다.
+
+**PROPOSAL**
+- Robot/Unit/Tower/Building의 일반 Property Authoring은 현재 PoC 패턴을 유지합니다.
+- `GENERATE MASK` 같은 cross-editor Visual Asset mutation은 Robot Editor의 일반 Save transaction에 억지로 포함하지 않고, Catalog Editor 소유 작업으로 분리하는 방향을 권고합니다.
+- Master 결정 전에는 이 cross-editor 경계를 추가 변경하지 않습니다.
+
+### 30.4 UNIT Authoring Contract PoC
+
+**IMPLEMENTED / VERIFIED**
+- UNIT Editor에 Editor-local working copy와 `unit_dirty`를 적용했습니다.
+- Allied Unit과 Enemy Catalog를 동일 working copy에서 편집하되 기존 source 경계를 유지합니다.
+- Property/Visual Asset 변경은 Dirty로만 반영하고 명시적 SAVE 전에는 Persistence하지 않습니다.
+- Dirty 상태 RELOAD와 다른 Unit 선택을 차단합니다.
+- New/Delete는 working copy에서 staging한 후 SAVE에서 Persistence합니다.
+- Image Editor의 pending Asset assignment가 더 이상 즉시 SAVE하지 않고 working copy에 반영됩니다.
+- Enemy 저장 시 기존 `visuals`와 legacy runtime field 변환을 유지합니다.
+
+**VERIFICATION UPDATE**
+- 실제 Godot process에서 Property Edit → Dirty → Reload 차단 → Save → New → Save → Delete → Save를 E2E 검증했습니다.
+- `UNIT_AUTHORING_E2E_PASS` 및 exit code 0 확인.
+- 테스트 SQLite는 임시 백업 후 원상복구했습니다.
+- `git diff --check`: PASS
+- Godot 4.7.2 headless Editor initialization: PASS
+- 자동 E2E는 PIE VERIFIED가 아닙니다.
+
+### 30.5 TOWER Authoring Contract PoC
+
+**IMPLEMENTED / VERIFIED**
+- TOWER Editor에 Editor-local working copy와 `tower_dirty`를 적용했습니다.
+- Property/Visual Asset 변경은 명시적 SAVE 전까지 Persistence하지 않습니다.
+- Dirty 상태 RELOAD와 다른 Tower 선택을 차단합니다.
+- New/Delete는 working copy에서 staging 후 SAVE합니다.
+- Visual Asset 선택 및 region 정보도 working copy에만 반영합니다.
+
+**VERIFICATION UPDATE**
+- 실제 Godot process에서 Property Edit → Dirty → Reload 차단 → Save → New → Save → Delete → Save를 E2E 검증했습니다.
+- `TOWER_AUTHORING_E2E_PASS` 및 exit code 0 확인.
+- 테스트 SQLite는 임시 백업 후 원상복구했습니다.
+- `git diff --check`: PASS
+- Godot 4.7.2 headless Editor initialization: PASS
+- 자동 E2E는 PIE VERIFIED가 아닙니다.
+
+### 30.6 BUILDING Authoring Contract PoC
+
+**IMPLEMENTED / VERIFIED**
+- BUILDING Editor에 Editor-local working copy와 `building_dirty`를 적용했습니다.
+- 기존 `BuildingRepository` 기반 SQLite 구조를 유지하면서 New/Edit/Delete를 working copy에서 staging합니다.
+- New Building은 임시 working-copy ID를 사용하고 SAVE 시 실제 ODB PK를 transaction으로 생성합니다.
+- Delete는 working copy에서 먼저 제거하고 SAVE 시 `buildings`와 `odb_registry`를 transaction으로 함께 삭제합니다.
+- Dirty 상태 RELOAD와 다른 Building 선택을 차단합니다.
+- Building Repository의 New/Delete persistence transaction을 보강했습니다.
+
+**VERIFICATION UPDATE**
+- 실제 Godot process에서 빈 Building Catalog에서도 New → Property Edit → Dirty → Reload 차단 → Save → Reload 확인 → Edit → Save → Delete → Save 흐름을 E2E 검증했습니다.
+- `BUILDING_AUTHORING_E2E_PASS` 및 exit code 0 확인.
+- 테스트 SQLite는 임시 백업 후 원상복구했습니다.
+- `git diff --check`: PASS
+- Godot 4.7.2 headless Editor initialization: PASS
+- 자동 E2E는 PIE VERIFIED가 아닙니다.
+
+**PROPOSAL**
+- ROBOT/UNIT/TOWER/BUILDING의 일반 Authoring Contract를 공통 기준 구현으로 유지합니다.
+- 다음 단계는 나머지 Content Editor의 동일 Contract 적용 여부를 조사하되, 각 메뉴의 Persistence 경계가 다르면 먼저 READ-ONLY로 schema/reference를 확인합니다.
+- 공통 Contract의 failure-injection rollback 검증과 Master 실제 화면 검증(PIE)은 별도 검증 단계로 남깁니다.
+
 ### 30.7 STAGE Persistence Boundary ? IMPLEMENTED / VERIFIED
 
 **CONFIRMED**
@@ -967,3 +1423,11 @@ If all three pass, ACCEPT/STOP this gate. If one fails, investigate only that Ob
 - Keep the current Stage + Reward atomic boundary as the implementation contract.
 - Do not create a separate REWARD Editor unless a later authoring requirement demonstrates independent Reward lifecycle needs.
 - Failure-injection rollback and Master visual acceptance remain separate verification gates.
+
+## PROGRESS — GUI Verification Method 2026-10-08
+
+- 듀얼 모니터/대형 이미지 환경을 고려하여 GUI 검증 방법을 mss + 축소 캡처 + pyautogui 입력 방식으로 확정하였다.
+- winapp CLI는 창/DPI/물리 좌표 진단용 보조 도구로 유지한다.
+- pywinauto는 Godot 내부 UI Control 접근에 유효하지 않아 제거하였다.
+- 최소 GUI E2E: ROBOT → UNIT → TOWER Editor 진입 및 RELOAD 동작을 실제 화면에서 확인하였다.
+- GUI Editor 검증 PASS는 PIE VERIFIED와 동일하지 않으며, 실제 Runtime acceptance는 별도 Gate로 유지한다.

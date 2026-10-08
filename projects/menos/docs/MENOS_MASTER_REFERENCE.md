@@ -166,11 +166,10 @@ Pilot 중심 HUD의 코드 경로가 존재한다.
 
 ### EDITOR VERIFIED
 - Content Editor GUI 실행
-- Faction/Skill Editor 전환
-- VFX/SFX/BGM/VOICE 메뉴 표시
-- 현재 4개 메뉴는 전용 Editor Scene이 없어 비활성
+- Faction / Skill Editor 전환
+- VFX / SFX / BGM / VOICE 메뉴 entry 및 전용 Editor Scene 경로 확인
+- VFX / SFX / BGM / VOICE의 현재 Authoring/Repository/Runtime 연결은 background smoke 기준으로 확인
 - Content Editor headless initialization PASS
-- 관련 Editor의 SQLite 소비 경로 확인
 
 ### PIE / Runtime
 - 실제 GUI Runtime에서 Title → Single Play → Stage 1 → Wave 1/2 진입 확인
@@ -230,11 +229,14 @@ ODB PK 원칙:
 - 독립 Editor는 반복 편집 가치와 독립 데이터 책임이 확인될 때만 만든다.
 
 ### 현재 VFX / SFX / BGM / VOICE
-Content Editor 상단에 4개 메뉴가 존재한다.
+Content Editor 상단에 VFX / SFX / BGM / VOICE 메뉴가 존재한다.
 
-VFX has a dedicated Editor Scene and Definition/Repository/Loader/Validator/Runtime Adapter/Runtime Instance implementation. The Content Editor VFX menu button remains disabled.
-SFX / BGM / VOICE currently remain disabled menu entries. SFX has a legacy Runtime/Asset path and SFX audio bus/settings, but no dedicated SFX Authoring/Definition/Content Editor implementation. BGM has a BGM audio bus/volume setting, but no dedicated BGM Asset/Definition/Content Editor/Runtime playback implementation. VOICE remains menu-level preparation; no dedicated Voice Asset/Definition/Content Editor/Runtime dialogue implementation is currently established.
-The VFX implementation is therefore beyond menu preparation; SFX has partial Runtime/Asset implementation, while BGM/VOICE remain menu-level preparation.
+- VFX: Definition / Repository / Loader / Validator / Runtime Adapter / Runtime Instance와 전용 Editor Scene이 구현되어 있다. Content Editor VFX entry는 활성화되어 있다.
+- SFX: SFX Definition / Repository / Loader / Validator / Runtime Adapter / Editor가 구현되어 있다. ROBOT_LASER_FIRE P0 pilot과 기존 SFX Definition binding이 존재하며 Content Editor SFX entry가 활성화되어 있다. Legacy direct-file playback 경로와 SFX bus/settings는 기존 호환 경계로 유지된다.
+- BGM: BGM Definition / Repository / Loader / Validator / Runtime Controller / Editor 기반이 구현되어 있다. Faction 01의 Normal / Combat / Victory / Defeat pilot binding이 존재하며 Content Editor BGM entry가 활성화되어 있다. 현재 실제 crossfade playback은 구현 범위 밖이다.
+- VOICE: Voice Definition / Repository / Loader / Validator / Runtime Adapter / Editor가 구현되어 있고 VOICE_PILOT_FACTION_01_ATTACK_01_KO P0 pilot이 등록되어 있다. Wave start에서 최소 Runtime playback trigger가 구현되어 있으며 Content Editor Voice entry가 활성화되어 있다. 현재 Dialogue/Subtitle 전체 구조는 구현하지 않는다.
+
+현재 상태와 과거 설계 문서의 "disabled / 미구현" 서술은 역사적 기록으로 취급하며, 현재 구현 판단에는 실제 코드와 state/CURRENT_STATE.md를 우선한다.
 
 ## 8. Asset Production Pipeline
 
@@ -266,6 +268,22 @@ Runtime
 
 원본 Asset은 보존한다. Variant와 Team Mask는 Source와 분리한다.
 
+### Catalog Save Transaction
+CATALOG의 저장 경계는 현재 구현에서 다음 순서를 따른다.
+
+```text
+Edit
+  -> Validate
+  -> Prepare All Changes
+  -> Persistence
+  -> Reload
+  -> Verify
+```
+
+Catalog 데이터와 `visual_assets` 데이터는 `ObjectPersistence.save_catalog_pair_atomic()`을 통해 하나의 SQLite transaction으로 함께 저장된다. Persistence 단계에서 어느 한쪽이라도 실패하면 transaction rollback으로 기존 정상 상태를 보존한다. 저장 후 `VisualAssetRepository` / `VisualAssetResolver`를 reload하고, SQLite에 다시 읽은 Catalog와 Visual Asset 데이터가 준비된 상태와 일치하는지 검증한다.
+
+이 경계는 이후 ROBOT / UNIT / TOWER / BUILDING 등 Content Editor 저장 흐름에 확장할 수 있는 공통 패턴으로 취급한다. 이는 현재 CATALOG 구현 계약이며 다른 Editor에 대한 적용은 별도 구현·검증 범위다.
+
 ### Visual Asset
 핵심 메타데이터:
 - Source
@@ -277,6 +295,7 @@ Runtime
 - Owner / Usage
 - Team Mask
 - Frame Regions / Anchors
+- Runtime Presentation Scale is not part of the Visual Asset definition; object/context presentation owns scale.
 
 ### Animation
 Animation은 Visual Asset의 Frame/Region/Anchor를 소비한다. Runtime의 직접 Frame 소비 구조를 우선 재사용하며 불필요하게 AnimationPlayer 중심 구조로 재설계하지 않는다.
@@ -288,7 +307,7 @@ Content Definition과 Runtime 재생을 분리한다.
 - Runtime Audio/VFX System: 실제 재생/표현
 - Gameplay/Settings: 전역 볼륨/활성화/정책
 
-VFX is implemented through Definition/Repository/Loader/Editor/Validator/Runtime Adapter/Runtime Instance and uses the SQLite `vfx_definitions` Catalog. The `impact_explosion` Runtime Pilot is implemented. The Content Editor VFX menu entry remains disabled. The next VFX P0 target is Content Editor activation/integration plus one authored VFX end-to-end acceptance path, preserving the existing Adapter/Instance boundary. Remaining media menus are SFX, BGM, and VOICE: SFX has legacy direct-file Runtime playback plus SFX bus/settings but no Definition/Authoring Catalog; BGM has bus/settings only and no Definition/Authoring/Runtime playback; VOICE has no dedicated Definition/Authoring/Runtime dialogue layer. Recommended implementation order is VFX acceptance → SFX Pilot → BGM Pilot → VOICE Pilot. Each menu remains a separate implementation scope.
+VFX is implemented through Definition/Repository/Loader/Editor/Validator/Runtime Adapter/Runtime Instance and uses the SQLite vfx_definitions Catalog. The impact_explosion Runtime Pilot is implemented and the Content Editor VFX entry is enabled. SFX now has Definition/Repository/Loader/Validator/Runtime Adapter/Editor support with the ROBOT_LASER_FIRE P0 pilot and existing SFX bindings. BGM now has Definition/Repository/Loader/Validator/Runtime Controller/Editor support with the Faction 01 four-context pilot binding. VOICE now has Definition/Repository/Loader/Validator/Runtime Adapter/Editor support with the approved VOICE_PILOT_FACTION_01_ATTACK_01_KO pilot and minimum Wave-start trigger. Full Dialogue/Subtitle architecture, broad Voice coverage, and actual BGM crossfade playback remain outside the current implementation boundary. Each media domain remains a separate acceptance scope.
 
 ## 9. UI / 화면 구조
 
@@ -492,6 +511,16 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 
 실제 제작자 관점에서 Content Editor의 주요 메뉴를 재검토했다. Catalog는 Source Image/Visual Asset의 공통 Authoring 계층, Robot/Unit/Tower/Building은 Semantic Game Object Authoring, Map은 공간/배치, Mission은 목표, Stage는 단일 플레이 시뮬레이션 데이터, Campaign은 진행 구조, Faction은 상위 소속을 담당하는 것으로 정리했다.
 
-상세 P0 필드와 메뉴 간 책임 경계는 CONTENT_EDITOR_RUNTIME_AUTHORING_REQUIREMENTS.md의 Content Authoring Menu Production Review를 기준으로 한다.
+상세 P0 필드와 메뉴 간 책임 경계는 CONTENT_EDITOR_IMPLEMENTATION_VERIFICATION_DECISION_MATRIX.md의 Content Authoring Menu Production Review를 기준으로 한다.
 
 Status: PROPOSAL / NOT CANON
+
+## GUI Verification Tooling Update — 2026-10-08
+
+- 듀얼 모니터 및 대형 화면 환경의 GUI 검증을 위해 창/화면 캡처와 입력 방법을 검증하였다.
+- mss로 필요한 화면 영역을 캡처하고, 판독용 이미지를 축소한 뒤 실제 물리 픽셀 좌표로 환산하는 방식을 사용한다.
+- pyautogui로 실제 Godot GUI 클릭/키 입력을 수행한다.
+- Microsoft winapp CLI는 Godot 창 탐색, DPI/좌표 확인 및 창 단위 진단용 보조 도구로 유지한다.
+- pywinauto는 Godot 내부 Control이 UI Automation/Win32 child control로 노출되지 않아 제거하였다.
+- 실제 GUI 최소 검증에서 ROBOT → UNIT → TOWER Editor 진입 및 각 Editor의 RELOAD 동작을 확인하였다.
+- 본 검증은 Content Editor GUI 경로 확인이며 Master의 최종 PIE acceptance를 대체하지 않는다.

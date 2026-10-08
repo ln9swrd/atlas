@@ -1,114 +1,118 @@
 # MENOS Current State
 
-?�성?? 2026-10-07
-?�태: CURRENT IMPLEMENTATION STATE
+작성일: 2026-10-07
+상태: CURRENT IMPLEMENTATION STATE
 
-## 1. 기�???
+## 1. 기준선
 
-- Branch: `main`
-- Git HEAD: `main` branch???�제 HEAD??Git??권위 ?�천?�며 문서?�는 고정 SHA�?기록?��? ?�는??
-- Remote: `upstream/main`�??�기?�된 ?�태�??��??�다.
-- Working Tree: ?�재 검�?기�??�서??clean ?�태�?목표�??�다.
-- Godot: `4.7.2.stable.official`
-- Runtime Content DB: `godot/content/menos.sqlite`
-- Combat Canon: `MENOS_COMBAT_CANON.md`
-- Integrated Reference: `docs/MENOS_MASTER_REFERENCE.md`
+- Branch: main
+- Git HEAD: 현재 저장소의 main 기준. 이 문서는 현재 구현 상태를 기록하며 고정 SHA를 권위 정보로 사용하지 않는다.
+- Remote: upstream/main 기준 동기화 상태를 별도 Git 상태 확인으로 판단한다.
+- Working Tree: 이 문서에는 프로젝트 현재 상태만 기록하며 실제 Git 상태는 작업 시작 시 확인한다.
+- Godot: 4.7.2.stable.official
+- Runtime Content DB: godot/content/menos.sqlite
+- Combat Canon: MENOS_COMBAT_CANON.md
+- Integrated Reference: docs/MENOS_MASTER_REFERENCE.md
 
-## 2. ?�제 구현 ?�태
+## 2. 현재 구현 상태
 
 ### Content / Data
-- ?�재 Content authority??`godot/content/menos.sqlite`??
-- MENOS-created `godot/content/**/*.json`???�재 0개다.
-- Robot / Unit / Tower / Stage / Map / Asset Catalog / Faction / Mission / Reward / Skill?� SQLite-backed Repository/Loader 경로�??�용?�다.
-- Content ?�?��? `ObjectPersistence`�??�해 SQLite??반영?�다.
-- ?�용???�???�이??`user://`)??Content DB?� 분리?�다.
+- 현재 Content authority는 godot/content/menos.sqlite이다.
+- MENOS-created godot/content/**/*.json은 현재 0개이다.
+- Robot / Unit / Tower / Stage / Map / Asset Catalog / Faction / Mission / Reward / Skill은 SQLite-backed Repository/Loader 경로를 사용한다.
+- Content 변경은 ObjectPersistence를 통해 SQLite에 반영한다.
+- 사용자 설정(user://)과 Content DB는 분리한다.
 
 ### Runtime
-- Stage ??Encounter ??Wave ??Group ??Enemy ?�행 경로가 존재?�다.
-- Stage Editor가 Encounter/Wave/Enemy Group�??�께 Stage�?Wave Auto Start, Wave Group Gap, Allied Support�??�집?????�다.
-- Single Play?� Campaign 모두 ?�택/진행??Stage ?�이?��? ?�일 Runtime 경로?�서 ?�비?�다.
-- Robot 직접 ?�동, 기본 공격, ?��??�택, Special, Skill, Finisher가 구현?�어 ?�다.
-- AI Allied Unit�??�전 배치 Fixed Tower???�동 지??경로가 존재?�다.
-- Giant Runtime�?Victory / Defeat / Restart 경로가 존재?�다.
-- Campaign Stage ?�환�?Reward 처리 경로가 존재?�다.
-- Combat damage path??`weapon_fired ??projectile/effect ??damage_requested ??damage_*` 구조??
+- Stage → Encounter → Wave → Group → Enemy 실행 경로가 존재한다.
+- Stage Editor는 Encounter/Wave/Enemy Group과 Stage Wave Auto Start, Wave Group Gap, Allied Support를 authoring한다.
+- Single Play와 Campaign은 Stage를 공통 Runtime 경로에서 소비한다.
+- Robot 직접 조작, 기본 공격, 특수 공격, Special, Skill, Finisher가 구현되어 있다.
+- AI Allied Unit과 Fixed Tower의 배치/이동 지원 경로가 존재한다.
+- Giant Runtime의 Victory / Defeat / Restart 경로가 존재한다.
+- Campaign Stage 전환 및 Reward 처리 경로가 존재한다.
+- Combat damage path는 weapon_fired → projectile/effect → damage_requested → damage_* 구조를 사용한다.
 
 ### Editor
-- Content Editor �?개별 Content Editor?�이 존재?�다.
-- Faction / Skill Editor??SQLite ?�비 경로가 ?�인?�었??
-- Asset Catalog / Image Editor가 Visual Asset 메�??�이?��? 관리한??
-- VFX Definition/Repository/Loader/Validator/Runtime Adapter/Runtime Instance are implemented and use the SQLite `vfx_definitions` Catalog. The Content Editor VFX menu button is now enabled and its opener/scene path passed background smoke validation. SFX menu button is disabled; SFX has legacy direct-file Runtime playback plus SFX bus/settings, but no dedicated Definition/Authoring layer. BGM menu button is disabled; BGM currently has bus/settings only, with no dedicated Definition/Authoring/Runtime playback layer. VOICE menu button is disabled; no dedicated Voice Definition/Authoring/Runtime dialogue layer is currently established. Recommended menu implementation order remains VFX acceptance ??SFX Pilot ??BGM Pilot ??VOICE Pilot.
+- Content Editor 및 개별 Content Editor가 존재한다.
+- Faction / Skill Editor의 SQLite 서비스 경로가 확인되었다.
+- Asset Catalog / Image Editor가 Visual Asset 메뉴를 관리한다.
+- VFX Definition/Repository/Loader/Validator/Runtime Adapter/Runtime Instance 및 Editor Scene이 구현되어 있고 Content Editor VFX entry가 활성화되어 있다.
+- SFX Definition/Repository/Loader/Validator/Runtime Adapter/Editor가 구현되어 있고 ROBOT_LASER_FIRE P0 pilot과 Content Editor SFX entry가 활성화되어 있다.
+- BGM Definition/Repository/Loader/Validator/Runtime Controller/Editor가 구현되어 있고 Faction 01 Normal/Combat/Victory/Defeat pilot과 Content Editor BGM entry가 활성화되어 있다.
+- Voice Definition/Repository/Loader/Validator/Runtime Adapter/Editor가 구현되어 있고 VOICE_PILOT_FACTION_01_ATTACK_01_KO P0 pilot과 최소 Wave-start Runtime trigger 및 Content Editor Voice entry가 활성화되어 있다.
+- Full Dialogue/Subtitle architecture와 실제 BGM crossfade playback은 현재 범위 밖이며 별도 검증이 필요하다.
 
 ### Localization
-- `locale/en.po`, `locale/ko.po`가 Localization source??
-- Runtime / Editor??Godot `TranslationServer` 경로�??�용?�다.
-- 과거 JSON Localization 계획?� ?�재 ?�행 권한???�다.
+- locale/en.po, locale/ko.po가 Localization source이다.
+- Runtime / Editor는 Godot TranslationServer 경로를 사용한다.
+- 과거 JSON Localization 계획은 현재 권위 경로가 아니다.
 
-## 3. 검�??�태
+## 3. 검증 상태
 
 ### CODE VERIFIED
 - Core combat event/damage path
 - Robot / Enemy / Giant / Tower Runtime path
 - Campaign / Stage / Map data connection
 - SQLite Content loader/repository path
-- Content Editor 메뉴 �?주요 SQLite ?�비 경로
+- Content Editor 주요 SQLite 서비스 경로
 
 ### BUILD VERIFIED
-- Windows Release Export ?�공
-- `godot/builds/MENOS-test-release.exe` ?�성
+- Windows Release Export 성공
+- godot/builds/MENOS-test-release.exe 생성
 - Exported EXE headless startup exit 0
-- `content/menos.sqlite` PCK ?�함 ?�인
+- content/menos.sqlite PCK 포함 확인
 
 ### EDITOR VERIFIED
-- Content Editor GUI ?�행
-- Faction / Skill Editor ?�환
-- VFX Authoring/Runtime code and Editor Scene are implemented. The Content Editor VFX menu button is enabled and background entry validation passes. SFX/BGM/VOICE menu buttons are disabled; SFX legacy Runtime/bus/settings are present, while BGM has bus/settings only.
+- Content Editor GUI 실행
+- Faction / Skill Editor 전환
+- VFX / SFX / BGM / VOICE Authoring/Runtime entry 및 관련 Editor Scene 경로 확인
 - Content Editor headless initialization PASS
 
 ### RUNTIME / PIE
-- Title ??Single Play ??Stage 1 ??Wave 진입 경로 ?�인
+- Title → Single Play → Stage 1 → Wave 진입 경로 확인
 - Background Combat Runtime Smoke PASS
 - Giant / Combat Timing / Pilot HUD / Fixed Tower background smoke PASS
 - Campaign 1 integrated background smoke PASS: 3 stages, Giant, final Campaign Victory
-- ?�동??�?background/headless 검증�? PIE VERIFIED�??�격?��? ?�는??
-- ?�제 ?�면 가?�성/?�출�?Master 직접 PIE acceptance??미확?�이??
-- Campaign smoke?�서 ?�인??reward `21.0`, `22.0`, `23.0` 참조 문제??StageLoader???�규?�된 reward reference ?�용?�로 ?�정?�다.
+- Background/headless 검증은 PIE VERIFIED가 아니다.
+- 실제 화면 가시성/연출에 대한 Master 직접 PIE acceptance는 별도 미확인이다.
+- Campaign smoke에서 확인된 reward 21.0, 22.0, 23.0 참조 문제는 StageLoader의 규격화된 reward reference 사용으로 수정되었다.
 
-## 4. ?�재 Acceptance Gap
+## 4. 현재 Acceptance Gap
 
-- Giant Boss: background Runtime Smoke PASS / PIE VERIFIED 미확??
-- Pilot HUD: background Runtime Smoke PASS / ?�제 ?�투 가?�성 �?PIE VERIFIED 미확??
-- Fixed Tower: background Runtime Smoke PASS / PIE VERIFIED 미확??
-- Attack ??Hit ??Damage: background Runtime Smoke PASS / PIE VERIFIED 미확??
+- Giant Boss: background Runtime Smoke PASS / PIE VERIFIED 미확인
+- Pilot HUD: background Runtime Smoke PASS / 실제 전투 가시성 및 PIE VERIFIED 미확인
+- Fixed Tower: background Runtime Smoke PASS / PIE VERIFIED 미확인
+- Attack / Hit / Damage: background Runtime Smoke PASS / PIE VERIFIED 미확인
 - Campaign 1: integrated background Runtime Smoke PASS
 
-## 5. 문서 ?�합??
+## 5. 문서 통합
 
-- `docs/MENOS_MASTER_REFERENCE.md`???�재 구현�?Canon???�결?�는 ?�합 기�??�다.
-- `state/HANDOFF_HISTORY.md`????��??Handoff 기록?�다.
-- `archive/docs_consolidated_2026-10-07/`????�� ?�료?�며 ?�재 ?�행 권한???�다.
-- 과거 JSON authority, 구형 Tower Defense 중심 구조, 과거 Git HEAD�??�재 ?�실�??�사?�하지 ?�는??
-- ?�재 ?�일 구조 책임 경계�??��??�며 병렬 구조�??�의�?만들지 ?�는??
+- docs/MENOS_MASTER_REFERENCE.md는 현재 구현과 Canon에 연결되는 통합 기준 문서다.
+- state/HANDOFF_HISTORY.md는 과거 작업의 Handoff 기록이다.
+- archive/는 과거 문서/기록 보존 영역이다.
+- 과거 JSON authority 및 구형 Tower Defense 중심 구조는 현재 권위 경로가 아니다.
+- 현재 문서의 책임 경계를 유지하고 병렬 구조를 새로 만들지 않는다.
 
-## 6. 최근 코드 ??문서 ?�합??조사
+## 6. 최근 코드 / 문서 정합성 조사
 
-2026-10-07 코드 ??문서 ?��?결과:
-- SQLite authority: 코드?� 문서 ?�치
-- Visual Asset Repository / Resolver 구조: 코드?� 문서 ?�치
-- Localization `.po ??TranslationServer`: 코드?� 문서 ?�치
-- VFX Definition/Repository/Loader/Validator/Runtime Adapter/Runtime Instance and dedicated VFX Editor Scene are implemented; SQLite `vfx_definitions` contains the `impact_explosion` pilot. The Content Editor VFX menu button is enabled and its entry path passed background validation. One authored VFX definition and Runtime adapter/instance path also passed smoke validation. SFX has legacy Runtime/bus/settings but no Definition/Authoring layer. BGM has bus/settings but no Definition/Authoring/Runtime playback layer. Voice has no dedicated Definition/Authoring/Runtime dialogue layer. SFX/BGM/VOICE menu entries remain disabled.
-- Campaign / Stage / Wave / Combat damage path: 코드?� 문서 ?�치
-- 기존 문서??HEAD ?�기�??�제 HEAD보다 ?�처???�어 ?�재 기�??�으�?갱신??
+2026-10-07 조사 결과:
+- SQLite authority: 코드와 문서 일치
+- Visual Asset Repository / Resolver 구조: 코드와 문서 일치
+- Localization .po + TranslationServer: 코드와 문서 일치
+- 2026-10-07 당시 VFX/SFX/BGM/VOICE 메뉴 상태는 이후 2026-10-08 구현 진행으로 갱신되었다. 현재 VFX/SFX/BGM/VOICE entry와 각 Definition/Authoring/Runtime 기반은 현재 Editor 섹션 및 후속 진행 기록에 반영되어 있다.
+- Campaign / Stage / Wave / Combat damage path: 코드와 문서 일치
+- 과거 문서의 HEAD 기록은 현재 Git 상태의 권위 정보로 사용하지 않는다.
 
-?�정: ?�재 조사 범위?�서 기능 구현???�못 기술???�심 문서 ?�류??발견?��? ?�았?�며, 기�????�재 ?�태 ?�현??보완?�다.
+판정: 현재 조사 범위에서 구현 상태와 핵심 문서의 주요 책임 경계 불일치는 발견되지 않았으며, 현재 상태 보강은 후속 진행 기록에 반영한다.
 
 ## Content Editor Authoring Re-review
 
-?�제 콘텐�??�작 ?�름 기�??�로 주요 메뉴 책임???�정?�했??
+현재 콘텐츠 authoring 흐름 기준으로 주요 메뉴 책임을 정리한다.
 
-CATALOG ??Game Object Authoring ??MAP ??MISSION ??STAGE ??CAMPAIGN ??Runtime Validation
+CATALOG → Game Object Authoring → MAP → MISSION → STAGE → CAMPAIGN → Runtime Validation
 
-Catalog??Visual Asset??관리하�?객체 Editor??게임 ?��?/?�치�?관리한?? Map?� 공간�?배치�? Mission?� 목표�? Stage?????�의 ?�행 ?�이?��?, Campaign?� Stage ?�서�??�당?�다. ?�세 ?�펙?� docs/CONTENT_EDITOR_RUNTIME_AUTHORING_REQUIREMENTS.md??기록?�다.
+Catalog는 Visual Asset을 관리하고, Game Object Editor는 게임 객체의 정의/참조를 관리한다. Map은 공간 배치, Mission은 목표, Stage는 실행 단위, Campaign은 Stage 묶음과 진행을 관리한다. 상세 규격은 docs/MENOS_MASTER_REFERENCE.md의 Catalog / Authoring sections에 기록한다.
 
 Status: PROPOSAL / NOT CANON
 
@@ -119,7 +123,7 @@ Status: PROPOSAL / NOT CANON
 - Combat timing, Fixed Tower, Pilot HUD, Map/Catalog, Campaign Runtime, and VFX authoring/runtime smoke paths PASS.
 - Content Editor VFX entry is enabled and background entry smoke PASS.
 - PIE VERIFIED remains unconfirmed; automated/background PASS is not promoted to PIE.
-- SFX P0 authoring + technical pilot is implemented through ROBOT_LASER_FIRE: approved CC0 source provenance recorded, runtime WAV imported, SQLite Definition registered, SFX Editor enabled, Save/Reload/Delete validation PASS, Content Validation 0 errors/0 warnings, and Definition?�Adapter?�AudioStream resolution verified. Master listening/Production Acceptance remains unverified.
+- SFX P0 authoring + technical pilot is implemented through ROBOT_LASER_FIRE: approved CC0 source provenance recorded, runtime WAV imported, SQLite Definition registered, SFX Editor enabled, Save/Reload/Delete validation PASS, Content Validation 0 errors/0 warnings, and Definition?占폗dapter?占폗udioStream resolution verified. Master listening/Production Acceptance remains unverified.
 - The temporary VFX SQLite test side-effect was restored to HEAD after approved Editor shutdown. The current SQLite modification is intentional: it registers the ROBOT_LASER_FIRE SFX pilot Definition.
 
 Status: HOLD ??SFX technical pilot PASS; Master listening/Production Acceptance and PIE VERIFIED remain unconfirmed.
@@ -145,7 +149,7 @@ Status: HOLD ??SFX technical pilot PASS; Master listening/Production Acceptance 
 CONFIRMED:
 - `game_controller.gd` now owns a `BGMController` instance for the active run.
 - BGM faction resolution uses the Robot Catalog faction and falls back to `FACTION_01` for the current pilot.
-- Run-state synchronization maps `RUNNING → COMBAT`, `READY/GROWTH → NORMAL`, `VICTORY → VICTORY`, and `DEFEAT → DEFEAT`.
+- Run-state synchronization maps `RUNNING ??COMBAT`, `READY/GROWTH ??NORMAL`, `VICTORY ??VICTORY`, and `DEFEAT ??DEFEAT`.
 - Stage reset explicitly selects NORMAL; wave start explicitly selects COMBAT.
 - Existing gameplay authority and legacy SFX behavior were not changed.
 - Godot project headless initialization PASS.
@@ -154,11 +158,11 @@ CONFIRMED:
 - `git diff --check` PASS.
 
 VERIFICATION:
-- CODE VERIFIED — BGMController binding and run-state mapping inspected.
-- BUILD VERIFIED — Godot 4.7.2 headless project initialization and smoke scripts PASS.
-- EDITOR VERIFIED — BGM definitions/assets resolve through the existing repository/loader path.
-- PIE VERIFIED — UNVERIFIED.
-- Actual audio listening / Production Acceptance — UNVERIFIED.
+- CODE VERIFIED ??BGMController binding and run-state mapping inspected.
+- BUILD VERIFIED ??Godot 4.7.2 headless project initialization and smoke scripts PASS.
+- EDITOR VERIFIED ??BGM definitions/assets resolve through the existing repository/loader path.
+- PIE VERIFIED ??UNVERIFIED.
+- Actual audio listening / Production Acceptance ??UNVERIFIED.
 
 KNOWN TEST WARNING:
 - BGM Runtime Controller smoke exits with ObjectDB/resource cleanup warnings. The functional test prints PASS and exits successfully, but cleanup warnings remain unresolved and are not treated as a clean zero-warning result.
@@ -168,7 +172,7 @@ PROPOSAL:
 - After acceptance, keep the state-driven binding and add only the required Faction/Context definitions.
 - Crossfade is currently a Definition field; actual crossfade playback is not yet implemented.
 
-STATUS: PASS — BGM runtime-state binding foundation; acceptance gate remains Master listening/PIE.
+STATUS: PASS ??BGM runtime-state binding foundation; acceptance gate remains Master listening/PIE.
 
 ## 2026-10-08 Voice P0 Technical Foundation Progress
 
@@ -184,11 +188,11 @@ CONFIRMED:
 - No external Voice source was introduced.
 
 VERIFICATION:
-- CODE VERIFIED — P0 Voice structure inspected and smoke-tested.
-- BUILD VERIFIED — Godot 4.7.2 headless script compilation/execution paths PASS.
-- EDITOR VERIFIED — Voice Editor scene instantiates and Content Editor VOICE button resolves.
-- PIE VERIFIED — UNVERIFIED.
-- Actual Voice playback/listening — UNVERIFIED.
+- CODE VERIFIED ??P0 Voice structure inspected and smoke-tested.
+- BUILD VERIFIED ??Godot 4.7.2 headless script compilation/execution paths PASS.
+- EDITOR VERIFIED ??Voice Editor scene instantiates and Content Editor VOICE button resolves.
+- PIE VERIFIED ??UNVERIFIED.
+- Actual Voice playback/listening ??UNVERIFIED.
 
 DECISION GATE:
 - Master must provide/approve the first actual Voice Asset and its Voice Profile/Dialogue performance before Voice Production Acceptance.
@@ -200,7 +204,7 @@ PROPOSAL:
 - Use a dedicated Voice bus later if/when separate Voice volume control is required; current pilot uses Master because the project has no dedicated Voice bus.
 - Do not introduce external generated voice assets without Master approval of the source/tool and production terms.
 
-STATUS: HOLD — Voice technical foundation PASS; actual voice asset and Master listening acceptance are the next decision gate.
+STATUS: HOLD ??Voice technical foundation PASS; actual voice asset and Master listening acceptance are the next decision gate.
 
 
 ## 2026-10-08 Voice P0 Asset Progress
@@ -227,7 +231,7 @@ PROPOSAL:
 - Record the exact script and generation prompt before any additional Voice asset is produced.
 - If the pilot is accepted, add subtitle/dialogue runtime linkage as the next minimum verification rather than expanding character/language coverage.
 
-STATUS: HOLD — technical Voice asset integration PASS; Master listening/PIE/Production Acceptance remains open.
+STATUS: HOLD ??technical Voice asset integration PASS; Master listening/PIE/Production Acceptance remains open.
 
 
 ## 2026-10-08 Voice Runtime Asset Verification Progress
@@ -278,14 +282,14 @@ PROPOSAL:
 - On the next Voice work request, establish one authoritative Dialogue record and exact script/provenance, then verify one Dialogue -> Voice -> Subtitle/Presentation E2E path before scaling Voice coverage.
 - Record exact Script Text, Voice Profile, Generation Tool/Model, Generation Prompt, Conditions, and source revision before producing additional Voice assets.
 
-STATUS: PASS — Voice P0 pilot approved; scope remains locked.
+STATUS: PASS ??Voice P0 pilot approved; scope remains locked.
 
 
 ## 2026-10-08 Settings P0 E2E Progress
 
 CONFIRMED:
 - Master approved preservation of the pre-existing `godot/content/menos.sqlite` working-tree change.
-- The approved SQLite difference is isolated to `player_profile.level` (`31 → 33`) and `player_profile.xp` (`2516 → 672`); no table/schema/count changes were found and SQLite integrity checks pass.
+- The approved SQLite difference is isolated to `player_profile.level` (`31 ??33`) and `player_profile.xp` (`2516 ??672`); no table/schema/count changes were found and SQLite integrity checks pass.
 - Settings uses `user://menos_settings.cfg` and does not use the authoritative content SQLite path.
 - Settings P0 now includes Restore Defaults: confirmation dialog, `ko / 1.0 / 1.0` reset, immediate runtime apply, and persistence.
 - Settings P0 E2E background verification PASS: language change, BGM/SFX change, UI reload, Restore Defaults, corrupt-file fallback, and separate-process persistence all passed.
@@ -293,10 +297,10 @@ CONFIRMED:
 - `git diff --check` PASS.
 
 VERIFICATION:
-- CODE VERIFIED: PASS — SettingsManager and SettingsScreen paths inspected and exercised.
-- BUILD VERIFIED: PASS — Windows Desktop export completed successfully.
-- EDITOR VERIFIED: PASS — Settings scene and new Restore Defaults control loaded during E2E.
-- PIE VERIFIED: NOT VERIFIED — screen observation remains reserved for Master.
+- CODE VERIFIED: PASS ??SettingsManager and SettingsScreen paths inspected and exercised.
+- BUILD VERIFIED: PASS ??Windows Desktop export completed successfully.
+- EDITOR VERIFIED: PASS ??Settings scene and new Restore Defaults control loaded during E2E.
+- PIE VERIFIED: NOT VERIFIED ??screen observation remains reserved for Master.
 
 UNVERIFIED:
 - Master-observed PIE visual presentation of the Settings screen.
@@ -306,7 +310,7 @@ PROPOSAL:
 - Next approval gate is Master PIE observation of Settings and, if accepted, the final Campaign 1 production-acceptance decision.
 - Do not expand Settings into Display/Controls/Accessibility without a separate Master request.
 
-STATUS: PASS — Settings P0 implementation and background E2E complete; Master PIE/production acceptance remains open.
+STATUS: PASS ??Settings P0 implementation and background E2E complete; Master PIE/production acceptance remains open.
 
 ## 2026-10-08 Campaign 1 Production Acceptance
 
@@ -341,7 +345,7 @@ CONFIRMED:
 - Existing working-tree changes, including `godot/content/menos.sqlite`, Map Editor, Settings, and unrelated `mk` changes, must be preserved.
 
 VERIFICATION:
-- Implementation result: PENDING — Serra/Copilot has the execution task; completion report has not yet been added to `state/COPILOT_TO_MARIE.md`.
+- Implementation result: PENDING ??Serra/Copilot has the execution task; completion report has not yet been added to `state/COPILOT_TO_MARIE.md`.
 - CODE VERIFIED: NOT YET for the new P1 changes.
 - BUILD VERIFIED: NOT YET for the new P1 changes.
 - EDITOR VERIFIED: NOT YET for the new P1 changes.
@@ -351,7 +355,7 @@ SAFETY:
 - Baseline checked before this record: HEAD `335f3800b111f45c1b246148d8b4b2a50ee092bb`, Branch `main`, Working Tree dirty with the pre-existing changes listed by Git.
 - No project code, Asset, SQLite content, or unrelated change was modified by this documentation update.
 
-STATUS: HOLD — waiting for Serra/Copilot implementation and minimum verification report. Stop at this gate until the result is reviewed.
+STATUS: HOLD ??waiting for Serra/Copilot implementation and minimum verification report. Stop at this gate until the result is reviewed.
 
 PROPOSAL:
 - After Serra reports completion, Marie reviews the actual diff and verification evidence before any further decision.
@@ -427,7 +431,100 @@ VERIFICATION:
 - PIE VERIFIED: NOT VERIFIED.
 - Test DBs were copies; production menos.sqlite was not changed by CRUD smoke tests.
 
-STATUS: PASS — Map CRUD implementation gate complete; awaiting final diff review before commit/push.
+STATUS: PASS ??Map CRUD implementation gate complete; awaiting final diff review before commit/push.
 
 PROPOSAL:
 Perform final Map Editor diff/regression review now, then stop for Master Commit/Push approval if no unintended changes are found.
+
+## 2026-10-08 Map Editor Final Diff / Regression Review
+
+CONFIRMED:
+- Final read-only review of the current Map Editor working-tree diff completed.
+- Current `godot/editor/map_editor.gd` delta is limited to Save-time `validate_map()` blocking and Save As Map ID preservation; no unrelated Map CRUD code was changed in this delta.
+- `godot/editor/map_editor.gd` and `godot/scripts/map_loader.gd` pass Godot 4.7.2 `--check-only` parsing.
+- Existing production maps `map_01`, `map_02`, and `map_03` all pass `MapEditor.validate_map()` with 0 errors / 0 warnings in a background headless scene-level gate.
+- `git diff --check` PASS.
+- No production SQLite write was performed by the validation gate.
+
+VERIFICATION:
+- CODE VERIFIED: PASS.
+- BUILD / SCRIPT PARSE VERIFIED: PASS.
+- EDITOR DATA VALIDATION: PASS for the three existing production maps.
+- PIE VERIFIED: NOT VERIFIED.
+- GUI Save → Reload → Runtime screen observation: NOT VERIFIED.
+
+STATUS: PASS — Map Editor final diff/regression review complete; commit/push remains a separate Master approval gate.
+
+PROPOSAL:
+- Do not modify Map Editor further in the current scope.
+- Treat this scope as ACCEPT·STOP pending Master Commit/Push approval.
+- Do not begin another Map feature or expand CRUD semantics automatically.
+
+
+## 2026-10-08 P0 E2E Visual Gate Result
+
+STATUS: PASS — Unit/Tower Visual Asset Catalog boundary established for minimum E2E; full PIE remains unverified.
+
+CONFIRMED:
+- Existing Unit/Tower image assets were reused; no new image asset was generated.
+- Added Catalog Visual Assets: `unit.basic.default` → `res://images/Unit/basic.png`, and `tower.rail.default` → `res://images/tower/tower.png`.
+- `allied_units.basic.visuals.sprite` and `default_image` now reference `unit.basic.default`.
+- `towers.rail.sprite_anim`, `default_image`, and `animations.idle` now reference `tower.rail.default`.
+- The data migration was applied in one SQLite transaction and persisted successfully.
+- Source image files exist at the registered paths.
+- Runtime code path was confirmed: Unit profile/sprite resolves through `VisualAssetResolver`; Tower sprite resolves through `VisualAssetResolver`.
+- The failed first migration attempt rolled back without partial data persistence.
+
+VERIFICATION:
+- CODE VERIFIED: PASS — Catalog IDs, Unit/Tower definitions, Resolver paths, and runtime texture loading paths inspected.
+- DATA / PERSISTENCE VERIFIED: PASS — SQLite transaction commit and post-write query verification passed.
+- BUILD VERIFIED: NOT VERIFIED by the new custom gate; existing Godot project initialization is known to pass.
+- EDITOR VERIFIED: PARTIAL — Unit/Tower Editor Save/Reload code paths were inspected, but a fresh GUI Save/Reload operation was not executed.
+- PIE VERIFIED: NOT VERIFIED.
+- RUNTIME VISUAL DISPLAY: NOT VERIFIED as a screen observation.
+- Existing `editor_data_smoke_test.gd` currently fails at an unrelated `MapEditorMain.current_map_data` access and was not used to promote this gate to PASS.
+
+UNVERIFIED:
+- Actual Unit Editor Save → Reload → Runtime display.
+- Actual Tower Editor Save → Reload → Runtime display.
+- Master-observed PIE visual presentation.
+
+PROPOSAL:
+- Keep the common Catalog Visual Asset contract unchanged.
+- Treat `unit.basic.default` and `tower.rail.default` as the minimum representative data gate, not as completion of every Unit/Tower visual asset.
+- Before Production Lock, perform one real Editor Save → Reload → Runtime display verification for Unit and Tower separately.
+- Do not expand Visual Asset registration to every Unit/Tower until that minimum E2E gate passes.
+
+## 2026-10-08 Map Commit / Working Tree Consolidation Gate
+
+CONFIRMED:
+- Map Editor P0 validation change was committed as `53d97f7b` (`Validate Map Editor saves`) and pushed to `upstream/main`.
+- `main` and `upstream/main` are aligned at `53d97f7b` for that commit.
+- Remaining working-tree changes are separate accumulated document, Content Editor, presentation-pipeline, SQLite, and asset-import changes; they were not included in the Map commit.
+- Temporary Godot SQLite extension files generated during background probing were cleaned; no source files were intentionally changed by that cleanup.
+
+STATUS: HOLD — the Map Editor commit is closed. The remaining working tree requires separate scope classification and verification before any additional commit/push.
+
+PROPOSAL:
+- Do not bulk-commit the remaining working tree.
+- Classify the remaining changes into coherent gates and verify each gate independently before proposing another commit.
+- Keep PIE / Master visual acceptance separate from technical commits.
+
+
+### Current Authoring Boundary ? STAGE / MISSION / REWARD
+
+- MISSION Editor is the sole Mission mutation owner.
+- STAGE Editor exposes Mission as a reference; Mission definition fields are read-only and are not persisted by STAGE SAVE.
+- STAGE Editor remains the Reward mutation owner for the current scope.
+- STAGE + Reward persistence uses one SQLite transaction via `ObjectPersistence.save_catalog_pair_atomic()`.
+- Mission reference existence is validated before persistence.
+- Godot 4.7.2 `--check-only` passed for `stage_editor.gd`; PIE remains NOT VERIFIED.
+
+## GUI Verification Tooling — 2026-10-08
+
+- 듀얼 모니터/대형 이미지 환경 GUI 검증 수단 확보.
+- mss + 축소 캡처 + pyautogui 입력 방식을 사용한다.
+- winapp CLI는 창/DPI/물리 좌표 진단용으로 유지한다.
+- pywinauto는 검증 후 제거하였다.
+- ROBOT → UNIT → TOWER Editor 진입 및 RELOAD 최소 GUI E2E PASS.
+- GUI 검증은 Master PIE acceptance와 구분한다.
