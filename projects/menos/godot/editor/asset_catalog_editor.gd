@@ -22,6 +22,7 @@ var visual_assets: Dictionary = {}
 var visual_asset_ids: Array[String] = []
 var usage_cache: Dictionary = {}
 var selected_is_visual_asset := false
+var catalog_dirty := false
 var source_dialog: FileDialog
 var asset_list: VBoxContainer
 var region_view: AssetRegionView
@@ -51,7 +52,7 @@ var windowed_size := Vector2i(1280, 820)
 var windowed_position := Vector2i.ZERO
 
 func _ready() -> void:
-	close_requested.connect(hide)
+	close_requested.connect(_on_close_requested)
 	min_size = Vector2i(960, 640)
 	windowed_size = size
 	windowed_position = position
@@ -81,6 +82,12 @@ func open_for_asset_id(asset_id: String, edit_target: String) -> void:
 
 func open_catalog() -> void:
 	_load_catalog()
+
+func _on_close_requested() -> void:
+	if catalog_dirty:
+		status_label.text = "Unsaved Catalog changes. Save Catalog before closing."
+		return
+	hide()
 	_clear_form()
 	status_label.text = "Catalog ready. Select an entry or add a new one."
 
@@ -552,6 +559,8 @@ func _find_entry_index(asset_id: String) -> int:
 	return -1
 
 func _load_visual_assets() -> void:
+	if catalog_dirty:
+		return
 	visual_assets.clear()
 	visual_asset_ids.clear()
 	VisualAssetRepository.reload()
@@ -615,22 +624,33 @@ func _save_visual_asset() -> void:
 		status_label.text = "Visual Frames cannot exceed Columns × Rows."
 		return
 	visual_assets[asset_id] = definition.to_dict()
-	if not _write_visual_assets():
-		status_label.text = "Visual Asset Catalog 저장에 실패했습니다."
-		return
-	_load_catalog()
+	catalog_dirty = true
+	var updated_entry := _visual_asset_entry(asset_id, visual_assets[asset_id])
 	var new_index := _find_entry_index(asset_id)
+	if new_index < 0:
+		entries.append(updated_entry)
+		new_index = entries.size() - 1
+	else:
+		entries[new_index] = updated_entry
+	_refresh_list()
 	if new_index >= 0:
 		_on_asset_selected(new_index)
-	status_label.text = "Visual Asset 저장 완료: " + asset_id
+	status_label.text = "Visual Asset 변경됨: " + asset_id + ". Save Catalog to persist changes."
 
 func _write_visual_assets() -> bool:
-	var path := "visual_assets"
-	if not ObjectPersistence.save_catalog(path, visual_assets):
+	var catalog_assets := _build_catalog_assets()
+	if not ObjectPersistence.save_catalog_pair_atomic(CATALOG_PATH, {"schema_version": 1, "assets": catalog_assets}, "visual_assets", visual_assets):
 		return false
 	VisualAssetRepository.reload()
 	VisualAssetResolver.reload()
 	return true
+
+func _build_catalog_assets() -> Array[Dictionary]:
+	var catalog_assets: Array[Dictionary] = []
+	for entry in entries:
+		if str(entry.get("catalog_kind", "")) != "visual_asset":
+			catalog_assets.append(entry.duplicate(true))
+	return catalog_assets
 
 func _add_entry() -> void:
 	var entry := _build_entry()
@@ -675,18 +695,22 @@ func _rename_visual_asset() -> void:
 	if visual_assets.has(new_id):
 		status_label.text = "Visual Asset ID already exists: " + new_id
 		return
-	var data: Dictionary = visual_assets[old_id]
+	var refs: Array = usage_cache.get(old_id, [])
+	if not refs.is_empty():
+		status_label.text = "Visual Asset ID 변경 거부: 참조 중입니다. (%s)" % ", ".join(PackedStringArray(refs))
+		return
+	var data: Dictionary = visual_assets[old_id].duplicate(true)
 	visual_assets.erase(old_id)
 	data["id"] = new_id
 	visual_assets[new_id] = data
-	if not _write_visual_assets():
-		status_label.text = "Visual Asset ID rename failed."
-		return
-	_load_catalog()
-	var new_index := _find_entry_index(new_id)
+	catalog_dirty = true
+	var renamed_entry := _visual_asset_entry(new_id, visual_assets[new_id])
+	var new_index := _find_entry_index(old_id)
 	if new_index >= 0:
+		entries[new_index] = renamed_entry
+		_refresh_list()
 		_on_asset_selected(new_index)
-	status_label.text = "Visual Asset ID changed: %s -> %s" % [old_id, new_id]
+	status_label.text = "Visual Asset ID changed: %s -> %s. Save Catalog to persist changes." % [old_id, new_id]
 
 func _update_entry() -> void:
 	if selected_is_visual_asset:
@@ -713,11 +737,13 @@ func _remove_entry() -> void:
 	if selected_is_visual_asset:
 		var visual_id := str(entries[selected_index].get("asset_id", ""))
 		_load_visual_assets()
+		var refs: Array = usage_cache.get(visual_id, [])
+		if not refs.is_empty():
+			status_label.text = "Visual Asset 삭제 거부: 참조 중입니다. (%s)" % ", ".join(PackedStringArray(refs))
+			return
 		if visual_assets.has(visual_id):
 			visual_assets.erase(visual_id)
-			if not _write_visual_assets():
-				status_label.text = "Visual Asset 삭제에 실패했습니다."
-				return
+			catalog_dirty = true
 	entries.remove_at(selected_index)
 	selected_index = -1
 	_refresh_list()
@@ -972,8 +998,7 @@ func _refresh_list() -> void:
 		_select_asset_row(selected_index)
 
 func _entry_preview_icon(entry: Dictionary) -> Texture2D:
-	var is_visual_asset := str(entry.get("catalog_kind", "")) == "visual_asset"
-	var value := str(entry.get("asset_id", "")) if is_visual_asset else str(entry.get("source_path", ""))
+	var value := str(entry.get("source_path", ""))
 	var fallback_region := Rect2()
 	var rect_values: Variant = entry.get("source_rect_px", [])
 	if rect_values is Array and rect_values.size() == 4:
@@ -982,6 +1007,9 @@ func _entry_preview_icon(entry: Dictionary) -> Texture2D:
 	return EDITOR_THUMBNAIL_UTIL.create(value, fallback_region, fallback_frames)
 
 func _load_catalog() -> void:
+	if catalog_dirty:
+		status_label.text = "Unsaved Catalog changes. Save or discard them before Reload."
+		return
 	entries.clear()
 	selected_index = -1
 	usage_cache.clear()
@@ -1000,16 +1028,71 @@ func _load_catalog() -> void:
 	_refresh_list()
 	status_label.text = "Loaded %d catalog entries." % entries.size()
 
-func _save_catalog() -> bool:
-	var catalog_assets: Array[Dictionary] = []
-	for entry in entries:
-		if str(entry.get("catalog_kind", "")) != "visual_asset":
-			catalog_assets.append(entry.duplicate(true))
-	var catalog := {"schema_version": 1, "assets": catalog_assets}
-	if not ObjectPersistence.save_content_document(CATALOG_PATH, catalog):
-		status_label.text = "Could not save catalog to SQLite."
+func _validate_catalog_transaction(catalog: Dictionary, visual_catalog: Dictionary) -> bool:
+	if int(catalog.get("schema_version", 0)) != 1:
+		status_label.text = "Catalog validation failed: unsupported schema version."
 		return false
-	status_label.text = "Saved %d catalog assets to SQLite" % catalog_assets.size()
+	var catalog_assets: Variant = catalog.get("assets", [])
+	if not catalog_assets is Array:
+		status_label.text = "Catalog validation failed: assets must be an array."
+		return false
+	var seen_ids: Dictionary = {}
+	for value in catalog_assets:
+		if not value is Dictionary:
+			status_label.text = "Catalog validation failed: an asset entry is not a dictionary."
+			return false
+		var asset_id := str(value.get("asset_id", "")).strip_edges()
+		if asset_id.is_empty() or seen_ids.has(asset_id):
+			status_label.text = "Catalog validation failed: invalid or duplicate asset ID."
+			return false
+		seen_ids[asset_id] = true
+	for visual_id in visual_catalog.keys():
+		var id := str(visual_id).strip_edges()
+		if id.is_empty() or not visual_catalog[visual_id] is Dictionary:
+			status_label.text = "Catalog validation failed: invalid Visual Asset entry."
+			return false
+		var definition: Dictionary = visual_catalog[visual_id]
+		var frames := maxi(1, int(definition.get("frames", 1)))
+		var columns := maxi(1, int(definition.get("columns", 1)))
+		var rows := maxi(1, int(definition.get("rows", 1)))
+		if frames > columns * rows:
+			status_label.text = "Catalog validation failed: Visual Asset frames exceed grid capacity (%s)." % id
+			return false
+	return true
+
+func _prepare_catalog_transaction() -> Dictionary:
+	var catalog_assets := _build_catalog_assets()
+	return {
+		"catalog": {"schema_version": 1, "assets": catalog_assets},
+		"visual_assets": visual_assets.duplicate(true)
+	}
+
+func _verify_catalog_transaction(catalog: Dictionary, visual_catalog: Dictionary) -> bool:
+	var persisted_catalog: Variant = ContentCatalogLoader.load_document(CATALOG_PATH)
+	var persisted_visual_assets := ContentCatalogLoader.load_dictionary_catalog("visual_assets")
+	if persisted_catalog != catalog or persisted_visual_assets != visual_catalog:
+		status_label.text = "Catalog transaction verification failed: persisted state differs from prepared state."
+		return false
+	return true
+
+func _save_catalog() -> bool:
+	# Common Save Transaction boundary:
+	# Edit -> Validate -> Prepare All Changes -> Persistence -> Reload -> Verify
+	var prepared := _prepare_catalog_transaction()
+	var catalog: Dictionary = prepared.get("catalog", {})
+	var prepared_visual_assets: Dictionary = prepared.get("visual_assets", {})
+	if not _validate_catalog_transaction(catalog, prepared_visual_assets):
+		return false
+	if not ObjectPersistence.save_catalog_pair_atomic(CATALOG_PATH, catalog, "visual_assets", prepared_visual_assets):
+		status_label.text = "Save Transaction failed; existing SQLite state was preserved by rollback."
+		return false
+	VisualAssetRepository.reload()
+	VisualAssetResolver.reload()
+	if not _verify_catalog_transaction(catalog, prepared_visual_assets):
+		return false
+	catalog_dirty = false
+	var catalog_assets: Array = catalog.get("assets", [])
+	status_label.text = "Saved %d catalog assets and %d visual assets to SQLite" % [catalog_assets.size(), prepared_visual_assets.size()]
 	var selected_asset_id := ""
 	if selected_index >= 0 and selected_index < entries.size():
 		selected_asset_id = str(entries[selected_index].get("asset_id", ""))

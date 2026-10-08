@@ -50,6 +50,83 @@ static func sync_catalog_to_sqlite(path: String, catalog: Dictionary) -> bool:
 		return false
 	return _sync_catalog_to_sqlite(path, catalog, JSON.stringify(catalog, "  "))
 
+static func save_catalog_pair_atomic(document_path: String, document: Dictionary, catalog_path: String, catalog: Dictionary) -> bool:
+	if document_path.is_empty() or catalog_path.is_empty() or document_path == catalog_path:
+		push_error("ObjectPersistence: invalid atomic document/catalog pair.")
+		return false
+	var document_table := _sqlite_table_for_path(document_path)
+	var catalog_table := _sqlite_table_for_path(catalog_path)
+	if document_table.is_empty() or catalog_table.is_empty() or document_table == catalog_table:
+		push_error("ObjectPersistence: invalid atomic document/catalog table pair.")
+		return false
+	var db = _open_db(false)
+	if db == null:
+		return false
+	if not db.query("BEGIN IMMEDIATE TRANSACTION"):
+		db.close_db()
+		return false
+	if not _sync_document_in_transaction(db, document_table, document):
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+	if not _sync_document_catalog_in_transaction(db, catalog_table, catalog):
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+	if not db.query("COMMIT"):
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+	db.close_db()
+	return true
+
+static func _sync_document_in_transaction(db, table: String, document: Dictionary) -> bool:
+	if not db.query_with_bindings('SELECT rowid, raw_json FROM "%s" LIMIT 2' % table, []):
+		return false
+	if db.query_result.size() != 1:
+		return false
+	var rowid = db.query_result[0].get("rowid", 0)
+	var json_text := JSON.stringify(document, "  ")
+	if not db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE rowid = ?' % table, [json_text, rowid]):
+		return false
+	if not db.query_with_bindings('SELECT raw_json FROM "%s" WHERE rowid = ? LIMIT 1' % table, [rowid]):
+		return false
+	return db.query_result.size() == 1 and str(db.query_result[0].get("raw_json", "")) == json_text
+
+static func _sync_document_catalog_in_transaction(db, table: String, catalog: Dictionary) -> bool:
+	if not db.query_with_bindings('SELECT document_id FROM "%s"' % table, []):
+		return false
+	var existing: Dictionary = {}
+	for row in db.query_result:
+		existing[str(row.get("document_id", ""))] = true
+	for entry_id in catalog.keys():
+		var id := str(entry_id)
+		var entry: Dictionary = catalog[entry_id] if catalog[entry_id] is Dictionary else {}
+		var json_text := JSON.stringify(entry, "  ")
+		if existing.has(id):
+			if not db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE document_id = ?' % table, [json_text, id]):
+				return false
+		else:
+			if not db.query_with_bindings('INSERT INTO "%s" (document_id, raw_json) VALUES (?, ?)' % table, [id, json_text]):
+				return false
+	for existing_id in existing.keys():
+		if not catalog.has(existing_id):
+			if not db.query_with_bindings('DELETE FROM "%s" WHERE document_id = ?' % table, [existing_id]):
+				return false
+	if not db.query_with_bindings('SELECT document_id, raw_json FROM "%s" ORDER BY document_id' % table, []):
+		return false
+	var rows: Array = db.query_result
+	if rows.size() != catalog.size():
+		return false
+	var verified: Dictionary = {}
+	for row in rows:
+		verified[str(row.get("document_id", ""))] = str(row.get("raw_json", ""))
+	for entry_id in catalog.keys():
+		var id := str(entry_id)
+		if not verified.has(id) or verified[id] != JSON.stringify(catalog[entry_id], "  "):
+			return false
+	return true
+
 static func save_catalog_entry_by_odb_pk(path: String, odb_pk: int, entry: Dictionary) -> bool:
 	var table := _sqlite_table_for_path(path)
 	if table.is_empty() or odb_pk <= 0:
@@ -180,6 +257,9 @@ static func _sync_catalog_to_sqlite(path: String, catalog: Dictionary, json_text
 			if not catalog.has(id):
 				ok = db.query_with_bindings('DELETE FROM "%s" WHERE "%s" = ?' % [table, key_column], [id])
 				if not ok: break
+				if table == "robots":
+					ok = db.query_with_bindings('DELETE FROM odb_registry WHERE content_type = ? AND legacy_id = ?', ["robot", id])
+					if not ok: break
 	if not ok:
 		db.query("ROLLBACK"); db.close_db(); return false
 	if not db.query("COMMIT"):
