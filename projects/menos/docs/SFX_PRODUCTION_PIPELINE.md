@@ -154,6 +154,15 @@ Pilot이 성공하면 동일 Pipeline을 나머지 SFX에 확장한다.
 - 관련 없는 문제는 수정하지 않는다.
 - Commit/Push는 Master 승인 후 수행한다.
 
+## 현재 구현 정합성
+
+현재 코드 기준으로 SFX P0 기술/Authoring 기반은 구현되어 있다.
+- SFX Definition / Repository / Loader / Validator / Runtime Adapter / Editor가 존재한다.
+- ROBOT_LASER_FIRE P0 pilot과 기존 SFX Definition binding이 등록되어 있다.
+- Content Editor SFX entry가 활성화되어 있다.
+- Technical validation / Save / Reload / Delete / Runtime resolution smoke가 PASS 상태다.
+- Master listening / Production Acceptance와 PIE audio observation은 UNVERIFIED다.
+- Legacy direct-file SFX playback은 호환 경계로 유지되며 단계적 이관 대상이다
 ## 상태
 STATUS — PROPOSAL
 이 문서는 SFX 제작/Authoring/Runtime 연결 설계안이다. Canon 승인은 Master의 결정에 따른다.

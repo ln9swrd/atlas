@@ -364,7 +364,16 @@ SFX 및 VOICE의 구현을 자동으로 시작하지 않는다.
 
 새로운 Faction, Context, 음악적 Canon은 Master 승인 없이 확정하지 않는다.
 
-## 19. 상태
+## 19. 현재 구현 정합성
+
+현재 코드 기준으로 BGM 기술 기반은 구현되어 있다.
+- BGM Definition / Repository / Loader / Validator / Runtime Controller / Editor가 존재한다.
+- Faction 01의 Normal / Combat / Victory / Defeat pilot binding이 등록되어 있다.
+- GameController의 Run State → BGM Context binding이 구현되어 있다.
+- BGM Runtime Controller 및 Definition/Adapter validation은 PASS 상태다.
+- 실제 Master 청취/Production Acceptance와 PIE 관찰은 UNVERIFIED다.
+- Definition의 crossfade 필드는 존재하지만 실제 crossfade playback은 현재 구현되지 않았다
+## 20. 상태
 
 STATUS: PROPOSAL
 
