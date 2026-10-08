@@ -1484,3 +1484,31 @@ CATALOG에는 일반 Asset Catalog와 Visual Asset Catalog가 서로 다른 Pers
 - This closes the minimum representative Unit/Tower Visual Asset E2E gate.
 - No expansion to every Unit/Tower Visual Asset was performed.
 - No new image Asset was generated.
+
+## 29. 2026-10-09 Roadmap State Reconciliation
+
+STATUS: PASS - Map CRUD implementation status reconciled with the current code/state records.
+
+CONFIRMED:
+- Sections 26/27 record the earlier Map CRUD investigation state and are retained as historical development records.
+- Section 28 and the current implementation supersede the earlier "CRUD not implemented" roadmap state.
+- `map_editor.gd` contains New Map, Duplicate Map, and Delete Map workflows.
+- `map_loader.gd` provides dynamic `map_documents` persistence for author-created maps while preserving canonical fixed-map compatibility.
+- New/Duplicate/Delete CRUD smoke verification passes on a copied SQLite database.
+- Existing 32px grid behavior is intrinsic; no separate Snap toggle is required for the current P0 contract.
+- Current `state/CURRENT_STATE.md` already records the approved Map CRUD policy and final Map Editor regression review.
+
+VERIFICATION:
+- CODE VERIFIED: PASS.
+- MAP_CRUD_SMOKE_PASS: PASS.
+- EDITOR_DATA_SMOKE_TEST_PASS: PASS.
+- Production `godot/content/menos.sqlite` was not modified by the Map CRUD smoke verification.
+- PIE VERIFIED: NOT VERIFIED.
+
+ROADMAP DECISION:
+- Do not reopen Map CRUD or add further Map semantics automatically.
+- The next Map-related action is only the already-recorded Master Commit/Push gate; implementation is otherwise ACCEPT/STOP.
+- For broader development, proceed to the next explicitly approved Common Authoring Contract / P0 gate rather than repeating Map CRUD investigation.
+
+PROPOSAL:
+Treat the integrated plan as reconciled at this point. No further Map Editor implementation should begin unless Master requests a new Map requirement.
