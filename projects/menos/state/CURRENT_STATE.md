@@ -547,3 +547,25 @@ PROPOSAL:
 - PIE VERIFIED: NOT VERIFIED - Master final acceptance remains separate.
 
 **RESULT:** The minimum representative Unit/Tower Visual Asset E2E gate is closed. This does not certify every Unit/Tower Visual Asset.
+
+
+## 2026-10-09 ROBOT Team Mask Ownership Boundary
+
+**STATUS: PASS**
+
+**CONFIRMED:**
+- Master-approved A boundary was implemented.
+- ROBOT Editor GENERATE MASK now opens the existing Image Editor path for the selected Profile Visual Asset instead of mutating the Visual Asset Catalog directly.
+- Robot-local Team Mask generation and direct Catalog persistence helpers were removed.
+- Image Editor remains the owner of Team Mask generation and Visual Asset Catalog persistence.
+
+**VERIFICATION:**
+- CODE VERIFIED: PASS — Godot 4.7.2 --check-only for Robot/Image Editor.
+- EDITOR ROUTING VERIFIED: PASS — headless route test returned MASK_ROUTE_PASS:robot.asura.profile.
+- git diff --check: PASS.
+- PIE VERIFIED: NOT VERIFIED.
+
+**PROPOSAL:**
+- Keep the current cross-editor ownership boundary.
+- Do not introduce a Robot + Visual Asset atomic transaction without a new requirement.
+- Scope is ready for separate Master Commit/Push approval.

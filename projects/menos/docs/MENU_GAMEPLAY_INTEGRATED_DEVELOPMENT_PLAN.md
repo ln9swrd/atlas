@@ -1512,3 +1512,35 @@ ROADMAP DECISION:
 
 PROPOSAL:
 Treat the integrated plan as reconciled at this point. No further Map Editor implementation should begin unless Master requests a new Map requirement.
+
+
+## 30.8 2026-10-09 ROBOT Team Mask Ownership Boundary
+
+**STATUS: PASS — Master-approved A boundary implemented.**
+
+**CONFIRMED:**
+- ROBOT Editor no longer generates or persists Team Mask PNG / Visual Asset Catalog data directly.
+- ROBOT GENERATE MASK now routes through the existing Image Editor entry path for the selected Profile Visual Asset.
+- The existing Image Editor owns the Team Mask generation action and its Visual Asset Catalog persistence path.
+- The existing ImageEditorState / request_image_editor routing is reused; no new cross-editor persistence API was introduced.
+- Robot working-copy SAVE remains responsible only for Robot authoring data.
+
+**VERIFICATION:**
+- robot_editor.gd --check-only: PASS.
+- image_editor.gd --check-only: PASS.
+- git diff --check: PASS.
+- Headless Editor route E2E: MASK_ROUTE_PASS:robot.asura.profile.
+- CODE VERIFIED: PASS.
+- EDITOR ROUTING VERIFIED: PASS.
+- PIE VERIFIED: NOT VERIFIED.
+
+**IMPLEMENTATION:**
+- godot/editor/robot_editor.gd
+  - GENERATE MASK button routes to _open_profile_team_mask_editor().
+  - Removed Robot-local Team Mask generation and direct Visual Asset persistence helpers.
+  - Reuses _open_image_editor_for_target("default_image") so the semantic Profile Visual Asset ID is preserved.
+
+**PROPOSAL:**
+- Keep Team Mask ownership under the Image/Catalog Editor boundary.
+- Do not add Robot + Visual Asset cross-catalog transactions unless a later requirement explicitly requires them.
+- Treat this scope as ACCEPT·STOP pending Master Commit/Push approval.
