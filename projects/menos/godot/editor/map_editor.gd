@@ -620,6 +620,11 @@ func save_map() -> void:
 	if canvas:
 		current_map_data = canvas.map_data
 
+	var validation := validate_map()
+	if not validation.get("errors", []).is_empty():
+		update_status("Save blocked: validation failed. " + str(validation.get("errors", [])[0]))
+		return
+
 	var success := MapLoader.save_map_data(current_map_path, current_map_data)
 	if success:
 		map_dirty = false
@@ -1193,7 +1198,10 @@ func _on_open_map_file_selected(path: String) -> void:
 	load_map(path)
 
 func _on_save_map_file_selected(path: String) -> void:
-	current_map_path = path
+	var selected_id := path.get_file().get_basename()
+	if selected_id != current_map_path:
+		update_status("Save As blocked: Map ID changes are not allowed by the Content Editor Canon.")
+		return
 	save_map()
 
 func _on_btn_asset_catalog_pressed() -> void:
