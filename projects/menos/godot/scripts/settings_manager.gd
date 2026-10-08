@@ -58,6 +58,15 @@ static func set_sfx_volume(value: float) -> void:
 	_apply_audio_volumes()
 	_save_audio()
 
+static func restore_defaults() -> void:
+	language = "ko"
+	bgm_volume = 1.0
+	sfx_volume = 1.0
+	loaded = true
+	TranslationServer.set_locale(language)
+	_apply_audio_volumes()
+	_save_audio()
+
 static func _save_audio() -> void:
 	var config := ConfigFile.new()
 	config.load("user://menos_settings.cfg")

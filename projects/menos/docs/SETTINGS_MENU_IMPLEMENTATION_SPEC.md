@@ -218,12 +218,14 @@ Settings P0 is implementation-ready when:
 
 ## 15. Current judgment
 
-CONFIRMED: the current project already has a functional Language/BGM/SFX Settings foundation.
+CONFIRMED: Language/BGM/SFX P0 Settings foundation is implemented, including Restore Defaults confirmation and persistence.
 
-PARTIAL: common schema, reset-to-default, corruption recovery, and explicit Editor-vs-Player Settings separation are not yet fully implemented.
+CONFIRMED: P0 E2E verified immediate runtime application, UI value reload, Restore Defaults, corrupt-file fallback, and persistence across separate Godot process launches.
 
-UNVERIFIED: full restart E2E persistence, corrupt-file recovery, and future display/input/accessibility runtime contracts.
+CONFIRMED: Settings persistence remains isolated to `user://menos_settings.cfg`; the approved `godot/content/menos.sqlite` change is unrelated player-profile data and was not modified by the Settings implementation.
 
-PROPOSAL: stabilize the existing Language/BGM/SFX P0 contract first; do not expand Settings into Display/Controls/Accessibility until their runtime contracts are confirmed.
+UNVERIFIED: Master-observed PIE behavior and future display/input/accessibility runtime contracts.
+
+PROPOSAL: keep Settings scope locked to Language/BGM/SFX P0; do not expand into Display/Controls/Accessibility until their runtime contracts are separately confirmed.
 
 OUT OF SCOPE: content authoring, gameplay balance, asset creation/editing, and audio/voice content definition authoring.

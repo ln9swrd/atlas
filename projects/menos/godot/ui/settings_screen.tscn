@@ -110,7 +110,16 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("Button")
 text = "영어"
 
+[node name="RestoreDefaults" type="Button" parent="Center/Panel/Content"]
+custom_minimum_size = Vector2(180, 48)
+layout_mode = 2
+text = "기본값 복원"
+
 [node name="Back" type="Button" parent="Center/Panel/Content"]
 custom_minimum_size = Vector2(180, 48)
 layout_mode = 2
 text = "뒤로"
+
+[node name="RestoreConfirm" type="ConfirmationDialog" parent="."]
+title = "기본값 복원"
+dialog_text = "모든 설정을 기본값으로 복원하시겠습니까?"
