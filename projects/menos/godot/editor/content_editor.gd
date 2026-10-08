@@ -16,6 +16,7 @@ const CAMPAIGN_EDITOR_SCENE := "res://editor/campaign_editor.tscn"
 const VFX_EDITOR_SCENE := "res://editor/vfx_editor.tscn"
 const SFX_EDITOR_SCENE := "res://editor/sfx_editor.tscn"
 const VOICE_EDITOR_SCENE := "res://editor/voice_editor.tscn"
+const BGM_EDITOR_SCENE := "res://editor/bgm_editor.tscn"
 
 
 var current_editor: Node = null
@@ -42,6 +43,7 @@ func _ready() -> void:
 	$MainLayout/TopMenu/Buttons/BtnVFX.pressed.connect(_open_vfx_editor)
 	$MainLayout/TopMenu/Buttons/BtnSFX.pressed.connect(_open_sfx_editor)
 	$MainLayout/TopMenu/Buttons/BtnVoice.pressed.connect(_open_voice_editor)
+	$MainLayout/TopMenu/Buttons/BtnBGM.pressed.connect(_open_bgm_editor)
 	_open_map_editor()
 
 func _setup_language() -> void:
@@ -169,6 +171,10 @@ func _open_voice_editor() -> void:
 	_load_editor(VOICE_EDITOR_SCENE)
 	_set_active_button($MainLayout/TopMenu/Buttons/BtnVoice)
 
+func _open_bgm_editor() -> void:
+	_load_editor(BGM_EDITOR_SCENE)
+	_set_active_button($MainLayout/TopMenu/Buttons/BtnBGM)
+
 func _open_image_editor() -> void:
 	if current_editor_scene != IMAGE_EDITOR_SCENE and not current_editor_scene.is_empty():
 		previous_editor_scene = current_editor_scene
@@ -257,6 +263,8 @@ func _set_active_button_for_scene(scene_path: String) -> void:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnCampaign)
 	elif scene_path == VFX_EDITOR_SCENE:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnVFX)
+	elif scene_path == BGM_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnBGM)
 
 func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnMap.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMap
@@ -271,6 +279,7 @@ func _set_active_button(active: Button) -> void:
 	$MainLayout/TopMenu/Buttons/BtnMission.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnMission
 	$MainLayout/TopMenu/Buttons/BtnCampaign.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnCampaign
 	$MainLayout/TopMenu/Buttons/BtnVFX.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnVFX
+	$MainLayout/TopMenu/Buttons/BtnBGM.button_pressed = active == $MainLayout/TopMenu/Buttons/BtnBGM
 
 func _quit() -> void:
 	get_tree().quit()

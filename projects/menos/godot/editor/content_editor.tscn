@@ -106,7 +106,7 @@ toggle_mode = true
 layout_mode = 2
 text = "BGM"
 tooltip_text = "BGM editor"
-disabled = true
+toggle_mode = true
 
 
 [node name="BtnVoice" type="Button" parent="MainLayout/TopMenu/Buttons"]
