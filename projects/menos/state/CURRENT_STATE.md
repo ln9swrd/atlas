@@ -279,3 +279,155 @@ PROPOSAL:
 - Record exact Script Text, Voice Profile, Generation Tool/Model, Generation Prompt, Conditions, and source revision before producing additional Voice assets.
 
 STATUS: PASS — Voice P0 pilot approved; scope remains locked.
+
+
+## 2026-10-08 Settings P0 E2E Progress
+
+CONFIRMED:
+- Master approved preservation of the pre-existing `godot/content/menos.sqlite` working-tree change.
+- The approved SQLite difference is isolated to `player_profile.level` (`31 → 33`) and `player_profile.xp` (`2516 → 672`); no table/schema/count changes were found and SQLite integrity checks pass.
+- Settings uses `user://menos_settings.cfg` and does not use the authoritative content SQLite path.
+- Settings P0 now includes Restore Defaults: confirmation dialog, `ko / 1.0 / 1.0` reset, immediate runtime apply, and persistence.
+- Settings P0 E2E background verification PASS: language change, BGM/SFX change, UI reload, Restore Defaults, corrupt-file fallback, and separate-process persistence all passed.
+- Windows Release export after the Settings changes completed with exit code 0.
+- `git diff --check` PASS.
+
+VERIFICATION:
+- CODE VERIFIED: PASS — SettingsManager and SettingsScreen paths inspected and exercised.
+- BUILD VERIFIED: PASS — Windows Desktop export completed successfully.
+- EDITOR VERIFIED: PASS — Settings scene and new Restore Defaults control loaded during E2E.
+- PIE VERIFIED: NOT VERIFIED — screen observation remains reserved for Master.
+
+UNVERIFIED:
+- Master-observed PIE visual presentation of the Settings screen.
+
+PROPOSAL:
+- Treat Settings P0 as technically complete and stop implementation work here.
+- Next approval gate is Master PIE observation of Settings and, if accepted, the final Campaign 1 production-acceptance decision.
+- Do not expand Settings into Display/Controls/Accessibility without a separate Master request.
+
+STATUS: PASS — Settings P0 implementation and background E2E complete; Master PIE/production acceptance remains open.
+
+## 2026-10-08 Campaign 1 Production Acceptance
+
+CONFIRMED:
+- Campaign 1 background Runtime Smoke verification passed: `CAMPAIGN_RUNTIME_SMOKE_PASS stages=3 giant=true impact_vfx=true` with process exit code 0.
+- CODE / BUILD / EDITOR verification was already PASS before this approval gate.
+- Actual screen PIE remained NOT VERIFIED through the available background-only tooling.
+- Master approved Campaign 1 Production Acceptance after the completed verification and approval gate.
+
+VERIFICATION:
+- CODE VERIFIED: PASS.
+- BUILD VERIFIED: PASS.
+- EDITOR VERIFIED: PASS.
+- PIE VERIFIED: NOT VERIFIED as a separate screen-observation status.
+- Production Acceptance: APPROVED by Master.
+
+SCOPE:
+- Campaign 1 existing integrated flow only: Stage -> Wave -> general combat -> Giant -> Victory/Defeat.
+- No new gameplay, UI expansion, asset replacement, or unrelated cleanup authorized by this approval.
+
+STATUS: PASS -- Campaign 1 Production Acceptance approved; scope locked; stop at this gate.
+
+
+## 2026-10-08 Gameplay P1 Implementation Gate
+
+CONFIRMED:
+- Master approved proceeding with Serra/Copilot's P1 implementation proposal within the locked Gameplay scope.
+- Implementation scope is limited to P1-2 Player Profile persistence boundary, P1-3 `defeat_giant` objective gating, and P1-4 Gameplay-critical Stage/Wave/Map/Enemy/Lane reference fail-fast validation.
+- P1-1 Reward Gold economy semantics remain intentionally UNRESOLVED; no new economic meaning or next-Stage build-budget transfer is authorized by this instruction.
+- Existing Campaign 1 Production Acceptance remains approved and is not being reopened; only minimum regression protection is required.
+- Commit / Push are not authorized for this work stage.
+- Existing working-tree changes, including `godot/content/menos.sqlite`, Map Editor, Settings, and unrelated `mk` changes, must be preserved.
+
+VERIFICATION:
+- Implementation result: PENDING — Serra/Copilot has the execution task; completion report has not yet been added to `state/COPILOT_TO_MARIE.md`.
+- CODE VERIFIED: NOT YET for the new P1 changes.
+- BUILD VERIFIED: NOT YET for the new P1 changes.
+- EDITOR VERIFIED: NOT YET for the new P1 changes.
+- PIE VERIFIED: NOT VERIFIED.
+
+SAFETY:
+- Baseline checked before this record: HEAD `335f3800b111f45c1b246148d8b4b2a50ee092bb`, Branch `main`, Working Tree dirty with the pre-existing changes listed by Git.
+- No project code, Asset, SQLite content, or unrelated change was modified by this documentation update.
+
+STATUS: HOLD — waiting for Serra/Copilot implementation and minimum verification report. Stop at this gate until the result is reviewed.
+
+PROPOSAL:
+- After Serra reports completion, Marie reviews the actual diff and verification evidence before any further decision.
+- No automatic P2 expansion or Commit/Push follows from a successful P1 result.
+
+
+## 2026-10-08 Current State Reconciliation after Gameplay P1
+
+CONFIRMED:
+- Gameplay P1 implementation was approved, committed as 94b53fe3, and pushed to origin/main.
+- P1-2 Player Profile persistence boundary, P1-3 defeat_giant objective gating, and P1-4 Stage/Wave/Map/Enemy/Lane fail-fast validation are complete.
+- P1-1 Reward Gold economy semantics remain UNRESOLVED and unchanged.
+- Campaign 1 Production Acceptance remains approved and is not reopened.
+- Existing Settings, Map Editor, SQLite, and unrelated mk working-tree changes remain outside the P1 commit.
+
+VERIFICATION:
+- CODE VERIFIED: PASS.
+- BUILD VERIFIED: PASS.
+- EDITOR VERIFIED: PASS.
+- PIE VERIFIED: NOT VERIFIED as separate Master screen observation.
+- Commit/Push: PASS.
+
+NEXT DEVELOPMENT GATE:
+- Reconcile Map Editor P0 against the integrated development plan.
+- Investigate New/Duplicate/Delete and Grid Snap semantics read-only first.
+- Do not implement identity/deletion/Production Lock/robot_id semantics without an authoritative decision.
+
+STATUS: PASS - Gameplay P1 closed; Map Editor P0 is the next controlled work area.
+
+PROPOSAL:
+Proceed with Map Editor schema/persistence read-only investigation. Stop and report when a Canon/design decision is required.
+
+
+## 2026-10-08 Map Editor P0 Investigation Result
+
+PROGRESS:
+- READ-ONLY inspection of MapEditor, EditorCanvas, and MapLoader completed.
+- Persistence is fixed SQLite document mapping (map_01, map_01_src, map_02, map_03).
+- Save updates an existing document row; generic create/duplicate/delete paths do not exist.
+- 32px grid semantics are already intrinsic to placement and resize; no separate Snap toggle is required for current P0 behavior.
+
+CONFIRMED:
+- New/Duplicate/Delete require an authoritative map identity and persistence policy before implementation.
+- Delete also requires reference protection and hard-delete/soft-delete semantics.
+
+STATUS: HOLD - Canon/design decision required before Map CRUD implementation.
+
+PROPOSAL:
+Keep current Map Editor unchanged. Decide the authoritative map identity/CRUD policy, then resume. No automatic implementation beyond this gate.
+
+
+## 2026-10-08 Map CRUD Implementation Result
+
+CONFIRMED:
+- Master approved stable Map ID identity, protected canonical maps, dynamic author-created map records, hard-delete for unreferenced dynamic maps, and Stage reference protection.
+- Map CRUD implementation is complete within this approved scope.
+- 32px grid behavior remains intrinsic; no Snap toggle was added.
+
+IMPLEMENTED:
+- Map selector.
+- New Map.
+- Duplicate Map.
+- Delete Map with Stage-reference protection.
+- Dynamic SQLite map_documents persistence.
+- Dynamic map save/load serialization compatible with the existing raw map schema.
+
+VERIFICATION:
+- CODE VERIFIED: PASS.
+- BUILD/Editor headless compile: PASS.
+- MAP_CRUD_SMOKE_PASS.
+- MAP_NEW_SMOKE_PASS.
+- MAP_DYNAMIC_SAVE_SMOKE_PASS.
+- PIE VERIFIED: NOT VERIFIED.
+- Test DBs were copies; production menos.sqlite was not changed by CRUD smoke tests.
+
+STATUS: PASS — Map CRUD implementation gate complete; awaiting final diff review before commit/push.
+
+PROPOSAL:
+Perform final Map Editor diff/regression review now, then stop for Master Commit/Push approval if no unintended changes are found.
