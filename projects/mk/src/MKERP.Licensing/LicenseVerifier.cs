@@ -45,11 +45,14 @@ public static class LicenseVerifier
             return new(false, "다른 제품의 라이선스입니다.", p);
 
         var bindingValid = MachineFingerprint.IsV2(p.MachineFingerprint)
-            ? MachineFingerprint.Matches(p.MachineFingerprint, currentMachineFingerprint, 3)
+            ? MachineFingerprint.Matches(p.MachineFingerprint, currentMachineFingerprint, 4)
             : string.Equals(p.MachineFingerprint, MachineFingerprint.GetLegacy(), StringComparison.OrdinalIgnoreCase);
 
         if (!bindingValid)
             return new(false, "이 PC에 등록된 라이선스가 아닙니다.", p);
+
+        if (!string.IsNullOrWhiteSpace(p.DevicePublicKey) && !DeviceIdentity.MatchesInstalledIdentity(p.DevicePublicKey))
+            return new(false, "이 PC의 등록된 장치 식별 키와 라이선스가 일치하지 않습니다.", p);
 
         if (p.IssuedAtUtc > nowUtc.AddMinutes(5))
             return new(false, "라이선스 발급 시간이 유효하지 않습니다.", p);

@@ -18,8 +18,45 @@ public partial class App : WpfApplication
         if (!validation.IsValid)
         {
             var machine = LicenseService.GetMachineFingerprint();
+            string requestPath;
+            try
+            {
+                var requestDirectory = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "MKERP");
+                Directory.CreateDirectory(requestDirectory);
+                requestPath = Path.Combine(requestDirectory, "license-request.json");
+                var requestUnsigned = new LicenseActivationRequestUnsigned
+                {
+                    MachineFingerprint = machine,
+                    CreatedAtUtc = DateTime.UtcNow,
+                    DevicePublicKey = DeviceIdentity.GetOrCreatePublicKey()
+                };
+                var request = new LicenseActivationRequest
+                {
+                    Product = requestUnsigned.Product,
+                    MachineFingerprint = requestUnsigned.MachineFingerprint,
+                    CreatedAtUtc = requestUnsigned.CreatedAtUtc,
+                    DevicePublicKey = requestUnsigned.DevicePublicKey,
+                    RequestSignature = DeviceIdentity.SignRequest(requestUnsigned)
+                };
+                File.WriteAllText(
+                    requestPath,
+                    System.Text.Json.JsonSerializer.Serialize(
+                        request,
+                        new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"MK ERP 라이선스가 유효하지 않습니다.\n\n{validation.Message}\n\n라이선스 요청 파일을 생성하지 못했습니다.\n\n{ex.Message}",
+                    "MK ERP 라이선스", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown(2);
+                return;
+            }
+
             MessageBox.Show(
-                $"MK ERP 라이선스가 유효하지 않습니다.\n\n{validation.Message}\n\n이 PC의 활성화 코드:\n{machine}\n\n발급받은 license.json을 프로그램 폴더에 넣고 다시 실행하십시오.",
+                $"MK ERP 라이선스가 유효하지 않습니다.\n\n{validation.Message}\n\n이 PC의 라이선스 요청 파일이 생성되었습니다.\n\n{requestPath}\n\n이 파일을 발급자에게 보내고, 받은 license.json을 다시 설치하십시오.",
                 "MK ERP 라이선스", MessageBoxButton.OK, MessageBoxImage.Stop);
             Shutdown(2);
             return;
