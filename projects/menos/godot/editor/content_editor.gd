@@ -263,6 +263,10 @@ func _set_active_button_for_scene(scene_path: String) -> void:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnCampaign)
 	elif scene_path == VFX_EDITOR_SCENE:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnVFX)
+	elif scene_path == SFX_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnSFX)
+	elif scene_path == VOICE_EDITOR_SCENE:
+		_set_active_button($MainLayout/TopMenu/Buttons/BtnVoice)
 	elif scene_path == BGM_EDITOR_SCENE:
 		_set_active_button($MainLayout/TopMenu/Buttons/BtnBGM)
 
