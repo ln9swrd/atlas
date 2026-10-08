@@ -201,6 +201,11 @@ func _build_stage_properties(parent: VBoxContainer) -> void:
 	_option_row(parent, "주 임무 유형", mission_type_option)
 	mission_target_edit = _line_row(parent, "대상 ID")
 	mission_time_spin = _spin_row(parent, "제한 시간(초)", 0, 86400, 1, 0)
+	mission_title_edit.editable = false
+	mission_briefing_edit.editable = false
+	mission_type_option.disabled = true
+	mission_target_edit.editable = false
+	mission_time_spin.editable = false
 
 	reward_id_edit = _line_row(parent, "Reward ID")
 	reward_gold_spin = _spin_row(parent, "Reward Gold", 0, 999999999, 1, 0)
@@ -587,37 +592,29 @@ func _delete_stage(dialog: ConfirmationDialog) -> void:
 	_set_status("DELETED stage: " + stage_id)
 	dialog.queue_free()
 
-func _save_mission() -> bool:
+func _validate_mission_reference() -> bool:
 	var mission_id := mission_id_edit.text.strip_edges()
 	if mission_id.is_empty():
 		_set_status("Mission ID is required."); return false
-	var catalog := MissionDefinitionLoader.load_catalog()
-	catalog[mission_id] = {
-		"id": mission_id,
-		"title": mission_title_edit.text.strip_edges(),
-		"briefing": mission_briefing_edit.text.strip_edges(),
-		"primary_type": str(mission_type_option.get_item_text(mission_type_option.selected)),
-		"target_id": mission_target_edit.text.strip_edges(),
-		"time_limit": int(mission_time_spin.value)
-	}
-	return ObjectPersistence.save_catalog(MISSION_CATALOG_FILE, catalog)
+	var mission := MissionDefinitionLoader.load_definition(mission_id)
+	if mission == null:
+		_set_status("Mission ID does not exist: " + mission_id); return false
+	return true
 
-func _save_reward() -> bool:
+func _prepare_reward_catalog() -> Dictionary:
 	var reward_id := reward_id_edit.text.strip_edges()
-	if reward_id.is_empty():
-		_set_status("Reward ID is required."); return false
+	var catalog := RewardDefinitionLoader.load_catalog()
 	var item_ids: Array[String] = []
 	for raw_item_id in reward_item_ids_edit.text.split(","):
 		var item_id := str(raw_item_id).strip_edges()
 		if not item_id.is_empty() and not item_ids.has(item_id):
 			item_ids.append(item_id)
-	var catalog := RewardDefinitionLoader.load_catalog()
 	catalog[reward_id] = {
 		"id": reward_id,
 		"gold": int(reward_gold_spin.value),
 		"item_ids": item_ids
 	}
-	return ObjectPersistence.save_catalog(REWARD_CATALOG_FILE, catalog)
+	return catalog
 
 func _save_stage() -> void:
 	if current_path.is_empty() or id_edit.text.strip_edges().is_empty() or name_edit.text.strip_edges().is_empty():
@@ -627,6 +624,10 @@ func _save_stage() -> void:
 	var encounters: Array = stage_data.get("encounters", [])
 	if encounters.is_empty():
 		_set_status("At least one Encounter is required."); return
+	if not _validate_mission_reference(): return
+	var reward_id := reward_id_edit.text.strip_edges()
+	if reward_id.is_empty():
+		_set_status("Reward ID is required."); return
 	for encounter in encounters:
 		if not (encounter is Dictionary) or str(encounter.get("id", "")).strip_edges().is_empty() or not (encounter.get("waves", []) is Array) or encounter["waves"].is_empty():
 			_set_status("Every Encounter requires an ID and at least one Wave."); return
@@ -641,13 +642,12 @@ func _save_stage() -> void:
 	}
 	if not stage_data.has("allied_units") or not stage_data["allied_units"] is Array:
 		stage_data["allied_units"] = []
-	if not _save_mission(): return
-	if not _save_reward(): return
 	stage_data["mission_id"] = mission_id_edit.text.strip_edges()
-	stage_data["reward_id"] = reward_id_edit.text.strip_edges()
+	stage_data["reward_id"] = reward_id
 	stage_data.erase("mission")
-	if not ObjectPersistence.save_content_document(current_path, stage_data):
-		_set_status("FAILED to save Stage to SQLite: " + current_path)
+	var reward_catalog := _prepare_reward_catalog()
+	if not ObjectPersistence.save_catalog_pair_atomic(current_path, stage_data, REWARD_CATALOG_FILE, reward_catalog):
+		_set_status("FAILED to atomically save Stage + Reward to SQLite: " + current_path)
 		return
 	_set_status("SAVED TO SQLITE: " + current_path)
 

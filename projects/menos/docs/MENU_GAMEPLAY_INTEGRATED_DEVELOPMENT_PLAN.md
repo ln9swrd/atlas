@@ -947,3 +947,23 @@ At the next execution opportunity, run only the minimum Robot/Unit/Tower Visual 
 Success criterion: each tested Object can load its Catalog Visual Asset after Save/Reload and display it through its existing Runtime path.
 
 If all three pass, ACCEPT/STOP this gate. If one fails, investigate only that Object's Runtime consumer and report the smallest required change.
+### 30.7 STAGE Persistence Boundary ? IMPLEMENTED / VERIFIED
+
+**CONFIRMED**
+- `MISSION Editor` is the sole Mission mutation owner.
+- STAGE Editor may change the Mission reference ID, but Mission definition fields are read-only and STAGE SAVE no longer mutates the `missions` Catalog.
+- `STAGE Editor` remains the Reward mutation owner; no separate REWARD Editor is introduced in the current scope.
+- STAGE SAVE prepares the Reward Catalog and persists the Stage document + Reward Catalog through `ObjectPersistence.save_catalog_pair_atomic()` in one SQLite transaction.
+- Mission reference existence is validated before persistence.
+- The approved ownership boundary is therefore: MISSION Editor ? Mission persistence; STAGE Editor ? Stage + Reward persistence/reference.
+
+**VERIFICATION**
+- `godot/editor/stage_editor.gd` parses successfully with Godot 4.7.2 `--check-only`.
+- `git diff --check`: PASS.
+- Existing `stage_01`~`stage_03` Mission/Reward references were inspected directly in SQLite.
+- PIE / GUI Save?Reload?Runtime verification remains NOT VERIFIED.
+
+**PROPOSAL**
+- Keep the current Stage + Reward atomic boundary as the implementation contract.
+- Do not create a separate REWARD Editor unless a later authoring requirement demonstrates independent Reward lifecycle needs.
+- Failure-injection rollback and Master visual acceptance remain separate verification gates.
