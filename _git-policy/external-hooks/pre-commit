@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "BLOCKED: This repository is an external repository under D:/Atlas."
+echo "Local commit/push is disabled by Atlas repository policy."
+exit 1
