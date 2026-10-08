@@ -76,6 +76,39 @@ static func create_building(name_value: String) -> int:
 	db.close_db()
 	return new_pk
 
+static func create_building_with_data(data: Dictionary) -> int:
+	if not ensure_schema():
+		return 0
+	var db = _open_db(false)
+	if db == null:
+		return 0
+	if not db.query("BEGIN IMMEDIATE TRANSACTION"):
+		db.close_db()
+		return 0
+	if not db.query('SELECT COALESCE(MAX(odb_pk), 0) + 1 AS next_pk FROM odb_registry') or db.query_result.is_empty():
+		db.query("ROLLBACK")
+		db.close_db()
+		return 0
+	var new_pk := int(db.query_result[0].get("next_pk", 1))
+	var legacy_id := "building_%d" % new_pk
+	var payload := data.duplicate(true)
+	payload.erase("id")
+	payload.erase("odb_pk")
+	if not db.query_with_bindings('INSERT INTO "buildings" (odb_pk, id, raw_json) VALUES (?, ?, ?)', [new_pk, legacy_id, JSON.stringify(payload, "  ")]):
+		db.query("ROLLBACK")
+		db.close_db()
+		return 0
+	if not db.query_with_bindings('INSERT INTO odb_registry(odb_pk, content_type, legacy_id) VALUES (?, ?, ?)', [new_pk, "building", legacy_id]):
+		db.query("ROLLBACK")
+		db.close_db()
+		return 0
+	if not db.query("COMMIT"):
+		db.query("ROLLBACK")
+		db.close_db()
+		return 0
+	db.close_db()
+	return new_pk
+
 static func save_building(odb_pk: int, data: Dictionary) -> bool:
 	if odb_pk <= 0 or not ensure_schema():
 		return false
@@ -95,8 +128,20 @@ static func delete_building(odb_pk: int) -> bool:
 	var db = _open_db(false)
 	if db == null:
 		return false
-	var ok := db.query_with_bindings('DELETE FROM "buildings" WHERE odb_pk = ?', [odb_pk])
-	if ok:
-		ok = db.query_with_bindings('DELETE FROM odb_registry WHERE content_type = ? AND odb_pk = ?', ["building", odb_pk])
+	if not db.query("BEGIN IMMEDIATE TRANSACTION"):
+		db.close_db()
+		return false
+	if not db.query_with_bindings('DELETE FROM "buildings" WHERE odb_pk = ?', [odb_pk]):
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+	if not db.query_with_bindings('DELETE FROM odb_registry WHERE content_type = ? AND odb_pk = ?', ["building", odb_pk]):
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+	if not db.query("COMMIT"):
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
 	db.close_db()
-	return ok
+	return true

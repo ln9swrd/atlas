@@ -7,6 +7,9 @@ const IMAGE_STATE = preload("res://editor/image_editor_state.gd")
 
 var tower_data: Dictionary = {}
 var selected_type := ""
+var tower_dirty := false
+var tower_loading := false
+var pending_deleted_type := ""
 var tower_list: OptionButton
 var name_edit: LineEdit
 var cost_spin: SpinBox
@@ -35,6 +38,7 @@ var animation_frame := 0
 
 func _ready() -> void:
 	_build_ui()
+	_connect_dirty_signals()
 	animation_timer = Timer.new()
 	animation_timer.wait_time = 0.12
 	animation_timer.autostart = true
@@ -229,10 +233,39 @@ func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximu
 	spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spin)
 	return spin
+func _connect_dirty_signals() -> void:
+	name_edit.text_changed.connect(_on_tower_text_changed)
+	preference_edit.text_changed.connect(_on_tower_text_changed)
+	sprite_edit.text_changed.connect(_on_tower_text_changed)
+	default_image_edit.text_changed.connect(_on_tower_text_changed)
+	projectile_edit.text_changed.connect(_on_tower_text_changed)
+	for edit in animation_edits.values():
+		(edit as LineEdit).text_changed.connect(_on_tower_text_changed)
+	for control in [cost_spin, damage_spin, cooldown_spin, range_spin, level2_cost_spin, level2_damage_spin, level2_cooldown_spin, level2_range_spin]:
+		control.value_changed.connect(_on_tower_value_changed)
+
+func _on_tower_text_changed(_value: String) -> void:
+	_mark_tower_dirty()
+
+func _on_tower_value_changed(_value: float) -> void:
+	_mark_tower_dirty()
+
+func _mark_tower_dirty() -> void:
+	if tower_loading:
+		return
+	tower_dirty = true
+	_set_status("Unsaved Tower changes.")
+
 func _load_data() -> void:
+	if tower_dirty:
+		_set_status("Unsaved Tower changes. SAVE before RELOAD.")
+		return
+	tower_loading = true
 	tower_data.clear()
 	tower_data = ObjectRepository.load_catalog(TOWER_FILE)
 	_refresh_tower_list()
+	tower_dirty = false
+	tower_loading = false
 	_set_status("Loaded: " + TOWER_FILE if not tower_data.is_empty() else "Failed to load JSON")
 
 func _get_tower_types() -> Array:
@@ -254,7 +287,12 @@ func _refresh_tower_list() -> void:
 func _on_tower_selected(index: int) -> void:
 	if index < 0 or index >= tower_list.item_count:
 		return
-	selected_type = str(tower_list.get_item_metadata(index))
+	var target_type := str(tower_list.get_item_metadata(index))
+	if tower_dirty and target_type != selected_type:
+		_set_status("Unsaved Tower changes. SAVE before changing selection.")
+		return
+	selected_type = target_type
+	tower_loading = true
 	var data: Dictionary = tower_data.get(selected_type, {})
 	var level2: Dictionary = data.get("level2", {})
 	name_edit.text = str(data.get("name", selected_type.to_upper()))
@@ -275,6 +313,7 @@ func _on_tower_selected(index: int) -> void:
 	level2_damage_spin.value = float(level2.get("damage", data.get("damage", 0.0)))
 	level2_cooldown_spin.value = float(level2.get("cooldown", data.get("cooldown", 1.0)))
 	level2_range_spin.value = float(level2.get("range", data.get("range", 0.0)))
+	tower_loading = false
 
 func _open_add_tower_dialog() -> void:
 	var dialog := ConfirmationDialog.new()
@@ -313,6 +352,10 @@ func _open_add_tower_dialog() -> void:
 	new_id_edit.grab_focus()
 
 func _add_tower(dialog: ConfirmationDialog, requested_id: String, requested_name: String) -> void:
+	if tower_dirty:
+		_set_status("Unsaved Tower changes. SAVE before adding another Tower.")
+		dialog.queue_free()
+		return
 	var new_id := requested_id.strip_edges().to_lower().validate_filename()
 	var new_name := requested_name.strip_edges()
 	if new_id.is_empty():
@@ -346,19 +389,15 @@ func _add_tower(dialog: ConfirmationDialog, requested_id: String, requested_name
 		"projectile_anim": ""
 	}
 	tower_data[new_id] = new_tower
-	if not ObjectPersistence.save_catalog(TOWER_FILE, tower_data):
-		tower_data.erase(new_id)
-		_set_status("FAILED to save new tower.")
-		dialog.queue_free()
-		return
-	ObjectRepository.reload()
+	tower_dirty = true
+	selected_type = new_id
 	_refresh_tower_list()
 	for i in range(tower_list.item_count):
 		if str(tower_list.get_item_metadata(i)) == new_id:
 			tower_list.select(i)
 			_on_tower_selected(i)
 			break
-	_set_status("ADDED tower: " + new_id)
+	_set_status("ADDED to working copy: " + new_id + ". SAVE to persist.")
 	dialog.queue_free()
 
 func _confirm_delete_tower() -> void:
@@ -374,56 +413,70 @@ func _confirm_delete_tower() -> void:
 	dialog.popup_centered(Vector2i(480, 180))
 
 func _delete_tower(dialog: ConfirmationDialog) -> void:
-	tower_data.erase(selected_type)
-	if not ObjectPersistence.save_catalog(TOWER_FILE, tower_data):
-		_set_status("FAILED to save or verify JSON: %s." % TOWER_FILE)
+	if selected_type.is_empty() or not tower_data.has(selected_type):
 		dialog.queue_free()
 		return
-	ObjectRepository.reload()
+	pending_deleted_type = selected_type
+	tower_data.erase(selected_type)
 	selected_type = ""
+	tower_dirty = true
 	_refresh_tower_list()
-	if tower_list.item_count > 0:
-		tower_list.select(0)
-		_on_tower_selected(0)
-	_set_status("DELETED tower from: " + TOWER_FILE)
+	_set_status("DELETED from working copy. SAVE to persist.")
 	dialog.queue_free()
 
 func _save_data() -> bool:
-	if selected_type.is_empty():
+	if not tower_dirty:
+		_set_status("No unsaved Tower changes.")
+		return false
+	if not pending_deleted_type.is_empty():
+		# Deletion is already represented in the working copy.
+		pass
+	elif selected_type.is_empty():
 		_set_status("No tower selected.")
 		return false
-	if name_edit.text.strip_edges().is_empty():
-		_set_status("Name is required.")
-		return false
-	var data: Dictionary = tower_data.get(selected_type, {}).duplicate(true)
-	data["name"] = name_edit.text.strip_edges()
-	data["cost"] = int(cost_spin.value)
-	data["damage"] = float(damage_spin.value)
-	data["cooldown"] = float(cooldown_spin.value)
-	data["range"] = float(range_spin.value)
-	data["preference"] = preference_edit.text.strip_edges()
-	data["sprite_anim"] = sprite_edit.text.strip_edges()
-	data["default_image"] = default_image_edit.text.strip_edges()
-	var animations: Dictionary = data.get("animations", {}).duplicate(true)
-	for animation_name in animation_edits.keys():
-		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
-	data["animations"] = animations
-	data["projectile_anim"] = projectile_edit.text.strip_edges()
-	data["level2"] = {
-		"upgrade_cost": int(level2_cost_spin.value),
-		"damage": float(level2_damage_spin.value),
-		"cooldown": float(level2_cooldown_spin.value),
-		"range": float(level2_range_spin.value)
-	}
-	tower_data[selected_type] = data
+	else:
+		if not tower_data.has(selected_type):
+			_set_status("Selected Tower is missing from working copy.")
+			return false
+		if name_edit.text.strip_edges().is_empty():
+			_set_status("Name is required.")
+			return false
+		var data: Dictionary = tower_data.get(selected_type, {}).duplicate(true)
+		data["name"] = name_edit.text.strip_edges()
+		data["cost"] = int(cost_spin.value)
+		data["damage"] = float(damage_spin.value)
+		data["cooldown"] = float(cooldown_spin.value)
+		data["range"] = float(range_spin.value)
+		data["preference"] = preference_edit.text.strip_edges()
+		data["sprite_anim"] = sprite_edit.text.strip_edges()
+		data["default_image"] = default_image_edit.text.strip_edges()
+		var animations: Dictionary = data.get("animations", {}).duplicate(true)
+		for animation_name in animation_edits.keys():
+			animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+		data["animations"] = animations
+		data["projectile_anim"] = projectile_edit.text.strip_edges()
+		data["level2"] = {
+			"upgrade_cost": int(level2_cost_spin.value),
+			"damage": float(level2_damage_spin.value),
+			"cooldown": float(level2_cooldown_spin.value),
+			"range": float(level2_range_spin.value)
+		}
+		tower_data[selected_type] = data
+
 	if not ObjectPersistence.save_catalog(TOWER_FILE, tower_data):
-		_set_status("FAILED to save or verify JSON: %s." % TOWER_FILE)
+		_set_status("FAILED to save or verify JSON. Working copy preserved.")
 		return false
+
 	ObjectRepository.reload()
-	_refresh_tower_list()
-	var selected_index := _get_tower_types().find(selected_type)
-	if selected_index >= 0:
-		tower_list.select(selected_index)
+	var saved_type := selected_type
+	tower_dirty = false
+	pending_deleted_type = ""
+	_load_data()
+	if not saved_type.is_empty():
+		var selected_index := _get_tower_types().find(saved_type)
+		if selected_index >= 0:
+			tower_list.select(selected_index)
+			_on_tower_selected(selected_index)
 	_set_status("SAVED + VERIFIED: " + TOWER_FILE)
 	return true
 
@@ -527,12 +580,8 @@ func _apply_pending_asset_selection() -> void:
 			(animation_edits[animation_name] as LineEdit).text = asset_id
 	_refresh_animation_previews()
 	_refresh_image_inventory()
-	# Catalog selection is the assignment operation. Persist it immediately,
-	# matching Robot Editor behavior.
-	if _save_data():
-		_set_status("Asset assigned + saved: " + asset_id)
-	else:
-		_set_status("Asset assigned, but save failed: " + asset_id)
+	_mark_tower_dirty()
+	_set_status("Asset assigned to working copy: " + asset_id + ". SAVE to persist.")
 
 func _apply_asset_rect_to_data(field: String, rect_values: Array) -> void:
 	if selected_type.is_empty():

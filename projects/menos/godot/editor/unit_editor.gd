@@ -17,6 +17,10 @@ const UNIT_COLOR_SHADER = preload("res://shaders/allied_unit_color.gdshader")
 
 var unit_data: Dictionary = {}
 var unit_sources: Dictionary = {}
+var unit_dirty := false
+var unit_loading := false
+var pending_deleted_type := ""
+var pending_deleted_source := "unit"
 var projectile_edit: LineEdit
 var selected_type := ""
 var unit_list: OptionButton
@@ -61,6 +65,7 @@ var image_inventory_box: VBoxContainer
 
 func _ready() -> void:
 	_build_ui()
+	_connect_dirty_signals()
 	animation_timer = Timer.new()
 	animation_timer.wait_time = 0.12
 	animation_timer.autostart = true
@@ -413,12 +418,53 @@ func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximu
 	row.add_child(spin)
 	return spin
 
+func _connect_dirty_signals() -> void:
+	name_edit.text_changed.connect(_on_unit_text_changed)
+	for control in [hp_spin, speed_spin, armor_spin, damage_spin, reward_spin, radius_spin, attack_range_spin, attack_cooldown_spin, melee_cooldown_spin, robot_damage_spin, robot_range_spin, robot_cooldown_spin, sprite_rect_x_spin, sprite_rect_y_spin, sprite_rect_w_spin, sprite_rect_h_spin]:
+		control.value_changed.connect(_on_unit_value_changed)
+	attack_type_list.item_selected.connect(_on_unit_option_changed)
+	melee_check.toggled.connect(_on_unit_toggled)
+	sprite_edit.text_changed.connect(_on_unit_text_changed)
+	default_image_edit.text_changed.connect(_on_unit_text_changed)
+	projectile_edit.text_changed.connect(_on_unit_text_changed)
+	for edit in animation_edits.values():
+		(edit as LineEdit).text_changed.connect(_on_unit_text_changed)
+	color_edit.color_changed.connect(_on_unit_color_changed)
+
+func _on_unit_text_changed(_value: String) -> void:
+	_mark_unit_dirty()
+
+func _on_unit_value_changed(_value: float) -> void:
+	_mark_unit_dirty()
+
+func _on_unit_option_changed(_index: int) -> void:
+	_mark_unit_dirty()
+
+func _on_unit_toggled(_pressed: bool) -> void:
+	_mark_unit_dirty()
+
+func _on_unit_color_changed(_color: Color) -> void:
+	_mark_unit_dirty()
+	_apply_preview_color()
+
+func _mark_unit_dirty() -> void:
+	if unit_loading:
+		return
+	unit_dirty = true
+	_set_status("Unsaved Unit changes.")
+
 func _load_data() -> void:
+	if unit_dirty:
+		_set_status("Unsaved Unit changes. SAVE before RELOAD.")
+		return
+	unit_loading = true
 	unit_data.clear()
 	unit_sources.clear()
 	_load_unit_catalog_file(UNIT_FILE, "unit")
 	_load_unit_catalog_file(ENEMY_FILE, "enemy")
 	_refresh_unit_list()
+	unit_dirty = false
+	unit_loading = false
 	_set_status("Loaded: Unit + Enemy catalogs")
 
 func _load_unit_catalog_file(path: String, source: String) -> void:
@@ -482,30 +528,23 @@ func _confirm_delete_unit() -> void:
 	dialog.popup_centered(Vector2i(480, 180))
 
 func _delete_unit(dialog: ConfirmationDialog) -> void:
-	var source := str(unit_sources.get(selected_type, "unit"))
-	var target_file := ENEMY_FILE if source == "enemy" else UNIT_FILE
-	var catalog: Dictionary = ObjectRepository.load_catalog(target_file)
-	if not catalog.has(selected_type):
-		_set_status("FAILED: selected unit was not found in source JSON.")
+	if selected_type.is_empty() or not unit_data.has(selected_type):
 		dialog.queue_free()
 		return
-	catalog.erase(selected_type)
-	if not ObjectPersistence.save_catalog(target_file, catalog):
-		_set_status("FAILED to save or verify JSON: %s." % target_file)
-		dialog.queue_free()
-		return
-	ObjectRepository.reload()
+	pending_deleted_type = selected_type
+	pending_deleted_source = str(unit_sources.get(selected_type, "unit"))
 	unit_data.erase(selected_type)
 	unit_sources.erase(selected_type)
 	selected_type = ""
+	unit_dirty = true
 	_refresh_unit_list()
-	if unit_list.item_count > 0:
-		unit_list.select(0)
-		_on_unit_selected(0)
-	_set_status("DELETED unit from: " + target_file)
+	_set_status("DELETED from working copy. SAVE to persist.")
 	dialog.queue_free()
 
 func _create_new_unit() -> void:
+	if unit_dirty:
+		_set_status("Unsaved Unit changes. SAVE before creating another Unit.")
+		return
 	var sequence := 1
 	var new_id := "unit_%02d" % sequence
 	while unit_data.has(new_id):
@@ -523,6 +562,8 @@ func _create_new_unit() -> void:
 		"ai": {},
 		"visuals": {}
 	}
+	unit_dirty = true
+	selected_type = new_id
 	_refresh_unit_list()
 	var new_index := _find_unit_index(new_id)
 	if new_index >= 0:
@@ -561,7 +602,12 @@ func _refresh_all_image_thumbnails() -> void:
 func _on_unit_selected(index: int) -> void:
 	if index < 0 or index >= unit_list.item_count:
 		return
-	selected_type = str(unit_list.get_item_metadata(index))
+	var target_type := str(unit_list.get_item_metadata(index))
+	if unit_dirty and target_type != selected_type:
+		_set_status("Unsaved Unit changes. SAVE before changing selection.")
+		return
+	selected_type = target_type
+	unit_loading = true
 	var data: Dictionary = unit_data.get(selected_type, {})
 	if selected_type.is_empty():
 		return
@@ -608,80 +654,99 @@ func _on_unit_selected(index: int) -> void:
 	robot_damage_spin.editable = false
 	robot_range_spin.editable = false
 	robot_cooldown_spin.editable = false
+	unit_loading = false
 
 func _save_data() -> void:
-	if selected_type.is_empty():
-		_set_status("No unit selected.")
+	if not unit_dirty:
+		_set_status("No unsaved Unit changes.")
 		return
-	if name_edit.text.strip_edges().is_empty():
-		_set_status("Name is required.")
-		return
-	var data: Dictionary = unit_data.get(selected_type, {}).duplicate(true)
-	data["name"] = name_edit.text.strip_edges()
-	data["hp"] = float(hp_spin.value)
-	data["speed"] = float(speed_spin.value)
-	data["armor"] = float(armor_spin.value)
-	data["damage"] = float(damage_spin.value)
-	data["reward"] = float(reward_spin.value)
-	data["radius"] = float(radius_spin.value)
-	data["cooldown"] = float(attack_cooldown_spin.value)
-	data["range"] = float(attack_range_spin.value)
-	var selected_attack_index := attack_type_list.selected
-	if selected_attack_index == 1:
-		data["attack_type"] = "melee"
-	elif selected_attack_index == 2:
-		data["attack_type"] = "ranged"
-	else:
-		data.erase("attack_type")
-	data["color"] = color_edit.color.to_html(true)
-	data["melee"] = melee_check.button_pressed
-	data["melee_cooldown"] = float(melee_cooldown_spin.value)
-	data["robot_damage"] = float(robot_damage_spin.value)
-	data["robot_range"] = float(robot_range_spin.value)
-	data["robot_cooldown"] = float(robot_cooldown_spin.value)
-	data["projectile_anim"] = projectile_edit.text.strip_edges()
-	var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
-	visuals["sprite"] = sprite_edit.text.strip_edges()
-	visuals["default_image"] = default_image_edit.text.strip_edges()
-	var animations: Dictionary = {}
-	for animation_name in animation_edits.keys():
-		var image_path := (animation_edits[animation_name] as LineEdit).text.strip_edges()
-		if not image_path.is_empty():
-			animations[animation_name] = image_path
-	visuals["animations"] = animations
-	var sprite_rect := _get_sprite_rect_from_controls()
-	if sprite_rect.is_empty():
-		visuals.erase("sprite_rect")
-	else:
-		visuals["sprite_rect"] = sprite_rect
-	data["visuals"] = visuals
-	unit_data[selected_type] = data
-	var source := str(unit_sources.get(selected_type, "unit"))
+	if not selected_type.is_empty():
+		if not unit_data.has(selected_type):
+			_set_status("Selected Unit is missing from working copy.")
+			return
+		if name_edit.text.strip_edges().is_empty():
+			_set_status("Name is required.")
+			return
+		var data: Dictionary = unit_data.get(selected_type, {}).duplicate(true)
+		data["name"] = name_edit.text.strip_edges()
+		data["hp"] = float(hp_spin.value)
+		data["speed"] = float(speed_spin.value)
+		data["armor"] = float(armor_spin.value)
+		data["damage"] = float(damage_spin.value)
+		data["reward"] = float(reward_spin.value)
+		data["radius"] = float(radius_spin.value)
+		data["cooldown"] = float(attack_cooldown_spin.value)
+		data["range"] = float(attack_range_spin.value)
+		var selected_attack_index := attack_type_list.selected
+		if selected_attack_index == 1:
+			data["attack_type"] = "melee"
+		elif selected_attack_index == 2:
+			data["attack_type"] = "ranged"
+		else:
+			data.erase("attack_type")
+		data["color"] = color_edit.color.to_html(true)
+		data["melee"] = melee_check.button_pressed
+		data["melee_cooldown"] = float(melee_cooldown_spin.value)
+		data["robot_damage"] = float(robot_damage_spin.value)
+		data["robot_range"] = float(robot_range_spin.value)
+		data["robot_cooldown"] = float(robot_cooldown_spin.value)
+		data["projectile_anim"] = projectile_edit.text.strip_edges()
+		var visuals: Dictionary = data.get("visuals", {}).duplicate(true)
+		visuals["sprite"] = sprite_edit.text.strip_edges()
+		visuals["default_image"] = default_image_edit.text.strip_edges()
+		var animations: Dictionary = {}
+		for animation_name in animation_edits.keys():
+			var image_path := (animation_edits[animation_name] as LineEdit).text.strip_edges()
+			if not image_path.is_empty():
+				animations[animation_name] = image_path
+		visuals["animations"] = animations
+		var sprite_rect := _get_sprite_rect_from_controls()
+		if sprite_rect.is_empty():
+			visuals.erase("sprite_rect")
+		else:
+			visuals["sprite_rect"] = sprite_rect
+		data["visuals"] = visuals
+		unit_data[selected_type] = data
+
+	var source := pending_deleted_source if not pending_deleted_type.is_empty() else str(unit_sources.get(selected_type, "unit"))
 	var target_file := ENEMY_FILE if source == "enemy" else UNIT_FILE
 	var catalog: Dictionary = ObjectRepository.load_catalog(target_file)
-	if source == "enemy":
-		var enemy_data: Dictionary = data.duplicate(true)
-		var enemy_visuals: Dictionary = enemy_data.get("visuals", {}).duplicate(true)
-		enemy_data["base_damage"] = float(data.get("damage", 0.0))
-		enemy_data["attack_cooldown"] = float(data.get("cooldown", 1.0))
-		enemy_data["attack_range"] = float(data.get("range", 0.0))
-		enemy_data["sprite_anim"] = str(enemy_visuals.get("sprite", ""))
-		enemy_data.erase("visuals")
-		enemy_data.erase("damage")
-		enemy_data.erase("cooldown")
-		enemy_data.erase("range")
-		catalog[selected_type] = enemy_data
-	else:
-		catalog[selected_type] = data
+
+	if not pending_deleted_type.is_empty():
+		catalog.erase(pending_deleted_type)
+
+	if not selected_type.is_empty():
+		var data_to_save: Dictionary = unit_data.get(selected_type, {}).duplicate(true)
+		if source == "enemy":
+			var enemy_data: Dictionary = data_to_save.duplicate(true)
+			var enemy_visuals: Dictionary = enemy_data.get("visuals", {}).duplicate(true)
+			enemy_data["base_damage"] = float(data_to_save.get("damage", 0.0))
+			enemy_data["attack_cooldown"] = float(data_to_save.get("cooldown", 1.0))
+			enemy_data["attack_range"] = float(data_to_save.get("range", 0.0))
+			enemy_data["sprite_anim"] = str(enemy_visuals.get("sprite", ""))
+			enemy_data.erase("visuals")
+			enemy_data.erase("damage")
+			enemy_data.erase("cooldown")
+			enemy_data.erase("range")
+			catalog[selected_type] = enemy_data
+		else:
+			catalog[selected_type] = data_to_save
+
 	if not ObjectPersistence.save_catalog(target_file, catalog):
-		_set_status("FAILED to save or verify JSON: %s." % target_file)
+		_set_status("FAILED to save or verify JSON. Working copy preserved.")
 		return
+
 	ObjectRepository.reload()
-	unit_data[selected_type] = data
-	var selected_index := _find_unit_index(selected_type)
-	if selected_index >= 0:
-		unit_list.select(selected_index)
-		_on_unit_selected(selected_index)
+	unit_dirty = false
+	pending_deleted_type = ""
+	pending_deleted_source = "unit"
+	var saved_type := selected_type
+	_load_data()
+	if not saved_type.is_empty():
+		var selected_index := _find_unit_index(saved_type)
+		if selected_index >= 0:
+			unit_list.select(selected_index)
+			_on_unit_selected(selected_index)
 	_set_status("SAVED + VERIFIED: " + target_file)
 func _set_sprite_rect_controls(rect_values: Array) -> void:
 	var values := rect_values if rect_values.size() >= 4 else [0, 0, 0, 0]
@@ -837,10 +902,8 @@ func _apply_pending_asset_selection() -> void:
 	_refresh_all_image_thumbnails()
 	_refresh_animation_previews()
 	_refresh_image_inventory()
-	# Catalog selection is an assignment operation. Persist it immediately,
-	# matching Robot Editor behavior so the selected slot survives navigation.
-	_save_data()
-	_set_status("Asset assigned + saved: " + asset_id)
+	_mark_unit_dirty()
+	_set_status("Asset assigned to working copy: " + asset_id + ". SAVE to persist.")
 
 func _open_image_editor_for_target(target: String) -> void:
 	var path := ""

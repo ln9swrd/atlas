@@ -11,6 +11,8 @@ const ROBOT_COLOR_SHADER = preload("res://shaders/robot_profile_color.gdshader")
 var robot_data: Dictionary = {}
 var selected_type := ""
 var selected_odb_pk := 0
+var robot_dirty := false
+var robot_loading := false
 var robot_list: OptionButton
 var name_edit: LineEdit
 var faction_option: OptionButton
@@ -272,6 +274,39 @@ func _build_ui() -> void:
 	content.add_child(skill_preview_row)
 	for animation_name in SKILL_ANIMATIONS:
 		animation_previews[animation_name] = _create_animation_preview(skill_preview_row, _animation_display_name(animation_name), Vector2(90, 120))
+	_connect_dirty_signals()
+
+func _connect_dirty_signals() -> void:
+	name_edit.text_changed.connect(_on_robot_text_changed)
+	faction_option.item_selected.connect(_on_robot_faction_changed)
+	hp_spin.value_changed.connect(_on_robot_value_changed)
+	speed_spin.value_changed.connect(_on_robot_value_changed)
+	damage_spin.value_changed.connect(_on_robot_value_changed)
+	cooldown_spin.value_changed.connect(_on_robot_value_changed)
+	range_spin.value_changed.connect(_on_robot_value_changed)
+	color_edit.color_changed.connect(_on_robot_color_changed)
+	default_image_edit.text_changed.connect(_on_robot_text_changed)
+	for edit in animation_edits.values():
+		(edit as LineEdit).text_changed.connect(_on_robot_text_changed)
+
+func _on_robot_text_changed(_value: String) -> void:
+	_mark_dirty()
+
+func _on_robot_faction_changed(_index: int) -> void:
+	_mark_dirty()
+
+func _on_robot_value_changed(_value: float) -> void:
+	_mark_dirty()
+
+func _on_robot_color_changed(_value: Color) -> void:
+	_mark_dirty()
+
+func _mark_dirty() -> void:
+	if robot_loading:
+		return
+	robot_dirty = true
+	_set_status("Unsaved Robot changes.")
+
 func _animation_display_name(animation_name: String) -> String:
 	match animation_name:
 		"skill1":
@@ -453,28 +488,50 @@ func _spin_row(parent: VBoxContainer, label_text: String, minimum: float, maximu
 	return spin
 
 func _load_data() -> void:
+	if robot_dirty:
+		_set_status("Unsaved Robot changes. SAVE before RELOAD.")
+		return
+	robot_loading = true
 	robot_data.clear()
 	robot_data = ObjectRepository.load_catalog(ROBOT_FILE)
 	_refresh_robot_list()
+	robot_dirty = false
+	robot_loading = false
 	_set_status("Loaded: " + ROBOT_FILE if not robot_data.is_empty() else "Failed to load JSON")
 
 func _refresh_robot_list() -> void:
 	robot_list.clear()
-	for robot_type in ObjectRepository.list_robots():
+	for robot_type_variant in robot_data.keys():
+		var robot_type := str(robot_type_variant)
 		var data: Dictionary = robot_data.get(robot_type, {})
 		if not (data is Dictionary):
 			continue
 		var odb_pk := ContentCatalogLoader.resolve_odb_pk_from_legacy("robot", robot_type)
-		if odb_pk <= 0:
-			continue
 		robot_list.add_item(str(data.get("name", robot_type.to_upper())))
-		robot_list.set_item_metadata(robot_list.item_count - 1, odb_pk)
+		if odb_pk > 0:
+			robot_list.set_item_metadata(robot_list.item_count - 1, odb_pk)
+		else:
+			robot_list.set_item_metadata(robot_list.item_count - 1, "staged:" + robot_type)
 
 func _on_robot_selected(index: int) -> void:
 	if index < 0 or index >= robot_list.item_count:
 		return
-	selected_odb_pk = int(robot_list.get_item_metadata(index))
-	selected_type = ContentCatalogLoader.resolve_odb_pk("robot", selected_odb_pk)
+	var metadata: Variant = robot_list.get_item_metadata(index)
+	var target_type := ""
+	if metadata is String and str(metadata).begins_with("staged:"):
+		target_type = str(metadata).trim_prefix("staged:")
+	else:
+		target_type = ContentCatalogLoader.resolve_odb_pk("robot", int(metadata))
+	if robot_dirty and target_type != selected_type:
+		_set_status("Unsaved Robot changes. SAVE before changing selection.")
+		return
+	if metadata is String and str(metadata).begins_with("staged:"):
+		selected_odb_pk = 0
+		selected_type = str(metadata).trim_prefix("staged:")
+	else:
+		selected_odb_pk = int(metadata)
+		selected_type = ContentCatalogLoader.resolve_odb_pk("robot", selected_odb_pk)
+	robot_loading = true
 	var data: Dictionary = robot_data.get(selected_type, {})
 	var robot_name := str(data.get("name", selected_type.to_upper()))
 	id_edit.text = str(data.get("id", selected_type))
@@ -506,6 +563,7 @@ func _on_robot_selected(index: int) -> void:
 	_refresh_all_image_thumbnails()
 	_refresh_animation_previews()
 	_refresh_robot_preview()
+	robot_loading = false
 
 func _create_animation_preview(parent: Container, label_text: String, size: Vector2) -> VisualAssetPreview:
 	var box := VBoxContainer.new()
@@ -523,6 +581,8 @@ func _create_animation_preview(parent: Container, label_text: String, size: Vect
 	return preview
 
 func _animated_texture(path: String, frame: int, total_frames: int, rect_values: Variant = []) -> Texture2D:
+	if path.strip_edges().is_empty():
+		return null
 	var source_path := path
 	var asset_frames := 0
 	var columns := maxi(1, total_frames)
@@ -652,18 +712,16 @@ func _add_robot(dialog: ConfirmationDialog, requested_id: String, requested_name
 		"animation_rects": {}
 	}
 	robot_data[new_id] = new_robot
-	if not _write_robot_data():
-		robot_data.erase(new_id)
-		_set_status("FAILED to save new robot.")
-		dialog.queue_free()
-		return
+	selected_type = new_id
+	selected_odb_pk = 0
+	robot_dirty = true
 	_refresh_robot_list()
 	for i in range(robot_list.item_count):
-		if str(robot_list.get_item_metadata(i)) == new_id:
+		if str(robot_list.get_item_metadata(i)) == "staged:" + new_id:
 			robot_list.select(i)
 			_on_robot_selected(i)
 			break
-	_set_status("ADDED robot: " + new_id)
+	_set_status("ADDED to working copy: " + new_id + ". SAVE to persist.")
 	dialog.queue_free()
 
 func _write_robot_data() -> bool:
@@ -684,65 +742,71 @@ func _confirm_delete_robot() -> void:
 	dialog.popup_centered(Vector2i(480, 180))
 
 func _delete_robot(dialog: ConfirmationDialog) -> void:
-	if selected_odb_pk <= 0 or selected_type.is_empty():
+	if selected_type.is_empty() or not robot_data.has(selected_type):
 		dialog.queue_free()
 		return
-	if not ObjectPersistence.delete_catalog_entry_by_odb_pk(ROBOT_FILE, "robot", selected_odb_pk):
-		_set_status("FAILED to write JSON.")
-		dialog.queue_free()
-		return
-	ObjectRepository.reload()
+	robot_data.erase(selected_type)
 	selected_type = ""
 	selected_odb_pk = 0
-	_load_data()
-	if robot_list.item_count > 0:
-		robot_list.select(0)
-		_on_robot_selected(0)
-	_set_status("DELETED robot from: " + ROBOT_FILE)
+	robot_dirty = true
+	_refresh_robot_list()
+	_set_status("DELETED from working copy. SAVE to persist.")
 	dialog.queue_free()
 
 func _save_data() -> void:
-	if selected_type.is_empty():
-		_set_status("No robot selected.")
+	if not robot_dirty:
+		_set_status("No unsaved Robot changes.")
 		return
-	if selected_odb_pk <= 0 or name_edit.text.strip_edges().is_empty() or id_edit.text.strip_edges().is_empty():
-		_set_status("ODB PK, ID and name are required.")
+	if not selected_type.is_empty():
+		if not robot_data.has(selected_type):
+			_set_status("Selected Robot is missing from working copy.")
+			return
+		if id_edit.text.strip_edges() != selected_type:
+			_set_status("Robot ID changes are forbidden by Canon.")
+			return
+		if name_edit.text.strip_edges().is_empty() or id_edit.text.strip_edges().is_empty():
+			_set_status("ID and name are required.")
+			return
+		var data: Dictionary = robot_data.get(selected_type, {}).duplicate(true)
+		data["id"] = id_edit.text.strip_edges()
+		data["name"] = name_edit.text.strip_edges()
+		data["faction_id"] = str(faction_option.get_selected_metadata())
+		data["hp"] = float(hp_spin.value)
+		data["speed"] = float(speed_spin.value)
+		data["damage"] = float(damage_spin.value)
+		data["cooldown"] = float(cooldown_spin.value)
+		data["range"] = float(range_spin.value)
+		var team_color := color_edit.color
+		team_color.a = 1.0
+		data["color"] = team_color.to_html(true)
+		data["default_image"] = default_image_edit.text.strip_edges()
+		var animations: Dictionary = data.get("animations", {}).duplicate(true)
+		for animation_name in animation_edits.keys():
+			animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
+		data["animations"] = animations
+		data["animation_rects"] = animation_rects.duplicate(true)
+		data["default_image_rect"] = data.get("default_image_rect", [])
+		# Legacy runtime fields remain synchronized during the migration.
+		data["sprite_idle"] = animations.get("idle", "")
+		data["sprite_move"] = animations.get("move", "")
+		data["sprite_attack"] = animations.get("attack", "")
+		data["sprite_skill"] = animations.get("skill1", "")
+		data["projectile_anim"] = animations.get("projectile", "")
+		robot_data[selected_type] = data
+	if not _write_robot_data():
+		_set_status("FAILED to save Robot catalog. Working copy preserved.")
 		return
-	var data: Dictionary = robot_data.get(selected_type, {}).duplicate(true)
-	data["id"] = id_edit.text.strip_edges()
-	data["name"] = name_edit.text.strip_edges()
-	data["faction_id"] = str(faction_option.get_selected_metadata())
-	data["hp"] = float(hp_spin.value)
-	data["speed"] = float(speed_spin.value)
-	data["damage"] = float(damage_spin.value)
-	data["cooldown"] = float(cooldown_spin.value)
-	data["range"] = float(range_spin.value)
-	var team_color := color_edit.color
-	team_color.a = 1.0
-	data["color"] = team_color.to_html(true)
-	data["default_image"] = default_image_edit.text.strip_edges()
-	var animations: Dictionary = data.get("animations", {}).duplicate(true)
-	for animation_name in animation_edits.keys():
-		animations[animation_name] = (animation_edits[animation_name] as LineEdit).text.strip_edges()
-	data["animations"] = animations
-	data["animation_rects"] = animation_rects.duplicate(true)
-	data["default_image_rect"] = data.get("default_image_rect", [])
-	# Legacy runtime fields remain synchronized during the migration.
-	data["sprite_idle"] = animations.get("idle", "")
-	data["sprite_move"] = animations.get("move", "")
-	data["sprite_attack"] = animations.get("attack", "")
-	data["sprite_skill"] = animations.get("skill1", "")
-	data["projectile_anim"] = animations.get("projectile", "")
-	robot_data[selected_type] = data
-	if not ObjectPersistence.save_catalog_entry_by_odb_pk(ROBOT_FILE, selected_odb_pk, data):
-		_set_status("FAILED to save JSON.")
-		return
+	var saved_type := selected_type
 	ObjectRepository.reload()
-	_refresh_robot_list()
-	for i in range(robot_list.item_count):
-		if int(robot_list.get_item_metadata(i)) == selected_odb_pk:
-			robot_list.select(i)
-			break
+	robot_dirty = false
+	_load_data()
+	if not saved_type.is_empty():
+		var saved_pk := ContentCatalogLoader.resolve_odb_pk_from_legacy("robot", saved_type)
+		for i in range(robot_list.item_count):
+			if int(robot_list.get_item_metadata(i)) == saved_pk:
+				robot_list.select(i)
+				_on_robot_selected(i)
+				break
 	_set_status("SAVED: " + ROBOT_FILE)
 
 

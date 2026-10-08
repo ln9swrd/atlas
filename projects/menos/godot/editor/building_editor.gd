@@ -12,9 +12,15 @@ var destructible_check: CheckButton
 var sprite_edit: LineEdit
 var status_label: Label
 var selected_id := 0
+var building_data: Dictionary = {}
+var building_dirty := false
+var building_loading := false
+var pending_delete_id := 0
+var pending_new := false
 
 func _ready() -> void:
 	_build_ui()
+	_connect_dirty_signals()
 	_load_data()
 
 func _build_ui() -> void:
@@ -128,14 +134,53 @@ func _check_row(parent: VBoxContainer, label_text: String) -> CheckButton:
 	parent.add_child(check)
 	return check
 
+func _connect_dirty_signals() -> void:
+	name_edit.text_changed.connect(_on_building_text_changed)
+	category_edit.text_changed.connect(_on_building_text_changed)
+	sprite_edit.text_changed.connect(_on_building_text_changed)
+	hp_spin.value_changed.connect(_on_building_value_changed)
+	armor_spin.value_changed.connect(_on_building_value_changed)
+	blocks_check.toggled.connect(_on_building_toggled)
+	destructible_check.toggled.connect(_on_building_toggled)
+
+func _on_building_text_changed(_value: String) -> void:
+	_mark_building_dirty()
+
+func _on_building_value_changed(_value: float) -> void:
+	_mark_building_dirty()
+
+func _on_building_toggled(_pressed: bool) -> void:
+	_mark_building_dirty()
+
+func _mark_building_dirty() -> void:
+	if building_loading:
+		return
+	building_dirty = true
+	_set_status("Unsaved Building changes.")
+
+func _refresh_building_list() -> void:
+	building_list.clear()
+	for id_variant in building_data.keys():
+		var id := int(id_variant)
+		var data: Dictionary = building_data.get(id, {})
+		var label := "#%d %s" % [id, str(data.get("name", "BUILDING"))] if id > 0 else "#NEW %s" % str(data.get("name", "BUILDING"))
+		building_list.add_item(label)
+		building_list.set_item_metadata(building_list.item_count - 1, id)
+
 func _load_data() -> void:
+	if building_dirty:
+		_set_status("Unsaved Building changes. SAVE before RELOAD.")
+		return
+	building_loading = true
 	if not BuildingRepository.ensure_schema():
 		_set_status("FAILED to initialize buildings schema.")
 		return
+	building_data.clear()
 	building_list.clear()
 	var buildings := BuildingRepository.list_buildings()
 	for data in buildings:
 		var odb_pk := int(data.get("odb_pk", 0))
+		building_data[odb_pk] = data.duplicate(true)
 		var name := str(data.get("name", "BUILDING"))
 		building_list.add_item("#%d %s" % [odb_pk, name])
 		building_list.set_item_metadata(building_list.item_count - 1, odb_pk)
@@ -144,15 +189,23 @@ func _load_data() -> void:
 		_on_building_selected(0)
 	else:
 		_clear_form()
+	building_dirty = false
+	building_loading = false
 	_set_status("Loaded: buildings")
 
 func _on_building_selected(index: int) -> void:
 	if index < 0 or index >= building_list.item_count:
 		return
-	selected_id = int(building_list.get_item_metadata(index))
-	var data := BuildingRepository.get_building(selected_id)
+	var target_id := int(building_list.get_item_metadata(index))
+	if building_dirty and target_id != selected_id:
+		_set_status("Unsaved Building changes. SAVE before changing selection.")
+		return
+	selected_id = target_id
+	building_loading = true
+	var data: Dictionary = building_data.get(selected_id, {})
 	if data.is_empty():
 		_clear_form()
+		building_loading = false
 		_set_status("Building not found: %d" % selected_id)
 		return
 	id_edit.text = str(selected_id)
@@ -163,6 +216,7 @@ func _on_building_selected(index: int) -> void:
 	blocks_check.button_pressed = bool(data.get("blocks_movement", true))
 	destructible_check.button_pressed = bool(data.get("destructible", true))
 	sprite_edit.text = str(data.get("sprite", ""))
+	building_loading = false
 
 func _clear_form() -> void:
 	selected_id = 0
@@ -176,21 +230,39 @@ func _clear_form() -> void:
 	sprite_edit.text = ""
 
 func _add_building() -> void:
-	var id := BuildingRepository.create_building("NEW BUILDING")
-	if id <= 0:
-		_set_status("FAILED to add building.")
+	if building_dirty:
+		_set_status("Unsaved Building changes. SAVE before adding another Building.")
 		return
-	_load_data()
-	for i in range(building_list.item_count):
-		if int(building_list.get_item_metadata(i)) == id:
-			building_list.select(i)
-			_on_building_selected(i)
-			break
-	_set_status("ADDED building: #%d" % id)
+	var temp_id := -1
+	var data := {
+		"name": "NEW BUILDING",
+		"category": "structure",
+		"hp": 100.0,
+		"armor": 0.0,
+		"blocks_movement": true,
+		"destructible": true,
+		"sprite": ""
+	}
+	building_data[temp_id] = data
+	selected_id = temp_id
+	pending_new = true
+	building_dirty = true
+	building_loading = true
+	id_edit.text = "NEW"
+	name_edit.text = str(data["name"])
+	category_edit.text = str(data["category"])
+	hp_spin.value = float(data["hp"])
+	armor_spin.value = float(data["armor"])
+	blocks_check.button_pressed = bool(data["blocks_movement"])
+	destructible_check.button_pressed = bool(data["destructible"])
+	sprite_edit.text = str(data["sprite"])
+	building_loading = false
+	_refresh_building_list()
+	_set_status("ADDED to working copy. SAVE to persist.")
 
 func _save_data() -> void:
-	if selected_id <= 0:
-		_set_status("No building selected.")
+	if not building_dirty:
+		_set_status("No unsaved Building changes.")
 		return
 	var data := {
 		"name": name_edit.text.strip_edges(),
@@ -201,24 +273,69 @@ func _save_data() -> void:
 		"destructible": destructible_check.button_pressed,
 		"sprite": sprite_edit.text.strip_edges()
 	}
+	if selected_id == 0 and pending_delete_id <= 0:
+		_set_status("No building selected.")
+		return
+	if selected_id < 0 and pending_new:
+		if data["name"] == "":
+			_set_status("Name is required.")
+			return
+		var new_id := BuildingRepository.create_building_with_data(data)
+		if new_id <= 0:
+			_set_status("FAILED to persist new building. Working copy preserved.")
+			return
+		building_data.erase(selected_id)
+		selected_id = new_id
+		pending_new = false
+		building_dirty = false
+		_load_data()
+		for i in range(building_list.item_count):
+			if int(building_list.get_item_metadata(i)) == new_id:
+				building_list.select(i)
+				_on_building_selected(i)
+				break
+		_set_status("SAVED + VERIFIED: building #%d" % new_id)
+		return
+	if pending_delete_id > 0:
+		var delete_id := pending_delete_id
+		if not BuildingRepository.delete_building(delete_id):
+			_set_status("FAILED to delete building #%d. Working copy preserved." % delete_id)
+			return
+		pending_delete_id = 0
+		building_dirty = false
+		selected_id = 0
+		_load_data()
+		_set_status("SAVED + VERIFIED: deleted building #%d" % delete_id)
+		return
+	if selected_id <= 0 or not building_data.has(selected_id):
+		_set_status("No building selected.")
+		return
 	if data["name"] == "":
 		_set_status("Name is required.")
 		return
+	building_data[selected_id] = data.duplicate(true)
 	if not BuildingRepository.save_building(selected_id, data):
-		_set_status("FAILED to save building #%d." % selected_id)
+		_set_status("FAILED to save building #%d. Working copy preserved." % selected_id)
 		return
+	building_dirty = false
 	_load_data()
+	for i in range(building_list.item_count):
+		if int(building_list.get_item_metadata(i)) == selected_id:
+			building_list.select(i)
+			_on_building_selected(i)
+			break
 	_set_status("SAVED + VERIFIED: building #%d" % selected_id)
 
 func _delete_building() -> void:
-	if selected_id <= 0:
+	if selected_id <= 0 or not building_data.has(selected_id):
 		_set_status("No building selected.")
 		return
-	if not BuildingRepository.delete_building(selected_id):
-		_set_status("FAILED to delete building #%d." % selected_id)
-		return
-	_load_data()
-	_set_status("DELETED building #%d" % selected_id)
+	pending_delete_id = selected_id
+	building_data.erase(selected_id)
+	selected_id = 0
+	building_dirty = true
+	_refresh_building_list()
+	_set_status("DELETED from working copy. SAVE to persist.")
 
 func _set_status(message: String) -> void:
 	if is_instance_valid(status_label):
