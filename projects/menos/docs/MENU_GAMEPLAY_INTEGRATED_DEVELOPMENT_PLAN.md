@@ -1431,3 +1431,56 @@ CATALOG에는 일반 Asset Catalog와 Visual Asset Catalog가 서로 다른 Pers
 - pywinauto는 Godot 내부 UI Control 접근에 유효하지 않아 제거하였다.
 - 최소 GUI E2E: ROBOT → UNIT → TOWER Editor 진입 및 RELOAD 동작을 실제 화면에서 확인하였다.
 - GUI Editor 검증 PASS는 PIE VERIFIED와 동일하지 않으며, 실제 Runtime acceptance는 별도 Gate로 유지한다.
+
+## PROGRESS - TOWER Animation Asset Contract 2026-10-09
+
+**CONFIRMED**
+- TOWER Runtime consumes sprite_anim for the placed-tower visual path.
+- idle / attack / hit / death are not currently consumed by the Tower Runtime path.
+- The previous Editor validation required idle and attack without a current Runtime contract.
+
+**MASTER DECISION**
+- sprite_anim: Required.
+- idle / attack / hit / death: Optional.
+- projectile_anim: Optional.
+- State-specific animation becomes Required only after an explicit corresponding Tower Runtime consumption contract is established.
+
+**Implementation**
+- TOWER Editor validation updated to match this contract.
+- Existing Visual Asset Resolver validation fix remains in place.
+- No Tower Runtime, Catalog Asset, or semantic Asset ID migration was performed.
+
+**Verification**
+- Code Diff: PASS.
+- git diff --check: PASS.
+- Editor/Runtime full re-verification after this policy change: NOT VERIFIED.
+
+**Scope**
+- This resolves the current TOWER Editor Required/Optional policy only.
+- Tower Semantic Visual Asset ID Canon remains a separate future decision.
+
+
+## PROGRESS - Unit/Tower Visual Asset P0 E2E Gate 2026-10-09
+
+**STATUS - PASS**
+
+**CONFIRMED**
+- UNIT: `unit.basic.default` was changed through the GUI to `robot.asura.profile`, then SAVE -> RELOAD persisted the new `default_image` value in SQLite.
+- A fresh Runtime process loaded the changed Unit catalog and displayed the changed Visual Asset path in the gameplay screen.
+- UNIT was restored through the GUI to `unit.basic.default`, then SAVE -> RELOAD was verified in SQLite.
+- TOWER: `towers.rail.sprite_anim` was changed through the GUI to `robot.asura.profile`, then SAVE -> RELOAD persisted the new value in SQLite.
+- A fresh Runtime process loaded the changed Tower catalog and displayed the changed Sprite Asset at Tower runtime positions.
+- TOWER was restored through the GUI to `tower.rail.default`, then SAVE -> RELOAD was verified in SQLite.
+- Runtime code path was independently confirmed: Unit consumes `default_image` first and Tower consumes `sprite_anim`, both through `VisualAssetResolver`.
+
+**VERIFICATION**
+- CODE VERIFIED: PASS
+- DATA / PERSISTENCE VERIFIED: PASS
+- EDITOR VERIFIED: PASS - actual GUI edit, SAVE, RELOAD and restoration performed for Unit and Tower.
+- RUNTIME VISUAL DISPLAY: PASS - fresh Runtime screen observation performed for Unit and Tower.
+- PIE VERIFIED: NOT VERIFIED - automated/remote Runtime observation remains distinct from Master final PIE acceptance.
+
+**SCOPE**
+- This closes the minimum representative Unit/Tower Visual Asset E2E gate.
+- No expansion to every Unit/Tower Visual Asset was performed.
+- No new image Asset was generated.

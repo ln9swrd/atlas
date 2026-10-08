@@ -41,6 +41,12 @@ Edit → Validate → Save → Reload → Verify
 | ROBOT | ID/Faction/Stats/Visual/Skill refs, Save→Reload, 최소 Runtime load | Command A/P/H/M 및 Skill AUTO Runtime 계약 |
 | UNIT | ID/Faction/Role/Combat/Visual, Save→Reload, Spawn/AI | 6번째 Role |
 | TOWER | Definition, target, attack, Level 2, Visual, Runtime | EMP 중첩/재적용/Upgrade 영향 |
+
+**CANON - TOWER Animation Asset Contract (2026-10-09)**
+- sprite_anim is Required.
+- idle, attack, hit, death are Optional.
+- projectile_anim is Optional.
+- State-specific animation becomes Required only when the corresponding Tower Runtime consumption contract is explicitly established.
 | BUILDING | Base/Gate/Repair 기본 구조, Save→Reload | Repair 규칙, Gate failure policy, ownership |
 | SKILL | 현재 구조/참조 확인 | Execution/Effect/Cost/Cooldown/Animation Runtime 계약 |
 | CATALOG | Asset registration, metadata, validation, references, Save→Reload, Object Runtime display | Anchor/Pivot/Frame Runtime contract; Scale is owned by Runtime Object / Presentation |
@@ -190,3 +196,16 @@ Branch: main
 **최소 GUI E2E 결과:** ROBOT → UNIT → TOWER Editor 진입 및 RELOAD 동작 PASS.
 
 **검증 경계:** GUI Editor 검증은 PIE VERIFIED를 자동 승격하지 않는다. Master의 실제 Runtime acceptance는 별도 검증으로 유지한다.
+
+
+## 2026-10-09 ? Unit/Tower Visual Asset P0 E2E Gate
+
+**STATUS - PASS**
+
+- UNIT representative Asset `unit.basic.default`: GUI edit ? SAVE -> RELOAD ? fresh Runtime visual observation ? restoration completed.
+- TOWER representative Asset `tower.rail.default`: GUI edit ? SAVE -> RELOAD ? fresh Runtime visual observation ? restoration completed.
+- Runtime consumers were independently confirmed as Unit `default_image` and Tower `sprite_anim`, resolved through `VisualAssetResolver`.
+- CODE / DATA-PERSISTENCE / EDITOR verification: PASS.
+- Runtime screen observation: PASS.
+- Master final PIE acceptance: NOT VERIFIED and remains a separate gate.
+- This does not imply completion of every Unit/Tower Visual Asset.

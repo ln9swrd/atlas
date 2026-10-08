@@ -528,3 +528,22 @@ PROPOSAL:
 - pywinauto는 검증 후 제거하였다.
 - ROBOT → UNIT → TOWER Editor 진입 및 RELOAD 최소 GUI E2E PASS.
 - GUI 검증은 Master PIE acceptance와 구분한다.
+
+
+## 2026-10-09 Unit/Tower Visual Asset P0 E2E Gate Closure
+
+**STATUS: PASS**
+
+**CONFIRMED:**
+- UNIT `unit.basic.default`: GUI Asset mutation ? SAVE -> RELOAD ? fresh Runtime display verification passed; original value restored and SAVE -> RELOAD verified.
+- TOWER `tower.rail.default`: GUI Asset mutation ? SAVE -> RELOAD ? fresh Runtime display verification passed; original value restored and SAVE -> RELOAD verified.
+- Runtime consumers confirmed: Unit uses `default_image`; Tower uses `sprite_anim`; both resolve through `VisualAssetResolver`.
+
+**VERIFICATION:**
+- CODE VERIFIED: PASS
+- DATA / PERSISTENCE VERIFIED: PASS
+- EDITOR VERIFIED: PASS
+- RUNTIME VISUAL DISPLAY: PASS
+- PIE VERIFIED: NOT VERIFIED - Master final acceptance remains separate.
+
+**RESULT:** The minimum representative Unit/Tower Visual Asset E2E gate is closed. This does not certify every Unit/Tower Visual Asset.

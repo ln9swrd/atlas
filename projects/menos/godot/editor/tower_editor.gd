@@ -659,13 +659,16 @@ func _image_asset_entries() -> Array[Dictionary]:
 	entries.append({"name": "Basic Image", "path": default_image_edit.text.strip_edges(), "required": true})
 	for animation_name in ["idle", "attack", "hit", "death"]:
 		var edit: LineEdit = animation_edits[animation_name] as LineEdit
-		entries.append({"name": animation_name.to_upper() + " Animation", "path": edit.text.strip_edges(), "required": animation_name == "idle" or animation_name == "attack"})
+		entries.append({"name": animation_name.to_upper() + " Animation", "path": edit.text.strip_edges(), "required": false})
 	entries.append({"name": "Projectile Animation", "path": projectile_edit.text.strip_edges(), "required": false})
 	return entries
 
 func _image_path_exists(path: String) -> bool:
 	if path.is_empty():
 		return false
+	var resolved := VisualAssetResolver.resolve(path)
+	if resolved != null and not resolved.id.begins_with("legacy:"):
+		return not resolved.source.is_empty() and ResourceLoader.exists(resolved.source)
 	if path.begins_with("res://") or path.begins_with("user://"):
 		return ResourceLoader.exists(path)
 	return FileAccess.file_exists(path)
