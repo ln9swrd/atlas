@@ -2,6 +2,19 @@
 
 Status: PROPOSAL — Content Editor 1차 완성을 우선하는 종합 개발계획. Canon 변경 아님.
 
+## Current Status Index — 2026-10-09
+
+이 문서는 설계 계획과 날짜순 실행 기록을 함께 보존합니다. 아래 요약은 최신으로 확인된 상태를 가리키며, 이후 상태 변경 시 이 요약을 갱신하십시오. 과거 섹션의 HOLD/PROPOSAL은 해당 기록 시점의 판단이므로, 더 뒤의 날짜가 명시된 결과/정합성 기록과 구분해 읽어야 합니다.
+
+- Map Editor CRUD: 구현 및 background smoke 검증 기록 PASS; Master PIE acceptance는 별도이며 NOT VERIFIED.
+- Catalog → Unit/Tower Visual Asset Save/Reload → Runtime display: 2026-10-09 최소 대표 E2E 기록 PASS; 모든 Asset의 완료 또는 Master PIE acceptance를 뜻하지 않음.
+- Catalog Save transaction rollback: 격리 DB 기반 실패 주입/rollback smoke PASS; PIE VERIFIED 아님.
+- Audio audibility: 2026-10-09 Master confirmed SFX, BGM, and Voice all produce audible sound. BGM/SFX asset-level aesthetic Production Acceptance and PIE observation remain separate gates; the Voice P0 pilot candidate is separately Master-approved, while PIE observation, Production Lock, and broader Voice scope remain open.
+- Next short-term goal: Content Editor UI improvement. Staged plan recorded in docs/CONTENT_EDITOR_UI_IMPROVEMENT_PLAN.md; begin with read-only visible baseline and prioritized issue inventory before changing layouts.
+- SFX: Authoring/Definition/Runtime technical pilot 기반 PASS. `ROBOT_LASER_FIRE` 출처는 `godot/sound/ATTRIBUTION.md`에 기록된 Freesound CC0 source.
+- Content Editor 1차 완성: 전체 메뉴의 최신 foreground/PIE 및 Production Acceptance가 모두 닫혔다고 이 요약에서 주장하지 않습니다. 각 메뉴별 검증 상태와 미확인 항목은 최신 `state/CURRENT_STATE.md` 및 날짜가 가장 최근인 개별 기록으로 확인합니다.
+- Commit/Push: 본 문서 갱신 자체는 Commit/Push를 승인하지 않습니다.
+
 ## 1. 목적
 
 현재까지 정의한 Content Editor 구현·검증 스펙을 개발계획에 통합하고, 먼저 Content Editor의 1차 완성을 달성한다. 1차 완성은 15개 Authoring 메뉴의 공통 편집/검증/저장/재로드 기준과 핵심 참조·Runtime E2E를 확보하는 것을 의미하며, 미확정 Gameplay 의미론이나 Presentation Production 확장은 자동으로 포함하지 않는다.

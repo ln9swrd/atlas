@@ -185,7 +185,7 @@ func _ready() -> void:
 	queue_redraw()
 
 func _bgm_faction() -> String:
-	var faction := str(robot_catalog.get("faction", ""))
+	var faction := str(robot_catalog.get("faction_id", ""))
 	return faction if not faction.is_empty() else "FACTION_01"
 
 func _play_bgm_context(context: String) -> void:

@@ -1,18 +1,19 @@
-# SFX Production Pipeline — Firefly Source to MENOS Runtime
+# SFX Production Pipeline — Source to MENOS Runtime
 
 ## 목적
-Master가 음향 전문지식 없이 무료 생성 서비스를 이용해 원천 SFX WAV를 확보하고, 이후 Source 검사부터 Production Asset, SFX Definition, Runtime Binding, 검증까지 일관된 파이프라인으로 처리한다.
+원천 SFX를 생성 서비스 또는 사용 조건이 확인된 기존 Source에서 확보하고, Source 검사부터 Production Asset, SFX Definition, Runtime Binding, 검증까지 일관된 파이프라인으로 처리한다. 특정 Source 제공자나 생성 서비스는 Canon으로 고정하지 않는다.
 
 ## 범위
 - SFX만 대상이다.
 - BGM과 Voice는 별도 도메인으로 관리한다.
-- Firefly는 원천 음원 생성 도구이며 MENOS의 Runtime/Authoring 시스템은 생성 도구와 독립적으로 유지한다.
+- Firefly는 사용할 수 있는 원천 음원 생성 선택지 중 하나이며, MENOS의 Runtime/Authoring 시스템은 Source 제공자와 독립적으로 유지한다.
+- 현재 `ROBOT_LASER_FIRE` P0 pilot의 기록된 출처는 Firefly가 아니라 Freesound의 Daleonfire / `Laser2` (CC0)이다. 실제 Asset 출처와 변환 정보는 `godot/sound/ATTRIBUTION.md`를 기준으로 한다.
 
 ## 역할 분담
 ### Master
-1. Marie가 제공한 SFX 제작 사양과 Firefly Prompt를 사용한다.
-2. Firefly에서 원천 WAV를 생성한다.
-3. 지정된 Source 폴더에 WAV를 저장한다.
+1. Marie가 제공한 SFX 제작 사양과, 생성 방식을 선택한 경우 해당 도구용 Prompt를 사용한다.
+2. 승인된 생성 서비스에서 원천 WAV를 만들거나, 사용 조건이 확인된 Source 음원을 확보한다.
+3. 지정된 Source 폴더에 원본을 보존한다.
 4. 실제 청취를 통해 후보의 미학적 품질을 판단한다.
 5. 최종 Production 승인 여부를 결정한다.
 
@@ -37,7 +38,7 @@ Master가 음향 전문지식 없이 무료 생성 서비스를 이용해 원천
 Sera의 기술 판단은 PROPOSAL이며 Canon이 아니다. Commit/Push는 수행하지 않는다.
 
 ## 전체 파이프라인
-Firefly Prompt → Firefly Source WAV → Source 검사 → Audio Processing → Production WAV → Prompt/Provenance Record → Audio Asset → SFX Definition → Runtime Binding → 게임 검증 → Master 청취 승인 → Production Lock
+Source 생성/확보 → Source 검사 → Audio Processing → Production WAV → Source/Prompt/Provenance Record → Audio Asset → SFX Definition → Runtime Binding → 게임 검증 → Master 청취 승인 → Production Lock
 
 ## Source Audio 원칙
 원천 WAV는 불변 자료로 취급한다. Production 처리로 원본을 덮어쓰지 않는다.
@@ -135,7 +136,7 @@ Master 승인 이후에는 Production Lock을 적용하고, 변경이 필요하�
 전체 SFX를 한 번에 제작하지 않는다.
 첫 End-to-End Pilot은 `ROBOT_LASER_FIRE` 하나로 한다.
 성공 조건:
-1. Firefly Source WAV 확보
+1. Source WAV 확보 및 실제 출처/사용 조건 기록 (`ROBOT_LASER_FIRE` 현재 기록: Freesound / Daleonfire / CC0)
 2. Source 검사 PASS
 3. Production WAV 생성
 4. Prompt/Provenance 기록
@@ -161,7 +162,8 @@ Pilot이 성공하면 동일 Pipeline을 나머지 SFX에 확장한다.
 - ROBOT_LASER_FIRE P0 pilot과 기존 SFX Definition binding이 등록되어 있다.
 - Content Editor SFX entry가 활성화되어 있다.
 - Technical validation / Save / Reload / Delete / Runtime resolution smoke가 PASS 상태다.
-- Master listening / Production Acceptance와 PIE audio observation은 UNVERIFIED다.
+- Master 청취 확인(소리 재생 여부): 2026-10-09 CONFIRMED — Master가 SFX, BGM, Voice 모두 소리가 난다고 확인했다.
+- 음향 품질에 대한 Production Acceptance와 PIE에서의 audio 상태 전환 관찰은 별도 항목이며 UNVERIFIED다.
 - Legacy direct-file SFX playback은 호환 경계로 유지되며 단계적 이관 대상이다
 ## 상태
 STATUS — PROPOSAL

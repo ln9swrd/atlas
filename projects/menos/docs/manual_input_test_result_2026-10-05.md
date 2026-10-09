@@ -3,7 +3,10 @@
 ## 작업 목적
 자동공격(ATTACK: AUTO)을 수동 공격 모드(ATTACK: MANUAL)로 전환하고, 수동 입력 동작을 테스트한다.
 
-## 기준선
+## 기준선 — 2026-10-05 당시 기록
+
+> 프로젝트 이름과 경로는 테스트 당시의 역사적 환경 정보이며 현재 제품 표시명/프로젝트 기준을 뜻하지 않습니다.
+
 - 프로젝트: MENOS Tactical Defense PoC
 - Godot: D:\\Godot_v4.7.2
 - 프로젝트: D:\\Atlas\\projects\\menos\\godot

@@ -183,10 +183,13 @@ OUT OF SCOPE:
 
 ## 10. 기준선
 
-HEAD: 6a5ec357
-Branch: main
+**역사적 기준선 스냅샷 (문서 작성 시점: 2026-10-08; 현재 저장소 상태가 아님)**
 
-이번 정리는 문서 구조만 변경했다. 코드/Asset/SQLite는 변경하지 않았다.
+HEAD: `6a5ec357`
+
+Branch: `main`
+
+이번 정리는 문서 구조만 변경했다. 코드/Asset/SQLite는 변경하지 않았다. 현재 기준선은 작업 시작 시점의 Git 상태와 `state/CURRENT_STATE.md`에서 확인한다.
 
 ## GUI Verification Tooling Decision — 2026-10-08
 

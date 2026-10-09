@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="MENOS Tactical Defense PoC"
+config/name="MENOS"
 run/main_scene="res://ui/title_screen.tscn"
 config/features=PackedStringArray("4.7")
 

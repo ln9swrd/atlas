@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: MENOS\n"
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "SETTINGS"
+msgstr "SETTINGS"
+
+msgid "LANGUAGE"
+msgstr "LANGUAGE"
+
+msgid "KOREAN"
+msgstr "KOREAN"
+
+msgid "ENGLISH"
+msgstr "ENGLISH"
+
+msgid "BACK"
+msgstr "BACK"
+
+msgid "START CAMPAIGN"
+msgstr "START CAMPAIGN"
+
+msgid "SINGLE PLAY"
+msgstr "SINGLE PLAY"
+
+msgid "START SINGLE PLAY"
+msgstr "START SINGLE PLAY"
+
+msgid "SINGLE PLAY SELECTED"
+msgstr "SINGLE PLAY SELECTED"
+
+msgid "QUIT"
+msgstr "QUIT"

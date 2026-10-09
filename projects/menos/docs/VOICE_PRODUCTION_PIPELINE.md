@@ -695,7 +695,8 @@ CONFIRMED:
 - Added the minimum gameplay Runtime path: `GameController.start_wave()` invokes the Voice pilot once through `VoiceDefinitionRepository` → `VoiceRuntimeAdapter` → `AudioStreamPlayer`.
 - Added `godot/tests/voice_runtime_integration_smoke_test.gd`; headless integration verification PASS against the actual `start_wave()` path.
 - This is a pilot runtime trigger, not a finalized Dialogue/Subtitle architecture.
-- PIE / human listening / Production Acceptance remain UNVERIFIED.
+- Master confirmed audible playback for SFX, BGM, and Voice on 2026-10-09.
+- Voice pilot audibility is CONFIRMED by Master. The Voice P0 pilot candidate is separately MASTER-APPROVED in Section 26; PIE observation, Production Lock, and any scope beyond that approved candidate remain separate and UNVERIFIED.
 - The actual project resource now loads as an `AudioStream` with duration 1.24226757369615 seconds.
 - A temporary background runtime check created an `AudioStreamPlayer`, entered it into the scene tree, invoked `play()`, and completed without a runtime load/play API failure.
 - Existing Voice validation, repository, editor-entry, and Content Editor smoke tests remain PASS.
@@ -705,11 +706,11 @@ LIMITATION:
 - PIE VERIFIED remains UNVERIFIED until the actual game is run and the Master observes the result.
 
 DECISION GATE:
-Actual Master listening / PIE observation remains the minimum remaining Voice acceptance check.
+Master's audible-playback confirmation and Voice P0 pilot-candidate approval are recorded. PIE observation, Production Lock, and any expansion beyond the approved pilot remain separate verification gates.
 
 PROPOSAL:
-- Keep the pilot as the sole Voice production candidate until acceptance.
-- After acceptance, add exactly one Dialogue -> Voice -> subtitle/runtime presentation E2E case before expanding Voice coverage.
+- Keep the Master-approved pilot as the sole approved Voice candidate; do not expand coverage without a new Master decision.
+- When Voice work resumes, add exactly one Dialogue -> Voice -> subtitle/runtime presentation E2E case before expanding Voice coverage.
 
 
 ## 26. 2026-10-08 Voice P0 Master Approval

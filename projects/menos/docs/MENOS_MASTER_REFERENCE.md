@@ -74,7 +74,7 @@ Runtime
 - Campaign: Stage의 순서와 진행
 - Runtime: 위 정의를 실행
 
-현재 Master가 지정한 Mission Type은 Tower Defense, Elimination, Giant Boss Battle이다. Mission Type과 Run Mode/Player Count는 동일 개념으로 취급하지 않는다.
+현재 Mission Editor의 `primary_type` 허용값은 코드 기준 `defend_base`, `clear_encounters`, `defeat_giant`이다. 이는 Mission Type의 저장 식별자이며, `Tower Defense`, `Elimination`, `Giant Boss Battle` 같은 과거의 설명용 명칭을 별도 enum 또는 현재 코드값으로 간주하지 않는다. `target_id`는 호환성을 위해 보존되는 Legacy/Deprecated 필드이며 P0 Runtime 목표 판정에 사용하지 않는다. Mission Type과 Run Mode/Player Count는 동일 개념으로 취급하지 않는다.
 
 ## 4. 현재 실제 구현 상태
 
@@ -370,7 +370,7 @@ Editor UI와 Runtime UI의 문자열을 중복 저장하지 않는다.
 - 최소 검증
 
 삭제/덮어쓰기/대규모 Asset 변환/외부 Source는 별도 승인 없이 수행하지 않는다.
-Commit/Push는 Master가 명시적으로 승인한 경우에만 수행한다.
+Commit/Push는 단기목표 달성 시 수행한다. 단, 단기목표에 포함되지 않는 기존 변경사항을 함께 커밋하지 않으며, 목표 범위·Diff·검증 결과를 확인한 뒤 해당 목표에 속하는 변경만 커밋하고 Push한다. 목표 달성 여부가 불명확하거나 원격 반영에 위험이 있으면 HOLD 후 Master에게 보고한다.
 
 화면 테스트는 프로젝트 Canon에 따라 background 방식으로 우선 수행한다. background 방식으로 판별할 수 없는 경우 foreground 조작으로 우회하지 않고 HOLD한다.
 

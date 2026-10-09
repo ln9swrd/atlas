@@ -371,7 +371,7 @@ SFX 및 VOICE의 구현을 자동으로 시작하지 않는다.
 - Faction 01의 Normal / Combat / Victory / Defeat pilot binding이 등록되어 있다.
 - GameController의 Run State → BGM Context binding이 구현되어 있다.
 - BGM Runtime Controller 및 Definition/Adapter validation은 PASS 상태다.
-- 실제 Master 청취/Production Acceptance와 PIE 관찰은 UNVERIFIED다.
+- Master 실제 청취(소리 재생 여부): 2026-10-09 CONFIRMED. 음악적 적합성에 대한 Production Acceptance 및 PIE에서의 상태 전환 관찰은 별도 항목이며 UNVERIFIED다.
 - Definition의 crossfade 필드는 존재하지만 실제 crossfade playback은 현재 구현되지 않았다
 ## 20. 상태
 

@@ -6,12 +6,14 @@ MENOS Catalog Editor에서 2행 이상의 Sprite Sheet를 정확하게 등록·�
 
 핵심 목표는 단순히 `frames` 수를 늘리는 것이 아니라 **고정 Cell Grid + Anchor 메타데이터**를 Visual Asset의 명시적 기준으로 정의하는 것이다. Anchor는 기본적으로 공통값을 사용하되, Master 결정에 따라 필요할 경우 **프레임별 수동 Anchor Override**를 저장·소비할 수 있어야 한다.
 
-## 2. 현재 기준선
+## 2. 문서 작성 당시 기준선 스냅샷
 
-- Project: `D:\Atlas\projects\menos`
-- Godot: `D:\Godot_v4.7.2`
-- 기준 Branch: `main`
-- 현재 Working Tree: 문서 정합성 보정 변경사항이 존재하며, 기존 변경사항은 임의로 되돌리지 않는다.
+> 아래 경로와 작업 상태는 이 개발계획을 작성/갱신한 당시의 환경 기록입니다. 현재 프로젝트 경로 또는 현재 Working Tree 상태를 의미하지 않습니다. 현재 상태는 작업 시작 시 Git 기준선과 `state/CURRENT_STATE.md`를 확인하십시오.
+
+- 당시 Project: `D:\Atlas\projects\menos`
+- 당시 Godot: `D:\Godot_v4.7.2`
+- 당시 기준 Branch: `main`
+- 당시 Working Tree: 문서 정합성 보정 변경사항이 존재하며, 기존 변경사항은 임의로 되돌리지 않는다.
 - 관련 핵심 파일:
   - `godot/scripts/visual_asset_definition.gd`
   - `godot/editor/image_editor.gd`
