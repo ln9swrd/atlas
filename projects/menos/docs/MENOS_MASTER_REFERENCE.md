@@ -538,3 +538,27 @@ Status: PROPOSAL / NOT CANON
 - pywinauto는 Godot 내부 Control이 UI Automation/Win32 child control로 노출되지 않아 제거하였다.
 - 실제 GUI 최소 검증에서 ROBOT → UNIT → TOWER Editor 진입 및 각 Editor의 RELOAD 동작을 확인하였다.
 - 본 검증은 Content Editor GUI 경로 확인이며 Master의 최종 PIE acceptance를 대체하지 않는다.
+
+## Short-term Content Editor / Runtime Boundary — 2026-10-09
+
+**Master-approved design direction; implementation pending separate authorization.**
+
+- Map authoring source: one independent JSON file per map.
+- Runtime delivery: filtered SQLite database + versioned manifest + referenced Runtime Assets.
+- Supported short-term play modes: Campaign and Single Play only.
+- Runtime owns the title/main screen, gameplay scene, HUD, navigation and execution behavior. Content Editor owns authoring tools and editable content data (including maps), validation and authoring preview. The Editor does not own the actual Runtime screens.
+- Current implementation does not yet meet the map-file source-of-truth or publish-package contract. Existing SQLite map storage, JSON-looking legacy paths, empty Runtime Asset manifest and multiplayer metadata are documented gaps, not grounds for silent migration.
+- This section records scoped design approval, not Canon. Code, DB, Asset and Runtime configuration changes remain behind the next implementation approval gate. Final visual/PIE acceptance remains with Master.
+
+## Canon: Independent Project Documentation and Code Ownership (Master-approved 2026-10-09)
+
+**CANON:** Content Editor and Runtime must separately own and manage their documentation and code.
+
+- Content Editor-specific documentation and code belong within the `content_editor/` project boundary.
+- Runtime-specific documentation and code belong within the `godot/` project boundary.
+- A change in one project must not implicitly change the other project's owned documents or code.
+- Shared data contracts and protocols must have explicit ownership and a defined shared boundary. Changes require cross-project impact analysis and a deliberate synchronization procedure.
+- Root-level integration documents record Canon, interfaces, and status; they do not replace project-owned documentation.
+- This documentation/code ownership Canon is separate from the DB-separation Canon. The approved publishing package, per-map JSON source, and mode scope remain distinct decisions.
+- CONFIRMED: `content_editor/` and `godot/` are separate project directories. UNVERIFIED: completeness of project-local documentation and governance of shared contracts; inspect READ-ONLY before proposing structural changes.
+- This update changes only root integration documents. It does not create, move, or duplicate project-local files and does not change code.

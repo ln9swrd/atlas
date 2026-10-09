@@ -12,10 +12,7 @@ func is_valid() -> bool:
 func resolve_stream() -> AudioStream:
 	if not is_valid():
 		return null
-	if not ResourceLoader.exists(str(definition.audio_asset)):
-		return null
-	var resource = load(str(definition.audio_asset))
-	return resource as AudioStream
+	return RuntimeContentPackage.load_resource(str(definition.audio_asset)) as AudioStream
 
 func play(parent: Node) -> bool:
 	var stream := resolve_stream()

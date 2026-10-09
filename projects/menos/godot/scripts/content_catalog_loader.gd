@@ -31,6 +31,11 @@ static func _get_db():
 	var db_path := SQLITE_PATH
 	if OS.is_debug_build() and not _database_path_for_tests.is_empty():
 		db_path = _database_path_for_tests
+	elif RuntimeContentPackage.is_package_selected():
+		if not RuntimeContentPackage.is_package_valid():
+			push_error("ContentCatalogLoader: selected package is invalid: %s" % RuntimeContentPackage.validation_error())
+			return null
+		db_path = RuntimeContentPackage.database_path()
 	var db = SQLite.new()
 	db.path = db_path
 	db.read_only = true

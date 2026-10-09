@@ -4,6 +4,9 @@ extends RefCounted
 const SQLITE_PATH := "res://content/menos.sqlite"
 static var _sqlite_path_override := ""
 
+static func _content_writes_allowed() -> bool:
+	return OS.has_feature("editor") or (OS.is_debug_build() and not _sqlite_path_override.is_empty())
+
 static func set_sqlite_path_for_tests(path: String) -> void:
 	_sqlite_path_override = path
 
@@ -11,7 +14,11 @@ static func clear_sqlite_path_override() -> void:
 	_sqlite_path_override = ""
 
 static func _database_path() -> String:
-	return _sqlite_path_override if not _sqlite_path_override.is_empty() else SQLITE_PATH
+	if not _sqlite_path_override.is_empty():
+		return _sqlite_path_override
+	if RuntimeContentPackage.is_package_selected():
+		return RuntimeContentPackage.database_path() if RuntimeContentPackage.is_package_valid() else ""
+	return SQLITE_PATH
 
 const SQLITE_MAP_TABLES := {
 	"map_01": "map_01",
@@ -27,6 +34,9 @@ const LEGACY_MAP_PATHS := {
 }
 
 static func list_map_paths() -> Array[String]:
+	if RuntimeContentPackage.is_package_selected() and not RuntimeContentPackage.is_package_valid():
+		push_error("MapLoader: selected Runtime content package is invalid: %s" % RuntimeContentPackage.validation_error())
+		return []
 	var paths: Array[String] = []
 	for path in SQLITE_MAP_TABLES.keys():
 		if str(path).ends_with("_src"):
@@ -45,6 +55,9 @@ static func list_map_paths() -> Array[String]:
 	return paths
 
 static func load_map_data(file_path: String) -> Dictionary:
+	if RuntimeContentPackage.is_package_selected() and not RuntimeContentPackage.is_package_valid():
+		push_error("MapLoader: selected Runtime content package is invalid: %s" % RuntimeContentPackage.validation_error())
+		return {}
 	var table := _sqlite_map_table(file_path)
 	if not table.is_empty():
 		return _load_sqlite_map_data(table)
@@ -233,6 +246,9 @@ static func _map_data_to_raw(map_data: Dictionary) -> Dictionary:
 	return raw
 
 static func save_map_data(file_path: String, map_data: Dictionary) -> bool:
+	if not _content_writes_allowed():
+		push_error("MapLoader: content database writes are disabled outside the editor.")
+		return false
 	if _sqlite_map_table(file_path).is_empty():
 		var db = _open_db(false)
 		if db == null:
@@ -308,8 +324,15 @@ static func _save_fixed_map_data(file_path: String, map_data: Dictionary) -> boo
 	return false
 
 static func _open_db(read_only: bool):
+	if not read_only and not _content_writes_allowed():
+		push_error("MapLoader: content database writes are disabled outside the editor.")
+		return null
+	var database_path := _database_path()
+	if database_path.is_empty():
+		push_error("MapLoader: selected content database path is invalid; refusing fallback.")
+		return null
 	var db = SQLite.new()
-	db.path = _database_path()
+	db.path = database_path
 	db.read_only = read_only
 	db.foreign_keys = true
 	db.verbosity_level = 0
@@ -338,6 +361,8 @@ static func _load_dynamic_map_data(map_id: String) -> Dictionary:
 	return parse_raw_data(raw_data) if raw_data is Dictionary else {}
 
 static func create_map(map_id: String, map_data: Dictionary) -> bool:
+	if not _content_writes_allowed():
+		return false
 	var id := map_id.strip_edges()
 	if id.is_empty() or not id.is_valid_filename() or id in SQLITE_MAP_TABLES:
 		return false
@@ -366,6 +391,8 @@ static func duplicate_map(source_id: String, new_id: String, new_name: String = 
 	return create_map(new_id, data)
 
 static func delete_map(map_id: String) -> bool:
+	if not _content_writes_allowed():
+		return false
 	if SQLITE_MAP_TABLES.has(map_id):
 		return false
 	var db = _open_db(false)
@@ -387,8 +414,12 @@ static func _sqlite_map_table(file_path: String) -> String:
 	return ""
 
 static func _load_sqlite_map_data(table: String) -> Dictionary:
+	var database_path := _database_path()
+	if database_path.is_empty():
+		push_error("MapLoader: selected content database path is invalid; refusing fallback.")
+		return {}
 	var db = SQLite.new()
-	db.path = _database_path()
+	db.path = database_path
 	db.read_only = true
 	db.foreign_keys = true
 	db.verbosity_level = 0
@@ -414,8 +445,15 @@ static func _load_sqlite_map_data(table: String) -> Dictionary:
 	return parse_raw_data(raw_data)
 
 static func _save_sqlite_map_data(table: String, json_string: String) -> bool:
+	if not _content_writes_allowed():
+		push_error("MapLoader: content database writes are disabled outside the editor.")
+		return false
+	var database_path := _database_path()
+	if database_path.is_empty():
+		push_error("MapLoader: selected content database path is invalid; refusing fallback.")
+		return false
 	var db = SQLite.new()
-	db.path = _database_path()
+	db.path = database_path
 	db.read_only = false
 	db.foreign_keys = true
 	db.verbosity_level = 0

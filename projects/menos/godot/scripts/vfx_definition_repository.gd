@@ -11,6 +11,9 @@ static var _catalog: Dictionary = {}
 static var _loaded := false
 
 static func _open_db(read_only: bool = false):
+	if not read_only and not OS.has_feature("editor"):
+		push_error("VFXDefinitionRepository: content database writes are disabled outside the editor.")
+		return null
 	var db = SQLite.new()
 	db.path = SQLITE_PATH
 	db.read_only = read_only
@@ -22,6 +25,18 @@ static func _open_db(read_only: bool = false):
 	return db
 
 static func ensure_schema() -> bool:
+	if not OS.has_feature("editor"):
+		var read_db = _open_db(true)
+		if read_db == null:
+			return false
+		var table_exists: bool = read_db.query_with_bindings("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?", [TABLE])
+		if not table_exists or read_db.query_result.is_empty():
+			read_db.close_db()
+			return false
+		var document_exists: bool = read_db.query_with_bindings("SELECT document_id FROM vfx_definitions WHERE document_id = ?", [DOCUMENT_ID])
+		var valid_schema: bool = document_exists and not read_db.query_result.is_empty()
+		read_db.close_db()
+		return valid_schema
 	var db = _open_db(false)
 	if db == null:
 		return false

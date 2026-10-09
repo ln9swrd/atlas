@@ -2,9 +2,11 @@ class_name ObjectPersistence
 extends RefCounted
 
 const SQLITE_PATH := "res://content/menos.sqlite"
-
 static var _atomic_failure_injection_for_tests := false
 static var _database_path_for_tests := ""
+
+static func _content_writes_allowed() -> bool:
+	return OS.has_feature("editor") or (OS.is_debug_build() and not _database_path_for_tests.is_empty())
 
 static func set_database_path_for_tests(path: String) -> void:
 	if not OS.is_debug_build():
@@ -192,6 +194,9 @@ static func _sqlite_table_for_path(path: String) -> String:
 	return normalized
 
 static func _open_db(read_only: bool):
+	if not read_only and not _content_writes_allowed():
+		push_error("ObjectPersistence: content database writes are disabled outside the editor.")
+		return null
 	var db_path := SQLITE_PATH
 	if OS.is_debug_build() and not _database_path_for_tests.is_empty():
 		db_path = _database_path_for_tests

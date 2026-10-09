@@ -5,6 +5,9 @@ const SQLITE_PATH := "res://content/menos.sqlite"
 const TABLE := "buildings"
 
 static func _open_db(read_only: bool = false):
+	if not read_only and not OS.has_feature("editor"):
+		push_error("BuildingRepository: content database writes are disabled outside the editor.")
+		return null
 	var db = SQLite.new()
 	db.path = SQLITE_PATH
 	db.read_only = read_only
@@ -16,6 +19,14 @@ static func _open_db(read_only: bool = false):
 	return db
 
 static func ensure_schema() -> bool:
+	if not OS.has_feature("editor"):
+		var read_db = _open_db(true)
+		if read_db == null:
+			return false
+		var exists: bool = read_db.query_with_bindings("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?", [TABLE])
+		var schema_exists: bool = exists and not read_db.query_result.is_empty()
+		read_db.close_db()
+		return schema_exists
 	var db = _open_db(false)
 	if db == null:
 		return false

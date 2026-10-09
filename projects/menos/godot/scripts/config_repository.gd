@@ -28,7 +28,10 @@ static func get_section(path: String, section: String) -> Dictionary:
 	return data[section].duplicate(true)
 
 static func get_editor_value(section: String, key: String, default_value: Variant = null) -> Variant:
-	return get_value(EDITOR_SETTINGS_PATH, section, key, default_value)
+	var settings_path := EDITOR_SETTINGS_PATH
+	if RuntimeContentPackage.is_package_selected() and not OS.has_feature("editor"):
+		settings_path = "runtime_settings"
+	return get_value(settings_path, section, key, default_value)
 
 static func get_gameplay_value(section: String, key: String, default_value: Variant = null) -> Variant:
 	return get_value(GAMEPLAY_SETTINGS_PATH, section, key, default_value)

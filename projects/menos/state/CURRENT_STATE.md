@@ -6,15 +6,15 @@ This dated snapshot supplements, and does not rewrite, the chronological records
 
 - Repository: `D:\Atlas\projects\menos`
 - Branch: `main`
-- HEAD at review: `6bbc484ae8033c5b115d5769d58dd887b8eb3183`
-- Working Tree before documentation updates: clean.
+- HEAD at review: `a5aadb04e759ca3cb11029e88720055d735bb1ae`
+- Working Tree includes pre-existing Godot modifications plus the current Content Editor map JSON / loader / validator / Publisher PoC changes. Preserve unrelated and pre-existing changes; no Commit or Push was performed.
 - Runtime project: `godot/`; existing Runtime content DB: `godot/content/menos.sqlite`.
 - Independent Content Editor project: `content_editor/`; authoring DB: `content_editor/data/menos.sqlite`.
-- Data authority transition is UNVERIFIED. The existence of an authoring DB copy does not make it the approved sole source of truth.
-- A published Runtime package/manifest is not yet established as a complete, validated delivery path.
+- Content Editor map authoring source: `content_editor/data/maps/*.json` (3 maps); Runtime delivery remains a generated, separate SQLite package. Broader content-authority transfer remains UNVERIFIED.
+- Isolated Runtime content package Publisher PoC is implemented and headless-smoke-tested. It is a data/Asset overlay only, not a standalone Runtime build or approved deployment path.
 - Headless/menu and isolated save/reload smoke results must not be described as full GUI acceptance or Master PIE acceptance.
 - Known Editor GUI hang/black-screen diagnosis and full GUI save/reload acceptance remain UNVERIFIED.
-- Do not modify either DB, change the authoring authority, or implement a publisher/runtime loader solely as a documentation cleanup.
+- Publisher writes only to a new caller-selected output directory. Source authoring DB, Runtime DB and source Assets remained unchanged during verification. Package activation/deployment and Master GUI/PIE acceptance remain unverified.
 - The separation plan contains historical baseline references to `E:\atlas` and HEAD `3620dea9...`; those refer to earlier investigation checkpoints, not the current repository baseline.
 
 
@@ -1068,3 +1068,103 @@ PROPOSAL:
 - Interactive mouse/keyboard Save/Reopen remains UNVERIFIED. Existing headless 15-menu/asset-resolution and isolated Unit/Tower save/reload tests remain PASS.
 - Validation clone and hung process removed/stopped. Source DB hash remained d4ff06697788800fb249c907ec3c068b4c2209ad3ecbe7c8aedc06a3df9a9edc; no source DB write from the GUI attempt. No commit/push.
 - HOLD: perform read-only diagnosis of the GUI hang before any additional fix. Do not change map startup or tileset resources without separate approval.
+
+## 2026-10-09 PROGRESS — Approved short-term Editor/Runtime separation goal
+
+- **STATUS:** design approval recorded; implementation not authorized.
+- **Approved:** map authoring source is one independent JSON file per map; Runtime publish output is a filtered SQLite DB plus manifest and referenced Assets; supported modes are Campaign and Single Play only.
+- **Ownership boundary:** Runtime owns the title/main screen, gameplay screen, HUD and gameplay behavior. Content Editor owns authoring UI and content authoring/validation/preview; map data can be edited there without making the Editor the owner of Runtime screens.
+- **CONFIRMED:** map persistence currently uses SQLite fixed-map tables and the `map_documents` table. Current JSON-looking map paths can be mapped to SQLite table names by `ContentCatalogLoader`; direct per-map JSON source-of-truth is not implemented.
+- **CONFIRMED:** `content_editor/runtime_manifest/runtime_assets.json` has an empty `assets` array; the end-to-end publisher/Runtime package contract remains incomplete.
+- **CONFIRMED:** map authoring code still contains multiplayer toggles/default metadata. Compatibility/removal policy remains a pre-implementation design item; no data was changed.
+- **NEXT GATE:** finish READ-ONLY design of map JSON schema/path/ID contract, map-reference resolution, JSON-to-published-SQLite transformation, dependency closure and multiplayer compatibility. Stop before code/data changes and request implementation authorization.
+- Existing 13 modified files under `godot/` predate this documentation work and must remain untouched. No Commit/Push.
+
+## 2026-10-09 PROGRESS: Canon for independent project documents and code
+
+- **STATUS:** Canon recorded in root integration documents; project structure compliance remains UNVERIFIED.
+- **CANON:** Content Editor and Runtime separately own/manage their documents and code. Shared interfaces must be explicit and reviewed across both projects; no implicit cross-project edits.
+- **CONFIRMED:** `content_editor/` and `godot/` project directories exist. Root `docs/` and `state/` contain integration/reference documents.
+- **UNVERIFIED:** project-local documentation completeness and shared-contract ownership/version policy. No file inventory, move, or copy was performed in this update.
+- **SCOPE:** only root integration documents updated. No project code, DB, Asset, project-local file, Commit or Push.
+- **NEXT:** READ-ONLY inventory project-local docs/code and cross-project references; propose minimum changes, then stop before creating/moving files or changing code until authorized.
+
+
+## Publisher PoC status ? 2026-10-09
+
+- Content Editor map JSON authoring contract is implemented and integration-tested.
+- `content_editor/tools/publish_runtime_package.py` creates a filtered SQLite + manifest + referenced data Asset package in a new isolated directory.
+- Python publisher integration test PASS; Godot 4.7.2 headless Runtime loader smoke PASS against the generated DB.
+- The package excludes `editor`, `player_profile`, and `schema_migrations`; it retains Runtime content tables and legacy map compatibility tables, and adds `map_documents`.
+- Source hashes and SQLite integrity checks PASS. Runtime DB/source and GUI/PIE were not modified/tested.
+- Status: PASS for isolated PoC; HOLD for deployment/Production acceptance. See `docs/CONTENT_EDITOR_RUNTIME_SEPARATION_PLAN.md` and `content_editor/docs/RUNTIME_PACKAGE_PUBLISHER.md`.
+
+
+## 2026-10-10 ? Runtime external package root (Option A)
+
+- Master selected A: use a selected package directory separate from the Runtime project.
+- Runtime package config: `user://runtime_content_package.json`, absolute `package_root`.
+- `RuntimeContentPackage` validates manifest version, DB SHA-256 and every manifest Asset's size/SHA-256; selected invalid packages fail closed instead of silently using the built-in DB.
+- `MapLoader` and `ContentCatalogLoader` share the selected DB. Dynamic content image/audio loading supports PNG/JPG/JPEG/WebP/BMP/TGA and OGG/WAV/MP3. Runtime title-screen settings are projected into `runtime_settings`; the full `editor` table remains excluded.
+- Headless package and config tests PASS. Test package was removed and user config restored/removed.
+- Windows Release export and headless startup with selected package PASS; log contained zero `ERROR`, script or SQL errors. Master GUI/PIE remains NOT VERIFIED. Package selection has no UI; scenes/scripts/shaders and other hard-coded Runtime dependencies remain bundled.
+- No Commit/Push. Details: `godot/docs/runtime_content_package_selection.md` and section 9 of `godot/docs/runtime_supplementation_plan_2026-10-09.md`.
+
+
+## 2026-10-10 ? Runtime package selection A option
+
+- Master selected A: Runtime reads an explicitly configured package from a separate root.
+- `godot/scripts/runtime_content_package.gd` validates manifest, database hash and listed Asset hashes; MapLoader/ContentCatalogLoader and supported image/audio adapters use the selected package.
+- Invalid configured packages fail closed. A regression test confirms map aliases/data and catalogs are not served from the built-in DB.
+- Publisher integration, Runtime package smoke, Runtime config/fail-closed test and Content Editor map-authoring contract test all PASS.
+- Windows Desktop Release export PASS. Exported executable headless startup with a valid package PASS; missing package root is rejected without built-in DB fallback.
+- User config was restored/removed; isolated package/build remain temporary test artifacts and are not deployed. No Commit/Push, GUI/PIE not performed.
+- Status: ACCEPT?STOP for A option's explicit package selection mechanism; Master GUI/PIE acceptance remains NOT VERIFIED. Details: `godot/docs/runtime_content_package_selection.md` and `docs/CONTENT_EDITOR_RUNTIME_SEPARATION_PLAN.md`.
+
+
+## 2026-10-10 ? Godot project boundary cleanup
+
+- Master approved removing the duplicate Content Editor implementation from Runtime.
+- Removed `godot/editor/` after confirming no pre-existing local changes were present there.
+- Moved 16 tests that directly exercised the embedded editor into `content_editor/tests/`, preserving their contents and UID sidecars. Their pass status is not assumed.
+- Publisher now requires explicit `--runtime-root`; no implicit sibling `godot/` default remains. Content Editor preview remains local to its own project.
+- Runtime main scene remains `res://ui/title_screen.tscn`; Content Editor main scene remains `res://editor/content_editor.tscn`.
+- Publisher integration test with explicit `MENOS_RUNTIME_ROOT`, Publisher CLI explicit-root check, and Content Editor map contract test PASS. Windows Desktop Release export and exported headless startup PASS; export contains zero `res://editor/` resources and no script/parse/load errors. `git diff --check` PASS; both DB hashes unchanged.
+- Migrated legacy editor smoke suite was not run wholesale because some tests may write fixtures/project data. GUI/PIE not performed. No Commit/Push.
+
+
+## 2026-10-10 ? Content Editor location update
+
+- Master moved the standalone Content Editor project to `D:\Atlas\projects\content_editor` (repository-relative `projects/content_editor/`). Its former `projects/menos/content_editor/` location no longer exists.
+- Runtime remains at `D:\Atlas\projects\menos\godot`.
+- Content Editor headless startup, map authoring contract test, Publisher integration test, and explicit Runtime-root package generation all PASS from the new location.
+- Publisher defaults remain relative to the Content Editor project; Runtime assets are read only from the explicitly supplied `--runtime-root`.
+- Historical entries above intentionally retain their then-current paths. No GUI/PIE, Commit or Push.
+
+## 2026-10-10 — Runtime cleanup and existing-content management
+
+- Master requested Runtime structure cleanup and the ability for Content Editor to manage existing Runtime data as well as publish new content.
+- READ-ONLY audit found `game_controller.gd` and both DBs reference `res://content/editor/edited_assets/...`; that directory is not safe to delete until runtime asset ownership/path migration is validated.
+- Content Editor and Runtime DBs remain separate and currently have equal SHA-256 (`B681FFF79513E9E0C65481A1ABE750937CAA77970BF1FDB85422CD451449E2A8`). No automatic synchronization exists.
+- Proposal contract: `projects/content_editor/docs/RUNTIME_CONTENT_IMPORT_CONTRACT.md`. Import should read Runtime data, preview and validate, require explicit confirmation, back up authoring data, then edit/publish from Content Editor. Runtime DB is never directly modified by import.
+- No DB, asset, or runtime code changes in this audit. No GUI/PIE, Commit or Push.
+
+## 2026-10-10 — Runtime content management UI first pass
+
+- Content Editor main toolbar now includes `RUNTIME DATA` with import and publish actions.
+- Import supports the full Runtime project `content/menos.sqlite`, with preview-only mode, schema/integrity checks, confirmation, timestamped DB/maps backup, staged replace, and post-write hash/map validation. Runtime source DB remains read-only. Filtered published-package DB import is not supported yet.
+- Publisher UI requests an explicit Runtime root and output parent and creates a new timestamped package; no overwrite or auto activation.
+- Import unit/integration tests PASS (4/4 temporary-target tests); Publisher integration test PASS; Content Editor headless startup PASS (no script/parse errors). Existing Northbridge tileset invalid UID warnings remain UNVERIFIED/out of scope.
+- Runtime root artifacts moved (not deleted) to `projects/menos/docs/runtime_artifacts/`; pre-existing `_ui_baseline_temp.png.import` change preserved.
+- Production DB hashes unchanged and equal: `B681FFF79513E9E0C65481A1ABE750937CAA77970BF1FDB85422CD451449E2A8`.
+- GUI/PIE NOT VERIFIED; no Commit/Push.
+
+## 2026-10-10 ? Content Editor window and Runtime access
+
+- Master clarified current scope: 3D work is out of scope; the Content Editor and MENOS Runtime are single-user tools; the existing table-set equality policy remains unchanged.
+- Content Editor startup window mode is now maximized (`window/size/mode=2`), matching the Runtime project's existing startup mode.
+- Runtime actions were moved out of the crowded editor-module HBox into a dedicated `MENOS RUNTIME` toolbar row so they remain visible independently of the long editor-module button strip.
+- `RUNTIME DATA` continues to provide explicit `Import Runtime Data` and `Publish Runtime Package` actions. Import preview/confirmation and new-output-only publishing remain unchanged.
+- Added `RUN RUNTIME`: prompts for the Runtime project directory, checks for `project.godot`, and launches it as a separate process using the current Godot executable. It does not activate a package or write the Runtime DB.
+- Verification: Content Editor headless startup PASS (exit 0, existing tileset invalid-UID warnings remain); map authoring contract test PASS; Publisher integration test PASS; Python syntax checks PASS; Runtime headless startup PASS; `git diff --check` PASS.
+- Import test command must set `MENOS_RUNTIME_DB` to the Runtime DB path; an initial invocation without that environment variable skipped its four tests, so that invocation is not counted as a pass. GUI visual interaction and Master PIE remain NOT VERIFIED.

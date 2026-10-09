@@ -263,7 +263,7 @@ func _texture_from_catalog_entry(data: Dictionary, field: String) -> Texture2D:
 		resolved_region = resolved.region
 		resolved_frames = maxi(1, resolved.frames)
 
-	var base_texture: Texture2D = load(source_path) as Texture2D
+	var base_texture: Texture2D = RuntimeContentPackage.load_resource(source_path) as Texture2D
 	if base_texture == null:
 		return null
 
@@ -368,7 +368,7 @@ func _texture_from_robot_animation_frame(anim_key: String, frame: int) -> Textur
 		rect_values = rects.get("skill1", [])
 	if rect_values is Array and rect_values.size() >= 4:
 		rect = Rect2(float(rect_values[0]), float(rect_values[1]), float(rect_values[2]), float(rect_values[3]))
-	var base_texture: Texture2D = load(source_path) as Texture2D
+	var base_texture: Texture2D = RuntimeContentPackage.load_resource(source_path) as Texture2D
 	if base_texture == null:
 		return null
 	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
@@ -398,7 +398,7 @@ func _texture_from_catalog_value(sprite_value: String, rect_values: Variant = []
 	source_path = _resolved_catalog_source(sprite_value, resolved)
 	if resolved != null and not resolved.id.begins_with("legacy:"):
 		resolved_region = resolved.region
-	var base_texture: Texture2D = load(source_path) as Texture2D
+	var base_texture: Texture2D = RuntimeContentPackage.load_resource(source_path) as Texture2D
 	if base_texture == null:
 		return null
 	var rect := resolved_region
@@ -602,7 +602,7 @@ func _draw_catalog_map_tiles(map_data: Dictionary) -> void:
 			if asset.is_empty():
 				continue
 			var source_path := str(asset.get("source_path", ""))
-			var texture := load(source_path) as Texture2D
+			var texture := RuntimeContentPackage.load_resource(source_path) as Texture2D
 			if texture == null:
 				continue
 			var rect_values: Variant = asset.get("source_rect_px", [0, 0, 32, 32])
@@ -629,7 +629,7 @@ func _draw_catalog_map_tiles(map_data: Dictionary) -> void:
 			if asset.is_empty():
 				continue
 			var source_path := str(asset.get("source_path", ""))
-			var texture := load(source_path) as Texture2D
+			var texture := RuntimeContentPackage.load_resource(source_path) as Texture2D
 			if texture == null:
 				continue
 			var rect_values: Variant = asset.get("source_rect_px", [0, 0, 32, 32])
@@ -1015,10 +1015,10 @@ func _team_mask_for_animation_frame(anim_key: String, frame: int) -> Texture2D:
 	if resolved == null or resolved.id.begins_with("legacy:") or resolved.team_mask_source.is_empty():
 		return null
 	var mask_path := resolved.team_mask_source
-	var mask_texture := ResourceLoader.load(mask_path) as Texture2D
+	var mask_texture := RuntimeContentPackage.load_resource(mask_path) as Texture2D
 	if mask_texture == null:
 		return null
-	var source_texture := ResourceLoader.load(resolved.source) as Texture2D
+	var source_texture := RuntimeContentPackage.load_resource(resolved.source) as Texture2D
 	if source_texture == null:
 		return null
 	if mask_texture.get_width() <= 0 or mask_texture.get_height() <= 0:
