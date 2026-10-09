@@ -2,11 +2,13 @@
 
 ## 0. 현재 구현 상태
 
-STATUS: PROPOSAL / NOT IMPLEMENTED
+STATUS: PARTIAL IMPLEMENTATION / P0 PILOT APPROVED
 
-현재 Content Editor의 VOICE 메뉴는 disabled 상태이며, 프로젝트에서 전용 Voice Editor, Voice Definition, Voice Profile Catalog, Dialogue Catalog, Voice Runtime Adapter/Repository, Subtitle/Localization Runtime Link는 구현되어 있지 않다. SQLite에도 Voice/Dialogue 전용 테이블은 현재 존재하지 않는다.
+이 문서의 초기 상태 선언(Voice Editor 및 Runtime 미구현)은 과거 계획 단계의 기록이며, 현재 상태로 사용하지 않는다. 2026-10-08 기록과 `state/CURRENT_STATE.md`에 따르면 Voice Definition/Repository/Loader/Validator/Runtime Adapter/Editor가 구현되어 있고 Content Editor의 VOICE 항목이 활성화되어 있다. SQLite에는 `voice_definitions` catalog가 있으며, `VOICE_PILOT_FACTION_01_ATTACK_01_KO`가 P0 파일럿으로 Master 승인되었다.
 
-따라서 이 문서는 현재 구현을 설명하는 문서가 아니라 향후 Voice 구현을 위한 Production / Authoring / Runtime 설계안이다. 기존 SFX/BGM Runtime 구현과 혼동하지 않는다.
+현재 승인 범위는 단일 P0 Voice 파일럿과 최소 Wave-start Runtime trigger에 한정된다. CODE/BUILD/EDITOR 검증 및 Master의 파일럿 승인 기록이 있으나, 이 문서의 최신 기록 기준 PIE 관찰은 별도로 VERIFIED 처리되지 않았다. 전체 Dialogue/Subtitle 아키텍처, 완전한 Dialogue → Voice → Subtitle/Presentation E2E 경로, Production Lock 및 전체 진영/캐릭터 확장은 완료된 것으로 간주하지 않는다.
+
+본 문서에는 설계 제안과 후속 구현 기록이 함께 포함되어 있다. 초기 제안 및 역사적 상태는 현재 구현 상태보다 우선하지 않으며, 설계 제안은 Master 승인 전까지 Canon이 아니다. 기존 SFX/BGM Runtime 구현과 Voice의 승인 범위를 혼동하지 않는다.
 
 ## 0.1 P0 구현 원칙
 
@@ -625,11 +627,11 @@ BUSINESS VIABLE:
 - 생성 서비스의 실제 이용권/상업 이용 조건을 Production 시점에 확인한다.
 - 특정 무료 정책을 프로젝트 Canon으로 고정하지 않는다.
 
-## 38. 상태
+## 38. 설계안의 권한 및 현재 상태 참조
 
-STATUS: PROPOSAL
+이 절과 앞선 설계 절은 Production / Authoring / Runtime 연결의 설계 기준과 제안을 기록한다. 이 절의 `STATUS: PROPOSAL`은 설계 제안의 권한 상태를 뜻하며, Voice 기능 전체가 미구현이라는 의미가 아니다.
 
-본 문서는 MENOS Voice Production / Authoring / Runtime 연결 설계안이다.
+현재 구현 및 승인 상태는 본 문서의 `## 0. 현재 구현 상태`와 그 뒤에 추가된 날짜별 진행 기록을 기준으로 판단한다. 날짜별 기록이 설계 제안과 충돌하면 실제 확인된 구현 상태 및 Master 승인 범위를 우선하며, 미승인 제안은 Canon이 아니다.
 
 PROPOSAL ≠ CANON
 
