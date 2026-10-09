@@ -306,10 +306,11 @@ func _quit() -> void:
 
 func _setup_runtime_import_ui() -> void:
 	$MainLayout/RuntimeToolbar/Actions/BtnRuntimeData.pressed.connect(_on_runtime_data_pressed)
-	$MainLayout/RuntimeToolbar/Actions/BtnRunRuntime.pressed.connect(_on_run_runtime_pressed)
 	_runtime_data_menu = PopupMenu.new()
-	_runtime_data_menu.add_item("Import Runtime Data", 0)
-	_runtime_data_menu.add_item("Publish Runtime Package", 1)
+	_runtime_data_menu.add_item("Import Runtime Data...", 0)
+	_runtime_data_menu.add_item("Publish Runtime Package...", 1)
+	_runtime_data_menu.add_separator()
+	_runtime_data_menu.add_item("Run MENOS Runtime...", 2)
 	_runtime_data_menu.id_pressed.connect(_on_runtime_data_action)
 	add_child(_runtime_data_menu)
 
@@ -379,6 +380,9 @@ func _on_runtime_data_action(id: int) -> void:
 		_runtime_import_file_dialog.popup_centered(Vector2i(900, 600))
 	elif id == 1:
 		_publish_runtime_root_dialog.popup_centered(Vector2i(900, 600))
+	elif id == 2:
+		_runtime_launch_root_dialog.popup_centered(Vector2i(900, 600))
+
 func _on_runtime_db_selected(path: String) -> void:
 	_runtime_import_source = path
 	var result := _run_runtime_import_tool(false)

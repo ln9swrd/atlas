@@ -159,11 +159,6 @@ layout_mode = 2
 text = "RUNTIME DATA"
 tooltip_text = "Import existing Runtime data or publish a new Runtime content package."
 
-[node name="BtnRunRuntime" type="Button" parent="MainLayout/RuntimeToolbar/Actions"]
-layout_mode = 2
-text = "RUN RUNTIME"
-tooltip_text = "Choose the MENOS Runtime project and launch it in a separate process."
-
 [node name="Content" type="Control" parent="MainLayout" unique_id=1915151087]
 clip_contents = true
 layout_mode = 2
