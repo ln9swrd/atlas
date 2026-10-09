@@ -998,7 +998,7 @@ Edit → Validate → Save → Reload → Verify
 - Localization Default / Fallback 언어
 
 **해당 메뉴 Runtime 검증 직전에 결정**
-- Mission target_id 의미
+- Mission `target_id` 의미 — **CANON: Deprecated**; 기존 필드는 호환성을 위해 유지하며 P0 Runtime에서는 사용하지 않음
 - Unit 6번째 Role
 - Robot Command A/P/H/M 및 Skill Runtime 계약
 - Tower EMP 중첩/재적용/Upgrade 영향

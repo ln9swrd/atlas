@@ -67,6 +67,7 @@ Runtime
 책임 경계:
 - Map: 재사용 가능한 전장 구조와 맵 종속 Gameplay 공간/지점
 - Mission: 목표와 승패 의미
+  - Mission `target_id`: Legacy/Deprecated 필드로 보존하며 P0 Runtime 목표 판정에는 사용하지 않습니다. 현재 목표는 Mission `primary_type`과 Stage/Encounter/Wave 구성으로 결정합니다.
 - Stage: Map + Mission + Encounter/Wave + Stage-specific gameplay controls
 - Stage gameplay controls: Wave Auto Start / Wave Group Gap / Allied Support
 - Single Play and Campaign both execute the selected Stage through the same StageManager/StageLoader/GameController path

@@ -35,7 +35,7 @@ Edit → Validate → Save → Reload → Verify
 |---|---|---|
 | MAP | CRUD, reference protection, 좌표/경계, Save→Reload→Runtime Map Load | 고급 Lock/Template는 후순위 |
 | STAGE | Definition, Map/Mission/Wave 참조, Save→Reload, Runtime Stage entry | Replay/Restart/Seed 등은 P1 |
-| MISSION | 3개 Type, Type별 필드, Time Limit, 참조/저장 검증 | target_id의 최종 의미 |
+| MISSION | 3개 Type, Type별 필드, Time Limit, 참조/저장 검증 | `target_id`는 Legacy/Deprecated 필드로 보존하며 P0 Runtime 계약에서는 사용하지 않음 |
 | CAMPAIGN | Ordered Stage, 참조 검증, Save→Reload, 전체 Stage sequence | Chapter/Story Runtime 여부 |
 | FACTION | ID, Name, registry/reference, Save→Reload | Color의 Runtime 의미, Alliance/Hostility Runtime 계약 |
 | ROBOT | ID/Faction/Stats/Visual/Skill refs, Save→Reload, 최소 Runtime load | Command A/P/H/M 및 Skill AUTO Runtime 계약 |
@@ -77,7 +77,11 @@ Edit → Validate → Save → Reload → Verify
 
 ### B. 실제 Runtime 검증 직전에 결정
 
-4. Mission target_id 유지/deprecated/제거.
+4. Mission `target_id` — **CANON: Deprecated**
+   - 기존 Authoring/SQLite 필드는 호환성을 위해 유지합니다.
+   - P0 Runtime은 `target_id`를 읽거나 목표 판정에 사용하지 않습니다.
+   - 현재 Mission 목표는 `primary_type` 및 Stage/Encounter/Wave 구성에 의해 결정됩니다.
+   - 향후 실제 Target 식별자가 필요한 경우 별도의 Master 결정으로 Runtime 계약을 정의합니다.
 5. Unit 6번째 Role.
 6. Robot Command/Skill Runtime 계약.
 7. Tower EMP 규칙.
