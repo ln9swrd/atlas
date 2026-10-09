@@ -1552,10 +1552,13 @@ Treat the integrated plan as reconciled at this point. No further Map Editor imp
 - Production save behavior is unchanged when the injection flag is disabled by default.
 - The seam forces failure after the document-side update and before catalog persistence, exercising the actual SQLite ROLLBACK path.
 - Added godot/tests/catalog_save_rollback_smoke_test.gd as the focused regression test.
+- Added Debug-build-only database path overrides to ObjectPersistence and ContentCatalogLoader; an empty override preserves the normal res://content/menos.sqlite path.
+- The test copies the source database to user://catalog_save_rollback_test.sqlite, runs assertions against that isolated copy, closes the cached loader connection, and removes the temporary database and SQLite sidecars.
 - The test snapshots asset_catalog and visual_assets, injects the failure, verifies Save returns failure, then verifies both catalogs are byte-equivalent at the loaded Dictionary level to their pre-transaction state.
-- Test execution used a backup/restore of the existing godot/content/menos.sqlite; the existing database working-tree change was preserved.
+- SHA-256 of the source godot/content/menos.sqlite matched before and after the isolated test; no temporary test database remained.
 - Verification: CATALOG_SAVE_ROLLBACK_PASS.
 - Godot 4.7.2 --headless --path ... --check-only for object_persistence.gd: PASS.
+- Godot 4.7.2 --headless --path ... --check-only for content_catalog_loader.gd: PASS.
 - Godot 4.7.2 --headless --path ... --check-only for catalog_save_rollback_smoke_test.gd: PASS.
 - git diff --check: PASS; existing line-ending warnings on unrelated .import files remain non-errors.
 - CODE VERIFIED: PASS.

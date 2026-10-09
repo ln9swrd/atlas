@@ -4,6 +4,12 @@ extends RefCounted
 const SQLITE_PATH := "res://content/menos.sqlite"
 
 static var _atomic_failure_injection_for_tests := false
+static var _database_path_for_tests := ""
+
+static func set_database_path_for_tests(path: String) -> void:
+	if not OS.is_debug_build():
+		return
+	_database_path_for_tests = path
 
 static func set_atomic_failure_injection_for_tests(enabled: bool) -> void:
 	if not OS.is_debug_build():
@@ -186,13 +192,16 @@ static func _sqlite_table_for_path(path: String) -> String:
 	return normalized
 
 static func _open_db(read_only: bool):
+	var db_path := SQLITE_PATH
+	if OS.is_debug_build() and not _database_path_for_tests.is_empty():
+		db_path = _database_path_for_tests
 	var db = SQLite.new()
-	db.path = SQLITE_PATH
+	db.path = db_path
 	db.read_only = read_only
 	db.foreign_keys = true
 	db.verbosity_level = 0
 	if not db.open_db():
-		push_error("ObjectPersistence: failed to open SQLite database: %s" % SQLITE_PATH)
+		push_error("ObjectPersistence: failed to open SQLite database: %s" % db_path)
 		return null
 	return db
 

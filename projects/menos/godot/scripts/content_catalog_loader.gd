@@ -4,6 +4,15 @@ extends RefCounted
 const SQLITE_PATH := "res://content/menos.sqlite"
 
 static var _db
+static var _database_path_for_tests := ""
+
+static func set_database_path_for_tests(path: String) -> void:
+	if not OS.is_debug_build():
+		return
+	if _db != null:
+		_db.close_db()
+		_db = null
+	_database_path_for_tests = path
 
 static func _table_from_path(path: String) -> String:
 	var normalized := path.replace("\\", "/")
@@ -19,13 +28,16 @@ static func _table_from_path(path: String) -> String:
 static func _get_db():
 	if _db != null:
 		return _db
+	var db_path := SQLITE_PATH
+	if OS.is_debug_build() and not _database_path_for_tests.is_empty():
+		db_path = _database_path_for_tests
 	var db = SQLite.new()
-	db.path = SQLITE_PATH
+	db.path = db_path
 	db.read_only = true
 	db.foreign_keys = true
 	db.verbosity_level = 0
 	if not db.open_db():
-		push_error("ContentCatalogLoader: failed to open SQLite database: %s" % SQLITE_PATH)
+		push_error("ContentCatalogLoader: failed to open SQLite database: %s" % db_path)
 		return null
 	_db = db
 	return _db

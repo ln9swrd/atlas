@@ -578,9 +578,10 @@ PROPOSAL:
 - Master-approved test-only failure injection was added to ObjectPersistence.save_catalog_pair_atomic().
 - Failure is injected after document persistence inside the transaction and before catalog persistence, forcing the real SQLite ROLLBACK path.
 - Focused regression test: godot/tests/catalog_save_rollback_smoke_test.gd.
+- Debug-only database path overrides allow the test to operate on an isolated user:// copy; the normal database path remains unchanged when the override is empty.
 - CATALOG_SAVE_ROLLBACK_PASS confirmed.
 - Both asset_catalog and visual_assets were verified unchanged after the injected failure.
-- Existing menos.sqlite was backed up and restored during the test; its pre-existing working-tree change was preserved.
+- SHA-256 of the source menos.sqlite matched before and after the test; the temporary test database and sidecars were removed.
 - CODE VERIFIED: PASS.
 - DATA/PERSISTENCE ROLLBACK VERIFIED: PASS.
 - PIE VERIFIED: NOT VERIFIED.
