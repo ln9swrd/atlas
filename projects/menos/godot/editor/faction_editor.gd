@@ -64,6 +64,12 @@ func _save_faction() -> void:
 	if faction_id.is_empty():
 		status_label.text = "ERROR: faction ID is required"
 		return
+	if not selected_id.is_empty() and faction_id != selected_id:
+		status_label.text = "ERROR: faction ID rename is not supported; create a new faction"
+		return
+	if selected_id.is_empty() and catalog.has(faction_id):
+		status_label.text = "ERROR: faction ID already exists; select it to edit"
+		return
 	if faction_name.is_empty():
 		status_label.text = "ERROR: faction name is required"
 		return
@@ -91,6 +97,9 @@ func _delete_faction() -> void:
 	if selected_id.is_empty():
 		status_label.text = "ERROR: select a faction"
 		return
+	if _is_faction_referenced(selected_id):
+		status_label.text = "ERROR: faction is referenced by a robot or BGM and cannot be deleted"
+		return
 	catalog.erase(selected_id)
 	if not ObjectPersistence.save_catalog("factions", catalog):
 		status_label.text = "ERROR: SQLite delete failed"
@@ -100,3 +109,16 @@ func _delete_faction() -> void:
 	_refresh_list()
 	_clear_editor()
 	status_label.text = "Deleted from SQLite: %s" % deleted_id
+
+func _is_faction_referenced(faction_id: String) -> bool:
+	var robots := ContentCatalogLoader.load_dictionary_catalog("robots")
+	var bgm_catalog := ContentCatalogLoader.load_dictionary_catalog("bgm_definitions")
+	if robots.is_empty() or bgm_catalog.is_empty():
+		return true
+	for robot_value in robots.values():
+		if robot_value is Dictionary and str(robot_value.get("faction_id", "")) == faction_id:
+			return true
+	for bgm_value in bgm_catalog.values():
+		if bgm_value is Dictionary and str(bgm_value.get("faction", "")) == faction_id:
+			return true
+	return false

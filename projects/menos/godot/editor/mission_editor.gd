@@ -44,6 +44,12 @@ func _new_mission() -> void:
 func _save_mission() -> void:
 	var mission_id := id_edit.text.strip_edges()
 	if mission_id.is_empty() or title_edit.text.strip_edges().is_empty(): status_label.text = "ERROR: mission ID and title are required"; return
+	if not selected_id.is_empty() and mission_id != selected_id:
+		status_label.text = "ERROR: mission ID rename is not supported; create a new mission"
+		return
+	if selected_id.is_empty() and catalog.has(mission_id):
+		status_label.text = "ERROR: mission ID already exists; select it to edit"
+		return
 	var data: Dictionary = {}
 	if selected_id != "" and catalog.get(selected_id, {}) is Dictionary: data = (catalog[selected_id] as Dictionary).duplicate(true)
 	data["id"] = mission_id; data["title"] = title_edit.text.strip_edges(); data["briefing"] = briefing_edit.text.strip_edges(); data["primary_type"] = str(type_option.get_item_text(type_option.selected)); data["target_id"] = target_edit.text.strip_edges(); data["time_limit"] = int(time_spin.value)
@@ -53,6 +59,27 @@ func _save_mission() -> void:
 	_load_catalog(); _refresh_list(); selected_id = mission_id; status_label.text = "Saved to SQLite: %s" % mission_id
 func _delete_mission() -> void:
 	if selected_id.is_empty(): status_label.text = "ERROR: select a mission"; return
+	if _is_mission_referenced(selected_id):
+		status_label.text = "ERROR: mission is referenced by a stage and cannot be deleted"
+		return
 	catalog.erase(selected_id)
 	if not ObjectPersistence.save_catalog("missions", catalog): status_label.text = "ERROR: SQLite delete failed"; return
 	var deleted_id := selected_id; _load_catalog(); _refresh_list(); _clear_editor(); status_label.text = "Deleted from SQLite: %s" % deleted_id
+
+func _is_mission_referenced(mission_id: String) -> bool:
+	var stage_catalog := ContentCatalogLoader.load_document("stage_catalog")
+	var stage_ids = stage_catalog.get("stages", [])
+	if not (stage_ids is Array) or stage_ids.is_empty():
+		return true
+	for stage_id_value in stage_ids:
+		var stage_path := StageLoader.resolve_stage_path(str(stage_id_value))
+		var stage := ContentCatalogLoader.load_document(stage_path)
+		if stage.is_empty():
+			return true
+		var reference = stage.get("mission_id", "")
+		if str(reference) == mission_id:
+			return true
+		if reference is int or reference is float:
+			if ContentCatalogLoader.resolve_odb_pk("mission", int(reference)) == mission_id:
+				return true
+	return false

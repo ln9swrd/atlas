@@ -83,6 +83,12 @@ func _save_skill() -> void:
 	if skill_id.is_empty() or name_edit.text.strip_edges().is_empty():
 		status_label.text = "ERROR: skill ID and name are required"
 		return
+	if not selected_id.is_empty() and skill_id != selected_id:
+		status_label.text = "ERROR: skill ID rename is not supported; create a new skill"
+		return
+	if selected_id.is_empty() and catalog.has(skill_id):
+		status_label.text = "ERROR: skill ID already exists; select it to edit"
+		return
 	if not _validate_numeric_inputs():
 		return
 	var data: Dictionary = catalog.get(selected_id, {}).duplicate(true) if not selected_id.is_empty() else {}
@@ -132,6 +138,9 @@ func _delete_skill() -> void:
 	if selected_id.is_empty():
 		status_label.text = "ERROR: select a skill"
 		return
+	if _is_skill_referenced(selected_id):
+		status_label.text = "ERROR: skill is referenced by gameplay skill slots and cannot be deleted"
+		return
 	catalog.erase(selected_id)
 	if not ObjectPersistence.save_catalog("skills", catalog):
 		status_label.text = "ERROR: SQLite delete failed"
@@ -141,3 +150,19 @@ func _delete_skill() -> void:
 	_refresh_list()
 	_clear_editor()
 	status_label.text = "Deleted from SQLite: %s" % deleted_id
+
+func _is_skill_referenced(skill_id: String) -> bool:
+	var gameplay := ContentCatalogLoader.load_document("gameplay")
+	if gameplay.is_empty():
+		return true
+	var slots = gameplay.get("skill_slots", {})
+	if not (slots is Dictionary):
+		return true
+	for slot_value in slots.values():
+		var reference := str(slot_value)
+		if reference == skill_id:
+			return true
+		if slot_value is int or slot_value is float:
+			if ContentCatalogLoader.resolve_odb_pk("skill", int(slot_value)) == skill_id:
+				return true
+	return false
