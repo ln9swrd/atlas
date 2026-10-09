@@ -586,3 +586,83 @@ PROPOSAL:
 - DATA/PERSISTENCE ROLLBACK VERIFIED: PASS.
 - PIE VERIFIED: NOT VERIFIED.
 - Proposal: keep the seam and regression test as the minimum permanent transaction safety gate.
+## 2026-10-09 PROGRESS ??Robot Visual E2E Environment Gate
+
+**STATUS: HOLD ??Godot executable not located in the checked environment paths.**
+
+- Reconfirmed baseline: repository `E:\atlas`, branch `main`, HEAD `9bc0487d6a5e8eb087477af98a40c2937f149eda`; pre-existing working-tree changes remain preserved.
+- Searched `PATH`, running processes, the repository tree, `C:\` and common install/download locations for `godot.exe`; no executable found. Godot user cache exists under `%LOCALAPPDATA%\Godot`, but that cache is not an engine executable.
+- Static code inspection confirms `RobotDefinition.from_catalog()` maps `default_image` into the profile visual field and `get_visual_asset()` delegates to `VisualAssetResolver.resolve()`. This does not establish Runtime display or Save/Reload E2E success.
+- Robot Visual Asset Save -> Reload -> Runtime verification remains UNVERIFIED. No code or catalog data was changed during this investigation.
+- Next gate: Master approval to obtain/use an official Godot 4.7.2 executable, or Master supplies the existing executable path. Do not download/install external software without approval. After the runtime gate, re-evaluate short-term goal completion and commit/push only the goal-scoped changes.
+
+
+## 2026-10-09 PROGRESS ??Godot E: Drive Launch and Headless Editor Scan
+
+**STATUS: HOLD ??Godot launched; unrelated Mission Editor scene parse error blocks clean verification.**
+
+- Master approved use of the existing Godot installation on E:.
+- Confirmed executable: `E:\\godot 4.7.2\\Godot_v4.7.2-stable_win64.exe`; console executable reports `4.7.2.stable.official.ed1daf0bf`.
+- Launched the Godot editor against `E:\\atlas\\projects\\menos\\godot`; process was observed running.
+- Headless editor scan completed filesystem scan, registered global script classes, and reimported assets, but emitted **CONFIRMED** parse error: `res://editor/mission_editor.tscn:1 - Parse Error: Expected '['.` This is outside the immediate Robot Visual Save -> Reload -> Runtime verification scope; no repair was attempted.
+- A separate ObjectDB snapshot-storage error also appeared during headless initialization while the GUI editor was running; cause is not established and is **UNVERIFIED**.
+- Robot Visual Asset Save -> Reload -> Runtime remains **UNVERIFIED**. The headless scan is not Build/PIE acceptance. No code, scene, or catalog data was intentionally edited. Git baseline before the scan: HEAD `9bc0487d6a5e8eb087477af98a40c2937f149eda`, branch `main`; pre-existing 11 modified paths were preserved.
+- Next gate: inspect the Mission Editor scene parse error only if it blocks the approved Robot Visual test path; otherwise continue with the Robot Editor-specific test without expanding scope. Commit/push remains on hold until the approved short-term goal is verified and its diff can be isolated.
+
+
+## 2026-10-09 PROGRESS ??Robot Editor Isolated Scene Load
+
+**STATUS: HOLD ??isolated Robot Editor scene loads headlessly; Save/Reload and rendered Runtime visual remain unverified.**
+
+- Ran Godot 4.7.2 directly against `res://editor/robot_editor.tscn` with `--headless --quit`; process exited with code 0 and emitted no Robot Editor scene/script parse errors.
+- Confirmed the scene directly references `res://editor/robot_editor.gd`; its `_ready()` builds the UI and calls `_load_data()`. Profile thumbnail creation delegates to `EditorThumbnailUtil.create()`, which resolves a visual asset and loads its source texture.
+- This isolated scene-load check does not prove a non-null profile texture, Save -> Reload persistence, or visible Runtime rendering. No catalog data was written by this test.
+- The earlier whole-project headless editor scan's Mission Editor parse error remains confirmed, but the isolated Robot Editor scene can be loaded without opening that scene. No unrelated error was repaired.
+- Git HEAD remains `9bc0487d6a5e8eb087477af98a40c2937f149eda` on `main`; unrelated pre-existing changes preserved. `git diff --check` passes apart from normal line-ending warnings. A Godot-generated untracked SQLite DLL remains and must be treated as generated build output, not goal-scoped content.
+- Gate: to prove Save -> Reload safely, a test must run against an isolated copy of the SQLite database; to prove rendered Runtime visuals, a visible GUI/PIE observation is required. Neither is inferred from the headless scene-load pass.
+
+
+## 2026-10-09 PROGRESS ??Robot Editor Isolated Save/Reload Test
+
+**STATUS: HOLD ??headless profile texture and isolated Save/Reload passed; visible Runtime verification remains UNVERIFIED.**
+
+- Godot 4.7.2 test instantiated `res://editor/robot_editor.tscn` against a copied `user://robot_editor_e2e_test.sqlite`, not the project database.
+- Selected `valkyrie` (`robot.valkyrie.profile`); profile preview and thumbnail textures were non-null. Invoked the editor Save path, reloaded the `robots` catalog from the isolated database, and confirmed the profile asset value persisted.
+- Result: `ROBOT_EDITOR_E2E_PASS scene_load, profile_texture, isolated_db_save_reload`; exit code 0. This is not visible Runtime/PIE evidence.
+- `asura` has an empty `default_image`; `valkyrie` has a configured profile asset. No catalog data was changed. Whether Asura's empty profile is intentional remains UNVERIFIED and outside this test.
+- Temporary test script and UID were removed. An untracked SQLite DLL remains while Godot is running; deletion was not confirmed, so it was left untouched.
+- `git diff --check` passes with line-ending warnings. HEAD remains `9bc0487d6a5e8eb087477af98a40c2937f149eda` on `main`. No commit/push performed.
+- Remaining acceptance gate: Master must inspect visible Runtime/PIE display. Do not treat headless results as PIE VERIFIED.
+
+
+## 2026-10-09 PROGRESS ??GUI Runtime Gate Recheck
+
+**STATUS: HOLD ??GUI process launched, but visual contents could not be inspected through the available Remote Commander actions.**
+
+- Confirmed a Godot GUI process was launched with `--path E:\\atlas\\projects\\menos\\godot res://editor/robot_editor.tscn`; its process exists. A separate Godot editor window and `MENOS (DEBUG)` window are also present.
+- Window titles and process command lines do not prove that the Robot Editor form or profile image is visibly rendered. No screenshot evidence was obtained, so PIE/visible Runtime remains UNVERIFIED.
+- The earlier isolated headless test passed for Valkyrie profile texture and Save/Reload using a copied test database. This is not substituted for visible Runtime verification.
+- Git baseline: HEAD `9bc0487d6a5e8eb087477af98a40c2937f149eda`, branch `main`, `HEAD...origin/main` divergence `0 0`. Existing 11 modified tracked paths are preserved. An untracked Godot-generated SQLite DLL remains; it is not included in scope.
+- No project code, catalog, or scene changes made in this recheck. No commit/push performed.
+- Next proposal: obtain a permitted desktop screenshot/UI inspection path or have Master inspect the already-open Robot Editor window directly; then decide whether to accept/stop or investigate further. Do not repair the unrelated Mission Editor parse error unless it blocks this gate.
+
+
+## 2026-10-09 PROGRESS ??Master Visible Robot Selection
+
+**STATUS: HOLD ??Master reports Asura is displayed; Valkyrie profile display remains unverified.**
+
+- Master visually confirmed the running Robot Editor shows Asura. This confirms a robot entry is visible in the actual GUI, but it does not confirm the requested Valkyrie profile texture.
+- Code inspection confirms `_ready()` sets `initial_index := 0`, then calls `_on_robot_selected(initial_index)` when there is no pending robot selection. This explains why the first list item (reported as Asura by Master) is shown on initial launch.
+- Prior data inspection found Asura's `default_image` empty and Valkyrie's profile asset configured as `robot.valkyrie.profile`.
+- No code or catalog edits made. Keep remaining visual check minimal: Master selects Valkyrie once in the robot dropdown and confirms whether its profile image appears. Do not ask for repeated screenshots or broaden scope.
+
+
+## 2026-10-09 PROGRESS ??Robot Editor Visible Profile Confirmed
+
+**STATUS: PASS for the Robot Editor profile-display gate; short-term Robot Visual E2E goal is ready for scoped change review.**
+
+- Master directly confirmed Valkyrie's profile image is visible in the running GUI after selecting Valkyrie.
+- Combined with the prior isolated headless test, confirmed scene load, non-null Valkyrie profile/thumbnail texture, isolated database Save/Reload, and Master-visible GUI profile display.
+- PIE/visible Runtime status is supported only for this specific Robot Editor profile display; this does not validate unrelated game runtime or all robot visuals.
+- No product code or catalog data was changed during this check. The generated untracked SQLite DLL and unrelated existing changes remain outside the goal scope and must not be committed as part of this goal.
+- Next: inspect the exact diff for the Robot Visual goal and separate it from existing unrelated modifications before deciding whether a scoped commit/push is safe.
