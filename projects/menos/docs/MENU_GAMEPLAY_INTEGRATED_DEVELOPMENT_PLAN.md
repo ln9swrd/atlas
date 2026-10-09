@@ -13,6 +13,10 @@ Status: PROPOSAL — Content Editor 1차 완성을 우선하는 종합 개발계
 - Next short-term goal: Content Editor UI improvement. Staged plan recorded in docs/CONTENT_EDITOR_UI_IMPROVEMENT_PLAN.md; begin with read-only visible baseline and prioritized issue inventory before changing layouts.
 - SFX: Authoring/Definition/Runtime technical pilot 기반 PASS. `ROBOT_LASER_FIRE` 출처는 `godot/sound/ATTRIBUTION.md`에 기록된 Freesound CC0 source.
 - Content Editor 1차 완성: 전체 메뉴의 최신 foreground/PIE 및 Production Acceptance가 모두 닫혔다고 이 요약에서 주장하지 않습니다. 각 메뉴별 검증 상태와 미확인 항목은 최신 `state/CURRENT_STATE.md` 및 날짜가 가장 최근인 개별 기록으로 확인합니다.
+- Editor/Runtime separation: independent `content_editor/` project and authoring DB copy exist; authority transfer, complete publish package/manifest, and full GUI save/reload acceptance remain UNVERIFIED. See `docs/CONTENT_EDITOR_RUNTIME_SEPARATION_PLAN.md` Current Status Index.
+- **Document consistency follow-up (P0, READ-ONLY first):** reconcile historical status claims with later evidence without deleting chronology; remove or explicitly distinguish duplicate GUI HOLD entries; cross-check the GUI Verification Decision Matrix against dated runtime/editor evidence; normalize Authoring Source, Runtime Source, and Published Package terminology across the current-state, master-reference, separation, and development-plan documents.
+- **Acceptance criteria:** (1) old baselines are visibly historical, (2) each PASS/HOLD identifies its test scope and does not overclaim GUI/PIE acceptance, (3) duplicate records are removed only when confirmed identical or are distinguished by attempt/time, (4) source-of-truth transfer and publish/loader completion remain UNVERIFIED until evidence proves otherwise, (5) all relative links and `git diff --check` pass.
+- **Change boundary:** preserve existing historical evidence; no code, DB, Asset, project-layout, Canon, Commit, or Push changes under this documentation task. Update the index only after cross-document comparison is complete.
 - Commit/Push: 본 문서 갱신 자체는 Commit/Push를 승인하지 않습니다.
 
 ## 1. 목적

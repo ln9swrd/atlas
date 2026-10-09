@@ -1,5 +1,23 @@
 # MENOS Current State
 
+## Current Snapshot — 2026-10-09 (Documentation Re-review)
+
+This dated snapshot supplements, and does not rewrite, the chronological records below.
+
+- Repository: `D:\Atlas\projects\menos`
+- Branch: `main`
+- HEAD at review: `6bbc484ae8033c5b115d5769d58dd887b8eb3183`
+- Working Tree before documentation updates: clean.
+- Runtime project: `godot/`; existing Runtime content DB: `godot/content/menos.sqlite`.
+- Independent Content Editor project: `content_editor/`; authoring DB: `content_editor/data/menos.sqlite`.
+- Data authority transition is UNVERIFIED. The existence of an authoring DB copy does not make it the approved sole source of truth.
+- A published Runtime package/manifest is not yet established as a complete, validated delivery path.
+- Headless/menu and isolated save/reload smoke results must not be described as full GUI acceptance or Master PIE acceptance.
+- Known Editor GUI hang/black-screen diagnosis and full GUI save/reload acceptance remain UNVERIFIED.
+- Do not modify either DB, change the authoring authority, or implement a publisher/runtime loader solely as a documentation cleanup.
+- The separation plan contains historical baseline references to `E:\atlas` and HEAD `3620dea9...`; those refer to earlier investigation checkpoints, not the current repository baseline.
+
+
 작성일: 2026-10-07
 상태: CURRENT IMPLEMENTATION STATE
 

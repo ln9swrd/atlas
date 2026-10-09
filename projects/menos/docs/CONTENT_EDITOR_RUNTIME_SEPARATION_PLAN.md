@@ -1,5 +1,24 @@
 # MENOS Content Editor 분리 및 Runtime 콘텐츠 공급 계획
 
+## Current Status Index — 2026-10-09
+
+This index is the current summary. Dated entries below are chronological evidence and may describe older baselines or earlier states.
+
+- Current repository: `D:\Atlas\projects\menos`; branch `main`; HEAD at this review: `6bbc484ae8033c5b115d5769d58dd887b8eb3183`.
+- The `E:\\atlas\\projects\\menos` path and HEAD `3620dea9a6e0f5be21fa06a2ac79a028bc7259e1` in the original plan header are historical investigation baseline values, not current values.
+- Independent project exists at `content_editor/`; its authoring database is `content_editor/data/menos.sqlite`. Runtime project remains `godot/`, with existing Runtime DB `godot/content/menos.sqlite`.
+- DB-copy integrity/hash matching previously demonstrated copy equality at that time only; it does not establish ongoing synchronization or approved data-authority transfer.
+- Current data-authority transition: UNVERIFIED. Published package/manifest and a complete Runtime loader contract: NOT COMPLETE / UNVERIFIED.
+- Headless isolated menu smoke reported 15/15 scene instantiation/host attachment. This does not prove full visual menu interaction, GUI save/reload, or Master PIE acceptance.
+- The latest recorded isolated GUI attempt was PARTIAL PASS / HOLD: GUI opened to Map, but responsiveness/menu transitions and GUI persistence acceptance were not established. The reported GUI hang/black-screen cause remains UNVERIFIED.
+- Existing runtime asset paths include hard-coded `res://` dependencies and database-driven paths; a publisher must resolve and validate both before a package can be considered complete.
+- Scope for this document update: clarify status only. No source code, database, Asset, project layout, Canon, or Git history is changed.
+
+## 0.1 Authority and status interpretation
+
+Use `state/CURRENT_STATE.md` for current implementation status, `MENOS_COMBAT_CANON.md` for approved combat Canon, and this document for the Editor/Runtime separation investigation. Historical baseline lines and dated progress reports below are retained for traceability; they must not override this current index.
+
+
 - 작성일: 2026-10-09
 - 상태: 방향 승인, 조사·설계 단계
 - 목적: 콘텐츠 에디터를 MENOS 게임 런타임과 분리하고, 런타임에는 게임 실행에 필요한 콘텐츠 데이터와 리소스만 공급한다.

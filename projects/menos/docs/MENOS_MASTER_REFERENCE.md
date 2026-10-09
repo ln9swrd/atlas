@@ -508,6 +508,19 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 
 기존 Working Tree 변경사항은 통폐합 작업에서 임의로 수정/되돌리지 않는다.
 
+## 12. Content Editor / Runtime Data Authority Boundary — 2026-10-09
+
+This section records the current implementation boundary; it does not change Canon.
+
+- Existing Runtime project and shipped-content baseline: `godot/` and `godot/content/menos.sqlite`.
+- Independent Content Editor project: `content_editor/`; authoring DB copy: `content_editor/data/menos.sqlite`.
+- The Editor authoring DB copy is not automatically the new sole authoritative database. The approved source-of-truth transition remains UNVERIFIED.
+- A distinct published Runtime database/package, complete manifest, asset collection rules, schema/package version contract, and failure-safe publish transaction are not yet established as one verified end-to-end path.
+- Runtime dependencies include both database-driven asset paths and code-level `res://` preloads. Any future publisher must account for both categories and validate referenced resources before publishing.
+- Headless smoke tests and isolated database tests are evidence for their specific paths only. They do not establish full GUI acceptance or Master PIE VERIFIED.
+- For current Editor/Runtime separation progress, use `docs/CONTENT_EDITOR_RUNTIME_SEPARATION_PLAN.md`; for the latest implementation/verification status, use `state/CURRENT_STATE.md`.
+- No Canon, source-of-truth authority, or Production status is changed by this note.
+
 ## Content Editor Authoring Boundary Re-review
 
 실제 제작자 관점에서 Content Editor의 주요 메뉴를 재검토했다. Catalog는 Source Image/Visual Asset의 공통 Authoring 계층, Robot/Unit/Tower/Building은 Semantic Game Object Authoring, Map은 공간/배치, Mission은 목표, Stage는 단일 플레이 시뮬레이션 데이터, Campaign은 진행 구조, Faction은 상위 소속을 담당하는 것으로 정리했다.
