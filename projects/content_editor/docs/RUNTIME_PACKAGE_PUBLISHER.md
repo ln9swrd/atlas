@@ -57,6 +57,21 @@ The publisher only reads the authoring database, map JSON, and Runtime source As
 
 ## Content Editor UI
 
-Open the Content Editor and use `RUNTIME DATA > Publish Runtime Package`. Select the Runtime project root, then select the parent directory for a new package. After confirmation, the Publisher creates a uniquely timestamped package directory. The output directory must not already exist. This action does not activate the package in Runtime.
+See the Target Runtime workflow below for the current Content Editor UI. The CLI remains available for explicit Runtime roots and output paths. Import expects the full Runtime project's content/menos.sqlite; filtered published-package databases are not accepted because their schema differs from the full authoring DB.
 
-Use `RUNTIME DATA > Import Runtime Data` to select the full Runtime project's `content/menos.sqlite`. The Editor previews the source hash, table count, and canonical maps, then asks for confirmation. Apply backs up the current authoring DB and maps before replacement. Filtered published-package databases are not accepted by the first-pass importer because their schema differs from the full authoring DB.
+## Target Runtime workflow (2026-10-10)
+
+- The Content Editor remembers the selected Runtime project root in its local user://menos_settings.cfg under [runtime] project_root. The current MENOS path is used as the initial default only when it exists and contains both project.godot and content/menos.sqlite.
+- RUNTIME DATA > Select Runtime Project... changes the target. Import Runtime Data from Target... previews/imports that target's full content/menos.sqlite. Import from SQLite File... remains available for a one-off explicit source.
+- Publish Runtime Package to Target... creates a fresh package under the target project's parent packages/ folder by default. Publish Package to Custom Folder... preserves manual output-location selection.
+- After publishing succeeds, the Content Editor invokes the selected Runtime project's scripts/runtime_package_config_cli.gd to write its user://runtime_content_package.json. It then offers to launch the Runtime. An already-running Runtime must be restarted to load the newly selected package.
+- This changes only the Runtime's user-data package-selection config. It does not overwrite the Runtime source database/assets. Package activation is not attempted if publishing fails. If the configuration helper fails, the UI reports that the package was published but not selected.
+- The UI and headless startup have been checked; Master GUI/PIE acceptance remains NOT VERIFIED.
+
+
+
+## Save versus Publish (explicit workflow)
+
+- **Save to Content Editor DB** writes authoring changes to `projects/content_editor/data/menos.sqlite` only. It does not write to the Runtime DB or make changes live in Runtime.
+- **IMPORT / PUBLISH > Publish Content Editor DB to Runtime Package...** reads the saved Content Editor DB and creates a new filtered package. On successful publish, the selected package is configured for the target Runtime; the user can then launch/restart Runtime to load it.
+- Import is the opposite-direction operation: it copies reviewed Runtime source content into the Content Editor authoring database after preview and confirmation. It is not a publish action.

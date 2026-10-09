@@ -34,19 +34,68 @@ size_flags_vertical = 3
 
 [node name="Fields" type="VBoxContainer" parent="MainLayout/Body/EditorPanel"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="NameEdit" type="LineEdit" parent="MainLayout/Body/EditorPanel/Fields"]
 layout_mode = 2
 placeholder_text = "Campaign Name"
 
+[node name="SaveScopeNotice" type="Label" parent="MainLayout/Body/EditorPanel/Fields"]
+layout_mode = 2
+text = "SAVE writes to Content Editor SQLite only. Use IMPORT / PUBLISH > Publish Content Editor DB to Runtime Package to apply changes to Runtime."
+
 [node name="StagesLabel" type="Label" parent="MainLayout/Body/EditorPanel/Fields"]
 layout_mode = 2
-text = "Stage Order (one ID per line)"
+text = "Campaign Stages"
 
-[node name="StagesEdit" type="TextEdit" parent="MainLayout/Body/EditorPanel/Fields"]
-custom_minimum_size = Vector2(0, 220)
+[node name="StageList" type="ItemList" parent="MainLayout/Body/EditorPanel/Fields"]
+custom_minimum_size = Vector2(0, 240)
 layout_mode = 2
 size_flags_vertical = 3
+select_mode = 0
+
+[node name="StageActions" type="HBoxContainer" parent="MainLayout/Body/EditorPanel/Fields"]
+layout_mode = 2
+
+[node name="AddStageButton" type="Button" parent="MainLayout/Body/EditorPanel/Fields/StageActions"]
+layout_mode = 2
+text = "+ Add Stage"
+
+[node name="DeleteStageButton" type="Button" parent="MainLayout/Body/EditorPanel/Fields/StageActions"]
+layout_mode = 2
+text = "Delete Selected Stage"
+disabled = true
+
+[node name="SelectedStageLabel" type="Label" parent="MainLayout/Body/EditorPanel/Fields"]
+layout_mode = 2
+text = "Select a campaign stage"
+
+[node name="SelectedStageFields" type="VBoxContainer" parent="MainLayout/Body/EditorPanel/Fields"]
+layout_mode = 2
+
+[node name="SourceStageRow" type="HBoxContainer" parent="MainLayout/Body/EditorPanel/Fields/SelectedStageFields"]
+layout_mode = 2
+
+[node name="SourceStageLabel" type="Label" parent="MainLayout/Body/EditorPanel/Fields/SelectedStageFields/SourceStageRow"]
+layout_mode = 2
+text = "Stage Data"
+custom_minimum_size = Vector2(130, 0)
+
+[node name="SourceStageOption" type="OptionButton" parent="MainLayout/Body/EditorPanel/Fields/SelectedStageFields/SourceStageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MissionRow" type="HBoxContainer" parent="MainLayout/Body/EditorPanel/Fields/SelectedStageFields"]
+layout_mode = 2
+
+[node name="MissionLabel" type="Label" parent="MainLayout/Body/EditorPanel/Fields/SelectedStageFields/MissionRow"]
+layout_mode = 2
+text = "Mission"
+custom_minimum_size = Vector2(130, 0)
+
+[node name="MissionOption" type="OptionButton" parent="MainLayout/Body/EditorPanel/Fields/SelectedStageFields/MissionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Buttons" type="HBoxContainer" parent="MainLayout/Body/EditorPanel/Fields"]
 layout_mode = 2
@@ -57,7 +106,8 @@ text = "Reload"
 
 [node name="SaveButton" type="Button" parent="MainLayout/Body/EditorPanel/Fields/Buttons"]
 layout_mode = 2
-text = "Save"
+text = "Save to Content Editor DB"
+tooltip_text = "Save campaign changes to the Content Editor database only. Does not update Runtime."
 
 [node name="Status" type="Label" parent="MainLayout"]
 layout_mode = 2

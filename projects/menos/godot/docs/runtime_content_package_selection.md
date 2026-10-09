@@ -56,3 +56,9 @@ The tests exercise the selected DB through existing map/catalog loaders and load
 - The same exported executable was run with a configured but missing package root. Runtime rejected the missing manifest and did not attempt to open/fall back to `res://content/menos.sqlite`; the fail-closed check passed. The test selection config was restored/removed afterward.
 - `runtime_content_package_config_test.gd` also covers invalid package selection and verifies that map aliases, map data, and catalog data are not served from the built-in DB.
 - These are headless release-startup checks, not Master PIE/visual acceptance.
+
+## Content Editor integration (2026-10-10)
+
+The Content Editor now invokes scripts/runtime_package_config_cli.gd using the selected Runtime project's Godot executable in headless script mode. The helper writes user://runtime_content_package.json in the Runtime project's own user-data context, so the Content Editor does not guess or hard-code the Runtime's AppData path. The selected package root must be an absolute path containing manifest.json and content/menos.sqlite.
+
+After publishing and package selection succeed, the Content Editor offers to launch the selected Runtime. Runtime source DB/assets are not overwritten. Existing running instances must be restarted. GUI/PIE acceptance remains with Master and is NOT VERIFIED by headless checks.

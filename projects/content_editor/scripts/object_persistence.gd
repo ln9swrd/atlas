@@ -301,7 +301,10 @@ static func _sync_document_to_sqlite(path: String, json_text: String) -> bool:
 	if db.query_result.size() != 1:
 		push_error("ObjectPersistence: expected exactly one SQLite document row in table '%s'" % table)
 		db.query("ROLLBACK"); db.close_db(); return false
-	var rowid = db.query_result[0]["rowid"]
+	var rowid: int = int(db.query_result[0].get("rowid", 0))
+	if rowid <= 0:
+		push_error("ObjectPersistence: campaign document rowid could not be resolved in table '%s'" % table)
+		db.query("ROLLBACK"); db.close_db(); return false
 	if not db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE rowid = ?' % table, [json_text, rowid]):
 		db.query("ROLLBACK"); db.close_db(); return false
 	if not db.query_with_bindings('SELECT raw_json FROM "%s" WHERE rowid = ?' % table, [rowid]):
