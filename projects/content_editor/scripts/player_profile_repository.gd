@@ -1,7 +1,7 @@
 class_name PlayerProfileRepository
 extends RefCounted
 
-const SQLITE_PATH := "res://data/menos.sqlite"
+const SQLITE_PATH := "res://data/content_editor.sqlite"
 const TABLE := "player_profile"
 const DOCUMENT_ID := "campaign_robot_profile"
 const USER_PROFILE_PATH := "user://menos_campaign_robot_profile.json"

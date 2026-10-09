@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class RuntimePublisherIntegrationTest(unittest.TestCase):
     def test_publish_isolated_filtered_package(self):
-        source_db = ROOT / 'data' / 'menos.sqlite'
+        source_db = ROOT / 'data' / 'content_editor.sqlite'
         maps_dir = ROOT / 'data' / 'maps'
         runtime_root_value = os.environ.get('MENOS_RUNTIME_ROOT', '').strip()
         self.assertTrue(runtime_root_value, 'Set MENOS_RUNTIME_ROOT explicitly to the Runtime project path')

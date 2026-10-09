@@ -14,6 +14,7 @@ var campaign_start_disabled := false
 var single_mode_selected := false
 
 func _ready() -> void:
+	SettingsManager.get_language()
 	set_process_input(true)
 	start_button.pressed.connect(_on_start_campaign_pressed)
 	start_button.disabled = campaign_start_disabled

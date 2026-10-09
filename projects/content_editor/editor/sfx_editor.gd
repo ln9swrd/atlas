@@ -111,7 +111,9 @@ func _preview() -> void:
 	if stream == null:
 		status_label.text = "PREVIEW INVALID AUDIO"
 		return
+	EditorSettingsManager.get_volume("SFX")
 	preview.stream = stream
+	preview.bus = "SFX"
 	preview.volume_db = linear_to_db(maxf(d.volume, 0.0001))
 	preview.pitch_scale = maxf(d.pitch, 0.01)
 	preview.play()

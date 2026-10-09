@@ -1,7 +1,7 @@
 class_name BGMDefinitionRepository
 extends RefCounted
 
-const SQLITE_PATH := "res://data/menos.sqlite"
+const SQLITE_PATH := "res://data/content_editor.sqlite"
 const TABLE := "bgm_definitions"
 const CATALOG_PATH := "bgm_definitions"
 const DEFINITION_SCRIPT = preload("res://scripts/bgm_definition.gd")

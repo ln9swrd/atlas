@@ -1,7 +1,7 @@
 class_name SFXDefinitionRepository
 extends RefCounted
 
-const SQLITE_PATH := "res://data/menos.sqlite"
+const SQLITE_PATH := "res://data/content_editor.sqlite"
 const CATALOG_PATH := "sfx_definitions"
 const TABLE := "sfx_definitions"
 const DEFINITION_SCRIPT = preload("res://scripts/sfx_definition.gd")

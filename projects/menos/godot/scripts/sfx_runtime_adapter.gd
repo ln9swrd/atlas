@@ -20,7 +20,8 @@ func play(parent: Node) -> bool:
 		return false
 	var player := AudioStreamPlayer.new()
 	player.stream = stream
-	player.bus = str(definition.bus)
+	SettingsManager.get_sfx_volume()
+	player.bus = "SFX"
 	player.volume_db = linear_to_db(maxf(float(definition.volume), 0.0001))
 	player.pitch_scale = maxf(float(definition.pitch), 0.01)
 	player.finished.connect(player.queue_free)

@@ -9,7 +9,7 @@ Status: implementation of the Master-approved short-term map-source boundary, 20
 - `northbridge_sector_01.json` is the authoring source for the former SQLite `map_01` record. It preserves the current active record's 309 objects and data fields.
 - `map_02.json` and `map_03.json` are sourced from their existing active SQLite records.
 - `map_01_src` is a legacy record, not an active map source. It remains in SQLite and is not migrated or deleted by this change.
-- The original `data/menos.sqlite` is retained for non-map catalogs and legacy data. Map save/create/delete operations must not mutate SQLite.
+- The original `data/content_editor.sqlite` is retained for non-map catalogs and legacy data. Map save/create/delete operations must not mutate SQLite.
 
 ## Legacy references
 

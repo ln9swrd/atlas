@@ -14,7 +14,7 @@ The output path must not already exist. The publisher creates a temporary siblin
 
 Optional inputs:
 
-- `--source-db`: defaults to `content_editor/data/menos.sqlite`.
+- `--source-db`: defaults to `content_editor/data/content_editor.sqlite`.
 - `--maps-dir`: defaults to `content_editor/data/maps`.
 - `--runtime-root`: **required** explicit path to the Runtime project; used only as the source for referenced `res://` assets. The Content Editor no longer infers a sibling Runtime path.
 
@@ -72,6 +72,6 @@ See the Target Runtime workflow below for the current Content Editor UI. The CLI
 
 ## Save versus Publish (explicit workflow)
 
-- **Save to Content Editor DB** writes authoring changes to `projects/content_editor/data/menos.sqlite` only. It does not write to the Runtime DB or make changes live in Runtime.
+- **Save to Content Editor DB** writes authoring changes to `projects/content_editor/data/content_editor.sqlite` only. It does not write to the Runtime DB or make changes live in Runtime.
 - **IMPORT / PUBLISH > Publish Content Editor DB to Runtime Package...** reads the saved Content Editor DB and creates a new filtered package. On successful publish, the selected package is configured for the target Runtime; the user can then launch/restart Runtime to load it.
 - Import is the opposite-direction operation: it copies reviewed Runtime source content into the Content Editor authoring database after preview and confirmation. It is not a publish action.

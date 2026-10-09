@@ -17,6 +17,9 @@ const VFX_EDITOR_SCENE := "res://editor/vfx_editor.tscn"
 const SFX_EDITOR_SCENE := "res://editor/sfx_editor.tscn"
 const VOICE_EDITOR_SCENE := "res://editor/voice_editor.tscn"
 const BGM_EDITOR_SCENE := "res://editor/bgm_editor.tscn"
+const SETTINGS_DIALOG_SCENE := "res://editor/editor_settings_dialog.tscn"
+const RUNTIME_TARGETS_SCENE := "res://editor/runtime_targets_manager.tscn"
+const DATABASE_COMPARE_SCRIPT := preload("res://editor/dual_database_compare.gd")
 
 
 var current_editor: Node = null
@@ -57,28 +60,35 @@ func _ready() -> void:
 	$MainLayout/TopMenu/Buttons/BtnSFX.pressed.connect(_open_sfx_editor)
 	$MainLayout/TopMenu/Buttons/BtnVoice.pressed.connect(_open_voice_editor)
 	$MainLayout/TopMenu/Buttons/BtnBGM.pressed.connect(_open_bgm_editor)
+	$MainLayout/TopMenu/Buttons/BtnSettings.pressed.connect(_open_settings_dialog)
+	$MainLayout/RuntimeToolbar/Actions/BtnRuntimeMenu.pressed.connect(_open_runtime_targets_manager)
+	$MainLayout/RuntimeToolbar/Actions/BtnDatabaseCompare.pressed.connect(_open_database_compare)
 	_setup_runtime_import_ui()
+	_refresh_runtime_button_label()
 	_open_map_editor()
 
 func _setup_language() -> void:
+	EditorSettingsManager.initialize()
 	var language_option: OptionButton = $MainLayout/TopMenu/Buttons/LanguageOption
-	var config := ConfigFile.new()
-	var locale := "en"
-	if config.load(SETTINGS_PATH) == OK:
-		locale = str(config.get_value("localization", "language", "en"))
-	if locale != "ko" and locale != "en":
-		locale = "en"
-	TranslationServer.set_locale(locale)
-	language_option.select(0 if locale == "ko" else 1)
+	language_option.select(0 if EditorSettingsManager.language == "ko" else 1)
 	language_option.item_selected.connect(_on_language_selected)
 
 func _on_language_selected(index: int) -> void:
-	var locale := "ko" if index == 0 else "en"
-	TranslationServer.set_locale(locale)
-	var config := ConfigFile.new()
-	config.load(SETTINGS_PATH)
-	config.set_value("localization", "language", locale)
-	config.save(SETTINGS_PATH)
+	EditorSettingsManager.set_language("ko" if index == 0 else "en")
+
+func _open_settings_dialog() -> void:
+	var packed := load(SETTINGS_DIALOG_SCENE) as PackedScene
+	if packed == null:
+		push_error("Could not load editor settings dialog.")
+		return
+	var dialog := packed.instantiate() as Window
+	add_child(dialog)
+	dialog.tree_exited.connect(_sync_language_option)
+	dialog.popup_centered()
+
+func _sync_language_option() -> void:
+	var language_option: OptionButton = $MainLayout/TopMenu/Buttons/LanguageOption
+	language_option.select(0 if EditorSettingsManager.language == "ko" else 1)
 
 func _apply_editor_theme() -> void:
 	var editor_theme := Theme.new()
@@ -311,6 +321,8 @@ func _setup_runtime_import_ui() -> void:
 	_runtime_data_menu.add_item("Publish Runtime Package...", 1)
 	_runtime_data_menu.add_separator()
 	_runtime_data_menu.add_item("Run MENOS Runtime...", 2)
+	_runtime_data_menu.add_separator()
+	_runtime_data_menu.add_item("Manage Runtime Targets / Tables...", 3)
 	_runtime_data_menu.id_pressed.connect(_on_runtime_data_action)
 	add_child(_runtime_data_menu)
 
@@ -375,6 +387,58 @@ func _on_runtime_launch_root_selected(path: String) -> void:
 		_runtime_import_result.dialog_text = "MENOS Runtime launched in a separate process.\nProject: " + path + "\nProcess ID: " + str(process_id)
 	_runtime_import_result.popup_centered()
 
+func _refresh_runtime_button_label() -> void:
+	var runtime_button: Button = $MainLayout/RuntimeToolbar/Actions/BtnRuntimeMenu
+	var config := ConfigFile.new()
+	var selected_id := 0
+	if config.load(SETTINGS_PATH) == OK:
+		selected_id = int(config.get_value("runtime", "selected_runtime_id", 0))
+	if selected_id <= 0:
+		runtime_button.text = "RUNTIME · 선택 필요"
+		return
+	var script_path := ProjectSettings.globalize_path("res://tools/manage_runtime_registry.py")
+	var output: Array = []
+	var exit_code := OS.execute("python", PackedStringArray([script_path, "list"]), output, true)
+	if exit_code == -1:
+		output.clear()
+		exit_code = OS.execute("py", PackedStringArray(["-3", script_path, "list"]), output, true)
+	if exit_code != 0:
+		runtime_button.text = "RUNTIME · 선택 필요"
+		return
+	var parsed: Variant = JSON.parse_string("\n".join(PackedStringArray(output)))
+	if not (parsed is Dictionary) or str(parsed.get("status", "")) != "PASS":
+		runtime_button.text = "RUNTIME · 선택 필요"
+		return
+	for target in parsed.get("targets", []):
+		if int(target.get("id", 0)) == selected_id and int(target.get("enabled", 0)) == 1:
+			runtime_button.text = "RUNTIME · " + str(target.get("name", ""))
+			return
+	runtime_button.text = "RUNTIME · 선택 필요"
+
+func _open_database_compare() -> void:
+	var dialog := DATABASE_COMPARE_SCRIPT.new() as Window
+	if not dialog.configure_for_scene(current_editor_scene):
+		dialog.free()
+		var notice := AcceptDialog.new()
+		notice.title = "DB 비교"
+		notice.dialog_text = "DB 좌우 비교는 미션, 팩션, 건물, 스킬, VFX, SFX, BGM, Voice 편집기에서 사용할 수 있습니다."
+		add_child(notice)
+		notice.confirmed.connect(notice.queue_free)
+		notice.popup_centered()
+		return
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(1280, 780))
+
+func _open_runtime_targets_manager() -> void:
+	var packed := load(RUNTIME_TARGETS_SCENE) as PackedScene
+	if packed == null:
+		push_error("Could not load Runtime Targets manager.")
+		return
+	var manager := packed.instantiate() as Window
+	add_child(manager)
+	manager.tree_exited.connect(_refresh_runtime_button_label)
+	manager.popup_centered(Vector2i(1120, 760))
+
 func _on_runtime_data_action(id: int) -> void:
 	if id == 0:
 		_runtime_import_file_dialog.popup_centered(Vector2i(900, 600))
@@ -382,6 +446,8 @@ func _on_runtime_data_action(id: int) -> void:
 		_publish_runtime_root_dialog.popup_centered(Vector2i(900, 600))
 	elif id == 2:
 		_runtime_launch_root_dialog.popup_centered(Vector2i(900, 600))
+	elif id == 3:
+		_open_runtime_targets_manager()
 
 func _on_runtime_db_selected(path: String) -> void:
 	_runtime_import_source = path

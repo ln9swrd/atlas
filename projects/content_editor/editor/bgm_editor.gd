@@ -160,8 +160,9 @@ func _preview() -> void:
 	if stream == null:
 		status_label.text = "PREVIEW INVALID AUDIO"
 		return
+	EditorSettingsManager.get_volume("BGM")
 	preview.stream = stream
-	preview.bus = d.bus
+	preview.bus = "BGM"
 	preview.volume_db = linear_to_db(maxf(d.volume, 0.0001))
 	preview.play()
 	status_label.text = "Preview: %s" % d.audio_asset

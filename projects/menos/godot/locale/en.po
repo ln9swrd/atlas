@@ -50,3 +50,21 @@ msgstr "SINGLE PLAY SELECTED"
 
 msgid "QUIT"
 msgstr "QUIT"
+
+msgid "RESOLUTION"
+msgstr "RESOLUTION"
+
+msgid "BGM"
+msgstr "BGM"
+
+msgid "SFX"
+msgstr "SFX"
+
+msgid "VOICE"
+msgstr "VOICE"
+
+msgid "RESTORE_DEFAULTS"
+msgstr "RESTORE DEFAULTS"
+
+msgid "RESTORE_DEFAULTS_CONFIRM"
+msgstr "Restore all settings to their defaults?"

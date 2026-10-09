@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
-DEFAULT_AUTHORING_DB = HERE / "data" / "menos.sqlite"
+DEFAULT_AUTHORING_DB = HERE / "data" / "content_editor.sqlite"
 DEFAULT_MAPS_DIR = HERE / "data" / "maps"
 REQUIRED_MAP_TABLES = {
     "northbridge_sector_01": "map_01",

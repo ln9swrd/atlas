@@ -2133,4 +2133,3 @@ func _replace_catalog_value(asset_id: String, new_path: String) -> bool:
 	for asset in assets:
 		if asset is Dictionary and str(asset.get("asset_id",""))==asset_id: asset["source_path"]=new_path; asset["source_rect_px"]=[0,0,current_image.get_width(),current_image.get_height()]; data["assets"]=assets; return _save_document_data(path,data)
 	return false
-

@@ -1,7 +1,7 @@
 class_name ObjectPersistence
 extends RefCounted
 
-const SQLITE_PATH := "res://data/menos.sqlite"
+const SQLITE_PATH := "res://data/content_editor.sqlite"
 
 static var _atomic_failure_injection_for_tests := false
 static var _database_path_for_tests := ""

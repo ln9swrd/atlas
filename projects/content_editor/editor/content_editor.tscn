@@ -29,7 +29,7 @@ layout_mode = 2
 [node name="Title" type="Label" parent="MainLayout/TopMenu/Buttons" unique_id=957360317]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "MENOS_CONTENT"
+text = "컨텐츠"
 vertical_alignment = 1
 
 [node name="Separator" type="VSeparator" parent="MainLayout/TopMenu/Buttons" unique_id=1157000197]
@@ -151,13 +151,23 @@ layout_mode = 2
 
 [node name="RuntimeToolbarLabel" type="Label" parent="MainLayout/RuntimeToolbar/Actions"]
 layout_mode = 2
-text = "MENOS RUNTIME"
+text = "RUNTIME"
 vertical_alignment = 1
+
+[node name="BtnRuntimeMenu" type="Button" parent="MainLayout/RuntimeToolbar/Actions"]
+layout_mode = 2
+text = "RUNTIME"
+tooltip_text = "Manage registered Runtime projects and their content tables."
 
 [node name="BtnRuntimeData" type="Button" parent="MainLayout/RuntimeToolbar/Actions"]
 layout_mode = 2
-text = "RUNTIME DATA"
+text = "Runtime data : D:/Atlas/projects/menos/godot"
 tooltip_text = "Import existing Runtime data or publish a new Runtime content package."
+
+[node name="BtnDatabaseCompare" type="Button" parent="MainLayout/RuntimeToolbar/Actions"]
+layout_mode = 2
+text = "DB 비교"
+tooltip_text = "현재 미션/팩션/건물/스킬/VFX/SFX/BGM/Voice의 컨텐츠 DB와 Runtime DB를 좌우 비교합니다."
 
 [node name="Content" type="Control" parent="MainLayout" unique_id=1915151087]
 clip_contents = true

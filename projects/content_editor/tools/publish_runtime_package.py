@@ -340,7 +340,7 @@ def publish(source_db, maps_dir, runtime_root, output_dir):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     here = Path(__file__).resolve().parents[1]
-    parser.add_argument("--source-db", type=Path, default=here / "data" / "menos.sqlite")
+    parser.add_argument("--source-db", type=Path, default=here / "data" / "content_editor.sqlite")
     parser.add_argument("--maps-dir", type=Path, default=here / "data" / "maps")
     parser.add_argument("--runtime-root", type=Path, required=True, help="Explicit Runtime project root used only as the source for referenced res:// assets")
     parser.add_argument("--output", type=Path, required=True, help="New output directory; must not already exist")

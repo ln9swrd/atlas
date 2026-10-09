@@ -1,7 +1,7 @@
 class_name BuildingRepository
 extends RefCounted
 
-const SQLITE_PATH := "res://data/menos.sqlite"
+const SQLITE_PATH := "res://data/content_editor.sqlite"
 const TABLE := "buildings"
 
 static func _open_db(read_only: bool = false):

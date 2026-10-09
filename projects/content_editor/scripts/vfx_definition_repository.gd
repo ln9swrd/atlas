@@ -1,7 +1,7 @@
 class_name VFXDefinitionRepository
 extends RefCounted
 
-const SQLITE_PATH := "res://data/menos.sqlite"
+const SQLITE_PATH := "res://data/content_editor.sqlite"
 const CATALOG_PATH := "vfx_definitions"
 const TABLE := "vfx_definitions"
 const DOCUMENT_ID := "vfx_definitions"

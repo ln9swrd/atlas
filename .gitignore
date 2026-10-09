@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -94,3 +94,10 @@ unreal-5-mcp
 
 # MK ERP customer license files
 projects/mk/src/MKERP.App/bin/**/license.json
+
+# Local MENOS database backups and generated runtime packages
+projects/content_editor/data/backups/
+projects/menos/godot/content/runtime-package-*/
+projects/menos/packages/
+projects/content_editor/tests/_tmp_campaign_editor_e2e.gd*
+projects/content_editor/addons/godot-sqlite/bin/~libgdsqlite*.TMP

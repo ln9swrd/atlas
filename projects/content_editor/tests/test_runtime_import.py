@@ -17,9 +17,9 @@ class RuntimeImportTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="menos_runtime_import_test_")
         self.root = Path(self.temp.name)
-        self.authoring_db = self.root / "data" / "menos.sqlite"
+        self.authoring_db = self.root / "data" / "content_editor.sqlite"
         self.authoring_db.parent.mkdir(parents=True)
-        shutil.copy2(ROOT / "data" / "menos.sqlite", self.authoring_db)
+        shutil.copy2(ROOT / "data" / "content_editor.sqlite", self.authoring_db)
         self.maps_dir = self.root / "data" / "maps"
         shutil.copytree(ROOT / "data" / "maps", self.maps_dir)
 

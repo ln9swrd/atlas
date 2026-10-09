@@ -50,3 +50,21 @@ msgstr "싱글 플레이 선택됨"
 
 msgid "QUIT"
 msgstr "종료"
+
+msgid "RESOLUTION"
+msgstr "해상도"
+
+msgid "BGM"
+msgstr "배경 음악"
+
+msgid "SFX"
+msgstr "효과음"
+
+msgid "VOICE"
+msgstr "음성"
+
+msgid "RESTORE_DEFAULTS"
+msgstr "기본값 복원"
+
+msgid "RESTORE_DEFAULTS_CONFIRM"
+msgstr "모든 설정을 기본값으로 복원하시겠습니까?"

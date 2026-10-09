@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://editor/runtime_targets_manager.gd" id="1"]
+
+[node name="RuntimeTargetsManager" type="Window"]
+title = "Runtime Targets"
+size = Vector2i(1120, 760)
+unresizable = false
+initial_position = 1
+script = ExtResource("1")

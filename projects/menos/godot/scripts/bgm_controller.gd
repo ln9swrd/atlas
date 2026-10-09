@@ -24,7 +24,7 @@ func play_definition(bgm_id: String) -> bool:
 	stop()
 	_player = AudioStreamPlayer.new()
 	_player.stream = stream
-	_player.bus = str(definition.bus)
+	_player.bus = "BGM"
 	_player.volume_db = linear_to_db(maxf(float(definition.volume), 0.0001))
 	_player.finished.connect(_on_finished)
 	add_child(_player)
