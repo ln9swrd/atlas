@@ -1566,3 +1566,32 @@ Treat the integrated plan as reconciled at this point. No further Map Editor imp
 - PIE VERIFIED: NOT VERIFIED.
 - Proposal: retain this seam and regression test as the minimum permanent transaction safety gate; do not add broader failure-injection cases unless a new failure mode is identified.
 - Current scope is ready for Commit review; no unrelated working-tree files are included in this change.
+
+## 2026-10-09 Remaining Content Editor Authoring Contract Audit
+
+**STATUS: HOLD - audit completed; broad contract migration requires a Master scope decision.**
+
+**SCOPE:** READ-ONLY review of remaining Mission, Faction, Skill, Campaign, BGM, SFX, VFX, and Voice Editor authoring paths. No code, catalog, or database changes were made for this audit.
+
+**CONFIRMED - direct-save catalog editors:**
+- Mission, Faction, and Skill edit an in-memory catalog and call `ObjectPersistence.save_catalog()` directly from Save/Delete. They have no editor-local dirty flag or common unsaved-change gate.
+- Mission, Faction, and Skill permit changing the selected record ID by erasing the old key and saving under the new key. This bypasses the established P0 rule that IDs must not be changed while references may exist; no common reference-usage guard is present in these inspected paths.
+- Campaign has a Reload action and validates stage references before Save, but edits are not tracked as dirty and Reload can overwrite unsaved form edits without warning.
+
+**CONFIRMED - definition/repository editors:**
+- BGM, SFX, VFX, and Voice validate then save definitions immediately through their repositories. These paths do not implement a common editor-local dirty/reload/close contract.
+- VFX explicitly rejects renaming an existing definition ID; the inspected Mission/Faction/Skill paths do not share this guard.
+- BGM deletion has a narrow runtime-required protection for required faction/context slots. SFX, VFX, and Voice repository deletion paths inspected here do not implement a general usage/reference scan.
+- Image Editor is a special multi-file mutation owner: managed asset deletion may update several catalogs and `main.gd` separately, and reports incomplete cleanup after partial failure. Do not fold this into a generic catalog-editor migration without a dedicated transaction/scope design.
+
+**CONFIRMED - already established working-copy paths:**
+- Map, Catalog, Robot, Unit, Tower, Building, and Stage have documented working-copy/dirty or explicit persistence boundaries. Their separate boundaries should be preserved unless an identified defect requires change.
+- ObjectPersistence has atomic transaction support for document/catalog pairs and an isolated rollback regression test, but that does not automatically make each direct-save editor conform to a common authoring contract.
+
+**VERIFICATION:** Static code-path inspection only. No Runtime, Editor UI, or PIE test was run for this audit. Existing unrelated working-tree changes and the SQLite file were not modified by this audit.
+
+**DECISION GATE - MASTER REQUIRED:** Choose the scope of the next implementation goal:
+1. Minimal safety patch: prohibit ID changes in Mission/Faction/Skill and add reference-protection where deletion is allowed, while retaining immediate Save semantics.
+2. Full authoring-contract migration: introduce editor-local working copy, dirty-state gates, explicit Save/Reload, and reference-protected ID/delete semantics for the identified editors. This is a broader cross-editor behavior change and requires per-editor E2E verification.
+
+**PROPOSAL:** Prefer option 1 as the next short-term goal, starting with a focused, isolated reference/ID safety audit and then minimal fixes. Defer full working-copy migration until the Master explicitly selects it. Keep Image Editor multi-file deletion as a separate decision gate.

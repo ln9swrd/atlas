@@ -666,3 +666,17 @@ PROPOSAL:
 - PIE/visible Runtime status is supported only for this specific Robot Editor profile display; this does not validate unrelated game runtime or all robot visuals.
 - No product code or catalog data was changed during this check. The generated untracked SQLite DLL and unrelated existing changes remain outside the goal scope and must not be committed as part of this goal.
 - Next: inspect the exact diff for the Robot Visual goal and separate it from existing unrelated modifications before deciding whether a scoped commit/push is safe.
+
+## 2026-10-09 PROGRESS - Remaining Content Editor Authoring Contract Audit
+
+**STATUS: HOLD - static audit completed; Master decision required before implementation.**
+
+- Reviewed Mission, Faction, Skill, Campaign, BGM, SFX, VFX, Voice, and Image Editor persistence/ID/deletion paths read-only.
+- CONFIRMED: Mission/Faction/Skill save directly from editor memory, have no common dirty/reload/close guard, and allow selected ID replacement by erasing the old key and saving under a new key. The inspected paths do not establish reference-safe rename protection.
+- CONFIRMED: Campaign validates stage references on Save but does not track dirty state; Reload can replace unsaved form edits.
+- CONFIRMED: BGM/SFX/VFX/Voice save definitions immediately through repositories and do not share a common dirty-state contract. VFX blocks ID rename; BGM has only a narrow required-slot deletion guard; SFX/VFX/Voice inspected repository delete paths have no general usage scan.
+- CONFIRMED: Image Editor managed-asset deletion can write multiple catalogs and `main.gd` independently, and can report incomplete cleanup after partial failure. Treat it separately from ordinary catalog editing.
+- Existing Map/Catalog/Robot/Unit/Tower/Building/Stage working-copy or explicit persistence boundaries are preserved.
+- Verification is static code inspection only. No code/data changes or Runtime/PIE tests were performed for this audit.
+- DECISION GATE: choose minimal ID/reference safety fixes while retaining immediate Save, or a broader working-copy/dirty-state migration. Full migration has materially larger behavioral scope.
+- PROPOSAL: prioritize minimal ID/reference safety, defer broad migration, and keep Image Editor multi-file deletion as a separate gate.
