@@ -569,3 +569,19 @@ PROPOSAL:
 - Keep the current cross-editor ownership boundary.
 - Do not introduce a Robot + Visual Asset atomic transaction without a new requirement.
 - Scope is ready for separate Master Commit/Push approval.
+
+
+## 2026-10-09 CATALOG Save Transaction Rollback Verification
+
+**STATUS — PASS (technical verification)**
+
+- Master-approved test-only failure injection was added to ObjectPersistence.save_catalog_pair_atomic().
+- Failure is injected after document persistence inside the transaction and before catalog persistence, forcing the real SQLite ROLLBACK path.
+- Focused regression test: godot/tests/catalog_save_rollback_smoke_test.gd.
+- CATALOG_SAVE_ROLLBACK_PASS confirmed.
+- Both asset_catalog and visual_assets were verified unchanged after the injected failure.
+- Existing menos.sqlite was backed up and restored during the test; its pre-existing working-tree change was preserved.
+- CODE VERIFIED: PASS.
+- DATA/PERSISTENCE ROLLBACK VERIFIED: PASS.
+- PIE VERIFIED: NOT VERIFIED.
+- Proposal: keep the seam and regression test as the minimum permanent transaction safety gate.

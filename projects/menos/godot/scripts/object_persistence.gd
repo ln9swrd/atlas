@@ -3,6 +3,13 @@ extends RefCounted
 
 const SQLITE_PATH := "res://content/menos.sqlite"
 
+static var _atomic_failure_injection_for_tests := false
+
+static func set_atomic_failure_injection_for_tests(enabled: bool) -> void:
+	if not OS.is_debug_build():
+		return
+	_atomic_failure_injection_for_tests = enabled
+
 static func load_catalog(path: String) -> Dictionary:
 	return ContentCatalogLoader.load_dictionary_catalog(path)
 
@@ -66,6 +73,10 @@ static func save_catalog_pair_atomic(document_path: String, document: Dictionary
 		db.close_db()
 		return false
 	if not _sync_document_in_transaction(db, document_table, document):
+		db.query("ROLLBACK")
+		db.close_db()
+		return false
+	if OS.is_debug_build() and _atomic_failure_injection_for_tests:
 		db.query("ROLLBACK")
 		db.close_db()
 		return false
