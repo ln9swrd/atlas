@@ -160,8 +160,14 @@ func _select_option_by_metadata(option: OptionButton, value: String) -> void:
 func _on_source_stage_changed(index: int) -> void:
 	if selected_entry_index < 0 or selected_entry_index >= stage_entries.size() or index < 0:
 		return
+	var new_stage_id := str(source_stage_option.get_item_metadata(index))
+	for i in range(stage_entries.size()):
+		if i != selected_entry_index and str(stage_entries[i].get("stage_id", "")) == new_stage_id:
+			status_label.text = "ERROR: stage is already in the campaign: %s" % new_stage_id
+			_reload()
+			return
 	var next_entries: Array[Dictionary] = stage_entries.duplicate(true)
-	next_entries[selected_entry_index]["stage_id"] = str(source_stage_option.get_item_metadata(index))
+	next_entries[selected_entry_index]["stage_id"] = new_stage_id
 	if not _persist_campaign(next_entries, name_edit.text):
 		_reload()
 		return
