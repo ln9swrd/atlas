@@ -32,7 +32,7 @@ The integration test requires the same explicit Runtime root; it does not infer 
 
 - `content/menos.sqlite`: newly constructed filtered SQLite database; Runtime loaders open it read-only.
 - `manifest.json`: package/schema versions, source DB hash, published map IDs/source hashes, included tables, database hash, Asset hashes/sizes and compatibility warnings.
-- Asset files are copied at their Runtime-relative paths (`images/...`, `sound/...`, `assets/...`, `content/editor/...`). Adjacent `.import` files are included when present.
+- Referenced Runtime Asset files are copied at their Runtime-relative paths (`images/...`, `sound/...`, `assets/...`, `content/editor/...`). Godot `.import` sidecars are editor-generated metadata and are not copied or listed in the package manifest; the manifest hashes only directly consumed content Assets.
 
 ## Filtering and compatibility
 
@@ -46,7 +46,7 @@ The integration test requires the same explicit Runtime root; it does not infer 
 ## Verification and limitations
 
 - Python integration test: `python -m unittest content_editor.tests.test_runtime_publisher -v`.
-- Runtime headless smoke exercises the existing Runtime `MapLoader` and `ContentCatalogLoader` against the generated DB using their debug test-path overrides. It verifies the fixed map aliases, canonical map ID, Campaign, Stage and robot catalog. This does not modify Runtime code or the Runtime DB.
+- Runtime headless smoke exercises the existing Runtime `MapLoader` and `ContentCatalogLoader` against the generated DB using their debug test-path overrides. It verifies the fixed map aliases, canonical map ID, Campaign, Stage and robot catalog, plus loading external PNG, SVG, OGG, and WAV resources. This does not modify the Runtime DB or source Assets.
 - The package is a data/Asset directory, not a standalone game build. It has not been copied into `godot/`, and no automatic deployment or replacement of `godot/content/menos.sqlite` occurs.
 - Database resource closure covers `res://` references discovered in included database content. It does not package the Runtime executable, scenes/scripts, or every hard-coded scene dependency. Production deployment still requires an explicit integration procedure and broader end-to-end validation.
 - GUI acceptance and Master PIE verification are not performed by this publisher.
@@ -75,3 +75,9 @@ See the Target Runtime workflow below for the current Content Editor UI. The CLI
 - **Save to Content Editor DB** writes authoring changes to `projects/content_editor/data/content_editor.sqlite` only. It does not write to the Runtime DB or make changes live in Runtime.
 - **IMPORT / PUBLISH > Publish Content Editor DB to Runtime Package...** reads the saved Content Editor DB and creates a new filtered package. On successful publish, the selected package is configured for the target Runtime; the user can then launch/restart Runtime to load it.
 - Import is the opposite-direction operation: it copies reviewed Runtime source content into the Content Editor authoring database after preview and confirmation. It is not a publish action.
+
+## Runtime target registry storage
+
+- Runtime target registrations and per-target table publication settings are stored in `content_editor/data/runtime_registry.sqlite`, separate from both the Content Editor authoring database (`content_editor.sqlite`) and the Runtime content database (`godot/content/menos.sqlite`).
+- On first initialization, `tools/manage_runtime_registry.py` imports only `runtime_targets` and `runtime_table_settings` from the legacy `data/menos.sqlite` when those tables exist and the new registry is empty. A timestamped full-database backup is written under `data/backups/` before migration. The legacy database is opened read-only and is not modified.
+- `runtime_registry.sqlite` and `data/backups/` are local state and are excluded from Git. Do not manually delete the legacy database as part of this migration; its other tables are outside this registry change.

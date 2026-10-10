@@ -1,4 +1,6 @@
 extends SceneTree
+
+const RuntimePackageIdentity = preload("res://scripts/runtime_package_identity.gd")
 var failures := 0
 func _initialize() -> void:
 	call_deferred("_run")
@@ -10,9 +12,9 @@ func _run() -> void:
 	if package_root.is_empty():
 		push_error("RUNTIME_CONTENT_PACKAGE_CONFIG_FAIL: --package-root required"); quit(2); return
 	RuntimeContentPackage.set_config_selection_for_tests(true)
-	var had_original := FileAccess.file_exists(RuntimeContentPackage.CONFIG_PATH)
-	var original_bytes := FileAccess.get_file_as_bytes(RuntimeContentPackage.CONFIG_PATH) if had_original else PackedByteArray()
-	var config := FileAccess.open(RuntimeContentPackage.CONFIG_PATH, FileAccess.WRITE)
+	var had_original := FileAccess.file_exists(RuntimePackageIdentity.current_config_path())
+	var original_bytes := FileAccess.get_file_as_bytes(RuntimePackageIdentity.current_config_path()) if had_original else PackedByteArray()
+	var config := FileAccess.open(RuntimePackageIdentity.current_config_path(), FileAccess.WRITE)
 	if config == null:
 		push_error("Cannot write temporary package config for test"); quit(2); return
 	config.store_string(JSON.stringify({"package_root": package_root}, "	")); config.close()
@@ -26,7 +28,7 @@ func _run() -> void:
 	MapLoader.clear_sqlite_path_override()
 	_assert(MapLoader.list_map_paths().has("northbridge_sector_01"), "map loader uses configured package DB")
 	# Invalid selection must fail closed; it must not read the built-in DB.
-	var bad_config := FileAccess.open(RuntimeContentPackage.CONFIG_PATH, FileAccess.WRITE)
+	var bad_config := FileAccess.open(RuntimePackageIdentity.current_config_path(), FileAccess.WRITE)
 	if bad_config != null:
 		bad_config.store_string(JSON.stringify({"package_root": package_root.path_join("missing_package_for_fail_closed_test")}, "\t"))
 		bad_config.close()
@@ -38,11 +40,11 @@ func _run() -> void:
 	_assert(ContentCatalogLoader.load_dictionary_catalog("robots").is_empty(), "invalid package does not load built-in catalogs")
 	# Restore the user's original config byte-for-byte, or remove the temporary one.
 	if had_original:
-		var restore := FileAccess.open(RuntimeContentPackage.CONFIG_PATH, FileAccess.WRITE)
+		var restore := FileAccess.open(RuntimePackageIdentity.current_config_path(), FileAccess.WRITE)
 		if restore != null:
 			restore.store_buffer(original_bytes); restore.close()
 	else:
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(RuntimeContentPackage.CONFIG_PATH))
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(RuntimePackageIdentity.current_config_path()))
 	RuntimeContentPackage.reload_configuration()
 	RuntimeContentPackage.set_config_selection_for_tests(false)
 	ContentCatalogLoader.set_database_path_for_tests("")

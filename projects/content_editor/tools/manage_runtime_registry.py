@@ -2,7 +2,6 @@
 """Manage registered Runtime targets and per-target table publication settings."""
 import argparse
 import json
-import shutil
 import sqlite3
 import sys
 from datetime import datetime, timezone
@@ -17,26 +16,12 @@ TABLES = [
 ]
 EDITOR_ONLY = {"editor", "player_profile", "schema_migrations"}
 ROOT = Path(__file__).resolve().parents[1]
-DB = ROOT / "data" / "menos.sqlite"
+DB = ROOT / "data" / "runtime_registry.sqlite"
+LEGACY_DB = ROOT / "data" / "menos.sqlite"
 
 
 def connect():
     DB.parent.mkdir(parents=True, exist_ok=True)
-    existed = DB.exists()
-    needs_migration = not existed
-    if existed:
-        probe = sqlite3.connect("file:" + str(DB).replace("\\", "/") + "?mode=ro", uri=True)
-        try:
-            existing = {row[0] for row in probe.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-            needs_migration = not {"runtime_targets", "runtime_table_settings"}.issubset(existing)
-        finally:
-            probe.close()
-    if existed and needs_migration:
-        backup_dir = DB.parent / "backups"
-        backup_dir.mkdir(parents=True, exist_ok=True)
-        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-        backup = backup_dir / ("runtime_registry_pre_migration_" + stamp + ".sqlite")
-        shutil.copy2(DB, backup)
     conn = sqlite3.connect(str(DB))
     try:
         conn.execute("PRAGMA foreign_keys=ON")
@@ -59,6 +44,69 @@ def connect():
             PRIMARY KEY(runtime_id, table_name)
         )""")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_runtime_targets_enabled ON runtime_targets(enabled)")
+        conn.execute("""CREATE TABLE IF NOT EXISTS registry_meta (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )""")
+
+        # One-time migration of only the registry tables. The legacy authoring
+        # database remains read-only and is never modified by this tool.
+        migration = conn.execute(
+            "SELECT value FROM registry_meta WHERE key='legacy_registry_imported'"
+        ).fetchone()
+        if migration is None:
+            target_count = conn.execute("SELECT COUNT(*) FROM runtime_targets").fetchone()[0]
+            legacy_tables = set()
+            if LEGACY_DB.is_file():
+                legacy = sqlite3.connect(
+                    "file:" + str(LEGACY_DB).replace("\\", "/") + "?mode=ro",
+                    uri=True,
+                )
+                try:
+                    legacy_tables = {
+                        row[0] for row in legacy.execute(
+                            "SELECT name FROM sqlite_master WHERE type='table'"
+                        )
+                    }
+                    required = {"runtime_targets", "runtime_table_settings"}
+                    if target_count == 0 and required.issubset(legacy_tables):
+                        backup_dir = DB.parent / "backups"
+                        backup_dir.mkdir(parents=True, exist_ok=True)
+                        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+                        backup = backup_dir / f"runtime_registry_source_pre_migration_{stamp}.sqlite"
+                        legacy_backup = sqlite3.connect(str(backup))
+                        try:
+                            legacy.backup(legacy_backup)
+                        finally:
+                            legacy_backup.close()
+                        conn.execute("BEGIN")
+                        conn.executemany(
+                            """INSERT INTO runtime_targets
+                            (runtime_id,name,project_path,enabled,notes,created_at_utc,updated_at_utc)
+                            VALUES(?,?,?,?,?,?,?)""",
+                            legacy.execute(
+                                """SELECT runtime_id,name,project_path,enabled,notes,
+                                created_at_utc,updated_at_utc FROM runtime_targets"""
+                            ).fetchall(),
+                        )
+                        conn.executemany(
+                            """INSERT INTO runtime_table_settings
+                            (runtime_id,table_name,enabled,last_publish_status,
+                             last_published_at_utc,last_published_sha256)
+                            VALUES(?,?,?,?,?,?)""",
+                            legacy.execute(
+                                """SELECT runtime_id,table_name,enabled,last_publish_status,
+                                last_published_at_utc,last_published_sha256
+                                FROM runtime_table_settings"""
+                            ).fetchall(),
+                        )
+                finally:
+                    legacy.close()
+            conn.execute(
+                "INSERT INTO registry_meta(key,value) VALUES('legacy_registry_imported',?)",
+                (datetime.now(timezone.utc).isoformat(),),
+            )
+
         # Keep per-runtime settings aligned with the current publishable content
         # catalog. Map documents are JSON assets, not SQLite tables.
         runtime_ids = [row[0] for row in conn.execute("SELECT runtime_id FROM runtime_targets")]
@@ -75,6 +123,7 @@ def connect():
         conn.commit()
         return conn
     except Exception:
+        conn.rollback()
         conn.close()
         raise
 

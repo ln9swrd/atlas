@@ -25,10 +25,16 @@ class RuntimePublisherIntegrationTest(unittest.TestCase):
             self.assertIn('runtime_settings', manifest['database']['included_tables'])
             self.assertEqual({x['map_id'] for x in manifest['maps']}, {'northbridge_sector_01', 'map_02', 'map_03'})
             self.assertTrue(any(x['code'] == 'UNSUPPORTED_PLAY_MODE_IGNORED' for x in manifest['warnings']))
+            self.assertTrue(manifest['assets'], 'manifest includes referenced Runtime assets')
+            self.assertTrue(all(not asset['path'].endswith('.import') for asset in manifest['assets']),
+                            'Godot .import metadata is excluded from package manifest')
+            self.assertTrue(all(asset['role'] == 'content_asset' for asset in manifest['assets']),
+                            'manifest contains only Runtime-consumed content assets')
             for asset in manifest['assets']:
                 rel = asset['path'][6:] if asset['path'].startswith('res://') else asset['path']
                 path = output.joinpath(*Path(rel).parts)
                 self.assertTrue(path.is_file(), asset['path'])
+                self.assertFalse(Path(str(path) + '.import').exists(), 'package omits adjacent import metadata')
                 self.assertEqual(publisher.sha256_file(path), asset['sha256'])
             db = sqlite3.connect('file:%s?mode=ro' % (output / 'content' / 'menos.sqlite').resolve().as_posix(), uri=True)
             try:

@@ -97,6 +97,7 @@ projects/mk/src/MKERP.App/bin/**/license.json
 
 # Local MENOS database backups and generated runtime packages
 projects/content_editor/data/backups/
+projects/content_editor/data/runtime_registry.sqlite
 projects/menos/godot/content/runtime-package-*/
 projects/menos/packages/
 projects/content_editor/tests/_tmp_campaign_editor_e2e.gd*

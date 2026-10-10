@@ -29,6 +29,15 @@ func _run() -> void:
 				texture_loaded = true
 				break
 	_assert(texture_loaded, "external package PNG loads as Texture2D")
+	var svg_loaded := false
+	for item in manifest.get("assets", []):
+		var path := str(item.get("path", ""))
+		if str(item.get("role", "")) == "content_asset" and path.get_extension().to_lower() == "svg":
+			var svg_texture := RuntimeContentPackage.load_resource(path) as Texture2D
+			if svg_texture != null and svg_texture.get_width() > 0 and svg_texture.get_height() > 0:
+				svg_loaded = true
+				break
+	_assert(svg_loaded, "external package SVG loads as Texture2D")
 	var audio := RuntimeContentPackage.load_resource("res://sound/BGM_FACTION_01_NORMAL.ogg") as AudioStream
 	_assert(audio != null, "external package OGG loads as AudioStream")
 	var wav := RuntimeContentPackage.load_resource("res://sound/ROBOT_LASER_FIRE.wav") as AudioStream

@@ -1,7 +1,7 @@
 
 # Runtime-Aware Content Editor — Phase 0 Store and Dependency Inventory
 
-**Status:** READ-ONLY investigation; implementation not started.
+**Status:** Phase 0 inventory plus approved Runtime identity/config-isolation slice implemented; broad Runtime-aware editor UI remains unimplemented.
 **Decision basis:** Master approved the proposal that Runtime-side panes are read-only, authoring remains the editing source, and per-Runtime copy/publish is explicit. Direct Runtime editing remains out of scope.
 
 ## 1. Confirmed common storage architecture
@@ -223,3 +223,46 @@ An additional read-only check enumerated the current package's manifested conten
 Before the proposed publisher change is accepted, the regression check should at minimum cover PNG, WAV, OGG, and MP3; separately identify whether `ground_basic_32.svg` is actually consumed through the external package path or is only a bundled/static resource. If it must be externally package-loadable, SVG handling needs a narrow, explicit decision (for example, convert/consume the raw SVG through a supported runtime path, or classify it as a bundled resource rather than a package asset). Do not silently expand the change into a general SVG/importer redesign.
 
 No implementation or package operation was performed during this follow-up. The existing configured package and config remain untouched.
+
+## 14. Runtime-specific package config identity ? implementation result (2026-10-10)
+
+**Scope approved by Master:** derive Runtime identity from normalized project path, separate package config per Runtime, and expose a read-only config query. No legacy-config migration, package activation, UI panel integration, commit, or push.
+
+- **CONFIRMED / CODE VERIFIED:** `projects/menos/godot/scripts/runtime_package_identity.gd` normalizes slash direction and redundant path segments; on Windows it also folds path casing, then computes SHA-256 over UTF-8 path text.
+- **CONFIRMED / CODE VERIFIED:** Runtime package reads and config CLI writes now use `user://runtime_content_package_<sha256>.json`; the legacy `user://runtime_content_package.json` is not used as a fallback and is not migrated or deleted.
+- **CONFIRMED / CODE VERIFIED:** `runtime_package_config_cli.gd --show-config` prints JSON describing Runtime identity, absolute config path, and whether a package is configured. Its read path only opens an existing config for reading; it does not create or write config. The response label `PACKAGE_CONFIGURED_FOR_NEXT_LAUNCH` does not claim package validity or a currently running Runtime's loaded state.
+- **CONFIRMED / TEST VERIFIED:** `runtime_package_identity_test.gd` passes checks for SHA-256 length, slash normalization, distinct path isolation, Windows case normalization, and identity-bearing config filename.
+- **CONFIRMED / MANUAL READ-ONLY CHECK:** running `--show-config` against `E:/atlas/projects/menos/godot` returned identity `02f4584dfb9d159a0088bcf076f46eef229e9c15a616c1b6ba11acb89a147e38`, config path under `app_userdata/MENOS`, and `BUILT_IN_CONTENT_CONFIGURED`. No per-Runtime config file was created by that query.
+- **UNVERIFIED:** the write path was not exercised end-to-end with a valid package because no existing package directory was available on the active `E:` or `D:` project paths. The existing full package config smoke test therefore was not run. Package integrity and actual Runtime loading were not evaluated in this slice.
+- **Compatibility note:** changing the project root changes the identity/config filename by design; the prior identity is not automatically linked. A Runtime path change requires re-query/revalidation.
+- **Preserved pre-existing changes:** `runtime_content_package.gd` already contained the external SVG-loading change, and `runtime_content_package_smoke_test.gd` already contained the matching SVG assertion. Those changes were not reverted or rewritten as part of this identity task.
+
+**Next decision gate:** determine whether this identity/config-query foundation is sufficient to proceed to the read-only Runtime status adapter consumed by Content Editor, or whether Master wants the config writer tested with a generated package fixture first.
+
+
+## 15. READ-ONLY RuntimeContext status adapter ? implementation result (2026-10-10)
+
+**Approved scope:** query the selected Runtime's per-project package configuration without mutating registry/configuration; distinguish config and package validation states. This is a data adapter only; no UI panel integration or package activation.
+
+- **CONFIRMED / CODE VERIFIED:** `projects/content_editor/tools/runtime_config_status.py` is a standalone read-only adapter. It does not import or invoke `manage_runtime_registry.py`, and it opens no SQLite database. The caller supplies the registered Runtime path and the matching Godot `app_userdata/<project-name>` directory.
+- **CONFIRMED / CODE VERIFIED:** Runtime identity is derived using the same Windows path normalization and SHA-256 rule as `runtime_package_identity.gd`. It resolves the per-Runtime config file, validates JSON and absolute package root, then checks the package manifest, database SHA-256, and each manifest asset's path containment, existence, byte size, and SHA-256.
+- **CONFIRMED / TEST VERIFIED:** seven unit tests pass: absent config does not create files; valid package DB hash; missing package files; malformed config; DB hash mismatch; asset hash mismatch; and different Runtime paths produce different identities/config paths.
+- **CONFIRMED / READ-ONLY QUERY:** selected Runtime ID 2 (`MENOS Runtime`, `E:\atlas\projects\menos\godot`) returned `BUILT_IN_CONTENT_CONFIGURED` and `package_state=NOT_CHECKED`, because no Runtime-specific config exists. The query did not create a config.
+- **State semantics:** `PACKAGE_CONFIGURED_FOR_NEXT_LAUNCH` describes stored configuration, not the active state of an already running Runtime. `PACKAGE_INTEGRITY_OK` verifies the manifest-declared database and assets only. Missing or malformed inputs produce distinct failure states.
+- **UNVERIFIED:** the adapter has not yet been connected to a Content Editor window or menu. Running Runtime process state is not inspected.
+
+**Next decision gate:** integrate this adapter into a read-only Runtime status panel or section in the existing Runtime-aware comparison UI. The next slice should remain display-only and show selected Runtime identity, config path, configured package path, and integrity state; activation and settings writes remain out of scope.
+
+
+## 16. RuntimeContext read-only UI integration ? implementation result (2026-10-10)
+
+**Approved scope:** display selected Runtime identity, config location, configured package path, and integrity status in the existing dual-database comparison window. No activation or settings writes.
+
+- **CONFIRMED / CODE VERIFIED:** `editor/dual_database_compare.gd` now displays a `RuntimeContext (read-only)` section above the independent DB comparison. Refresh reruns the status query and refreshes both views.
+- **CONFIRMED / READ-ONLY SAFETY:** the view invokes `tools/runtime_config_status.py` with the selected Runtime ID. The helper reads `runtime_targets` via SQLite `mode=ro`; the previous call to `manage_runtime_registry.py list` has been removed from this view because that command enters a connection path that may migrate or write registry tables.
+- **CONFIRMED / TEST VERIFIED:** nine unit tests pass, including selected Runtime resolution from a temporary registry DB, byte-for-byte verification that the registry is unchanged, and distinct failure reporting for a missing selected target.
+- **CONFIRMED / PARSE CHECK:** Godot 4.7.2 headless editor scan exited 0. Existing invalid-UID fallback warnings were emitted for Northbridge tileset resources; these are unrelated to this task and were not changed.
+- **CONFIRMED / LIVE READ-ONLY QUERY:** Runtime ID 2 resolves to `E:\atlas\projects\menos\godot`, identity `02f4584dfb9d159a0088bcf076f46eef229e9c15a616c1b6ba11acb89a147e38`, config state `BUILT_IN_CONTENT_CONFIGURED`, and package state `NOT_CHECKED`. No Runtime config was created.
+- **UNVERIFIED:** actual window appearance and refresh behavior have not been inspected interactively. No PIE/Runtime launch test was performed.
+
+**Decision gate:** UI integration is implemented. Recommend stop here and have Master inspect the comparison window during the planned focused UI/PIE pass. Any future activation workflow should be a separate approved slice.

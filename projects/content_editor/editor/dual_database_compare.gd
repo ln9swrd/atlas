@@ -2,7 +2,8 @@ extends Window
 
 const CONTENT_DB_PATH := "res://data/content_editor.sqlite"
 const SETTINGS_PATH := "user://menos_settings.cfg"
-const REGISTRY_TOOL := "res://tools/manage_runtime_registry.py"
+const REGISTRY_DB_PATH := "res://data/runtime_registry.sqlite"
+const RUNTIME_STATUS_TOOL := "res://tools/runtime_config_status.py"
 const TABLES_BY_SCENE := {
 	"res://editor/mission_editor.tscn": {"table": "missions", "label": "Mission"},
 	"res://editor/faction_editor.tscn": {"table": "factions", "label": "Faction"},
@@ -21,6 +22,7 @@ var right_path_label: Label
 var left_data: TextEdit
 var right_data: TextEdit
 var status_label: Label
+var runtime_context_label: Label
 
 func configure_for_scene(scene_path: String) -> bool:
 	var spec: Dictionary = TABLES_BY_SCENE.get(scene_path, {})
@@ -48,6 +50,15 @@ func _build_ui() -> void:
 	heading.text = "%s data | two independent read-only SQLite connections" % editor_label
 	heading.add_theme_font_size_override("font_size", 16)
 	root.add_child(heading)
+
+	var runtime_context_heading := Label.new()
+	runtime_context_heading.text = "RuntimeContext (read-only)"
+	runtime_context_heading.add_theme_font_size_override("font_size", 14)
+	root.add_child(runtime_context_heading)
+	runtime_context_label = Label.new()
+	runtime_context_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	runtime_context_label.text = "Runtime status has not been queried."
+	root.add_child(runtime_context_label)
 
 	var split := HSplitContainer.new()
 	split.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -108,14 +119,20 @@ func _build_ui() -> void:
 
 func _load_both_databases() -> void:
 	var content_path := ProjectSettings.globalize_path(CONTENT_DB_PATH)
-	var runtime_path := _selected_runtime_database_path()
+	var runtime_context := _read_runtime_context()
+	var runtime_path := ""
+	if str(runtime_context.get("status", "")) == "PASS":
+		var project_root := str(runtime_context.get("project_root", ""))
+		if not project_root.is_empty():
+			runtime_path = project_root.path_join("content").path_join("menos.sqlite")
+	_update_runtime_context_label(runtime_context)
 	left_path_label.text = content_path
-	right_path_label.text = runtime_path if not runtime_path.is_empty() else "No enabled Runtime target selected."
+	right_path_label.text = runtime_path if not runtime_path.is_empty() else "No usable enabled Runtime target selected."
 
 	if runtime_path.is_empty():
-		left_data.text = "ERROR: Runtime target is not selected."
-		right_data.text = "Select an enabled Runtime in Runtime Targets manager."
-		status_label.text = "Both database handles were not opened because there is no selected Runtime."
+		left_data.text = "ERROR: Runtime target is not selected or RuntimeContext query failed."
+		right_data.text = "Review the RuntimeContext status above and select an enabled Runtime in Runtime Targets manager."
+		status_label.text = "Both database handles were not opened because RuntimeContext could not resolve an enabled target."
 		return
 
 	var content_db = _open_read_only_database(content_path, "Content Editor")
@@ -139,6 +156,51 @@ func _load_both_databases() -> void:
 	runtime_db.close_db()
 	content_db.close_db()
 	status_label.text = "Read complete: %s | Both independent read-only SQLite handles were open simultaneously." % table_name
+
+func _read_runtime_context() -> Dictionary:
+	var settings := ConfigFile.new()
+	var selected_id := 0
+	if settings.load(SETTINGS_PATH) == OK:
+		selected_id = int(settings.get_value("runtime", "selected_runtime_id", 0))
+	var registry_path := ProjectSettings.globalize_path(REGISTRY_DB_PATH)
+	var tool_path := ProjectSettings.globalize_path(RUNTIME_STATUS_TOOL)
+	var appdata := OS.get_environment("APPDATA")
+	if appdata.is_empty():
+		return {"status": "FAIL", "state": "USERDATA_BASE_UNAVAILABLE", "error": "APPDATA environment variable is unavailable."}
+	var userdata_base := appdata.path_join("Godot").path_join("app_userdata")
+	var args := PackedStringArray([
+		tool_path,
+		"--registry-db", registry_path,
+		"--selected-runtime-id", str(selected_id),
+		"--userdata-base", userdata_base
+	])
+	var output: Array = []
+	var exit_code := OS.execute("python", args, output, false)
+	if exit_code == -1:
+		output.clear()
+		var fallback_args := PackedStringArray(["-3"])
+		fallback_args.append_array(args)
+		exit_code = OS.execute("py", fallback_args, output, false)
+	if output.is_empty():
+		return {"status": "FAIL", "state": "STATUS_QUERY_FAILED", "error": "RuntimeContext query produced no output (exit %d)." % exit_code}
+	var parsed: Variant = JSON.parse_string("\n".join(PackedStringArray(output)).strip_edges())
+	if not (parsed is Dictionary):
+		return {"status": "FAIL", "state": "STATUS_QUERY_INVALID_JSON", "error": "RuntimeContext query did not return a JSON object."}
+	return parsed
+
+func _update_runtime_context_label(context: Dictionary) -> void:
+	var state := str(context.get("state", ""))
+	if str(context.get("status", "")) != "PASS":
+		runtime_context_label.text = "RuntimeContext ERROR | %s | %s" % [state, str(context.get("error", ""))]
+		return
+	var lines := PackedStringArray()
+	lines.append("Runtime: %s (ID %s)" % [str(context.get("runtime_name", "Unknown")), str(context.get("selected_runtime_id", "?"))])
+	lines.append("Identity: %s" % str(context.get("runtime_identity", "")))
+	lines.append("Project: %s" % str(context.get("project_root", "")))
+	lines.append("Config: %s | %s" % [str(context.get("config_state", "UNKNOWN")), str(context.get("config_path", ""))])
+	lines.append("Package: %s" % (str(context.get("package_root", "")) if bool(context.get("configured", false)) else "(not configured)"))
+	lines.append("Integrity: %s" % str(context.get("package_state", "UNKNOWN")))
+	runtime_context_label.text = "\n".join(lines)
 
 func _open_read_only_database(database_path: String, _source_label: String):
 	if not FileAccess.file_exists(database_path):
@@ -170,31 +232,3 @@ func _read_table_from_handle(db, database_path: String) -> String:
 				record[str(key)] = value
 		records.append(record)
 	return "Table: %s\nRows: %d\n\n%s" % [table_name, records.size(), JSON.stringify(records, "  ")]
-
-func _selected_runtime_database_path() -> String:
-	var settings := ConfigFile.new()
-	if settings.load(SETTINGS_PATH) != OK:
-		return ""
-	var selected_id := int(settings.get_value("runtime", "selected_runtime_id", 0))
-	if selected_id <= 0:
-		return ""
-	var script_path := ProjectSettings.globalize_path(REGISTRY_TOOL)
-	var output: Array = []
-	var exit_code := OS.execute("python", PackedStringArray([script_path, "list"]), output, false)
-	if exit_code == -1:
-		output.clear()
-		exit_code = OS.execute("py", PackedStringArray(["-3", script_path, "list"]), output, false)
-	if exit_code != 0:
-		return ""
-	var raw := "\n".join(PackedStringArray(output)).strip_edges()
-	var parsed: Variant = JSON.parse_string(raw)
-	if not (parsed is Dictionary) or str(parsed.get("status", "")) != "PASS":
-		return ""
-	for target in parsed.get("targets", []):
-		if int(target.get("id", 0)) != selected_id or int(target.get("enabled", 0)) != 1:
-			continue
-		var project_root := str(target.get("path", ""))
-		if project_root.is_empty():
-			return ""
-		return project_root.path_join("content").path_join("menos.sqlite")
-	return ""

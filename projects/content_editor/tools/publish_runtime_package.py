@@ -290,13 +290,8 @@ def publish(source_db, maps_dir, runtime_root, output_dir):
             shutil.copy2(str(source), str(target))
             assets_manifest.append({"path": resource, "size_bytes": target.stat().st_size,
                                     "sha256": sha256_file(target), "role": "content_asset"})
-            # Godot's adjacent import metadata preserves the project's import settings/UID.
-            import_source = Path(str(source) + ".import")
-            if import_source.is_file():
-                import_target = Path(str(target) + ".import")
-                shutil.copy2(str(import_source), str(import_target))
-                assets_manifest.append({"path": resource + ".import", "size_bytes": import_target.stat().st_size,
-                                        "sha256": sha256_file(import_target), "role": "godot_import_metadata"})
+            # Import metadata is editor-generated state, not a distributable Runtime Asset.
+            # The package manifest covers only files the Runtime consumes directly.
         database_hash = sha256_file(db_target)
         manifest = {
             "package_format_version": PACKAGE_FORMAT_VERSION,

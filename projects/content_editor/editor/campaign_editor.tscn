@@ -42,7 +42,7 @@ placeholder_text = "Campaign Name"
 
 [node name="SaveScopeNotice" type="Label" parent="MainLayout/Body/EditorPanel/Fields"]
 layout_mode = 2
-text = "SAVE writes to Content Editor SQLite only. Use IMPORT / PUBLISH > Publish Content Editor DB to Runtime Package to apply changes to Runtime."
+text = "Changes are committed to Content Editor SQLite immediately. Use IMPORT / PUBLISH > Publish Content Editor DB to apply changes to Runtime."
 
 [node name="StagesLabel" type="Label" parent="MainLayout/Body/EditorPanel/Fields"]
 layout_mode = 2
@@ -104,10 +104,6 @@ layout_mode = 2
 layout_mode = 2
 text = "Reload"
 
-[node name="SaveButton" type="Button" parent="MainLayout/Body/EditorPanel/Fields/Buttons"]
-layout_mode = 2
-text = "Save to Content Editor DB"
-tooltip_text = "Save campaign changes to the Content Editor database only. Does not update Runtime."
 
 [node name="Status" type="Label" parent="MainLayout"]
 layout_mode = 2

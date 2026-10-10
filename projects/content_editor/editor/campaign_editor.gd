@@ -18,7 +18,8 @@ var rebuilding: bool = false
 
 func _ready() -> void:
 	$MainLayout/Body/EditorPanel/Fields/Buttons/ReloadButton.pressed.connect(_reload)
-	$MainLayout/Body/EditorPanel/Fields/Buttons/SaveButton.pressed.connect(_save)
+	name_edit.focus_exited.connect(_on_campaign_name_committed)
+	name_edit.text_submitted.connect(_on_campaign_name_submitted)
 	$MainLayout/Body/EditorPanel/Fields/StageActions/AddStageButton.pressed.connect(_add_stage)
 	$MainLayout/Body/EditorPanel/Fields/StageActions/DeleteStageButton.pressed.connect(_delete_selected_stage)
 	stage_list.item_selected.connect(_on_stage_selected)
@@ -114,12 +115,16 @@ func _add_stage() -> void:
 	if stage_entries.any(func(entry: Dictionary) -> bool: return str(entry.get("stage_id", "")) == stage_id):
 		status_label.text = "ERROR: stage is already in the campaign: %s" % stage_id
 		return
-	stage_entries.append({"stage_id": stage_id, "mission_id": mission_id})
+	var next_entries: Array[Dictionary] = stage_entries.duplicate(true)
+	next_entries.append({"stage_id": stage_id, "mission_id": mission_id})
+	if not _persist_campaign(next_entries, name_edit.text):
+		return
+	stage_entries = next_entries
 	selected_entry_index = stage_entries.size() - 1
 	_rebuild_stage_list()
 	stage_list.select(selected_entry_index)
 	_on_stage_selected(selected_entry_index)
-	status_label.text = "Added Campaign Stage %02d" % (selected_entry_index + 1)
+	status_label.text = "Added Campaign Stage %02d (transaction committed)." % (selected_entry_index + 1)
 
 func _rebuild_stage_list() -> void:
 	rebuilding = true
@@ -155,21 +160,37 @@ func _select_option_by_metadata(option: OptionButton, value: String) -> void:
 func _on_source_stage_changed(index: int) -> void:
 	if selected_entry_index < 0 or selected_entry_index >= stage_entries.size() or index < 0:
 		return
-	stage_entries[selected_entry_index]["stage_id"] = str(source_stage_option.get_item_metadata(index))
+	var next_entries: Array[Dictionary] = stage_entries.duplicate(true)
+	next_entries[selected_entry_index]["stage_id"] = str(source_stage_option.get_item_metadata(index))
+	if not _persist_campaign(next_entries, name_edit.text):
+		_reload()
+		return
+	stage_entries = next_entries
 	_rebuild_stage_list()
+	status_label.text = "Stage data updated (transaction committed)."
 
 func _on_mission_changed(index: int) -> void:
 	if selected_entry_index < 0 or selected_entry_index >= stage_entries.size() or index < 0:
 		return
-	stage_entries[selected_entry_index]["mission_id"] = str(mission_option.get_item_metadata(index))
+	var next_entries: Array[Dictionary] = stage_entries.duplicate(true)
+	next_entries[selected_entry_index]["mission_id"] = str(mission_option.get_item_metadata(index))
+	if not _persist_campaign(next_entries, name_edit.text):
+		_reload()
+		return
+	stage_entries = next_entries
 	_rebuild_stage_list()
+	status_label.text = "Mission updated (transaction committed)."
 
 func _delete_selected_stage() -> void:
 	if selected_entry_index < 0 or selected_entry_index >= stage_entries.size():
 		status_label.text = "Select a campaign stage to delete."
 		return
 	var removed_index: int = selected_entry_index
-	stage_entries.remove_at(removed_index)
+	var next_entries: Array[Dictionary] = stage_entries.duplicate(true)
+	next_entries.remove_at(removed_index)
+	if not _persist_campaign(next_entries, name_edit.text):
+		return
+	stage_entries = next_entries
 	selected_entry_index = -1
 	_rebuild_stage_list()
 	if not stage_entries.is_empty():
@@ -178,7 +199,7 @@ func _delete_selected_stage() -> void:
 		_on_stage_selected(next_index)
 	else:
 		_clear_selected_stage()
-	status_label.text = "Deleted campaign stage."
+	status_label.text = "Deleted campaign stage (transaction committed)."
 
 func _clear_selected_stage() -> void:
 	selected_entry_index = -1
@@ -189,14 +210,27 @@ func _clear_selected_stage() -> void:
 	if mission_option.item_count > 0:
 		mission_option.select(0)
 
-func _save() -> void:
-	var campaign_name: String = name_edit.text.strip_edges()
+func _on_campaign_name_committed() -> void:
+	_persist_name_edit()
+
+func _on_campaign_name_submitted(_value: String) -> void:
+	_persist_name_edit()
+
+func _persist_name_edit() -> void:
+	var campaign_name := name_edit.text.strip_edges()
 	if campaign_name.is_empty():
 		status_label.text = "ERROR: campaign name is required"
 		return
-	if stage_entries.is_empty():
-		status_label.text = "ERROR: add at least one stage"
+	if not _persist_campaign(stage_entries, campaign_name):
+		_reload()
 		return
+	status_label.text = "Campaign name updated (transaction committed)."
+
+func _persist_campaign(entries: Array[Dictionary], campaign_name_value: String) -> bool:
+	var campaign_name := campaign_name_value.strip_edges()
+	if campaign_name.is_empty():
+		status_label.text = "ERROR: campaign name is required"
+		return false
 	var stage_catalog := ContentCatalogLoader.load_document("stage_catalog")
 	var valid_ids: Dictionary = {}
 	var values: Variant = stage_catalog.get("stages", [])
@@ -206,19 +240,19 @@ func _save() -> void:
 	var stage_pks: Array[int] = []
 	var entry_missions: Array[Dictionary] = []
 	var legacy_missions: Dictionary = {}
-	for entry in stage_entries:
-		var stage_id: String = str(entry.get("stage_id", ""))
-		var mission_id: String = str(entry.get("mission_id", ""))
+	for entry in entries:
+		var stage_id := str(entry.get("stage_id", ""))
+		var mission_id := str(entry.get("mission_id", ""))
 		if not valid_ids.has(stage_id):
 			status_label.text = "ERROR: stage is not registered in Content Editor SQLite. Import Runtime Data first: %s" % stage_id
-			return
+			return false
 		if not mission_catalog.has(mission_id):
 			status_label.text = "ERROR: choose a valid mission for %s" % stage_id
-			return
-		var stage_pk: int = ContentCatalogLoader.resolve_odb_pk_from_legacy("stage", stage_id)
+			return false
+		var stage_pk := ContentCatalogLoader.resolve_odb_pk_from_legacy("stage", stage_id)
 		if stage_pk < 1:
 			status_label.text = "ERROR: stage is not registered in Content Editor database: %s" % stage_id
-			return
+			return false
 		stage_pks.append(stage_pk)
 		entry_missions.append({"stage_id": stage_id, "mission_id": mission_id})
 		if not legacy_missions.has(stage_id):
@@ -230,7 +264,7 @@ func _save() -> void:
 	next_document["stage_missions"] = legacy_missions
 	next_document["stage_mission_entries"] = entry_missions
 	if not ObjectPersistence.save_content_document("campaign", next_document):
-		status_label.text = "ERROR: campaign SQLite save failed"
-		return
-	document = ContentCatalogLoader.load_document("campaign")
-	status_label.text = "Saved campaign with %d stages to Content Editor SQLite." % stage_entries.size()
+		status_label.text = "ERROR: campaign SQLite transaction failed; changes were not applied."
+		return false
+	document = next_document
+	return true

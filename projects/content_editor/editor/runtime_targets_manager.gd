@@ -257,7 +257,7 @@ func _new_target() -> void:
 	status_label.text = "새 런타임 정보를 입력한 뒤 '등록/저장'을 누르십시오."
 
 func _browse_path() -> void:
-	path_dialog.current_dir = path_edit.text if not path_edit.text.is_empty() else "D:/Atlas/projects"
+	path_dialog.current_dir = path_edit.text if not path_edit.text.is_empty() else ProjectSettings.globalize_path("res://..")
 	path_dialog.popup_centered(Vector2i(850, 600))
 
 func _save_target() -> void:

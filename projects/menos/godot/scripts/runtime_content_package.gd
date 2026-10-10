@@ -1,7 +1,8 @@
 class_name RuntimeContentPackage
 extends RefCounted
 
-const CONFIG_PATH := "user://runtime_content_package.json"
+const RuntimePackageIdentity = preload("res://scripts/runtime_package_identity.gd")
+
 const MANIFEST_NAME := "manifest.json"
 const PACKAGE_FORMAT_VERSION := 1
 
@@ -97,6 +98,16 @@ static func load_resource(resource_path: String) -> Resource:
 		if image.load(resolved) != OK:
 			return null
 		return ImageTexture.create_from_image(image)
+	if extension == "svg":
+		var svg_file := FileAccess.open(resolved, FileAccess.READ)
+		if svg_file == null:
+			return null
+		var svg_bytes := svg_file.get_buffer(svg_file.get_length())
+		svg_file.close()
+		var svg_image := Image.new()
+		if svg_image.load_svg_from_buffer(svg_bytes) != OK:
+			return null
+		return ImageTexture.create_from_image(svg_image)
 	if extension == "ogg":
 		return AudioStreamOggVorbis.load_from_file(resolved)
 	if extension == "wav":
@@ -114,12 +125,12 @@ static func _ensure_loaded() -> void:
 	if root.is_empty():
 		# Package selection applies to Runtime builds only. Running project tools in
 		# the Godot editor must retain access to the project-owned authoring DB.
-		if (OS.has_feature("editor") and not _test_allow_config_selection) or not FileAccess.file_exists(CONFIG_PATH):
+		if (OS.has_feature("editor") and not _test_allow_config_selection) or not FileAccess.file_exists(RuntimePackageIdentity.current_config_path()):
 			return
 		_selected = true
-		var config_file := FileAccess.open(CONFIG_PATH, FileAccess.READ)
+		var config_file := FileAccess.open(RuntimePackageIdentity.current_config_path(), FileAccess.READ)
 		if config_file == null:
-			_validation_error = "Cannot read package selection config: " + CONFIG_PATH
+			_validation_error = "Cannot read package selection config: " + RuntimePackageIdentity.current_config_path()
 			push_error("RuntimeContentPackage: " + _validation_error)
 			return
 		var parsed: Variant = JSON.parse_string(config_file.get_as_text())
