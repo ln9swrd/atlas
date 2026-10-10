@@ -2809,3 +2809,15 @@ STATUS — HOLD / Canon 결정 필요
 
 **판정**
 구조상 중요한 참조 계약이지만 Canon 결정이 필요한 영역이다. 구현 없이 HOLD한다.
+
+
+## Handoff — Campaign Stage direct SQLite transaction persistence HOLD (2026-10-10)
+
+- STATUS: HOLD. A prior isolated-copy test observed Save returning success while the queried Stage data did not match expectation; the failure has not been explained.
+- Repository baseline confirmed on `E:\\atlas`: branch `main`, HEAD `c6dc48ca130e2861d15919a96c78cb8470c9c794`, local `main` ahead of `origin/main` by 2 commits.
+- Pre-existing uncommitted change in `projects/content_editor/scripts/object_persistence.gd` was preserved. The diff adds a transaction around document-row updates and verifies `raw_json`, plus `name` / `stages_json` when those columns exist.
+- No reliable evidence yet ties the failing read-back to a specific DB path or row. The root cause, successful reload, and forced rollback remain UNVERIFIED.
+- No production DB write, code change beyond the already-existing diff, commit, or push was performed for this handoff.
+- Next: use an explicitly disposable DB copy; print its resolved absolute path and before/after target row values (`odb_pk` or `rowid`, `raw_json`, `name`, `stages_json`); then test reload and rollback. Do not modify the product code until this isolates the cause.
+- Verification: CODE VERIFIED — partial static review only; DATA/PERSISTENCE — HOLD; BUILD/EDITOR/PIE — NOT VERIFIED.
+- PROPOSAL: diagnose and verify the single transaction path, then ACCEPT/STOP without expanding scope.

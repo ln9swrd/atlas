@@ -1612,3 +1612,31 @@ Treat the integrated plan as reconciled at this point. No further Map Editor imp
 2. Full authoring-contract migration: introduce editor-local working copy, dirty-state gates, explicit Save/Reload, and reference-protected ID/delete semantics for the identified editors. This is a broader cross-editor behavior change and requires per-editor E2E verification.
 
 **PROPOSAL:** Prefer option 1 as the next short-term goal, starting with a focused, isolated reference/ID safety audit and then minimal fixes. Defer full working-copy migration until the Master explicitly selects it. Keep Image Editor multi-file deletion as a separate decision gate.
+
+## 31. Campaign Stage direct SQLite transaction persistence — 2026-10-10
+
+**STATUS: HOLD — isolated persistence read-back mismatch remains unresolved.**
+
+**CONFIRMED**
+- Current `E:\\atlas` baseline is branch `main`, HEAD `c6dc48ca130e2861d15919a96c78cb8470c9c794`, with local `main` two commits ahead of `origin/main`.
+- `projects/content_editor/scripts/object_persistence.gd` has an existing uncommitted diff. The current implementation attempts `BEGIN IMMEDIATE TRANSACTION`, selects the single mapped document row, resolves `odb_pk` or `rowid`, updates `raw_json` and available `name` / `stages_json` columns, verifies the row, and commits.
+- The direct-save behavior is not yet accepted: a prior isolated-copy test returned success from Save while its read-back did not contain the expected Stage data.
+
+**UNVERIFIED**
+- Actual absolute DB path used by the failing test.
+- Exact row values before and after the attempted Save.
+- Whether reload uses the same database file and whether the transaction rollback path works under injected failure.
+- BUILD, EDITOR, and PIE verification for this fix.
+
+**SAFETY / SCOPE**
+- Preserve the current uncommitted diff and all unrelated Working Tree changes.
+- Do not write to the production Content Editor or Runtime DB while diagnosing.
+- Use an explicitly identified disposable DB copy; no commit or push is included in this task.
+
+**NEXT MINIMUM VERIFICATION**
+1. Log and confirm the absolute path of the DB connection actually opened.
+2. Capture the target row's `odb_pk`/`rowid`, `raw_json`, `name`, and `stages_json` before and after Save.
+3. Reload through the same application path and compare the exact Stage list.
+4. Inject one failure and verify rollback against the disposable copy.
+
+**PROPOSAL:** diagnose the path/read-back mismatch before any further product-code change. If save, reload, and rollback are proven on the isolated copy, ACCEPT/STOP this scope.

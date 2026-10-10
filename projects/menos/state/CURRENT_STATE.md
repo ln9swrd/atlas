@@ -1168,3 +1168,16 @@ PROPOSAL:
 - Added `RUN RUNTIME`: prompts for the Runtime project directory, checks for `project.godot`, and launches it as a separate process using the current Godot executable. It does not activate a package or write the Runtime DB.
 - Verification: Content Editor headless startup PASS (exit 0, existing tileset invalid-UID warnings remain); map authoring contract test PASS; Publisher integration test PASS; Python syntax checks PASS; Runtime headless startup PASS; `git diff --check` PASS.
 - Import test command must set `MENOS_RUNTIME_DB` to the Runtime DB path; an initial invocation without that environment variable skipped its four tests, so that invocation is not counted as a pass. GUI visual interaction and Master PIE remain NOT VERIFIED.
+
+
+## 2026-10-10 — Campaign Stage direct SQLite transaction persistence HOLD
+
+- **STATUS: HOLD.** Campaign Stage add/delete persistence has not yet passed an isolated database read-back test. Do not describe the transaction path as verified.
+- **CONFIRMED:** `E:\\atlas` is on branch `main`, HEAD `c6dc48ca130e2861d15919a96c78cb8470c9c794`, and `origin/main` is two commits behind local HEAD. The working tree already contains an uncommitted modification to `projects/content_editor/scripts/object_persistence.gd`; preserve it.
+- **CONFIRMED:** the current diff parses `json_text` and attempts to update the mapped document row in a `BEGIN IMMEDIATE TRANSACTION`, choosing `odb_pk` when present and otherwise `rowid`. It updates `raw_json` and, when present, the `name` and `stages_json` columns, then checks read-back before COMMIT.
+- **CONFIRMED:** remote connection to device `ln9swrd` and repository baseline inspection succeeded. The shell command used for process enumeration had quoting/encoding errors; no reliable Godot-process result was obtained from that command.
+- **UNVERIFIED / FAILED TEST:** a previous isolated-copy test reported that the save function returned success but the queried Stage data did not match the expected value. The actual SQLite path opened by the test and the exact before/after row values have not yet been captured in one trustworthy run. Root cause and rollback behavior remain unverified.
+- **SAFETY:** no production DB write, commit, or push is authorized by this investigation. Do not overwrite or revert the existing `object_persistence.gd` diff. Test only against an explicitly identified disposable DB copy.
+- **NEXT MINIMUM CHECK:** log the resolved DB path; query the target row's `odb_pk`/`rowid`, `raw_json`, `name`, and `stages_json` before and after Save; then reload through the same code path and compare exact Stage values. Verify forced rollback on the copy only after the path is proven isolated.
+- **VERIFICATION:** CODE VERIFIED — partial static path review only; BUILD/EDITOR/PIE — NOT VERIFIED for this persistence fix; DATA/PERSISTENCE — HOLD.
+- **PROPOSAL:** diagnose the isolated test/path mismatch before changing product code. Stop after save/read-back/reload and rollback results are trustworthy.
