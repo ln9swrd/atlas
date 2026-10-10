@@ -1181,3 +1181,13 @@ PROPOSAL:
 - **NEXT MINIMUM CHECK:** log the resolved DB path; query the target row's `odb_pk`/`rowid`, `raw_json`, `name`, and `stages_json` before and after Save; then reload through the same code path and compare exact Stage values. Verify forced rollback on the copy only after the path is proven isolated.
 - **VERIFICATION:** CODE VERIFIED — partial static path review only; BUILD/EDITOR/PIE — NOT VERIFIED for this persistence fix; DATA/PERSISTENCE — HOLD.
 - **PROPOSAL:** diagnose the isolated test/path mismatch before changing product code. Stop after save/read-back/reload and rollback results are trustworthy.
+
+
+## 2026-10-10 Current Status Index Reconciliation
+
+- **STATUS:** PASS for the scoped documentation summary reconciliation; implementation status and Canon remain unchanged.
+- Updated the current-status index in `docs/CONTENT_EDITOR_RUNTIME_SEPARATION_PLAN.md` to use the current repository HEAD and the actual standalone Content Editor / Runtime project roots. Older path and baseline references remain in dated history.
+- Updated the current-status index in `docs/MENU_GAMEPLAY_INTEGRATED_DEVELOPMENT_PLAN.md` to reflect current project roots, tested package/headless evidence, and the unresolved Campaign Stage persistence HOLD.
+- Preserved historical GUI HOLD records and acceptance boundaries; no historical entries were deleted or rewritten.
+- No code, DB, Asset, project layout, Canon, Build, Editor, or PIE changes were made in this reconciliation.
+- Verification: `git diff --check` PASS. Final staged diff review and Git reflection remain to be completed for these documentation-only changes.

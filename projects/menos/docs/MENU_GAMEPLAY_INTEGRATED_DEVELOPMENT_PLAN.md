@@ -2,22 +2,21 @@
 
 Status: PROPOSAL — Content Editor 1차 완성을 우선하는 종합 개발계획. Canon 변경 아님.
 
-## Current Status Index — 2026-10-09
+## Current Status Index - 2026-10-10
 
-이 문서는 설계 계획과 날짜순 실행 기록을 함께 보존합니다. 아래 요약은 최신으로 확인된 상태를 가리키며, 이후 상태 변경 시 이 요약을 갱신하십시오. 과거 섹션의 HOLD/PROPOSAL은 해당 기록 시점의 판단이므로, 더 뒤의 날짜가 명시된 결과/정합성 기록과 구분해 읽어야 합니다.
+This document preserves the development plan and chronological execution records. The summary below reflects the latest reviewed evidence; older HOLD/PROPOSAL entries remain historical decisions from their recorded dates.
 
-- Map Editor CRUD: 구현 및 background smoke 검증 기록 PASS; Master PIE acceptance는 별도이며 NOT VERIFIED.
-- Catalog → Unit/Tower Visual Asset Save/Reload → Runtime display: 2026-10-09 최소 대표 E2E 기록 PASS; 모든 Asset의 완료 또는 Master PIE acceptance를 뜻하지 않음.
-- Catalog Save transaction rollback: 격리 DB 기반 실패 주입/rollback smoke PASS; PIE VERIFIED 아님.
-- Audio audibility: 2026-10-09 Master confirmed SFX, BGM, and Voice all produce audible sound. BGM/SFX asset-level aesthetic Production Acceptance and PIE observation remain separate gates; the Voice P0 pilot candidate is separately Master-approved, while PIE observation, Production Lock, and broader Voice scope remain open.
-- Next short-term goal: Content Editor UI improvement. Staged plan recorded in docs/CONTENT_EDITOR_UI_IMPROVEMENT_PLAN.md; begin with read-only visible baseline and prioritized issue inventory before changing layouts.
-- SFX: Authoring/Definition/Runtime technical pilot 기반 PASS. `ROBOT_LASER_FIRE` 출처는 `godot/sound/ATTRIBUTION.md`에 기록된 Freesound CC0 source.
-- Content Editor 1차 완성: 전체 메뉴의 최신 foreground/PIE 및 Production Acceptance가 모두 닫혔다고 이 요약에서 주장하지 않습니다. 각 메뉴별 검증 상태와 미확인 항목은 최신 `state/CURRENT_STATE.md` 및 날짜가 가장 최근인 개별 기록으로 확인합니다.
-- Editor/Runtime separation: independent `content_editor/` project and authoring DB copy exist; authority transfer, complete publish package/manifest, and full GUI save/reload acceptance remain UNVERIFIED. See `docs/CONTENT_EDITOR_RUNTIME_SEPARATION_PLAN.md` Current Status Index.
-- **Document consistency follow-up (P0, READ-ONLY first):** reconcile historical status claims with later evidence without deleting chronology; remove or explicitly distinguish duplicate GUI HOLD entries; cross-check the GUI Verification Decision Matrix against dated runtime/editor evidence; normalize Authoring Source, Runtime Source, and Published Package terminology across the current-state, master-reference, separation, and development-plan documents.
-- **Acceptance criteria:** (1) old baselines are visibly historical, (2) each PASS/HOLD identifies its test scope and does not overclaim GUI/PIE acceptance, (3) duplicate records are removed only when confirmed identical or are distinguished by attempt/time, (4) source-of-truth transfer and publish/loader completion remain UNVERIFIED until evidence proves otherwise, (5) all relative links and `git diff --check` pass.
-- **Change boundary:** preserve existing historical evidence; no code, DB, Asset, project-layout, Canon, Commit, or Push changes under this documentation task. Update the index only after cross-document comparison is complete.
-- Commit/Push: 본 문서 갱신 자체는 Commit/Push를 승인하지 않습니다.
+- Repository root: `D:\Atlas`; MENOS project: `projects/menos`; branch `main`; HEAD at this review: `44a7966926127458c30b2e5bd9e51f5f77886caa`. Working Tree was clean at review start.
+- Map Editor CRUD: implementation and background smoke are recorded PASS; Master PIE acceptance remains separate and NOT VERIFIED.
+- Catalog -> Unit/Tower Visual Asset Save/Reload -> Runtime display: the representative 2026-10-09 E2E is recorded PASS; this does not establish completion for all Assets or Master PIE acceptance.
+- Catalog Save transaction rollback: isolated-DB failure injection/rollback smoke is recorded PASS; this is not PIE VERIFIED.
+- Audio: Master confirmed SFX/BGM/Voice audibility in the recorded acceptance. This does not establish aesthetic/Production Acceptance for every Asset or full PIE acceptance.
+- Editor/Runtime roots: Content Editor `projects/content_editor/`; Runtime `projects/menos/godot/`. Authoring DB and Runtime DB are separate files. Publisher/external-package isolated tests and headless checks are recorded PASS; GUI/PIE remains NOT VERIFIED.
+- **Open persistence gate:** Campaign Stage direct SQLite transaction Save/read-back/reload/rollback remains HOLD in the latest recorded result. Do not call it successful until the resolved DB path and before/after row values are captured in one trustworthy isolated test. Do not test against the production DB.
+- The Content Editor UI improvement plan is recorded, but it is not automatically the next implementation goal. The current goal follows Master direction and the latest status record.
+- **Document consistency follow-up:** current indexes must use current project roots and distinguish approved Canon from implementation/acceptance evidence. Preserve historical chronology; do not bulk-move/delete documents or rewrite old dated evidence.
+- Acceptance criteria: old baselines are visibly historical; PASS/HOLD entries identify test scope; package/authority/GUI/PIE status is not overstated; relevant relative links and `git diff --check` pass.
+- Change boundary: documentation summaries only for this reconciliation. No code, DB, Asset, project-layout, or Canon changes. Commit/Push requires the applicable Master-approved goal boundary and final diff review.
 
 ## 1. 목적
 

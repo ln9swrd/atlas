@@ -1,21 +1,18 @@
 # MENOS Content Editor 분리 및 Runtime 콘텐츠 공급 계획
 
-## Current Status Index — 2026-10-09
+## Current Status Index - 2026-10-10
 
 This index is the current summary. Dated entries below are chronological evidence and may describe older baselines or earlier states.
 
-- Current repository: `D:\Atlas\projects\menos`; branch `main`; HEAD at this review: `a5aadb04e759ca3cb11029e88720055d735bb1ae`.
-- The `E:\\atlas\\projects\\menos` path and HEAD `3620dea9a6e0f5be21fa06a2ac79a028bc7259e1` in the original plan header are historical investigation baseline values, not current values.
-- Independent project exists at `content_editor/`; its authoring database is `content_editor/data/menos.sqlite`. Runtime project remains `godot/`, with existing Runtime DB `godot/content/menos.sqlite`.
-- DB-copy integrity/hash matching previously demonstrated copy equality at that time only; it does not establish ongoing synchronization or approved data-authority transfer.
-- Current data-authority transition: UNVERIFIED. Published package/manifest and a complete Runtime loader contract: NOT COMPLETE / UNVERIFIED.
-- Headless isolated menu smoke reported 15/15 scene instantiation/host attachment. This does not prove full visual menu interaction, GUI save/reload, or Master PIE acceptance.
-- The latest recorded isolated GUI attempt was PARTIAL PASS / HOLD: GUI opened to Map, but responsiveness/menu transitions and GUI persistence acceptance were not established. The reported GUI hang/black-screen cause remains UNVERIFIED.
-- Existing runtime asset paths include hard-coded `res://` dependencies and database-driven paths; a publisher must resolve and validate both before a package can be considered complete.
-- Master-approved short-term design (2026-10-09): each map's authoring source is an independent JSON file; the published Runtime package is a filtered SQLite DB plus manifest and referenced Assets; supported modes are Campaign and Single Play only.
-- Runtime owns the game title/main screen and gameplay screens/behavior. Content Editor owns authoring UI and content creation/editing/validation/preview. Runtime-facing content such as map definitions and UI labels may be authored in the Editor, but the Editor does not own or execute Runtime screens.
-- This approval authorizes design documentation and read-only pre-implementation analysis only. It does not authorize code changes, database migration, map conversion, publisher implementation, Build/PIE work, Commit, or Push.
-- Current review baseline: branch `main`, HEAD `a5aadb04e759ca3cb11029e88720055d735bb1ae`; Working Tree has 13 pre-existing modified `godot/` import/project files that must be preserved.
+- Repository root: `D:\Atlas`; MENOS project: `projects/menos`; branch `main`; HEAD at this review: `44a7966926127458c30b2e5bd9e51f5f77886caa`. Working Tree was clean at review start.
+- Current project roots: Content Editor `projects/content_editor/`; Runtime `projects/menos/godot/`. Authoring DB: `projects/content_editor/data/menos.sqlite`; Runtime-owned DB: `projects/menos/godot/content/menos.sqlite`.
+- **Master-approved data-authority Canon:** the Content Editor DB is the authoring source for editable reference data; each map has an independent JSON authoring source; Runtime DB/assets remain Runtime-owned built-in content; a published package is a derived artifact; player Save Data is separate and must not be overwritten by publishing.
+- **Publisher/package PoC:** publisher integration tests, map-authoring contract tests, and selected-package Runtime headless checks are recorded as passing. Windows Release export and exported headless startup with a valid external package are also recorded as passing. This establishes the tested PoC path only, not full deployment/Production acceptance.
+- Runtime package selection uses an explicit external package root and fails closed for invalid configured packages; package UI/activation workflow and full dependency closure are not established as Production-complete.
+- Content Editor Runtime Data import and new-output-only publishing UI have headless/integration test evidence. GUI interaction and Master PIE acceptance remain **NOT VERIFIED**.
+- Source-authority model is Canon, but complete end-to-end authority transfer, all transitive Asset dependency closure, and GUI save/reload acceptance remain **UNVERIFIED**.
+- The `E:\atlas\projects\menos` path, earlier HEAD values, old `content_editor/` paths relative to the MENOS project, and earlier Working Tree descriptions in dated sections are historical evidence only. Do not use them as the current baseline.
+- Use `state/CURRENT_STATE.md` for implementation/verification status, `MENOS_COMBAT_CANON.md` for combat Canon, and this plan for the Editor/Runtime separation history and status. Historical entries below remain unchanged for traceability.
 
 ## 0.1 Authority and status interpretation
 
