@@ -1,8 +1,8 @@
 # MENOS Current State
 
-## Current Snapshot — 2026-10-09 (Documentation Re-review)
+## Historical Snapshot - 2026-10-09 (Documentation Re-review; NOT CURRENT)
 
-This dated snapshot supplements, and does not rewrite, the chronological records below.
+This is a historical checkpoint only. Its HEAD, Working Tree, and implementation-status statements describe the 2026-10-09 review and must not be treated as the current repository baseline. Use the live Git status and the latest dated records below for current status. This snapshot supplements, and does not rewrite, the chronological records below.
 
 - Repository: `D:\Atlas\projects\menos`
 - Branch: `main`

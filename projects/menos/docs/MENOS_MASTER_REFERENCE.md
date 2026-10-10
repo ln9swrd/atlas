@@ -201,7 +201,7 @@ Pilot 중심 HUD의 코드 경로가 존재한다.
 
 다음 권위 경계를 Canon으로 한다. 이 모델의 승인만으로 현재 구현이 완성되었다고 간주하지 않는다.
 
-- **Content Editor Authoring DB** (`content_editor/data/menos.sqlite`): 편집 가능한 기준정보의 Authoring Source. Runtime DB와 별도 소유·관리한다.
+- **Content Editor Authoring DB** (`projects/content_editor/data/menos.sqlite`): 편집 가능한 기준정보의 Authoring Source. Runtime DB와 별도 소유·관리한다.
 - **Map JSON**: 맵별 독립 Authoring Source. 맵 데이터의 원본이며, SQLite에 저장된 기존 맵 데이터는 이 Canon을 충족한 것으로 간주하지 않는다.
 - **Runtime Built-in Content** (`godot/content/menos.sqlite` 및 Runtime 소유 Asset): Runtime 프로젝트의 내장 콘텐츠 기준선. Content Editor DB와 자동 동기화하거나 덮어쓰지 않는다.
 - **Published Runtime Package**: Authoring Source에서 생성되는 파생 배포물. 필터링된 SQLite + 버전 명시 Manifest + 참조 Runtime Asset으로 구성하며 Authoring Source가 아니다.
@@ -498,10 +498,10 @@ Archive 문서는 현재 설계/실행 권한이 없다. 역사적 근거가 필
 주요 책임 경계:
 - 프로젝트 루트: Canon, README, 상태/운영 문서, 역사적 Browser PoC
 - `godot/`: 실제 Godot 프로젝트
-- `godot/editor/`: Content Editor
+- `projects/content_editor/`: 독립 Content Editor Godot 프로젝트
 - `godot/scripts/`: Runtime/Repository/Loader/Definition 코드
 - `godot/ui/`: Runtime UI
-- `godot/content/`: SQLite 및 Editor Content 데이터
+- `godot/content/`: Runtime 소유 SQLite/내장 콘텐츠 데이터. Authoring Source는 `projects/content_editor/data/`에 별도 관리
 - `godot/images/`: Runtime/Visual Asset
 - `godot/sound/`: Runtime Audio Asset
 - `godot/shaders/`: Shader
@@ -565,7 +565,7 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 This section records the current implementation boundary against the approved data-authority Canon.
 
 - Existing Runtime project and shipped-content baseline: `godot/` and `godot/content/menos.sqlite`.
-- Independent Content Editor project: `content_editor/`; authoring DB copy: `content_editor/data/menos.sqlite`.
+- Independent Content Editor project: `projects/content_editor/`; authoring DB copy: `projects/content_editor/data/menos.sqlite`.
 - **Canon (Master-approved 2026-10-10):** the Content Editor Authoring DB is the authoring source for editable reference data; each map has an independent JSON authoring source; the Runtime DB/assets remain Runtime-owned built-in content; the published package is a derived artifact; player save data remains separate and must not be overwritten by publishing.
 - This authority model is approved, but end-to-end implementation remains **UNVERIFIED**. A complete published Runtime package path, map JSON source implementation, asset collection/reference contract, schema/package compatibility contract, and failure-safe publish transaction are not yet verified together.
 - Runtime dependencies include both database-driven asset paths and code-level `res://` preloads. Any future publisher must account for both categories and validate referenced resources before publishing.
@@ -606,11 +606,11 @@ Status: PROPOSAL / NOT CANON
 
 **CANON:** Content Editor and Runtime must separately own and manage their documentation and code.
 
-- Content Editor-specific documentation and code belong within the `content_editor/` project boundary.
+- Content Editor-specific documentation and code belong within the `projects/content_editor/` project boundary.
 - Runtime-specific documentation and code belong within the `godot/` project boundary.
 - A change in one project must not implicitly change the other project's owned documents or code.
 - Shared data contracts and protocols must have explicit ownership and a defined shared boundary. Changes require cross-project impact analysis and a deliberate synchronization procedure.
 - Root-level integration documents record Canon, interfaces, and status; they do not replace project-owned documentation.
 - This documentation/code ownership Canon is separate from the DB-separation Canon. The approved publishing package, per-map JSON source, and mode scope remain distinct decisions.
-- CONFIRMED: `content_editor/` and `godot/` are separate project directories. UNVERIFIED: completeness of project-local documentation and governance of shared contracts; inspect READ-ONLY before proposing structural changes.
+- CONFIRMED: `projects/content_editor/` and `projects/menos/godot/` are separate project directories. UNVERIFIED: completeness of project-local documentation and governance of shared contracts; inspect READ-ONLY before proposing structural changes.
 - This update changes only root integration documents. It does not create, move, or duplicate project-local files and does not change code.
