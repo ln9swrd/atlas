@@ -155,14 +155,20 @@ func _is_skill_referenced(skill_id: String) -> bool:
 	var gameplay := ContentCatalogLoader.load_document("gameplay")
 	if gameplay.is_empty():
 		return true
-	var slots = gameplay.get("skill_slots", {})
-	if not (slots is Dictionary):
+	return _skill_slots_reference_skill(gameplay.get("skill_slots", {}), skill_id)
+
+func _skill_slots_reference_skill(slots: Variant, skill_id: String) -> bool:
+	if not (slots is Dictionary) or slots.is_empty():
 		return true
 	for slot_value in slots.values():
 		var reference := str(slot_value)
 		if reference == skill_id:
 			return true
+		var numeric_reference := -1
 		if slot_value is int or slot_value is float:
-			if ContentCatalogLoader.resolve_odb_pk("skill", int(slot_value)) == skill_id:
-				return true
+			numeric_reference = int(slot_value)
+		elif slot_value is String and str(slot_value).is_valid_int():
+			numeric_reference = int(str(slot_value))
+		if numeric_reference >= 0 and ContentCatalogLoader.resolve_odb_pk("skill", numeric_reference) == skill_id:
+			return true
 	return false
