@@ -42,6 +42,28 @@ func _run() -> void:
 	_assert(audio != null, "external package OGG loads as AudioStream")
 	var wav := RuntimeContentPackage.load_resource("res://sound/ROBOT_LASER_FIRE.wav") as AudioStream
 	_assert(wav != null, "external package WAV loads as AudioStream")
+	# Exercise schema-version fail-closed behavior against the temporary test package.
+	var manifest_path := package_root.path_join("manifest.json")
+	var original_manifest := FileAccess.get_file_as_bytes(manifest_path)
+	var changed_manifest: Dictionary = JSON.parse_string(original_manifest.get_string_from_utf8())
+	changed_manifest["content_schema_version"] = 999
+	var changed_file := FileAccess.open(manifest_path, FileAccess.WRITE)
+	if changed_file == null:
+		_assert(false, "open manifest for unsupported schema-version test")
+	else:
+		changed_file.store_string(JSON.stringify(changed_manifest, "\t"))
+		changed_file.close()
+		RuntimeContentPackage.reload_configuration()
+		_assert(not RuntimeContentPackage.is_package_valid(), "unsupported content_schema_version is rejected")
+		_assert(RuntimeContentPackage.database_path().is_empty(), "unsupported schema fails closed before database access")
+		var restore_file := FileAccess.open(manifest_path, FileAccess.WRITE)
+		if restore_file == null:
+			_assert(false, "restore original test manifest")
+		else:
+			restore_file.store_buffer(original_manifest)
+			restore_file.close()
+			RuntimeContentPackage.reload_configuration()
+			_assert(RuntimeContentPackage.is_package_valid(), "original manifest is accepted after restoration")
 	if failures == 0:
 		print("RUNTIME_CONTENT_PACKAGE_SMOKE_PASS"); quit(0)
 	else:

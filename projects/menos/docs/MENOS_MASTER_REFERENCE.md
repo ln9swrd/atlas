@@ -236,9 +236,10 @@ Master는 아래 세 가지 계약을 승인했다. 기존 구현이 계약을 �
 - **CONFIRMED / Asset:** Publisher의 `collect_resource_paths()`는 DB/맵 JSON의 문자열·배열·객체를 재귀 탐색해 `res://` 참조를 수집하고 빈 경로, 절대 경로, `.`/`..` 경로 요소를 거부한다. 참조된 파일이 Runtime root에 없으면 게시 실패 처리한다.
 - **GAP / Asset:** 이 탐색은 데이터에서 발견되는 참조만 대상으로 한다. Runtime 코드의 정적 `preload()`/`load()` 의존성을 전수 수집·검증하는 절차는 확인되지 않았다. 전체 Asset 계약은 **PARTIAL / NOT VERIFIED**.
 - **CONFIRMED / Publish safety:** Publisher는 기존 출력 디렉터리가 있으면 덮어쓰기를 거부하고, 임시 디렉터리에서 패키지를 생성·검증한 후 최종 경로로 이동한다. 기존 패키지 교체/롤백 기능은 이번 조사 범위에서 확인되지 않았다.
-- **GAP / Package compatibility:** Publisher는 `package_format_version=1` 및 `content_schema_version=1`을 Manifest에 기록한다. Runtime은 package format 버전을 검사하지만, `content_schema_version`을 검사하지 않는다. 승인 Canon과 불일치하므로 패키지 호환 계약은 **FAIL / IMPLEMENTATION GAP**.
+- **이전 GAP 해결 / Package compatibility:** Runtime `RuntimeContentPackage`가 `package_format_version`과 `content_schema_version`을 각각 검증한다. 누락, 숫자가 아닌 값, 미지원 버전은 DB 경로를 공개하기 전에 fail-closed 처리한다. 현재 지원 버전은 두 항목 모두 `1`이다.
+- **검증 결과:** `runtime_content_package_smoke_test.gd`에서 정상 패키지 통과, `content_schema_version=999` 거부, DB 경로 미공개, Manifest 원본 복구 후 재검증을 확인했다. Godot 4.7.2 headless smoke test와 Publisher Python 통합 테스트 통과. 이는 CODE/TEST VERIFIED이며 Build/Editor/PIE 검증은 아니다.
 - **CONFIRMED / Save Data boundary:** Publisher는 `player_profile` 테이블을 제외하며 Runtime은 프로필을 `user://menos_campaign_robot_profile.json`에, 설정을 `user://menos_settings.cfg`에 저장한다. 프로필 파일이 없으면 내장 DB의 레거시 프로필을 사용자 파일로 가져오려는 기존 경로가 있다. 이는 기존 동작이며 신규 마이그레이션 정책으로 일반화하지 않는다.
-- **검증 범위:** 소스 코드 정적 조사만 수행. 테스트, Build, Editor, PIE는 실행하지 않았다. 구현 수정은 이번 READ-ONLY 목표 범위 밖이며 별도 승인 없이는 수행하지 않는다.
+- **검증 범위:** 초기 계약 감사는 소스 코드 정적 조사였다. 후속 승인 작업에서 버전 검사 코드와 회귀 테스트를 추가하고 headless 테스트를 실행했다. Build/Editor/PIE는 실행하지 않았다. Asset 정적 의존성 전체 목록은 여전히 미완료.
 
 ODB PK 원칙:
 - Content 간 식별/참조는 ODB PK 기반

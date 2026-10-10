@@ -5,6 +5,7 @@ const RuntimePackageIdentity = preload("res://scripts/runtime_package_identity.g
 
 const MANIFEST_NAME := "manifest.json"
 const PACKAGE_FORMAT_VERSION := 1
+const CONTENT_SCHEMA_VERSION := 1
 
 static var _test_package_root := ""
 static var _test_allow_config_selection := false
@@ -160,8 +161,14 @@ static func _ensure_loaded() -> void:
 		push_error("RuntimeContentPackage: " + _validation_error)
 		return
 	_manifest = manifest_value
-	if int(_manifest.get("package_format_version", -1)) != PACKAGE_FORMAT_VERSION:
-		_validation_error = "Unsupported package_format_version"
+	var package_format_version: Variant = _manifest.get("package_format_version", null)
+	if typeof(package_format_version) not in [TYPE_INT, TYPE_FLOAT] or float(package_format_version) != float(PACKAGE_FORMAT_VERSION):
+		_validation_error = "Unsupported or invalid package_format_version"
+		push_error("RuntimeContentPackage: " + _validation_error)
+		return
+	var content_schema_version: Variant = _manifest.get("content_schema_version", null)
+	if typeof(content_schema_version) not in [TYPE_INT, TYPE_FLOAT] or float(content_schema_version) != float(CONTENT_SCHEMA_VERSION):
+		_validation_error = "Unsupported or invalid content_schema_version"
 		push_error("RuntimeContentPackage: " + _validation_error)
 		return
 	var database: Variant = _manifest.get("database", {})
