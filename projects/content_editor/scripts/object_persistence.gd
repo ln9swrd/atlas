@@ -296,21 +296,53 @@ static func _sync_document_to_sqlite(path: String, json_text: String) -> bool:
 	if db == null: return false
 	if not db.query("BEGIN IMMEDIATE TRANSACTION"):
 		db.close_db(); return false
-	if not db.query_with_bindings('SELECT rowid FROM "%s" LIMIT 2' % table, []):
+	if not db.query_with_bindings('SELECT rowid AS resolved_rowid FROM "%s" LIMIT 2' % table, []):
 		db.query("ROLLBACK"); db.close_db(); return false
 	if db.query_result.size() != 1:
 		push_error("ObjectPersistence: expected exactly one SQLite document row in table '%s'" % table)
 		db.query("ROLLBACK"); db.close_db(); return false
-	var rowid: int = int(db.query_result[0].get("rowid", 0))
+	var rowid: int = int(db.query_result[0].get("resolved_rowid", 0))
 	if rowid <= 0:
-		push_error("ObjectPersistence: campaign document rowid could not be resolved in table '%s'" % table)
+		push_error("ObjectPersistence: document rowid could not be resolved in table '%s'" % table)
 		db.query("ROLLBACK"); db.close_db(); return false
-	if not db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE rowid = ?' % table, [json_text, rowid]):
+
+	var update_ok := false
+	if table == "campaign":
+		var parsed: Variant = JSON.parse_string(json_text)
+		if not (parsed is Dictionary):
+			push_error("ObjectPersistence: campaign document is not a JSON object")
+			db.query("ROLLBACK"); db.close_db(); return false
+		var campaign_id := str(parsed.get("campaign_id", ""))
+		var campaign_name := str(parsed.get("name", ""))
+		var campaign_stages: Variant = parsed.get("stages", [])
+		if campaign_id.is_empty() or campaign_name.strip_edges().is_empty() or not (campaign_stages is Array):
+			push_error("ObjectPersistence: campaign document is missing valid campaign_id, name, or stages")
+			db.query("ROLLBACK"); db.close_db(); return false
+		var stages_json := JSON.stringify(campaign_stages)
+		update_ok = db.query_with_bindings('UPDATE campaign SET campaign_id = ?, name = ?, stages_json = ?, raw_json = ? WHERE rowid = ?', [campaign_id, campaign_name, stages_json, json_text, rowid])
+	else:
+		update_ok = db.query_with_bindings('UPDATE "%s" SET raw_json = ? WHERE rowid = ?' % table, [json_text, rowid])
+	if not update_ok:
 		db.query("ROLLBACK"); db.close_db(); return false
-	if not db.query_with_bindings('SELECT raw_json FROM "%s" WHERE rowid = ?' % table, [rowid]):
+
+	if OS.is_debug_build() and _atomic_failure_injection_for_tests:
 		db.query("ROLLBACK"); db.close_db(); return false
-	if db.query_result.size() != 1 or str(db.query_result[0].get("raw_json", "")) != json_text:
-		db.query("ROLLBACK"); db.close_db(); return false
+
+	if table == "campaign":
+		if not db.query_with_bindings('SELECT campaign_id, name, stages_json, raw_json FROM campaign WHERE rowid = ?', [rowid]):
+			db.query("ROLLBACK"); db.close_db(); return false
+		var expected: Dictionary = JSON.parse_string(json_text)
+		var expected_stages_json := JSON.stringify(expected.get("stages", []))
+		if db.query_result.size() != 1:
+			db.query("ROLLBACK"); db.close_db(); return false
+		var saved_row: Dictionary = db.query_result[0]
+		if str(saved_row.get("campaign_id", "")) != str(expected.get("campaign_id", "")) or str(saved_row.get("name", "")) != str(expected.get("name", "")) or str(saved_row.get("stages_json", "")) != expected_stages_json or str(saved_row.get("raw_json", "")) != json_text:
+			db.query("ROLLBACK"); db.close_db(); return false
+	else:
+		if not db.query_with_bindings('SELECT raw_json FROM "%s" WHERE rowid = ?' % table, [rowid]):
+			db.query("ROLLBACK"); db.close_db(); return false
+		if db.query_result.size() != 1 or str(db.query_result[0].get("raw_json", "")) != json_text:
+			db.query("ROLLBACK"); db.close_db(); return false
 	if not db.query("COMMIT"):
 		db.query("ROLLBACK"); db.close_db(); return false
 	db.close_db()
