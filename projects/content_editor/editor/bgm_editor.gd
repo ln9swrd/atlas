@@ -31,9 +31,9 @@ var current_id := ""
 func _ready() -> void:
 	$Root/Body/ListPanel/Buttons/New.pressed.connect(_new_definition)
 	$Root/Body/ListPanel/Buttons/Refresh.pressed.connect(_refresh)
-	$Root/Body/Editor/Buttons/Save.pressed.connect(_save)
-	$Root/Body/Editor/Buttons/Delete.pressed.connect(_delete)
-	$Root/Body/Editor/Buttons/Preview.pressed.connect(_preview)
+	$Root/Body/Editor/Fields/Buttons/Save.pressed.connect(_save)
+	$Root/Body/Editor/Fields/Buttons/Delete.pressed.connect(_delete)
+	$Root/Body/Editor/Fields/Buttons/Preview.pressed.connect(_preview)
 	list.item_selected.connect(_select)
 	repository.reload()
 	_refresh()

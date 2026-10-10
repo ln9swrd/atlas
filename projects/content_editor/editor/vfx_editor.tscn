@@ -62,67 +62,76 @@ size_flags_vertical = 3
 
 [node name="PreviewVBox" type="VBoxContainer" parent="MainLayout/Body/PreviewPanel"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Title" type="Label" parent="MainLayout/Body/PreviewPanel"]
+[node name="Title" type="Label" parent="MainLayout/Body/PreviewPanel/PreviewVBox"]
 layout_mode = 2
 text = "Runtime Preview"
 
-[node name="PreviewCanvas" type="Control" parent="MainLayout/Body/PreviewPanel"]
+[node name="PreviewCanvas" type="Control" parent="MainLayout/Body/PreviewPanel/PreviewVBox"]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 script = null
 
-[node name="PreviewStatus" type="Label" parent="MainLayout/Body/PreviewPanel"]
+[node name="PreviewStatus" type="Label" parent="MainLayout/Body/PreviewPanel/PreviewVBox"]
 layout_mode = 2
 text = "t=0.00 / 0.25 | Stopped"
 
-[node name="Controls" type="HBoxContainer" parent="MainLayout/Body/PreviewPanel"]
+[node name="Controls" type="HBoxContainer" parent="MainLayout/Body/PreviewPanel/PreviewVBox"]
 layout_mode = 2
 
-[node name="Play" type="Button" parent="MainLayout/Body/PreviewPanel/Controls"]
+[node name="Play" type="Button" parent="MainLayout/Body/PreviewPanel/PreviewVBox/Controls"]
 layout_mode = 2
 text = "Play"
 
-[node name="Stop" type="Button" parent="MainLayout/Body/PreviewPanel/Controls"]
+[node name="Stop" type="Button" parent="MainLayout/Body/PreviewPanel/PreviewVBox/Controls"]
 layout_mode = 2
 text = "Stop"
 
-[node name="Restart" type="Button" parent="MainLayout/Body/PreviewPanel/Controls"]
+[node name="Restart" type="Button" parent="MainLayout/Body/PreviewPanel/PreviewVBox/Controls"]
 layout_mode = 2
 text = "Restart"
 
-[node name="Scrub" type="HSlider" parent="MainLayout/Body/PreviewPanel/Controls"]
+[node name="Scrub" type="HSlider" parent="MainLayout/Body/PreviewPanel/PreviewVBox/Controls"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 0.0
 max_value = 0.25
 step = 0.01
 
-[node name="Fields" type="VBoxContainer" parent="MainLayout/Body/Editor"]
+[node name="FieldScroll" type="ScrollContainer" parent="MainLayout/Body/Editor"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Fields" type="VBoxContainer" parent="MainLayout/Body/Editor/FieldScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Identity" type="VBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields"]
 layout_mode = 2
 
-[node name="Identity" type="VBoxContainer" parent="MainLayout/Body/Editor/Fields"]
-layout_mode = 2
-
-[node name="Id" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Identity"]
+[node name="Id" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Identity"]
 layout_mode = 2
 placeholder_text = "VFX ID"
 
-[node name="Name" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Identity"]
+[node name="Name" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Identity"]
 layout_mode = 2
 placeholder_text = "Name"
 
-[node name="Category" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Identity"]
+[node name="Category" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Identity"]
 layout_mode = 2
 placeholder_text = "Category"
 
-[node name="Revision" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Identity"]
+[node name="Revision" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Identity"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 
-[node name="Status" type="OptionButton" parent="MainLayout/Body/Editor/Fields/Identity"]
+[node name="Status" type="OptionButton" parent="MainLayout/Body/Editor/FieldScroll/Fields/Identity"]
 layout_mode = 2
 item_count = 5
 popup/item_0/text = "Draft"
@@ -136,48 +145,48 @@ popup/item_3/id = 3
 popup/item_4/text = "Deprecated"
 popup/item_4/id = 4
 
-[node name="Description" type="TextEdit" parent="MainLayout/Body/Editor/Fields"]
+[node name="Description" type="TextEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 placeholder_text = "Description"
 
-[node name="Composition" type="VBoxContainer" parent="MainLayout/Body/Editor/Fields"]
+[node name="Composition" type="VBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields"]
 layout_mode = 2
 
-[node name="ComponentTitle" type="Label" parent="MainLayout/Body/Editor/Fields/Composition"]
+[node name="ComponentTitle" type="Label" parent="MainLayout/Body/Editor/FieldScroll/Fields/Composition"]
 layout_mode = 2
 text = "Components"
 
-[node name="ComponentList" type="ItemList" parent="MainLayout/Body/Editor/Fields/Composition"]
+[node name="ComponentList" type="ItemList" parent="MainLayout/Body/Editor/FieldScroll/Fields/Composition"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 
-[node name="ComponentType" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Composition"]
+[node name="ComponentType" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Composition"]
 layout_mode = 2
 placeholder_text = "Component type: Sprite / Shape / Trail / Ring / Beam"
 
-[node name="ComponentResource" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Composition"]
+[node name="ComponentResource" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Composition"]
 layout_mode = 2
 placeholder_text = "Visual Resource ID (optional)"
 
-[node name="ComponentButtons" type="HBoxContainer" parent="MainLayout/Body/Editor/Fields/Composition"]
+[node name="ComponentButtons" type="HBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields/Composition"]
 layout_mode = 2
 
-[node name="Add" type="Button" parent="MainLayout/Body/Editor/Fields/Composition/ComponentButtons"]
+[node name="Add" type="Button" parent="MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentButtons"]
 layout_mode = 2
 text = "Add Component"
 
-[node name="Remove" type="Button" parent="MainLayout/Body/Editor/Fields/Composition/ComponentButtons"]
+[node name="Remove" type="Button" parent="MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentButtons"]
 layout_mode = 2
 text = "Remove Component"
 
-[node name="Timeline" type="VBoxContainer" parent="MainLayout/Body/Editor/Fields"]
+[node name="Timeline" type="VBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields"]
 layout_mode = 2
 
-[node name="Controls" type="HBoxContainer" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="Controls" type="HBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 
-[node name="Duration" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Timeline/Controls"]
+[node name="Duration" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline/Controls"]
 layout_mode = 2
 min_value = 0.01
 max_value = 60.0
@@ -185,11 +194,11 @@ step = 0.01
 value = 0.25
 suffix = " s"
 
-[node name="Loop" type="CheckButton" parent="MainLayout/Body/Editor/Fields/Timeline/Controls"]
+[node name="Loop" type="CheckButton" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline/Controls"]
 layout_mode = 2
 text = "Loop"
 
-[node name="Playback" type="OptionButton" parent="MainLayout/Body/Editor/Fields/Timeline/Controls"]
+[node name="Playback" type="OptionButton" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline/Controls"]
 layout_mode = 2
 item_count = 3
 popup/item_0/text = "Once"
@@ -199,22 +208,22 @@ popup/item_1/id = 1
 popup/item_2/text = "Ping Pong"
 popup/item_2/id = 2
 
-[node name="TrackList" type="ItemList" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="TrackList" type="ItemList" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 
-[node name="TrackProperty" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="TrackProperty" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 placeholder_text = "Track property: opacity / scale / rotation / position_offset / parameter"
 
-[node name="TrackStart" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="TrackStart" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 min_value = 0.0
 max_value = 60.0
 step = 0.01
 suffix = " s"
 
-[node name="TrackEnd" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="TrackEnd" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 min_value = 0.01
 max_value = 60.0
@@ -222,33 +231,33 @@ step = 0.01
 value = 0.25
 suffix = " s"
 
-[node name="TrackButtons" type="HBoxContainer" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="TrackButtons" type="HBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 
-[node name="Add" type="Button" parent="MainLayout/Body/Editor/Fields/Timeline/TrackButtons"]
+[node name="Add" type="Button" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackButtons"]
 layout_mode = 2
 text = "Add Track"
 
-[node name="Remove" type="Button" parent="MainLayout/Body/Editor/Fields/Timeline/TrackButtons"]
+[node name="Remove" type="Button" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackButtons"]
 layout_mode = 2
 text = "Remove Track"
 
-[node name="KeyList" type="ItemList" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="KeyList" type="ItemList" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 
-[node name="KeyTime" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="KeyTime" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 min_value = 0.0
 max_value = 60.0
 step = 0.01
 suffix = " s"
 
-[node name="KeyValue" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="KeyValue" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 placeholder_text = "Key value"
 
-[node name="KeyInterpolation" type="OptionButton" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="KeyInterpolation" type="OptionButton" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 item_count = 4
 popup/item_0/text = "Linear"
@@ -260,21 +269,21 @@ popup/item_2/id = 2
 popup/item_3/text = "Ease Out"
 popup/item_3/id = 3
 
-[node name="KeyButtons" type="HBoxContainer" parent="MainLayout/Body/Editor/Fields/Timeline"]
+[node name="KeyButtons" type="HBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline"]
 layout_mode = 2
 
-[node name="Add" type="Button" parent="MainLayout/Body/Editor/Fields/Timeline/KeyButtons"]
+[node name="Add" type="Button" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline/KeyButtons"]
 layout_mode = 2
 text = "Add Key"
 
-[node name="Remove" type="Button" parent="MainLayout/Body/Editor/Fields/Timeline/KeyButtons"]
+[node name="Remove" type="Button" parent="MainLayout/Body/Editor/FieldScroll/Fields/Timeline/KeyButtons"]
 layout_mode = 2
 text = "Remove Key"
 
-[node name="Transform" type="HBoxContainer" parent="MainLayout/Body/Editor/Fields"]
+[node name="Transform" type="HBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields"]
 layout_mode = 2
 
-[node name="Space" type="OptionButton" parent="MainLayout/Body/Editor/Fields/Transform"]
+[node name="Space" type="OptionButton" parent="MainLayout/Body/Editor/FieldScroll/Fields/Transform"]
 layout_mode = 2
 item_count = 4
 popup/item_0/text = "World"
@@ -286,69 +295,69 @@ popup/item_2/id = 2
 popup/item_3/text = "Screen"
 popup/item_3/id = 3
 
-[node name="Anchor" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Transform"]
+[node name="Anchor" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Transform"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 placeholder_text = "Anchor"
 
-[node name="OffsetX" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Transform"]
+[node name="OffsetX" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Transform"]
 layout_mode = 2
 min_value = -10000.0
 max_value = 10000.0
 step = 1.0
 suffix = " X"
 
-[node name="OffsetY" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Transform"]
+[node name="OffsetY" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Transform"]
 layout_mode = 2
 min_value = -10000.0
 max_value = 10000.0
 step = 1.0
 suffix = " Y"
 
-[node name="Rotation" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Transform"]
+[node name="Rotation" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Transform"]
 layout_mode = 2
 min_value = -360.0
 max_value = 360.0
 step = 1.0
 suffix = " deg"
 
-[node name="Scale" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Transform"]
+[node name="Scale" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Transform"]
 layout_mode = 2
 min_value = 0.01
 max_value = 100.0
 step = 0.01
 value = 1.0
 
-[node name="Resources" type="TextEdit" parent="MainLayout/Body/Editor/Fields"]
+[node name="Resources" type="TextEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "[]"
 placeholder_text = "Visual Resource IDs as JSON array"
 
-[node name="Policy" type="HBoxContainer" parent="MainLayout/Body/Editor/Fields"]
+[node name="Policy" type="HBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields"]
 layout_mode = 2
 
-[node name="Priority" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Policy"]
+[node name="Priority" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Policy"]
 layout_mode = 2
 max_value = 100.0
 
-[node name="Concurrency" type="LineEdit" parent="MainLayout/Body/Editor/Fields/Policy"]
+[node name="Concurrency" type="LineEdit" parent="MainLayout/Body/Editor/FieldScroll/Fields/Policy"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 placeholder_text = "Concurrency"
 
-[node name="MaxInstances" type="SpinBox" parent="MainLayout/Body/Editor/Fields/Policy"]
+[node name="MaxInstances" type="SpinBox" parent="MainLayout/Body/Editor/FieldScroll/Fields/Policy"]
 layout_mode = 2
 max_value = 999.0
 
-[node name="Buttons" type="HBoxContainer" parent="MainLayout/Body/Editor/Fields"]
+[node name="Buttons" type="HBoxContainer" parent="MainLayout/Body/Editor/FieldScroll/Fields"]
 layout_mode = 2
 
-[node name="Save" type="Button" parent="MainLayout/Body/Editor/Fields/Buttons"]
+[node name="Save" type="Button" parent="MainLayout/Body/Editor/FieldScroll/Fields/Buttons"]
 layout_mode = 2
 text = "Save"
 
-[node name="Delete" type="Button" parent="MainLayout/Body/Editor/Fields/Buttons"]
+[node name="Delete" type="Button" parent="MainLayout/Body/Editor/FieldScroll/Fields/Buttons"]
 layout_mode = 2
 text = "Delete"
 

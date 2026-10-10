@@ -11,23 +11,23 @@ func _init() -> void:
 	var instance = scene.instantiate()
 	get_root().add_child(instance)
 	await process_frame
-	instance.get_node("MainLayout/Body/Editor/Fields/Identity/Id").text = "p1_transform_vfx"
-	instance.get_node("MainLayout/Body/Editor/Fields/Identity/Name").text = "P1 Transform VFX"
-	instance.get_node("MainLayout/Body/Editor/Fields/Composition/ComponentType").text = "Ring"
-	instance.get_node("MainLayout/Body/Editor/Fields/Composition/ComponentResource").text = "impact_explosion"
-	instance.get_node("MainLayout/Body/Editor/Fields/Composition/ComponentButtons/Add").emit_signal("pressed")
-	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/Controls/Duration").value = 1.0
-	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/TrackProperty").text = "opacity"
-	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/TrackStart").value = 0.0
-	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/TrackEnd").value = 0.8
-	instance.get_node("MainLayout/Body/Editor/Fields/Timeline/TrackButtons/Add").emit_signal("pressed")
-	instance.get_node("MainLayout/Body/Editor/Fields/Transform/Space").select(1)
-	instance.get_node("MainLayout/Body/Editor/Fields/Transform/Anchor").text = "parent"
-	instance.get_node("MainLayout/Body/Editor/Fields/Transform/OffsetX").value = 12
-	instance.get_node("MainLayout/Body/Editor/Fields/Transform/OffsetY").value = -4
-	instance.get_node("MainLayout/Body/Editor/Fields/Transform/Rotation").value = 30
-	instance.get_node("MainLayout/Body/Editor/Fields/Transform/Scale").value = 1.5
-	instance.get_node("MainLayout/Body/Editor/Fields/Buttons/Save").emit_signal("pressed")
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Identity/Id").text = "p1_transform_vfx"
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Identity/Name").text = "P1 Transform VFX"
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentType").text = "Ring"
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentResource").text = "impact_explosion"
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentButtons/Add").emit_signal("pressed")
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Timeline/Controls/Duration").value = 1.0
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackProperty").text = "opacity"
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackStart").value = 0.0
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackEnd").value = 0.8
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackButtons/Add").emit_signal("pressed")
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Transform/Space").select(1)
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Transform/Anchor").text = "parent"
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Transform/OffsetX").value = 12
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Transform/OffsetY").value = -4
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Transform/Rotation").value = 30
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Transform/Scale").value = 1.5
+	instance.get_node("MainLayout/Body/Editor/FieldScroll/Fields/Buttons/Save").emit_signal("pressed")
 	await process_frame
 	var definition = RepositoryScript.get_definition("p1_transform_vfx")
 	if definition == null:

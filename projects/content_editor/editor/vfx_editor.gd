@@ -15,60 +15,60 @@ var preview_duration := 0.25
 var preview_adapter = VFXRuntimeAdapterScript.new()
 
 @onready var list: ItemList = $MainLayout/Body/ListPanel/List
-@onready var id_edit: LineEdit = $MainLayout/Body/Editor/Fields/Identity/Id
-@onready var name_edit: LineEdit = $MainLayout/Body/Editor/Fields/Identity/Name
-@onready var category_edit: LineEdit = $MainLayout/Body/Editor/Fields/Identity/Category
-@onready var revision_edit: SpinBox = $MainLayout/Body/Editor/Fields/Identity/Revision
-@onready var status_edit: OptionButton = $MainLayout/Body/Editor/Fields/Identity/Status
-@onready var description_edit: TextEdit = $MainLayout/Body/Editor/Fields/Description
-@onready var component_list: ItemList = $MainLayout/Body/Editor/Fields/Composition/ComponentList
-@onready var component_type_edit: LineEdit = $MainLayout/Body/Editor/Fields/Composition/ComponentType
-@onready var component_resource_edit: LineEdit = $MainLayout/Body/Editor/Fields/Composition/ComponentResource
-@onready var timeline_duration_edit: SpinBox = $MainLayout/Body/Editor/Fields/Timeline/Controls/Duration
-@onready var timeline_loop: CheckButton = $MainLayout/Body/Editor/Fields/Timeline/Controls/Loop
-@onready var timeline_playback: OptionButton = $MainLayout/Body/Editor/Fields/Timeline/Controls/Playback
-@onready var track_list: ItemList = $MainLayout/Body/Editor/Fields/Timeline/TrackList
-@onready var track_property_edit: LineEdit = $MainLayout/Body/Editor/Fields/Timeline/TrackProperty
-@onready var track_start_edit: SpinBox = $MainLayout/Body/Editor/Fields/Timeline/TrackStart
-@onready var track_end_edit: SpinBox = $MainLayout/Body/Editor/Fields/Timeline/TrackEnd
-@onready var key_list: ItemList = $MainLayout/Body/Editor/Fields/Timeline/KeyList
-@onready var key_time_edit: SpinBox = $MainLayout/Body/Editor/Fields/Timeline/KeyTime
-@onready var key_value_edit: LineEdit = $MainLayout/Body/Editor/Fields/Timeline/KeyValue
-@onready var key_interpolation: OptionButton = $MainLayout/Body/Editor/Fields/Timeline/KeyInterpolation
-@onready var transform_space: OptionButton = $MainLayout/Body/Editor/Fields/Transform/Space
-@onready var transform_anchor: LineEdit = $MainLayout/Body/Editor/Fields/Transform/Anchor
-@onready var transform_offset_x: SpinBox = $MainLayout/Body/Editor/Fields/Transform/OffsetX
-@onready var transform_offset_y: SpinBox = $MainLayout/Body/Editor/Fields/Transform/OffsetY
-@onready var transform_rotation: SpinBox = $MainLayout/Body/Editor/Fields/Transform/Rotation
-@onready var transform_scale: SpinBox = $MainLayout/Body/Editor/Fields/Transform/Scale
-@onready var resources_edit: TextEdit = $MainLayout/Body/Editor/Fields/Resources
-@onready var priority_edit: SpinBox = $MainLayout/Body/Editor/Fields/Policy/Priority
-@onready var concurrency_edit: LineEdit = $MainLayout/Body/Editor/Fields/Policy/Concurrency
-@onready var max_instances_edit: SpinBox = $MainLayout/Body/Editor/Fields/Policy/MaxInstances
-@onready var preview_canvas: Control = $MainLayout/Body/PreviewPanel/PreviewCanvas
-@onready var preview_status: Label = $MainLayout/Body/PreviewPanel/PreviewStatus
+@onready var id_edit: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Identity/Id
+@onready var name_edit: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Identity/Name
+@onready var category_edit: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Identity/Category
+@onready var revision_edit: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Identity/Revision
+@onready var status_edit: OptionButton = $MainLayout/Body/Editor/FieldScroll/Fields/Identity/Status
+@onready var description_edit: TextEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Description
+@onready var component_list: ItemList = $MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentList
+@onready var component_type_edit: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentType
+@onready var component_resource_edit: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentResource
+@onready var timeline_duration_edit: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/Controls/Duration
+@onready var timeline_loop: CheckButton = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/Controls/Loop
+@onready var timeline_playback: OptionButton = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/Controls/Playback
+@onready var track_list: ItemList = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackList
+@onready var track_property_edit: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackProperty
+@onready var track_start_edit: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackStart
+@onready var track_end_edit: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackEnd
+@onready var key_list: ItemList = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/KeyList
+@onready var key_time_edit: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/KeyTime
+@onready var key_value_edit: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/KeyValue
+@onready var key_interpolation: OptionButton = $MainLayout/Body/Editor/FieldScroll/Fields/Timeline/KeyInterpolation
+@onready var transform_space: OptionButton = $MainLayout/Body/Editor/FieldScroll/Fields/Transform/Space
+@onready var transform_anchor: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Transform/Anchor
+@onready var transform_offset_x: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Transform/OffsetX
+@onready var transform_offset_y: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Transform/OffsetY
+@onready var transform_rotation: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Transform/Rotation
+@onready var transform_scale: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Transform/Scale
+@onready var resources_edit: TextEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Resources
+@onready var priority_edit: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Policy/Priority
+@onready var concurrency_edit: LineEdit = $MainLayout/Body/Editor/FieldScroll/Fields/Policy/Concurrency
+@onready var max_instances_edit: SpinBox = $MainLayout/Body/Editor/FieldScroll/Fields/Policy/MaxInstances
+@onready var preview_canvas: Control = $MainLayout/Body/PreviewPanel/PreviewVBox/PreviewCanvas
+@onready var preview_status: Label = $MainLayout/Body/PreviewPanel/PreviewVBox/PreviewStatus
 @onready var status_label: Label = $MainLayout/Status
 
 func _ready() -> void:
 	repository.reload()
 	$MainLayout/Body/ListPanel/Buttons/New.pressed.connect(_new_definition)
 	$MainLayout/Body/ListPanel/Buttons/Refresh.pressed.connect(_refresh)
-	$MainLayout/Body/Editor/Fields/Buttons/Save.pressed.connect(_save_definition)
-	$MainLayout/Body/Editor/Fields/Buttons/Delete.pressed.connect(_delete_definition)
+	$MainLayout/Body/Editor/FieldScroll/Fields/Buttons/Save.pressed.connect(_save_definition)
+	$MainLayout/Body/Editor/FieldScroll/Fields/Buttons/Delete.pressed.connect(_delete_definition)
 	list.item_selected.connect(_select_definition)
-	$MainLayout/Body/Editor/Fields/Composition/ComponentButtons/Add.pressed.connect(_add_component)
-	$MainLayout/Body/Editor/Fields/Composition/ComponentButtons/Remove.pressed.connect(_remove_component)
+	$MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentButtons/Add.pressed.connect(_add_component)
+	$MainLayout/Body/Editor/FieldScroll/Fields/Composition/ComponentButtons/Remove.pressed.connect(_remove_component)
 	component_list.item_selected.connect(_select_component)
-	$MainLayout/Body/Editor/Fields/Timeline/TrackButtons/Add.pressed.connect(_add_track)
-	$MainLayout/Body/Editor/Fields/Timeline/TrackButtons/Remove.pressed.connect(_remove_track)
+	$MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackButtons/Add.pressed.connect(_add_track)
+	$MainLayout/Body/Editor/FieldScroll/Fields/Timeline/TrackButtons/Remove.pressed.connect(_remove_track)
 	track_list.item_selected.connect(_select_track)
-	$MainLayout/Body/Editor/Fields/Timeline/KeyButtons/Add.pressed.connect(_add_key)
-	$MainLayout/Body/Editor/Fields/Timeline/KeyButtons/Remove.pressed.connect(_remove_key)
+	$MainLayout/Body/Editor/FieldScroll/Fields/Timeline/KeyButtons/Add.pressed.connect(_add_key)
+	$MainLayout/Body/Editor/FieldScroll/Fields/Timeline/KeyButtons/Remove.pressed.connect(_remove_key)
 	key_list.item_selected.connect(_select_key)
-	$MainLayout/Body/PreviewPanel/Controls/Play.pressed.connect(_preview_play)
-	$MainLayout/Body/PreviewPanel/Controls/Stop.pressed.connect(_preview_stop)
-	$MainLayout/Body/PreviewPanel/Controls/Restart.pressed.connect(_preview_restart)
-	$MainLayout/Body/PreviewPanel/Controls/Scrub.value_changed.connect(_preview_scrub)
+	$MainLayout/Body/PreviewPanel/PreviewVBox/Controls/Play.pressed.connect(_preview_play)
+	$MainLayout/Body/PreviewPanel/PreviewVBox/Controls/Stop.pressed.connect(_preview_stop)
+	$MainLayout/Body/PreviewPanel/PreviewVBox/Controls/Restart.pressed.connect(_preview_restart)
+	$MainLayout/Body/PreviewPanel/PreviewVBox/Controls/Scrub.value_changed.connect(_preview_scrub)
 	preview_canvas.draw.connect(_on_preview_canvas_draw)
 	_refresh()
 	_new_definition()
@@ -79,7 +79,7 @@ func _process(delta: float) -> void:
 	preview_adapter.tick(delta)
 	preview_time = preview_adapter.time
 	preview_playing = preview_adapter.playing
-	$MainLayout/Body/PreviewPanel/Controls/Scrub.value = preview_time
+	$MainLayout/Body/PreviewPanel/PreviewVBox/Controls/Scrub.value = preview_time
 	_update_preview()
 
 func _refresh() -> void:
@@ -468,7 +468,7 @@ func _preview_restart() -> void:
 	preview_time = 0.0
 	preview_duration = maxf(float(timeline_duration_edit.value), 0.01)
 	preview_playing = true
-	$MainLayout/Body/PreviewPanel/Controls/Scrub.value = 0.0
+	$MainLayout/Body/PreviewPanel/PreviewVBox/Controls/Scrub.value = 0.0
 	_update_preview()
 
 func _preview_scrub(value: float) -> void:
@@ -506,7 +506,7 @@ func _update_preview() -> void:
 		return
 	preview_duration = maxf(float(timeline_duration_edit.value), 0.01)
 	_sync_preview_adapter()
-	$MainLayout/Body/PreviewPanel/Controls/Scrub.max_value = preview_duration
+	$MainLayout/Body/PreviewPanel/PreviewVBox/Controls/Scrub.max_value = preview_duration
 	preview_canvas.queue_redraw()
 	preview_status.text = "t=%.2f / %.2f  |  %s" % [preview_time, preview_duration, "Playing" if preview_playing else "Stopped"]
 

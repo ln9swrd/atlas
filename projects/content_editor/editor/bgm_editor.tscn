@@ -135,18 +135,18 @@ text = "UNVERIFIED"
 layout_mode = 2
 text = "Production Lock"
 
-[node name="Buttons" type="HBoxContainer" parent="Root/Body/Editor"]
+[node name="Buttons" type="HBoxContainer" parent="Root/Body/Editor/Fields"]
 layout_mode = 2
 
-[node name="Save" type="Button" parent="Root/Body/Editor/Buttons"]
+[node name="Save" type="Button" parent="Root/Body/Editor/Fields/Buttons"]
 layout_mode = 2
 text = "Save"
 
-[node name="Delete" type="Button" parent="Root/Body/Editor/Buttons"]
+[node name="Delete" type="Button" parent="Root/Body/Editor/Fields/Buttons"]
 layout_mode = 2
 text = "Delete"
 
-[node name="Preview" type="Button" parent="Root/Body/Editor/Buttons"]
+[node name="Preview" type="Button" parent="Root/Body/Editor/Fields/Buttons"]
 layout_mode = 2
 text = "Preview"
 

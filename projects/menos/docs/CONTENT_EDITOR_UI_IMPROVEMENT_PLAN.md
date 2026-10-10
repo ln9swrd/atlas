@@ -191,3 +191,49 @@ Do not expand to a full visual redesign after these criteria are met.
 **MASTER SCOPE UPDATE (2026-10-09):** UI improvement scope is restricted to Building, VFX, SFX, BGM, and Voice editors only. Robot, Tower, Map, Asset Catalog, and all other menus are OUT OF SCOPE for this short-term goal. Do not inspect or modify them further under this task.
 
 **PROPOSAL:** Continue Phase 0 only for Building, VFX, SFX, BGM, and Voice. Inspect actual GUI layouts for these five menus, complete the evidence-ranked issue inventory, then choose pilot edits within this scope. Do not edit layouts until the five-menu baseline is sufficient.
+
+
+## 2026-10-10 — Scoped UI Baseline Recheck
+
+**Environment / evidence**
+- Repository: `D:\\Atlas`, branch `main`, HEAD `5603626414afa0cf4261cfa5ea17e73514c3fec0` at start of this pass.
+- Working tree at start: one pre-existing untracked generated SQLite extension DLL under `projects/content_editor/addons/godot-sqlite/bin/`; preserve it and do not include it in this task.
+- Actual GUI inspected on the 2560×1440 primary desktop; screenshots were temporarily downscaled to 1600×900 for review. These temporary captures are not project assets and must not be committed.
+- No authoring controls were used to edit/save content during baseline inspection.
+
+**Scope confirmation**
+- In scope: Building, VFX, SFX, BGM, Voice.
+- Out of scope: Robot, Tower, Map, Asset Catalog, and all other menus. Do not inspect or modify them under this task.
+
+**Observed issue inventory**
+
+| ID | Menu | Severity | Observed symptom | Root cause status | Acceptance condition |
+|---|---|---|---|---|---|
+| UI-BUILDING-01 | Building | P1 candidate | Form controls stretch nearly the entire window width although labels and values need only a bounded working column; most of the lower work area remains unused. | Layout cause CONFIRMED in `building_editor.gd`: rows expand horizontally and no maximum/property-column width is defined. | Form is bounded to a readable width; unused area is deliberate rather than forcing every field across the viewport; controls remain reachable at baseline and narrower size. |
+| UI-VFX-01 | VFX | P0 candidate | Definition/composition/timeline form is longer than the visible area and has no enclosing vertical ScrollContainer; lower fields/actions can be clipped. Preview panel children are not grouped under its existing `PreviewVBox`. | CONFIRMED in `vfx_editor.tscn`: `Fields` is a long VBox directly under the editor panel without scrolling; `PreviewVBox` is empty while title/canvas/status/controls are separate direct children of a PanelContainer. | Every field and primary action is reachable by scrolling; preview title/canvas/status/controls form one intentional vertical layout; resizing does not overlap or hide controls. |
+| UI-SFX-01 | SFX | P1 candidate | Save/Delete/Preview action area is visibly stretched into tall narrow columns rather than a compact horizontal action row. | CONFIRMED in `sfx_editor.tscn`: both `Fields` and `Buttons` are direct children of the same PanelContainer, which is intended to lay out one child. | Fields and actions are placed in one vertical content container; actions render as compact horizontal buttons and remain visible. |
+| UI-BGM-01 | BGM | P1 candidate | Save/Delete/Preview action area has the same tall narrow-column presentation as SFX; the editor has a longer set of fields that should retain predictable reachability when resized. | CONFIRMED in `bgm_editor.tscn`: `Fields` and `Buttons` are sibling direct children of one PanelContainer. | Actions are compact and aligned below the fields; all BGM fields/actions remain visible or intentionally scrollable at baseline and narrower size. |
+| UI-VOICE-01 | Voice | No defect confirmed | List and form/action row are visible in the baseline capture; no comparable panel-child overlap or oversized action columns observed. | No defect confirmed from current GUI evidence. | Keep as-is unless a reproducible issue appears during regression. |
+
+**Separate non-UI observation — OUT OF SCOPE**
+- Building’s selection dropdown appeared blank while status said the Building catalog loaded. This may be a selection/data state issue; no diagnosis or behavioral change is authorized by this UI-only task.
+
+**Phase 0 disposition**
+- Baseline captured for all five in-scope menus.
+- Ranked candidates: (1) VFX P0 candidate, (2) SFX/BGM shared action-layout defect, (3) Building P1 width/space defect, (4) Voice no confirmed defect.
+- Source inspection corroborates the VFX and SFX/BGM layout causes. This is not yet proof of a fixed GUI.
+- No UI code has been changed as part of the baseline-only pass.
+
+**Phase 1 — Minimal layout contract**
+1. PanelContainer has exactly one layout child; sibling controls are grouped in a VBox/HBox content container.
+2. Long VFX authoring content is placed inside a vertical ScrollContainer; its primary Save/Delete actions must remain reachable.
+3. Preview title, canvas, status, and playback controls are grouped in a single VBox; the preview canvas receives the remaining flexible space.
+4. Audio editor Save/Delete/Preview controls stay in a compact horizontal row under the form, not stretched vertically.
+5. Building fields use a deliberate bounded property column rather than expanding every row across the full viewport.
+6. Keep all IDs, signals, data bindings, validation, Save/Reload/Delete semantics, and repository calls unchanged.
+
+**Pilot selection proposal based on observed evidence**
+- Pilot A: VFX — specialized multi-panel workspace with a confirmed long-form scrolling defect and an ungrouped preview panel.
+- Pilot B: BGM — longer form representative of the audio editors, with the same confirmed PanelContainer child-layout defect as SFX.
+- After the two pilots pass code checks and same-resolution/narrower-window GUI comparison, apply the validated action-row pattern to SFX and the bounded-column pattern to Building. Keep Voice unchanged.
+- Do not commit/push under this task without a separate approved gate. Do not include the pre-existing generated DLL.
