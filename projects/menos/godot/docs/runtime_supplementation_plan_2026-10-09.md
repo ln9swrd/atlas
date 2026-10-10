@@ -1,5 +1,7 @@
 # MENOS Runtime Supplementation Plan
 
+> **Historical-plan note (updated 2026-10-10):** This document preserves dated investigation and implementation records. Earlier sections that describe `user://runtime_content_package.json` or state that package selection/publishing is unimplemented reflect the state at that time and are superseded by the current `docs/runtime_content_package_selection.md` and Content Editor package documents. The current config path is `user://runtime_content_package_<sha256>.json`, derived from the normalized absolute Runtime project root. Do not treat historical commands/status entries below as current operational instructions.
+
 - Status: PROPOSAL — planning only; implementation not authorized by this document
 - Date: 2026-10-09
 - Project owner: MENOS Runtime (`godot/`)

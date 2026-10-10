@@ -10,9 +10,11 @@ The selected package is read-only from Runtime. Player profiles/settings remain 
 
 ## Selecting a package
 
-Create this file in the MENOS Godot user-data directory:
+The package-selection config is stored in the MENOS Godot user-data directory at a path derived from the normalized absolute Runtime project root:
 
-`user://runtime_content_package.json`
+`user://runtime_content_package_<sha256>.json`
+
+`<sha256>` is the lowercase SHA-256 hex digest of that normalized path. Each Runtime project root therefore has a separate config file. The legacy `user://runtime_content_package.json` is not read as a fallback, migrated, overwritten, or deleted.
 
 Its contents must be JSON with an absolute filesystem path:
 
@@ -24,7 +26,7 @@ Its contents must be JSON with an absolute filesystem path:
 
 On Windows, forward slashes are accepted. `package_root` must point to the package directory that contains `manifest.json`, `content/menos.sqlite`, and the copied asset folders. Do not point it to the `content` subdirectory.
 
-The config is intentionally separate from the project files and is not committed. To return to the built-in content, remove `runtime_content_package.json` and restart Runtime. The project does not currently include a GUI package picker.
+The config is intentionally separate from the project files and is not committed. To return to the built-in content, remove the identity-specific `runtime_content_package_<sha256>.json` for that Runtime project and restart Runtime. Do not remove another Runtime project's config. The project does not currently include a GUI package picker.
 
 ## Validation and failure behavior
 
@@ -37,15 +39,18 @@ The config is intentionally separate from the project files and is not committed
 
 ## Tests
 
-Run from `D:\Atlas\projects\menos` after generating a package to a fresh temporary output directory:
+Run the publisher integration test from the standalone Content Editor project, and the Runtime smoke tests from the Runtime project:
 
 ```powershell
-python -m unittest content_editor.tests.test_runtime_publisher -v
-& 'D:\Godot_v4.7.2\Godot_v4.7.2-stable_win64.exe' --headless --path godot --script res://tests/runtime_content_package_smoke_test.gd -- --package-root 'D:\path\to\package'
-& 'D:\Godot_v4.7.2\Godot_v4.7.2-stable_win64.exe' --headless --path godot --script res://tests/runtime_content_package_config_test.gd -- --package-root 'D:\path\to\package'
+Set-Location D:\Atlas\projects\content_editor
+python -m unittest tests.test_runtime_publisher -v
+
+Set-Location D:\Atlas\projects\menos\godot
+& 'D:\Godot_v4.7.2\Godot_v4.7.2-stable_win64.exe' --headless --path . --script res://tests/runtime_content_package_smoke_test.gd -- --package-root 'D:\path\to\package'
+& 'D:\Godot_v4.7.2\Godot_v4.7.2-stable_win64.exe' --headless --path . --script res://tests/runtime_content_package_config_test.gd -- --package-root 'D:\path\to\package'
 ```
 
-The tests exercise the selected DB through existing map/catalog loaders and load an external package PNG, OGG and WAV. The config test temporarily writes `user://runtime_content_package.json`, then restores its original bytes or removes the temporary file.
+The tests exercise the selected DB through existing map/catalog loaders and load an external package PNG, OGG and WAV. The config test temporarily writes the identity-specific config for its Runtime project context, then restores its original bytes or removes the temporary file.
 
 ## Limitations
 
@@ -59,6 +64,6 @@ The tests exercise the selected DB through existing map/catalog loaders and load
 
 ## Content Editor integration (2026-10-10)
 
-The Content Editor now invokes scripts/runtime_package_config_cli.gd using the selected Runtime project's Godot executable in headless script mode. The helper writes user://runtime_content_package.json in the Runtime project's own user-data context, so the Content Editor does not guess or hard-code the Runtime's AppData path. The selected package root must be an absolute path containing manifest.json and content/menos.sqlite.
+The Content Editor invokes `scripts/runtime_package_config_cli.gd` using the selected Runtime project's Godot executable in headless script mode. The helper writes `user://runtime_content_package_<sha256>.json` in the Runtime project's own user-data context, so the Content Editor does not guess or hard-code the Runtime's AppData path. The SHA-256 identity is derived from the normalized absolute Runtime project root. The selected package root must be an absolute path containing `manifest.json` and `content/menos.sqlite`.
 
 After publishing and package selection succeed, the Content Editor offers to launch the selected Runtime. Runtime source DB/assets are not overwritten. Existing running instances must be restarted. GUI/PIE acceptance remains with Master and is NOT VERIFIED by headless checks.

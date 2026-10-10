@@ -4,25 +4,25 @@ Status: first isolated publishing implementation and headless compatibility smok
 
 ## Invocation
 
-From the repository root (`D:\Atlas\projects\menos`):
+From the standalone Content Editor project root (`D:\Atlas\projects\content_editor`):
 
 ```powershell
-python content_editor\tools\publish_runtime_package.py --runtime-root D:\Atlas\projects\menos\godot --output D:\Atlas\builds\menos-runtime-package-YYYYMMDD
+python tools\publish_runtime_package.py --runtime-root D:\Atlas\projects\menos\godot --output D:\Atlas\builds\menos-runtime-package-YYYYMMDD
 ```
 
 The output path must not already exist. The publisher creates a temporary sibling directory, validates the output, then renames it into place. It never overwrites an existing package. On failure, the temporary output is removed.
 
 Optional inputs:
 
-- `--source-db`: defaults to `content_editor/data/content_editor.sqlite`.
-- `--maps-dir`: defaults to `content_editor/data/maps`.
+- `--source-db`: defaults to `data/content_editor.sqlite` relative to the standalone Content Editor project root.
+- `--maps-dir`: defaults to `data/maps` relative to the standalone Content Editor project root.
 - `--runtime-root`: **required** explicit path to the Runtime project; used only as the source for referenced `res://` assets. The Content Editor no longer infers a sibling Runtime path.
 
-Publisher integration test (PowerShell, from the repository root):
+Publisher integration test (PowerShell, from `D:\Atlas\projects\content_editor`):
 
 ```powershell
 $env:MENOS_RUNTIME_ROOT = "D:\Atlas\projects\menos\godot"
-python -m unittest content_editor.tests.test_runtime_publisher -v
+python -m unittest tests.test_runtime_publisher -v
 Remove-Item Env:MENOS_RUNTIME_ROOT
 ```
 
@@ -64,7 +64,7 @@ See the Target Runtime workflow below for the current Content Editor UI. The CLI
 - The Content Editor remembers the selected Runtime project root in its local user://menos_settings.cfg under [runtime] project_root. The current MENOS path is used as the initial default only when it exists and contains both project.godot and content/menos.sqlite.
 - RUNTIME DATA > Select Runtime Project... changes the target. Import Runtime Data from Target... previews/imports that target's full content/menos.sqlite. Import from SQLite File... remains available for a one-off explicit source.
 - Publish Runtime Package to Target... creates a fresh package under the target project's parent packages/ folder by default. Publish Package to Custom Folder... preserves manual output-location selection.
-- After publishing succeeds, the Content Editor invokes the selected Runtime project's scripts/runtime_package_config_cli.gd to write its user://runtime_content_package.json. It then offers to launch the Runtime. An already-running Runtime must be restarted to load the newly selected package.
+- After publishing succeeds, the Content Editor invokes the selected Runtime project's `scripts/runtime_package_config_cli.gd` to write that Runtime project's identity-specific `user://runtime_content_package_<sha256>.json`. It then offers to launch the Runtime. An already-running Runtime must be restarted to load the newly selected package. The legacy `user://runtime_content_package.json` is not read as a fallback or migrated.
 - This changes only the Runtime's user-data package-selection config. It does not overwrite the Runtime source database/assets. Package activation is not attempted if publishing fails. If the configuration helper fails, the UI reports that the package was published but not selected.
 - The UI and headless startup have been checked; Master GUI/PIE acceptance remains NOT VERIFIED.
 

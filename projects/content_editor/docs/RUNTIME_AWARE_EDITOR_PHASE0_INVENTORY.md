@@ -1,7 +1,7 @@
 
 # Runtime-Aware Content Editor — Phase 0 Store and Dependency Inventory
 
-**Status:** Phase 0 inventory plus approved Runtime identity/config-isolation slice implemented; broad Runtime-aware editor UI remains unimplemented.
+**Status:** Phase 0 inventory, per-Runtime config identity/query, read-only RuntimeContext status adapter, and a status section in the dual-database comparison window are implemented. Broad editor-by-editor Runtime panes and complete content-family coverage remain unimplemented / NOT VERIFIED.
 **Decision basis:** Master approved the proposal that Runtime-side panes are read-only, authoring remains the editing source, and per-Runtime copy/publish is explicit. Direct Runtime editing remains out of scope.
 
 ## 1. Confirmed common storage architecture
@@ -140,7 +140,7 @@ Option A directly meets the approved left-source/right-target requirement (and t
 The current architecture distinguishes at least two valid target views:
 
 - **Runtime source view:** inspect `<runtime root>/content/menos.sqlite` and the Runtime project's source assets. This answers what is present in the project before packaging.
-- **Active package view (recommended):** inspect the package directory currently configured in the Runtime's `user://runtime_content_package.json`, including its filtered DB, manifest, and packaged assets. This answers what the next Runtime launch is configured to consume. If the Runtime is currently running, the UI still cannot claim it has loaded the latest package without restart/load confirmation.
+- **Active package view (recommended):** inspect the package directory currently configured in the Runtime's identity-specific `user://runtime_content_package_<sha256>.json`, where `<sha256>` is derived from the normalized absolute Runtime project root. This answers what the next Runtime launch is configured to consume. If the Runtime is currently running, the UI still cannot claim it has loaded the latest package without restart/load confirmation. The legacy `user://runtime_content_package.json` is not a fallback.
 
 These views can differ. The existing package-selection config is stored in the Runtime process's Godot user-data context, and the current Runtime Target registry does not itself prove which package is configured or currently loaded. The UI should label the view explicitly and never imply a live-running Runtime state from configuration alone.
 
@@ -150,7 +150,7 @@ These views can differ. The existing package-selection config is stored in the R
 
 - Existing publisher/package-selection path: **CONFIRMED implemented; prior headless checks documented**.
 - Existing Runtime DB comparison: **CODE VERIFIED for the eight mapped tables only**; broad per-editor coverage **NOT VERIFIED**.
-- Active package path exposed to the editor: **UNVERIFIED**.
+- Runtime package configuration and integrity status exposed in the comparison window: **CODE VERIFIED**; complete active-package content browsing across editor families: **NOT IMPLEMENTED / NOT VERIFIED**.
 - Shared selection-change service and in-editor Runtime panels: **NOT IMPLEMENTED / NOT VERIFIED**.
 - No source code or Runtime data changed in this follow-up. The inventory document was extended only.
 ## 10. Schema and package-view feasibility findings
@@ -159,7 +159,7 @@ These views can differ. The existing package-selection config is stored in the R
 - **CONFIRMED:** relevant DB table families include `robots`, `allied_units`, `enemies`, `towers`, `buildings`, `missions`, `campaign`, `stage_catalog`, `stage_01`–`stage_03`, `rewards`, `items`, `factions`, `skills`, `vfx_definitions`, `sfx_definitions`, `bgm_definitions`, `voice_definitions`, `asset_catalog`, `visual_assets`, and `gameplay`. Map content also uses fixed legacy tables and JSON documents.
 - **CONFIRMED:** the current Runtime package manifest contains package format/schema versions, source metadata, DB path/hash, map metadata, Asset entries, supported play modes, and warnings. It does not expose a top-level `included_tables` field in the inspected package; the actual included DB tables must be read from the package DB or another authoritative manifest field.
 - **CONFIRMED:** `RuntimeContentPackage` validates the selected package manifest, DB hash, and every listed Asset's existence/size/hash. Its DB path is `content/menos.sqlite`. In Runtime, package selection is cached until configuration reload/restart.
-- **CONFIRMED:** the package-config helper writes `user://runtime_content_package.json` in the selected Runtime project's own Godot user-data context. The Content Editor cannot reliably infer that user-data path from the project root alone; it must query the helper/Runtime context or invoke a narrow read-only query helper.
+- **CONFIRMED (historical path superseded by Section 14):** the initial package-config helper used `user://runtime_content_package.json` in the selected Runtime project's own Godot user-data context. The current implementation uses `user://runtime_content_package_<sha256>.json`, with the identity derived from the normalized absolute Runtime project root. The Content Editor queries the Runtime context rather than inferring its user-data path.
 - **CONFIRMED:** the current package contract externally resolves only explicitly manifested `content_asset` resources; other Godot resources remain bundled with the Runtime project. Therefore the Runtime pane must distinguish packaged content from built-in/static Runtime resources.
 - **INFERENCE:** package-side inspection is technically feasible using a read-only manifest + SQLite reader without starting Runtime. However, discovering which package is configured requires a separate read-only query path, and proving that it has actually loaded requires Runtime-side evidence.
 

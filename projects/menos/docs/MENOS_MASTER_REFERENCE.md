@@ -187,16 +187,49 @@ Pilot 중심 HUD의 코드 경로가 존재한다.
 
 중요: 자동화/headless PASS는 PIE VERIFIED와 동일하지 않다.
 
-## 6. 현재 데이터 파이프라인
+## 단기 목표 종료 및 Git 반영 절차 — CANON (Master 승인 2026-10-10)
 
-SQLite가 MENOS Runtime/Editor Content의 authoritative source다.
+단기 목표를 달성하면 관련 문서를 실제 구현·검증 결과에 맞춰 갱신하고, 해당 목표의 변경을 Git에 커밋·푸시한다.
 
-현재 확인된 원칙:
-- `godot/content/menos.sqlite`가 Content Canon
-- MENOS-created `godot/content/**/*.json`는 0개
-- Robot / Unit / Tower / Stage / Map / Asset Catalog / Faction / Mission / Reward / Skill 등의 Content는 SQLite-backed Repository/Loader를 사용
-- Content 저장은 ObjectPersistence를 통해 SQLite에 반영
-- `user://` 사용자 저장 JSON은 Content SQLite와 분리
+1. 목표 성공 조건을 검증하고 달성 여부를 판정한다. 달성하면 해당 목표를 종료하며 후속 목표를 자동 시작하지 않는다.
+2. 관련 문서에는 CONFIRMED / PROPOSAL / UNVERIFIED와 CODE / BUILD / EDITOR / PIE 검증 상태를 구분해 기록한다. 승인되지 않은 제안은 Canon으로 승격하지 않는다.
+3. 커밋 전 HEAD, Branch, Working Tree 및 기존 변경사항을 확인한다. 목표와 무관한 변경, 임시 파일, 생성 산출물은 커밋 대상에서 제외한다. 기존 작업물은 임의로 삭제하거나 되돌리지 않는다.
+4. 스테이징된 파일 목록과 staged diff를 검토하고, 관련 검증 및 `git diff --check`를 수행한다. 의도하지 않은 변경이나 충돌이 있으면 중단하고 보고한다.
+5. 해당 목표에 속하는 검증된 변경만 커밋하고 원격 저장소에 푸시한다. 성공 후 커밋 ID, 푸시 결과, Branch, Working Tree 상태 및 미해결 사항을 보고한다.
+
+## 6. 데이터 권위 모델 — CANON (Master 승인 2026-10-10)
+
+다음 권위 경계를 Canon으로 한다. 이 모델의 승인만으로 현재 구현이 완성되었다고 간주하지 않는다.
+
+- **Content Editor Authoring DB** (`content_editor/data/menos.sqlite`): 편집 가능한 기준정보의 Authoring Source. Runtime DB와 별도 소유·관리한다.
+- **Map JSON**: 맵별 독립 Authoring Source. 맵 데이터의 원본이며, SQLite에 저장된 기존 맵 데이터는 이 Canon을 충족한 것으로 간주하지 않는다.
+- **Runtime Built-in Content** (`godot/content/menos.sqlite` 및 Runtime 소유 Asset): Runtime 프로젝트의 내장 콘텐츠 기준선. Content Editor DB와 자동 동기화하거나 덮어쓰지 않는다.
+- **Published Runtime Package**: Authoring Source에서 생성되는 파생 배포물. 필터링된 SQLite + 버전 명시 Manifest + 참조 Runtime Asset으로 구성하며 Authoring Source가 아니다.
+- **Player Save Data**: 플레이어 진행/설정 데이터의 별도 저장 영역. Content Publishing은 이를 포함하거나 덮어쓰지 않는다.
+
+기존 구현은 이 경계의 일부만 충족한다. Publisher, 맵 JSON 원본화, 자산 참조/Manifest, 패키지 호환성 및 Save Data 이전 정책은 별도 검증·계약 정의와 구현 승인이 필요하다.
+
+### 6.1 데이터 전달 계약 검토 — PROPOSAL / NOT CANON (2026-10-10)
+
+다음은 현재 코드 조사 결과와 후속 계약 제안이다. 이 절의 제안은 별도 Master 승인 전까지 Canon이 아니다.
+
+**CONFIRMED — Publisher / Asset**
+- Publisher는 Authoring DB의 문자열/JSON 값을 재귀 탐색해 `res://` 경로를 수집하고, 맵 JSON도 탐색한다. 발견한 파일이 Runtime root에 없으면 게시를 실패시킨다.
+- 게시물은 임시 디렉터리에서 생성되고 DB/Asset 해시를 검증한 뒤 최종 경로로 이동한다. 출력 경로가 이미 존재하면 덮어쓰기를 거부한다.
+- Manifest에는 `package_format_version`, `content_schema_version`, DB SHA-256, 포함 테이블, 맵 원본 해시, Asset 경로·크기·SHA-256·role이 기록된다.
+- Runtime은 `package_format_version`을 검사하고 DB/Asset 무결성을 검사한다. 현재 확인한 Runtime 코드에서는 `content_schema_version`을 검사하지 않는다.
+- 현재 자산 수집은 DB/맵 데이터에서 발견되는 `res://` 참조에 기반한다. 코드의 정적 `preload()`/`load()` 의존성이 모두 Manifest 대상이라고 보장하는 것은 아니다.
+
+**CONFIRMED — Save Data**
+- Player profile은 `user://menos_campaign_robot_profile.json`, 설정은 `user://menos_settings.cfg`를 사용한다.
+- 사용자 프로필 파일이 없으면 `PlayerProfileRepository`는 Runtime 내장 DB의 레거시 `player_profile` 행을 읽어 사용자 파일로 저장하려 시도한다. 이는 현재 존재하는 레거시 가져오기 동작이며, Publisher가 Save Data를 배포한다는 뜻은 아니다.
+- Publisher는 `player_profile` 테이블을 패키지 DB에서 제외한다.
+
+**PROPOSAL — 계약 기준**
+1. Manifest의 package format과 content schema 버전을 각각 필수로 검증한다. 미지원 버전은 콘텐츠 로드 전에 fail-closed 처리한다.
+2. Publisher는 데이터 기반 리소스 참조의 누락·경로 탈출을 거부하고, 코드 수준 정적 의존성은 별도 목록/검증 대상으로 명시한다. 현재의 데이터 스캔만으로 완전성을 주장하지 않는다.
+3. 게시물은 새 출력 경로에만 생성한다. 기존 게시물 교체/롤백은 별도 승인된 교체 프로토콜 없이는 수행하지 않는다.
+4. Save Data는 패키지와 분리한다. 기존 프로필 자동 가져오기는 별도 호환성 결정 전까지 현행 동작으로 기록하며, 이를 새 데이터 마이그레이션의 일반 정책으로 확대하지 않는다.
 
 ODB PK 원칙:
 - Content 간 식별/참조는 ODB PK 기반
@@ -510,16 +543,16 @@ BUSINESS VIABLE: 아직 최종 상업성은 검증되지 않았다. 반복 전�
 
 ## 12. Content Editor / Runtime Data Authority Boundary — 2026-10-09
 
-This section records the current implementation boundary; it does not change Canon.
+This section records the current implementation boundary against the approved data-authority Canon.
 
 - Existing Runtime project and shipped-content baseline: `godot/` and `godot/content/menos.sqlite`.
 - Independent Content Editor project: `content_editor/`; authoring DB copy: `content_editor/data/menos.sqlite`.
-- The Editor authoring DB copy is not automatically the new sole authoritative database. The approved source-of-truth transition remains UNVERIFIED.
-- A distinct published Runtime database/package, complete manifest, asset collection rules, schema/package version contract, and failure-safe publish transaction are not yet established as one verified end-to-end path.
+- **Canon (Master-approved 2026-10-10):** the Content Editor Authoring DB is the authoring source for editable reference data; each map has an independent JSON authoring source; the Runtime DB/assets remain Runtime-owned built-in content; the published package is a derived artifact; player save data remains separate and must not be overwritten by publishing.
+- This authority model is approved, but end-to-end implementation remains **UNVERIFIED**. A complete published Runtime package path, map JSON source implementation, asset collection/reference contract, schema/package compatibility contract, and failure-safe publish transaction are not yet verified together.
 - Runtime dependencies include both database-driven asset paths and code-level `res://` preloads. Any future publisher must account for both categories and validate referenced resources before publishing.
 - Headless smoke tests and isolated database tests are evidence for their specific paths only. They do not establish full GUI acceptance or Master PIE VERIFIED.
 - For current Editor/Runtime separation progress, use `docs/CONTENT_EDITOR_RUNTIME_SEPARATION_PLAN.md`; for the latest implementation/verification status, use `state/CURRENT_STATE.md`.
-- No Canon, source-of-truth authority, or Production status is changed by this note.
+- This note records the approved Canon boundary; it does not claim that implementation or Production acceptance is complete.
 
 ## Content Editor Authoring Boundary Re-review
 
@@ -541,14 +574,14 @@ Status: PROPOSAL / NOT CANON
 
 ## Short-term Content Editor / Runtime Boundary — 2026-10-09
 
-**Master-approved design direction; implementation pending separate authorization.**
+**Master-approved direction; the data authority boundary is now Canon (2026-10-10). Implementation remains pending separate authorization.**
 
 - Map authoring source: one independent JSON file per map.
 - Runtime delivery: filtered SQLite database + versioned manifest + referenced Runtime Assets.
 - Supported short-term play modes: Campaign and Single Play only.
 - Runtime owns the title/main screen, gameplay scene, HUD, navigation and execution behavior. Content Editor owns authoring tools and editable content data (including maps), validation and authoring preview. The Editor does not own the actual Runtime screens.
 - Current implementation does not yet meet the map-file source-of-truth or publish-package contract. Existing SQLite map storage, JSON-looking legacy paths, empty Runtime Asset manifest and multiplayer metadata are documented gaps, not grounds for silent migration.
-- This section records scoped design approval, not Canon. Code, DB, Asset and Runtime configuration changes remain behind the next implementation approval gate. Final visual/PIE acceptance remains with Master.
+- The data-authority rules above are Canon. The broader implementation plan and play-mode scope do not by themselves authorize code, DB, Asset or Runtime configuration changes. Final visual/PIE acceptance remains with Master.
 
 ## Canon: Independent Project Documentation and Code Ownership (Master-approved 2026-10-09)
 
