@@ -231,6 +231,15 @@ Master는 아래 세 가지 계약을 승인했다. 기존 구현이 계약을 �
 3. **게시 안전성:** 패키지는 새 출력 경로에 생성한다. 기존 패키지의 교체·롤백은 별도 승인된 교체 프로토콜 없이는 수행하지 않는다.
 4. **Save Data 경계:** Save Data는 콘텐츠 패키지와 분리한다. 기존 레거시 프로필 가져오기 동작은 별도로 평가하며, 신규 마이그레이션 정책은 별도 승인 없이는 추가하지 않는다.
 
+**계약 준수 감사 — READ-ONLY (2026-10-10)**
+
+- **CONFIRMED / Asset:** Publisher의 `collect_resource_paths()`는 DB/맵 JSON의 문자열·배열·객체를 재귀 탐색해 `res://` 참조를 수집하고 빈 경로, 절대 경로, `.`/`..` 경로 요소를 거부한다. 참조된 파일이 Runtime root에 없으면 게시 실패 처리한다.
+- **GAP / Asset:** 이 탐색은 데이터에서 발견되는 참조만 대상으로 한다. Runtime 코드의 정적 `preload()`/`load()` 의존성을 전수 수집·검증하는 절차는 확인되지 않았다. 전체 Asset 계약은 **PARTIAL / NOT VERIFIED**.
+- **CONFIRMED / Publish safety:** Publisher는 기존 출력 디렉터리가 있으면 덮어쓰기를 거부하고, 임시 디렉터리에서 패키지를 생성·검증한 후 최종 경로로 이동한다. 기존 패키지 교체/롤백 기능은 이번 조사 범위에서 확인되지 않았다.
+- **GAP / Package compatibility:** Publisher는 `package_format_version=1` 및 `content_schema_version=1`을 Manifest에 기록한다. Runtime은 package format 버전을 검사하지만, `content_schema_version`을 검사하지 않는다. 승인 Canon과 불일치하므로 패키지 호환 계약은 **FAIL / IMPLEMENTATION GAP**.
+- **CONFIRMED / Save Data boundary:** Publisher는 `player_profile` 테이블을 제외하며 Runtime은 프로필을 `user://menos_campaign_robot_profile.json`에, 설정을 `user://menos_settings.cfg`에 저장한다. 프로필 파일이 없으면 내장 DB의 레거시 프로필을 사용자 파일로 가져오려는 기존 경로가 있다. 이는 기존 동작이며 신규 마이그레이션 정책으로 일반화하지 않는다.
+- **검증 범위:** 소스 코드 정적 조사만 수행. 테스트, Build, Editor, PIE는 실행하지 않았다. 구현 수정은 이번 READ-ONLY 목표 범위 밖이며 별도 승인 없이는 수행하지 않는다.
+
 ODB PK 원칙:
 - Content 간 식별/참조는 ODB PK 기반
 - Name/Title/Display Name은 변경 가능한 속성
